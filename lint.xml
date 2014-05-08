@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="NewApi">
+        <ignore path="src/com/edusoho/app/MainActivity.java" />
+        <ignore path="src/org/demo/phonegapdemo/MainActivity.java" />
+    </issue>
+</lint>

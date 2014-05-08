@@ -1,0 +1,10 @@
+﻿load_learn_list(
+[
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"},
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"},
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"},
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"},
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"},
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"},
+	{"th_img": "images/net_logo.jpg","title":"教你如何成为一个公务员", "learn_hour": "15", "now_hour": "4", "comment" : "免费","star":"3"}
+]);

@@ -1,0 +1,357 @@
+#course_lesson_content img{
+    width: 100%;
+}
+
+#course_lesson_content {
+    width: 100%;
+}
+#message_content a{
+    
+}
+.course_comment_table {
+    height: 80px;
+    border-bottom: 1px solid #ccc;
+}
+.card {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 10px;
+    background: white;
+    margin-bottom: 15px;
+}
+.card-head {
+    font-size: large !important;
+    color:#0066FF !important;
+    margin-bottom: 10px !important;
+}
+
+.nickname {
+    color: rgba(82,155,234,255);
+}
+.school {
+    display:block;
+    color: rgba(82,155,234,255);
+    font-size: 12px;
+    position: relative;
+    bottom:0px;
+}
+.small-avatar {
+    width: 48px;
+    height: 48px;
+}
+#course_head {
+    padding:5px !important;
+    margin:0px !important;
+    position: absolute !important;
+    margin-top:40px !important;
+    width:100% !important;
+    //border-top: 1px solid rgba(158,158,158,255) !important;
+}
+.card-ul-bg {
+    padding-top: 10px !important;
+}
+.card-bg {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin: 15px;
+    background: white;
+}
+#grid tr{
+            height:80px;
+        }
+#grid td{
+    width:30%;
+    text-align: center;
+}
+#grid td>a.icon:not(.button):before {
+    position:absolute;
+    top:2px;
+    left:0;
+    font-size: 30px;
+    margin:auto;
+    width: 100%;
+}
+#grid td>a:not(.button) {
+    -webkit-box-sizing:border-box;
+    box-sizing: border-box;
+    top: 3px;
+    height: 60px;
+    overflow: hidden;
+    font-size:12px;
+    font-weight:normal;
+    text-decoration: none;
+    color: rgba(82,155,234,255);
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    line-height: 100px;
+    position: relative;
+    margin: 0;
+}
+
+#grid td a.pressed {
+font-weight: bold;
+background: white;
+}
+
+#grid td div.pressed {
+font-weight: bold;
+background: white;
+}
+
+#data_lis a.pressed{
+    background: rgba(82,155,234,255);
+}
+
+#carousel_dots {
+    text-align: center; 
+    margin-left: auto; 
+    margin-right: auto; 
+    clear: both; 
+    position: relative; 
+    top: -20px; 
+    z-index: 200;
+}
+
+.carousel_paging2 {
+    border-radius: 10px;
+
+    background: #ccc;
+    width: 10px;
+    height: 10px;
+    display:inline-block;
+}
+
+.carousel_paging2_selected {
+    border-radius: 10px;
+
+    background: #000;
+    width: 10px;
+    height: 10px;
+    display:inline-block;
+}
+
+#splash_dots {
+    text-align: center; 
+    margin-left: auto; 
+    margin-right: auto; 
+    clear: both; 
+    position: relative; 
+    top: -20px; 
+    z-index: 200;
+}
+
+.splash_paging2 {
+    border-radius: 10px;
+
+    background: #ccc;
+    width: 10px;
+    height: 10px;
+    display:inline-block;
+}
+
+.splash_paging2_selected {
+    border-radius: 10px;
+
+    background: #000;
+    width: 10px;
+    height: 10px;
+    display:inline-block;
+}
+
+.spacer {
+    width: 10px;
+    float: left;
+}
+
+.carousel_content {
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+.splash_content {
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+//列表字体颜色
+.list_span_color {
+    color:#0066FF;
+}
+.list span {
+    color:#0066FF;
+    font-weight: normal;
+    font-size: 14px;
+}
+.tab_hide {
+    display:none;
+}
+
+.hide {
+    display:none;
+}
+
+.divider_none{
+    font-size: 14px !important;
+    padding: 20px 20px 20px 10px !important;
+}
+.button_noright{
+    font-size: 17px;
+    padding: 7px 0px 7px 7px !important;
+    margin: 7px 0px 7px 7px !important;
+}
+.button_noleft{
+    font-size: 17px;
+    padding: 7px 7px 7px 0px !important;
+    margin: 7px 7px 7px 0px !important;
+}
+
+.custom_button_red {
+    border-radius: 5px !important;
+    background-color:#CC3300 !important;
+    width:90%;
+    color:white !important;
+}
+
+.custom_button_red.pressed {
+    background-color:#de773f !important;
+}
+
+
+.custom_splash_button {
+    position: relative; 
+    top: 80%; 
+    border-radius: 5px !important;
+    background-color:#1E90FF !important;
+    width:50%;
+    color:white !important;
+}
+
+.custom_splash_button.pressed {
+    background-color:#87CEFF !important;
+}
+
+.custom_button_blue {
+    border-radius: 5px !important;
+    background-color:#00BA84 !important;
+    width:90%;
+    color:white !important;
+}
+.custom_button_blue.pressed {
+    background-color:#65c294 !important;
+}
+
+.learn_btn {
+    color:#FF6600;border-width: 1px;border-style: solid;border-radius:3px;padding:5px;
+}
+.learn_btn.pressed {
+    color:#fdb933;
+}
+.input_bg:before {
+    float: left;
+    top: 31px;
+    left:10px;
+    color: rgba(82,155,234,255);
+}
+.li_sel:after{
+    content: "\f054";
+    font-size: 1.5em;
+    font-family: 'IcoMoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    position: relative;
+    left: -3px;
+    top: 2px;
+    color:rgba(82,155,234,255) !important;
+}
+.li_sel_color{
+    color:rgba(82,155,234,255) !important;
+}
+#loadmask {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 999999;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+#toastmask {
+    display: block;
+    width: auto;
+    height: auto;
+    background: #000;
+    z-index: 999999;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+#afui_toast { 
+    padding: 20px;
+    position:absolute;
+    top:45%;
+    z-index:999999; 
+}
+
+.stars-0, .stars-1, .stars-2, .stars-3, .stars-4, .stars-5 {
+    display:inline-block;
+    *display:inline;
+    *zoom:1;
+    overflow:hidden;
+    width:85px;
+    height:16px;
+    background:url("images/stars.png") no-repeat;
+} 
+
+.stars-5 {
+    background-position:0 0px;
+}
+
+.stars-4 {
+    background-position:0 -16px;
+}
+
+.stars-3 {
+    background-position:0 -32px;
+}
+
+.stars-2 {
+    background-position:0 -48px;
+}
+
+.stars-1 {
+    background-position:0 -64px;
+}
+
+.stars-0 {
+    background-position:0 -80px;
+}
+
+.favorite {
+    color:red !important;
+}
+
+.quick_comment
+{
+    width: auto !important;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 5px;
+    background: white;
+    margin: 5px;
+}
+
+.quick_comment.pressed
+{
+    background: rgba(82,155,234,255) !important;
+}
+
+.quick_comment_wrap{
+    padding-bottom: 5px;
+    text-align: left;
+}
