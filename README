@@ -1,2 +1,0 @@
-android工程和ios工程结合在一起，两个平台共享assets/www里代码。
-ios工程在assets/www目录下
