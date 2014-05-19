@@ -59,6 +59,7 @@ exports.unFavorite = function(course_id, event)
 			if (data.status == "success") {
 				showToast("取消收藏成功!");
 				$("#favorite_course_" + course_id).remove();
+				$("#favorite_radio").removeAttr("checked");
 			}
 		}
 	);
@@ -91,7 +92,7 @@ exports.init_favorite_data = function(isappend)
 		webRoot + "/favoritecourse" + '?callback=?&token=' + token,
 		function(data){
 			if (data.status == "success") {
-				list_str = zy_tmpl($("#favorite_list_item").val(), data.favoriteCourses, zy_tmpl_count(data.favoriteCourses),function(a, b) {
+				list_str = zy_tmpl($("#favorite_list_item").val(), data.courses, zy_tmpl_count(data.courses),function(a, b) {
 					switch (b[1]){
 						case "teacher":
 							var user = data.users[a["teacherIds"][0]];

@@ -49,6 +49,7 @@ define(function(require, exports){
 
 	exports.saveUserInfo = function(user,token)
 	{
+		window.loginUser = user;
 		appStore.setItem("username", user.nickname);
 		appStore.setItem("usertitle", user.title);
 		appStore.setItem("userid", user.id);
@@ -168,6 +169,14 @@ define(function(require, exports){
 	}
 
 	exports.saveSchool = function(name, cover, url)
+	{
+		setSchoolHost(url, name);
+		appstore_model.setStoreCache("defaultSchool", url);
+		appstore_model.setStoreCache("defaultSchoolName", name);
+		load_courselist_page();
+	}
+
+	function saveSchoolToLocal(name, cover, url)
 	{
 		var school_list;
 		var school_list_str = appStore.getItem("school_list");

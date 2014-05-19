@@ -3,7 +3,6 @@ define(function(require, exports){
 var func_txt = new String(function(){
 /*
 <div title="系统通知" id="notification" data-header="notification_header" class="panel" data-footer='courselist_footer' data-tab="navbar_setting">
-	
 		<textarea id="notification_list_item" style="display:none;">
 			
 			<li>

@@ -27,11 +27,21 @@ define(function(require, exports){
 	var text = schoolpage_txt.substring(schoolpage_txt.indexOf("/*") + 2, schoolpage_txt.lastIndexOf("*/"));
 	$.ui.addContentDiv("addschool", text, "添加网校");
 
+	exports.isStartQRSearch = false;
+
 	exports.qrSearch = function()
 	{
+		if (exports.isStartQRSearch) {
+			return;
+		}
+		exports.isStartQRSearch = true;
 		nativeSearch(function(text) {
-			$("#searchWord").val(text);
-			schoolpage_model.seachSchool();
+			exports.isStartQRSearch = false;
+			if (text != "") {
+				$("#searchWord").val(text);
+				schoolpage_model.searchSchoolForQr(text);
+			}
+			
 		});
 	}
 
@@ -57,6 +67,19 @@ define(function(require, exports){
 		});
 	}
 
+	exports.searchSchoolForQr = function(url)
+	{
+		simpleJsonP(url, function(data){
+			if (data && data.status == "success") {
+				if (data.token) {
+					appstore_model.saveUserInfo(data.user, data.token);
+				}
+				var school = data.school;
+				appstore_model.saveSchool(school.title, school.logo, school.url);
+			}
+		});
+	}
+
 	exports.seachSchool = function()
 	{
 		var search = $("#searchWord").val();
@@ -79,8 +102,8 @@ define(function(require, exports){
 				if (data.status == "error") {
 					$("#afui").popup("网校不存在!");
 				} else {
-					var school_info = "网校名称:" + data.school.name
-								+ "<br>网站副标题:" + data.school.slogan
+					var school_info = "网校名称:" + data.school.title
+								+ "<br>网站副标题:" + data.school.info
 								+ "<br>网站域名:" + data.school.url;
 					$("#afui").popup(
 						{

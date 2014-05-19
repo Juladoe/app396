@@ -10,7 +10,6 @@ define(function(require, exports){
 
 	exports.init = function()
 	{
-
 		var maskDiv = $.create("div", {
 		    id: "afui_toast",
 		    className: "ui-loader",
@@ -20,6 +19,28 @@ define(function(require, exports){
 		    display: "none"
 		});
 		document.body.appendChild(maskDiv.get(0));
+
+		require(
+            ['../appstore', '../init', 'courselist', 'splash'],
+            function(appstore, init, courselist, splash){
+                window.splash_model = splash;
+                window.courselist_model = courselist;
+                window.init_model = init;
+                window.appstore_model = appstore;
+
+                appstore_model.loadUserInfo();
+                //_load_carousel();
+                var showSplash = appstore_model.getStoreCache("showSplash");
+                if (showSplash != "false") {
+                    splash_model.load(function(){
+                        loadDefaultSchool();
+                    });
+                } else {
+                    loadDefaultSchool();
+                }
+                //appstore_model.loadSchoolList(true);
+            }
+        );
 
 		require(
 				['courseinfo', 'learning', 'schoolpage', 'course_lesson_list', 'searchlist'],
@@ -50,30 +71,7 @@ define(function(require, exports){
 					window.audio_model = audio;
 				}
 		);
-
-		require(
-            ['../appstore', '../init', 'courselist', 'splash'],
-            function(appstore, init, courselist, splash){
-                window.splash_model = splash;
-                window.courselist_model = courselist;
-                window.init_model = init;
-                window.appstore_model = appstore;
-
-                appstore_model.loadUserInfo();
-                _load_carousel();
-                var showSplash = appstore_model.getStoreCache("showSplash");
-                if (showSplash != "false") {
-                    splash_model.load(function(){
-                        loadDefaultSchool();
-                    });
-                } else {
-                    loadDefaultSchool();
-                }
-                appstore_model.loadSchoolList(true);
-            }
-        );
 	}
-
 
 	var uiToastBlocked = false;
 
@@ -261,7 +259,6 @@ define(function(require, exports){
 
 	window.load_notification_page = function()
 	{
-		setTitle(notification_model.title);
 		if (appstore_model.checkIsLogin()) {
 			appconfig.page = "notification";
 			$.ui.loadContent('notification',false,false,'slide');
@@ -271,10 +268,12 @@ define(function(require, exports){
 			appconfig.page = "login";
 			$.ui.loadContent('login',false,false,'slide');
 		}
+		setTitle(notification_model.title);
 	}
 
 	window.load_favorite_page = function()
 	{
+		setTitle(learning_model.title);
 		if (appstore_model.checkIsLogin()) {
 			appconfig.page = "favorite";
 			$.ui.loadContent('favorite',false,false,'slide');
@@ -520,11 +519,15 @@ define(function(require, exports){
 		var scanner = window.cordova.require("native_plugins/BarcodeScanner");
 	        scanner.scan(
 	                function (result) {
+	                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
+	                		return;
+	                	}
 	                	$("#afui").popup({
 					        title: "扫描结果",
 					        message: "二维码信息:\n" + result.text,
 					        cancelText: "取消",
 					        cancelCallback: function () {
+					        	callback("");
 					            applog("qr search cancelled");
 					        },
 					        doneText: "添加网校",
@@ -625,7 +628,13 @@ define(function(require, exports){
 	window.favorite = function(favorite_btn)
 	{
 		if (appstore_model.checkIsLogin()) {
-			favorite_model.favorite($("#favorite_btn").attr("courseId"));
+			var ischeck = $("#favorite_radio").attr("checked");
+			if (ischeck == "checked") {
+				favorite_model.unFavorite($("#favorite_btn").attr("courseId"));
+			} else {
+				favorite_model.favorite($("#favorite_btn").attr("courseId"));
+			}
+			
 		} else {
 			setHistoryAction(window.load_courseinfo_page, $("#favorite_btn").attr("courseId"));
 			$.ui.loadContent('login',false,false,'slide');

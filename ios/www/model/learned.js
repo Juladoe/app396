@@ -2,7 +2,7 @@ define(function(require, exports){
 
 	var func_txt = new String(function(){
 	/*
-	<div title="在学" id="learned" class="panel" data-footer='learn_footer' data-tab="learn_footer">
+	<div title="在学" id="learned" class="panel" data-header="normal_header" data-footer="courselist_footer">
 		<!-- templ input list模板 -->
 			<textarea id="learned_list_item" style="display:none;">
 				<!-- list item -->
@@ -12,7 +12,7 @@ define(function(require, exports){
 					<tr>
 						<td style="width:140px;"><img src="${middlePicture}" width="120" height="80" /></td>
 						<td style="text-align:left;">
-						<p style="color:#0066FF;">${title}</p>
+						<p class="custom_normal_color">${title}</p>
 						<p>课时数：${lessonNum}</p>
 						</td>
 					</tr>
@@ -30,7 +30,7 @@ define(function(require, exports){
 				<!-- list item end -->
 			</textarea>
 		<!-- templ input list end -->
-		<ul class="list card-ul-bg" id="learned_list">
+		<ul class="list card-ul-bg ul_bg_null" id="learned_list">
 			
 		</ul>
 	</div>

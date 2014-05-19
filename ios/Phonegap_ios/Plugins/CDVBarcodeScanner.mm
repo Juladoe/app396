@@ -119,6 +119,11 @@
     return result;
 }
 
+-(void) drawRect:(CGRect)rect
+{
+    NSLog(@"ddddd");
+}
+
 //--------------------------------------------------------------------------
 - (void)scan:(CDVInvokedUrlCommand*)command {
     CDVbcsProcessor* processor;
@@ -788,14 +793,14 @@ parentViewController:(UIViewController*)parentViewController
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     if (self.processor.is1D) {
-        UIColor* color = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:RETICLE_ALPHA];
-        CGContextSetStrokeColorWithColor(context, color.CGColor);
-        CGContextSetLineWidth(context, RETICLE_WIDTH);
-        CGContextBeginPath(context);
-        CGFloat lineOffset = RETICLE_OFFSET+(0.5*RETICLE_WIDTH);
-        CGContextMoveToPoint(context, lineOffset, RETICLE_SIZE/2);
-        CGContextAddLineToPoint(context, RETICLE_SIZE-lineOffset, 0.5*RETICLE_SIZE);
-        CGContextStrokePath(context);
+//        UIColor* color = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:RETICLE_ALPHA];
+//        CGContextSetStrokeColorWithColor(context, color.CGColor);
+//        CGContextSetLineWidth(context, RETICLE_WIDTH);
+//        CGContextBeginPath(context);
+//        CGFloat lineOffset = RETICLE_OFFSET+(0.5*RETICLE_WIDTH);
+//        CGContextMoveToPoint(context, lineOffset, RETICLE_SIZE/2);
+//        CGContextAddLineToPoint(context, RETICLE_SIZE-lineOffset, 0.5*RETICLE_SIZE);
+//        CGContextStrokePath(context);
     }
     
     if (self.processor.is2D) {

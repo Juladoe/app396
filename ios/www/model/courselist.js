@@ -5,7 +5,7 @@ define(function(require, exports){
 	<div title="" id="courselist" class="panel" data-header="courselist_header" data-footer="courselist_footer" data-height="80">
 		<div id="scroller">
 		<!-- templ input list模板 -->
-			<textarea id="ns_list_item" style="display:none;">
+			<textarea id="list_item" style="display:none;">
 				<li class="card-bg">
 				<a onclick="load_courseinfo_page('${id}');">
 					<table style="width:98%;">	
@@ -17,7 +17,17 @@ define(function(require, exports){
 								<h5 class="custom_normal_color">${title}</h5>
 								<p>教师:${cb:teacher}</p>
 								<p>学员数:${studentNum}</p>
-								<p>${cb:rating}<span class="system_normal" style="float:right;">${cb:price}</span></p>
+							</td>
+							<td>
+
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p>${cb:rating}</p>
+							</td>
+							<td>
+								<span class="system_normal" style="float:right;">${cb:price}</span>
 							</td>
 						</tr>
 						
@@ -55,15 +65,17 @@ define(function(require, exports){
 		simpleJsonP(
 			schoolHost + "/courselist" + '?callback=?&page=' + offset + "&sort=" + sort,
 			function(data){
-				list_str = zy_tmpl($("#ns_list_item").val(), data.courses, zy_tmpl_count(data.courses), function(a, b) {
+				list_str = zy_tmpl($("#list_item").val(), data.courses, zy_tmpl_count(data.courses), function(a, b) {
 					switch (b[1]){
 						case "smallPicture":
 							if (a.smallPicture == null || a.smallPicture == "") {
 								return "images/img1.jpg";
 							}
 							return a.smallPicture;
+
 						case "teacher":
 							return data.users[a["teacherIds"][0]].nickname;
+
 						default:
 							return templ_handler(a, b);
 					}
@@ -77,7 +89,7 @@ define(function(require, exports){
 					//$("#data_list").find("#bottom_refresh_div").remove();
 					$("#data_list").html($("#data_list").html() + list_str);
 				} else {
-					courselist_model.scroller.scrollToTop(100);
+					courselist_model.scroller.scrollToTop(10);
 					$("#data_list").html(list_str);
 				}
 				if (callback) {

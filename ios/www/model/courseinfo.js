@@ -57,7 +57,7 @@ var courseinfo_text = new String(function(){
 			<input type="hidden" id="course_price" value="${couse_introduction.price}" />
 		</div>
 		<!-- 课程tab -->
-		<div style="width:98%;margin:0 auto;">
+		<div style="width:100%;margin:0 auto;">
 			<div class="button-grouped flex tabbed">
 					<a class="button tab_radio" data-v="0" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课时列表</a>
 					<a class="button tab_radio pressed" data-v="1" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课程介绍</a>
@@ -122,8 +122,8 @@ var courseinfo_text = new String(function(){
 					${cb:audiences}
 					
 				</div>
-				<div id="2" class="ui-body-d ui-content tab_content">
-					<table style="width:100%;border-collapse:collapse;padding:3px;" id="course_comment_table">
+				<div id="2" class="ui-body-d ui-content tab_content" style="padding:5px;">
+					<table style="width:100%;border-collapse:collapse;" id="course_comment_table">
 						${cb:course_comment}
 					</table>
 					<div class="${cb:ishide}" style="text-align:center;padding-right:1px;margin-top:20px;">
