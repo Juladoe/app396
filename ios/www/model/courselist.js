@@ -7,16 +7,15 @@ define(function(require, exports){
 		<!-- templ input list模板 -->
 			<textarea id="list_item" style="display:none;">
 				<li class="card-bg">
-				<a onclick="load_courseinfo_page('${id}');">
-					<table style="width:98%;" border="0" cellpadding="0" cellspacing="0">	
-						<tr class="card-bg-line">
-							<td style="width:180px;">
-								<img src="${cb:smallPicture}" width="160" height="90" />
+				<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
+					<table style="width:100%;" border="0" cellpadding="0" cellspacing="0">	
+						<tr class="card-bg-line" valign="top">
+							<td style="width:160px;">
+								<img src="${cb:middlePicture}" width="160" height="90" />
 							</td>
 							<td style="text-align:left;" class="list_content">
-								<h5 class="custom_normal_color">${title}</h5>
+								<h4 class="custom_normal_color">${title}</h4>
 								<p>教师:${cb:teacher}</p>
-								<p>学员数:${studentNum}</p>
 							</td>
 							<td>
 
@@ -24,8 +23,22 @@ define(function(require, exports){
 						</tr>
 						<tr>
 							<td colspan = "2">
-								<p>${cb:rating}</p>
-								<span class="system_normal" style="float:right;">${cb:price}</span>
+								<div class="course_list_bottom">
+									<table style="width:100%;">
+										<tr valign="middle">
+											<td align="left" width="33%">
+												${cb:rating}
+											</td>
+											<td align="center" width="33%" class="course_price">
+												${cb:price}
+											</td>
+											<td align="right" width="33%">
+												学员数:${studentNum}
+											</td>
+										<tr>
+									</table>
+									
+								</div>
 							</td>
 						</tr>
 						
@@ -65,11 +78,11 @@ define(function(require, exports){
 			function(data){
 				list_str = zy_tmpl($("#list_item").val(), data.courses, zy_tmpl_count(data.courses), function(a, b) {
 					switch (b[1]){
-						case "smallPicture":
-							if (a.smallPicture == null || a.smallPicture == "") {
+						case "middlePicture":
+							if (a.middlePicture == null || a.middlePicture == "") {
 								return "images/img1.jpg";
 							}
-							return a.smallPicture;
+							return a.middlePicture;
 
 						case "teacher":
 							return data.users[a["teacherIds"][0]].nickname;

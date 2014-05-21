@@ -2,7 +2,7 @@ define(function(require, exports){
 
 var courseinfo_text = new String(function(){
 /*
-<div title="课程详情" id="courseinfo" class="panel" data-header='info_header' data-footer="courselist_footer">
+<div title="课程详情" id="courseinfo" class="panel" data-header='info_header' data-footer="none">
 	<!-- templ input list模板 -->
 	<textarea id="courseinfo_cb_course_list" style="display:none;">
 		<tr class="course_lesson_table" valign="middle" onclick="courseinfo_model.showCourseInfo('${type}','${courseId}','http://bcs.duapp.com/bimbucket/test.mp4','${id}');">
@@ -160,6 +160,8 @@ var content = '请打分:<span id="commentStar" style="cursor: pointer; width: 1
 				+ '<input readonly size="7" type="text" rating="4" value="感觉很好" class="quick_comment">'
 				+ '<input readonly size="12" type="text" rating="5" value="课程内容很好" class="quick_comment">';
 
+exports.isTeacher = false;
+
 exports.quick_comment = function(input)
 {
 	var rating = $(input).attr("rating");
@@ -234,6 +236,7 @@ exports.getComments = function()
 		schoolHost + "/commentlist/" + courseId + '?callback=?&token=' + token,
 		function(data){
 			if (data.status == "success") {
+				$(".ui-content").find(".no_course_content").hide();
 				var course_comment_templ = $("#courseinfo_cb_course_comment").val();
 				var users = data['commentUsers'];
 				list_str = zy_tmpl(
@@ -357,7 +360,7 @@ exports.refundDialog = function()
 //显示课程详情
 exports.showCourseInfo = function(type, id, mediaUri, lesson_id)
 {
-	if (! exports.isStudent) {
+	if (!exports.isStudent && !exports.isTeacher ) {
 		$("#afui").popup("请加入学习");
 		return;
 	}
@@ -425,7 +428,7 @@ function templ_courseinfo_handler(a, b)
 			var course_comment_templ = $("#courseinfo_cb_course_comment").val();
 			var users = a['users'];
 			if (a['course_comment'] && a['course_comment'].length <= 0) {
-				return "<div style='text-align:center;'>暂无课程评价</div>";
+				return "<div class='no_course_content' style='text-align:center;'>暂无课程评价</div>";
 			}
 			return zy_tmpl(
 					course_comment_templ, 
@@ -473,12 +476,12 @@ function templ_courseinfo_handler(a, b)
 			return stars + star_offs;
 
 		case "islearn":
-			if (checkIsTeacher(a, window.loginUserName)) {
+			if (checkIsTeacher(a, window.loginUser)) {
 				return "";
 			}
 			var t_btn = "";
 			exports.isStudent = a["isStudent"];
-			if (a["member"] || exports.isStudent == "true") {
+			if (a["member"] && exports.isStudent) {
 				t_btn =  '<a onclick="courseinfo_model.refundDialog();" class="learn_btn">退出学习</a>';
 			} else {
 				var buyParames= "'alipay','" + a["couse_introduction"].id + "'";
@@ -538,7 +541,8 @@ function checkIsTeacher(a, loginUser)
 	var  teacherUsers = a["teacherUsers"];
 	for (var i in teacherIds) {
 		var teacher = teacherUsers[teacherIds[i]];
-		if (teacher && teacher.nickname == loginUser) {
+		if (teacher && teacher.nickname == loginUser.nickname) {
+			exports.isTeacher = true;
 			return true;
 		}
 	}

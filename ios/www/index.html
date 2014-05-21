@@ -176,7 +176,7 @@
                 <iframe width="100%" id="payCourseIFrame"></iframe>
             </div>
 
-			<div title="注册网校" id="regist" class="panel" data-footer="none">
+			<div title="注册网校" id="regist" class="panel" data-header="normal_header" data-footer="none">
 				<div style="padding:60px 30px 30px 40px;maring:0 auto;text-align:center;">
 					<div class="icon mail input_bg big">
 						<input id="loginEmailInput" type="text" style="padding-left:40px;" placeholder="输入常用邮箱地址" class="">
@@ -316,13 +316,23 @@
 
 			<!-- head部 -->
 			<header id="login_header" class="custom_header">
-                <a id="backButton">返回</a>
+                <input type="radio" name="loginbackbtn" checked="checked">
+                <button onclick="$.ui.goBack();" class="topcoat-tab-bar__button backButton_left">
+                  <i class="fa fa-2x fa-angle-left pressed">
+                    <span class="back_text">返回</span>
+                  </i>
+                </button>
                     <h1 id="pageTitle">登陆</h1>
-                <a href="#regist" data-title="注册" class="button" style="float:right;font-size:16px;">注册</a>
+                <a onclick="load_regist_page();" data-title="注册" class="button" style="float:right;font-size:16px;">注册</a>
             </header>
 
             <header id="course_lesson_list_header" class="custom_header">
-                <a id="backButton">返回</a>
+                <input type="radio" name="lesson_list_backbtn" checked="checked">
+                <button onclick="$.ui.goBack();" class="topcoat-tab-bar__button backButton_left">
+                  <i class="fa fa-2x fa-angle-left pressed">
+                    <span class="back_text">返回</span>
+                  </i>
+                </button>
                     <h1 id="course_lesson_title">标题</h1>
                 <a id="menubadge" onclick="toggleTextCourseMenu();" class="menuButton pressed" style="float: right;"></a>
             </header>

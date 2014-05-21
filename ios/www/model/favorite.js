@@ -2,13 +2,51 @@ define(function(require, exports){
 
 var func_txt = new String(function(){
 /*
-<div title="收藏的课程" id="favorite" class="panel" data-footer='courselist_footer' data-header="normal_header">
+<div title="收藏的课程" id="favorite" class="panel" data-footer='none' data-header="normal_header">
 				<!-- templ input list模板 -->
 				<textarea id="favorite_list_item" style="display:none;">
 					<!-- list item -->
 					<li id="favorite_course_${id}" class="card-bg">
-					<a onclick="load_courseinfo_page('${id}');">
-					<table style="width:98%;">
+					<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
+						<table style="width:100%;" border="0" cellpadding="0" cellspacing="0">	
+							<tr class="card-bg-line" valign="top">
+								<td style="width:160px;">
+									<img src="${cb:middlePicture}" width="160" height="90" />
+								</td>
+								<td style="text-align:left;" class="list_content">
+									<h4 class="custom_normal_color">${title}</h4>
+									<p>教师:${cb:teacher}</p>
+								</td>
+								<td>
+
+								</td>
+							</tr>
+							<tr>
+								<td colspan = "2">
+									<div class="course_list_bottom">
+										<table style="width:100%;">
+											<tr valign="middle">
+												<td align="left" width="33%">
+													${cb:rating}
+												</td>
+												<td align="center" width="33%" class="course_price">
+													${cb:price}
+												</td>
+												<td align="right" width="33%">
+													学员数:${studentNum}
+												</td>
+											<tr>
+										</table>
+										
+									</div>
+								</td>
+							</tr>
+						</table>
+					<!--
+					<table style="width:100%;">
+						<tr valign="top">
+							<td><img src="${middlePicture}" width="100%" height="120" /></td>
+						</tr>
 						<tr>
 							<td style="width:120px;">
 								<img src="${middlePicture}" width="110" height="80" /></td>
@@ -33,6 +71,7 @@ var func_txt = new String(function(){
 							</td>
 						</tr>
 					</table>
+					-->
 					</a>
 					</li>
 					<!-- list item end -->
@@ -44,11 +83,13 @@ var func_txt = new String(function(){
 			</div>
 */
 });
+
 var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
 $.ui.addContentDiv("favorite", text, "收藏的课程");
 
 
 exports.title = "收藏的课程";
+exports.noData = "<div class='noData'>暂无收藏课程</div>";
 
 exports.unFavorite = function(course_id, event)
 {
@@ -92,8 +133,17 @@ exports.init_favorite_data = function(isappend)
 		webRoot + "/favoritecourse" + '?callback=?&token=' + token,
 		function(data){
 			if (data.status == "success") {
-				list_str = zy_tmpl($("#favorite_list_item").val(), data.courses, zy_tmpl_count(data.courses),function(a, b) {
+				if (data.favoriteCourses.length == 0) {
+					$("#favorite_list").html(exports.noData);
+					return;
+				}
+				list_str = zy_tmpl($("#favorite_list_item").val(), data.favoriteCourses, zy_tmpl_count(data.favoriteCourses),function(a, b) {
 					switch (b[1]){
+						case "middlePicture":
+							if (a.middlePicture == null || a.middlePicture == "") {
+								return "images/img1.jpg";
+							}
+							return a.middlePicture;
 						case "teacher":
 							var user = data.users[a["teacherIds"][0]];
 							return user ? user.nickname : "";

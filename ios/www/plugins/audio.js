@@ -18,7 +18,8 @@ define(function(require, exports){
 				<div class="play_progress_layout" id="play_progress_bar">
 					<span class="play_progress_pressed" id="play_progress"></spn>
 				</div>
-				<span class="playtime" id="play_currentTime"></span><span class="playtime" id="play_TotalTime"></span>
+				<span class="playtime" id="play_currentTime"></span>
+				<span class="playtime" id="play_TotalTime"></span>
 				<img style="display:none;" src="images/star.png" onload="audio_model.init();" />
 			</div>
 		*/

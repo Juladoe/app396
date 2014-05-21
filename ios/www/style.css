@@ -81,19 +81,27 @@
 }
 .card-bg {
     padding: 0px !important;
-    border: 1px solid #ccc;
+    border-top: 1px solid rgb(249,249,249) !important;
+    border-bottom: 1px solid rgb(249,249,249) !important;
     border-radius: 1px;
-    margin: 8px;
+    margin: 15px;
     background: white;
 }
 
-.card-bg-line {
-    border-bottom: 1px solid #ccc;
+.card-bg-a
+{
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.card-bg-a:after{
+    content:"" !important;
 }
 
 #grid tr{
-            height:80px;
-        }
+    height:80px;
+}
+
 #grid td{
     width:30%;
     text-align: center;
@@ -617,6 +625,10 @@ background: white;
     background: rgba(238,238,238,255) !important;
 }
 
+.list_content {
+    padding: 10px;
+}
+
 .list_content p {
     font-size: 12px !important;
 }
@@ -757,4 +769,27 @@ background: white;
     width:130px;
     height:80px;
     border: 0px solid rgb(249,249,249) !important;
+}
+
+.course_list_bottom {
+    padding:5px;
+    height:30px;
+    border-top: 1px solid rgb(249,249,249) !important;
+}
+.course_price
+{
+    color:#E79022;
+}
+
+.noData {
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.learn_progress {
+    background:#f9b719 !important;
+}
+.learnnum {
+    color:#635F5F;
 }

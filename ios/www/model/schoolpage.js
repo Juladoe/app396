@@ -121,6 +121,7 @@ define(function(require, exports){
 				if (data.status == "error") {
 					$("#afui").popup("网校不存在!");
 				} else {
+					alert(data.school);
 					var school_info = "网校名称:" + data.school.title
 								+ "<br>网站副标题:" + data.school.info
 								+ "<br>网站域名:" + data.school.url;

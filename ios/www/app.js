@@ -250,6 +250,12 @@ define(function(require, exports){
 		}
 	}
 
+	window.load_regist_page = function()
+	{
+		$.ui.loadContent('regist',false,false,'slide');
+		setTitle("注册网校");
+	}
+
 	window.load_notification_page = function()
 	{
 		if (appstore_model.checkIsLogin()) {
@@ -266,7 +272,6 @@ define(function(require, exports){
 
 	window.load_favorite_page = function()
 	{
-		setTitle(learning_model.title);
 		if (appstore_model.checkIsLogin()) {
 			appconfig.page = "favorite";
 			$.ui.loadContent('favorite',false,false,'slide');
@@ -276,6 +281,8 @@ define(function(require, exports){
 			appconfig.page = "login";
 			$.ui.loadContent('login',false,false,'slide');
 		}
+
+		setTitle(favorite_model.title);
 	}
 
 	window.load_courselist_page = function()

@@ -2,7 +2,7 @@ define(function(require, exports){
 
 var func_txt = new String(function(){
 /*
-<div title="系统通知" id="notification" data-header="notification_header" class="panel" data-footer='courselist_footer' data-tab="navbar_setting">
+<div title="系统通知" id="notification" data-header="notification_header" class="panel" data-footer='none' data-tab="navbar_setting">
 		<textarea id="notification_list_item" style="display:none;">
 			
 			<li>
@@ -22,6 +22,8 @@ var func_txt = new String(function(){
 var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
 $.ui.addContentDiv("notification", text, "系统通知");
 
+exports.noData = "<div class='noData'>暂无系统通知</div>";
+
 exports.init_notification_data = function()
 {
 	var token = appstore_model.getToken();
@@ -29,6 +31,10 @@ exports.init_notification_data = function()
 		schoolHost + "/notices" + '?callback=?&token=' + token,
 		function(data){
 				if (data.status == "success") {
+					if (data.notifications.length == 0) {
+						$("#notification_list").html(exports.noData);
+						return;
+					}
 					list_str = zy_tmpl(
 						$("#notification_list_item").val(), 
 						data.notifications, 

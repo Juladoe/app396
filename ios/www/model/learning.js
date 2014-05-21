@@ -2,26 +2,28 @@ define(function(require, exports){
 
 	var func_txt = new String(function(){
 	/*
-	<div title="在学" id="learning" class="panel" data-header="normal_header" data-footer='learn_footer' data-tab="learn_footer">
+	<div title="在学" id="learning" class="panel" data-header="normal_header" data-footer='none' >
 		<!-- templ input list模板 -->
 			<textarea id="learning_list_item" style="display:none;">
 				<!-- list item -->
 				<li class="card-bg">
-				<a onclick="load_courseinfo_page('${id}');">
-				<table style="width:98%;">
+				<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
+				<table style="width:100%;">
 					<tr valign="top">
-						<td style="width:120px;"><img src="${middlePicture}" width="110" height="80" /></td>
-						<td style="text-align:left;padding:3px;" class="list_content">
-						<h4 class="custom_normal_color">${title}</h4>
-						<p>课时数：${lessonNum}</p>
+						<td><img src="${cb:middlePicture}" width="100%" height="120" /></td>
+					</tr>
+					<tr>
+						<td style="padding:10px;">
+							<h3>${title}</h3>
+							<h5 class="learnnum" style="margin-top:5px;">${subtitle}</h5>
 						</td>
 					</tr>
 					<tr>
-						<td>
-						学习到第 ${memberLearnedNum} 课时
-						</td>
-						<td style="float:right;">
-							<a class="learn_btn">继续学习</a>
+						<td style="padding:10px;">
+							<div style="height:5px;" class="play_progress_layout">
+								<span style="height:5px;width:${cb:learnProgress};" class="play_progress_pressed learn_progress"></spn>
+							</div>
+							<h5 class="learnnum">学习到第 ${memberLearnedNum} 课时</h5>
 						</td>
 					</tr>
 				</table>
@@ -40,6 +42,7 @@ define(function(require, exports){
 	$.ui.addContentDiv("learning", text, "在学");
 
 	exports.title = "在学";
+	exports.noData = "<div class='noData'>暂无在学课程</div>";
 
 	exports.init_learn_data = function(isappend)
 	{
@@ -48,7 +51,26 @@ define(function(require, exports){
 			schoolHost + "/learncourse" + '?callback=?&token=' + token,
 			function(data){
 					if (data.status == "success") {
-						list_str = zy_tmpl($("#learning_list_item").val(), data.learnCourses, zy_tmpl_count(data.learnCourses),templ_handler);
+						if (data.learnCourses.length == 0) {
+							$("#learn_list").html(exports.noData);
+							return;
+						}
+						list_str = zy_tmpl($("#learning_list_item").val(), data.learnCourses, zy_tmpl_count(data.learnCourses),function(a, b) {
+							switch(b[1]) {
+								case "middlePicture":
+									if (a.middlePicture == null || a.middlePicture == "") {
+										return "images/img1.jpg";
+									}
+							return a.middlePicture;
+								case "learnProgress":
+									var memberLearnedNum = a.memberLearnedNum;
+									var lessonNum = a.lessonNum;
+									var progress = (memberLearnedNum / lessonNum) * 100;
+									return progress + "%";
+								default:
+									return templ_handler(a, b);
+							}
+						});
 						if (data.count - data.page > 1) {
 							$("#learn_list").attr("offset", data.page + 1);
 							list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='learning_model.init_learn_data(true);'>加载更多</li>";
