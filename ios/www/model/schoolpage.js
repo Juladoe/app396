@@ -3,22 +3,36 @@ define(function(require, exports){
 	var schoolpage_txt = new String(function(){
 	/*
 	<div title="添加网校" id="addschool" class="panel" data-header="normal_header" data-footer="none" >
-					 <ul class="list">
-						<li class="divider" style="text-align:center;padding-right:1px;">
-							<input id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:80%;">
-							<button onclick="schoolpage_model.qrSearch();" class="topcoat-tab-bar__button header_btn_right">
-	                          <i class="fa fa-2x fa-qrcode"></i>
-	                        </button>
-						</li>
-						<li class="divider" style="text-align:center;padding-right:1px;">
-							<span onclick="schoolpage_model.seachSchool();" class="button white custom_button_blue">确 定</span>
-						</li>
-					 </ul>
-					 
-					 <h2>推荐网校</h2>
-					 <ul class="list" id="school_list">
-						
-					 </ul>
+		<textarea id="rsch_list_item" style="display:none;">
+			<li class="rsch_bg" onclick="appstore_model.saveSchool(${cb:params});">
+			<div style="display:table;">
+				<span style="float:left;">
+				<img src="${logo}" width="120" height="60" style="" >
+				</span>
+				<div style="width:200px;margin:5px;">
+					<h4 style="display:block;">${title}</h4>
+					<h6>${info}</h6>
+				</div>
+				
+			</div>
+			</li>
+		</textarea>
+		 <ul class="list">
+			<li class="divider" style="text-align:center;padding-right:1px;">
+				<input id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:80%;">
+				<button onclick="schoolpage_model.qrSearch();" class="topcoat-tab-bar__button header_btn_right">
+                  <i class="fa fa-2x fa-qrcode"></i>
+                </button>
+			</li>
+			<li class="divider" style="text-align:center;padding-right:1px;">
+				<span onclick="schoolpage_model.searchSchool();" class="button white custom_button_blue">确 定</span>
+			</li>
+		 </ul>
+		 
+		 <h2>推荐网校</h2>
+		 <ul class="list ul_bg_null" id="school_list">
+			
+		 </ul>
 	</div>
 	*/
 	});
@@ -52,16 +66,16 @@ define(function(require, exports){
 			function(data){
 				var list_str = "";
 				var schoollist_templ = '<li><span class="list_span_color"></span></li>';
-				for (var i in data) {
-					var saveParames = "'" + data[i].title + "',"
-									+ "'" + data[i].logo + "',"
-									+ "'" + data[i].url + "'";
-					if (i % 2 == 0) {
-						list_str += '<li onclick="appstore_model.saveSchool(' + saveParames + ');"><span class="list_span_color">' + data[i].title+ '</span></li>';
-					} else {
-						list_str += '<li onclick="appstore_model.saveSchool(' + saveParames + ');" class="divider divider_none"><span class="list_span_color">' + data[i].title+ '</span></li>';
+				
+				var list_str = zy_tmpl($("#rsch_list_item").val(), data, zy_tmpl_count(data), function(a, b) {
+					switch (b[1]){
+						case "params":
+							var saveParames = "'" + a.title + "',"
+								+ "'" + a.logo + "',"
+								+ "'" + a.url + "'";
+							return a.saveParames;
 					}
-				}
+				});
 				$("#school_list").html(list_str);
 				//appstore_model.setCache("addschool", "cache");
 		});
@@ -80,7 +94,7 @@ define(function(require, exports){
 		});
 	}
 
-	exports.seachSchool = function()
+	exports.searchSchool = function()
 	{
 		var search = $("#searchWord").val();
 		if (search.length < 3) {

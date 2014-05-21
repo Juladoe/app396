@@ -1,6 +1,6 @@
 define(function(require, exports){
 
-	window.webRoot = "http://192.168.12.7/mapi";
+	window.webRoot = "http://try3.edusoho.cn/mapi";
 	window.defalut_avatar = "images/avatar.png";
 	window.debug = true;
 	window.appconfig = {};
