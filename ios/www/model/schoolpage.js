@@ -5,16 +5,21 @@ define(function(require, exports){
 	<div title="添加网校" id="addschool" class="panel" data-header="normal_header" data-footer="none" >
 		<textarea id="rsch_list_item" style="display:none;">
 			<li class="rsch_bg" onclick="appstore_model.saveSchool(${cb:params});">
-			<div style="display:table;">
-				<span style="float:left;">
-				<img src="${logo}" width="120" height="60" style="" >
-				</span>
-				<div style="width:200px;margin:5px;">
-					<h4 style="display:block;">${title}</h4>
-					<h6>${info}</h6>
-				</div>
-				
-			</div>
+			<table border="0" cellpadding="0" cellspacing="0" >
+				<tr>
+					<td>
+						<img src="${logo}" class="rsch_logo" >
+					</td>
+					<td>
+					<td valign="top">
+						<div style="padding:5px;">
+							<h4 class="rsch_title">${title}</h4>
+							<h6 class="rsch_info">${info}</h6>
+						</div>
+					</td>
+				</tr>
+			</table>
+			
 			</li>
 		</textarea>
 		 <ul class="list">
@@ -73,7 +78,7 @@ define(function(require, exports){
 							var saveParames = "'" + a.title + "',"
 								+ "'" + a.logo + "',"
 								+ "'" + a.url + "'";
-							return a.saveParames;
+							return saveParames;
 					}
 				});
 				$("#school_list").html(list_str);

@@ -8,10 +8,10 @@ define(function(require, exports){
 			<textarea id="list_item" style="display:none;">
 				<li class="card-bg">
 				<a onclick="load_courseinfo_page('${id}');">
-					<table style="width:98%;">	
-						<tr>
-							<td style="width:134px;">
-								<img src="${cb:smallPicture}" width="124" height="70" />
+					<table style="width:98%;" border="0" cellpadding="0" cellspacing="0">	
+						<tr class="card-bg-line">
+							<td style="width:180px;">
+								<img src="${cb:smallPicture}" width="160" height="90" />
 							</td>
 							<td style="text-align:left;" class="list_content">
 								<h5 class="custom_normal_color">${title}</h5>
@@ -23,10 +23,8 @@ define(function(require, exports){
 							</td>
 						</tr>
 						<tr>
-							<td>
+							<td colspan = "2">
 								<p>${cb:rating}</p>
-							</td>
-							<td>
 								<span class="system_normal" style="float:right;">${cb:price}</span>
 							</td>
 						</tr>

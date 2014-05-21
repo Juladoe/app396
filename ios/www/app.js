@@ -30,14 +30,7 @@ define(function(require, exports){
 
                 appstore_model.loadUserInfo();
                 //_load_carousel();
-                var showSplash = appstore_model.getStoreCache("showSplash");
-                if (showSplash != "false") {
-                    splash_model.load(function(){
-                        loadDefaultSchool();
-                    });
-                } else {
-                    loadDefaultSchool();
-                }
+                loadDefaultSchool();
                 //appstore_model.loadSchoolList(true);
             }
         );
