@@ -7,7 +7,7 @@ define(function(require, exports){
 					<tr>
 						<td>
 							<div class="play_status">
-								<i id="play_btn" onclick="audio_model.changePlayStatus();" class="fa play_btn fa-play-circle"></i>
+								<i id="play_btn" onclick="audio_model.changePlayStatus();" class="fa play_btn fa-play"></i>
 								<h5 id="play_title"></h5>
 							</div>
 						</td>
@@ -26,15 +26,20 @@ define(function(require, exports){
 	});
 
 	exports.text = func_text.substring(func_text.indexOf("/*") + 2, func_text.lastIndexOf("*/"));
-	$("body").append('<audio id="audioPlayer" src="http://bcs.duapp.com/bimbucket/sj.mp3"></audio>');
+	$("body").append('<audio id="audioPlayer" src=""></audio>');
 
 	exports.totalTime = 0;
 	var audioPlayer = null;
 	var max = 300;
 	var progress_limit = 0;
+	exports.defaultProgressWidth = 5;
+	exports.mediaUri = "http://bcs.duapp.com/bimbucket/sj.mp3";
 
-	exports.audioplayer = function()
+	exports.audioplayer = function(mediaUri)
 	{
+		if (mediaUri) {
+			exports.mediaUri = mediaUri;
+		}
 		return exports.text;
 	}
 
@@ -52,6 +57,7 @@ define(function(require, exports){
 		max = $("#play_progress_bar").width();
 
 		audioPlayer = document.getElementById("audioPlayer");
+		audioPlayer.src = exports.mediaUri;
 		audioPlayer.load();
 		audioPlayer.play();
 
@@ -61,26 +67,28 @@ define(function(require, exports){
 			$("#play_title").text();
 			$("#play_currentTime").attr("max", audioPlayer.duration);
 			$("#play_TotalTime").text("/" + getDate(audioPlayer.duration));
+			$("#play_progress").css("width", exports.defaultProgressWidth);
 		});
 
 		audioPlayer.addEventListener("timeupdate",function(){
 			$("#play_currentTime").text(getDate(audioPlayer.currentTime));
-			$("#play_progress").css("width", audioPlayer.currentTime * progress_limit);
+			$("#play_progress").css(
+				"width", exports.defaultProgressWidth + audioPlayer.currentTime * progress_limit);
 		});
 
 		audioPlayer.addEventListener("play",function(){
-			$("#play_btn").removeClass("fa-play-circle");
+			$("#play_btn").removeClass("fa-play");
 			$("#play_btn").addClass("fa-pause");
 		}); 
 
 		audioPlayer.addEventListener("ended",function(){
 			$("#play_btn").removeClass("fa-pause");
-			$("#play_btn").addClass("fa-play-circle");
+			$("#play_btn").addClass("fa-play");
 		}); 
 
 		audioPlayer.addEventListener("pause",function(){
 			$("#play_btn").removeClass("fa-pause");
-			$("#play_btn").addClass("fa-play-circle");
+			$("#play_btn").addClass("fa-play");
 		}); 
 
 		if ($.os.ios) {
