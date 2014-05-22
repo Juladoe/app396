@@ -15,7 +15,7 @@
 }
 
 .rating_color {
-    color: #f9b719;
+    color: #555;
     font-weight: normal;
 }
 
@@ -486,7 +486,11 @@ background: white;
 }
 
 .custom_normal_color{
-    color:#03b884 !important;
+    color:#444 !important;
+}
+
+.course_teacher {
+    color: #999 !important;
 }
 
 .course_lesson_type_normal_color{
@@ -772,9 +776,10 @@ background: white;
 }
 
 .course_list_bottom {
-    padding:5px;
-    height:30px;
-    border-top: 1px solid rgb(249,249,249) !important;
+    margin-top: 5px;
+    padding:10px;
+    height:40px;
+    border-top: 1px solid rgb(238,238,238) !important;
 }
 .course_price
 {
@@ -787,9 +792,16 @@ background: white;
     text-align: center;
 }
 
+.qr_color
+{
+    color:#03b884;
+}
+
 .learn_progress {
     background:#f9b719 !important;
 }
 .learnnum {
-    color:#635F5F;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color:#888 !important;
 }

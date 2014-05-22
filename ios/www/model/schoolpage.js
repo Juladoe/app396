@@ -24,10 +24,8 @@ define(function(require, exports){
 		</textarea>
 		 <ul class="list">
 			<li class="divider" style="text-align:center;padding-right:1px;">
-				<input id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:80%;">
-				<button onclick="schoolpage_model.qrSearch();" class="topcoat-tab-bar__button header_btn_right">
-                  <i class="fa fa-2x fa-qrcode"></i>
-                </button>
+				<input id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:90%;">
+				
 			</li>
 			<li class="divider" style="text-align:center;padding-right:1px;">
 				<span onclick="schoolpage_model.searchSchool();" class="button white custom_button_blue">确 定</span>

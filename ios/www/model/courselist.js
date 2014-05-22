@@ -15,10 +15,9 @@ define(function(require, exports){
 							</td>
 							<td style="text-align:left;" class="list_content">
 								<h4 class="custom_normal_color">${title}</h4>
-								<p>教师:${cb:teacher}</p>
+								<p class="course_teacher">教师:${cb:teacher}</p>
 							</td>
 							<td>
-
 							</td>
 						</tr>
 						<tr>
@@ -33,7 +32,7 @@ define(function(require, exports){
 												${cb:price}
 											</td>
 											<td align="right" width="33%">
-												学员数:${studentNum}
+												<span class="course_teacher">${studentNum}&nbsp;学员</span>
 											</td>
 										<tr>
 									</table>
