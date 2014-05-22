@@ -537,6 +537,9 @@ function templ_courseinfo_handler(a, b)
 
 function checkIsTeacher(a, loginUser)
 {
+	if (! loginUser) {
+		return false;
+	}
 	var teacherIds = a.couse_introduction["teacherIds"]; 
 	var  teacherUsers = a["teacherUsers"];
 	for (var i in teacherIds) {

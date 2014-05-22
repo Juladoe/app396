@@ -54,13 +54,15 @@ define(function(require, exports){
 			return;
 		}
 		exports.isStartQRSearch = true;
-		nativeSearch(function(text) {
-			exports.isStartQRSearch = false;
-			if (text != "") {
-				$("#searchWord").val(text);
-				schoolpage_model.searchSchoolForQr(text);
-			}
-			
+		nativeSearch(
+			function(){
+				exports.isStartQRSearch = false;
+			},
+			function(text) {
+				if (text != "") {
+					$("#searchWord").val(text);
+					schoolpage_model.searchSchoolForQr(text);
+				}
 		});
 	}
 

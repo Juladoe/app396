@@ -23,7 +23,7 @@ define(function(require, exports){
 							<div style="height:5px;" class="play_progress_layout">
 								<span style="height:5px;width:${cb:learnProgress};" class="play_progress_pressed learn_progress"></spn>
 							</div>
-							<h5 class="learnnum">学习到第 ${memberLearnedNum} 课时</h5>
+							<h5 class="learnnum">${cb:memberLearnedNum}</h5>
 						</td>
 					</tr>
 				</table>
@@ -61,7 +61,13 @@ define(function(require, exports){
 									if (a.middlePicture == null || a.middlePicture == "") {
 										return "images/img1.jpg";
 									}
-							return a.middlePicture;
+									return a.middlePicture;
+
+								case "memberLearnedNum":
+									if (a.memberLearnedNum == a.lessonNum) {
+										return "已学完";
+									}
+									return "已学" + a.memberLearnedNum + "课时";
 								case "learnProgress":
 									var memberLearnedNum = a.memberLearnedNum;
 									var lessonNum = a.lessonNum;

@@ -1,6 +1,6 @@
 define(function(require, exports){
 
-	window.webRoot = "http://try3.edusoho.cn/mapi";
+	window.webRoot = "http://www.edusoho-dev.com/mapi";
 	window.defalut_avatar = "images/avatar.png";
 	window.debug = true;
 	window.appconfig = {};
@@ -94,6 +94,23 @@ define(function(require, exports){
 	    toastblockUI(0.5);
 	    $.query("#afui_toast").show();
 	    setTimeout(hideToast, 1000);
+	}
+
+	window.goback = function()
+	{
+		$.ui.goBack();
+	}
+
+	window.clearHistory = function(name)
+	{
+		var history = $.ui.history;
+		for (var i in history) {
+			var target = history[i].target;
+			if (target == ("#" + name)) {
+				$.ui.history.splice(i, 1);
+				break;
+			}
+		}
 	}
 
 	window.hideToast = function()
@@ -502,6 +519,7 @@ define(function(require, exports){
 					if (window.historyAction) {
 						window.historyAction(window.historyActionParams);
 						clearHistoryAction();
+						clearHistory("login");
 					} else {
 						load_setting_page();
 					}
@@ -514,11 +532,12 @@ define(function(require, exports){
 
 
 	//扫描二维码
-	window.nativeSearch = function(callback)
+	window.nativeSearch = function(callback, successCallback)
 	{
 		var scanner = window.cordova.require("native_plugins/BarcodeScanner");
 	        scanner.scan(
 	                function (result) {
+	                	callback();
 	                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
 	                		return;
 	                	}
@@ -532,7 +551,7 @@ define(function(require, exports){
 					        },
 					        doneText: "添加网校",
 					        doneCallback: function () {
-					        	callback(result.text);
+					        	successCallback(result.text);
 					        },
 					        cancelOnly: false
 					    });
