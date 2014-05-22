@@ -11,13 +11,10 @@
 
 @implementation AlipayPlugin
 
-@synthesize pluginResult;
-@synthesize callbackId;
-
 -(void)showPay:(CDVInvokedUrlCommand *)command
 {
     NSString* url = [command.arguments objectAtIndex:0];
-    self.callbackId = command.callbackId;
+    _callbackId = command.callbackId;
     
     if (url != nil && [url length] > 0) {
         AlipayViewController *alipayView = [[AlipayViewController alloc] initWithUrl:url alipayPlugin:self];
@@ -27,8 +24,8 @@
         [[alipayView view] setFrame:[self.webView bounds]];
         [self.webView addSubview:[alipayView view]];
     } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        _pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:_pluginResult callbackId:command.callbackId];
     }
 }
 
@@ -40,7 +37,7 @@
                                                   object:nil];
     
     NSString* result = [noitfy object];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+    _pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+    [self.commandDelegate sendPluginResult:_pluginResult callbackId:_callbackId];
 }
 @end

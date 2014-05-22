@@ -8,10 +8,7 @@
 
 #import <Cordova/CDV.h>
 
-@interface AlipayPlugin : CDVPlugin{
-    CDVPluginResult* pluginResult;
-    NSString* callbackId;
-}
+@interface AlipayPlugin : CDVPlugin
 
 -(void)showPay:(CDVInvokedUrlCommand*)command;
 

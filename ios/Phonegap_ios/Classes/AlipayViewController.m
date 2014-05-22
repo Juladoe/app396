@@ -15,10 +15,6 @@
 
 @implementation AlipayViewController
 
-@synthesize url;
-@synthesize alipayPlugin;
-@synthesize webView;
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -79,10 +75,10 @@
     CGRect r = [ UIScreen mainScreen ].bounds;
     CGRect frame = [ UIScreen mainScreen ].applicationFrame;
     
-    webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, r.size.width, frame.size.height - toolbarHeight)];
-    self.webView.delegate = self;
+    _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, r.size.width, frame.size.height - toolbarHeight)];
+    _webView.delegate = self;
     
-    [overlayView addSubview: webView];
+    [overlayView addSubview: _webView];
     
     return overlayView;
 }
@@ -90,10 +86,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
      if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-         CGRect viewBounds = [self.webView bounds];
-        viewBounds.origin.y = 20;
+         CGRect viewBounds = [_webView bounds];
+         viewBounds.origin.y = 20;
          viewBounds.size.height = viewBounds.size.height - 20;
-         self.webView.frame = viewBounds;
+         _webView.frame = viewBounds;
      }
     [super viewWillAppear:animated];
 }
@@ -102,8 +98,8 @@
 {
     self = [super init];
     if (self){
-        self.url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.alipayPlugin = alipayPlugin;
+        _url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        _alipayPlugin = alipayPlugin;
     }
     return self;
 }
@@ -112,11 +108,11 @@
 {
     [super viewDidLoad];
   
-    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
+    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:_url]];
 
     [self.view addSubview:[self buildOverlayView]];
-    [webView loadRequest:request];
-    NSLog(@"init webview %@", self.url);
+    [_webView loadRequest:request];
+    NSLog(@"init webview %@", _url);
 }
 
 -(void)leftBtnClick:(id)sender{
