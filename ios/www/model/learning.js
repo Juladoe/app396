@@ -32,7 +32,7 @@ define(function(require, exports){
 				<!-- list item end -->
 			</textarea>
 		<!-- templ input list end -->
-		<ul class="list card-ul-bg ul_bg_null" id="learn_list">
+		<ul class="list card-ul-bg ul_bg_null" id="learn_list" start="0">
 			
 		</ul>
 	</div>
@@ -42,58 +42,90 @@ define(function(require, exports){
 	$.ui.addContentDiv("learning", text, "在学");
 
 	exports.title = "在学";
+	exports.scroller = null;
+	//是否显示动态加载
+	exports.isRefresh = false;
 	exports.noData = "<div class='noData'>暂无在学课程</div>";
+	var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img src='images/loading.gif' >加载中...</div>";
 
-	exports.init_learn_data = function(isappend)
+	exports.init_learn_data = function(isappend, showLoading, callback)
 	{
+		exports.isRefresh = false;
 		var token = appstore_model.getToken();
+		var start = isappend == true ? $("#data_list").attr("start"): 0;
 		simpleJsonP(
-			schoolHost + "/learncourse" + '?callback=?&token=' + token,
+			schoolHost + "/me/learning_courses" + '?callback=?&token=' + token + "&start=" + start,
 			function(data){
-					if (data.status == "success") {
-						if (data.learnCourses.length == 0) {
+					if (data && data.error == "not_login") {
+						$("#afui").popup(data.message);
+						$.ui.goBack();
+						return;
+					}
+					if (data.data.length == 0) {
 							$("#learn_list").html(exports.noData);
 							return;
 						}
-						list_str = zy_tmpl($("#learning_list_item").val(), data.learnCourses, zy_tmpl_count(data.learnCourses),function(a, b) {
-							switch(b[1]) {
-								case "middlePicture":
-									if (a.middlePicture == null || a.middlePicture == "") {
-										return "images/img1.jpg";
-									}
-									return a.middlePicture;
+					list_str = zy_tmpl($("#learning_list_item").val(), data.data, zy_tmpl_count(data.data),function(a, b) {
+						switch(b[1]) {
+							case "middlePicture":
+								if (a.middlePicture == null || a.middlePicture == "") {
+									return "images/img1.jpg";
+								}
+								return a.middlePicture;
 
-								case "memberLearnedNum":
-									if (a.memberLearnedNum == a.lessonNum) {
-										return "已学完";
-									}
-									return "已学" + a.memberLearnedNum + "课时";
-								case "learnProgress":
-									var memberLearnedNum = a.memberLearnedNum;
-									var lessonNum = a.lessonNum;
-									var progress = (memberLearnedNum / lessonNum) * 100;
-									return progress + "%";
-								default:
-									return templ_handler(a, b);
-							}
-						});
-						if (data.count - data.page > 1) {
-							$("#learn_list").attr("offset", data.page + 1);
-							list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='learning_model.init_learn_data(true);'>加载更多</li>";
+							case "memberLearnedNum":
+								if (a.memberLearnedNum == a.lessonNum) {
+									return "已学完";
+								}
+								return "已学" + a.memberLearnedNum + "课时";
+							case "learnProgress":
+								var memberLearnedNum = a.memberLearnedNum;
+								var lessonNum = a.lessonNum;
+								var progress = (memberLearnedNum / lessonNum) * 100;
+								return progress + "%";
+							default:
+								return templ_handler(a, b);
 						}
-						
-						if (isappend) {
-							$("#learn_list").find("#bottom_refresh_div").remove();
-							$("#learn_list").html($("#learn_list").html() + list_str);
-						} else {
-							$("#learn_list").html(list_str);
-						}
-						appstore_model.setCache("learning", "cache");
+					});
+					if (((data.start + 1) * normalLimit) <= data.total) {
+						$("#data_list").attr("start", data.start + 1);
+						exports.isRefresh = true;
+						//refresh_div = "<li id='bottom_refresh_div' class='bottom_refresh_div' onclick='courselist_model.init_courselist_data(true, \"" + sort + "\");'>加载中...</li>";
 					}
-			}
+					
+					if (isappend) {
+						$("#learn_list").html($("#learn_list").html() + list_str);
+					} else {
+						learning_model.scroller.scrollToTop(10);
+						$("#learn_list").html(list_str);
+					}
+					if (callback) {
+						callback();
+					}
+			}, showLoading
 		);
 	}
 
-	initScroll("learning");
+	initScroll("learning", {
+		"scrollerCallback": function(scroller) {
+			if (!learning_model.isRefresh) {
+				scroller.clearInfinite();
+				return;
+			}
+			$("#learn_list").append(refresh_div);
+	        $.bind(scroller, "infinite-scroll-end", function () {
+	        	applog("infinite-scroll-end");
+		        $.unbind(scroller, "infinite-scroll-end");
+		        scroller.scrollToBottom(1);
+		        learning_model.init_learn_data(true, true, function(){
+		        	$("#learn_list").find("#bottom_refresh_div").remove();
+		            scroller.clearInfinite();
+		        });
+		    });
+		},
+		"init" : function(scroller){
+			exports.scroller = scroller;
+		}
+	});
 
 });

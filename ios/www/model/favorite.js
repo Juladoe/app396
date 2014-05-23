@@ -95,9 +95,13 @@ exports.unFavorite = function(course_id, event)
 {
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		schoolHost + "/unfavorite" + '?callback=?&token=' + token + "&course_id=" + course_id,
+		schoolHost + "/courses/" + course_id + "/unfavorite" + '?callback=?&token=' + token,
 		function(data){
-			if (data.status == "success") {
+			if (data.error) {
+				showToast(data.message);
+				return;
+			}
+			if (data) {
 				showToast("取消收藏成功!");
 				$("#favorite_course_" + course_id).remove();
 				$("#favorite_radio").removeAttr("checked");
@@ -112,14 +116,15 @@ exports.favorite = function(course_id)
 {
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		webRoot + "/favorite" + '?callback=?&token=' + token + "&course_id=" + course_id,
+		schoolHost + "/courses/" + course_id + "/favorite" + '?callback=?&token=' + token,
 		function(data){
-			//showToast("2222");
-			if (data.status == "success") {
+			if (data.error) {
+				showToast(data.message);
+				return;
+			}
+			if (data) {
 				showToast("收藏成功");
 				$("#favorite_radio").attr("checked", "checked");
-			} else {
-				showToast(data.message ? data.message : "收藏失败!");
 			}
 		}
 	);
@@ -130,41 +135,41 @@ exports.init_favorite_data = function(isappend)
 	$.ui.showMask('加载中...	');
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		webRoot + "/favoritecourse" + '?callback=?&token=' + token,
+		webRoot + "/me/favorite_courses" + '?callback=?&token=' + token,
 		function(data){
-			if (data.status == "success") {
-				if (data.favoriteCourses.length == 0) {
-					$("#favorite_list").html(exports.noData);
-					return;
-				}
-				list_str = zy_tmpl($("#favorite_list_item").val(), data.favoriteCourses, zy_tmpl_count(data.favoriteCourses),function(a, b) {
-					switch (b[1]){
-						case "middlePicture":
-							if (a.middlePicture == null || a.middlePicture == "") {
-								return "images/img1.jpg";
-							}
-							return a.middlePicture;
-						case "teacher":
-							var user = data.users[a["teacherIds"][0]];
-							return user ? user.nickname : "";
-						default:
-							return templ_handler(a, b);
-					}
-				});
-				if (data.count - data.page > 1) {
-					$("#data_list").attr("offset", data.page + 1);
-					list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='init_favorite_data(true);'>加载更多</li>";
-				}
-				
-				if (isappend) {
-					$("#favorite_list").find("#bottom_refresh_div").remove();
-					$("#favorite_list").html($("#favorite_list").html() + list_str);
-				} else {
-					$("#favorite_list").html(list_str);
-				}
-				appstore_model.setCache("favorite", "cache");
+			if (data.error) {
+				$("#afui").popup(data.message);
+				$.ui.goBack();
+				return;
 			}
-			$.ui.hideMask();
+			if (data.data.length == 0) {
+				$("#favorite_list").html(exports.noData);
+				return;
+			}
+			list_str = zy_tmpl($("#favorite_list_item").val(), data.data, zy_tmpl_count(data.data),function(a, b) {
+				switch (b[1]){
+					case "middlePicture":
+						if (a.middlePicture == null || a.middlePicture == "") {
+							return "images/img1.jpg";
+						}
+						return a.middlePicture;
+					case "teacher":
+						return data.user ? data.user.nickname : "";
+					default:
+						return templ_handler(a, b);
+				}
+			});
+			if (data.count - data.page > 1) {
+				$("#data_list").attr("offset", data.page + 1);
+				list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='init_favorite_data(true);'>加载更多</li>";
+			}
+			
+			if (isappend) {
+				$("#favorite_list").find("#bottom_refresh_div").remove();
+				$("#favorite_list").html($("#favorite_list").html() + list_str);
+			} else {
+				$("#favorite_list").html(list_str);
+			}
 		}
 	);
 }

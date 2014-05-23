@@ -15,7 +15,7 @@
 }
 
 .rating_color {
-    color: #555;
+    color: #999;
     font-weight: normal;
 }
 
@@ -800,8 +800,34 @@ background: white;
 .learn_progress {
     background:#f9b719 !important;
 }
+
 .learnnum {
     padding-top: 5px;
     padding-bottom: 5px;
     color:#888 !important;
+}
+
+.lesson_bg {
+    background: #f6f6f6;
+}
+
+.lesson_item:after{
+    content:"" !important;
+}
+
+.lesson_item_fa
+{
+    font-size: 14px !important;
+}
+
+.lesson_item {
+    background: #f6f6f6 !important;
+    margin:0px !important;
+    padding:10px !important;
+    border-top: 0px !important;
+    border-bottom: 0px !important;
+}
+
+.ui-content {
+    //background: #ffffff;
 }

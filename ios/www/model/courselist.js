@@ -46,7 +46,7 @@ define(function(require, exports){
 				</li>
 			</textarea>
 		<!-- templ input list end -->
-		<ul class="list card-ul-bg ul_bg_null" id="data_list" offset="0">
+		<ul class="list card-ul-bg ul_bg_null" id="data_list" start="0">
 				
 		</ul>
 		</div>
@@ -71,11 +71,11 @@ define(function(require, exports){
 		exports.sort = sort;
 		exports.isRefresh = false;
 		$("#currentSchoolName").text(schoolName);
-		var offset = isappend == true ? $("#data_list").attr("offset"): 0;
+		var offset = isappend == true ? $("#data_list").attr("start"): 0;
 		simpleJsonP(
-			schoolHost + "/courselist" + '?callback=?&page=' + offset + "&sort=" + sort,
+			schoolHost + "/courses" + '?callback=?&start=' + offset + "&sort=" + sort,
 			function(data){
-				list_str = zy_tmpl($("#list_item").val(), data.courses, zy_tmpl_count(data.courses), function(a, b) {
+				list_str = zy_tmpl($("#list_item").val(), data.data, zy_tmpl_count(data.data), function(a, b) {
 					switch (b[1]){
 						case "middlePicture":
 							if (a.middlePicture == null || a.middlePicture == "") {
@@ -84,14 +84,14 @@ define(function(require, exports){
 							return a.middlePicture;
 
 						case "teacher":
-							return data.users[a["teacherIds"][0]].nickname;
+							return a.teachers[0].nickname;
 
 						default:
 							return templ_handler(a, b);
 					}
 				});
-				if (data.total_page - data.page > 1) {
-					$("#data_list").attr("offset", data.page + 1);
+				if (((data.start + 1) * normalLimit) <= data.total) {
+					$("#data_list").attr("start", data.start + 1);
 					exports.isRefresh = true;
 					//refresh_div = "<li id='bottom_refresh_div' class='bottom_refresh_div' onclick='courselist_model.init_courselist_data(true, \"" + sort + "\");'>加载中...</li>";
 				}

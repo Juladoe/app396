@@ -6,21 +6,18 @@ var courseinfo_text = new String(function(){
 	<!-- templ input list模板 -->
 	<textarea id="courseinfo_cb_course_list" style="display:none;">
 		<tr class="course_lesson_table" valign="middle" onclick="courseinfo_model.showCourseInfo('${type}','${courseId}','http://bcs.duapp.com/bimbucket/test.mp4','${id}');">
-			<td style="width:40px;">
-				<a>
+			<td style="width:50px;" align="right">
+				<a style="padding:5px;">
 					${cb:type}
 				</a>
 			</td>
 			<td>
-				${number}、&nbsp; ${title}
-			</td>
-			<td style="text-align: right;width:15%;">
-				${cb:type_text}
+				${cb:title}
 			</td>
 		</tr>
 	</textarea>
 	<textarea id="courseinfo_cb_course_comment" style="display:none;">
-		<tr class="course_comment_table">
+		<tr class="course_comment_table" id="${id}">
 			<td style="width:60px;" valign="middle">
 				<img class="small-avatar" src="${cb:avatar}" />
 			</td>
@@ -31,17 +28,17 @@ var courseinfo_text = new String(function(){
 							<span class="nickname">${cb:nickname}</span>
 						</td>
 						<td align="right">
-							${createdTime}
+							<span class="createdTime">${cb:createdTime}</span>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
-							${cb:rating}
+							<span class="rating">${cb:rating}</span>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
-							${content}
+							<span class="content">${content}</span>
 						</td>
 					</tr>
 				</table>
@@ -52,9 +49,9 @@ var courseinfo_text = new String(function(){
 		<div id="course_header">
 			<img style="width:100%;height:160px;" src="${cb:largePicture}"/>
 			<input type="hidden" id="course_payment" value="alipay" />
-			<input type="hidden" id="course_title" value="${couse_introduction.title}" />
-			<input type="hidden" id="course_courseId" value="${couse_introduction.id}" />
-			<input type="hidden" id="course_price" value="${couse_introduction.price}" />
+			<input type="hidden" id="course_title" value="${course.title}" />
+			<input type="hidden" id="course_courseId" value="${course.id}" />
+			<input type="hidden" id="course_price" value="${course.price}" />
 		</div>
 		<!-- 课程tab -->
 		<div style="width:100%;margin:0 auto;">
@@ -69,13 +66,13 @@ var courseinfo_text = new String(function(){
 				
 				<div id="0" class="ui-body-d ui-content tab_content">
 					<table style="width:100%;border-collapse:collapse;">
-						${cb:course_list}
+						${cb:items}
 					</table>
 				</div>
 				<div id="1" class="ui-body-d ui-content tab_content">
 					<div class="card">
 						<p class="card-head">
-							${couse_introduction.title}
+							${course.title}
 						</p>
 						<table style="width:100%">
 							<tbody>
@@ -92,7 +89,7 @@ var courseinfo_text = new String(function(){
 										<p>
 											教师:${cb:teacher}
 											<span>
-												学员数:${couse_introduction.studentNum}
+												学员数:${course.studentNum}
 											</span>
 										</p>
 										
@@ -124,7 +121,7 @@ var courseinfo_text = new String(function(){
 				</div>
 				<div id="2" class="ui-body-d ui-content tab_content" style="padding:5px;">
 					<table style="width:100%;border-collapse:collapse;" id="course_comment_table">
-						${cb:course_comment}
+						${cb:reviews}
 					</table>
 					<div class="${cb:ishide}" style="text-align:center;padding-right:1px;margin-top:20px;">
 						<span onclick="courseinfo_model.addComment();" class="button white custom_button_blue">评 论</span>
@@ -161,6 +158,7 @@ var content = '请打分:<span id="commentStar" style="cursor: pointer; width: 1
 				+ '<input readonly size="12" type="text" rating="5" value="课程内容很好" class="quick_comment">';
 
 exports.isTeacher = false;
+exports.loginUserReview = null
 
 exports.quick_comment = function(input)
 {
@@ -169,11 +167,15 @@ exports.quick_comment = function(input)
 	var courseId = $("#course_courseId").val();
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		schoolHost + "/commentcourse/" + courseId + '?callback=?&token=' + token 
+		schoolHost + "/courses/" + courseId + '/review_create?callback=?&token=' + token 
 				+ "&rating=" + rating + "&content=" + content,
 		function(data){
-			if (data.status == "success") {
-				courseinfo_model.getComments();
+			if (data && !data.error) {
+				if (! data.error) {
+					courseinfo_model.setComment(data);
+				} else {
+					$("#afui").popup(data.message);
+				}
 			}
 		}
 	);
@@ -188,9 +190,9 @@ exports.changeTab = function(radio)
 exports.addComment = function()
 {
 	var message = "";
-	var CommentContent = courseinfo_model.loginUserCommentContent ? courseinfo_model.loginUserCommentContent : "";
+	var CommentContent = courseinfo_model.loginUserReview ? courseinfo_model.loginUserReview.content : "";
 
-	var rating = courseinfo_model.rating ? courseinfo_model.rating  : 0;
+	var rating = courseinfo_model.loginUserReview ? courseinfo_model.loginUserReview.rating  : 0;
 	message = content.replace("{content}", CommentContent);
 	for(i=0; i < rating; i++) {
 		message = message.replace("star-off", "star-on");
@@ -208,12 +210,16 @@ exports.addComment = function()
         	var content = $("#commentContent").val();
         	var token = appstore_model.getToken();
         	simpleJsonP(
-        		schoolHost + "/commentcourse/" + courseId + '?callback=?&token=' + token 
+        		schoolHost + "/courses/" + courseId + '/review_create?callback=?&token=' + token 
         				+ "&rating=" + rating + "&content=" + content,
         		function(data){
-        			if (data.status == "success") {
-        				courseinfo_model.getComments();
-        			}
+        			if (data && !data.error) {
+						if (! data.error) {
+							courseinfo_model.setComment(data);
+						} else {
+							$("#afui").popup(data.message);
+						}
+					}
         		}
         	);
         },
@@ -228,28 +234,36 @@ exports.addComment = function()
 	});
 }
 
+exports.setComment = function(review)
+{
+	setReviewContent(review);
+	$(".ui-content").find(".course_comment_table").each(function() {
+		var id = $(this).attr("id");
+		if (id == review.id) {
+			$(this).find(".content").text(review.content);
+			$(this).find(".rating").html(setRating(review.rating));
+			return;
+		}
+	});
+}
+
 exports.getComments = function()
 {
 	var courseId = $("#course_courseId").val();
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		schoolHost + "/commentlist/" + courseId + '?callback=?&token=' + token,
+		schoolHost + "/courses/" + courseId + '/reviews?callback=?&token=' + token,
 		function(data){
-			if (data.status == "success") {
-				$(".ui-content").find(".no_course_content").hide();
-				var course_comment_templ = $("#courseinfo_cb_course_comment").val();
-				var users = data['commentUsers'];
-				list_str = zy_tmpl(
-					course_comment_templ, data['course_comment'], 
-					zy_tmpl_count(data['course_comment']), 
-					function(a,b) {
-						return course_comment_handler(a, b, users);
-					}
-				);
-				$(".ui-content").find("#course_comment_table").html(list_str);
-			} else {
-				$("#afui").popup("课程不存在或已关闭!");
-			}
+			$(".ui-content").find(".no_course_content").hide();
+			var course_comment_templ = $("#courseinfo_cb_course_comment").val();
+			list_str = zy_tmpl(
+				course_comment_templ, data.data, 
+				zy_tmpl_count(data.data), 
+				function(a,b) {
+					return course_comment_handler(a, b, users);
+				}
+			);
+			$(".ui-content").find("#course_comment_table").html(list_str);
 		}
 	);
 }
@@ -275,30 +289,36 @@ exports.init_courseinfo_data = function(course_id)
 {
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		schoolHost + "/course/" + course_id + '?callback=?&token=' + token,
+		schoolHost + "/courses/" + course_id + '?callback=?&token=' + token,
 		function(data){
-			if (data.status == "success") {
-				list_str = zy_tmpl(
+			if (data && data.error == "not_found") {
+				$("#afui").popup(data.error);
+				$.ui.goBack();
+				return;
+			}
+			var list = new Array();
+			list[0] = data;
+			list_str = zy_tmpl(
 						$("#courseinfo_list_item").val(), 
-						data.courseinfo, 
-						zy_tmpl_count(data.courseinfo),function(a, b) {
+						list, 
+						zy_tmpl_count(list),function(a, b) {
 							switch (b[1]) {
 								case "largePicture":
-									if (a.couse_introduction.largePicture == null
-										|| a.couse_introduction.largePicture == "") {
+									if (a.courselargePicture == null
+										|| a.course.largePicture == "") {
 										return "images/img1.jpg";
 									}
-									return a.couse_introduction.largePicture;
+									return a.course.largePicture;
 								case "location":
 									return schoolName;
 								case "teacher":
-									var teacher = a.couse_introduction['teacherIds'][0];
-									return a.teacherUsers[teacher].nickname;
+									var teacher = a.course.teachers[0];
+									return teacher.nickname;
 							}
 							return templ_courseinfo_handler(a, b);
 						});
 
-				if (data.courseinfo[0].favoriteStatus == true) {
+				if (data.favoriteStatus == true) {
 					$("#favorite_radio").attr("checked", "checked");
 				} else {
 					$("#favorite_radio").removeAttr("checked");
@@ -325,10 +345,6 @@ exports.init_courseinfo_data = function(course_id)
 					});
 				});
 				exports.courseCarousel.onMoveIndex(1);
-
-			} else {
-				$("#afui").popup("课程不存在或已关闭!");
-			}
 		}
 	);
 }
@@ -413,6 +429,20 @@ exports.buyDialog = function()
     });
 }
 
+function setRating(rating)
+{
+	var star_templ = '<i class="rating_color fa fa-star"></i>';
+	var star_off_tmpl = '<i class="rating_color fa fa-star-o"></i>';
+	var num = parseInt(rating);
+	if (!num) {
+		num = 0;
+	}
+	var offnum = 5 - num;
+	var stars = stringTimes(star_templ, num);
+	var star_offs = stringTimes(star_off_tmpl, offnum);
+	return stars + star_offs;
+}
+
 //模板回调函数
 function templ_courseinfo_handler(a, b)
 {
@@ -424,37 +454,37 @@ function templ_courseinfo_handler(a, b)
 	switch (b[1]) {
 		case "ishide":
 			return appstore_model.checkIsLogin() ? "" : "hide";
-		case "course_comment":
+		case "reviews":
 			var course_comment_templ = $("#courseinfo_cb_course_comment").val();
 			var users = a['users'];
-			if (a['course_comment'] && a['course_comment'].length <= 0) {
+			if (a.reviews && a.reviews.length <= 0) {
 				return "<div class='no_course_content' style='text-align:center;'>暂无课程评价</div>";
 			}
 			return zy_tmpl(
 					course_comment_templ, 
-					a['course_comment'], 
-					zy_tmpl_count(a['course_comment']), 
+					a.reviews, 
+					zy_tmpl_count(a.reviews), 
 					function(a, b) {
 						return course_comment_handler(a, b, users);
 					}
 				);
 
-		case "course_list":
+		case "items":
 			var learnStatuses = a['learnStatuses'];
-			if (a['course_list'] && a['course_list'].length <= 0) {
+			if (a.items && a.items.length <= 0) {
 				return "<div style='text-align:center;'>课程暂无课时内容</div>";
 			}
 			return zy_tmpl(
 				courseinfo_templ, 
-				a['course_list'], 
-				zy_tmpl_count(a['course_list']),
+				a.items, 
+				zy_tmpl_count(a.items),
 				function(a, b) {
 					return templ_courselist_handler(a, b, learnStatuses);
 				}
 			);
 
 		case "ratingValue":
-			var rating = parseFloat(a.couse_introduction.rating);
+			var rating = parseFloat(a.course.rating);
 			if (rating <= 0) {
 				return 0;
 			}
@@ -466,26 +496,19 @@ function templ_courseinfo_handler(a, b)
 			return fixedV1;
 
 		case "rating":
-			var num = parseInt(a["couse_introduction"].rating);
-			if (!num) {
-				num = 0;
-			}
-			var offnum = 5 - num;
-			var stars = stringTimes(star_templ, num);
-			var star_offs = stringTimes(star_off_tmpl, offnum);
-			return stars + star_offs;
+			return setRating(a.course.rating);
 
 		case "islearn":
 			if (checkIsTeacher(a, window.loginUser)) {
 				return "";
 			}
 			var t_btn = "";
-			exports.isStudent = a["isStudent"];
+			exports.isStudent = a.userIsStudent;
 			if (a["member"] && exports.isStudent) {
 				t_btn =  '<a onclick="courseinfo_model.refundDialog();" class="learn_btn">退出学习</a>';
 			} else {
-				var buyParames= "'alipay','" + a["couse_introduction"].id + "'";
-				var price = parseFloat(a["couse_introduction"].price);
+				var buyParames= "'alipay','" + a.course.id + "'";
+				var price = parseFloat(a.course.price);
 				if (price && price > 0) {
 					t_btn = '<a onclick="courseinfo_model.buyDialog();" class="learn_btn">购买课程</a>';
 				} else {
@@ -494,20 +517,20 @@ function templ_courseinfo_handler(a, b)
 			}
 			return t_btn;
 		case "price":
-			var price = parseFloat(a["couse_introduction"].price);
+			var price = parseFloat(a.course.price);
 			return price == 0 ? "免费" :price + "元";
 
 		case "about":
 			var html = '<div class="card"> <p class="card-head"> 课程介绍 </p>'
 						+ '<p class="umh4"> {about} </p></div>';
-			var about =a.couse_introduction.about;
+			var about =a.course.about;
 			if (about == "") {
 				return "";
 			}
 			return html.replace("{about}", about);
 
 		case "goals":
-			var course_target = a["couse_introduction"].goals
+			var course_target = a.course.goals
 			if (course_target && course_target.length <= 0) {
 				return "";
 			}
@@ -520,7 +543,7 @@ function templ_courseinfo_handler(a, b)
 			return html.replace("{goals}", result);
 
 		case "audiences":
-			var course_notice = a["couse_introduction"].audiences;
+			var course_notice = a.course.audiences;
 			if (course_notice && course_notice.length <= 0) {
 				return "";
 			}
@@ -539,11 +562,10 @@ function checkIsTeacher(a, loginUser)
 {
 	if (! loginUser) {
 		return false;
-	}
-	var teacherIds = a.couse_introduction["teacherIds"]; 
-	var  teacherUsers = a["teacherUsers"];
-	for (var i in teacherIds) {
-		var teacher = teacherUsers[teacherIds[i]];
+	} 
+	var  teacherUsers = a.course.teachers;
+	for (var i in teacherUsers) {
+		var teacher = teacherUsers[i];
 		if (teacher && teacher.nickname == loginUser.nickname) {
 			exports.isTeacher = true;
 			return true;
@@ -552,22 +574,24 @@ function checkIsTeacher(a, loginUser)
 	return false;
 }
 
+function setReviewContent(review)
+{
+	var id = review.user.id;
+	if (loginUser && loginUser.id == id) {
+		courseinfo_model.loginUserReview = review;
+	}
+}
+
 function course_comment_handler(a, b, users) 
 {
+	setReviewContent(a);
 	switch (b[1]){
+			case "createdTime":
+				return a.createdTime.substring(0, 10);
 			case "nickname":
-				var user = users[a['userId']];
-				if (user && user.nickname == window.loginUserName) {
-					courseinfo_model.loginUserCommentContent = a["content"];
-					courseinfo_model.rating = a["rating"];
-				}
-				return user ? user.nickname : "" ;
+				return a.user ? a.user.nickname : "" ;
 			case "avatar":
-				var smallAvatar = users[a['userId']].smallAvatar;
-				if (smallAvatar) {;
-					return smallAvatar;
-				} 
-				return defalut_avatar;
+				return a.user ? a.user.avatar : "" ;
 			default:
 				return templ_handler(a, b);
 		}
@@ -587,15 +611,25 @@ function templ_courselist_handler(a, b, learnStatuses)
 		case "type":
 			switch (a["type"]) {
 				case "testpaper":
-					return '<i class="fa fa-2x fa-pencil-square course_lesson_type_normal_color"></i>';
+					return '<i class="fa lesson_item_fa fa-pencil-square course_lesson_type_normal_color"></i>';
 				case "video":
-					return '<i class="fa fa-2x fa-play-circle course_lesson_type_normal_color"></i>';
+					return '<i class="fa lesson_item_fa fa-play-circle course_lesson_type_normal_color"></i>';
 				case "text":
-					return '<i class="fa fa-2x fa-picture-o course_lesson_type_normal_color"></i>';
+					return '<i class="fa lesson_item_fa fa-picture-o course_lesson_type_normal_color"></i>';
 				case "audio":
-					return '<i class="fa fa-2x fa-microphone course_lesson_type_normal_color"></i>';
+					return '<i class="fa lesson_item_fa fa-microphone course_lesson_type_normal_color"></i>';
+				
 			}
 			return "";
+		case "title":
+			switch (a.type) {
+				case "chapter":
+					return "第" + a.number + "章" + a.title;
+				case "unit":
+					return "第" + a.number + "节" + a.title;
+			}
+			return a.title;
+
 		case "type_text":
 			switch (a["type"]) {
 				case "testpaper":
