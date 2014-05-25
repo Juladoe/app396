@@ -340,7 +340,7 @@ define(function(require, exports){
 	{
 		appconfig.page = "addschool";
 		$.ui.loadContent('addschool',false,false,'pop');
-		schoolpage_model.init_schoollist_data();
+
 		setTitle(schoolpage_model.title);
 	}
 
@@ -456,8 +456,10 @@ define(function(require, exports){
 		{
 			url:webRoot + "/logout" + '?callback=?&token=' + token,
 			success:function(data){
-				appstore_model.clearUserInfo();
-				load_setting_page();
+				if (data) {
+					appstore_model.clearUserInfo();
+					load_setting_page();
+				}
 				$.ui.hideMask();
 			}
 		});
@@ -514,18 +516,18 @@ define(function(require, exports){
 		simpleJsonP(
 			webRoot + "/login" + '?callback=?&_username=' + account + "&_password=" + password,
 			function(data){
-				if (data && data.status == "success") {
-					window.loginUser = data.user;
-					appstore_model.saveUserInfo(data.user, data.token);
-					if (window.historyAction) {
-						window.historyAction(window.historyActionParams);
-						clearHistoryAction();
-						clearHistory("login");
-					} else {
-						load_setting_page();
-					}
+				if (data.error) {
+					$("#afui").popup(data.error.message);
+					return;
+				}
+				window.loginUser = data.user;
+				appstore_model.saveUserInfo(data.user, data.token);
+				if (window.historyAction) {
+					window.historyAction(window.historyActionParams);
+					clearHistoryAction();
+					clearHistory("login");
 				} else {
-					$("#afui").popup("账号或密码错误!");
+					load_setting_page();
 				}
 			}
 		);

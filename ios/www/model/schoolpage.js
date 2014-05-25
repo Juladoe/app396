@@ -24,7 +24,7 @@ define(function(require, exports){
 		</textarea>
 		 <ul class="list">
 			<li class="divider" style="text-align:center;padding-right:1px;">
-				<input id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:90%;">
+				<input value="try3.edusoho.cn" id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:90%;">
 				
 			</li>
 			<li class="divider" style="text-align:center;padding-right:1px;">
@@ -32,10 +32,6 @@ define(function(require, exports){
 			</li>
 		 </ul>
 		 
-		 <h2>推荐网校</h2>
-		 <ul class="list ul_bg_null" id="school_list">
-			
-		 </ul>
 	</div>
 	*/
 	});
@@ -116,27 +112,22 @@ define(function(require, exports){
 		$.ui.showMask('加载中...');
 		$.jsonP(
 		{
-			url: search + "/mapi/verifyschool" + '?callback=?',
+			url: search + "/mapi/login_with_site" + '?callback=?',
 			success:function(data){
-				if (data.status == "error") {
-					$("#afui").popup("网校不存在!");
-				} else {
-					alert(data.school);
-					var school_info = "网校名称:" + data.school.title
-								+ "<br>网站副标题:" + data.school.info
-								+ "<br>网站域名:" + data.school.url;
-					$("#afui").popup(
-						{
-							title:"搜索结果",
-							message: school_info,
-	        				cancelText: "取消",
-							doneText: "查看",
-					        doneCallback: function () {
-					        	
-					        }
-						}
-					);
-				}
+				var school = data.site;
+				var school_info = "网校名称:" + school.name
+							+ "<br>网站域名:" + school.url;
+				$("#afui").popup(
+					{
+						title:"搜索结果",
+						message: school_info,
+        				cancelText: "取消",
+						doneText: "查看",
+				        doneCallback: function () {
+				        	appstore_model.saveSchool(school.name, school.logo, school.url);
+				        }
+					}
+				);
 				$.ui.hideMask();
 			},
 			timeout:"5000",

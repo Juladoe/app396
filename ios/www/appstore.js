@@ -74,9 +74,10 @@ define(function(require, exports){
 		setTimeout(function(){
 			$.jsonP(
 			{
-				url:webRoot + "/checktoken" + '?callback=?&token=' + token,
+				url:webRoot + "/login_with_token" + '?callback=?&token=' + token,
 				success:function(data){
-					if (!data.token) {
+					if (data.error) {
+						//token异常
 						appStore.removeItem("token");
 						return;
 					}

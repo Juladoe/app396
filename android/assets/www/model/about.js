@@ -2,7 +2,7 @@ define(function(require, exports){
 
 	var func_txt = new String(function(){
 	/*
-	<div title="关于我们" id="about" class="panel" data-header="about_header" data-footer='courselist_footer' data-tab="navbar_setting">
+	<div title="关于我们" id="about" class="panel" data-header="about_header" data-footer='none' data-tab="navbar_setting">
 	</div>
 	*/
 	});

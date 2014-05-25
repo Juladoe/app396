@@ -7,7 +7,7 @@ var func_txt = new String(function(){
 			
 			<li>
 				<a id="message_content" class="icon message">${cb:message}</a>
-				<div style="float:right;margin-bottom:1px;font-size:12px;">${createdTime}</div>
+				<div style="float:right;margin-bottom:1px;font-size:12px;">${cb:createdTime}</div>
 			</li>
 			
 		</textarea>
@@ -28,31 +28,46 @@ exports.init_notification_data = function()
 {
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		schoolHost + "/notices" + '?callback=?&token=' + token,
+		schoolHost + "/me/notifications" + '?callback=?&token=' + token,
 		function(data){
-				if (data.status == "success") {
-					if (data.notifications.length == 0) {
-						$("#notification_list").html(exports.noData);
-						return;
-					}
-					list_str = zy_tmpl(
-						$("#notification_list_item").val(), 
-						data.notifications, 
-						zy_tmpl_count(data.notifications),
-						function(a,b) {
-							switch (b[1]) {
-								case "message":
-									message = a.content.message;
-									message = message.replace(/<[^>]+>/g, "");
+			if (data.error) {
+				$("#afui").popup(data.message);
+				$.ui.goBack();
+				return;
+			}
+			if (data.length == 0) {
+				$("#notification_list").html(exports.noData);
+				return;
+			}
+			list_str = zy_tmpl(
+				$("#notification_list_item").val(), 
+				data, 
+				zy_tmpl_count(data),
+				function(a,b) {
+					switch (b[1]) {
+						case "message":
+							message = a.content.message;
+							if (message) {
+								message = message.replace(/<[^>]+>/g, "");
+								return message;
+							}
+							switch(a.content.threadType) {
+								case "question":
+									message = a.content.threadUserNickname
+											+ " 在课程 "
+											+ a.content.courseTitle
+											+ " 发表了问题 "
+											+ a.content.threadTitle;
 									return message;
 							}
-						}
-					);
-					$("#notification_list").html(list_str);
-					//appstore_model.setCache("notification", "cache");
+						case "createdTime":
+							return a.createdTime.substring(0, 10);
+					}
 				}
-			}
-		);
+			);
+			$("#notification_list").html(list_str);
+		}
+	);
 }
 
 });

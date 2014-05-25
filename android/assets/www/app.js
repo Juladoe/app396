@@ -1,16 +1,16 @@
 define(function(require, exports){
 
-	window.webRoot = "http://192.168.12.7/mapi";
+	window.webRoot = "http://try3.edusoho.cn/mapi";
 	window.defalut_avatar = "images/avatar.png";
 	window.debug = true;
 	window.appconfig = {};
 	window.schoolHost = "";
 	window.schoolName = "";
+	window.normalLimit = 10;
 	window.testToken = "15isuvjja7s0k4k4gk08w4ggogo880g";
 
 	exports.init = function()
 	{
-
 		var maskDiv = $.create("div", {
 		    id: "afui_toast",
 		    className: "ui-loader",
@@ -20,6 +20,21 @@ define(function(require, exports){
 		    display: "none"
 		});
 		document.body.appendChild(maskDiv.get(0));
+
+		require(
+            ['../appstore', '../init', 'courselist', 'splash'],
+            function(appstore, init, courselist, splash){
+                window.splash_model = splash;
+                window.courselist_model = courselist;
+                window.init_model = init;
+                window.appstore_model = appstore;
+
+                appstore_model.loadUserInfo();
+                //_load_carousel();
+                loadDefaultSchool();
+                //appstore_model.loadSchoolList(true);
+            }
+        );
 
 		require(
 				['courseinfo', 'learning', 'schoolpage', 'course_lesson_list', 'searchlist'],
@@ -50,30 +65,7 @@ define(function(require, exports){
 					window.audio_model = audio;
 				}
 		);
-
-		require(
-            ['../appstore', '../init', 'courselist', 'splash'],
-            function(appstore, init, courselist, splash){
-                window.splash_model = splash;
-                window.courselist_model = courselist;
-                window.init_model = init;
-                window.appstore_model = appstore;
-
-                appstore_model.loadUserInfo();
-                _load_carousel();
-                var showSplash = appstore_model.getStoreCache("showSplash");
-                if (showSplash != "false") {
-                    splash_model.load(function(){
-                        loadDefaultSchool();
-                    });
-                } else {
-                    loadDefaultSchool();
-                }
-                appstore_model.loadSchoolList(true);
-            }
-        );
 	}
-
 
 	var uiToastBlocked = false;
 
@@ -103,6 +95,23 @@ define(function(require, exports){
 	    toastblockUI(0.5);
 	    $.query("#afui_toast").show();
 	    setTimeout(hideToast, 1000);
+	}
+
+	window.goback = function()
+	{
+		$.ui.goBack();
+	}
+
+	window.clearHistory = function(name)
+	{
+		var history = $.ui.history;
+		for (var i in history) {
+			var target = history[i].target;
+			if (target == ("#" + name)) {
+				$.ui.history.splice(i, 1);
+				break;
+			}
+		}
 	}
 
 	window.hideToast = function()
@@ -259,9 +268,14 @@ define(function(require, exports){
 		}
 	}
 
+	window.load_regist_page = function()
+	{
+		$.ui.loadContent('regist',false,false,'slide');
+		setTitle("注册网校");
+	}
+
 	window.load_notification_page = function()
 	{
-		setTitle(notification_model.title);
 		if (appstore_model.checkIsLogin()) {
 			appconfig.page = "notification";
 			$.ui.loadContent('notification',false,false,'slide');
@@ -271,6 +285,7 @@ define(function(require, exports){
 			appconfig.page = "login";
 			$.ui.loadContent('login',false,false,'slide');
 		}
+		setTitle(notification_model.title);
 	}
 
 	window.load_favorite_page = function()
@@ -284,6 +299,8 @@ define(function(require, exports){
 			appconfig.page = "login";
 			$.ui.loadContent('login',false,false,'slide');
 		}
+
+		setTitle(favorite_model.title);
 	}
 
 	window.load_courselist_page = function()
@@ -503,6 +520,7 @@ define(function(require, exports){
 					if (window.historyAction) {
 						window.historyAction(window.historyActionParams);
 						clearHistoryAction();
+						clearHistory("login");
 					} else {
 						load_setting_page();
 					}
@@ -515,21 +533,26 @@ define(function(require, exports){
 
 
 	//扫描二维码
-	window.nativeSearch = function(callback)
+	window.nativeSearch = function(callback, successCallback)
 	{
 		var scanner = window.cordova.require("native_plugins/BarcodeScanner");
 	        scanner.scan(
 	                function (result) {
+	                	callback();
+	                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
+	                		return;
+	                	}
 	                	$("#afui").popup({
 					        title: "扫描结果",
 					        message: "二维码信息:\n" + result.text,
 					        cancelText: "取消",
 					        cancelCallback: function () {
+					        	callback("");
 					            applog("qr search cancelled");
 					        },
 					        doneText: "添加网校",
 					        doneCallback: function () {
-					        	callback(result.text);
+					        	successCallback(result.text);
 					        },
 					        cancelOnly: false
 					    });
@@ -625,7 +648,13 @@ define(function(require, exports){
 	window.favorite = function(favorite_btn)
 	{
 		if (appstore_model.checkIsLogin()) {
-			favorite_model.favorite($("#favorite_btn").attr("courseId"));
+			var ischeck = $("#favorite_radio").attr("checked");
+			if (ischeck == "checked") {
+				favorite_model.unFavorite($("#favorite_btn").attr("courseId"));
+			} else {
+				favorite_model.favorite($("#favorite_btn").attr("courseId"));
+			}
+			
 		} else {
 			setHistoryAction(window.load_courseinfo_page, $("#favorite_btn").attr("courseId"));
 			$.ui.loadContent('login',false,false,'slide');

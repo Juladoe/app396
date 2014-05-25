@@ -828,6 +828,79 @@ background: white;
     border-bottom: 0px !important;
 }
 
-.ui-content {
-    //background: #ffffff;
+.lesson_bg {
+    background: #ffffff !important;
+    border-bottom: 1px solid #ddd !important;
+}
+
+.lesson_bg a {
+    padding:10px !important;
+}
+
+.lesson_bordr {
+    height: 30px !important;
+    padding-left: 10px !important;
+    border-bottom: 0px !important;
+}
+
+.lesson_number {
+    display: inline-block;
+    line-height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+.lesson_title {
+    display: inline-block;
+    line-height: 40px;
+}
+
+.lesson_learnStatuses {
+    display: inline-block;
+    width: 15px;
+    height: 20px;
+    background: rgb(67, 221, 67);
+    border-radius: 50px 0px 0px 50px;
+}
+
+.lesson_bordr span {
+    padding-left: 10px !important;
+}
+
+.small-avatar {
+    border-radius: 5px;
+}
+
+
+.learn-status {
+    top:5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    position: relative;
+}
+
+.learn-status em {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    
+    border-radius: 20px;
+}
+
+.learn-status-learning em {
+    background: #08D490;
+    width: 50%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.learn-status-finished em {
+    background: #08D490;
 }

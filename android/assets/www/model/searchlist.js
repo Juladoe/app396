@@ -7,21 +7,39 @@ define(function(require, exports){
 		<!-- templ input list模板 -->
 			<textarea id="ns_list_item" style="display:none;">
 				<li class="card-bg">
-				<a onclick="load_courseinfo_page('${id}');">
+				<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
 					<table style="width:98%;">
-						<tr>
-							<td style="width:140px;"><img src="${smallPicture}" width="120" height="80" /></td>
-							<td style="text-align:left;">
-								<p style="color:#0066FF;">${title}</p>
+						<tr class="card-bg-line" valign="top">
+							<td style="width:160px;">
+								<img src="${cb:middlePicture}" width="160" height="90" />
+							</td>
+							<td style="text-align:left;" class="list_content">
+								<h4 class="custom_normal_color">${title}</h4>
 								<p>教师:${cb:teacher}</p>
-								<p>学员数:${studentNum}</p>
+							</td>
+							<td>
+
 							</td>
 						</tr>
 						<tr>
-							<td>
-								${cb:rating}
+							<td colspan = "2">
+								<div class="course_list_bottom">
+									<table style="width:100%;">
+										<tr valign="middle">
+											<td align="left" width="33%">
+												${cb:rating}
+											</td>
+											<td align="center" width="33%" class="course_price">
+												${cb:price}
+											</td>
+											<td align="right" width="33%">
+												学员数:${studentNum}
+											</td>
+										<tr>
+									</table>
+									
+								</div>
 							</td>
-							<td class="system_normal" style="float:right;">${cb:price}</td>
 						</tr>
 					</table>
 				</a>
@@ -71,6 +89,11 @@ define(function(require, exports){
 				}
 				list_str = zy_tmpl($("#ns_list_item").val(), data.courses, zy_tmpl_count(data.courses), function(a, b) {
 					switch (b[1]){
+						case "middlePicture":
+							if (a.middlePicture == null || a.middlePicture == "") {
+								return "images/img1.jpg";
+							}
+							return a.middlePicture;	
 						case "teacher":
 							return data.users[a["teacherIds"][0]].nickname;
 						default:

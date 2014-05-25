@@ -90,8 +90,9 @@ define(function(require, exports){
 							return templ_handler(a, b);
 					}
 				});
-				if (((data.start + 1) * normalLimit) <= data.total) {
-					$("#data_list").attr("start", data.start + 1);
+				var start = (data.start + 1) * normalLimit;
+				if (start < data.total) {
+					$("#data_list").attr("start", start);
 					exports.isRefresh = true;
 					//refresh_div = "<li id='bottom_refresh_div' class='bottom_refresh_div' onclick='courselist_model.init_courselist_data(true, \"" + sort + "\");'>加载中...</li>";
 				}

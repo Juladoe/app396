@@ -2,17 +2,16 @@ define(function(require, exports){
 
 var courseinfo_text = new String(function(){
 /*
-<div title="课程详情" id="courseinfo" class="panel" data-header='info_header' data-footer="none">
+<div title="课程详情" id="courseinfo" class="panel" data-header='info_header' data-footer="none" style="padding:0px;">
 	<!-- templ input list模板 -->
 	<textarea id="courseinfo_cb_course_list" style="display:none;">
-		<tr class="course_lesson_table" valign="middle" onclick="courseinfo_model.showCourseInfo('${type}','${courseId}','http://bcs.duapp.com/bimbucket/test.mp4','${id}');">
-			<td style="width:50px;" align="right">
-				<a style="padding:5px;">
-					${cb:type}
-				</a>
-			</td>
-			<td>
-				${cb:title}
+		<tr class="course_lesson_table ${cb:lesson_bg}" valign="middle" onclick="courseinfo_model.showCourseInfo('${type}','${courseId}','http://bcs.duapp.com/bimbucket/test.mp4','${id}');">
+			<td align="left" valign="middle">
+			<div>
+				${cb:number}
+				${cb:learnStatus}
+				<span class="lesson_title">${cb:title}</span>
+			</div>
 			</td>
 		</tr>
 	</textarea>
@@ -61,11 +60,11 @@ var courseinfo_text = new String(function(){
 					<a class="button tab_radio" data-v="2" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课程评价</a>
 			</div>
 			<!--评论 -->
-			<div style="padding:3px;">
+			<div style="padding:0px;">
 				<div id="courseInfoCarousel" style="display:block;height:auto;width:100%;">
 				
 				<div id="0" class="ui-body-d ui-content tab_content">
-					<table style="width:100%;border-collapse:collapse;">
+					<table style="width:100%;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
 						${cb:items}
 					</table>
 				</div>
@@ -453,7 +452,7 @@ function templ_courseinfo_handler(a, b)
 	//类型变量  //cb:xxx
 	switch (b[1]) {
 		case "ishide":
-			return appstore_model.checkIsLogin() ? "" : "hide";
+			return a.userIsStudent ? "" : "hide";
 		case "reviews":
 			var course_comment_templ = $("#courseinfo_cb_course_comment").val();
 			var users = a['users'];
@@ -470,7 +469,7 @@ function templ_courseinfo_handler(a, b)
 				);
 
 		case "items":
-			var learnStatuses = a['learnStatuses'];
+			var userLearns = a.userLearns;
 			if (a.items && a.items.length <= 0) {
 				return "<div style='text-align:center;'>课程暂无课时内容</div>";
 			}
@@ -479,7 +478,7 @@ function templ_courseinfo_handler(a, b)
 				a.items, 
 				zy_tmpl_count(a.items),
 				function(a, b) {
-					return templ_courselist_handler(a, b, learnStatuses);
+					return templ_courselist_handler(a, b, userLearns);
 				}
 			);
 
@@ -598,16 +597,42 @@ function course_comment_handler(a, b, users)
 }
 
 //课时列表模板回调函数
-function templ_courselist_handler(a, b, learnStatuses)
+function templ_courselist_handler(a, b, userLearns)
 {
 	//类型变量 //cb:xxx
 	switch (b[1]) {
+		case "learnStatus":
+			if (a.type == "chapter" || a.type == "unit") {
+				return "";
+			}
+			
+			var status = userLearns[a.id];
+			switch (status) {
+				case "finished":
+					return '<span class="learn-status learn-status-finished"><em></em></span>';
+				case "learning":
+					return '<span class="learn-status learn-status-learning"><em></em></span>';
+				default:
+					return '<span class="learn-status"><em></em></span>';
+			}
+
+		case "lesson_bg":
+			if (a.type == "chapter" || a.type == "unit") {
+				return "lesson_bordr";
+			}
+			return "lesson_bg";
+
 		case "islearn":
 			var status = learnStatuses[a['id']];
 			if (status == "finished") {
 				return '<img src="images/isread.png" align="top" />';
 			} 
 			break;
+		case "number":
+			if (a.type == "chapter" || a.type == "unit") {
+				return "";
+			}
+			return "<span class='lesson_number'>" + a.number + "</span>";
 		case "type":
 			switch (a["type"]) {
 				case "testpaper":
@@ -624,9 +649,9 @@ function templ_courselist_handler(a, b, learnStatuses)
 		case "title":
 			switch (a.type) {
 				case "chapter":
-					return "第" + a.number + "章" + a.title;
+					return "第" + a.number + "章&nbsp;&nbsp;" + a.title;
 				case "unit":
-					return "第" + a.number + "节" + a.title;
+					return "&nbsp;&nbsp;&nbsp;&nbsp;第" + a.number + "节&nbsp;&nbsp;" + a.title;
 			}
 			return a.title;
 

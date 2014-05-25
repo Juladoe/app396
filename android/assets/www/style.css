@@ -15,7 +15,7 @@
 }
 
 .rating_color {
-    color: #f9b719;
+    color: #999;
     font-weight: normal;
 }
 
@@ -42,7 +42,7 @@
 }
 .card {
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 1px;
     padding: 10px;
     background: white;
     margin-bottom: 15px;
@@ -80,14 +80,28 @@
     padding-top: 5px !important;
 }
 .card-bg {
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin: 8px;
+    padding: 0px !important;
+    border-top: 1px solid rgb(249,249,249) !important;
+    border-bottom: 1px solid rgb(249,249,249) !important;
+    border-radius: 1px;
+    margin: 15px;
     background: white;
 }
+
+.card-bg-a
+{
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.card-bg-a:after{
+    content:"" !important;
+}
+
 #grid tr{
-            height:80px;
-        }
+    height:80px;
+}
+
 #grid td{
     width:30%;
     text-align: center;
@@ -270,6 +284,17 @@ background: white;
     background-color:#65c294 !important;
 }
 
+.search_sch_btn {
+    height: 100px;
+    border-radius: 5px !important;
+    background-color:#00BA84 !important;
+    width:100px;
+    color:white !important;
+}
+.search_sch_btn.pressed {
+    background-color:#65c294 !important;
+}
+
 .learn_btn {
     color:#03b884;
     border-width: 1px;
@@ -280,6 +305,7 @@ background: white;
 .learn_btn.pressed {
     color:#fdb933;
 }
+
 .input_bg:before {
     float: left;
     top: 31px;
@@ -460,7 +486,11 @@ background: white;
 }
 
 .custom_normal_color{
-    color:#03b884 !important;
+    color:#444 !important;
+}
+
+.course_teacher {
+    color: #999 !important;
 }
 
 .course_lesson_type_normal_color{
@@ -495,14 +525,17 @@ background: white;
 }
 
 .bottom_refresh_div {
+    margin: 8px;
     height: 50px;
+    padding-top:10px;
     background: white;
     text-align:center;
 }
 
 .bottom_refresh_div img{
-    width: 24px;
-    height: 24px;
+    vertical-align:middle;
+    width: 20px;
+    height: 20px;
 }
 
 #main {
@@ -596,6 +629,10 @@ background: white;
     background: rgba(238,238,238,255) !important;
 }
 
+.list_content {
+    padding: 10px;
+}
+
 .list_content p {
     font-size: 12px !important;
 }
@@ -665,8 +702,160 @@ background: white;
 }
 
 .back_text{
-    line-height: 35px;
-    display: inline-table;
-    vertical-align: middle;
+    //line-height: 35px;
+    //display: inline-table;
+    //vertical-align: middle;
     font-size: 14px;
+}
+
+.center_div {
+    position:absolute;
+    top:50%; 
+    left:50%;         
+    margin:-50px 0 0 -50px;
+    width:100px; 
+    height:100px;
+}
+
+.qr_sch_btn
+{
+    color:#03b884;
+    display: block;
+    text-align: center;
+    border: 1px solid #03b884;
+    border-radius: 3px;
+    padding: 10px;
+    background: white;
+    margin-bottom: 15px;
+}
+
+.qr_sch_btn.pressed {
+    color:#fdb933;
+
+}
+
+.qr_login_sch_btn
+{
+    font-size: 60px !important;
+}
+
+#aside_menu {
+    top:20px !important;
+}
+
+.normal_btn{
+    color:#03b884;
+    top: 50px;
+    left: 50px;
+    position: relative;
+}
+
+.rsch_title {
+    padding: 5px;
+    color:#555;
+}
+.rsch_info {
+    padding:5px;
+    color: #ccc;
+}
+
+.rsch_bg {
+    background: #ffffff;
+    border-top: 1px solid rgb(249,249,249) !important;
+    border-bottom: 1px solid rgb(249,249,249) !important;
+    border-radius: 1px;
+    padding: 0px !important;    
+    background: white;
+    margin: 15px;
+}
+
+.rsch_logo {
+    width:130px;
+    height:80px;
+    border: 0px solid rgb(249,249,249) !important;
+}
+
+.course_list_bottom {
+    margin-top: 5px;
+    padding:10px;
+    height:40px;
+    border-top: 1px solid rgb(238,238,238) !important;
+}
+.course_price
+{
+    color:#E79022;
+}
+
+.noData {
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.qr_color
+{
+    color:#03b884;
+}
+
+.learn_progress {
+    background:#f9b719 !important;
+}
+
+.learnnum {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color:#888 !important;
+}
+
+.lesson_bg {
+    background: #f6f6f6;
+}
+
+.lesson_item:after{
+    content:"" !important;
+}
+
+.lesson_item_fa
+{
+    font-size: 14px !important;
+}
+
+.lesson_item {
+    background: #f6f6f6 !important;
+    margin:0px !important;
+    padding:10px !important;
+    border-top: 0px !important;
+    border-bottom: 0px !important;
+}
+
+.lesson_bg {
+    background: #ffffff !important;
+    border-bottom: 1px solid #ddd !important;
+}
+
+.lesson_bg a {
+    padding:10px !important;
+}
+
+.lesson_bordr {
+    height: 30px !important;
+    padding-left: 10px !important;
+    border-bottom: 0px !important;
+}
+
+.lesson_number {
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+.lesson_learnStatuses {
+    display: inline-block;
+    width: 15px;
+    height: 20px;
+    background: rgb(67, 221, 67);
+    border-radius: 50px 0px 0px 50px;
+}
+
+.lesson_bordr span {
+    padding-left: 10px !important;
 }
