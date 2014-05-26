@@ -46,7 +46,7 @@
 
 #pragma mark - platform
 
-- (NSString *)platform {
+- (NSString *)checkPlatform {
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
     char *machine = malloc(size);
@@ -56,38 +56,50 @@
     return platform;
 }
 
-- (NSString *)platformString {
-    NSString *platform = [self platform];
-    if ([platform hasPrefix:@"iPhone6"])            return @"iPhone 5s";
-    if ([platform isEqualToString:@"iPhone5,3"]
-        || [platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c";
-    if ([platform hasPrefix:@"iPhone5"])            return @"iPhone 5";
-    if ([platform hasPrefix:@"iPhone4"])            return @"iPhone 4S";
-    if ([platform hasPrefix:@"iPhone3"])            return @"iPhone 4";
-    if ([platform isEqualToString:@"iPhone2,1"])    return @"iPhone 3GS";
-    if ([platform isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
-    if ([platform isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
-    if ([platform isEqualToString:@"iPod5,1"])      return @"iPod Touch 5G";
-    if ([platform isEqualToString:@"iPod4,1"])      return @"iPod Touch 4G";
-    if ([platform isEqualToString:@"iPod3,1"])      return @"iPod Touch 3G";
-    if ([platform isEqualToString:@"iPod2,1"])      return @"iPod Touch 2G";
-    if ([platform isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
-    if ([platform isEqualToString:@"iPad2,5"]
-        || [platform isEqualToString:@"iPad2,6"]
-        || [platform isEqualToString:@"iPad2,7"])   return @"iPad mini";
-    if ([platform isEqualToString:@"iPad3,4"]
-        || [platform isEqualToString:@"iPad3,5"]
-        || [platform isEqualToString:@"iPad3,6"])   return @"iPad 4G";
-    if ([platform hasPrefix:@"iPad3"])              return @"iPad 3G";
-    if ([platform hasPrefix:@"iPad2"])              return @"iPad 2G";
-    if ([platform isEqualToString:@"iPad1,1"])      return @"iPad";
-    if ([platform isEqualToString:@"i386"]
-        || [platform isEqualToString:@"x86_64"])    return @"iPhone Simulator";
-    return platform;
+- (void)platform:(CDVInvokedUrlCommand *)command {
+    NSString *callbackId = command.callbackId;
+    NSString *platform = [self checkPlatform];
+    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:platform];
+    [self writeJavascript:[result toSuccessCallbackString:callbackId]];
 }
 
-- (NSString *)systemVersion {
-    return [[UIDevice currentDevice] systemVersion];
+- (void)platformString:(CDVInvokedUrlCommand *)command {
+    NSString *callbackId = command.callbackId;
+    NSString *platform = [self checkPlatform];
+    if ([platform hasPrefix:@"iPhone6"])                platform = @"iPhone 5s";
+    else if ([platform isEqualToString:@"iPhone5,3"]
+        || [platform isEqualToString:@"iPhone5,4"])     platform = @"iPhone 5c";
+    else if ([platform hasPrefix:@"iPhone5"])           platform = @"iPhone 5";
+    else if ([platform hasPrefix:@"iPhone4"])           platform = @"iPhone 4S";
+    else if ([platform hasPrefix:@"iPhone3"])           platform = @"iPhone 4";
+    else if ([platform isEqualToString:@"iPhone2,1"])   platform = @"iPhone 3GS";
+    else if ([platform isEqualToString:@"iPhone1,2"])   platform = @"iPhone 3G";
+    else if ([platform isEqualToString:@"iPhone1,1"])   platform = @"iPhone 1G";
+    else if ([platform isEqualToString:@"iPod5,1"])     platform = @"iPod Touch 5G";
+    else if ([platform isEqualToString:@"iPod4,1"])     platform = @"iPod Touch 4G";
+    else if ([platform isEqualToString:@"iPod3,1"])     platform = @"iPod Touch 3G";
+    else if ([platform isEqualToString:@"iPod2,1"])     platform = @"iPod Touch 2G";
+    else if ([platform isEqualToString:@"iPod1,1"])     platform = @"iPod Touch 1G";
+    else if ([platform isEqualToString:@"iPad2,5"]
+        || [platform isEqualToString:@"iPad2,6"]
+        || [platform isEqualToString:@"iPad2,7"])       platform = @"iPad mini";
+    else if ([platform isEqualToString:@"iPad3,4"]
+        || [platform isEqualToString:@"iPad3,5"]
+        || [platform isEqualToString:@"iPad3,6"])       platform = @"iPad 4G";
+    else if ([platform hasPrefix:@"iPad3"])             platform = @"iPad 3G";
+    else if ([platform hasPrefix:@"iPad2"])             platform = @"iPad 2G";
+    else if ([platform isEqualToString:@"iPad1,1"])     platform = @"iPad";
+    else if ([platform isEqualToString:@"i386"]
+        || [platform isEqualToString:@"x86_64"])        platform = @"iPhone Simulator";
+    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:platform];
+    [self writeJavascript:[result toSuccessCallbackString:callbackId]];
+}
+
+- (void)systemVersion:(CDVInvokedUrlCommand *)command {
+    NSString *callbackId = command.callbackId;
+    NSString *sVersion = [[UIDevice currentDevice] systemVersion];
+    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:sVersion];
+    [self writeJavascript:[result toSuccessCallbackString:callbackId]];
 }
 
 @end

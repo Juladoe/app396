@@ -21,20 +21,20 @@
  *
  *  @return Model Identifier
  */
-- (NSString *)platform;
+- (void)platform:(CDVInvokedUrlCommand *)command;
 
 /**
  *  Convert Model Identifier into real device name
  *
  *  @return Readable device name
  */
-- (NSString *)platformString;
+- (void)platformString:(CDVInvokedUrlCommand *)command;
 
 /**
  *  Check current system version
  *
  *  @return System version string
  */
-- (NSString *)systemVersion;
+- (void)systemVersion:(CDVInvokedUrlCommand *)command;
 
 @end
