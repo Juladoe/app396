@@ -80,7 +80,13 @@ function loadLesson(courseId, lessonId)
 			$(li).find("a").addClass("li_sel li_sel_color");
 			$("#course_lesson_title").text(lessonItem.title);
 
-			setLessonContent(lessonItem.content, lessonItem.type, lessonId, lessonItem.mediaUri);
+			setLessonContent(
+				lessonItem.content, 
+				lessonItem.type, 
+				lessonId, 
+				lessonItem.mediaUri, 
+				lessonItem.mediaSource
+			);
 		}
 	);
 }
@@ -172,7 +178,7 @@ exports.learn_status = function(lessonId)
 	}
 }
 
-function setLessonContent(content, type, lesson_id, mediaUri)
+function setLessonContent(content, type, lesson_id, mediaUri, mediaSource)
 {
 	audio_model.stop();
 	switch (type) {
@@ -186,9 +192,19 @@ function setLessonContent(content, type, lesson_id, mediaUri)
 			content = audio_model.audioplayer(mediaUri);
 			break;
 		case "video":
-			//content = '<table><tr valign="middle"><td onclick="nativePlay({params});" class="lesson_content_table"><img class="lesson_content_center" src="images/play.png" /><td></tr></table>';
-			content = '<div style="padding:3px;"><video onclick="nativePlay({params})"; id="playvideo" src="' + mediaUri +'" width="100%" height="60%" controls="controls" autoplay="autoplay">不支持 video 标签。</video></div>';
-			content = content.replace("{params}", "'" + mediaUri + "'," + course_lesson_list_model.courseId + "," + course_lesson_list_model.lessonId);
+			switch (mediaSource) {
+				case "youku":
+				case "tudou":
+					content = '<iframe height=498 width="100%" src="{mediaUri}" frameborder=0 allowfullscreen></iframe>';
+					content = content.replace(/{mediaUri}/g, mediaUri);
+					break;
+				case "self":
+					//content = '<table><tr valign="middle"><td onclick="nativePlay({params});" class="lesson_content_table"><img class="lesson_content_center" src="images/play.png" /><td></tr></table>';
+					content = '<div style="padding:3px;"><video onclick="nativePlay({params})"; id="playvideo" src="' + mediaUri +'" width="100%" height="60%" controls="controls" autoplay="autoplay">不支持 video 标签。</video></div>';
+					content = content.replace("{params}", "'" + mediaUri + "'," + course_lesson_list_model.courseId + "," + course_lesson_list_model.lessonId);
+					break;
+			}
+			
 	}
 	$("#course_lesson_content").html(content);
 	course_lesson_list_model.learn_status(lesson_id);

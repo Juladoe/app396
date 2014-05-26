@@ -90,6 +90,24 @@ define(function(require, exports){
 	    $("BODY DIV#toastmask").remove();
 	};
 
+	window.playIframeVideo = function(mediaUri)
+	{
+		alert(1);
+		if ($.ui.android) {
+			alert(2);
+			cordova.exec(
+				function(result) {
+					
+				},
+				function(error) {
+					$("#afui").popup("播放错误: " + error);
+				},
+		         "IFramePlayerPlugin",
+		         "playVideo",
+		         [mediaUri]);
+		}
+	}
+
 	window.showToast = function(text) {
 	    $.query("#afui_toast>h1").html(text);
 	    toastblockUI(0.5);
