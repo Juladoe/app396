@@ -46,7 +46,7 @@ define(function(require, exports){
 				</li>
 			</textarea>
 		<!-- templ input list end -->
-		<ul class="list card-ul-bg ul_bg_null" id="search_list" offset="0">
+		<ul class="list card-ul-bg ul_bg_null" id="search_list" start="0">
 			
 		</ul>
 		</div>
@@ -74,20 +74,20 @@ define(function(require, exports){
 		exports.sort = sort;
 		exports.isRefresh = false;
 
-		var offset = isappend == true ? $("#search_list").attr("offset"): 0;
+		var offset = isappend == true ? $("#search_list").attr("start"): 0;
 		var search = $("#global_search").val();
 		if (search == "") {
 			$("#afui").popup("请输入搜索内容");
 			return;
 		}
 		simpleJsonP(
-			schoolHost + "/courselist" + '?callback=?&page=' + offset + "&search=" + search,
+			schoolHost + "/courses" + '?callback=?&start=' + offset + "&search=" + search,
 			function(data){
-				if (data.courses.length == 0) {
+				if (data.data.length == 0) {
 					$("#search_list").html("<div style='text-align:center;'>没有搜索到相关内容</div>");
 					return;
 				}
-				list_str = zy_tmpl($("#ns_list_item").val(), data.courses, zy_tmpl_count(data.courses), function(a, b) {
+				list_str = zy_tmpl($("#ns_list_item").val(), data.data, zy_tmpl_count(data.data), function(a, b) {
 					switch (b[1]){
 						case "middlePicture":
 							if (a.middlePicture == null || a.middlePicture == "") {
@@ -95,22 +95,23 @@ define(function(require, exports){
 							}
 							return a.middlePicture;	
 						case "teacher":
-							return data.users[a["teacherIds"][0]].nickname;
+							return a.teachers[0].nickname;
 						default:
 							return templ_handler(a, b);
 					}
 				});
-				if (data.total_page - data.page > 1) {
+				var start = (data.start + 1) * normalLimit;
+				if (start < data.total) {
+					$("#search_list").attr("start", start);
 					exports.isRefresh = true;
-					$("#search_list").attr("offset", data.page + 1);
-					//list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='searchlist_model.init_searchlist_data(true);'>加载更多</li>";
+					//refresh_div = "<li id='bottom_refresh_div' class='bottom_refresh_div' onclick='courselist_model.init_courselist_data(true, \"" + sort + "\");'>加载中...</li>";
 				}
 
 				if (isappend) {
 					//$("#search_list").find("#bottom_refresh_div").remove();
 					$("#search_list").html($("#search_list").html() + list_str);
 				} else {
-					searchlist_model.scroller.scrollToTop(100);
+					searchlist_model.scroller.scrollToTop(10);
 					$("#search_list").html(list_str);
 				}
 

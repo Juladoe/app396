@@ -186,8 +186,8 @@ function setLessonContent(content, type, lesson_id, mediaUri)
 			content = audio_model.audioplayer(mediaUri);
 			break;
 		case "video":
-			content = '<table><tr valign="middle"><td onclick="nativePlay({params});" class="lesson_content_table"><img class="lesson_content_center" src="images/play.png" /><td></tr></table>';
-			//content = '<div style="padding:3px;"><video onclick="nativePlay({params})"; id="playvideo" src="' + mediaUri +'" width="100%" height="60%" controls="controls" autoplay="autoplay">不支持 video 标签。</video></div>';
+			//content = '<table><tr valign="middle"><td onclick="nativePlay({params});" class="lesson_content_table"><img class="lesson_content_center" src="images/play.png" /><td></tr></table>';
+			content = '<div style="padding:3px;"><video onclick="nativePlay({params})"; id="playvideo" src="' + mediaUri +'" width="100%" height="60%" controls="controls" autoplay="autoplay">不支持 video 标签。</video></div>';
 			content = content.replace("{params}", "'" + mediaUri + "'," + course_lesson_list_model.courseId + "," + course_lesson_list_model.lessonId);
 	}
 	$("#course_lesson_content").html(content);
