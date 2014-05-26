@@ -576,7 +576,7 @@ function checkIsTeacher(a, loginUser)
 function setReviewContent(review)
 {
 	var id = review.user.id;
-	if (loginUser && loginUser.id == id) {
+	if(window.loginUser && loginUser.id == id) {
 		courseinfo_model.loginUserReview = review;
 	}
 }
