@@ -745,9 +745,10 @@ background: white;
 
 .normal_btn{
     color:#03b884;
-    top: 50px;
-    left: 50px;
+    top: 100px;
+    left: 50%;
     position: relative;
+
 }
 
 .rsch_title {
@@ -853,7 +854,7 @@ background: white;
 
 .lesson_title {
     display: inline-block;
-    line-height: 40px;
+    line-height: 20px;
 }
 
 .lesson_learnStatuses {

@@ -162,7 +162,7 @@
                       <i class="fa qr_login_sch_btn fa-qrcode qr_color"></i>
                     </a>
                     <span onclick="schoolpage_model.qrSearch();" class="button white custom_button_blue">扫描二维码登录</span>
-                     <div style="text-align:right;">
+                     <div style="text-align:center;">
                          <a onclick="load_schoollist_page()" class="normal_btn">普通登录</a>
                     </div>
                 </div>
@@ -430,15 +430,21 @@
 			</aside>
         </div>
     </body>
+    <script src='cordova_ios.js'></script>
+    <script src='native_plugins/barcodescanner.js'></script>
 	<script type="text/javascript">
-		if ($.os.ios) {
-            $(".statusDiv").height(20);
-            $("#aside_menu").css("top", "20px");
-			document.write("<script src='cordova_ios.js'><\/script>");
-            document.write("<script src='native_plugins/barcodescanner.js'><\/script>");
-		} else if ($.os.android) {
-			document.write("<script src='cordova_android.js'><\/script>");
-			require(['native_plugins/video.js']);
-		}
+		$(".statusDiv").height(20);
+        $("#aside_menu").css("top", "20px");
+        cordova.exec(
+                function(array) {
+                   alert(array);
+                },
+                function(error) {
+                    alert(error);
+                },
+                 "VideoPlugin",
+                 "playvideo",
+                 ["ddd"]
+            );
 	</script>
 </html>

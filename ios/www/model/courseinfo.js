@@ -303,7 +303,7 @@ exports.init_courseinfo_data = function(course_id)
 						zy_tmpl_count(list),function(a, b) {
 							switch (b[1]) {
 								case "largePicture":
-									if (a.courselargePicture == null
+									if (a.course.largePicture == null
 										|| a.course.largePicture == "") {
 										return "images/img1.jpg";
 									}

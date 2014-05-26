@@ -626,13 +626,6 @@ define(function(require, exports){
 		         "VideoPlugin",
 		         "playvideo",
 		         [url]);
-			/*
-			var playvideo = document.getElementById("playvideo");
-		    playvideo.src = "http://hlstest.qiniudn.com/dahuangya.mp4";
-		    playvideo.load();
-		    playvideo.play();
-	 	   return;
-	 	   */
 	 	   return;
 		}
 		VideoPlayer.playVideo( nativePluginResultHandler, nativePluginErrorHandler, url); 
@@ -720,7 +713,7 @@ define(function(require, exports){
 
 	window.load_pay_page = function(payurl, course_id)
 	{
-		if ($.os.ios) {
+		if ($.os.ios || $.os.android) {
 			cordova.exec(
 				function(result) {
 					if (result == "success") {
@@ -742,13 +735,14 @@ define(function(require, exports){
 		var token = appstore_model.getToken();
 		if (token) {
 			simpleJsonP(
-				schoolHost + "/paycourse" + '?payment=alipay&callback=?&token=' + token + "&courseId=" + course_id,
+				schoolHost + "/courses/" + course_id + "/pay" + '?payment=alipay&callback=?&token=' + token,
 					function(data){
-						if (data.status == "success") {
-							load_courseinfo_page(course_id);
-						} else {
-							load_pay_page(data.payurl, course_id);
-							//$("#afui").popup(data.message ? data.message : "加入学习失败！");
+						if (data.status == "ok") {
+							if (data.paid == true) {
+								load_courseinfo_page(course_id);
+							} else {
+								load_pay_page(data.payUrl, course_id);
+							}
 						}
 					}
 			);
