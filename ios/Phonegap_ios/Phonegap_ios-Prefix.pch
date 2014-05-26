@@ -23,4 +23,8 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
+
+#define IS_IPAD         (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IOS7_OR_LATER	(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+
 #endif
