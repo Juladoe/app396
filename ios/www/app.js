@@ -696,8 +696,13 @@ define(function(require, exports){
 		var token = appstore_model.getToken();
 		if (token) {
 			simpleJsonP(
-				schoolHost + "/refundcourse/" + course_id + '?callback=?&token=' + token +"&reason=" + reason,
+				schoolHost + "/courses/" + course_id + "/refund" + '?callback=?&token=' + token +"&reason=" + reason,
 					function(data){
+						if (data.error) {
+							$("#afui").popup(data.error);
+							$.ui.goBack();
+							return;
+						}
 						if (data.status == "success") {
 							load_courseinfo_page(course_id);
 						} else {
