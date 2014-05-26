@@ -533,36 +533,71 @@ define(function(require, exports){
 		);
 	}
 
+	function androidQrSearch(callback, successCallback)
+	{
+		cordova.exec(
+				function(result) {
+					callback();
+                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
+                		return;
+                	}
+                	$("#afui").popup({
+				        title: "扫描结果",
+				        message: "二维码信息:\n" + result,
+				        cancelText: "取消",
+				        cancelCallback: function () {
+				        	callback("");
+				            applog("qr search cancelled");
+				        },
+				        doneText: "添加网校",
+				        doneCallback: function () {
+				        	successCallback(result);
+				        },
+				        cancelOnly: false
+				    });
+				},
+				function(error) {
+					$("#afui").popup("扫描错误: " + error);
+				},
+		         "QrPlugin",
+		         "qrsearch",
+		         [""]);
+	}
 
 	//扫描二维码
 	window.nativeSearch = function(callback, successCallback)
 	{
-		var scanner = window.cordova.require("native_plugins/BarcodeScanner");
-	        scanner.scan(
-	                function (result) {
-	                	callback();
-	                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
-	                		return;
-	                	}
-	                	$("#afui").popup({
-					        title: "扫描结果",
-					        message: "二维码信息:\n" + result.text,
-					        cancelText: "取消",
-					        cancelCallback: function () {
-					        	callback("");
-					            applog("qr search cancelled");
-					        },
-					        doneText: "添加网校",
-					        doneCallback: function () {
-					        	successCallback(result.text);
-					        },
-					        cancelOnly: false
-					    });
-	                },
-	                function (error) {
-	                	$("#afui").popup("扫描错误: " + error);
-	                }
-	    );
+		if ($.os.ios) {
+
+			var scanner = window.cordova.require("native_plugins/BarcodeScanner");
+		        scanner.scan(
+		                function (result) {
+		                	callback();
+		                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
+		                		return;
+		                	}
+		                	$("#afui").popup({
+						        title: "扫描结果",
+						        message: "二维码信息:\n" + result.text,
+						        cancelText: "取消",
+						        cancelCallback: function () {
+						        	callback("");
+						            applog("qr search cancelled");
+						        },
+						        doneText: "添加网校",
+						        doneCallback: function () {
+						        	successCallback(result.text);
+						        },
+						        cancelOnly: false
+						    });
+		                },
+		                function (error) {
+		                	$("#afui").popup("扫描错误: " + error);
+		                }
+		    );
+		} else {
+			androidQrSearch(callback, successCallback);
+		}
 
 	}
 

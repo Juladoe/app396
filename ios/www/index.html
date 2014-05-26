@@ -118,7 +118,7 @@
 
     <body>
         <div id="afui" class="ios7">
-            <div style="height:20px;background:rgb(249,249,249);"></div>
+            <div class="statusDiv" style="height:0px;background:rgb(249,249,249);"></div>
             <!-- this is the splashscreen you see. -->
             <div id="splashscreen" class='ui-loader'>
                 <img src="images/s1.jpg">
@@ -160,8 +160,8 @@
                 <div class="center_div">
                     <a class="qr_sch_btn" onclick="schoolpage_model.qrSearch();">
                       <i class="fa qr_login_sch_btn fa-qrcode qr_color"></i>
-                      <div style="font-size:15px;">扫描登录</div>
                     </a>
+                    <span onclick="schoolpage_model.qrSearch();" class="button white custom_button_blue">扫描二维码登录</span>
                      <div style="text-align:right;">
                          <a onclick="load_schoollist_page()" class="normal_btn">普通登录</a>
                     </div>
@@ -431,11 +431,9 @@
         </div>
     </body>
 	<script type="text/javascript">
-        function loadedPanel() {
-            
-        }
-        
 		if ($.os.ios) {
+            $(".statusDiv").height(20);
+            $("#aside_menu").css("top", "20px");
 			document.write("<script src='cordova_ios.js'><\/script>");
             document.write("<script src='native_plugins/barcodescanner.js'><\/script>");
 		} else if ($.os.android) {
