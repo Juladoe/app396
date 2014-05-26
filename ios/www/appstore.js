@@ -175,6 +175,7 @@ define(function(require, exports){
 		appstore_model.setStoreCache("defaultSchool", url);
 		appstore_model.setStoreCache("defaultSchoolName", name);
 		load_courselist_page();
+		$.ui.clearHistory();
 	}
 
 	function saveSchoolToLocal(name, cover, url)

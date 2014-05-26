@@ -435,16 +435,5 @@
 	<script type="text/javascript">
 		$(".statusDiv").height(20);
         $("#aside_menu").css("top", "20px");
-        cordova.exec(
-                function(array) {
-                   alert(array);
-                },
-                function(error) {
-                    alert(error);
-                },
-                 "VideoPlugin",
-                 "playvideo",
-                 ["ddd"]
-            );
 	</script>
 </html>

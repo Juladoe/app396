@@ -212,7 +212,7 @@ exports.addComment = function()
         		schoolHost + "/courses/" + courseId + '/review_create?callback=?&token=' + token 
         				+ "&rating=" + rating + "&content=" + content,
         		function(data){
-        			if (data && !data.error) {
+        			if (data) {
 						if (! data.error) {
 							courseinfo_model.setComment(data);
 						} else {
@@ -317,7 +317,7 @@ exports.init_courseinfo_data = function(course_id)
 							return templ_courseinfo_handler(a, b);
 						});
 
-				if (data.favoriteStatus == true) {
+				if (data.userFavorited == true) {
 					$("#favorite_radio").attr("checked", "checked");
 				} else {
 					$("#favorite_radio").removeAttr("checked");

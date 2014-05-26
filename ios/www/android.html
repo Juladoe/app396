@@ -90,6 +90,11 @@
 		    });
 
 			function onBackKeyDown() {
+                var history = $.ui.history;
+                if (history && history.length > 0) {
+                    $.ui.goBack();
+                    return;
+                } 
 				navigator.notification.confirm(
 					'确定退出程序?', 
 					onConfirm,

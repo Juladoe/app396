@@ -261,6 +261,7 @@ define(function(require, exports){
 	{
 		if (appstore_model.checkIsLogin()) {
 			$.ui.loadContent('learned',false,false,'slide');
+			appconfig.page = "learned";
 			learned_model.init_learned_data();
 		} else {
 			setHistoryAction(window.load_learned_page);
@@ -271,6 +272,7 @@ define(function(require, exports){
 	window.load_regist_page = function()
 	{
 		$.ui.loadContent('regist',false,false,'slide');
+		appconfig.page = "regist";
 		setTitle("注册网校");
 	}
 
@@ -308,6 +310,7 @@ define(function(require, exports){
 		appconfig.page = "courselist";
 		$.ui.loadContent('courselist',false,false,'slide');
 		courselist_model.init_courselist_data();
+		$.ui.clearHistory();
 	}
 
 	window.load_about_page = function()
@@ -332,6 +335,7 @@ define(function(require, exports){
 
 	window.load_courseinfo_page = function(course_id)
 	{
+		appconfig.page = "courseinfo";
 		$.ui.loadContent('courseinfo',false,false,'pop');
 		courseinfo_model.init_courseinfo_data(course_id);
 	}
@@ -477,29 +481,27 @@ define(function(require, exports){
 		}
 		
 		simpleJsonP(
-			webRoot + "/regist" + '?callback=?&email=' + email + "&nickname=" + name + "&password=" + pass,
+			webRoot + "/user_register" + '?callback=?&email=' + email + "&nickname=" + name + "&password=" + pass,
 			function(data){
-				if (data.status == "success") {
-					$("#afui").popup(
-						{
-							title:"注册成功",
-							message: "注册成功！同时生成了第二课堂的账号，您可以用它来登录其他网校.<br> 邮箱：" + email + "<br> 账号：" + name,
-	        				cancelText: "确定",
-							doneText: "返回",
-							cancelCallback: function () {
-					        	appstore_model.saveUserInfo(name, data.token);
-					        	load_setting_page();
-					        },
-					        doneCallback: function () {
-					        	appstore_model.saveUserInfo(name, data.token);
-					        	load_setting_page();
-					        }
-						}
-					);
-				} else {
-					$("#afui").popup(data.message ? data.message : "注册失败!");
+				if (data && data.error) {
+					$("#afui").popup(data.error.message);
+					return;
 				}
-				$.ui.hideMask();
+				$("#afui").popup(
+				{
+					title:"注册成功",
+					message: "注册成功！同时生成了第二课堂的账号，您可以用它来登录其他网校.<br> 邮箱：" + email + "<br> 账号：" + name,
+    				cancelText: "确定",
+					doneText: "返回",
+					cancelCallback: function () {
+			        	appstore_model.saveUserInfo(data.user, data.token);
+			        	load_setting_page();
+			        },
+			        doneCallback: function () {
+			        	appstore_model.saveUserInfo(data.user, data.token);
+			        	load_setting_page();
+			        }
+				});
 			}
 		);
 	}
@@ -721,9 +723,20 @@ define(function(require, exports){
 		if ($.os.ios || $.os.android) {
 			cordova.exec(
 				function(result) {
-					if (result == "success") {
-						load_courseinfo_page(course_id);
-					}
+					$("#afui").popup({
+				        title: "支付结果",
+				        message: "确认支付结果？",
+				        cancelText: "取消",
+				        cancelCallback: function () {
+				            console.log("cancelled");
+				            load_courseinfo_page(course_id);
+				        },
+				        doneText: "确定",
+				        doneCallback: function () {
+				        	load_courseinfo_page(course_id);
+				        },
+				        cancelOnly: false
+				    });
 				},
 				function(error) {
 					alert("支付失败");
