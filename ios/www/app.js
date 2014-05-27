@@ -588,12 +588,11 @@ define(function(require, exports){
 	window.nativeSearch = function(callback, successCallback)
 	{
 		if ($.os.ios) {
-
 			var scanner = window.cordova.require("native_plugins/BarcodeScanner");
 		        scanner.scan(
 		                function (result) {
 		                	callback();
-		                	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
+		                	if (result.text.replace(/(^\s*)|(\s*$)/g,"") == ""){
 		                		return;
 		                	}
 		                	$("#afui").popup({
