@@ -849,6 +849,8 @@ background: white;
     line-height: 40px;
     padding-left: 10px;
     padding-right: 10px;
+    width: 40px;
+    text-align: center;
     font-weight: bold;
 }
 
@@ -875,6 +877,8 @@ background: white;
 
 
 .learn-status {
+    width: 30px;
+    text-align: center;
     top:5px;
     display: inline-block;
     width: 20px;
