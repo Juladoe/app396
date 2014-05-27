@@ -14,8 +14,7 @@ define(function(require, exports){
 		simpleJsonP(
 			schoolHost + "/about" + '?callback=?',
 			function(data){
-				$("#about").html(data.info);
-				appstore_model.setCache("about", "cache");
+				$("#about").html(data);
 			});
 	}
 
