@@ -85,13 +85,15 @@ define(function(require, exports){
 	exports.searchSchoolForQr = function(url)
 	{
 		simpleJsonP(url, function(data){
-			if (data && data.status == "success") {
-				if (data.token) {
-					appstore_model.saveUserInfo(data.user, data.token);
-				}
-				var school = data.school;
-				appstore_model.saveSchool(school.title, school.logo, school.url);
+			if (data.error) {
+				$("#afui").popup(data.error.message);
+				return;
 			}
+			if (data.token) {
+				appstore_model.saveUserInfo(data.user, data.token);
+			}
+			var school = data.site;
+			appstore_model.saveSchool(school.title, school.logo, school.url);
 		});
 	}
 

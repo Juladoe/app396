@@ -291,7 +291,7 @@ exports.init_courseinfo_data = function(course_id)
 		schoolHost + "/courses/" + course_id + '?callback=?&token=' + token,
 		function(data){
 			if (data && data.error == "not_found") {
-				$("#afui").popup(data.error);
+				$("#afui").popup(data.error.message);
 				$.ui.goBack();
 				return;
 			}
