@@ -560,24 +560,22 @@ define(function(require, exports){
                 		return;
                 	}
                 	var isStart = false;
+                	var isCancel = false;
 
                 	var pop = $("#afui").popup({
 				        title: "扫描结果",
 				        message: "正在进入网校...<img src='images/sch_load.gif' >",
 				        cancelText: "取消",
 				        cancelCallback: function () {
+				        	isCancel = true;
+				        	pop.hide();
 				        	callback("");
 				            applog("qr search cancelled");
 				        },
-				        doneText: "添加网校",
-				        doneCallback: function () {
-				        	isStart = true;
-				        	successCallback(result);
-				        },
-				        cancelOnly: false
+				        cancelOnly: true
 				    });
 				    setTimeout(function(){
-						if (isStart) {
+						if (isStart || isCancel) {
 							return;
 						}
 				    	successCallback(result);

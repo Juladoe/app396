@@ -122,20 +122,20 @@ define(function(require, exports){
 							+ "<p>正在进入网校...<img src='images/sch_load.gif' ></p>";
 
 				var isStart = false;
+				var isCancel = false;
 				var pop = $("#afui").popup(
 				{
 					title:"搜索结果",
 					message: school_info,
     				cancelText: "取消",
-					doneText: "查看",
-			        doneCallback: function () {
-			        	isStart = true;
-			        	appstore_model.saveSchool(school.name, school.logo, school.url);
-			        }
-				}
-				);
+					cancelCallback: function () {
+			        	isCancel = true;
+			        	pop.hide();
+			        },
+			        cancelOnly: true
+				});
 				setTimeout(function(){
-					if (isStart) {
+					if (isStart || isCancel) {
 						return;
 					}
 			    	appstore_model.saveSchool(school.name, school.logo, school.url);
