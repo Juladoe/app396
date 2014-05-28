@@ -163,7 +163,7 @@ exports.learn_status = function(lessonId)
 					$("#afui").popup(data.message);
 					return;
 				}
-				if (status == "finished") {
+				if (data == "finished") {
 					$("#finish_lesson_btn").addClass("pressed");
 					$("#finish_lesson_btn").attr("data-status", "finished");
 				} else {

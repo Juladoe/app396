@@ -360,7 +360,6 @@ define(function(require, exports){
 	{
 		appconfig.page = "addschool";
 		$.ui.loadContent('addschool',false,false,'pop');
-
 		setTitle(schoolpage_model.title);
 	}
 
