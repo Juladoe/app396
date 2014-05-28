@@ -92,7 +92,6 @@ define(function(require, exports){
 
 	window.playIframeVideo = function(mediaUri)
 	{
-		alert(1);
 		if ($.ui.android) {
 			alert(2);
 			cordova.exec(
