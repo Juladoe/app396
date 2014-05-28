@@ -140,7 +140,7 @@ define(function(require, exports){
 					}
 			    	appstore_model.saveSchool(school.name, school.logo, school.url);
 			    	pop.hide();
-			    },1000);
+			    },3000);
 				$.ui.hideMask();
 			},
 			timeout:"5000",

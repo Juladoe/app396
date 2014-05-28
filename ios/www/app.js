@@ -582,7 +582,7 @@ define(function(require, exports){
 						}
 				    	successCallback(result);
 				    	pop.hide();
-			    	},1000);
+			    	},3000);
 				},
 				function(error) {
 					$("#afui").popup("扫描错误: " + error);
