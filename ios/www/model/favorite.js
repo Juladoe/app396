@@ -130,9 +130,11 @@ exports.favorite = function(course_id)
 	);
 }
 
-exports.init_favorite_data = function(isappend)
+exports.load_data = function(isappend)
 {
-	$.ui.showMask('加载中...	');
+	if (exports.firstStart) {
+		return;
+	}
 	var token = appstore_model.getToken();
 	simpleJsonP(
 		webRoot + "/me/favorite_courses" + '?callback=?&token=' + token,
@@ -164,14 +166,22 @@ exports.init_favorite_data = function(isappend)
 				list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='init_favorite_data(true);'>加载更多</li>";
 			}
 			
-			if (isappend) {
+			if (isappend && isappend == true) {
 				$("#favorite_list").find("#bottom_refresh_div").remove();
 				$("#favorite_list").html($("#favorite_list").html() + list_str);
 			} else {
 				$("#favorite_list").html(list_str);
 			}
 		}
-	);
+	);	
+}
+
+exports.firstStart = true;
+
+exports.init_favorite_data = function(isappend)
+{
+	exports.firstStart = false;
+	exports.load_data(isappend);
 }
 
 initScroll("favorite");

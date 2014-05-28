@@ -131,6 +131,12 @@ define(function(require, exports){
 		}
 	}
 
+	//load courseinfo panel
+	window.load_courseinfo_panel = function()
+	{
+
+	}
+	
 	window.hideToast = function()
 	{
 		unToastblockUI();

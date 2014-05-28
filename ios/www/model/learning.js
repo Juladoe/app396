@@ -2,7 +2,7 @@ define(function(require, exports){
 
 	var func_txt = new String(function(){
 	/*
-	<div title="在学" id="learning" class="panel" data-header="normal_header" data-footer='none' >
+	<div title="在学" id="learning" data-load="learning_model.load_data" class="panel" data-header="normal_header" data-footer='none' >
 		<!-- templ input list模板 -->
 			<textarea id="learning_list_item" style="display:none;">
 				<!-- list item -->
@@ -48,8 +48,11 @@ define(function(require, exports){
 	exports.noData = "<div class='noData'>暂无在学课程</div>";
 	var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img src='images/loading.gif' >加载中...</div>";
 
-	exports.init_learn_data = function(isappend, showLoading, callback)
+	exports.load_data = function(isappend, showLoading, callback)
 	{
+		if (exports.firstStart) {
+			return;
+		}
 		exports.isRefresh = false;
 		var token = appstore_model.getToken();
 		var start = isappend == true ? $("#data_list").attr("start"): 0;
@@ -93,7 +96,7 @@ define(function(require, exports){
 						//refresh_div = "<li id='bottom_refresh_div' class='bottom_refresh_div' onclick='courselist_model.init_courselist_data(true, \"" + sort + "\");'>加载中...</li>";
 					}
 					
-					if (isappend) {
+					if (isappend && isappend == true) {
 						$("#learn_list").html($("#learn_list").html() + list_str);
 					} else {
 						learning_model.scroller.scrollToTop(10);
@@ -104,6 +107,14 @@ define(function(require, exports){
 					}
 			}, showLoading
 		);
+	}
+
+	exports.firstStart = true;
+
+	exports.init_learn_data = function(isappend, showLoading, callback)
+	{
+		exports.firstStart = false;
+		exports.load_data(isappend, showLoading, callback);
 	}
 
 	initScroll("learning", {

@@ -2,7 +2,7 @@ define(function(require, exports){
 
 var courseinfo_text = new String(function(){
 /*
-<div title="课程详情" id="courseinfo" class="panel" data-header='info_header' data-footer="none" style="padding:0px;">
+<div title="课程详情" data-load="courseinfo_model.load_data" id="courseinfo" class="panel" data-header='info_header' data-footer="none" style="padding:0px;">
 	<!-- templ input list模板 -->
 	<textarea id="courseinfo_cb_course_list" style="display:none;">
 		<tr class="course_lesson_table ${cb:lesson_bg}" valign="middle" onclick="courseinfo_model.showCourseInfo('${type}','${courseId}','http://bcs.duapp.com/bimbucket/test.mp4','${id}');">
@@ -158,6 +158,8 @@ var content = '请打分:<span id="commentStar" style="cursor: pointer; width: 1
 
 exports.isTeacher = false;
 exports.loginUserReview = null
+exports.courseId = 0;
+exports.currentIndex = -1;
 
 exports.quick_comment = function(input)
 {
@@ -284,8 +286,12 @@ exports.changeCommentStar = function(img)
 exports.courseCarousel = null;
 exports.isStudent = false;
 
-exports.init_courseinfo_data = function(course_id)
+exports.load_data = function()
 {
+	if (exports.firstStart) {
+		return;
+	}
+	var course_id = exports.courseId;
 	var token = appstore_model.getToken();
 	simpleJsonP(
 		schoolHost + "/courses/" + course_id + '?callback=?&token=' + token,
@@ -333,7 +339,9 @@ exports.init_courseinfo_data = function(course_id)
 					preventDefaults:false,
 					wrap:true
 				});
+
 				$.bind(exports.courseCarousel, 'movestop' , function(carousel){
+					exports.currentIndex = carousel.carouselIndex;
 					$(".tab_radio").each(function(e){
 						index = $(this).attr("data-v");
 						if (index == carousel.carouselIndex) {
@@ -343,9 +351,20 @@ exports.init_courseinfo_data = function(course_id)
 						$(this).removeClass("pressed");
 					});
 				});
-				exports.courseCarousel.onMoveIndex(1);
+				var moveIndex = exports.currentIndex == -1 ? 1 : exports.currentIndex;
+				
+				exports.courseCarousel.onMoveIndex(moveIndex);
 		}
 	);
+}
+
+exports.firstStart = true;
+
+exports.init_courseinfo_data = function(course_id)
+{
+	exports.courseId = course_id;
+	exports.firstStart = false;
+	exports.load_data(course_id);
 }
 
 exports.refundDialog = function()
