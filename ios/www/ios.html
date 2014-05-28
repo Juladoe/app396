@@ -420,7 +420,8 @@
             if (cordova.exec) {
                 cordova.exec(
                 function(version) {
-                    if (version >= 7) {
+                    code = parseFloat(version);
+                    if (code >= 7) {
                         $(".statusDiv").height(20);
                         $("#aside_menu").css("top", "20px");
                     }

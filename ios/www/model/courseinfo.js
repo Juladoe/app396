@@ -173,7 +173,7 @@ exports.quick_comment = function(input)
 		function(data){
 			if (data && !data.error) {
 				if (! data.error) {
-					courseinfo_model.setComment(data);
+					courseinfo_model.getComments();
 				} else {
 					$("#afui").popup(data.message);
 				}
@@ -216,7 +216,7 @@ exports.addComment = function()
         		function(data){
         			if (data) {
 						if (! data.error) {
-							courseinfo_model.setComment(data);
+							courseinfo_model.getComments();
 						} else {
 							$("#afui").popup(data.message);
 						}
@@ -261,9 +261,10 @@ exports.getComments = function()
 				course_comment_templ, data.data, 
 				zy_tmpl_count(data.data), 
 				function(a,b) {
-					return course_comment_handler(a, b, users);
+					return course_comment_handler(a, b);
 				}
 			);
+
 			$(".ui-content").find("#course_comment_table").html(list_str);
 		}
 	);

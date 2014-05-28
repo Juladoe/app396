@@ -537,8 +537,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -563,7 +563,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "639C91F5-6372-48BC-B208-EA7CCB79238B";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -573,8 +573,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -597,7 +597,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "9BAEC09F-6FAF-4E33-9B3C-CE66119B5FD7";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -651,8 +651,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -675,7 +675,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "9BAEC09F-6FAF-4E33-9B3C-CE66119B5FD7";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = AdHoc;
