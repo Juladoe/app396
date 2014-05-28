@@ -12,6 +12,4 @@
 
 -(void)showPay:(CDVInvokedUrlCommand*)command;
 
-@property (nonatomic, retain) CDVPluginResult* pluginResult;
-@property (nonatomic, retain) NSString* callbackId;
 @end
