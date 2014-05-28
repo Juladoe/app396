@@ -131,12 +131,6 @@ define(function(require, exports){
 		}
 	}
 
-	//load courseinfo panel
-	window.load_courseinfo_panel = function()
-	{
-
-	}
-	
 	window.hideToast = function()
 	{
 		unToastblockUI();
@@ -359,7 +353,6 @@ define(function(require, exports){
 	window.load_courseinfo_page = function(course_id)
 	{
 		appconfig.page = "courseinfo";
-		$.ui.loadContent('courseinfo',false,false,'pop');
 		courseinfo_model.init_courseinfo_data(course_id);
 	}
 

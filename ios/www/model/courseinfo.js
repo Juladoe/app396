@@ -365,11 +365,17 @@ function setRadioStatus(carouselIndex)
 
 exports.firstStart = true;
 
-exports.init_courseinfo_data = function(course_id)
+exports.init_data = function(course_id)
 {
 	exports.currentIndex = -1;
 	exports.courseId = course_id;
 	exports.firstStart = false;
+}
+
+exports.init_courseinfo_data = function(course_id)
+{
+	exports.init_data(course_id);
+	$.ui.loadContent('courseinfo',false,false,'pop');
 	exports.load_data(course_id);
 }
 
