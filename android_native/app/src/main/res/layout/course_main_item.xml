@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/course_pic"
+        android:layout_width="155dp"
+        android:layout_height="95dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/defaultpic" />
+
+    <TextView
+        android:textColor="@color/course_title"
+        android:ellipsize="marquee"
+        android:layout_marginTop="3dp"
+        android:layout_alignTop="@id/course_pic"
+        android:id="@+id/course_title"
+        android:layout_toRightOf="@id/course_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="标题"
+        android:textSize="@dimen/course_list_item_title"
+        android:textStyle="normal" />
+
+    <TextView
+        android:layout_below="@id/course_title"
+        android:id="@+id/course_teacher_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textColor="@color/course_teacher"
+        android:layout_toRightOf="@id/course_pic"
+        android:text="admin"
+        android:textSize="@dimen/course_teacher_nickname" />
+
+
+</merge>

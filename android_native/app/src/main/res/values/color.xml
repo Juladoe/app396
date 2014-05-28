@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lesson_item_bg_pressed">#E5E5E5</color>
+    <color name="lesson_item_bg">#ffffff</color>
+    <color name="header_bg">#ffffff</color>
+    <color name="recommend_sch_item_bg_normal">#FFFFFF</color>
+    <color name="recommend_sch_item_bg_pressed">#87CEEB</color>
+    <color name="system_window_bg">#E5E5E5</color>
+    <color name="recommend_sch_info">#8A8A8A</color>
+    <color name="course_content_head">#03b884</color>
+    <color name="course_content_head_pressed">#ffffff</color>
+    <color name="load_bg">#333</color>
+    <color name="course_title">#444</color>
+    <color name="course_info_title">#03b884</color>
+    <color name="course_teacher">#999</color>
+    <color name="setting_line">#DFDFDF</color>
+    <color name="setting_item_pressed">#e0e0e0</color>
+    <color name="course_price">#fdb933</color>
+    <color name="qr_btn_bg">#ccc</color>
+
+    <color name="setting_logout_btn_text">#ffffff</color>
+
+    <color name="menu_btn_normal">#ccc</color>
+    <color name="menu_btn_pressed">#03b884</color>
+    
+    <color name="learn_btn_normal">#03b884</color>
+    <color name="learn_btn_pressed">#fdb933</color>
+    <color name="school_card_bg">#ffffff</color>
+    <color name="school_card_title">#000000</color>
+    <color name="title_bar">#CBD2D8</color>
+    <color name="qrback">#808080</color>
+    <color name="login_text">#ffffff</color>
+    <color name="lesson_icon">#4F94CD</color>
+    <color name="lesson_chapter_bg">#EEEEEE</color>
+    <color name="lesson_menu_text_normal">#000000</color>
+    <color name="lesson_menu_text_pressed">#03b884</color>
+
+    <color name="learn_subtitle">#635F5F</color>
+    <!-- custom acitonbar style -->
+    <color name="titleTextColor">#03b884</color>
+    <color name="backPressedColor">#e0e0e0</color>
+    <color name="actionBarMenu">#03b884</color>
+    <color name="nav_btn_normal">#888</color>
+    <color name="nav_btn_pressed">#03b884</color>
+
+    <!-- popup -->
+    <color name="popup_btn_normal">#03b884</color>
+    <color name="popup_btn_pressed">#000000</color>
+    <color name="popup_color">#000000</color>
+    <color name="qucik_comment_color">#ccc</color>
+    <color name="popup_bg_color">#FFFFFF</color>
+    <!-- -->
+    <color name="lesson_menu_bg">#ffffff</color>
+    <!-- qr -->
+    <color name="contents_text">#ff000000</color>
+    <color name="encode_view">#ffffffff</color>
+    <color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
+    <color name="result_minor_text">#ffc0c0c0</color>
+    <color name="result_points">#c099cc00</color> <!-- Android standard ICS color -->
+    <color name="result_text">#ffffffff</color>
+    <color name="result_view">#b0000000</color>
+    <color name="status_text">#ffffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="gray">#808080</color>
+    <color name="lightgreen">#99CC33</color>
+    <color name="green">#00CC00</color>
+    <color name="white">#FFFFFF</color>
+</resources>

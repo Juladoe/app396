@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
+
+    <com.edusohoapp.app.view.EduSohoIconView
+        android:padding="5dp"
+        android:textSize="@dimen/login_icon"
+        android:layout_centerVertical="true"
+        android:id="@+id/notification_icon"
+        android:text="@string/font_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.edusohoapp.app.view.EduSohoIconView
+        android:padding="5dp"
+        android:textSize="@dimen/login_icon"
+        android:layout_centerVertical="true"
+        android:id="@+id/notification_angel_right"
+        android:text="@string/font_angle_right"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:padding="5dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/notification_icon"
+        android:layout_toLeftOf="@id/notification_angel_right"
+        android:id="@+id/notification_message"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_below="@id/notification_message"
+        android:layout_toLeftOf="@id/notification_angel_right"
+        android:padding="5dp"
+        android:id="@+id/notification_time"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

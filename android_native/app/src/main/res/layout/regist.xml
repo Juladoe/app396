@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include layout="@layout/actionbar_title" />
+
+    <RelativeLayout
+        android:padding="20dp"
+        android:layout_below="@id/edusoho_actionbar"
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_marginBottom="30dp"
+            android:id="@+id/input_email_layout"
+            android:padding="10dp"
+            android:background="@drawable/card_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.edusohoapp.app.view.EduSohoIconView
+                android:layout_centerVertical="true"
+                android:text="@string/font_email"
+                android:layout_width="30dp"
+                android:textColor="@color/actionBarMenu"
+                android:textSize="@dimen/login_icon"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/regist_email_edt"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:paddingLeft="30dp"
+                android:hint="输入常用邮箱地址"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginBottom="30dp"
+            android:id="@+id/input_user_layout"
+            android:layout_below="@id/input_email_layout"
+            android:padding="10dp"
+            android:background="@drawable/card_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.edusohoapp.app.view.EduSohoIconView
+                android:textSize="@dimen/login_icon"
+                android:layout_centerVertical="true"
+                android:text="@string/font_user"
+                android:layout_width="30dp"
+                android:textColor="@color/actionBarMenu"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/regist_user_edt"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:paddingLeft="30dp"
+                android:hint="昵称,中英文,最长14字符"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginBottom="60dp"
+            android:id="@+id/input_pass_layout"
+            android:layout_below="@id/input_user_layout"
+            android:padding="10dp"
+            android:background="@drawable/card_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.edusohoapp.app.view.EduSohoIconView
+                android:textSize="@dimen/login_icon"
+                android:layout_centerVertical="true"
+                android:text="@string/font_unlock"
+                android:layout_width="30dp"
+                android:textColor="@color/actionBarMenu"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/regist_pass_edt"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:inputType="textPassword"
+                android:paddingLeft="30dp"
+                android:hint="设置密码"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/regist_btn"
+            android:padding="10dp"
+            android:textColor="@color/login_text"
+            android:text="注  册"
+            android:background="@drawable/login_btn_sel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_pass_layout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

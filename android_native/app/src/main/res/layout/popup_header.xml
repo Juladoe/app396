@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:textColor="@color/popup_color"
+        android:textSize="@dimen/popup_title"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:id="@+id/popup_title"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:textColor="@color/popup_color"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        android:id="@+id/popup_message"
+        android:layout_below="@id/popup_title"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</merge>

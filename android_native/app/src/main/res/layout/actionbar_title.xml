@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:gravity="center_vertical"
+    android:id="@+id/edusoho_actionbar"
+    android:background="@drawable/actionbar_bg">
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:clickable="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/actionbar_back"
+        android:background="@drawable/actionbar_back_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <com.edusohoapp.app.view.EduSohoIconView
+            android:id="@+id/actionbar_back_icon"
+            android:textColor="@color/actionBarMenu"
+            android:textSize="@dimen/actionbarMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/angle_left" />
+
+        <TextView
+            android:id="@+id/actionbar_back_text"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/actionBarMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/actionbarBack"
+            android:text="返回" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/actionbar_menu">
+        </LinearLayout>
+
+    <TextView
+        android:padding="5dp"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/actionbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/actionbarTitle" />
+
+
+</RelativeLayout>
