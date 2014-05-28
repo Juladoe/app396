@@ -7,14 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AlipayPlugin.h"
 
 @interface AlipayViewController : UIViewController<UIWebViewDelegate>
 
 @property (nonatomic, retain)NSString *url;
-@property (nonatomic, retain)AlipayPlugin *alipayPlugin;
 @property (nonatomic, retain)UIWebView *webView;
 
-- (id)initWithUrl:(NSString *)url alipayPlugin:(AlipayPlugin *)alipayPlugin;
+- (id)initWithUrl:(NSString *)url;
 
 @end

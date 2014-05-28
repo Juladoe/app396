@@ -94,12 +94,11 @@
     [super viewWillAppear:animated];
 }
 
--(id) initWithUrl:(NSString*)url alipayPlugin:(AlipayPlugin*) alipayPlugin
+-(id) initWithUrl:(NSString*)url
 {
     self = [super init];
     if (self){
         _url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        _alipayPlugin = alipayPlugin;
     }
     return self;
 }
@@ -118,7 +117,6 @@
 -(void)leftBtnClick:(id)sender{
     //发送支付回调信息
     [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayCallback" object:@"error"];
-    [self.view removeFromSuperview];
 }
 
 - (void)didReceiveMemoryWarning
