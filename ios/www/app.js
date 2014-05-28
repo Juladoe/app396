@@ -559,9 +559,11 @@ define(function(require, exports){
                 	if (result.replace(/(^\s*)|(\s*$)/g,"") == ""){
                 		return;
                 	}
-                	$("#afui").popup({
+                	var isStart = false;
+
+                	var pop = $("#afui").popup({
 				        title: "扫描结果",
-				        message: "二维码信息:\n" + result,
+				        message: "正在进入网校...<img src='images/sch_load.gif' >",
 				        cancelText: "取消",
 				        cancelCallback: function () {
 				        	callback("");
@@ -569,10 +571,18 @@ define(function(require, exports){
 				        },
 				        doneText: "添加网校",
 				        doneCallback: function () {
+				        	isStart = true;
 				        	successCallback(result);
 				        },
 				        cancelOnly: false
 				    });
+				    setTimeout(function(){
+						if (isStart) {
+							return;
+						}
+				    	successCallback(result);
+				    	pop.hide();
+			    	},1000);
 				},
 				function(error) {
 					$("#afui").popup("扫描错误: " + error);

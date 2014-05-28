@@ -118,18 +118,29 @@ define(function(require, exports){
 			success:function(data){
 				var school = data.site;
 				var school_info = "网校名称:" + school.name
-							+ "<br>网站域名:" + school.url;
-				$("#afui").popup(
-					{
-						title:"搜索结果",
-						message: school_info,
-        				cancelText: "取消",
-						doneText: "查看",
-				        doneCallback: function () {
-				        	appstore_model.saveSchool(school.name, school.logo, school.url);
-				        }
-					}
+							+ "<br>网站域名:" + school.url
+							+ "<p>正在进入网校...<img src='images/sch_load.gif' ></p>";
+
+				var isStart = false;
+				var pop = $("#afui").popup(
+				{
+					title:"搜索结果",
+					message: school_info,
+    				cancelText: "取消",
+					doneText: "查看",
+			        doneCallback: function () {
+			        	isStart = true;
+			        	appstore_model.saveSchool(school.name, school.logo, school.url);
+			        }
+				}
 				);
+				setTimeout(function(){
+					if (isStart) {
+						return;
+					}
+			    	appstore_model.saveSchool(school.name, school.logo, school.url);
+			    	pop.hide();
+			    },1000);
 				$.ui.hideMask();
 			},
 			timeout:"5000",
