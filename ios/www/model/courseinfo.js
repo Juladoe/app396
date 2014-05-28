@@ -342,26 +342,32 @@ exports.load_data = function()
 
 				$.bind(exports.courseCarousel, 'movestop' , function(carousel){
 					exports.currentIndex = carousel.carouselIndex;
-					$(".tab_radio").each(function(e){
-						index = $(this).attr("data-v");
-						if (index == carousel.carouselIndex) {
-							$(this).addClass("pressed");
-							return;
-						}
-						$(this).removeClass("pressed");
-					});
+					setRadioStatus(carousel.carouselIndex);
 				});
 				var moveIndex = exports.currentIndex == -1 ? 1 : exports.currentIndex;
-				
 				exports.courseCarousel.onMoveIndex(moveIndex);
+				setRadioStatus(moveIndex);
 		}
 	);
+}
+
+function setRadioStatus(carouselIndex)
+{
+	$(".tab_radio").each(function(e){
+		index = $(this).attr("data-v");
+		if (index == carouselIndex) {
+			$(this).addClass("pressed");
+			return;
+		}
+		$(this).removeClass("pressed");
+	});
 }
 
 exports.firstStart = true;
 
 exports.init_courseinfo_data = function(course_id)
 {
+	exports.currentIndex = -1;
 	exports.courseId = course_id;
 	exports.firstStart = false;
 	exports.load_data(course_id);
