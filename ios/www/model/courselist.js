@@ -10,8 +10,8 @@ define(function(require, exports){
 				<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
 					<table style="width:100%;" border="0" cellpadding="0" cellspacing="0">	
 						<tr class="card-bg-line" valign="top">
-							<td style="width:160px;">
-								<img src="${cb:middlePicture}" width="160" height="90" />
+							<td style="width:48%;">
+								<img src="${cb:middlePicture}" width="100%" height="90" />
 							</td>
 							<td style="text-align:left;" class="list_content">
 								<h4 class="custom_normal_color">${title}</h4>
