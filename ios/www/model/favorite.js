@@ -1,6 +1,6 @@
 define(function(require, exports){
 
-var func_txt = new String(function(){
+	var func_txt = new String(function(){
 /*
 <div title="收藏的课程" id="favorite" class="panel" data-footer='none' data-header="normal_header">
 				<!-- templ input list模板 -->
@@ -81,8 +81,8 @@ var func_txt = new String(function(){
 						
 				</ul>
 			</div>
-*/
-});
+			*/
+		});
 
 var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
 $.ui.addContentDiv("favorite", text, "收藏的课程");
@@ -107,7 +107,7 @@ exports.unFavorite = function(course_id, event)
 				$("#favorite_radio").removeAttr("checked");
 			}
 		}
-	);
+		);
 	//阻止事件冒泡
 	event.stopPropagation();
 }
@@ -127,7 +127,7 @@ exports.favorite = function(course_id)
 				$("#favorite_radio").attr("checked", "checked");
 			}
 		}
-	);
+		);
 }
 
 exports.load_data = function(isappend)
@@ -151,14 +151,14 @@ exports.load_data = function(isappend)
 			list_str = zy_tmpl($("#favorite_list_item").val(), data.data, zy_tmpl_count(data.data),function(a, b) {
 				switch (b[1]){
 					case "middlePicture":
-						if (a.middlePicture == null || a.middlePicture == "") {
-							return "images/img1.jpg";
-						}
-						return a.middlePicture;
+					if (a.middlePicture == null || a.middlePicture == "") {
+						return "images/img1.jpg";
+					}
+					return a.middlePicture;
 					case "teacher":
-						return data.user ? data.user.nickname : "";
+					return data.user ? data.user.nickname : "";
 					default:
-						return templ_handler(a, b);
+					return templ_handler(a, b);
 				}
 			});
 			if (data.count - data.page > 1) {
@@ -173,7 +173,7 @@ exports.load_data = function(isappend)
 				$("#favorite_list").html(list_str);
 			}
 		}
-	);	
+		);	
 }
 
 exports.firstStart = true;

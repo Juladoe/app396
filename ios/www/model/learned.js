@@ -35,7 +35,7 @@ define(function(require, exports){
 		</ul>
 	</div>
 	*/
-	});
+});
 	var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
 	$.ui.addContentDiv("learned", text, "已学完");
 
@@ -45,22 +45,22 @@ define(function(require, exports){
 		simpleJsonP(
 			schoolHost + "/learnedcourse" + '?callback=?&token=' + token,
 			function(data){
-					if (data.status == "success") {
-						list_str = zy_tmpl($("#learned_list_item").val(), data.learnedCourses, zy_tmpl_count(data.learnedCourses),templ_handler);
-						if (data.count - data.page > 1) {
-							$("#learned_list").attr("offset", data.page + 1);
-							list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='learning_model.init_learned_data(true);'>加载更多</li>";
-						}
-						if (isappend) {
-							$("#learned_list").find("#bottom_refresh_div").remove();
-							$("#learned_list").html($("#learned_list").html() + list_str);
-						} else {
-							$("#learned_list").html(list_str);
-						}
-						appstore_model.setCache("learned", "cache");
+				if (data.status == "success") {
+					list_str = zy_tmpl($("#learned_list_item").val(), data.learnedCourses, zy_tmpl_count(data.learnedCourses),templ_handler);
+					if (data.count - data.page > 1) {
+						$("#learned_list").attr("offset", data.page + 1);
+						list_str += "<li id='bottom_refresh_div' style='text-align:center;' onclick='learning_model.init_learned_data(true);'>加载更多</li>";
 					}
+					if (isappend) {
+						$("#learned_list").find("#bottom_refresh_div").remove();
+						$("#learned_list").html($("#learned_list").html() + list_str);
+					} else {
+						$("#learned_list").html(list_str);
+					}
+					appstore_model.setCache("learned", "cache");
+				}
 			}
-		);
+			);
 	}
 
 	initScroll("learned");

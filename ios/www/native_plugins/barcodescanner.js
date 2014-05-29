@@ -21,7 +21,7 @@ cordova.define("native_plugins/BarcodeScanner",
 
         //-------------------------------------------------------------------
         BarcodeScanner.Encode = {
-            TEXT_TYPE: "TEXT_TYPE",
+               TEXT_TYPE: "TEXT_TYPE",
             EMAIL_TYPE: "EMAIL_TYPE",
             PHONE_TYPE: "PHONE_TYPE",
             SMS_TYPE: "SMS_TYPE",

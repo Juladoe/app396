@@ -52,19 +52,19 @@ define(function(require, exports){
 		</div>
 	</div>
 	*/
-	});
+});
 
-	var text = func_text.substring(func_text.indexOf("/*") + 2, func_text.lastIndexOf("*/"));
-	$.ui.addContentDiv("searchlist", text, "");
+var text = func_text.substring(func_text.indexOf("/*") + 2, func_text.lastIndexOf("*/"));
+$.ui.addContentDiv("searchlist", text, "");
 
-	exports.clear = function() {
-		$("#global_search").val('');
-		$("#search_list").empty();
-	}
-	var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img src='images/loading.gif' >加载中...</div>";
+exports.clear = function() {
+	$("#global_search").val('');
+	$("#search_list").empty();
+}
+var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img src='images/loading.gif' >加载中...</div>";
 
-	exports.isRefresh = false;
-	exports.scroller = null;
+exports.isRefresh = false;
+exports.scroller = null;
 
 	/**
 	* page == offset
@@ -90,14 +90,14 @@ define(function(require, exports){
 				list_str = zy_tmpl($("#ns_list_item").val(), data.data, zy_tmpl_count(data.data), function(a, b) {
 					switch (b[1]){
 						case "middlePicture":
-							if (a.middlePicture == null || a.middlePicture == "") {
-								return "images/img1.jpg";
-							}
-							return a.middlePicture;	
+						if (a.middlePicture == null || a.middlePicture == "") {
+							return "images/img1.jpg";
+						}
+						return a.middlePicture;	
 						case "teacher":
-							return a.teachers[0].nickname;
+						return a.teachers[0].nickname;
 						default:
-							return templ_handler(a, b);
+						return templ_handler(a, b);
 					}
 				});
 				var start = (data.start + 1) * normalLimit;
@@ -119,28 +119,27 @@ define(function(require, exports){
 					callback();
 				}
 			}, showLoading);
-	}
+}
 
-	initScroll("searchlist", {
-		"scrollerCallback": function(scroller) {
-			if (!searchlist_model.isRefresh) {
-				scroller.clearInfinite();
-				return;
-			}
-			$("#search_list").append(refresh_div);
-	        $.bind(scroller, "infinite-scroll-end", function () {
-	        	applog("infinite-scroll-end");
-		        $.unbind(scroller, "infinite-scroll-end");
-		        scroller.scrollToBottom(1);
-		        searchlist_model.init_searchlist_data(true, exports.sort, true, function(){
-		        	$("#search_list").find("#bottom_refresh_div").remove();
-		            scroller.clearInfinite();
-		        });
-		    });
-		},
-		"init" : function(scroller){
-			exports.scroller = scroller;
+initScroll("searchlist", {
+	"scrollerCallback": function(scroller) {
+		if (!searchlist_model.isRefresh) {
+			scroller.clearInfinite();
+			return;
 		}
-	});
+		$("#search_list").append(refresh_div);
+		$.bind(scroller, "infinite-scroll-end", function () {
+			applog("infinite-scroll-end");
+			$.unbind(scroller, "infinite-scroll-end");
+			scroller.scrollToBottom(1);
+			searchlist_model.init_searchlist_data(true, exports.sort, true, function(){
+				$("#search_list").find("#bottom_refresh_div").remove();
+				scroller.clearInfinite();
+			});
+		});
+	},
+	"init" : function(scroller){
+		exports.scroller = scroller;
+	}
 });
-	
+});

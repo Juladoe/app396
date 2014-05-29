@@ -1,6 +1,6 @@
 define(function(require, exports){
 
-var setting_text = new String(function(){
+	var setting_text = new String(function(){
 /*
 <div title="个人中心" id="setting" class="panel" data-footer='set_footer' data-header="setting_header" data-tab="navbar_setting">
 				<ul class="list normal_list" id="setting_list">
@@ -39,8 +39,8 @@ var setting_text = new String(function(){
 					</li>
 				</ul>
 			</div>
-*/
-});
+			*/
+		});
 var text = setting_text.substring(setting_text.indexOf("/*") + 2, setting_text.lastIndexOf("*/"));
 $.ui.addContentDiv("setting", text, "个人中心");
 

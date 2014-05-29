@@ -1,6 +1,6 @@
 define(function(require, exports){
 
-var func_txt = new String(function(){
+	var func_txt = new String(function(){
 /*
 <div title="系统通知" id="notification" data-header="notification_header" class="panel" data-footer='none' data-tab="navbar_setting">
 		<textarea id="notification_list_item" style="display:none;">
@@ -19,33 +19,33 @@ var func_txt = new String(function(){
 */
 });
 
-var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
-$.ui.addContentDiv("notification", text, "系统通知");
+	var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
+	$.ui.addContentDiv("notification", text, "系统通知");
 
-exports.noData = "<div class='noData'>暂无系统通知</div>";
+	exports.noData = "<div class='noData'>暂无系统通知</div>";
 
-exports.init_notification_data = function()
-{
-	var token = appstore_model.getToken();
-	simpleJsonP(
-		schoolHost + "/me/notifications" + '?callback=?&token=' + token,
-		function(data){
-			if (data.error) {
-				$("#afui").popup(data.message);
-				$.ui.goBack();
-				return;
-			}
-			if (data.length == 0) {
-				$("#notification_list").html(exports.noData);
-				return;
-			}
-			list_str = zy_tmpl(
-				$("#notification_list_item").val(), 
-				data, 
-				zy_tmpl_count(data),
-				function(a,b) {
-					switch (b[1]) {
-						case "message":
+	exports.init_notification_data = function()
+	{
+		var token = appstore_model.getToken();
+		simpleJsonP(
+			schoolHost + "/me/notifications" + '?callback=?&token=' + token,
+			function(data){
+				if (data.error) {
+					$("#afui").popup(data.message);
+					$.ui.goBack();
+					return;
+				}
+				if (data.length == 0) {
+					$("#notification_list").html(exports.noData);
+					return;
+				}
+				list_str = zy_tmpl(
+					$("#notification_list_item").val(), 
+					data, 
+					zy_tmpl_count(data),
+					function(a,b) {
+						switch (b[1]) {
+							case "message":
 							message = a.content.message;
 							if (message) {
 								message = message.replace(/<[^>]+>/g, "");
@@ -53,21 +53,21 @@ exports.init_notification_data = function()
 							}
 							switch(a.content.threadType) {
 								case "question":
-									message = a.content.threadUserNickname
-											+ " 在课程 "
-											+ a.content.courseTitle
-											+ " 发表了问题 "
-											+ a.content.threadTitle;
-									return message;
+								message = a.content.threadUserNickname
+								+ " 在课程 "
+								+ a.content.courseTitle
+								+ " 发表了问题 "
+								+ a.content.threadTitle;
+								return message;
 							}
-						case "createdTime":
+							case "createdTime":
 							return a.createdTime.substring(0, 10);
+						}
 					}
-				}
+					);
+				$("#notification_list").html(list_str);
+			}
 			);
-			$("#notification_list").html(list_str);
-		}
-	);
-}
+	}
 
 });

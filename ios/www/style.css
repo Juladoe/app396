@@ -897,7 +897,7 @@ background: white;
 
     
     border-radius: 20px;
-}
+    }
 
 .learn-status-learning em {
     background: #08D490;
@@ -911,8 +911,13 @@ background: white;
 }
 
 .course_title {
-    line-height: 30px;
+    line-height: 20px;
     display: inline-block;
+    //height: 40px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    white-space: normal;
 }
 
 .course_card {

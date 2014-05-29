@@ -12,12 +12,12 @@ define(function(require, exports){
 		        clearTapStatus();
 			}
 		   
-		});
+                              });
 		if (istap && istap == true) {
 			$(".school_div").bind("tap",function(){
 				if (window.isClick) {
 					window.isClick = false;
-					var url = $(this).attr("school-url");
+                                  var url = $(this).attr("school-url");
 					var name = $(this).attr("school-name");
 					setSchoolHost(url, name);
 					appstore_model.setStoreCache("defaultSchool", url);

@@ -8,4 +8,4 @@ cordova.exec(
                  "UtilPlugin",
                  "platformString",
                  [""]
-            );
+             );

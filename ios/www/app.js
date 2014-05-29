@@ -585,7 +585,7 @@ define(function(require, exports){
 					$("#afui").popup("扫描错误: " + error);
 				},
 		         "QrPlugin",
-		         "qrsearch",
+                     "qrsearch",
 		         [""]);
 	}
 

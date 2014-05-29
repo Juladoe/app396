@@ -18,7 +18,7 @@ var courseinfo_text = new String(function(){
 	<textarea id="courseinfo_cb_course_comment" style="display:none;">
 		<tr class="course_comment_table" id="${id}">
 			<td style="width:60px;" valign="middle">
-				<img class="small-avatar" src="${cb:avatar}" />
+ <img class="small-avatar" src="${cb:avatar}" />
 			</td>
 			<td>
 				<table style="width:100%;">

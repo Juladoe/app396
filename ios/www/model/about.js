@@ -5,7 +5,7 @@ define(function(require, exports){
 	<div title="关于我们" id="about" class="panel" data-header="about_header" data-footer='none' data-tab="navbar_setting">
 	</div>
 	*/
-	});
+});
 	var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
 	$.ui.addContentDiv("about", text, "关于我们");
 
