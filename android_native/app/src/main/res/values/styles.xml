@@ -55,5 +55,6 @@
     </style>
     <style name="schLoaingStyle" parent="@android:style/Widget.ProgressBar.Large">
         <item name="android:indeterminateDrawable">@anim/sch_loading</item>
+        <item name="android:maxWidth">322px</item>
     </style>
 </resources>

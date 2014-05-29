@@ -25,14 +25,13 @@ public class StartActivity extends Activity {
     private void init() {
         Intent startIntent;
         EdusohoApp app = (EdusohoApp) getApplication();
-        /*
-		if (app.config.startWithSchool) {
-			startIntent = new Intent(this, SchCourseActivity.class);
-			startActivity(startIntent);
+        if (app.config.startWithSchool) {
+            startIntent = new Intent(this, SchCourseActivity.class);
+            startActivity(startIntent);
             finish();
-			return;
-		}
-
+            return;
+        }
+        /*
 		if (app.config.showSplash) {
 			startIntent = new Intent(this, SplashActivity.class);
 			startActivity(startIntent);

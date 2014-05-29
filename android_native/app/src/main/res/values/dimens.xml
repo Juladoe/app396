@@ -14,7 +14,7 @@
     <dimen name="recommend_sch_info_size">12dp</dimen>
     <dimen name="course_info_title">16dp</dimen>
     <dimen name="course_info_normal">14dp</dimen>
-    <dimen name="school_search">18dp</dimen>
+    <dimen name="school_search">16dp</dimen>
     <dimen name="qr_sch_btn">100dp</dimen>
     <dimen name="normal_btn">16dp</dimen>
 

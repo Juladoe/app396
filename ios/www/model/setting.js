@@ -5,7 +5,7 @@ define(function(require, exports){
 <div title="个人中心" id="setting" class="panel" data-footer='set_footer' data-header="setting_header" data-tab="navbar_setting">
 				<ul class="list normal_list" id="setting_list">
 					<li class="setting_single_card">
-						<a id="loginuser_layout">
+						<span id="loginuser_layout">
 							<table>
 								<tr>
 									<td><img id="login_user_avatar" style="border-radius: 50px;margin:5px;" src="images/avatar.png" /></td>
@@ -15,8 +15,7 @@ define(function(require, exports){
 									</td>
 								</tr>
 							</table>
-							
-						</a>
+						</span>
 					</li>
 					<li class="setting_single_card"><a onclick="load_favorite_page();">收藏的课程</a></li>
 					

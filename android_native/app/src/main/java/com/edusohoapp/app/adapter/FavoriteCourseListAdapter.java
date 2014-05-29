@@ -85,7 +85,7 @@ public class FavoriteCourseListAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
-        holder.course_price.setText(course.price >=0 ? course.price + "元" : "免费");
+        holder.course_price.setText(course.price == 0 ? "免费" : course.price + "元");
         holder.course_title.setText(course.title);
         holder.course_studentNum.setText("学员数:" + course.studentNum);
         holder.aq.id(R.id.course_pic).image(

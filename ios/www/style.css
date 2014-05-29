@@ -745,10 +745,11 @@ background: white;
 
 .normal_btn{
     color:#03b884;
-    top: 100px;
-    left: 50%;
+    height:30px;
     position: relative;
-
+    z-index: 10;
+    height: 60px;
+    top:100px;
 }
 
 .rsch_title {

@@ -63,7 +63,7 @@ public class AboutActivity extends BaseActivity {
                         object, new TypeToken<String>(){}.getType());
 
                 if (result != null) {
-                    about_content.loadData(result, "text/html", "utf-8");
+                    about_content.loadDataWithBaseURL(null, result, "text/html", "utf-8", null);
                 }
             }
         });

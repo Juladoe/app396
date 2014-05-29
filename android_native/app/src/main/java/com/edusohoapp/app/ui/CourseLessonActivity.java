@@ -83,7 +83,13 @@ public class CourseLessonActivity extends BaseActivity{
         }
 
         mLessonId = dataIntent.getIntExtra("lessonId", 0);
-        setBackMode(dataIntent.getStringExtra("lessonTitle"), true, null);
+        setBackMode(dataIntent.getStringExtra("lessonTitle"), true, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();
+            }
+        });
+
         setMenu(R.layout.course_lesson_menu, new MenuListener() {
             @Override
             public void bind(View menuView) {
@@ -508,13 +514,18 @@ public class CourseLessonActivity extends BaseActivity{
                 hideCustomView();
                 return true;
             }
-            normal_lesson_content.stopLoading();
-            normal_lesson_content.loadData("<br>", "text/html", "utf-8");
-
-            setResult(Const.NORMAL_RESULT_REFRESH);
-            finish();
+            goBack();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void goBack()
+    {
+        normal_lesson_content.stopLoading();
+        normal_lesson_content.loadData("<br>", "text/html", "utf-8");
+
+        setResult(Const.NORMAL_RESULT_REFRESH);
+        finish();
     }
 
     private FrameLayout customViewContainer;
