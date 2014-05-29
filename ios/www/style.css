@@ -84,7 +84,7 @@
     border-top: 1px solid rgb(249,249,249) !important;
     border-bottom: 1px solid rgb(249,249,249) !important;
     border-radius: 1px;
-    margin: 15px;
+    margin: 6px;
     background: white;
 }
 
@@ -908,4 +908,9 @@ background: white;
 
 .learn-status-finished em {
     background: #08D490;
+}
+
+.course_title {
+    line-height: 30px;
+    display: inline-block;
 }

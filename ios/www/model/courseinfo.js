@@ -69,8 +69,8 @@ var courseinfo_text = new String(function(){
 					</table>
 				</div>
 				<div id="1" class="ui-body-d ui-content tab_content">
-					<div class="card" style="margin:3px;">
-						<p class="card-head">
+					<div class="card" style="margin-left:5px;margin-right:4px;">
+						<p class="card-head">	
 							${course.title}
 						</p>
 						<table style="width:100%">

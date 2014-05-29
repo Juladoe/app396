@@ -14,7 +14,7 @@ define(function(require, exports){
 								<img src="${cb:middlePicture}" width="100%" height="90" />
 							</td>
 							<td style="text-align:left;" class="list_content">
-								<h4 class="custom_normal_color">${title}</h4>
+								<h4 class="custom_normal_color course_title">${title}</h4>
 								<p class="course_teacher">教师:${cb:teacher}</p>
 							</td>
 							<td>
