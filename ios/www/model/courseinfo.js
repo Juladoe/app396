@@ -69,7 +69,7 @@ var courseinfo_text = new String(function(){
 					</table>
 				</div>
 				<div id="1" class="ui-body-d ui-content tab_content">
-					<div class="card" style="margin-left:5px;margin-right:4px;">
+					<div class="card course_card">
 						<p class="card-head">	
 							${course.title}
 						</p>
@@ -552,7 +552,7 @@ function templ_courseinfo_handler(a, b)
 			return price == 0 ? "免费" :price + "元";
 
 		case "about":
-			var html = '<div class="card"> <p class="card-head"> 课程介绍 </p>'
+			var html = '<div class="card course_card"> <p class="card-head"> 课程介绍 </p>'
 						+ '<p class="umh4"> {about} </p></div>';
 			var about =a.course.about;
 			if (about == "") {
@@ -565,7 +565,7 @@ function templ_courseinfo_handler(a, b)
 			if (course_target && course_target.length <= 0) {
 				return "";
 			}
-			var html = '<div class="card"><p class="card-head">课程目标</p>'
+			var html = '<div class="card course_card"><p class="card-head">课程目标</p>'
 						+ '<ul style="margin-left:30px;">{goals}</ul></div>';
 
 			for (var i in course_target) {
@@ -578,7 +578,7 @@ function templ_courseinfo_handler(a, b)
 			if (course_notice && course_notice.length <= 0) {
 				return "";
 			}
-			var html = '<div class="card"><p class="card-head">适合人群</p>'
+			var html = '<div class="card course_card"><p class="card-head">适合人群</p>'
 						+ '<ul style="margin-left:30px;"> {audiences} </ul> </p> </div>';
 
 			for (var i in course_notice) {

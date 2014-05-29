@@ -914,3 +914,8 @@ background: white;
     line-height: 30px;
     display: inline-block;
 }
+
+.course_card {
+    margin-left:5px;
+    margin-right:4px;
+}
