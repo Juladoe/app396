@@ -600,20 +600,27 @@ define(function(require, exports){
 		                	if (result.text.replace(/(^\s*)|(\s*$)/g,"") == ""){
 		                		return;
 		                	}
-		                	$("#afui").popup({
+		                	var isStart = false;
+		                	var isCancel = false;
+
+		                	var pop = $("#afui").popup({
 						        title: "扫描结果",
-						        message: "二维码信息:\n" + result.text,
+						        message: "正在进入网校...<img src='images/sch_load.gif' >",
 						        cancelText: "取消",
 						        cancelCallback: function () {
-						        	callback("");
+						        	isCancel = true;
+						        	pop.hide();
 						            applog("qr search cancelled");
 						        },
-						        doneText: "添加网校",
-						        doneCallback: function () {
-						        	successCallback(result.text);
-						        },
-						        cancelOnly: false
+						        cancelOnly: true
 						    });
+						    setTimeout(function(){
+								if (isStart || isCancel) {
+									return;
+								}
+						    	successCallback(result.text);
+						    	pop.hide();
+					    	},3000);
 		                },
 		                function (error) {
 		                	$("#afui").popup("扫描错误: " + error);

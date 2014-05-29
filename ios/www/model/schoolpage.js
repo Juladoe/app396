@@ -54,7 +54,6 @@ define(function(require, exports){
 			},
 			function(text) {
 				if (text != "") {
-					$("#searchWord").val(text);
 					schoolpage_model.searchSchoolForQr(text);
 				}
 		});
