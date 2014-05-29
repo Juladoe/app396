@@ -254,7 +254,7 @@ public class SchCourseActivity extends BaseActivity{
                     CourseListAdapter adapter = new CourseListAdapter(
                             mContext, result, R.layout.course_list_normal_item);
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mContext, listView);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
                     listView.setOnItemClickListener(listener);
 
                     OverScrollView scrollView = (OverScrollView) parent.findViewById(R.id.course_content_scrollview);

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.TextView;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
@@ -32,7 +33,7 @@ public class FavoriteActivity extends BaseActivity {
     {
         Intent intent = new Intent();
         intent.setClass(context, FavoriteActivity.class);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, Const.FAVORITE_REQUEST);
     }
 
     private void initView() {
@@ -56,7 +57,26 @@ public class FavoriteActivity extends BaseActivity {
             case LoginActivity.EXIT:
                 finish();
                 break;
+            case Const.NORMAL_RESULT_REFRESH:
+                if (app.loginUser != null) {
+                    loadCourse(0, false);
+                }
+                break;
         }
+    }
+
+    private void showEmptyLayout(final String text)
+    {
+        ViewStub emptyLayout = (ViewStub) findViewById(R.id.list_empty_layout);
+        emptyLayout.setOnInflateListener(new ViewStub.OnInflateListener() {
+            @Override
+            public void onInflate(ViewStub viewStub, View view) {
+                TextView emptyText = (TextView) view;
+                emptyText.setText(text);
+            }
+        });
+        emptyLayout.inflate();
+        return;
     }
 
     /**
@@ -86,7 +106,8 @@ public class FavoriteActivity extends BaseActivity {
                 final CourseResult result = app.gson.fromJson(
                         object, new TypeToken<CourseResult>(){}.getType());
                 Log.i(null, result.toString());
-                if (result == null) {
+                if (result == null || result.data.length == 0) {
+                    showEmptyLayout("暂无收藏课程");
                     return;
                 }
                 if (! isAppend) {
@@ -94,7 +115,7 @@ public class FavoriteActivity extends BaseActivity {
                             mContext, result, R.layout.course_list_normal_item);
 
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mContext, listView);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
                     listView.setOnItemClickListener(listener);
 
                     OverScrollView scrollView = (OverScrollView) findViewById(R.id.course_content_scrollview);

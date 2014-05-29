@@ -33,7 +33,7 @@ public class LearningActivity extends BaseActivity {
     {
         Intent intent = new Intent();
         intent.setClass(context, LearningActivity.class);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, Const.LEARNING_REQUEST);
     }
 
     private void initView() {
@@ -57,6 +57,11 @@ public class LearningActivity extends BaseActivity {
             case LoginActivity.EXIT:
                 finish();
                 break;
+            case Const.NORMAL_RESULT_REFRESH:
+                if (app.loginUser != null) {
+                    loadCourse(0, false);
+                }
+                break;
         }
     }
 
@@ -73,7 +78,6 @@ public class LearningActivity extends BaseActivity {
         emptyLayout.inflate();
         return;
     }
-
 
     /**
      *
@@ -111,7 +115,7 @@ public class LearningActivity extends BaseActivity {
                             mContext, result.data, R.layout.learn_list_item);
 
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mContext, listView);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
                     listView.setOnItemClickListener(listener);
 
                     OverScrollView scrollView = (OverScrollView) findViewById(R.id.course_content_scrollview);

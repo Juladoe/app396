@@ -116,12 +116,6 @@ public class BaseActivity extends ActivityGroup {
         public void bind(View menuView);
     }
 
-    public void checkSdk()
-    {
-        int version = Build.VERSION.SDK_INT;
-        System.out.println(version);
-    }
-
     public void longToast(String title)
     {
         Toast.makeText(mContext, title, Toast.LENGTH_LONG).show();

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusohoapp.app.R;
@@ -34,6 +36,20 @@ public class NotificationActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(context, NotificationActivity.class);
         context.startActivity(intent);
+    }
+
+    private void showEmptyLayout(final String text)
+    {
+        ViewStub emptyLayout = (ViewStub) findViewById(R.id.list_empty_layout);
+        emptyLayout.setOnInflateListener(new ViewStub.OnInflateListener() {
+            @Override
+            public void onInflate(ViewStub viewStub, View view) {
+                TextView emptyText = (TextView) view;
+                emptyText.setText(text);
+            }
+        });
+        emptyLayout.inflate();
+        return;
     }
 
     @Override
@@ -83,6 +99,9 @@ public class NotificationActivity extends BaseActivity {
             public void callback(String url, String object, AjaxStatus status) {
                 ArrayList<Notify> result = app.gson.fromJson(
                         object, new TypeToken<ArrayList<Notify>>(){}.getType());
+                if (result == null || result.size() == 0) {
+                    showEmptyLayout("暂无系统通知");
+                }
                 if (result != null) {
                     NotificationListAdapter adapter = new NotificationListAdapter(
                             mContext, result, R.layout.notification_list_item);

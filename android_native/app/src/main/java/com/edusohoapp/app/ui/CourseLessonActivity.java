@@ -55,9 +55,11 @@ public class CourseLessonActivity extends BaseActivity{
     private WebView normal_lesson_content;
     private View audio_layout;
     private ViewGroup video_layout;
+    private ViewGroup webVideo_layout;
     private TextView audio_play_time;
     private TextView audio_total_time;
     private ViewGroup lesson_status_btn;
+    private WebView mWebVideoView;
 
     //时间从1970-0-0 08:00:00开始
     private static final int DEFAULT_TIME = 3600 * 1000 * 16;
@@ -98,7 +100,9 @@ public class CourseLessonActivity extends BaseActivity{
         lesson_status_btn = (ViewGroup) findViewById(R.id.lesson_status_btn);
         video_layout = (ViewGroup) findViewById(R.id.video_layout);
         audio_layout = findViewById(R.id.audio_layout);
+        webVideo_layout = (ViewGroup) findViewById(R.id.webVideo_layout);
         customViewContainer = (FrameLayout) findViewById(R.id.customViewContainer);
+
         normal_lesson_content =(WebView) findViewById(R.id.normal_lesson_content);
         normal_lesson_content.getSettings().setJavaScriptEnabled(true);
         normal_lesson_content.getSettings().setAllowFileAccess(true);
@@ -108,9 +112,9 @@ public class CourseLessonActivity extends BaseActivity{
         normal_lesson_content.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
 
         mWebViewClient = new myWebViewClient();
-        normal_lesson_content.setWebViewClient(new myWebViewClient());
+        normal_lesson_content.setWebViewClient(mWebViewClient);
         mWebChromeClient = new myWebChromeClient();
-        normal_lesson_content.setWebChromeClient(new myWebChromeClient());
+        normal_lesson_content.setWebChromeClient(mWebChromeClient);
 
         menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.RIGHT);
@@ -124,6 +128,24 @@ public class CourseLessonActivity extends BaseActivity{
         menu.setMenu(R.layout.lesson_menu);
 
         loadCourseLesson(dataIntent.getIntExtra("courseId", 0));
+    }
+
+    private WebView createWebView()
+    {
+        WebView videoWebView = new WebView(mContext);
+        videoWebView.getSettings().setJavaScriptEnabled(true);
+        videoWebView.getSettings().setAllowFileAccess(true);
+        videoWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        videoWebView.getSettings().setDefaultTextEncodingName("UTF-8");
+
+        videoWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+
+        mWebViewClient = new myWebViewClient();
+        videoWebView.setWebViewClient(new myWebViewClient());
+        mWebChromeClient = new myWebChromeClient();
+        videoWebView.setWebChromeClient(new myWebChromeClient());
+
+        return videoWebView;
     }
 
     private void finishLesson(int courseId, int lessonId)
@@ -247,6 +269,7 @@ public class CourseLessonActivity extends BaseActivity{
                             if (mVideoView != null) {
                                 mVideoView.resume();
                             }
+
                             LessonItem lesson = (LessonItem) item;
                             loadLessonContent(lesson);
                             adapter.setmCurrentLessonId(lesson.id);
@@ -259,6 +282,14 @@ public class CourseLessonActivity extends BaseActivity{
     }
 
     private MediaPlayer mAudioPlayer;
+
+    private void distoryWebVideoView()
+    {
+        if (mWebVideoView != null) {
+            mWebVideoView.destroy();
+        }
+        webVideo_layout.removeAllViews();
+    }
 
     /**
      *
@@ -286,18 +317,19 @@ public class CourseLessonActivity extends BaseActivity{
                 String content = "";
                 switch (CourseLessonType.value(items.type)) {
                     case VIDEO:
+                        audio_layout.setVisibility(View.GONE);
                         LessonItem.MediaSourceType mtype = LessonItem.MediaSourceType.cover(items.mediaSource);
                         switch (mtype) {
                             case YOUKU:
                             case TUDOU:
                                 content = items.mediaUri;
+                                video_layout.setVisibility(View.GONE);
+                                normal_lesson_content.setVisibility(View.VISIBLE);
                                 normal_lesson_content.loadUrl(content);
                                 return;
                             case SELF:
                                 normal_lesson_content.setVisibility(View.GONE);
-                                audio_layout.setVisibility(View.GONE);
                                 video_layout.setVisibility(View.VISIBLE);
-                                normal_lesson_content.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
                                 playVideo(items);
                                 return;
                         }
@@ -311,7 +343,6 @@ public class CourseLessonActivity extends BaseActivity{
                     case AUDIO:
                         normal_lesson_content.setVisibility(View.GONE);
                         audio_layout.setVisibility(View.VISIBLE);
-                        normal_lesson_content.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
                         playAudio(items);
                         return;
                 }
@@ -461,6 +492,9 @@ public class CourseLessonActivity extends BaseActivity{
             }
             mAudioPlayer.release();
         }
+        if (normal_lesson_content != null) {
+            normal_lesson_content.destroy();
+        }
     }
 
     @Override
@@ -474,6 +508,11 @@ public class CourseLessonActivity extends BaseActivity{
                 hideCustomView();
                 return true;
             }
+            normal_lesson_content.stopLoading();
+            normal_lesson_content.loadData("<br>", "text/html", "utf-8");
+
+            setResult(Const.NORMAL_RESULT_REFRESH);
+            finish();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -490,12 +529,13 @@ public class CourseLessonActivity extends BaseActivity{
 
         @Override
         public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
+            System.out.println("custom->" + view);
             onShowCustomView(view, callback);    //To change body of overridden methods use File | Settings | File Templates.
         }
 
         @Override
         public void onShowCustomView(View view,CustomViewCallback callback) {
-
+            System.out.println("custom->" + view);
             // if a view already exists then immediately terminate the new one
             if (mCustomView != null) {
                 callback.onCustomViewHidden();
@@ -545,7 +585,6 @@ public class CourseLessonActivity extends BaseActivity{
         }
     }
 
-
     public boolean inCustomView() {
         return (mCustomView != null);
     }
@@ -556,13 +595,13 @@ public class CourseLessonActivity extends BaseActivity{
 
     @Override
     protected void onPause() {
-        super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
+        super.onPause();
         normal_lesson_content.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();    //To change body of overridden methods use File | Settings | File Templates.
+        super.onResume();
         normal_lesson_content.onResume();
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,6 +25,7 @@ public class AlipayActivity extends BaseActivity {
     private WebView webView;
     public static final int ALIPAY_REQUEST = 0001;
     public static final int ALIPAY_SUCCESS = 0002;
+    public static final int ALIPAY_EXIT = 0003;
 
     private static Pattern urlPat = Pattern.compile("objc://([\\w\\W]+)\\?([\\w]+)", Pattern.DOTALL);
 
@@ -45,7 +47,13 @@ public class AlipayActivity extends BaseActivity {
     private String payurl;
 
     private void initView() {
-        setBackMode("支付课程", true, null);
+        setBackMode("支付课程", true, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setResult(ALIPAY_EXIT);
+                finish();
+            }
+        });
 
         Intent dataIntent = getIntent();
         if (!dataIntent.hasExtra("payurl")) {
@@ -72,6 +80,15 @@ public class AlipayActivity extends BaseActivity {
             }
         });
         webView.loadUrl(payurl);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            setResult(ALIPAY_EXIT);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void callMethod(String name, String params)

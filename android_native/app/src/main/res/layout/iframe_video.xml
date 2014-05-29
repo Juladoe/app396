@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <VideoView
-        android:background="@null"
+        android:background="@android:color/transparent"
         android:id="@+id/playVideoView"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"

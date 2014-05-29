@@ -80,7 +80,7 @@ public class RegistActivity extends BaseActivity {
                             PopupDialog.createMuilt(
                                     mContext,
                                     "注册成功",
-                                    "恭喜你！注册成功",
+                                    "恭喜你！网校账号注册成功！",
                                     new PopupDialog.PopupClickListener() {
                                     @Override
                                     public void onClick(int button) {

@@ -25,6 +25,7 @@ public class StartActivity extends Activity {
     private void init() {
         Intent startIntent;
         EdusohoApp app = (EdusohoApp) getApplication();
+        /*
 		if (app.config.startWithSchool) {
 			startIntent = new Intent(this, SchCourseActivity.class);
 			startActivity(startIntent);
@@ -38,7 +39,7 @@ public class StartActivity extends Activity {
             finish();
 			return;
 		}
-
+        */
 		startIntent = new Intent(this, QrSchoolActivity.class);
 		startActivity(startIntent);
 

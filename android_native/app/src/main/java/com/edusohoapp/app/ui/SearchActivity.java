@@ -99,7 +99,7 @@ public class SearchActivity extends BaseActivity {
                     CourseListAdapter adapter = new CourseListAdapter(
                             mContext, result, R.layout.course_list_normal_item);
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mContext, listView);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
                     listView.setOnItemClickListener(listener);
 
                     scrollView.setMoveListener(new MoveListener(){

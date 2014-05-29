@@ -67,4 +67,13 @@ public class Const {
             "再接再厉，很喜欢这个课程的内容", 5.0f
     };
 
+
+    public static final int LEARNING_REQUEST = 0x1001;
+    public static final int LEARNING_RESULT = 0x1002;
+    public static final int NORMAL_RESULT_REFRESH = 0x1003;
+
+    public static final int FAVORITE_REQUEST = 0x1004;
+    public static final int COURSEINFO_REQUEST = 0x1005;
+
+    public static final int COURSELESSON_REQUEST = 0x1001;
 }

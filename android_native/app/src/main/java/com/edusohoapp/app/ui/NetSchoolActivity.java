@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.edusohoapp.app.adapter.RecommendSchoolAdapter;
 import com.edusohoapp.app.entity.CourseResult;
 import com.edusohoapp.app.entity.RecommendSchoolItem;
 import com.edusohoapp.app.entity.VerifySchoolItem;
+import com.edusohoapp.app.model.ErrorResult;
 import com.edusohoapp.app.model.SchoolResult;
 import com.edusohoapp.app.util.Const;
 import com.edusohoapp.app.util.NetUtil;
@@ -37,8 +39,10 @@ import com.edusohoapp.app.util.NetUtil.modelAjaxCallback;
 import com.edusohoapp.app.view.EdusohoListView;
 import com.edusohoapp.app.view.EdusohoPullRrefreshView;
 import com.edusohoapp.app.view.EdusohoPullRrefreshView.RefreshCallback;
+import com.edusohoapp.app.view.LoadDialog;
 import com.edusohoapp.app.view.OverScrollView;
 import com.edusohoapp.app.view.PopupDialog;
+import com.edusohoapp.app.view.plugin.PopupLoaingDialog;
 import com.edusohoapp.handler.ProgressBarHandler;
 import com.edusohoapp.listener.ResultCallback;
 import com.edusohoapp.listener.SchoolListClickListener;
@@ -113,40 +117,54 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
                     return;
                 }
                 String url = "http://" + searchStr + Const.VERIFYSCHOOL;
-                ajaxGetString(url, new ResultCallback() {
-                    @Override
-                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                        final SchoolResult result = app.gson.fromJson(
-                                object, new TypeToken<SchoolResult>() {
-                        }.getType());
 
-                        if (result != null) {
-                            StringBuffer message = new StringBuffer("网校名称:");
+                final LoadDialog loading = LoadDialog.create(mContext);
+                loading.show();
+                app.query.ajax(url, String.class, new AjaxCallback<String>(){
+                    @Override
+                    public void callback(String url, String object, AjaxStatus status) {
+                        loading.dismiss();
+                        int code = status.getCode();
+                        if (code != Const.OK) {
+                            PopupDialog.createNormal(mContext, "提示信息", "网络异常！请检查网络链接").show();
+                            return;
+                        }
+                        try {
+                            final SchoolResult result = app.gson.fromJson(
+                                    object, new TypeToken<SchoolResult>() {
+                            }.getType());
+
+                            if (result == null) {
+                                PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
+                                return;
+                            }
+
+                            StringBuilder message = new StringBuilder("网校名称:");
                             message.append(result.site.name)
                                     .append("\r\n网站域名:")
-                                    .append(result.site.url);
+                                    .append(result.site.url)
+                                    .append("\r\n正在进入网校...");
 
-                            PopupDialog.createMuilt(
+                            PopupLoaingDialog.create(
                                     mContext,
                                     "搜索结果",
                                     message.toString(),
-                                    new PopupDialog.PopupClickListener() {
+                                    new PopupLoaingDialog.PopupCallback() {
                                         @Override
-                                        public void onClick(int button) {
-                                            if (button == PopupDialog.OK) {
-                                                app.setCurrentSchool(result.site);
-                                                Intent courseIntent = new Intent(mContext,
-                                                        SchCourseActivity.class);
-                                                startActivity(courseIntent);
-                                                finish();
-                                            }
+                                        public void success() {
+                                            app.setCurrentSchool(result.site);
+                                            Intent courseIntent = new Intent(mContext,
+                                                    SchCourseActivity.class);
+                                            startActivity(courseIntent);
+                                            finish();
                                         }
                                     }).show();
-                            return;
+                        }catch (Exception e) {
+                            PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                         }
-                        longToast("没有搜索到网校");
                     }
                 });
+
             }
         });
      }

@@ -20,10 +20,12 @@ import com.edusohoapp.app.R;
 import com.edusohoapp.app.entity.QRResult;
 import com.edusohoapp.app.entity.RecommendSchoolItem;
 import com.edusohoapp.app.entity.TokenResult;
+import com.edusohoapp.app.model.SchoolResult;
 import com.edusohoapp.app.util.AppUtil;
 import com.edusohoapp.app.util.Const;
 import com.edusohoapp.app.view.LoadDialog;
 import com.edusohoapp.app.view.PopupDialog;
+import com.edusohoapp.app.view.plugin.PopupLoaingDialog;
 import com.edusohoapp.listener.ResultCallback;
 import com.edusohoapp.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
@@ -97,34 +99,53 @@ public class QrSchoolActivity extends BaseActivity {
 
     private void showQrResultDlg(final String result)
     {
-        PopupDialog.createMuilt(
-                mContext,
-                "扫描结果",
-                "二维码信息:" + result,
-                new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    if (button == PopupDialog.OK) {
-                        ajaxGetString(result, new ResultCallback() {
-                            @Override
-                            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                                super.callback(url, object, ajaxStatus);
-                                TokenResult result = app.gson.fromJson(
-                                        object, new TypeToken<TokenResult>() {
-                                }.getType());
+        final LoadDialog loading = LoadDialog.create(mContext);
+        loading.show();
+        app.query.ajax(result, String.class, new AjaxCallback<String>(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                loading.dismiss();
+                int code = status.getCode();
+                if (code != Const.OK) {
+                    longToast("二维码信息错误!");
+                    return;
+                }
+                try {
+                    final TokenResult result = app.gson.fromJson(
+                            object, new TypeToken<TokenResult>() {
+                    }.getType());
 
-                                if (result != null) {
+                    if (result == null) {
+                        longToast("二维码信息错误!");
+                        return;
+                    }
+
+                    StringBuilder message = new StringBuilder("网校名称:");
+                    message.append(result.site.name)
+                            .append("\r\n网站域名:")
+                            .append(result.site.url)
+                            .append("\r\n正在进入网校...");
+
+                    PopupLoaingDialog.create(
+                            mContext,
+                            "搜索结果",
+                            "正在进入网校 " + result.site.name,
+                            new PopupLoaingDialog.PopupCallback() {
+                                @Override
+                                public void success() {
                                     app.saveToken(result);
                                     app.setCurrentSchool(result.site);
-                                    Intent intent = new Intent();
-                                    intent.setClass(mContext, SchCourseActivity.class);
-                                    startActivity(intent);
+                                    Intent courseIntent = new Intent(mContext,
+                                            SchCourseActivity.class);
+                                    startActivity(courseIntent);
                                     finish();
                                 }
-                            }
-                        });
-                    }
+                            }).show();
+                }catch (Exception e) {
+                    longToast("二维码信息错误!");
                 }
-        }).show();
+            }
+        });
+
     }
 }

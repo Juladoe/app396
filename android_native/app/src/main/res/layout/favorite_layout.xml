@@ -12,5 +12,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout="@layout/course_content" />
+        <include layout="@layout/list_empty_info" />
     </RelativeLayout>
 </RelativeLayout>

@@ -159,29 +159,31 @@ public class SettingActivity extends BaseActivity
 
     private void loadUser()
     {
-        if (app.loginUser != null) {
-            aq.id(R.id.setting_user_avatar).image(app.loginUser.mediumAvatar, false, true);
-            aq.id(R.id.setting_user_nickname).text(app.loginUser.nickname);
-            aq.id(R.id.setting_user_info).text(app.loginUser.title);
-            aq.id(R.id.setting_logout_btn).visibility(View.VISIBLE).clicked(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String url = app.bindToken2Url(Const.LOGOUT, true);
-                    ajaxGetString(url, new ResultCallback(){
-                        @Override
-                        public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                            if ("true".equals(object)) {
-                                app.removeToken();
-                                aq.id(R.id.setting_user_avatar).image(R.drawable.course_teacher_avatar);
-                                aq.id(R.id.setting_user_nickname).text("");
-                                aq.id(R.id.setting_user_info).text("");
-                                aq.id(R.id.setting_logout_btn).visibility(View.GONE);
-                            }
-                        }
-                    });
-                }
-            });
+        if (app.loginUser == null) {
+            aq.id(R.id.setting_user_nickname).text("点击登录网校");
+            return;
         }
+        aq.id(R.id.setting_user_avatar).image(app.loginUser.mediumAvatar, false, true);
+        aq.id(R.id.setting_user_nickname).text(app.loginUser.nickname);
+        aq.id(R.id.setting_user_info).text(app.loginUser.title);
+        aq.id(R.id.setting_logout_btn).visibility(View.VISIBLE).clicked(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = app.bindToken2Url(Const.LOGOUT, true);
+                ajaxGetString(url, new ResultCallback(){
+                    @Override
+                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                        if ("true".equals(object)) {
+                            app.removeToken();
+                            aq.id(R.id.setting_user_avatar).image(R.drawable.course_teacher_avatar);
+                            aq.id(R.id.setting_user_nickname).text("点击登录网校");
+                            aq.id(R.id.setting_user_info).text("");
+                            aq.id(R.id.setting_logout_btn).visibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void enableBtn(ViewGroup vg, boolean isEnable)

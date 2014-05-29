@@ -54,14 +54,22 @@
             android:id="@+id/normal_lesson_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></WebView>
+
         <FrameLayout
             android:id="@+id/customViewContainer"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
+
         <include layout="@layout/audio_layout" />
 
         <include layout="@layout/video_layout" />
+
+        <RelativeLayout
+            android:id="@+id/webVideo_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
