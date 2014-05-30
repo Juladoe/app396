@@ -10,7 +10,9 @@ var courseinfo_text = new String(function(){
 			<div>
 				${cb:number}
 				${cb:learnStatus}
-				<span class="lesson_title">${cb:title}</span>
+				<span class="lesson_title">
+					${cb:title}
+				</span>
 			</div>
 			</td>
 		</tr>
@@ -344,6 +346,7 @@ exports.load_data = function()
 				$.bind(exports.courseCarousel, 'movestop' , function(carousel){
 					exports.currentIndex = carousel.carouselIndex;
 					setRadioStatus(carousel.carouselIndex);
+					$("#courseInfoCarousel").css("height", "auto");
 				});
 				var moveIndex = exports.currentIndex == -1 ? 1 : exports.currentIndex;
 				exports.courseCarousel.onMoveIndex(moveIndex);
@@ -628,11 +631,31 @@ function course_comment_handler(a, b, users)
 		}
 }
 
+function setLessonTypeIcon(type)
+{
+	switch (type) {
+		case "testpaper":
+			return '<i class="fa lesson_item_fa fa-pencil-square course_lesson_type_normal_color"></i>';
+		case "video":
+			return '<i class="fa lesson_item_fa fa-play-circle course_lesson_type_normal_color"></i>';
+		case "text":
+			return '<i class="fa lesson_item_fa fa-picture-o course_lesson_type_normal_color"></i>';
+		case "audio":
+			return '<i class="fa lesson_item_fa fa-microphone course_lesson_type_normal_color"></i>';	
+	}
+	return "";
+}
+
 //课时列表模板回调函数
 function templ_courselist_handler(a, b, userLearns)
 {
 	//类型变量 //cb:xxx
 	switch (b[1]) {
+		case "lessonLength":
+			if (a.length != "0") {
+				return a.length;
+			}
+			return "";
 		case "learnStatus":
 			if (a.type == "chapter" || a.type == "unit") {
 				return "";
@@ -679,13 +702,20 @@ function templ_courselist_handler(a, b, userLearns)
 			}
 			return "";
 		case "title":
-			switch (a.type) {
+			switch (a.itemType) {
 				case "chapter":
+					if (a.type == "unit") {
+						return "&nbsp;&nbsp;&nbsp;&nbsp;第" + a.number + "节&nbsp;&nbsp;" + a.title;
+					}
 					return "第" + a.number + "章&nbsp;&nbsp;" + a.title;
-				case "unit":
-					return "&nbsp;&nbsp;&nbsp;&nbsp;第" + a.number + "节&nbsp;&nbsp;" + a.title;
+				case "lesson":
+					var lessonTypeHtml = '<span style="display:block;"> <span >${type}</span> <span>${lessonLength}</span> </span>';
+					lessonTypeHtml = lessonTypeHtml.replace("${type}", setLessonTypeIcon(a.type));
+					lessonTypeHtml = lessonTypeHtml.replace("${lessonLength}", a.length == "0" ? "" : a.length);
+					return a.title + lessonTypeHtml;
+
 			}
-			return a.title;
+			return "";
 
 		case "type_text":
 			switch (a["type"]) {

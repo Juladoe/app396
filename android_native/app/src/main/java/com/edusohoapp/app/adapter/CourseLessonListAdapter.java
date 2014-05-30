@@ -74,6 +74,7 @@ public class CourseLessonListAdapter extends BaseAdapter {
 		if (view == null) {
 			view = inflater.inflate(mResouce, null);
 			holder = new ViewHolder();
+            holder.course_lesson_length = (TextView) view.findViewById(R.id.course_lesson_length);
             holder.course_lesson_number = (TextView) view.findViewById(R.id.course_lesson_number);
             holder.lesson_status_rating = (ProgressBar) view.findViewById(R.id.lesson_status_rating);
 			holder.course_lesson_title = (TextView) view.findViewById(R.id.course_lesson_title);
@@ -110,6 +111,7 @@ public class CourseLessonListAdapter extends BaseAdapter {
 			case VIDEO:
 				type = "视频";
 				typeIcon = R.string.font_play;
+                holder.course_lesson_length.setText(lesson.length);
 				break;
 			case TEXT:
 				type = "图文";
@@ -122,6 +124,7 @@ public class CourseLessonListAdapter extends BaseAdapter {
             case AUDIO:
                 type = "音频";
                 typeIcon = R.string.font_microphone;
+                holder.course_lesson_length.setText(lesson.length);
                 break;
 		}
 
@@ -140,6 +143,7 @@ public class CourseLessonListAdapter extends BaseAdapter {
 		public TextView course_lesson_title;
         public ProgressBar lesson_status_rating;
         public TextView course_lesson_number;
+        public TextView course_lesson_length;
 	}
 
 }

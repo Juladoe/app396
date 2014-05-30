@@ -20,7 +20,7 @@ public class LessonItem {
     public String mediaSource;
     public String mediaName;
     public String mediaUri;
-    public int length;
+    public String length;
     public int materialNum;
     public int quizNum;
     public int learnedNum;

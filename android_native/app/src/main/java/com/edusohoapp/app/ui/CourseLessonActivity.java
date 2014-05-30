@@ -382,6 +382,7 @@ public class CourseLessonActivity extends BaseActivity{
             mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+                    System.out.println("prepared");
                     dlg.dismiss();
                 }
             });
@@ -540,13 +541,13 @@ public class CourseLessonActivity extends BaseActivity{
 
         @Override
         public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
-            System.out.println("custom->" + view);
+
             onShowCustomView(view, callback);    //To change body of overridden methods use File | Settings | File Templates.
         }
 
         @Override
         public void onShowCustomView(View view,CustomViewCallback callback) {
-            System.out.println("custom->" + view);
+
             // if a view already exists then immediately terminate the new one
             if (mCustomView != null) {
                 callback.onCustomViewHidden();
@@ -593,6 +594,12 @@ public class CourseLessonActivity extends BaseActivity{
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return super.shouldOverrideUrlLoading(view, url);    //To change body of overridden methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            System.out.println("url->" + url);
+            super.onLoadResource(view, url);
         }
     }
 

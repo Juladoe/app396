@@ -30,6 +30,7 @@
 
     <dimen name="searchBtn">20dp</dimen>
     <dimen name="lessonNumber">18dp</dimen>
+    <dimen name="lessonLength">10dp</dimen>
 
     <dimen name="audio_play_btn">20dp</dimen>
 

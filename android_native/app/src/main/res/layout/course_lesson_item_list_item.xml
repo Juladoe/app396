@@ -27,7 +27,7 @@
         android:max="10" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_weight="1"
         android:paddingBottom="5dp"
@@ -45,6 +45,7 @@
             android:text="课程标题" />
 
         <com.edusohoapp.app.view.EduSohoIconView
+            android:layout_below="@id/course_lesson_title"
             android:id="@+id/course_lesson_typeimg"
             android:padding="2dp"
             android:textColor="@color/lesson_icon"
@@ -52,7 +53,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/font_picture" />
-    </LinearLayout>
+        <TextView
+            android:textSize="@dimen/lesson_type"
+            android:layout_toRightOf="@id/course_lesson_typeimg"
+            android:layout_alignTop="@id/course_lesson_typeimg"
+            android:id="@+id/course_lesson_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
+    </RelativeLayout>
 
 
 </LinearLayout>

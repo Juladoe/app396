@@ -856,11 +856,13 @@ background: white;
 }
 
 .lesson_title {
-    display: inline-block;
+    display: inline-table;
+    vertical-align: middle;
     line-height: 20px;
 }
 
 .lesson_learnStatuses {
+
     display: inline-block;
     width: 15px;
     height: 20px;
@@ -878,6 +880,7 @@ background: white;
 
 
 .learn-status {
+    margin-right: 10px;
     width: 30px;
     text-align: center;
     top:5px;
