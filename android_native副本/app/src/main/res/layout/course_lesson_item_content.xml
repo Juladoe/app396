@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/system_window_bg"
+    android:orientation="vertical" >
+
+    <com.edusohoapp.app.view.EduSohoList
+        android:background="@drawable/course_lesson_bg"
+        android:orientation="vertical"
+        android:id="@+id/course_lesson_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </com.edusohoapp.app.view.EduSohoList>
+    <include layout="@layout/list_empty_info"/>
+</LinearLayout>

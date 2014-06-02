@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/actionbar_title" />
+
+    <RelativeLayout
+        android:padding="5dp"
+        android:layout_below="@id/edusoho_actionbar"
+        android:id="@+id/course_content_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/system_window_bg">
+
+
+        <include layout="@layout/course_tab_bar" />
+    </RelativeLayout>
+
+    <include layout="@layout/nav_courselist" />
+
+    <android.support.v4.view.ViewPager
+        android:layout_above="@id/nav_bottom_layout"
+        android:id="@+id/content_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/course_content_head"
+        android:layout_gravity="center" />
+</RelativeLayout>

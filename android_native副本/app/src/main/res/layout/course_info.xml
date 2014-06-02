@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/system_window_bg" >
+    <include layout="@layout/actionbar_title" />
+
+    <ImageView
+        android:layout_below="@id/edusoho_actionbar"
+        android:id="@+id/courseInfo_pic"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/defaultpic" />
+    <RelativeLayout
+        android:padding="5dp"
+        android:id="@+id/course_info_head"
+        android:layout_below="@id/courseInfo_pic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/head_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.edusohoapp.app.view.EduSohoTabRadio
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:tag="left"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="课时列表"
+                android:textColor="@color/course_head_color_sel"
+                android:textSize="@dimen/course_content_head" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_center_sel"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="课程介绍"
+                android:textColor="@color/course_head_color_sel"
+                android:textSize="@dimen/course_content_head" />
+
+            <com.edusohoapp.app.view.EduSohoTabRadio
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_right_sel"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:tag="right"
+                android:text="课程评价"
+                android:textColor="@color/course_head_color_sel"
+                android:textSize="@dimen/course_content_head" />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/content_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/course_info_head"
+        android:layout_gravity="center" />
+
+</RelativeLayout>

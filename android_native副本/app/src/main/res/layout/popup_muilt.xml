@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/popup_bg"
+    android:layout_margin="20dp" >
+
+    <include layout="@layout/popup_header"/>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_below="@id/popup_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.edusohoapp.app.view.EduSohoPopBtn
+            android:textColor="@color/popup_btn_color"
+            android:id="@+id/popup_cancel_btn"
+            android:layout_weight="1"
+            android:tag="left"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:background="@drawable/popup_left_btn"
+            android:text="取 消"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusohoapp.app.view.EduSohoPopBtn
+            android:textColor="@color/popup_btn_color"
+            android:id="@+id/popup_ok_btn"
+            android:layout_weight="1"
+            android:tag="right"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:background="@drawable/popup_right_btn"
+            android:text="确 定"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</RelativeLayout>

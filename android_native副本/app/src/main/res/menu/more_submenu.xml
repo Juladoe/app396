@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/add_recommend_sch"
+        android:icon="@drawable/recommend_school_add_icon"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/recomemnd_course_str"/>
+    <item
+        android:id="@+id/menu_more"
+        android:icon="@drawable/menu_more"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_more_str"/>
+
+</menu>
