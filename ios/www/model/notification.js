@@ -5,14 +5,17 @@ define(function(require, exports){
 <div title="系统通知" id="notification" data-header="notification_header" class="panel" data-footer='none' data-tab="navbar_setting">
 		<textarea id="notification_list_item" style="display:none;">
 			
-			<li>
-				<a id="message_content" class="icon message">${cb:message}</a>
+			<li class="card-bg notify_li">
+				<div style="float:left;padding-right: 10px;">
+				<i class="fa notify_icon fa-comment course_lesson_type_normal_color"></i>
+				</div>
+				<a style="line-height:30px;" id="message_content" class="card-bg-a">${cb:message}</a>
 				<div style="float:right;margin-bottom:1px;font-size:12px;">${cb:createdTime}</div>
 			</li>
 			
 		</textarea>
 	
-	<ul class="list" id="notification_list">
+	<ul class="list card-ul-bg ul_bg_null" id="notification_list">
 		
 	</ul>
 </div>

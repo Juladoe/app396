@@ -493,8 +493,17 @@ background: white;
     color: #999 !important;
 }
 
+.course_price {
+    color: #E79022 !important;
+}
+
+.lesson_length {
+    font-size: 10px;
+    color: #999 !important;
+}
+
 .course_lesson_type_normal_color{
-    color:#4F94CD !important;
+    color:#ccc !important;
 }
 
 .course_lesson_type_yellow_color{
@@ -822,6 +831,11 @@ background: white;
     font-size: 14px !important;
 }
 
+.notify_icon {
+    color: #03b884 !important;
+    font-size: 30px !important;
+}
+
 .lesson_item {
     background: #f6f6f6 !important;
     margin:0px !important;
@@ -927,4 +941,8 @@ background: white;
 .course_card {
     margin-left:5px;
     margin-right:4px;
+}
+
+.notify_li{
+    padding:20px !important;
 }

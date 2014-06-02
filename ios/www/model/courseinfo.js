@@ -101,8 +101,8 @@ var courseinfo_text = new String(function(){
 								</tr>
 								<tr style="height:30px;">
 									<td style="float:left;">
-										<p>
-											费用:${cb:price}
+										<p class="course_price">
+											${cb:price}
 										</p>
 									</td>
 									<td style="float:right;">
@@ -709,7 +709,7 @@ function templ_courselist_handler(a, b, userLearns)
 					}
 					return "第" + a.number + "章&nbsp;&nbsp;" + a.title;
 				case "lesson":
-					var lessonTypeHtml = '<span style="display:block;"> <span >${type}</span> <span>${lessonLength}</span> </span>';
+					var lessonTypeHtml = '<span style="display:block;"> <span >${type}</span> <span class="lesson_length">${lessonLength}</span> </span>';
 					lessonTypeHtml = lessonTypeHtml.replace("${type}", setLessonTypeIcon(a.type));
 					lessonTypeHtml = lessonTypeHtml.replace("${lessonLength}", a.length == "0" ? "" : a.length);
 					return a.title + lessonTypeHtml;
