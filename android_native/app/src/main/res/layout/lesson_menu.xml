@@ -3,7 +3,7 @@
     android:id="@+id/menu_layout"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:background="@color/lesson_menu_bg"
+    android:background="@drawable/lesson_menu_bg"
     android:paddingLeft="1px">
 
     <ListView

@@ -11,7 +11,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -58,7 +57,7 @@ public class CourseLessonActivity extends BaseActivity {
     private ViewGroup lesson_status_btn;
     private View lesson_status_layout;
     private View lesson_content;
-    private WebView mWebVideoView;
+
     private ViewGroup mLesson_layout;
     private Handler webViewHandler;
 
@@ -164,13 +163,16 @@ public class CourseLessonActivity extends BaseActivity {
         loadCourseLesson(dataIntent.getIntExtra("courseId", 0));
     }
 
+    /**
+     * js注入对象
+     */
     public class JavaScriptObj
     {
         @JavascriptInterface
         public void showHtml(String src)
         {
             if (src != null && !"".equals(src)) {
-                System.out.println("src--->" + src);
+                System.out.println("-->" + src);
                 webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
             }
         }

@@ -400,6 +400,9 @@ public class CourseInfoActivity extends BaseActivity {
                     return;
                 }
                 LessonItem lesson = (LessonItem) item;
+                if (!"lesson".equals(lesson.itemType)) {
+                    return;
+                }
                 Intent lessonIntent = new Intent();
                 lessonIntent.setClass(mContext, CourseLessonActivity.class);
                 lessonIntent.putExtra("courseId", lesson.courseId);

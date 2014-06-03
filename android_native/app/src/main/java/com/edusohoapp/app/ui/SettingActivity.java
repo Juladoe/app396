@@ -149,7 +149,7 @@ public class SettingActivity extends BaseActivity
                                     loadDialog.showAutoHide("清除中....");
                                 }
                             }
-                        });
+                        }).show();
             }
         });
     }

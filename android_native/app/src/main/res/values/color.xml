@@ -56,6 +56,7 @@
     <color name="popup_bg_color">#FFFFFF</color>
     <!-- -->
     <color name="lesson_menu_bg">#ffffff</color>
+    <color name="lesson_menu_border">#ddd</color>
     <!-- qr -->
     <color name="contents_text">#ff000000</color>
     <color name="encode_view">#ffffffff</color>

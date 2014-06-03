@@ -123,12 +123,14 @@ public class LessonAdapter extends BaseAdapter {
                 }
                 break;
             case CHAPTER:
-                holder.lesson_title.setText("第" + item.number + "章节");
-                holder.lesson_array_right.setVisibility(View.GONE);
-                holder.lesson_bg.setBackgroundResource(R.color.lesson_chapter_bg);
-                holder.lesson_type_img.setText("");
-            case UNIT:
-                holder.lesson_title.setText("第" + item.number + "小节");
+                StringBuilder builder = new StringBuilder("第");
+                builder.append(item.number)
+                       .append(
+                               "unit".equals(item.type) ? "小节  " : "章节  "
+                       )
+                       .append(item.title);
+
+                holder.lesson_title.setText(builder.toString());
                 holder.lesson_array_right.setVisibility(View.GONE);
                 holder.lesson_bg.setBackgroundResource(R.color.lesson_chapter_bg);
                 holder.lesson_type_img.setText("");

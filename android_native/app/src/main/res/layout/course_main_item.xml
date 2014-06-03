@@ -22,6 +22,7 @@
         android:layout_above="@id/course_teacher_nickname"
         android:textColor="@color/course_title"
         android:ellipsize="end"
+        android:lines="2"
         android:layout_marginTop="3dp"
         android:layout_alignTop="@id/course_pic"
         android:id="@+id/course_title"

@@ -99,21 +99,19 @@ public class EduSohoList extends LinearLayout {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int action = motionEvent.getAction();
+
                 if (action == MotionEvent.ACTION_UP) {
-                    if (currentIndex != -1 && itemClickListener != null) {
+                    int index = containPoint(motionEvent);
+                    if (currentIndex == index && itemClickListener != null) {
                         itemClickListener.onItemClick(
                                 mAdapter.getItem(currentIndex), currentIndex, childs.get(currentIndex));
+                        return true;
                     }
+
                 } else if(action == MotionEvent.ACTION_DOWN) {
-                    Rect rect = new Rect();
-                    int size = childs.size();
-                    for (int i=0; i < size; i++) {
-                        View childView =  childs.get(i);
-                        childView.getHitRect(rect);
-                        if (rect.contains((int)motionEvent.getX(), (int)motionEvent.getY())){
-                            currentIndex = i;
-                            return true;
-                        }
+                    currentIndex = containPoint(motionEvent);
+                    if (currentIndex != -1) {
+                        return true;
                     }
                 }
                 return false;
@@ -121,6 +119,19 @@ public class EduSohoList extends LinearLayout {
         });
     }
 
+    private int containPoint(MotionEvent motionEvent)
+    {
+        Rect rect = new Rect();
+        int size = childs.size();
+        for (int i=0; i < size; i++) {
+            View childView =  childs.get(i);
+            childView.getHitRect(rect);
+            if (rect.contains((int)motionEvent.getX(), (int)motionEvent.getY())){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public static interface EduSohoItemClickListener{
         public void onItemClick(Object item, int index, View view);

@@ -16,7 +16,7 @@
         android:indeterminateDrawable="@anim/sch_loading"
         android:layout_below="@+id/popup_message"
         android:layout_width="322px"
-        android:layout_height="20dp" />
+        android:layout_height="18px" />
 
     <TextView
         android:textColor="@color/popup_btn_color"
