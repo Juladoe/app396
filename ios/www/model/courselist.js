@@ -8,7 +8,7 @@ data-footer="courselist_footer" data-height="80">
                 <!-- templ input list模板 -->
                 <textarea id="list_item" style="display:none;">
                         <li class="card-bg">
-                                <a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
+                                <a class="card-bg-a" onclick="load_courseinfo_page('${id}', 1);">
                                         <table style="width:100%;" border="0" cellpadding="0" cellspacing="0">
                                                 <tr class="card-bg-line" valign="top">
                                                         <td style="width:48%;">

@@ -378,7 +378,11 @@ exports.init_data = function(course_id, currentPage)
 
 exports.init_courseinfo_data = function(course_id, currentPage)
 {
-	exports.init_data(course_id, currentPage);
+	var page = -1;
+	if (currentPage || currentPage == 0) {
+		page = currentPage;
+	}
+	exports.init_data(course_id, page);
 	$.ui.loadContent('courseinfo',false,false,'pop');
 	exports.load_data(course_id);
 }
@@ -537,6 +541,7 @@ function templ_courseinfo_handler(a, b)
 				return "";
 			}
 			var t_btn = "";
+
 			exports.isStudent = a.userIsStudent;
 			if (a["member"] && exports.isStudent) {
 				t_btn =  '<a onclick="courseinfo_model.refundDialog();" class="learn_btn">退出学习</a>';

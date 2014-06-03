@@ -102,38 +102,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="QrSchoolActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/QrSchoolActivity.java">
+      <file leaf-file-name="CourseLessonActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseLessonActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="138" column="69" selection-start="5017" selection-end="5017" vertical-scroll-proportion="0.0" vertical-offset="1266" max-vertical-offset="1710">
+            <state line="141" column="80" selection-start="4986" selection-end="5070" vertical-scroll-proportion="0.37330317" vertical-offset="1740" max-vertical-offset="10035">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="36" column="16" selection-start="1874" selection-end="1917" vertical-scroll-proportion="0.0" vertical-offset="1710" max-vertical-offset="2235">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LearningActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/LearningActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="114" column="62" selection-start="4156" selection-end="4156" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="2130">
-              <folding>
-                <element signature="e#4514#5066#0" expanded="true" />
-                <element signature="e#5043#5044#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CourseInfoActivity.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseInfoActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="674" column="13" selection-start="24583" selection-end="24583" vertical-scroll-proportion="0.62417585" vertical-offset="8341" max-vertical-offset="10035">
-              <folding>
-                <element signature="e#3644#4750#0" expanded="true" />
-                <element signature="e#4727#4728#0" expanded="true" />
-                <element signature="e#23311#23816#0" expanded="true" />
-                <element signature="e#23805#23806#0" expanded="true" />
-                <element signature="e#24096#24593#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -1793,7 +1777,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23929471" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20738874" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40483382" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
@@ -1930,13 +1914,6 @@
       </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state line="28" column="53" selection-start="1087" selection-end="1087" vertical-scroll-proportion="0.50223213" vertical-offset="195" max-vertical-offset="1170">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="37" selection-start="3024" selection-end="3041" vertical-scroll-proportion="0.47494555" vertical-offset="757" max-vertical-offset="2235">
           <folding />
         </state>
       </provider>
@@ -2157,19 +2134,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseLessonActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="691" column="16" selection-start="25666" selection-end="25666" vertical-scroll-proportion="0.0" vertical-offset="9214" max-vertical-offset="10035">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5581#5643#0" expanded="true" />
-            <element signature="e#18283#18305#0" expanded="true" />
-            <element signature="e#18418#18441#0" expanded="true" />
-            <element signature="e#19130#19153#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/listener/CourseListScrollListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="74" selection-start="1255" selection-end="1624" vertical-scroll-proportion="0.7408207" vertical-offset="257" max-vertical-offset="720">
@@ -2203,13 +2167,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseInfoActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="674" column="13" selection-start="24583" selection-end="24583" vertical-scroll-proportion="0.62417585" vertical-offset="8341" max-vertical-offset="10035">
+        <state line="669" column="38" selection-start="24407" selection-end="24407" vertical-scroll-proportion="0.45934066" vertical-offset="8341" max-vertical-offset="10035">
           <folding>
             <element signature="e#3644#4750#0" expanded="true" />
             <element signature="e#4727#4728#0" expanded="true" />
             <element signature="e#23311#23816#0" expanded="true" />
             <element signature="e#23805#23806#0" expanded="true" />
             <element signature="e#24096#24593#0" expanded="true" />
+            <element signature="e#24582#24583#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="16" selection-start="1874" selection-end="1917" vertical-scroll-proportion="0.0" vertical-offset="1710" max-vertical-offset="2235">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseLessonActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="141" column="80" selection-start="4986" selection-end="5070" vertical-scroll-proportion="0.37330317" vertical-offset="1740" max-vertical-offset="10035">
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
