@@ -66,7 +66,7 @@ exports.init_setting_data = function()
 	$("#login_user_info").text(title);
 	$("#login_user_avatar").attr("src", avatar);
 
-	var startWithSchool = appstore_model.getStoreCache("startWithSchool");
+	var startWithSchool = appstore_model.getStoreCache("startWithSchool", "true");
 	if (startWithSchool == "true") {
 		$("#toggle").attr("checked", "");
 		$("#toggle").attr("data-sel", "on");

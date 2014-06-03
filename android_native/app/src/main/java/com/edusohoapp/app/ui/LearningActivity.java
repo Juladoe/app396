@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusohoapp.app.R;
 import com.edusohoapp.app.adapter.LearnCourseListAdapter;
+import com.edusohoapp.app.model.Course;
 import com.edusohoapp.app.model.LearnCourse;
 import com.edusohoapp.app.model.LearnCourseResult;
 import com.edusohoapp.app.util.Const;
@@ -101,7 +103,19 @@ public class LearningActivity extends BaseActivity {
                             mContext, result.data, R.layout.learn_list_item);
 
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView){
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int index, long arg3) {
+                            Course course = (Course) parent.getItemAtPosition(index);
+
+                            Intent intent = new Intent(mContext, CourseInfoActivity.class);
+                            intent.putExtra("courseId", course.id);
+                            intent.putExtra("largePicture", course.largePicture);
+                            intent.putExtra("courseTitle", course.title);
+                            intent.putExtra("currentPage", 0);
+                            startActivityForResult(intent, Const.COURSEINFO_REQUEST);
+                        }
+                    };
                     listView.setOnItemClickListener(listener);
 
                     OverScrollView scrollView = (OverScrollView) findViewById(R.id.course_content_scrollview);

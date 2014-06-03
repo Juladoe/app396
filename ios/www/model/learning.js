@@ -7,7 +7,7 @@ define(function(require, exports){
 			<textarea id="learning_list_item" style="display:none;">
 				<!-- list item -->
 				<li class="card-bg">
-				<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
+				<a class="card-bg-a" onclick="load_courseinfo_page('${id}', 0);">
 				<table style="width:100%;" border="0" cellpadding="0" cellspacing="0">
 					<tr valign="top">
 						<td><img src="${cb:middlePicture}" width="100%" height="120" /></td>

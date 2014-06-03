@@ -42,6 +42,7 @@ import com.google.gson.reflect.TypeToken;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Timer;
@@ -175,6 +176,12 @@ public class CourseLessonActivity extends BaseActivity {
                 System.out.println("-->" + src);
                 webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
             }
+        }
+
+        @JavascriptInterface
+        public void show(String html)
+        {
+            System.out.println("html-->" + html);
         }
     }
 
@@ -672,6 +679,7 @@ public class CourseLessonActivity extends BaseActivity {
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
             view.loadUrl("javascript:window.jsobj.showHtml(document.getElementsByTagName('video')[0].src);");
+            view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('video')[0].parentNode.innerHTML);");
         }
 
         @Override

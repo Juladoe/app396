@@ -33,9 +33,9 @@ define(function(require, exports){
 		return appStore.getItem(name) ? true: false;
 	}
 
-	exports.getStoreCache = function(name)
+	exports.getStoreCache = function(name, value)
 	{
-		return _getStoreItem(name, "");
+		return _getStoreItem(name, value ? value : "");
 	}
 
 	function _getStoreItem(name, default_value)

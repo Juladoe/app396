@@ -59,8 +59,11 @@ public class CourseInfoActivity extends BaseActivity {
 
     private TextView course_learn_btn;
     private Course mCourseInfo;
+    private int mCurrentPage;
 
+    private static final int latest = 0;
     private static final int popular = 1;
+    private static final int recommended = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -599,6 +602,7 @@ public class CourseInfoActivity extends BaseActivity {
             return;
         }
 
+        mCurrentPage = dataIntent.getIntExtra("currentPage", 1);
         mCourseId = dataIntent.getStringExtra("courseId");
         setBackMode(dataIntent.getStringExtra("courseTitle"), true, new View.OnClickListener() {
             @Override
@@ -607,6 +611,7 @@ public class CourseInfoActivity extends BaseActivity {
                 finish();
             }
         });
+
         setMenu(R.layout.courseinfo_menu, new MenuListener() {
             @Override
             public void bind(View menuView) {
@@ -664,6 +669,9 @@ public class CourseInfoActivity extends BaseActivity {
                 mCourseInfoResult = result;
                 loadCourseInfoPager();
                 changeContentHead(popular);
+                if (mCurrentPage != popular) {
+                    changeContentHead(mCurrentPage);
+                }
             }
         });
     }

@@ -369,16 +369,16 @@ function setRadioStatus(carouselIndex)
 
 exports.firstStart = true;
 
-exports.init_data = function(course_id)
+exports.init_data = function(course_id, currentPage)
 {
-	exports.currentIndex = -1;
+	exports.currentIndex = currentPage;
 	exports.courseId = course_id;
 	exports.firstStart = false;
 }
 
-exports.init_courseinfo_data = function(course_id)
+exports.init_courseinfo_data = function(course_id, currentPage)
 {
-	exports.init_data(course_id);
+	exports.init_data(course_id, currentPage);
 	$.ui.loadContent('courseinfo',false,false,'pop');
 	exports.load_data(course_id);
 }

@@ -158,15 +158,17 @@ define(function(require, exports){
 
 	window.loadDefaultSchool = function()
 	{
-		var startWithSchool = appstore_model.getStoreCache("startWithSchool");
+		var startWithSchool = appstore_model.getStoreCache("startWithSchool", "true");
 		if (startWithSchool == "true") {
 			defaultSchool = appstore_model.getStoreCache("defaultSchool");
 			defaultSchoolName = appstore_model.getStoreCache("defaultSchoolName");
-			setSchoolHost(defaultSchool, defaultSchoolName);
-			load_courselist_page();
-		} else {
-			$.ui.loadContent('main',false,false,'slide');
-		}
+			if (defaultSchool) {
+				setSchoolHost(defaultSchool, defaultSchoolName);
+				load_courselist_page();
+				return;
+			}
+		} 
+		$.ui.loadContent('main',false,false,'slide');
 	}
 
 	window.setTitle = function(title)
@@ -350,10 +352,10 @@ define(function(require, exports){
 		searchlist_model.clear();
 	}
 
-	window.load_courseinfo_page = function(course_id)
+	window.load_courseinfo_page = function(course_id, currentPage)
 	{
 		appconfig.page = "courseinfo";
-		courseinfo_model.init_courseinfo_data(course_id);
+		courseinfo_model.init_courseinfo_data(course_id, currentPage);
 	}
 
 	window.load_schoollist_page = function()
@@ -676,12 +678,25 @@ define(function(require, exports){
 
 	window.clearCache = function()
 	{
-		$.ui.showMask('清除缓存中...	');
-		setTimeout(function(){
-			appstore_model.destoryCache();
-			appstore_model.delStore("showSplash");
-			$.ui.hideMask();
-		}, 1000);
+		$("#afui").popup({
+	        title: "清除缓存",
+	        message: "确定要清除缓存? ",
+	        cancelText: "取消",
+	        cancelCallback: function () {
+	            console.log("cancelled");
+	        },
+	        doneText: "确定",
+	        doneCallback: function () {
+	        	$.ui.showMask('清除缓存中...	');
+				setTimeout(function(){
+					appstore_model.destoryCache();
+					appstore_model.delStore("showSplash");
+					$.ui.hideMask();
+				}, 1000);
+	        },
+	        cancelOnly: false
+	    });
+		
 	}
 
 	window.exitSchool = function(school_name, event)
