@@ -116,15 +116,13 @@ define(function(require, exports){
 			url: search + "/mapi/login_with_site" + '?callback=?',
 			success:function(data){
 				var school = data.site;
-				var school_info = "网校名称:" + school.name
-							+ "<br>网站域名:" + school.url
-							+ "<p>正在进入网校...<img src='images/sch_load.gif' ></p>";
+				var school_info = "正在进入... <b>" + school.name + "</b><img src='images/sch_load.gif' >";
 
 				var isStart = false;
 				var isCancel = false;
 				var pop = $("#afui").popup(
 				{
-					title:"搜索结果",
+					title:"<span/>",
 					message: school_info,
     				cancelText: "取消",
 					cancelCallback: function () {

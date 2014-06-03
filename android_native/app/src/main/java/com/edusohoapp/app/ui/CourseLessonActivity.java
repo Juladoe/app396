@@ -63,7 +63,8 @@ public class CourseLessonActivity extends BaseActivity {
     private Handler webViewHandler;
 
     private static final int PLAY_VIDEO = 0001;
-
+    private static final String IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25";
+    private String mDefaultUA = "";
     private boolean isShowVideo;
 
     //时间从1970-0-0 08:00:00开始
@@ -143,6 +144,7 @@ public class CourseLessonActivity extends BaseActivity {
         normal_lesson_content.addJavascriptInterface(new JavaScriptObj(), "jsobj");
         normal_lesson_content.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
 
+        mDefaultUA = normal_lesson_content.getSettings().getUserAgentString();
         mWebViewClient = new myWebViewClient();
         normal_lesson_content.setWebViewClient(mWebViewClient);
         mWebChromeClient = new myWebChromeClient();
@@ -173,7 +175,7 @@ public class CourseLessonActivity extends BaseActivity {
         public void showHtml(String src)
         {
             if (src != null && !"".equals(src)) {
-                System.out.println("-->" + src);
+                System.out.println("src-->" + src);
                 webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
             }
         }
@@ -398,6 +400,11 @@ public class CourseLessonActivity extends BaseActivity {
         switch (mtype) {
             case YOUKU:
             case TUDOU:
+                if (mtype == LessonItem.MediaSourceType.YOUKU) {
+                    normal_lesson_content.getSettings().setUserAgentString(IOS_UA);
+                } else {
+                    normal_lesson_content.getSettings().setUserAgentString(mDefaultUA);
+                }
                 content = items.mediaUri;
                 video_layout.setVisibility(View.GONE);
                 normal_lesson_content.setVisibility(View.VISIBLE);
@@ -575,6 +582,7 @@ public class CourseLessonActivity extends BaseActivity {
                 return true;
             }
             goBack();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -679,7 +687,7 @@ public class CourseLessonActivity extends BaseActivity {
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
             view.loadUrl("javascript:window.jsobj.showHtml(document.getElementsByTagName('video')[0].src);");
-            view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('video')[0].parentNode.innerHTML);");
+            view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
         }
 
         @Override
