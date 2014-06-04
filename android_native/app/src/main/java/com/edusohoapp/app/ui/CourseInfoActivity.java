@@ -400,6 +400,16 @@ public class CourseInfoActivity extends BaseActivity {
 
                 if (app.loginUser == null || !(mIsStudent || mIsTeacher)) {
                     PopupDialog.createNormal(mContext, "课程提示", "你不是该课程学员或教师").show();
+                    PopupDialog.createMuilt(
+                            mContext,
+                            "课程提示", 
+                            "",
+                            new PopupDialog.PopupClickListener() {
+                                @Override
+                                public void onClick(int button) {
+
+                                }
+                    });
                     return;
                 }
                 LessonItem lesson = (LessonItem) item;

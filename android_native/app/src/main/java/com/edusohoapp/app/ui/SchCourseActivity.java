@@ -77,6 +77,7 @@ public class SchCourseActivity extends BaseActivity{
             setBackIcon(R.string.font_home, app.defaultSchool.name, new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    System.out.println("qr-->" + app.taskIsRun("QrSchoolActivity"));
                     if (!app.taskIsRun("QrSchoolActivity")) {
                         QrSchoolActivity.start(mActivity);
                     }

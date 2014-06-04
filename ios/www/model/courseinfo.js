@@ -185,10 +185,10 @@ exports.changeTab = function(radioId)
 {
 	$(".tab_radio").removeClass("pressed");
 	$("#course_radio_" + radioId).addClass("pressed");
-	var currentIndex = radioId;
+	exports.currentIndex = radioId;
 	$(".ui-content").each(function(e){
 		index = $(this).attr("id");
-		if (index == currentIndex) {
+		if (index == exports.currentIndex) {
 			$(this).show();
 			$.ui.scrollToTop("courseinfo");
 			return;

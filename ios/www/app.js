@@ -750,7 +750,7 @@ define(function(require, exports){
 							return;
 						}
 						if (data.status == "success") {
-							load_courseinfo_page(course_id);
+							load_courseinfo_page(course_id, 1);
 						} else {
 							$("#afui").popup(data.message ? data.message : "退出学习失败！");
 						}
@@ -801,7 +801,7 @@ define(function(require, exports){
 					function(data){
 						if (data.status == "ok") {
 							if (data.paid == true) {
-								load_courseinfo_page(course_id);
+								load_courseinfo_page(course_id, 1);
 							} else {
 								load_pay_page(data.payUrl, course_id);
 							}

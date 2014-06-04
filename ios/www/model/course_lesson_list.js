@@ -28,41 +28,47 @@ define(function(require, exports){
 					var list_str = "";
 					for (var name in data) {
 						var lessonItem = data[name];
-					//章节
-					if (lessonItem.itemType == "chapter") {
-						list_str += "<li class='divider'>" + lessonItem.number + " " + lessonItem.title + "</li>";
-						continue;
-					} 
-					//default video
-					var item_type = "fa-youtube-play";
-					switch (lessonItem.type) {
-						case "text":
-						item_type = "fa-picture-o";
-						break;
-						case "testpaper":
-						item_type = "fa-file-text-o";
-						break;
-						case "audio":
-						item_type = "fa-microphone";
-						break;
+						//章节
+						if (lessonItem.itemType == "chapter") {
+							var number = "";
+							if (lessonItem.type == "unit") {
+								number = "第" + lessonItem.number + "节&nbsp;&nbsp;";
+							} else {
+								number = "第" + lessonItem.number + "章&nbsp;&nbsp;";
+							}
+							list_str += "<li class='divider'>" + number  + lessonItem.title + "</li>";
+							continue;
+						} 
+						//default video
+						var item_type = "fa-youtube-play";
+						switch (lessonItem.type) {
+							case "text":
+							item_type = "fa-picture-o";
+							break;
+							case "testpaper":
+							item_type = "fa-file-text-o";
+							break;
+							case "audio":
+							item_type = "fa-microphone";
+							break;
+						}
+						//li id == course_lesson `s id
+						var sel_class = "li_a_item";
+						if (lesson_id == lessonItem.id) {
+							loadLesson(course_lesson_list_model.courseId, lesson_id);
+						}
+						list_str += "<li id='lesson_" 
+						+ lessonItem.id + "'"
+						+ " type='" + lessonItem.type + "'"
+						+ " title='" + lessonItem.title + "'"
+						+ " mediaUri='" + lessonItem.mediaUri + "'"
+						+ " onclick='course_lesson_list_model.selCourseLessonMenu(" + lessonItem.id  + ");'><a class='" 
+						+ sel_class 
+						+ "'>"
+						+ "<i class='course_lesson_type_normal_color fa " + item_type + "'></i>&nbsp;"
+						+ lessonItem.title 
+						+ "</a><textarea class='tab_hide content'>" + lessonItem.content + "</textarea></li>";
 					}
-					//li id == course_lesson `s id
-					var sel_class = "li_a_item";
-					if (lesson_id == lessonItem.id) {
-						loadLesson(course_lesson_list_model.courseId, lesson_id);
-					}
-					list_str += "<li id='lesson_" 
-					+ lessonItem.id + "'"
-					+ " type='" + lessonItem.type + "'"
-					+ " title='" + lessonItem.title + "'"
-					+ " mediaUri='" + lessonItem.mediaUri + "'"
-					+ " onclick='course_lesson_list_model.selCourseLessonMenu(" + lessonItem.id  + ");'><a class='" 
-					+ sel_class 
-					+ "'>"
-					+ "<i class='course_lesson_type_normal_color fa " + item_type + "'></i>&nbsp;"
-					+ lessonItem.title 
-					+ "</a><textarea class='tab_hide content'>" + lessonItem.content + "</textarea></li>";
-				}
 				$("#course_lesson_menu").html(list_str);
 			}
 		}

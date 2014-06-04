@@ -7,7 +7,7 @@ define(function(require, exports){
 				<textarea id="favorite_list_item" style="display:none;">
 					<!-- list item -->
 					<li id="favorite_course_${id}" class="card-bg">
-					<a class="card-bg-a" onclick="load_courseinfo_page('${id}');">
+					<a class="card-bg-a" onclick="load_courseinfo_page('${id}', 1);">
 						<table style="width:100%;" border="0" cellpadding="0" cellspacing="0">	
 							<tr class="card-bg-line" valign="top">
 								<td style="width:160px;">

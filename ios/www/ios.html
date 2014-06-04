@@ -423,12 +423,13 @@
     </body>
     <script src='native_plugins/barcodescanner.js'></script>
 	<script type="text/javascript">
+    
         function load_cordova()
         {
             if (cordova.exec) {
                 cordova.exec(
                 function(version) {
-                    code = parseFloat(version);
+                    code = parseInt(version);
                     if (code >= 7) {
                         $(".statusDiv").height(20);
                         $("#aside_menu").css("top", "20px");
