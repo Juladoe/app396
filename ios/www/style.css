@@ -437,9 +437,9 @@ background: white;
     width: auto !important;
     border: 1px solid #ccc;
     border-radius: 3px;
-    padding: 5px;
+    padding: 3px;
     background: white;
-    margin: 5px;
+    margin: 2px;
 }
 
 .backButton_left {
@@ -458,7 +458,7 @@ background: white;
 }
 .quick_comment.pressed
 {
-    background: rgba(82,155,234,255) !important;
+    background: #eee !important;
 }
 
 
@@ -694,6 +694,7 @@ background: white;
 }
 
 .tab_content {
+    display: none;
     padding:1px;
 }
 

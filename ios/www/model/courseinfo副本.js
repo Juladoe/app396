@@ -60,7 +60,8 @@ var courseinfo_text = new String(function(){
 		<div style="width:100%;margin:0 auto;">
 			
 			<!--评论 -->
-			<div style="padding-top:2px;" id="lesson_tab_div">
+			<div style="padding-top:2px;">
+				<div id="courseInfoCarousel" style="display:block;height:auto;width:100%;">
 				
 				<div id="0" class="ui-body-d ui-content tab_content">
 					<table style="width:100%;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
@@ -126,6 +127,7 @@ var courseinfo_text = new String(function(){
 					</div>
 				</div>
 				</div>
+			</div>
 		</div>
 		<!--评论end-->
 	</textarea>
@@ -149,7 +151,7 @@ var content = '请打分:<span id="commentStar" style="cursor: pointer; width: 1
 				+ '<img onclick="courseinfo_model.changeCommentStar(this);" src="images/star-off.png" alt="5" title="力荐">' 
 				+ '<input id="commentScore" type="hidden" name="score"></span>'
 				+ '<textarea id="commentContent" rows="4" placeholder="评价内容" class="pressed">{content}</textarea>'
-				+ '<div class="quick_comment_wrap">快捷回复:</div>'
+				+ '<div class="formGroupHead quick_comment_wrap">快捷回复:</div>'
 				+ '<input readonly size="4" type="text" rating="3" value="不错" class="quick_comment">'
 				+ '<input readonly size="7" type="text" rating="4" value="感觉很好" class="quick_comment">'
 				+ '<input readonly size="12" type="text" rating="5" value="课程内容很好" class="quick_comment">';
@@ -165,7 +167,6 @@ exports.quick_comment = function(input)
 	var content = $(input).val();
 	var courseId = $("#course_courseId").val();
 	var token = appstore_model.getToken();
-
 	simpleJsonP(
 		schoolHost + "/courses/" + courseId + '/review_create?callback=?&token=' + token 
 				+ "&rating=" + rating + "&content=" + content,
@@ -181,20 +182,11 @@ exports.quick_comment = function(input)
 	);
 }
 
-exports.changeTab = function(radioId)
+exports.changeTab = function(radio)
 {
-	$(".tab_radio").removeClass("pressed");
-	$("#course_radio_" + radioId).addClass("pressed");
-	var currentIndex = radioId;
-	$(".ui-content").each(function(e){
-		index = $(this).attr("id");
-		if (index == currentIndex) {
-			$(this).show();
-			$.ui.scrollToTop("courseinfo");
-			return;
-		}
-		$(this).hide();
-	});
+	index = $(radio).attr("data-v");
+	exports.courseCarousel.onMoveIndex(index);
+	$.ui.scrollToTop('courseinfo');
 }
 
 exports.addComment = function()
@@ -207,7 +199,7 @@ exports.addComment = function()
 	for(i=0; i < rating; i++) {
 		message = message.replace("star-off", "star-on");
 	}
-
+	
 	$("#afui").popup({
 		id : "addCommentPopup",
 		title:"评价课程",
@@ -235,9 +227,10 @@ exports.addComment = function()
         },
         onShow: function()
         {
-        	$("#commentScore").val(rating);
+        	var popupThis = this;
         	$("#addCommentPopup").find(".quick_comment").bind("click", function() {
-        		$("#addCommentPopup").find("#commentContent").val($(this).val());
+        		courseinfo_model.quick_comment(this);
+        		popupThis.hide();
         	});
         }
 	});
@@ -343,7 +336,25 @@ exports.load_data = function()
 				}
 				$("#course_content").html(list_str);
 				$("#favorite_btn").attr("courseId", course_id);
-				exports.changeTab(exports.currentIndex);
+				
+				exports.courseCarousel=$("#courseInfoCarousel").carousel({
+					pagingDiv: "none",
+					pagingCssName: "carousel_paging2",
+					pagingCssNameSelected: "carousel_paging2_selected",
+					preventDefaults:false,
+					wrap:true
+				});
+
+				$.bind(exports.courseCarousel, 'movestop' , function(carousel){
+					if (exports.currentIndex == carousel.carouselIndex) {
+						return;
+					}
+					exports.currentIndex = carousel.carouselIndex;
+					setRadioStatus(carousel.carouselIndex);
+				});
+				var moveIndex = exports.currentIndex == -1 ? 1 : exports.currentIndex;
+				exports.courseCarousel.onMoveIndex(moveIndex);
+				setRadioStatus(moveIndex);
 		}
 	);
 }

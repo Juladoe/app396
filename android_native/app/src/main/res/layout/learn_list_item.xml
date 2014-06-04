@@ -55,7 +55,8 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:id="@+id/course_learn_progress"
             android:layout_width="match_parent"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:indeterminate="false" />
 
         <TextView
             android:textColor="@color/learn_subtitle"
