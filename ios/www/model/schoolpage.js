@@ -116,7 +116,7 @@ define(function(require, exports){
 			url: search + "/mapi/login_with_site" + '?callback=?',
 			success:function(data){
 				var school = data.site;
-				var school_info = "正在进入... <b>" + school.name + "</b><img src='images/sch_load.gif' >";
+				var school_info = "正在进入... <b>" + school.name + "</b><p></p><img src='images/sch_load.gif' >";
 
 				var isStart = false;
 				var isCancel = false;

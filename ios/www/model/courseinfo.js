@@ -2,7 +2,7 @@ define(function(require, exports){
 
 var courseinfo_text = new String(function(){
 /*
-<div title="课程详情" data-load="courseinfo_model.load_data" id="courseinfo" class="panel" data-header='info_header' data-footer="none" style="padding:0px;">
+<div title="课程详情" data-load="courseinfo_model.load_data" id="courseinfo" class="panel" data-header='info_header' data-footer="none" style="padding:0px;" data-height="255">
 	<!-- templ input list模板 -->
 	<textarea id="courseinfo_cb_course_list" style="display:none;">
 		<tr class="course_lesson_table ${cb:lesson_bg}" valign="middle" onclick="courseinfo_model.showCourseInfo('${type}','${courseId}','http://bcs.duapp.com/bimbucket/test.mp4','${id}');">
@@ -48,7 +48,9 @@ var courseinfo_text = new String(function(){
 	</textarea>
 	<textarea id="courseinfo_list_item" style="display:none;">
 		<div id="course_header">
+		<!--
 			<img style="width:100%;height:160px;" src="${cb:largePicture}"/>
+		-->
 			<input type="hidden" id="course_payment" value="alipay" />
 			<input type="hidden" id="course_title" value="${course.title}" />
 			<input type="hidden" id="course_courseId" value="${course.id}" />
@@ -56,13 +58,9 @@ var courseinfo_text = new String(function(){
 		</div>
 		<!-- 课程tab -->
 		<div style="width:100%;margin:0 auto;">
-			<div class="button-grouped flex tabbed">
-					<a class="button tab_radio" data-v="0" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课时列表</a>
-					<a class="button tab_radio pressed" data-v="1" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课程介绍</a>
-					<a class="button tab_radio" data-v="2" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课程评价</a>
-			</div>
+			
 			<!--评论 -->
-			<div style="padding:0px;">
+			<div style="padding-top:2px;">
 				<div id="courseInfoCarousel" style="display:block;height:auto;width:100%;">
 				
 				<div id="0" class="ui-body-d ui-content tab_content">
@@ -120,7 +118,7 @@ var courseinfo_text = new String(function(){
 					${cb:audiences}
 					
 				</div>
-				<div id="2" class="ui-body-d ui-content tab_content" style="padding:5px;">
+				<div id="2" class="ui-body-d ui-content tab_content y-scroll" style="padding:5px;">
 					<table style="width:100%;border-collapse:collapse;" id="course_comment_table">
 						${cb:reviews}
 					</table>
@@ -188,6 +186,7 @@ exports.changeTab = function(radio)
 {
 	index = $(radio).attr("data-v");
 	exports.courseCarousel.onMoveIndex(index);
+	$.ui.scrollToTop('courseinfo');
 }
 
 exports.addComment = function()
@@ -312,11 +311,15 @@ exports.load_data = function()
 						zy_tmpl_count(list),function(a, b) {
 							switch (b[1]) {
 								case "largePicture":
+									var pic = "";
 									if (a.course.largePicture == null
 										|| a.course.largePicture == "") {
-										return "images/img1.jpg";
+										pic = "images/img1.jpg";
+									} else {
+										pic = a.course.largePicture;
 									}
-									return a.course.largePicture;
+									$("#course_pic").attr("src", pic);
+									return;
 								case "location":
 									return schoolName;
 								case "teacher":
@@ -333,8 +336,7 @@ exports.load_data = function()
 				}
 				$("#course_content").html(list_str);
 				$("#favorite_btn").attr("courseId", course_id);
-
-				$("#course_content").find(".");
+				
 				exports.courseCarousel=$("#courseInfoCarousel").carousel({
 					pagingDiv: "none",
 					pagingCssName: "carousel_paging2",
@@ -344,9 +346,11 @@ exports.load_data = function()
 				});
 
 				$.bind(exports.courseCarousel, 'movestop' , function(carousel){
+					if (exports.currentIndex == carousel.carouselIndex) {
+						return;
+					}
 					exports.currentIndex = carousel.carouselIndex;
 					setRadioStatus(carousel.carouselIndex);
-					$("#courseInfoCarousel").css("height", "auto");
 				});
 				var moveIndex = exports.currentIndex == -1 ? 1 : exports.currentIndex;
 				exports.courseCarousel.onMoveIndex(moveIndex);
@@ -361,6 +365,7 @@ function setRadioStatus(carouselIndex)
 		index = $(this).attr("data-v");
 		if (index == carouselIndex) {
 			$(this).addClass("pressed");
+			$.ui.scrollToTop('courseinfo');
 			return;
 		}
 		$(this).removeClass("pressed");
@@ -414,23 +419,25 @@ exports.refundDialog = function()
 //显示课程详情
 exports.showCourseInfo = function(type, id, mediaUri, lesson_id)
 {
+	if (type == "chapter" || type == "unit") {
+		return;
+	}
 	if (!exports.isStudent && !exports.isTeacher ) {
-		$("#afui").popup("请加入学习");
+		$("#afui").popup({
+	        title: "课程提示",
+	        message: '课程尚未加入学习?\r\n是否加入学习?',
+
+	        cancelText: "取消",
+	        cancelCallback: function () {},
+	        doneText: "确定",
+	        doneCallback: function () {
+	        	exports.buyDialog();
+	        },
+	        cancelOnly: false
+	    });
 		return;
 	}
 	load_course_lesson_page(id, lesson_id);
-	return;
-	switch (type) {
-		case "video":
-			nativePlay(mediaUri, id, lesson_id);
-			break;
-		case "text":
-			load_course_lesson_page(id, lesson_id);
-			break;
-		case "testpaper":
-			//show paper
-			break;	
-	}
 }
 
 exports.buyDialog = function()
@@ -710,14 +717,16 @@ function templ_courselist_handler(a, b, userLearns)
 			switch (a.itemType) {
 				case "chapter":
 					if (a.type == "unit") {
-						return "&nbsp;&nbsp;&nbsp;&nbsp;第" + a.number + "节&nbsp;&nbsp;" + a.title;
+						return "<span class='lesson_item_title'>&nbsp;&nbsp;&nbsp;&nbsp;第" 
+								+ a.number + "节&nbsp;&nbsp;" + a.title + "</span>";
 					}
-					return "第" + a.number + "章&nbsp;&nbsp;" + a.title;
+					return "<span class='lesson_item_title'>第" 
+							+ a.number + "章&nbsp;&nbsp;" + a.title + "</span>";
 				case "lesson":
-					var lessonTypeHtml = '<span style="display:block;"> <span >${type}</span> <span class="lesson_length">${lessonLength}</span> </span>';
+					var lessonTypeHtml = '<span style="display:block;"> <span>${type}</span> <span class="lesson_length">${lessonLength}</span> </span>';
 					lessonTypeHtml = lessonTypeHtml.replace("${type}", setLessonTypeIcon(a.type));
 					lessonTypeHtml = lessonTypeHtml.replace("${lessonLength}", a.length == "0" ? "" : a.length);
-					return a.title + lessonTypeHtml;
+					return "<span class='lesson_item_title'>" + a.title + "</span>" + lessonTypeHtml;
 
 			}
 			return "";

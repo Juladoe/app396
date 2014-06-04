@@ -300,10 +300,12 @@ background: white;
     border-width: 1px;
     border-style: solid;
     border-radius:3px;
+    border-color: #03b884;
     padding:5px;
 }
 .learn_btn.pressed {
-    color:#fdb933;
+    background: #03b884;
+    color:#ffffff;
 }
 
 .input_bg:before {
@@ -665,7 +667,7 @@ background: white;
 .play_progress_layout
  {
     border-radius: 10px;
-    background: #03b884;
+    background: #ccc;
     height: 15px;
     width:100%;
  }
@@ -809,7 +811,7 @@ background: white;
 }
 
 .learn_progress {
-    background:#f9b719 !important;
+    background:#03b884 !important;
 }
 
 .learnnum {
@@ -854,6 +856,7 @@ background: white;
 }
 
 .lesson_bordr {
+    border-top: 1px solid #ccc !important;
     height: 30px !important;
     padding-left: 10px !important;
     border-bottom: 0px !important;
@@ -945,4 +948,13 @@ background: white;
 
 .notify_li{
     padding:20px !important;
+}
+
+.lesson_item_title
+{
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width:200px;
 }

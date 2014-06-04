@@ -22,7 +22,7 @@
         <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <link rel="stylesheet" type="text/css" href="css/icons.css" />    
- 
+    
       <link rel="stylesheet" type="text/css" href="css/main.css"  />
       <link rel="stylesheet" type="text/css" href="css/appframework.css"  />
       <link rel="stylesheet" type="text/css" href="css/lists.css"  />
@@ -140,7 +140,7 @@
 			<!-- 滚动横幅 -->
             <div id="content">
             <div title="" data-load="loadedPanel" id="main" class="panel" data-header="none" data-footer="none">
-                <div class="center_div" style="min-height:100%;">
+                <div class="center_div">
                     <a class="" onclick="schoolpage_model.qrSearch();">
                       <img width="120" height="120" src="images/qr_logo.png" >
                     </a>
@@ -390,7 +390,7 @@
 				</div>
             </header>
 			<!-- 课程头部 end -->
-			<header id="info_header" class="custom_header">
+			<header id="info_header" style="height:255px;">
                 <input type="radio" name="infoback" checked="checked">
                 <button id="backButton" class="topcoat-tab-bar__button backButton_left">
                   <i class="fa fa-2x fa-angle-left pressed">
@@ -405,7 +405,14 @@
                           <i class="fa header_btn fa-heart"></i>
                     </button>  
 				</div>
-				
+                <div id="course_head" class="ul_bg_null">
+                    <img id="course_pic" style="width:100%;height:160px;" src="#"/>
+                    <div class="button-grouped flex tabbed">
+                        <a class="button tab_radio" data-v="0" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课时列表</a>
+                        <a class="button tab_radio pressed" data-v="1" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课程介绍</a>
+                        <a class="button tab_radio" data-v="2" data-ignore-pressed="true" onclick="courseinfo_model.changeTab(this);">课程评价</a>
+                    </div>
+                </div>
             </header>
 			 <aside>
 		        <ul class="list" id="course_lesson_menu">
