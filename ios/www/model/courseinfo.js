@@ -20,7 +20,7 @@ var courseinfo_text = new String(function(){
 	<textarea id="courseinfo_cb_course_comment" style="display:none;">
 		<tr class="course_comment_table" id="${id}">
 			<td style="width:60px;" valign="middle">
- <img class="small-avatar" src="${cb:avatar}" />
+ 				<img class="small-avatar" src="${cb:avatar}" />
 			</td>
 			<td>
 				<table style="width:100%;">
@@ -87,7 +87,7 @@ var courseinfo_text = new String(function(){
 										<p>
 											教师:${cb:teacher}
 											<span>
-												学员数:${course.studentNum}
+												${cb:studentNum}
 											</span>
 										</p>
 										
@@ -117,7 +117,7 @@ var courseinfo_text = new String(function(){
 					${cb:audiences}
 					
 				</div>
-				<div id="2" class="ui-body-d ui-content tab_content y-scroll" style="padding:5px;">
+				<div id="2" class="ui-body-d ui-content tab_content" style="padding:5px;">
 					<table style="width:100%;border-collapse:collapse;" id="course_comment_table">
 						${cb:reviews}
 					</table>
@@ -191,7 +191,7 @@ exports.changeTab = function(radioId)
 		index = $(this).attr("id");
 		if (index == exports.currentIndex) {
 			$(this).show();
-			$.ui.scrollToTop("courseinfo");
+			//$.ui.scrollToTop("courseinfo");
 			return;
 		}
 		$(this).hide();
@@ -333,6 +333,11 @@ exports.load_data = function()
 								case "teacher":
 									var teacher = a.course.teachers[0];
 									return teacher.nickname;
+								case "studentNum":
+									if ("opened" == a.showStudentNumType) {
+										return "学员数:" + a.studentNum;
+									}
+									return "";
 							}
 							return templ_courseinfo_handler(a, b);
 						});
@@ -345,6 +350,11 @@ exports.load_data = function()
 				$("#course_content").html(list_str);
 				$("#favorite_btn").attr("courseId", course_id);
 				exports.changeTab(exports.currentIndex);
+		},
+		false,
+		function()
+		{
+			$("#afui").popup("网络不可用，请重新尝试");
 		}
 	);
 }
@@ -355,7 +365,7 @@ function setRadioStatus(carouselIndex)
 		index = $(this).attr("data-v");
 		if (index == carouselIndex) {
 			$(this).addClass("pressed");
-			$.ui.scrollToTop('courseinfo');
+			//$.ui.scrollToTop('courseinfo');
 			return;
 		}
 		$(this).removeClass("pressed");

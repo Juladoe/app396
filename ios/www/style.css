@@ -686,7 +686,7 @@ background: white;
 
 .playtime{
     display: inline-block;
-    padding:5px;
+    padding-top:5px;
 }
 
 .system_normal {
@@ -958,4 +958,62 @@ background: white;
     white-space: nowrap;
     text-overflow: ellipsis;
     width:200px;
+}
+
+.icon_play
+{
+    width: 72px;
+    height: 72px;
+    background-size:72px 72px;
+    background-image: url('images/play.png');
+}
+
+.icon_pause
+{
+    width: 72px;
+    height: 72px;
+    background-size:72px 72px;
+    background-image: url('images/pause.png');
+}
+
+.audio_progress_layout
+{
+    border-radius: 10px;
+    background: #ccc;
+    height: 8px;
+    width:100%;
+}
+
+.audio_progress_pressed {
+    border-radius: 10px;
+    display:block;
+    background: #03b884;
+    height: 8px;
+    width:0px;
+}
+
+#play_current_border{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background: #ccc;
+    border-radius: 50px;
+    border-color: #03b884;
+    border-width: 5px;
+    border: 3px solid #03b884;
+    position: relative;
+    top: -15px;
+    left: 1px;
+}
+
+#audio_layout{
+    padding:15px;
+}
+
+.refresh_btn
+{
+    border-radius: 5px !important;
+    background-color:#03b884 !important;
+    
+    color:white !important;
 }

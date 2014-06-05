@@ -5,9 +5,9 @@ define(function(require, exports){
 			<div id="audio_layout" class="audioplaylayout card">
 				<table>
 					<tr>
-						<td>
+						<td align="center" style="width:100%;">
 							<div class="play_status">
-								<i id="play_btn" onclick="audio_model.changePlayStatus();" class="fa play_btn fa-play"></i>
+								<i id="play_btn" onclick="audio_model.changePlayStatus();" class="fa play_btn icon_play"></i>
 								<h5 id="play_title"></h5>
 							</div>
 						</td>
@@ -15,8 +15,9 @@ define(function(require, exports){
 						</td>
 					</tr>
 				</table>
-				<div class="play_progress_layout" id="play_progress_bar">
-					<span class="play_progress_pressed" id="play_progress"></spn>
+				<div class="audio_progress_layout" id="play_progress_bar">
+					<span class="audio_progress_pressed" id="play_progress"></span>
+					<span id="play_current_border"></span>
 				</div>
 				<span class="playtime" id="play_currentTime"></span>
 				<span class="playtime" id="play_TotalTime"></span>
@@ -72,23 +73,25 @@ define(function(require, exports){
 
 		audioPlayer.addEventListener("timeupdate",function(){
 			$("#play_currentTime").text(getDate(audioPlayer.currentTime));
+			var speed = exports.defaultProgressWidth + audioPlayer.currentTime * progress_limit;
 			$("#play_progress").css(
-				"width", exports.defaultProgressWidth + audioPlayer.currentTime * progress_limit);
+				"width", speed);
+			$("#play_current_border").css("left", speed - 10);
 		});
 
 		audioPlayer.addEventListener("play",function(){
-			$("#play_btn").removeClass("fa-play");
-			$("#play_btn").addClass("fa-pause");
+			$("#play_btn").removeClass("icon_play");
+			$("#play_btn").addClass("icon_pause");
 		}); 
 
 		audioPlayer.addEventListener("ended",function(){
-			$("#play_btn").removeClass("fa-pause");
-			$("#play_btn").addClass("fa-play");
+			$("#play_btn").removeClass("icon_pause");
+			$("#play_btn").addClass("icon_play");
 		}); 
 
 		audioPlayer.addEventListener("pause",function(){
-			$("#play_btn").removeClass("fa-pause");
-			$("#play_btn").addClass("fa-play");
+			$("#play_btn").removeClass("icon_pause");
+			$("#play_btn").addClass("icon_play");
 		}); 
 
 		if ($.os.ios) {

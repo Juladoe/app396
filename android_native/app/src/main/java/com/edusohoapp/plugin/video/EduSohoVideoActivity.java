@@ -54,7 +54,6 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
                 mVideoView.videoWidth = mediaPlayer.getVideoWidth();
                 mVideoView.videoHeight = mediaPlayer.getVideoHeight();
                 mediaPlayer.start();
-                System.out.println("loop->" + mediaPlayer.isLooping());
                 mVideoView.requestLayout();
                 mLoadView.setVisibility(View.GONE);
                 mMediaController.ready();

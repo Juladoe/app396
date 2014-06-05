@@ -45,6 +45,8 @@ define(function(require, exports){
 	exports.scroller = null;
 	//是否显示动态加载
 	exports.isRefresh = false;
+
+	exports.errorData = '<div class="noData">网络访问异常,请重新尝试<p><span onclick="learning_model.init_learn_data();" class="button white refresh_btn">刷新</span></p></div>';
 	exports.noData = "<div class='noData'>暂无在学课程</div>";
 	var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img src='images/loading.gif' >加载中...</div>";
 
@@ -105,7 +107,11 @@ define(function(require, exports){
 					if (callback) {
 						callback();
 					}
-			}, showLoading
+			}, 
+			showLoading,
+			function(){
+				$("#learn_list").html(exports.errorData);
+			}
 		);
 	}
 

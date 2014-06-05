@@ -18,7 +18,6 @@ define(function(require, exports){
 									<p>教师:${cb:teacher}</p>
 								</td>
 								<td>
-
 								</td>
 							</tr>
 							<tr>
@@ -89,7 +88,8 @@ $.ui.addContentDiv("favorite", text, "收藏的课程");
 
 
 exports.title = "收藏的课程";
-exports.noData = "<div class='noData'>暂无收藏课程</div>";
+exports.noData = '<div class="noData">暂无收藏课程</div>';
+exports.errorData = '<div class="noData">网络访问异常,请重新尝试<p><span onclick="favorite_model.init_favorite_data();" class="button white refresh_btn">刷新</span></p></div>';
 
 exports.unFavorite = function(course_id, event)
 {
@@ -172,8 +172,11 @@ exports.load_data = function(isappend)
 			} else {
 				$("#favorite_list").html(list_str);
 			}
-		}
-		);	
+		}, 
+		false,
+		function(){
+			$("#favorite_list").html(exports.errorData);
+		});	
 }
 
 exports.firstStart = true;

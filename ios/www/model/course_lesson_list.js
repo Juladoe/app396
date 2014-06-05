@@ -192,7 +192,7 @@ function setLessonContent(content, type, lesson_id, mediaUri, mediaSource)
 		content = content.replace(/href=[^=]+\s/g, "href='javascript:void();'");
 		break;
 		case "testpaper":
-		content = "暂不支持此功能";
+		content = "暂不支持试卷功能";
 		break;
 		case "audio":
 		content = audio_model.audioplayer(mediaUri);

@@ -61,6 +61,7 @@ public class CourseLessonActivity extends BaseActivity {
 
     private ViewGroup mLesson_layout;
     private Handler webViewHandler;
+    private boolean mIsPlayVideo = false;
 
     private static final int PLAY_VIDEO = 0001;
     private static final String IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25";
@@ -114,12 +115,18 @@ public class CourseLessonActivity extends BaseActivity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case PLAY_VIDEO:
-                        releaseWebView();
-                        System.out.println("releaseWebView");
-                        audio_layout.setVisibility(View.GONE);
-                        normal_lesson_content.setVisibility(View.GONE);
-                        video_layout.setVisibility(View.VISIBLE);
-                        playVideo(msg.obj.toString());
+                        synchronized (mContext) {
+                            if (mIsPlayVideo) {
+                                return;
+                            }
+                            mIsPlayVideo = true;
+                            releaseWebView();
+                            System.out.println("releaseWebView");
+                            audio_layout.setVisibility(View.GONE);
+                            normal_lesson_content.setVisibility(View.GONE);
+                            video_layout.setVisibility(View.VISIBLE);
+                            playVideo(msg.obj.toString());
+                        }
                         break;
                 }
             }
@@ -178,11 +185,8 @@ public class CourseLessonActivity extends BaseActivity {
         public void showHtml(String src)
         {
             if (src != null && !"".equals(src)) {
-                System.out.println("src-->" + src);
-                if (isStartPlayer) {
-                    isStartPlayer = false;
-                    webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
-                }
+                System.out.println("src-->" + System.currentTimeMillis() + "  " + src);
+                webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
             }
         }
 
@@ -383,7 +387,7 @@ public class CourseLessonActivity extends BaseActivity {
                         content = items.content;
                         break;
                     case TESTPAPER:
-                        content = "暂不支持试卷课程";
+                        content = "暂不支持试卷功能";
                         break;
                     case AUDIO:
                         playAudio(items);
@@ -603,7 +607,9 @@ public class CourseLessonActivity extends BaseActivity {
     }
 
     private void releaseWebView() {
-        normal_lesson_content.loadData("<br>", "text/html", "utf-8");
+        normal_lesson_content.stopLoading();
+        normal_lesson_content.loadData("<a></a>", "text/html", "utf-8");
+        //normal_lesson_content.onPause();
     }
 
     private FrameLayout customViewContainer;
@@ -683,14 +689,13 @@ public class CourseLessonActivity extends BaseActivity {
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
             view.loadUrl("javascript:window.jsobj.showHtml(document.getElementsByTagName('video')[0].src);");
-            //view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
+            view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
         }
-
     }
 
     public boolean inCustomView() {

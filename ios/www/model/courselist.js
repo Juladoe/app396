@@ -38,7 +38,7 @@ data-footer="courselist_footer" data-height="80">
                                                                                         </td>
                                                                                         <td align="right" width="33%">
                                                                                                 <span class="course_teacher">
-                                                                                                        ${studentNum}&nbsp;学员
+                                                                                                        ${cb:studentNum}
                                                                                                 </span>
                                                                                         </td>
                                                                                         <tr>
@@ -61,6 +61,7 @@ data-footer="courselist_footer" data-height="80">
 var text = courselist_text.substring(courselist_text.indexOf("/*") + 2, courselist_text.lastIndexOf("*/"));
 $.ui.addContentDiv("courselist", text, "");
 
+exports.errorData = '<div class="noData">网络访问异常,请重新尝试<p><span onclick="courselist_model.init_courselist_data();" class="button white refresh_btn">刷新</span></p></div>';
 var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img src='images/loading.gif' >加载中...</div>";
        //是否显示动态加载
        exports.isRefresh = false;
@@ -113,7 +114,12 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
                if (callback) {
                	callback();
                }
-           }, showLoading);
+           }, 
+           showLoading,
+           function(){
+            $("#data_list").html(exports.errorData);
+           }
+      );
 }
 
 function wrapText(tag)

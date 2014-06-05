@@ -25,6 +25,7 @@ define(function(require, exports){
 	var text = func_txt.substring(func_txt.indexOf("/*") + 2, func_txt.lastIndexOf("*/"));
 	$.ui.addContentDiv("notification", text, "系统通知");
 
+	exports.errorData = '<div class="noData">网络访问异常,请重新尝试<p><span onclick="notification_model.init_notification_data();" class="button white refresh_btn">刷新</span></p></div>';
 	exports.noData = "<div class='noData'>暂无系统通知</div>";
 
 	exports.init_notification_data = function()
@@ -67,10 +68,15 @@ define(function(require, exports){
 							return a.createdTime.substring(0, 10);
 						}
 					}
-					);
+				);
 				$("#notification_list").html(list_str);
+			},
+			false,
+			function()
+			{
+				$("#notification_list").html(exports.errorData);
 			}
-			);
+		);
 	}
 
 });

@@ -234,11 +234,12 @@ define(function(require, exports){
 		});
 	}
 
-	window.simpleJsonP = function(url_path, success_func, showLoading)
+	window.simpleJsonP = function(url_path, success_func, showLoading, error_func)
 	{
 		if (!showLoading) {
 			$.ui.showMask('加载中...');
 		}
+
 		$.jsonP(
 		{
 			url: url_path,
@@ -249,6 +250,10 @@ define(function(require, exports){
 			timeout:"5000",
 			error: function(){
 				$.ui.hideMask();
+				if (error_func) {
+					error_func();
+					return;
+				}
 				$("#afui").popup("网络异常！请重新尝试");
 			}
 		});
@@ -466,24 +471,38 @@ define(function(require, exports){
 			case "price":
 				var price = parseFloat(a["price"]);
 				return price == 0 ? "免费" :price + "元" ;
+			case "studentNum":
+				if ("opened" == a.showStudentNumType) {
+					return a.studentNum + "&nbsp;学员";
+				}
+				return "";
 		}
 		return "";
 	}
 
 	window.logout = function()
 	{
-		$.ui.showMask('连接服务器...	');
-		var token = appstore_model.getToken();
-		$.jsonP(
+		$("#afui").popup(
 		{
-			url:webRoot + "/logout" + '?callback=?&token=' + token,
-			success:function(data){
-				if (data) {
-					appstore_model.clearUserInfo();
-					load_setting_page();
-				}
-				$.ui.hideMask();
-			}
+			title:"退出登录",
+			message: "确定退出登录?",
+			cancelText: "取消",
+			doneText: "确定",
+			cancelCallback: function () {
+	        	//cancel
+	        },
+	        doneCallback: function () {
+	        	var token = appstore_model.getToken();
+	        	simpleJsonP(
+	        		webRoot + "/logout" + '?callback=?&token=' + token,
+	        		function(data) {
+	        			if (data) {
+							appstore_model.clearUserInfo();
+							load_setting_page();
+						}
+	        		}
+	        	);
+	        }
 		});
 	}
 

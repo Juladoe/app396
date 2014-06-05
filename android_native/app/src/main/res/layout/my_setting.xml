@@ -89,7 +89,7 @@
 
                 <TextView
                     android:layout_centerVertical="true"
-                    android:text="自动进入上次退出的网校"
+                    android:text="自动进入网校"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

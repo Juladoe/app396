@@ -21,7 +21,7 @@ define(function(require, exports){
 					
 					<li class="setting_single_card">
 					<div style="height:30px;">
-						<label style="width:auto;padding-left:0px;">自动进入上次退出时的网校</label>
+						<label style="width:auto;padding-left:0px;">自动进入网校</label>
 							<input data-sel="off" id="toggle" type="checkbox" name="toggle" value="0" class="toggle">
 							  <label onclick="setting_model.startWithSchoolToogle();" style="left:0px;float:right;" for="toggle" data-on="" data-off="">
 								 <span></span>
@@ -33,8 +33,8 @@ define(function(require, exports){
 						<li onclick="clearCache();">清理缓存</li>
 						<li><a  onclick="load_about_page();">关于我们</a></li>
 					</div>
-					<li id="exitBtn" style="text-align:center;padding-right:1px;display:none;">
-						<span onclick="logout();" class="button white custom_button_red">退出登陆</span>
+					<li style="text-align:center;padding-right:1px;">
+						<span id="exitBtn" style="display:none;" onclick="logout();" class="button white custom_button_red">退出登陆</span>
 					</li>
 				</ul>
 			</div>
