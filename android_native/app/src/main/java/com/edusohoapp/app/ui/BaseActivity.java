@@ -2,9 +2,7 @@ package com.edusohoapp.app.ui;
 
 import android.app.ActivityGroup;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -23,8 +21,6 @@ import com.edusohoapp.app.util.Const;
 import com.edusohoapp.app.view.LoadDialog;
 import com.edusohoapp.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
 
 public class BaseActivity extends ActivityGroup {
 
@@ -71,11 +67,14 @@ public class BaseActivity extends ActivityGroup {
 
     protected void showEmptyLayout(final String text)
     {
-        ViewStub emptyLayout = (ViewStub) findViewById(R.id.list_empty_layout);
+        ViewStub emptyLayout = (ViewStub) findViewById(R.id.list_empty_stub);
+        if (emptyLayout == null) {
+            return;
+        }
         emptyLayout.setOnInflateListener(new ViewStub.OnInflateListener() {
             @Override
             public void onInflate(ViewStub viewStub, View view) {
-                TextView emptyText = (TextView) view;
+                TextView emptyText = (TextView) view.findViewById(R.id.list_empty_text);
                 emptyText.setText(text);
             }
         });

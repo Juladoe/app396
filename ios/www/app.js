@@ -7,6 +7,7 @@ define(function(require, exports){
 	window.schoolHost = "";
 	window.schoolName = "";
 	window.normalLimit = 10;
+	window.courseCurrentPage = 1;
 	window.testToken = "15isuvjja7s0k4k4gk08w4ggogo880g";
 
 	exports.init = function()

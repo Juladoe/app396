@@ -3,9 +3,9 @@
 
     <ViewStub
         android:layout="@layout/list_empty_layout"
-        android:id="@+id/list_empty_layout"
+        android:id="@+id/list_empty_stub"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
     <ViewStub
         android:layout="@layout/list_error_layout"

@@ -138,11 +138,8 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
                                 return;
                             }
 
-                            StringBuilder message = new StringBuilder("网校名称:");
-                            message.append(result.site.name)
-                                    .append("\r\n网站域名:")
-                                    .append(result.site.url)
-                                    .append("\r\n正在进入网校...");
+                            StringBuilder message = new StringBuilder("正在进入...");
+                            message.append(result.site.name);
 
                             PopupLoaingDialog.create(
                                     mContext,

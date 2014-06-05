@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewStub.OnInflateListener;
-import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -351,7 +350,7 @@ public class CourseInfoActivity extends BaseActivity {
     }
 
     private void showEmptyLayout(View inflated, final String text) {
-        ViewStub emptyLayout = (ViewStub) inflated.findViewById(R.id.list_empty_layout);
+        ViewStub emptyLayout = (ViewStub) inflated.findViewById(R.id.list_empty_stub);
         if (emptyLayout != null) {
             emptyLayout.setOnInflateListener(new OnInflateListener() {
                 @Override
@@ -399,19 +398,21 @@ public class CourseInfoActivity extends BaseActivity {
             public void onItemClick(Object item, int index, View view) {
 
                 if (app.loginUser == null || !(mIsStudent || mIsTeacher)) {
-                    PopupDialog.createNormal(mContext, "课程提示", "你不是该课程学员或教师").show();
                     PopupDialog.createMuilt(
                             mContext,
-                            "课程提示", 
-                            "",
+                            "课程提示",
+                            "你不是该课程学员或教师,是否加入学习?",
                             new PopupDialog.PopupClickListener() {
                                 @Override
                                 public void onClick(int button) {
-
+                                    if (button == PopupDialog.OK) {
+                                        joinLearnCourse(mCourseInfo);
+                                    }
                                 }
-                    });
+                    }).show();
                     return;
                 }
+
                 LessonItem lesson = (LessonItem) item;
                 if (!"lesson".equals(lesson.itemType)) {
                     return;

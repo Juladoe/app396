@@ -115,6 +115,7 @@ public class CourseLessonActivity extends BaseActivity {
                 switch (msg.what) {
                     case PLAY_VIDEO:
                         releaseWebView();
+                        System.out.println("releaseWebView");
                         audio_layout.setVisibility(View.GONE);
                         normal_lesson_content.setVisibility(View.GONE);
                         video_layout.setVisibility(View.VISIBLE);
@@ -171,12 +172,17 @@ public class CourseLessonActivity extends BaseActivity {
      */
     public class JavaScriptObj
     {
+        private boolean isStartPlayer = true;
+
         @JavascriptInterface
         public void showHtml(String src)
         {
             if (src != null && !"".equals(src)) {
                 System.out.println("src-->" + src);
-                webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
+                if (isStartPlayer) {
+                    isStartPlayer = false;
+                    webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
+                }
             }
         }
 
@@ -426,12 +432,17 @@ public class CourseLessonActivity extends BaseActivity {
     private VideoView mVideoView;
     private View videoLoadingView;
 
-    private void playVideo(String mediaUri) {
+    private void clearVideoPlayer()
+    {
         Activity videoplayer = getLocalActivityManager().getActivity("videoplayer");
         if (videoplayer != null) {
             getLocalActivityManager().removeAllActivities();
             video_layout.removeAllViews();
         }
+    }
+
+    private void playVideo(String mediaUri) {
+        clearVideoPlayer();
 
         Intent intent = new Intent(mContext, EduSohoVideoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -439,6 +450,7 @@ public class CourseLessonActivity extends BaseActivity {
         Window videoWindow = getLocalActivityManager().startActivity(
                 "videoplayer", intent);
         View rootView = videoWindow.getDecorView();
+
         final ImageView fullBtn = (ImageView) rootView.findViewById(R.id.custom_full_btn);
         fullBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -577,10 +589,6 @@ public class CourseLessonActivity extends BaseActivity {
             return true;
         }
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (inCustomView()) {
-                hideCustomView();
-                return true;
-            }
             goBack();
             return true;
         }
@@ -590,11 +598,11 @@ public class CourseLessonActivity extends BaseActivity {
     private void goBack() {
         releaseWebView();
         setResult(Const.NORMAL_RESULT_REFRESH);
+        clearVideoPlayer();
         finish();
     }
 
     private void releaseWebView() {
-        normal_lesson_content.stopLoading();
         normal_lesson_content.loadData("<br>", "text/html", "utf-8");
     }
 
@@ -610,7 +618,7 @@ public class CourseLessonActivity extends BaseActivity {
 
         @Override
         public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
-            onShowCustomView(view, callback);    //To change body of overridden methods use File | Settings | File Templates.
+            onShowCustomView(view, callback);
         }
 
         @Override
@@ -633,16 +641,6 @@ public class CourseLessonActivity extends BaseActivity {
                     }
                 }
             }
-            // if a view already exists then immediately terminate the new one
-            if (mCustomView != null) {
-                callback.onCustomViewHidden();
-                return;
-            }
-            mCustomView = view;
-            normal_lesson_content.setVisibility(View.GONE);
-            customViewContainer.setVisibility(View.VISIBLE);
-            customViewContainer.addView(view);
-            customViewCallback = callback;
         }
 
         @Override
@@ -657,17 +655,15 @@ public class CourseLessonActivity extends BaseActivity {
 
         @Override
         public void onHideCustomView() {
-            super.onHideCustomView();    //To change body of overridden methods use File | Settings | File Templates.
+            super.onHideCustomView();
             if (mCustomView == null)
                 return;
 
             normal_lesson_content.setVisibility(View.VISIBLE);
             customViewContainer.setVisibility(View.GONE);
 
-            // Hide the custom view.
             mCustomView.setVisibility(View.GONE);
 
-            // Remove the custom view from its container.
             customViewContainer.removeView(mCustomView);
             customViewCallback.onCustomViewHidden();
 
@@ -687,7 +683,7 @@ public class CourseLessonActivity extends BaseActivity {
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
             view.loadUrl("javascript:window.jsobj.showHtml(document.getElementsByTagName('video')[0].src);");
-            view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
+            //view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
         }
 
         @Override
@@ -719,7 +715,7 @@ public class CourseLessonActivity extends BaseActivity {
 
     @Override
     protected void onStop() {
-        super.onStop();    //To change body of overridden methods use File | Settings | File Templates.
+        super.onStop();
         if (inCustomView()) {
             hideCustomView();
         }

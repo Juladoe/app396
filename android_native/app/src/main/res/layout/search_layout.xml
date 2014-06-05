@@ -75,10 +75,9 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/search_content"
         android:layout_below="@id/search_actionbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <include layout="@layout/course_content" />
-        <include layout="@layout/list_empty_info" />
+        android:layout_height="match_parent">
     </RelativeLayout>
 </RelativeLayout>

@@ -54,6 +54,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
                 mVideoView.videoWidth = mediaPlayer.getVideoWidth();
                 mVideoView.videoHeight = mediaPlayer.getVideoHeight();
                 mediaPlayer.start();
+                System.out.println("loop->" + mediaPlayer.isLooping());
                 mVideoView.requestLayout();
                 mLoadView.setVisibility(View.GONE);
                 mMediaController.ready();
@@ -72,6 +73,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
         mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
+                System.out.println("stop play");
                 mMediaController.stop();
             }
         });
@@ -152,5 +154,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
             autoHideTimer.cancel();
         }
         mMediaController.destory();
+        mVideoView.pause();
+        mVideoView = null;
     }
 }

@@ -186,6 +186,7 @@ exports.changeTab = function(radioId)
 	$(".tab_radio").removeClass("pressed");
 	$("#course_radio_" + radioId).addClass("pressed");
 	exports.currentIndex = radioId;
+	window.courseCurrentPage = radioId;
 	$(".ui-content").each(function(e){
 		index = $(this).attr("id");
 		if (index == exports.currentIndex) {
@@ -366,13 +367,14 @@ exports.firstStart = true;
 exports.init_data = function(course_id, currentPage)
 {
 	exports.currentIndex = currentPage;
+	window.courseCurrentPage = currentPage;
 	exports.courseId = course_id;
 	exports.firstStart = false;
 }
 
 exports.init_courseinfo_data = function(course_id, currentPage)
 {
-	var page = -1;
+	var page = window.courseCurrentPage;
 	if (currentPage || currentPage == 0) {
 		page = currentPage;
 	}

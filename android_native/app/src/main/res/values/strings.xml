@@ -17,7 +17,7 @@
 
     <string-array name="exitcourse_array">
         <item>老师服务态度不好</item>
-        <item>课程内容质量查</item>
+        <item>课程内容质量差</item>
         <item>其他</item>
     </string-array>
     <!-- icon font -->
