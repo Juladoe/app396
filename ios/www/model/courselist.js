@@ -110,7 +110,7 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
                }
                $(".course_title").each(function(){
                		wrapText(this);
-               	});
+               });
                if (callback) {
                	callback();
                }
@@ -122,15 +122,6 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
       );
 }
 
-function wrapText(tag)
-{
-	title = $(tag).text();
-	height = $(tag).height();
-	if (height > 40) {
-		$(tag).text(title.substring(0, title.length - 4) + "...");
-		wrapText(tag);
-	}
-}
 
 initScroll("courselist", {
 	"scrollerCallback": function(scroller) {

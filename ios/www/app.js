@@ -132,6 +132,18 @@ define(function(require, exports){
 		}
 	}
 
+	window.SettingJumpToMain = function()
+	{
+		$("#backToSetting").show();
+		load_mian();
+	}
+
+	window.jumpToSetting = function()
+	{
+		$("#backToSetting").hide();
+		goback();
+	}
+
 	window.hideToast = function()
 	{
 		unToastblockUI();
@@ -257,6 +269,16 @@ define(function(require, exports){
 				$("#afui").popup("网络异常！请重新尝试");
 			}
 		});
+	}
+
+	window.wrapText = function(tag)
+	{
+		title = $(tag).text();
+		height = $(tag).height();
+		if (height > 40) {
+			$(tag).text(title.substring(0, title.length - 4) + "...");
+			wrapText(tag);
+		}
 	}
 
 	//check radio and show tab_content

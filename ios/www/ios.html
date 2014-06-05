@@ -145,8 +145,9 @@
                       <img width="120" height="120" src="images/qr_logo.png" >
                     </a>
                     <span onclick="schoolpage_model.qrSearch();" class="button white custom_button_blue">扫描二维码登录</span>
-                    <div style="text-align:right;">
-                         <a onclick="load_schoollist_page()" class="normal_btn">普通登录</a>
+                    <div>
+                        <a id="backToSetting" style="float:left;display:none;" onclick="jumpToSetting();" class="normal_btn">返回</a>
+                        <a style="float:right;" onclick="load_schoollist_page()" class="normal_btn">普通登录</a>
                     </div>
                 </div>
 
@@ -357,7 +358,7 @@
 
                 <input type="radio" name="searchbtn" checked="checked">
                 <button onclick="searchlist_model.init_searchlist_data();" class="topcoat-tab-bar__button header_btn_right">
-                  <i class="fa fa-2x fa-search pressed"></i>
+                  <i class="search_btn fa fa-2x fa-search pressed"></i>
                 </button>
             </header>
 			
@@ -372,14 +373,11 @@
 			<!-- 课程头部 -->
             <header id="courselist_header">
 				<div style="height:80px;">
-                    <input type="radio" name="home" checked="checked">
-                    <button onclick="load_mian();" class="topcoat-tab-bar__button backButton_left">
-                          <i class="fa fa-2x fa-home pressed"></i>
-                    </button>
+                    
 					<h1 id="currentSchoolName">网校名称</h1>
                     <input type="radio" name="search" checked="checked">
                     <button onclick="searchCourse();" class="topcoat-tab-bar__button header_btn_right">
-                      <i class="fa fa-2x fa-search pressed"></i>
+                      <i class="search_btn fa fa-2x fa-search pressed"></i>
                     </button>
 
 					<div class="button-grouped flex tabbed ul_bg_null" id="course_head">
@@ -398,7 +396,7 @@
                   </i>
                 </button>
 
-                <h1>课程详情</h1>
+                <h1 id="pageTitle">课程详情</h1>
 				<div style="float:right;">
                     <input type="radio" name="favorite" id="favorite_radio">
                     <button courseId="" id="favorite_btn" onclick="favorite()" class="topcoat-tab-bar__button">

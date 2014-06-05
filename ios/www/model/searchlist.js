@@ -14,11 +14,10 @@ define(function(require, exports){
 								<img src="${cb:middlePicture}" width="160" height="90" />
 							</td>
 							<td style="text-align:left;" class="list_content">
-								<h4 class="custom_normal_color">${title}</h4>
+								<h4 class="custom_normal_color course_title">${title}</h4>
 								<p>教师:${cb:teacher}</p>
 							</td>
 							<td>
-
 							</td>
 						</tr>
 						<tr>
@@ -77,7 +76,13 @@ exports.scroller = null;
 		var offset = isappend == true ? $("#search_list").attr("start"): 0;
 		var search = $("#global_search").val();
 		if (search == "") {
-			$("#afui").popup("请输入搜索内容");
+			$("#afui").popup(
+			{
+				title : "提示",
+				message : "请输入搜索内容",
+				cancelText: "取消",
+				cancelOnly: true
+			});
 			return;
 		}
 		simpleJsonP(
@@ -114,6 +119,10 @@ exports.scroller = null;
 					searchlist_model.scroller.scrollToTop(10);
 					$("#search_list").html(list_str);
 				}
+
+				$(".course_title").each(function(){
+               		wrapText(this);
+               	});
 
 				if (callback) {
 					callback();

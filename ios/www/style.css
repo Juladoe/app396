@@ -15,7 +15,7 @@
 }
 
 .rating_color {
-    color: #999;
+    color: #f9b719;
     font-weight: normal;
 }
 
@@ -68,6 +68,12 @@
     width: 48px;
     height: 48px;
 }
+
+.comment_title {
+    padding-bottom: 5px;
+    float: left;
+}
+
 #course_head {
     padding:5px !important;
     margin:0px !important;
@@ -761,6 +767,7 @@ background: white;
     position: relative;
     z-index: 10;
     height: 60px;
+    padding: 10px;
     top:100px;
 }
 
@@ -787,6 +794,11 @@ background: white;
     width:130px;
     height:80px;
     border: 0px solid rgb(249,249,249) !important;
+}
+
+.search_btn
+{
+    font-size: 22px !important;
 }
 
 .course_list_bottom {
@@ -1006,14 +1018,34 @@ background: white;
     left: 1px;
 }
 
+.auto_enter_sch
+{
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+}
+
+.auto_enter_sch_title{
+    color: inherit !important;
+    display: inline-block;
+    line-height: 30px;
+}
+
 #audio_layout{
     padding:15px;
+}
+
+.lesson_type_normal_color{
+    color: #2BA3F3 !important;
+}
+
+.large_size
+{
+    font-size: 22px;
 }
 
 .refresh_btn
 {
     border-radius: 5px !important;
     background-color:#03b884 !important;
-    
     color:white !important;
 }

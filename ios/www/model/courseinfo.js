@@ -141,13 +141,13 @@ var courseinfo_text = new String(function(){
 var text = courseinfo_text.substring(courseinfo_text.indexOf("/*") + 2, courseinfo_text.lastIndexOf("*/"));
 $.ui.addContentDiv("courseinfo", text, "课程详情");
 
-var content = '请打分:<span id="commentStar" style="cursor: pointer; width: 100px;">' 
-				+ '<img onclick="courseinfo_model.changeCommentStar(this);" src="images/star-off.png" alt="1" title="很差">&nbsp;' 
-				+ '<img onclick="courseinfo_model.changeCommentStar(this);" src="images/star-off.png" alt="2" title="较差">&nbsp;' 
-				+ '<img onclick="courseinfo_model.changeCommentStar(this);" src="images/star-off.png" alt="3" title="还行">&nbsp;' 
-				+ '<img onclick="courseinfo_model.changeCommentStar(this);" src="images/star-off.png" alt="4" title="推荐">&nbsp;' 
-				+ '<img onclick="courseinfo_model.changeCommentStar(this);" src="images/star-off.png" alt="5" title="力荐">' 
-				+ '<input id="commentScore" type="hidden" name="score"></span>'
+var content  = 	'<div class="comment_title">请打分:<span id="commentStar" style="cursor: pointer; width: 100px;">' 
+				+ '<i class="large_size rating_color fa fa-star-o" onclick="courseinfo_model.changeCommentStar(this);"  alt="1" title="很差" ></i>' 
+				+ '<i class="large_size rating_color fa fa-star-o" onclick="courseinfo_model.changeCommentStar(this);" alt="2" title="较差" ></i>' 
+				+ '<i class="large_size rating_color fa fa-star-o" onclick="courseinfo_model.changeCommentStar(this);" alt="3" title="还行" ></i>' 
+				+ '<i class="large_size rating_color fa fa-star-o" onclick="courseinfo_model.changeCommentStar(this);" alt="4" title="推荐" ></i>' 
+				+ '<i class="large_size rating_color fa fa-star-o" onclick="courseinfo_model.changeCommentStar(this);" alt="5" title="力荐" ></i>' 
+				+ '</div><input id="commentScore" type="hidden" name="score"></span>'
 				+ '<textarea id="commentContent" rows="4" placeholder="评价内容" class="pressed">{content}</textarea>'
 				+ '<div class="quick_comment_wrap">快捷回复:</div>'
 				+ '<input readonly size="4" type="text" rating="3" value="不错" class="quick_comment">'
@@ -206,7 +206,7 @@ exports.addComment = function()
 	var rating = courseinfo_model.loginUserReview ? courseinfo_model.loginUserReview.rating  : 0;
 	message = content.replace("{content}", CommentContent);
 	for(i=0; i < rating; i++) {
-		message = message.replace("star-off", "star-on");
+		message = message.replace("fa-star-o", "fa-star");
 	}
 
 	$("#afui").popup({
@@ -281,20 +281,24 @@ exports.getComments = function()
 
 exports.changeCommentStar = function(img)
 {
-	var star = img.alt;
+	var star = $(img).attr("alt");
 	$("#commentScore").val(star);
-	$("#commentStar").find("img").each(function(){
-		var temp_alt = this.alt;
+	var i_list = $("#commentStar").find("i");
+	i_list.removeClass("fa-star-o");
+	i_list.removeClass("fa-star");
+	i_list.each(function(){
+		var temp_alt = $(this).attr("alt");
 		if (temp_alt <= star) {
-			this.src = "images/star-on.png";
+			$(this).addClass("fa-star");
 		} else {
-			this.src = "images/star-off.png";
+			$(this).addClass("fa-star-o");
 		}
 	});
 }
 
 exports.courseCarousel = null;
 exports.isStudent = false;
+exports.title = "课程详情";
 
 exports.load_data = function()
 {
@@ -311,6 +315,7 @@ exports.load_data = function()
 				$.ui.goBack();
 				return;
 			}
+			setTitle(data.course.title);
 			var list = new Array();
 			list[0] = data;
 			list_str = zy_tmpl(

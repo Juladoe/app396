@@ -19,22 +19,26 @@ define(function(require, exports){
 					</li>
 					<li class="setting_single_card"><a onclick="load_favorite_page();">收藏的课程</a></li>
 					
-					<li class="setting_single_card">
-					<div style="height:30px;">
-						<label style="width:auto;padding-left:0px;">自动进入网校</label>
-							<input data-sel="off" id="toggle" type="checkbox" name="toggle" value="0" class="toggle">
-							  <label onclick="setting_model.startWithSchoolToogle();" style="left:0px;float:right;" for="toggle" data-on="" data-off="">
-								 <span></span>
+					<div class="setting_mulit_card">
+						<li style="padding-bottom: 5px !important;padding-top: 5px !important;">
+							<div style="height:30px;">
+								<span class="auto_enter_sch_title">自动进入网校</span>
+								<input data-sel="off" id="toggle" type="checkbox" name="toggle" value="0" class="toggle">
+								<label onclick="setting_model.startWithSchoolToogle();" style="left:0px;float:right;margin:0px;" for="toggle" data-on="" data-off="">
+								<span></span>
+							</div>
+						</label>
+						</li>
+						<li onclick="SettingJumpToMain();">登录其他网校</li>
 					</div>
-					</label>
-					</li>
+					
 					<div class="setting_mulit_card">
 						<li><a onclick="load_notification_page();">系统通知</a></li>
 						<li onclick="clearCache();">清理缓存</li>
 						<li><a  onclick="load_about_page();">关于我们</a></li>
 					</div>
-					<li style="text-align:center;padding-right:1px;">
-						<span id="exitBtn" style="display:none;" onclick="logout();" class="button white custom_button_red">退出登陆</span>
+					<li id="exitBtn" style="text-align:center;padding-right:1px;">
+						<span onclick="logout();" class="button white custom_button_red">退出登陆</span>
 					</li>
 				</ul>
 			</div>

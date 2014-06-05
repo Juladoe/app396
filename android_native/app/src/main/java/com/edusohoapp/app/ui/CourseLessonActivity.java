@@ -160,7 +160,7 @@ public class CourseLessonActivity extends BaseActivity {
 
         menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.RIGHT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 
         menu.setBehindWidth(getResources().getDimensionPixelSize(R.dimen.slidingMenuWidth));
         menu.setShadowDrawable(R.drawable.card_bg);
