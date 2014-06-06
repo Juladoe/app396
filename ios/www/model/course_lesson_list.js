@@ -191,7 +191,7 @@ function setLessonContent(content, type, lesson_id, mediaUri, mediaSource)
 	switch (type) {
 		case "text":
 			content = content.replace(/href=[^=]+\s/g, "href='javascript:void();'");
-			content = content.replace(/<img/g, "<img onclick='alert(1);' ");
+			content = content.replace(/<img/g, "<img onclick='showLessonImages(this);' ");
 			break;
 		case "testpaper":
 			content = "暂不支持试卷功能";

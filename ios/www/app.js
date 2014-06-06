@@ -866,4 +866,30 @@ define(function(require, exports){
 		load_search_page();
 	}
 
+	window.showLessonImages = function(img)
+	{
+		var imgs = $("#course_lesson_content").find("img");
+		var imgSize = imgs.length;
+		var currentSrc = img.src;
+		var index = 0;
+		var imgArray = new Array();
+		for (var i =0; i < imgSize; i++) {
+			var src = imgs.get(i).src;
+			imgArray.push(src);
+			if (currentSrc == src) {
+				index = i;
+			}
+		}
+		//本地界面显示图片
+		cordova.exec(
+	                function(status) {
+	                    //
+	                },
+	                function(error) {
+	                    alert(error);
+	                },
+	                 "ImagePlugin",
+	                 "showImage",
+	                 [index, imgArray]);
+	}
 });
