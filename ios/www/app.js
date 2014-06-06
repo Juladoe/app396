@@ -868,7 +868,7 @@ define(function(require, exports){
 
 	window.showLessonImages = function(index, img)
 	{
-		var imgs = $("#course_lesson_content").find("img");
+		var imgs = $("#coursgite_lesson_content").find("img");
 		var imgSize = imgs.length;
 		var imgArray = new Array();
 		for (var i =0; i < imgSize; i++) {
@@ -885,6 +885,7 @@ define(function(require, exports){
 	                },
 	                 "ImagePlugin",
 	                 "showImage",
-	                 [index, imgArray]);
+	                 [index, imgArray]
+	            );
 	}
 });
