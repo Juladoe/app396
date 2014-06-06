@@ -39,6 +39,7 @@
 		30E5649213A7FCAF007403D8 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30E5649113A7FCAF007403D8 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
 		509E9D02192DE81500ED81DA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 509E9D01192DE81500ED81DA /* CoreMotion.framework */; };
+		50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50BCE58819415008007E03D7 /* ImagePlugin.m */; };
 		5AA0E66D1729F45B000DC89A /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66C1729F45B000DC89A /* OpenAL.framework */; };
 		5AA0E66F1729F460000DC89A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66E1729F460000DC89A /* ImageIO.framework */; };
 		5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE5B34173C68D80009041E /* CoreLocation.framework */; };
@@ -115,6 +116,8 @@
 		30FC414816E50CA1004E6F35 /* icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72@2x.png"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Phonegap_ios-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Phonegap_ios-Prefix.pch"; sourceTree = "<group>"; };
 		509E9D01192DE81500ED81DA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		50BCE58719415008007E03D7 /* ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePlugin.h; sourceTree = "<group>"; };
+		50BCE58819415008007E03D7 /* ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePlugin.m; sourceTree = "<group>"; };
 		5AA0E66C1729F45B000DC89A /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5AA0E66E1729F460000DC89A /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		5AEE5B34173C68D80009041E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -301,6 +304,8 @@
 				723FC7CF191DC7A1004AC6B1 /* zxing-all-in-one.h */,
 				724A5071191C763700BECABE /* VideoPlugin.h */,
 				724A5072191C763700BECABE /* VideoPlugin.m */,
+				50BCE58719415008007E03D7 /* ImagePlugin.h */,
+				50BCE58819415008007E03D7 /* ImagePlugin.m */,
 				72E53C751923121600ABF7DE /* AlipayPlugin.h */,
 				72E53C761923121600ABF7DE /* AlipayPlugin.m */,
 				72E53CC71923B85E00ABF7DE /* UtilPlugin.h */,
@@ -481,6 +486,7 @@
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
 				723FC7D1191DC7A1004AC6B1 /* zxing-all-in-one.cpp in Sources */,
 				724A5074191C763700BECABE /* VideoPlugin.m in Sources */,
+				50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */,
 				72E53CC91923B85E00ABF7DE /* UtilPlugin.m in Sources */,
 				72E53C771923121600ABF7DE /* AlipayPlugin.m in Sources */,
 			);
@@ -537,8 +543,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -563,7 +569,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "8C0E2911-F767-4618-981D-9C3DE332D78F";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -573,8 +579,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -597,7 +603,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "69663F7A-C64C-41DD-B446-59B4664D43CE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -638,7 +644,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "9BAEC09F-6FAF-4E33-9B3C-CE66119B5FD7";
+				PROVISIONING_PROFILE = "69663F7A-C64C-41DD-B446-59B4664D43CE";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -651,8 +657,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -675,7 +681,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "69663F7A-C64C-41DD-B446-59B4664D43CE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = AdHoc;
@@ -716,7 +722,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "639C91F5-6372-48BC-B208-EA7CCB79238B";
+				PROVISIONING_PROFILE = "8C0E2911-F767-4618-981D-9C3DE332D78F";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -760,7 +766,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "9BAEC09F-6FAF-4E33-9B3C-CE66119B5FD7";
+				PROVISIONING_PROFILE = "69663F7A-C64C-41DD-B446-59B4664D43CE";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";

@@ -6,8 +6,10 @@
 //
 //
 
-#import <Cordova/Cordova.h>
+#import <Cordova/CDV.h>
 
 @interface ImagePlugin : CDVPlugin
+
+- (void)showImage:(CDVInvokedUrlCommand *)command;
 
 @end
