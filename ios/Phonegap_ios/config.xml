@@ -124,4 +124,7 @@
     <feature name="BarcodeScanner">
         <param name="ios-package" value="CDVBarcodeScanner" />
     </feature>
+    <feature name="ImagePlugin">
+        <param name="ios-package" value="ImagePlugin" />
+    </feature>
 </widget>
