@@ -101,21 +101,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CourseLessonActivity.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseLessonActivity.java">
+      <file leaf-file-name="SettingActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SettingActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="171" column="33" selection-start="6547" selection-end="6547" vertical-scroll-proportion="0.5269608" vertical-offset="2185" max-vertical-offset="10260">
+            <state line="112" column="25" selection-start="3310" selection-end="3310" vertical-scroll-proportion="0.0" vertical-offset="977" max-vertical-offset="2625">
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3747#4609#0" expanded="true" />
-                <element signature="e#4598#4599#0" expanded="true" />
-                <element signature="e#6250#6312#0" expanded="true" />
-                <element signature="e#17441#17874#0" expanded="true" />
-                <element signature="e#17863#17864#0" expanded="true" />
-                <element signature="e#19396#19418#0" expanded="true" />
-                <element signature="e#19531#19554#0" expanded="true" />
-                <element signature="e#20243#20266#0" expanded="true" />
+                <element signature="e#5654#5831#0" expanded="true" />
+                <element signature="e#5820#5821#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AboutActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/AboutActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="45" column="31" selection-start="1205" selection-end="1205" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="750">
+              <folding>
+                <element signature="e#1261#1685#0" expanded="true" />
+                <element signature="e#1674#1675#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="QrSchoolActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/QrSchoolActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="49" column="5" selection-start="1643" selection-end="1643" vertical-scroll-proportion="0.34013605" vertical-offset="135" max-vertical-offset="1695">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -1286,10 +1300,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/quick_comment_color_sel.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/quick_comment_btn_pressed.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/view/CommentPopupDialog.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/comment_popup.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/course_comment_item_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/course_content.xml" />
@@ -1309,7 +1319,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/plugin/video/CustomPlayerView.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/frame_video.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/custom_controller_layout.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SettingActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/course_main_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/color.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/lesson_menu_bg.xml" />
@@ -1322,11 +1331,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/LearningActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/learn_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/video_sk.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SchCourseActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/EdusohoApp.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseInfoActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/NetSchoolActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/list_empty_info.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/list_empty_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/BaseActivity.java" />
@@ -1335,8 +1341,16 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/plugin/video/CustomMediaController.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/plugin/video/EduSohoVideoActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/assets/empty.html" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/my_setting.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseLessonActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SchCourseActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/NetSchoolActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/my_setting.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseInfoActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/adapter/CourseListAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/course_info_item_content.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/course_list_normal_item.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SettingActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/QrSchoolActivity.java" />
       </list>
     </option>
   </component>
@@ -1372,7 +1386,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -1425,6 +1438,62 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1532,6 +1601,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1590,19 +1660,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -1628,6 +1685,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -1761,6 +1831,7 @@
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4836272" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.5004205" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1768,20 +1839,19 @@
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24685138" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24169184" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32175228" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29154077" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3254836" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28931874" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40483382" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1802,130 +1872,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/content/res/Configuration.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="28" selection-start="2945" selection-end="2945" vertical-scroll-proportion="0.33183858" vertical-offset="782" max-vertical-offset="2010" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/content/pm/ActivityInfo.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="28" selection-start="1452" selection-end="1452" vertical-scroll-proportion="0.33333334" vertical-offset="282" max-vertical-offset="1290" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/latest_course.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="432">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/adapter/CourseListAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="13" selection-start="581" selection-end="581" vertical-scroll-proportion="0.13071896" vertical-offset="0" max-vertical-offset="1650" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_main_item.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="24" selection-start="888" selection-end="888" vertical-scroll-proportion="0.4861111" vertical-offset="150" max-vertical-offset="645">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_list_normal_item.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="41" selection-start="660" selection-end="660" vertical-scroll-proportion="0.5416667" vertical-offset="6" max-vertical-offset="960">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/lesson_menu_bg.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="67" selection-start="106" selection-end="106" vertical-scroll-proportion="0.03267974" vertical-offset="0" max-vertical-offset="459" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/lesson_menu.xml">
-      <provider editor-type-id="text-editor">
-        <state line="5" column="48" selection-start="289" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="300">
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/view/MotionEvent.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="28" selection-start="413" selection-end="413" vertical-scroll-proportion="0.33153638" vertical-offset="12" max-vertical-offset="5220" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/widget/Adapter.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="21" selection-start="458" selection-end="458" vertical-scroll-proportion="0.33333334" vertical-offset="97" max-vertical-offset="510" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/view/EduSohoList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="106" column="45" selection-start="2952" selection-end="2952" vertical-scroll-proportion="0.3515625" vertical-offset="1125" max-vertical-offset="1845" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/favorite_layout.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="37" selection-start="301" selection-end="301" vertical-scroll-proportion="0.2184466" vertical-offset="0" max-vertical-offset="412">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/FavoriteActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="39" selection-start="946" selection-end="946" vertical-scroll-proportion="0.31690142" vertical-offset="0" max-vertical-offset="1755">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/anim/sch_loading.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="43" selection-start="690" selection-end="690" vertical-scroll-proportion="0.6492027" vertical-offset="0" max-vertical-offset="885" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/loading_7.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/popup_loading.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="38" selection-start="475" selection-end="475" vertical-scroll-proportion="0.4368932" vertical-offset="0" max-vertical-offset="585">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/view/plugin/PopupLoaingDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="42" selection-start="1828" selection-end="1828" vertical-scroll-proportion="0.10250569" vertical-offset="735" max-vertical-offset="1260" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/QrSchoolActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="138" column="69" selection-start="5017" selection-end="5017" vertical-scroll-proportion="0.0" vertical-offset="1266" max-vertical-offset="1710">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/listener/CourseListScrollListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="74" selection-start="1255" selection-end="1624" vertical-scroll-proportion="0.7408207" vertical-offset="257" max-vertical-offset="720" />
@@ -1958,13 +1904,6 @@
         <state line="158" column="0" selection-start="9806" selection-end="9806" vertical-scroll-proportion="0.0" vertical-offset="2033" max-vertical-offset="2445" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/color.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="40" selection-start="1873" selection-end="1879" vertical-scroll-proportion="0.40384614" vertical-offset="477" max-vertical-offset="1230">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/learn_list_item.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="61" column="46" selection-start="2361" selection-end="2361" vertical-scroll-proportion="0.6015424" vertical-offset="681" max-vertical-offset="1170">
@@ -1984,17 +1923,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="103" column="0" selection-start="3393" selection-end="3393" vertical-scroll-proportion="0.516129" vertical-offset="1037" max-vertical-offset="2085">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/EdusohoApp.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="5" selection-start="1817" selection-end="1817" vertical-scroll-proportion="0.0" vertical-offset="417" max-vertical-offset="3270">
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#5936#6317#0" expanded="false" />
-            <element signature="e#6306#6307#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2050,52 +1978,9 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/BaseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="40" selection-start="2384" selection-end="2384" vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="3075">
-          <folding>
-            <element signature="e#2132#2408#0" expanded="false" />
-            <element signature="e#2397#2398#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/view/ExitCoursePopupDialog.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="32" column="34" selection-start="873" selection-end="873" vertical-scroll-proportion="0.21634616" vertical-offset="285" max-vertical-offset="1020" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseInfoActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="161" column="21" selection-start="5774" selection-end="5774" vertical-scroll-proportion="0.15865384" vertical-offset="2259" max-vertical-offset="10875">
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#14044#15484#0" expanded="false" />
-            <element signature="e#14459#14837#0" expanded="false" />
-            <element signature="e#14814#14815#0" expanded="false" />
-            <element signature="e#15473#15474#0" expanded="false" />
-            <element signature="e#16562#17318#0" expanded="false" />
-            <element signature="e#17295#17296#0" expanded="false" />
-            <element signature="e#24567#25064#0" expanded="false" />
-            <element signature="e#25053#25054#0" expanded="false" />
-            <element signature="e#25289#25699#0" expanded="false" />
-            <element signature="e#25688#25689#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/NetSchoolActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="133" column="41" selection-start="4903" selection-end="4903" vertical-scroll-proportion="0.0" vertical-offset="1080" max-vertical-offset="3900">
-          <folding>
-            <element signature="e#3698#6344#0" expanded="false" />
-            <element signature="e#4233#6317#0" expanded="false" />
-            <element signature="e#5501#6105#0" expanded="false" />
-            <element signature="e#6066#6067#0" expanded="false" />
-            <element signature="e#6298#6299#0" expanded="false" />
-            <element signature="e#6333#6334#0" expanded="false" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/list_empty_info.xml">
@@ -2144,23 +2029,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SchCourseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="270" column="45" selection-start="8933" selection-end="8933" vertical-scroll-proportion="1.7149533" vertical-offset="2686" max-vertical-offset="4005">
-          <folding>
-            <element signature="e#2228#2246#0" expanded="false" />
-            <element signature="e#2272#2660#0" expanded="false" />
-            <element signature="e#2645#2646#0" expanded="false" />
-            <element signature="e#2716#3166#0" expanded="false" />
-            <element signature="e#3155#3156#0" expanded="false" />
-            <element signature="e#4009#4299#0" expanded="false" />
-            <element signature="e#4284#4285#0" expanded="false" />
-            <element signature="e#8604#9170#0" expanded="false" />
-            <element signature="e#9147#9148#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/plugin/video/CustomMediaController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="172" column="29" selection-start="5006" selection-end="5006" vertical-scroll-proportion="0.0" vertical-offset="1886" max-vertical-offset="3570">
@@ -2170,40 +2038,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/assets/empty.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="5" selection-start="5" selection-end="5" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="429">
-          <folding />
-        </state>
+        <state line="0" column="5" selection-start="5" selection-end="5" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="429" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/plugin/video/EduSohoVideoActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="0" selection-start="2419" selection-end="2419" vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="2175">
-          <folding>
-            <element signature="e#1638#2106#0" expanded="true" />
-            <element signature="e#2094#2095#0" expanded="true" />
-            <element signature="e#2148#2416#0" expanded="true" />
-            <element signature="e#2405#2406#0" expanded="true" />
-            <element signature="e#2463#2703#0" expanded="true" />
-            <element signature="e#2692#2693#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/my_setting.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="38" selection-start="3861" selection-end="3861" vertical-scroll-proportion="0.2284264" vertical-offset="1275" max-vertical-offset="3075">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SettingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="38" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.74821854" vertical-offset="0" max-vertical-offset="2595">
-          <folding />
-        </state>
+        <state line="70" column="0" selection-start="2419" selection-end="2419" vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="2175" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/adapter/LessonAdapter.java">
@@ -2213,20 +2053,267 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="421">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/app.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1305">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="25" selection-start="211" selection-end="211" vertical-scroll-proportion="0.35629454" vertical-offset="0" max-vertical-offset="510">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="30" selection-start="14" selection-end="30" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="421">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="40" selection-start="1342" selection-end="1347" vertical-scroll-proportion="0.0" vertical-offset="310" max-vertical-offset="825">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/color.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="4" selection-start="2406" selection-end="2513" vertical-scroll-proportion="0.26128265" vertical-offset="730" max-vertical-offset="1230">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/lesson_menu_bg.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="44" selection-start="190" selection-end="190" vertical-scroll-proportion="0.17814727" vertical-offset="0" max-vertical-offset="421">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/lesson_menu.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="42" selection-start="283" selection-end="283" vertical-scroll-proportion="0.19035533" vertical-offset="0" max-vertical-offset="394">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="4" selection-start="734" selection-end="851" vertical-scroll-proportion="0.35629454" vertical-offset="195" max-vertical-offset="1050">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/NetSchoolActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="17" selection-start="2816" selection-end="2816" vertical-scroll-proportion="-5.0319147" vertical-offset="2980" max-vertical-offset="3450">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/actionbar_title.xml">
+      <provider editor-type-id="text-editor">
+        <state line="9" column="17" selection-start="356" selection-end="368" vertical-scroll-proportion="0.0" vertical-offset="123" max-vertical-offset="1005">
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/NotificationActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="17" selection-start="1478" selection-end="1478" vertical-scroll-proportion="0.33333334" vertical-offset="423" max-vertical-offset="1230">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/my_setting.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="16" selection-start="5075" selection-end="5075" vertical-scroll-proportion="-27.333334" vertical-offset="1047" max-vertical-offset="3525">
+          <folding>
+            <element signature="e#6919#6945#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseLessonActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="171" column="33" selection-start="6547" selection-end="6547" vertical-scroll-proportion="0.5269608" vertical-offset="2185" max-vertical-offset="10260">
+        <state line="680" column="0" selection-start="25325" selection-end="25325" vertical-scroll-proportion="0.45560747" vertical-offset="10005" max-vertical-offset="11025">
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3109#3254#0" expanded="true" />
+            <element signature="e#3243#3244#0" expanded="true" />
+            <element signature="e#3303#3718#0" expanded="true" />
+            <element signature="e#3502#3692#0" expanded="true" />
+            <element signature="e#3673#3674#0" expanded="true" />
+            <element signature="e#3707#3708#0" expanded="true" />
             <element signature="e#3747#4609#0" expanded="true" />
             <element signature="e#4598#4599#0" expanded="true" />
             <element signature="e#6250#6312#0" expanded="true" />
+            <element signature="e#8690#9113#0" expanded="true" />
+            <element signature="e#9102#9103#0" expanded="true" />
+            <element signature="e#9462#9885#0" expanded="true" />
+            <element signature="e#9874#9875#0" expanded="true" />
+            <element signature="e#10253#11262#0" expanded="true" />
+            <element signature="e#10613#10842#0" expanded="true" />
+            <element signature="e#10819#10820#0" expanded="true" />
+            <element signature="e#10989#11218#0" expanded="true" />
+            <element signature="e#11195#11196#0" expanded="true" />
+            <element signature="e#11251#11252#0" expanded="true" />
+            <element signature="e#11657#13562#0" expanded="true" />
+            <element signature="e#12426#12709#0" expanded="true" />
+            <element signature="e#12678#12679#0" expanded="true" />
+            <element signature="e#12816#13518#0" expanded="true" />
+            <element signature="e#13495#13496#0" expanded="true" />
+            <element signature="e#13551#13552#0" expanded="true" />
+            <element signature="e#13897#15364#0" expanded="true" />
+            <element signature="e#15353#15354#0" expanded="true" />
             <element signature="e#17441#17874#0" expanded="true" />
             <element signature="e#17863#17864#0" expanded="true" />
+            <element signature="e#18068#18489#0" expanded="true" />
+            <element signature="e#18482#18483#0" expanded="true" />
+            <element signature="e#19077#19598#0" expanded="true" />
             <element signature="e#19396#19418#0" expanded="true" />
             <element signature="e#19531#19554#0" expanded="true" />
+            <element signature="e#19587#19588#0" expanded="true" />
+            <element signature="e#20005#21117#0" expanded="true" />
             <element signature="e#20243#20266#0" expanded="true" />
+            <element signature="e#20548#21074#0" expanded="true" />
+            <element signature="e#21051#21052#0" expanded="true" />
+            <element signature="e#21102#21103#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/model/Course.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="18" selection-start="360" selection-end="360" vertical-scroll-proportion="0.0" vertical-offset="78" max-vertical-offset="630">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_info_item_content.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="33" selection-start="2051" selection-end="2051" vertical-scroll-proportion="0.51449275" vertical-offset="582" max-vertical-offset="2790">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_list_item.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="24" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.33333334" vertical-offset="747" max-vertical-offset="1650">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_list_normal_item.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="21" selection-start="1835" selection-end="1835" vertical-scroll-proportion="-4.7777777" vertical-offset="531" max-vertical-offset="945">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/adapter/CourseListAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="80" column="79" selection-start="2162" selection-end="2162" vertical-scroll-proportion="0.5578231" vertical-offset="699" max-vertical-offset="1695">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SchCourseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="249" column="30" selection-start="7699" selection-end="7699" vertical-scroll-proportion="0.63084114" vertical-offset="2745" max-vertical-offset="3735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/CourseInfoActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="250" column="35" selection-start="9001" selection-end="9001" vertical-scroll-proportion="0.46938777" vertical-offset="2658" max-vertical-offset="10200">
+          <folding>
+            <element signature="e#18847#19400#0" expanded="true" />
+            <element signature="e#19389#19390#0" expanded="true" />
+            <element signature="e#19639#20349#0" expanded="true" />
+            <element signature="e#20338#20339#0" expanded="true" />
+            <element signature="e#22500#22701#0" expanded="true" />
+            <element signature="e#22690#22691#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/SettingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="112" column="25" selection-start="3310" selection-end="3310" vertical-scroll-proportion="0.0" vertical-offset="977" max-vertical-offset="2625">
+          <folding>
+            <element signature="e#5654#5831#0" expanded="true" />
+            <element signature="e#5820#5821#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/EdusohoApp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="200" column="29" selection-start="5737" selection-end="5737" vertical-scroll-proportion="0.40136054" vertical-offset="2418" max-vertical-offset="3270">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/AboutActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="31" selection-start="1205" selection-end="1205" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="750">
+          <folding>
+            <element signature="e#1261#1685#0" expanded="true" />
+            <element signature="e#1674#1675#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/FavoriteActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="0" selection-start="1211" selection-end="1211" vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="1755">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/BaseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="875" selection-end="875" vertical-scroll-proportion="0.034013607" vertical-offset="105" max-vertical-offset="3030">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusohoapp/app/ui/QrSchoolActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="5" selection-start="1643" selection-end="1643" vertical-scroll-proportion="0.34013605" vertical-offset="135" max-vertical-offset="1695">
+          <folding />
         </state>
       </provider>
     </entry>

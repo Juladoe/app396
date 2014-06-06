@@ -247,7 +247,9 @@ public class CourseInfoActivity extends BaseActivity {
         aquery.id(R.id.course_info_title).text(mCourseInfo.title);
         aquery.id(R.id.course_rating).rating((float) mCourseInfo.rating);
 
-        aquery.id(R.id.course_student_num).text("学员数:" + mCourseInfo.studentNum);
+        if ("opened".equals(mCourseInfo.showStudentNumType)) {
+            aquery.id(R.id.course_student_num).text("学员数:" + mCourseInfo.studentNum);
+        }
 
         aquery.id(R.id.course_free).text(mCourseInfo.price > 0 ? mCourseInfo.price + "元" : "免费");
 

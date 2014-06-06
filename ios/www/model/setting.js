@@ -29,7 +29,7 @@ define(function(require, exports){
 							</div>
 						</label>
 						</li>
-						<li onclick="SettingJumpToMain();">登录其他网校</li>
+						<li onclick="SettingJumpToMain();">选择其他网校</li>
 					</div>
 					
 					<div class="setting_mulit_card">

@@ -52,7 +52,6 @@
             android:layout_alignBottom="@id/course_teacher"
             android:layout_toRightOf="@id/course_teacher"
             android:padding="5dp"
-            android:text="学员数:"
             android:textSize="@dimen/course_info_normal" />
 
         <TextView

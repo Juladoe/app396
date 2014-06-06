@@ -90,7 +90,10 @@ public class CourseListAdapter extends BaseAdapter {
         }
 
         holder.course_title.setText(course.title);
-        holder.course_studentNum.setText(course.studentNum + " 学员");
+        if ("opened".equals(course.showStudentNumType)) {
+            holder.course_studentNum.setText(course.studentNum + " 学员");
+        }
+
         if (TextUtils.isEmpty(course.middlePicture)) {
             holder.aq.id(R.id.course_pic).image(R.drawable.noram_course);
         } else {

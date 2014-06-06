@@ -46,6 +46,7 @@ public class QrSchoolActivity extends BaseActivity {
         setContentView(R.layout.qrsch_layout);
         initView();
         app.addTask("QrSchoolActivity", this);
+        System.out.println("user->" + app.loginUser);
     }
 
     public static void start(Activity context) {
@@ -89,9 +90,7 @@ public class QrSchoolActivity extends BaseActivity {
         if (requestCode == REQUEST_QR && resultCode == RESULT_QR) {
             if (data != null) {
                 Bundle bundle = data.getExtras();
-                int status = bundle.getInt("status");
                 String result = bundle.getString("result");
-                System.out.println(result);
                 showQrResultDlg(result);
             }
         }

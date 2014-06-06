@@ -58,7 +58,7 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
 
     private OverScrollView net_sch_layout;
     private View load_layout;
-    private Handler workHandler;
+
     private static String mTitle = "添加网校";
     private ImageView search_qr_btn;
     private EditText search_edt;
@@ -72,8 +72,6 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.netschool);
 
-        //搜索进度条handler
-        workHandler = new ProgressBarHandler(this);
         initView();
         app.addTask("NetSchoolActivity", this);
     }
@@ -203,7 +201,6 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
      */
     private void loadRecommendSchoolData()
     {
-        workHandler.sendEmptyMessage(ProgressBarHandler.REFRESH_START);
         app.query.ajax(
                 app.host + Const.RECOMMEND_SCHOOL, String.class, new AjaxCallback<String>(){
             @Override
@@ -217,7 +214,6 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
                 } else {
                     loadRecommendSchool(list);
                 }
-                workHandler.sendEmptyMessage(ProgressBarHandler.REFRESH_STOP);
             }
         });
     }
@@ -296,22 +292,5 @@ public class NetSchoolActivity extends BaseActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.normal_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return true;
     }
 }

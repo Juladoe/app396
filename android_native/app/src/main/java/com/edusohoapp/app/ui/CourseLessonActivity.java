@@ -659,6 +659,7 @@ public class CourseLessonActivity extends BaseActivity {
             return mVideoProgressView;
         }
 
+
         @Override
         public void onHideCustomView() {
             super.onHideCustomView();
@@ -689,7 +690,7 @@ public class CourseLessonActivity extends BaseActivity {
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
             view.loadUrl("javascript:window.jsobj.showHtml(document.getElementsByTagName('video')[0].src);");
-            view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
+            //view.loadUrl("javascript:window.jsobj.show(document.getElementsByTagName('html')[0].innerHTML);");
         }
 
         @Override

@@ -74,16 +74,7 @@ public class SchCourseActivity extends BaseActivity{
 	*/
 	private void initView() {
 		if (app.defaultSchool != null) {
-            setBackIcon(R.string.font_home, app.defaultSchool.name, new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("qr-->" + app.taskIsRun("QrSchoolActivity"));
-                    if (!app.taskIsRun("QrSchoolActivity")) {
-                        QrSchoolActivity.start(mActivity);
-                    }
-                    finish();
-                }
-            });
+            setBackMode(app.defaultSchool.name, false, null);
 		}
 
         setMenu(R.layout.schcourse_layout_menu, new MenuListener() {

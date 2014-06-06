@@ -49,8 +49,7 @@
                 android:id="@+id/course_studentNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="3dp"
-                android:text="0 学员" />
+                android:padding="3dp" />
 
         </RelativeLayout>
 

@@ -62,12 +62,12 @@ var courseinfo_text = new String(function(){
 			<!--评论 -->
 			<div style="padding-top:2px;" id="lesson_tab_div">
 				
-				<div id="0" class="ui-body-d ui-content tab_content">
+				<div id="0" class="ui-body-d ui-content tab_content" style="overflow:scroll;">
 					<table style="width:100%;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
 						${cb:items}
 					</table>
 				</div>
-				<div id="1" class="ui-body-d ui-content tab_content">
+				<div id="1" class="ui-body-d ui-content tab_content" style="overflow:scroll;">
 					<div class="card course_card">
 						<p class="card-head">	
 							${course.title}

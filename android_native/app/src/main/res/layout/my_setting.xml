@@ -78,36 +78,66 @@
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/sch_sel_layout"
+                android:orientation="vertical"
                 android:layout_margin="8dp"
-                android:id="@+id/setting_entersch_layout"
                 android:layout_below="@id/setting_favorite_layout"
-                android:padding="15dp"
-                android:background="@drawable/set_item_bg"
+                android:background="@drawable/card_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:text="自动进入网校"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <RelativeLayout
+                    android:id="@+id/setting_entersch_layout"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <CheckBox
-                    android:background="@drawable/set_check_sel"
-                    android:id="@+id/setting_check"
-                    android:button="@null"
-                    android:focusable="false"
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="自动进入网校"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <CheckBox
+                        android:background="@drawable/set_check_sel"
+                        android:id="@+id/setting_check"
+                        android:button="@null"
+                        android:focusable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/setting_line"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true" />
-            </RelativeLayout>
+                    android:layout_height="1px" />
+
+                <RelativeLayout
+                    android:background="@drawable/set_child_item_bg"
+                    android:clickable="true"
+                    android:id="@+id/sel_sch_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="选择其他网校"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/setting_layout_one"
                 android:orientation="vertical"
                 android:layout_margin="8dp"
-                android:layout_below="@id/setting_entersch_layout"
+                android:layout_below="@id/sch_sel_layout"
                 android:background="@drawable/card_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

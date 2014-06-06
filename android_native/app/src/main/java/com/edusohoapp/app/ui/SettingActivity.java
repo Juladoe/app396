@@ -40,8 +40,6 @@ public class SettingActivity extends BaseActivity
     private ViewGroup nav_my_btn;
     private AQuery aq;
 
-    private View setting_user_layout;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -134,6 +132,13 @@ public class SettingActivity extends BaseActivity
             }
         });
 
+        aq.id(R.id.sel_sch_layout).clicked(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QrSchoolActivity.start(mActivity);
+            }
+        });
+
         aq.id(R.id.setting_clear_layout).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,17 +169,20 @@ public class SettingActivity extends BaseActivity
     {
         if (app.loginUser == null) {
             aq.id(R.id.setting_user_nickname).text("点击登录网校");
+            aq.id(R.id.setting_user_info).text("暂无个人简介");
             return;
         }
+
         aq.id(R.id.setting_user_layout).enabled(false);
         aq.id(R.id.setting_user_avatar).image(app.loginUser.largeAvatar, false, true);
         aq.id(R.id.setting_user_nickname).text(app.loginUser.nickname);
         aq.id(R.id.setting_user_info).text(app.loginUser.title);
-        aq.id(R.id.setting_logout_btn).visibility(View.VISIBLE).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logout();
-            }
+        aq.id(R.id.setting_logout_btn).visibility(View.VISIBLE).clicked(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        logout();
+                    }
         });
     }
 
@@ -209,12 +217,6 @@ public class SettingActivity extends BaseActivity
             vg.getChildAt(i).setEnabled(isEnable);
         }
     }
-
-    @Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		//Create the search view
-		return true;
-	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
