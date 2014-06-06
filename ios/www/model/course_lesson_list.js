@@ -190,8 +190,12 @@ function setLessonContent(content, type, lesson_id, mediaUri, mediaSource)
 	audio_model.stop();
 	switch (type) {
 		case "text":
+			var index = 0;
+			var replaceStr = "<img onclick='showLessonImages({index}, this);' ";
 			content = content.replace(/href=[^=]+\s/g, "href='javascript:void();'");
-			content = content.replace(/<img/g, "<img onclick='showLessonImages(this);' ");
+			content = content.replace(/<img/g, function(match){
+				return replaceStr.replace("{index}", index++);
+			});
 			break;
 		case "testpaper":
 			content = "暂不支持试卷功能";
