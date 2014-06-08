@@ -7,13 +7,10 @@
 //
 
 #import "ImagePlugin.h"
-#import "ImagesViewController.h"
 #import "XHImageViewer.h"
 #import "UIImageView+XHURLDownload.h"
 
 @interface ImagePlugin () <XHImageViewerDelegate>
-
-
 
 @end
 
@@ -27,17 +24,36 @@
     NSArray *urls = [command.arguments objectAtIndex:1];
     
     if ((index >=0) && urls) {
-        ImagesViewController *imageViewer = [[ImagesViewController alloc] initWithImageUrls:urls
-                                                                                    atIndex:index];
-        [[[UIApplication sharedApplication] delegate].window.rootViewController presentViewController:imageViewer
-                                                                                                 animated:YES
-                                                                                               completion:nil];
+        NSMutableArray *imageViews = [NSMutableArray array];
+        for (int i = 0; i < [urls count]; i ++) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 100, 300, 280)];
+            [imageView loadWithURL:[NSURL URLWithString:[urls objectAtIndex:i]]
+                        placeholer:nil
+         showActivityIndicatorView:YES];
+            [imageViews addObject:imageView];
+        }
+        
+        XHImageViewer *imageViewer = [[XHImageViewer alloc] init];
+        imageViewer.delegate = self;
+        [imageViewer showWithImageViews:imageViews selectedView:[imageViews objectAtIndex:index]];
+        
+        [[UIApplication sharedApplication]setStatusBarHidden:YES
+                                               withAnimation:UIStatusBarAnimationFade];
     }
     else {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     
+}
+
+#pragma mark - XHImageViewerDelegate
+
+- (void)imageViewer:(XHImageViewer *)imageViewer DidDismissWithSelectedView:(UIImageView *)selectedView
+{
+    [selectedView removeFromSuperview];
+    [[UIApplication sharedApplication]setStatusBarHidden:NO
+                                           withAnimation:UIStatusBarAnimationFade];
 }
 
 @end
