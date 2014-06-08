@@ -868,13 +868,14 @@ define(function(require, exports){
 
 	window.showLessonImages = function(index, img)
 	{
-		var imgs = $("#coursgite_lesson_content").find("img");
+		var imgs = $("#course_lesson_content").find("img");
 		var imgSize = imgs.length;
 		var imgArray = new Array();
 		for (var i =0; i < imgSize; i++) {
 			var src = imgs.get(i).src;
 			imgArray.push(src);
 		}
+		console.log(imgArray);
 		//本地界面显示图片
 		cordova.exec(
 	                function(status) {
