@@ -38,8 +38,17 @@
 		308D05391370CCF300D202BF /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 308D05301370CCF300D202BF /* icon@2x.png */; };
 		30E5649213A7FCAF007403D8 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30E5649113A7FCAF007403D8 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
+		507199DB19417663008A72DE /* NSString+XHMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199CC19417663008A72DE /* NSString+XHMD5.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199DC19417663008A72DE /* UIImage+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199CE19417663008A72DE /* UIImage+Utility.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199DD19417663008A72DE /* UIImageView+XHURLDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D019417663008A72DE /* UIImageView+XHURLDownload.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199DE19417663008A72DE /* XHCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D219417663008A72DE /* XHCacheManager.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199DF19417663008A72DE /* XHFileAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D419417663008A72DE /* XHFileAttribute.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199E019417663008A72DE /* XHImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D619417663008A72DE /* XHImageViewer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199E119417663008A72DE /* XHViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D819417663008A72DE /* XHViewState.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199E219417663008A72DE /* XHZoomingImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199DA19417663008A72DE /* XHZoomingImageView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507199E51941769C008A72DE /* ImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199E41941769C008A72DE /* ImagesViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		509E9D02192DE81500ED81DA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 509E9D01192DE81500ED81DA /* CoreMotion.framework */; };
-		50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50BCE58819415008007E03D7 /* ImagePlugin.m */; };
+		50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50BCE58819415008007E03D7 /* ImagePlugin.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		5AA0E66D1729F45B000DC89A /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66C1729F45B000DC89A /* OpenAL.framework */; };
 		5AA0E66F1729F460000DC89A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66E1729F460000DC89A /* ImageIO.framework */; };
 		5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE5B34173C68D80009041E /* CoreLocation.framework */; };
@@ -115,6 +124,24 @@
 		30E5649113A7FCAF007403D8 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		30FC414816E50CA1004E6F35 /* icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72@2x.png"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Phonegap_ios-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Phonegap_ios-Prefix.pch"; sourceTree = "<group>"; };
+		507199CB19417663008A72DE /* NSString+XHMD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+XHMD5.h"; sourceTree = "<group>"; };
+		507199CC19417663008A72DE /* NSString+XHMD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+XHMD5.m"; sourceTree = "<group>"; };
+		507199CD19417663008A72DE /* UIImage+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Utility.h"; sourceTree = "<group>"; };
+		507199CE19417663008A72DE /* UIImage+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Utility.m"; sourceTree = "<group>"; };
+		507199CF19417663008A72DE /* UIImageView+XHURLDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+XHURLDownload.h"; sourceTree = "<group>"; };
+		507199D019417663008A72DE /* UIImageView+XHURLDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XHURLDownload.m"; sourceTree = "<group>"; };
+		507199D119417663008A72DE /* XHCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHCacheManager.h; sourceTree = "<group>"; };
+		507199D219417663008A72DE /* XHCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHCacheManager.m; sourceTree = "<group>"; };
+		507199D319417663008A72DE /* XHFileAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHFileAttribute.h; sourceTree = "<group>"; };
+		507199D419417663008A72DE /* XHFileAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHFileAttribute.m; sourceTree = "<group>"; };
+		507199D519417663008A72DE /* XHImageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHImageViewer.h; sourceTree = "<group>"; };
+		507199D619417663008A72DE /* XHImageViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHImageViewer.m; sourceTree = "<group>"; };
+		507199D719417663008A72DE /* XHViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHViewState.h; sourceTree = "<group>"; };
+		507199D819417663008A72DE /* XHViewState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHViewState.m; sourceTree = "<group>"; };
+		507199D919417663008A72DE /* XHZoomingImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHZoomingImageView.h; sourceTree = "<group>"; };
+		507199DA19417663008A72DE /* XHZoomingImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHZoomingImageView.m; sourceTree = "<group>"; };
+		507199E31941769C008A72DE /* ImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagesViewController.h; sourceTree = "<group>"; };
+		507199E41941769C008A72DE /* ImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesViewController.m; sourceTree = "<group>"; };
 		509E9D01192DE81500ED81DA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		50BCE58719415008007E03D7 /* ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePlugin.h; sourceTree = "<group>"; };
 		50BCE58819415008007E03D7 /* ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePlugin.m; sourceTree = "<group>"; };
@@ -189,6 +216,8 @@
 				72E53C7D1923167200ABF7DE /* AlipayViewController.xib */,
 				72E53CC41923641500ABF7DE /* HeaderViewController.h */,
 				72E53CC51923641500ABF7DE /* HeaderViewController.m */,
+				507199E31941769C008A72DE /* ImagesViewController.h */,
+				507199E41941769C008A72DE /* ImagesViewController.m */,
 			);
 			name = Classes;
 			path = Phonegap_ios/Classes;
@@ -247,6 +276,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				507199CA19417663008A72DE /* XHImageViewer */,
 				30A0434214DC770100060A13 /* de.lproj */,
 				30A0434514DC770100060A13 /* se.lproj */,
 				1F766FDB13BBADB100FB74C0 /* en.lproj */,
@@ -354,6 +384,29 @@
 				30A0434614DC770100060A13 /* Localizable.strings */,
 			);
 			path = se.lproj;
+			sourceTree = "<group>";
+		};
+		507199CA19417663008A72DE /* XHImageViewer */ = {
+			isa = PBXGroup;
+			children = (
+				507199CB19417663008A72DE /* NSString+XHMD5.h */,
+				507199CC19417663008A72DE /* NSString+XHMD5.m */,
+				507199CD19417663008A72DE /* UIImage+Utility.h */,
+				507199CE19417663008A72DE /* UIImage+Utility.m */,
+				507199CF19417663008A72DE /* UIImageView+XHURLDownload.h */,
+				507199D019417663008A72DE /* UIImageView+XHURLDownload.m */,
+				507199D119417663008A72DE /* XHCacheManager.h */,
+				507199D219417663008A72DE /* XHCacheManager.m */,
+				507199D319417663008A72DE /* XHFileAttribute.h */,
+				507199D419417663008A72DE /* XHFileAttribute.m */,
+				507199D519417663008A72DE /* XHImageViewer.h */,
+				507199D619417663008A72DE /* XHImageViewer.m */,
+				507199D719417663008A72DE /* XHViewState.h */,
+				507199D819417663008A72DE /* XHViewState.m */,
+				507199D919417663008A72DE /* XHZoomingImageView.h */,
+				507199DA19417663008A72DE /* XHZoomingImageView.m */,
+			);
+			path = XHImageViewer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -478,14 +531,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				507199DF19417663008A72DE /* XHFileAttribute.m in Sources */,
 				72E53C7E1923167200ABF7DE /* AlipayViewController.m in Sources */,
+				507199E119417663008A72DE /* XHViewState.m in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				723FC7D0191DC7A1004AC6B1 /* CDVBarcodeScanner.mm in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
+				507199E51941769C008A72DE /* ImagesViewController.m in Sources */,
 				72E53CC61923641500ABF7DE /* HeaderViewController.m in Sources */,
+				507199DE19417663008A72DE /* XHCacheManager.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
+				507199E019417663008A72DE /* XHImageViewer.m in Sources */,
 				723FC7D1191DC7A1004AC6B1 /* zxing-all-in-one.cpp in Sources */,
 				724A5074191C763700BECABE /* VideoPlugin.m in Sources */,
+				507199E219417663008A72DE /* XHZoomingImageView.m in Sources */,
+				507199DC19417663008A72DE /* UIImage+Utility.m in Sources */,
+				507199DB19417663008A72DE /* NSString+XHMD5.m in Sources */,
+				507199DD19417663008A72DE /* UIImageView+XHURLDownload.m in Sources */,
 				50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */,
 				72E53CC91923B85E00ABF7DE /* UtilPlugin.m in Sources */,
 				72E53C771923121600ABF7DE /* AlipayPlugin.m in Sources */,
