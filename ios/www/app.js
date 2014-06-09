@@ -875,7 +875,7 @@ define(function(require, exports){
 			var src = imgs.get(i).src;
 			imgArray.push(src);
 		}
-		console.log(imgArray);
+		
 		//本地界面显示图片
 		cordova.exec(
 	                function(status) {

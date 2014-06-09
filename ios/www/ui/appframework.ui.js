@@ -1087,6 +1087,7 @@
             if (!text) text = this.loadingText || "";
             $.query("#afui_mask>h1").html(text);
             $.maskblockUI(0.5);
+
             $.query("#afui_mask").show();
         },
         /**
@@ -2382,7 +2383,8 @@
     $.maskblockUI = function (opacity) {
         if (uiMaskBlocked)
             return;
-        opacity = opacity ? " style='opacity:" + opacity + ";'" : "";
+        var height = window.screen.height;
+        opacity = opacity ? " style='height:" + height + "px; opacity:" + opacity + ";'" : "";
         $.query("BODY").prepend($("<div id='loadmask'" + opacity + "></div>"));
         $.query("BODY DIV#loadmask").bind("touchstart", function (e) {
             e.preventDefault();
