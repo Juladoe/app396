@@ -46,7 +46,6 @@
 		507199E019417663008A72DE /* XHImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D619417663008A72DE /* XHImageViewer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		507199E119417663008A72DE /* XHViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199D819417663008A72DE /* XHViewState.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		507199E219417663008A72DE /* XHZoomingImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199DA19417663008A72DE /* XHZoomingImageView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		507199E51941769C008A72DE /* ImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199E41941769C008A72DE /* ImagesViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		509E9D02192DE81500ED81DA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 509E9D01192DE81500ED81DA /* CoreMotion.framework */; };
 		50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50BCE58819415008007E03D7 /* ImagePlugin.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		5AA0E66D1729F45B000DC89A /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66C1729F45B000DC89A /* OpenAL.framework */; };
@@ -140,8 +139,6 @@
 		507199D819417663008A72DE /* XHViewState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHViewState.m; sourceTree = "<group>"; };
 		507199D919417663008A72DE /* XHZoomingImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHZoomingImageView.h; sourceTree = "<group>"; };
 		507199DA19417663008A72DE /* XHZoomingImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHZoomingImageView.m; sourceTree = "<group>"; };
-		507199E31941769C008A72DE /* ImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagesViewController.h; sourceTree = "<group>"; };
-		507199E41941769C008A72DE /* ImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesViewController.m; sourceTree = "<group>"; };
 		509E9D01192DE81500ED81DA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		50BCE58719415008007E03D7 /* ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePlugin.h; sourceTree = "<group>"; };
 		50BCE58819415008007E03D7 /* ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePlugin.m; sourceTree = "<group>"; };
@@ -216,8 +213,6 @@
 				72E53C7D1923167200ABF7DE /* AlipayViewController.xib */,
 				72E53CC41923641500ABF7DE /* HeaderViewController.h */,
 				72E53CC51923641500ABF7DE /* HeaderViewController.m */,
-				507199E31941769C008A72DE /* ImagesViewController.h */,
-				507199E41941769C008A72DE /* ImagesViewController.m */,
 			);
 			name = Classes;
 			path = Phonegap_ios/Classes;
@@ -537,7 +532,6 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				723FC7D0191DC7A1004AC6B1 /* CDVBarcodeScanner.mm in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
-				507199E51941769C008A72DE /* ImagesViewController.m in Sources */,
 				72E53CC61923641500ABF7DE /* HeaderViewController.m in Sources */,
 				507199DE19417663008A72DE /* XHCacheManager.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
