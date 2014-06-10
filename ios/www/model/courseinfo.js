@@ -319,33 +319,10 @@ exports.load_data = function()
 			var list = new Array();
 			list[0] = data;
 			list_str = zy_tmpl(
-						$("#courseinfo_list_item").val(), 
-						list, 
-						zy_tmpl_count(list),function(a, b) {
-							switch (b[1]) {
-								case "largePicture":
-									var pic = "";
-									if (a.course.largePicture == null
-										|| a.course.largePicture == "") {
-										pic = "images/img1.jpg";
-									} else {
-										pic = a.course.largePicture;
-									}
-									$("#course_pic").attr("src", pic);
-									return;
-								case "location":
-									return schoolName;
-								case "teacher":
-									var teacher = a.course.teachers[0];
-									return teacher.nickname;
-								case "studentNum":
-									if ("opened" == a.showStudentNumType) {
-										return "学员数:" + a.studentNum;
-									}
-									return "";
-							}
-							return templ_courseinfo_handler(a, b);
-						});
+				$("#courseinfo_list_item").val(), 
+				list, 
+				zy_tmpl_count(list),courseTemplHandler
+				);
 
 				if (data.userFavorited == true) {
 					$("#favorite_radio").attr("checked", "checked");
@@ -362,6 +339,33 @@ exports.load_data = function()
 			$("#afui").popup("网络不可用，请重新尝试");
 		}
 	);
+}
+
+function courseTemplHandler(a, b)
+{
+	switch (b[1]) {
+		case "largePicture":
+			var pic = "";
+			if (a.course.largePicture == null
+				|| a.course.largePicture == "") {
+				pic = "images/img1.jpg";
+			} else {
+				pic = a.course.largePicture;
+			}
+			$("#course_pic").attr("src", pic);
+			return;
+		case "location":
+			return schoolName;
+		case "teacher":
+			var teacher = a.course.teachers[0];
+			return teacher.nickname;
+		case "studentNum":
+			if ("opened" == a.showStudentNumType) {
+				return "学员数:" + a.studentNum;
+			}
+			return "";
+	}
+	return templ_courseinfo_handler(a, b);
 }
 
 function setRadioStatus(carouselIndex)
@@ -579,7 +583,9 @@ function templ_courseinfo_handler(a, b)
 			if (about == "") {
 				return "";
 			}
-			return html.replace("{about}", about);
+			html = html.replace("{about}", about);
+			html = html.replace(/href=[^=]+\s/g, "href='javascript:void()';'");
+			return html;
 
 		case "goals":
 			var course_target = a.course.goals
