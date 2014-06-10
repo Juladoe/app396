@@ -241,7 +241,7 @@ exports.addComment = function()
         		$("#addCommentPopup").find("#commentContent").val($(this).val());
         	});
         }
-	});
+});
 }
 
 exports.setComment = function(review)

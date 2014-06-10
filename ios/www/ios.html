@@ -139,7 +139,7 @@
 
 			<!-- 滚动横幅 -->
             <div id="content">
-            <div title="" data-load="loadedPanel" id="main" class="panel" data-header="none" data-footer="none">
+            <div title="" data-load="loadedPanel" id="qrSearchPanel" class="panel" data-header="none" data-footer="none">
                 <div class="center_div">
                     <a class="" onclick="schoolpage_model.qrSearch();">
                       <img width="120" height="120" src="images/qr_logo.png" >
@@ -147,7 +147,7 @@
                     <span onclick="schoolpage_model.qrSearch();" class="button white custom_button_blue">扫描二维码登录</span>
                     <div>
                         <a id="backToSetting" style="float:left;display:none;" onclick="jumpToSetting();" class="normal_btn">返回</a>
-                        <a style="float:right;" onclick="load_schoollist_page()" class="normal_btn">普通登录</a>
+                        <a style="float:right;" onclick="load_schoollist_page();" class="normal_btn">普通登录</a>
                     </div>
                 </div>
 
@@ -157,8 +157,7 @@
 				<video id="playvideo" width="100%" height="240" controls="controls"></video>
 			</div>
 
-            <div title="购买课程" id="payCourse" class="panel" data-footer="none">
-                <iframe width="100%" id="payCourseIFrame"></iframe>
+            <div title="" id="main" selected="true" class="panel" data-footer="none" data-header="none">
             </div>
 
 			<div title="注册网校" id="regist" class="panel" data-header="normal_header" data-footer="none">
@@ -313,7 +312,7 @@
 
             <header id="course_lesson_list_header" class="custom_header">
                 <input type="radio" name="lesson_list_backbtn" checked="checked">
-                <button onclick="goback();" class="topcoat-tab-bar__button backButton_left">
+                <button onclick="lessonBackCourse();" class="topcoat-tab-bar__button backButton_left">
                   <i class="fa fa-2x fa-angle-left pressed">
                     <span class="back_text">返回</span>
                   </i>
@@ -380,12 +379,12 @@
                       <i class="search_btn fa fa-2x fa-search pressed"></i>
                     </button>
 
-					<div class="button-grouped flex tabbed ul_bg_null" id="course_head">
-						<a onclick="courselist_model.init_courselist_data(false,'latest');" class="button" data-ignore-pressed="true">最新</a>
-						<a onclick="courselist_model.init_courselist_data(false,'popular');" class="button pressed" data-ignore-pressed="true">热门</a>
-						<a onclick="courselist_model.init_courselist_data(false,'recommended');" class="button" data-ignore-pressed="true">推荐</a>
-					</div>
-				</div>
+                    		<div class="button-grouped flex tabbed ul_bg_null" id="course_head">
+                    			<a onclick="courselist_model.init_courselist_data(false,'latest');" class="button" data-ignore-pressed="true">最新</a>
+                    			<a onclick="courselist_model.init_courselist_data(false,'popular');" class="button pressed" data-ignore-pressed="true">热门</a>
+                    			<a onclick="courselist_model.init_courselist_data(false,'recommended');" class="button" data-ignore-pressed="true">推荐</a>
+                    		</div>
+                    	</div>
             </header>
 			<!-- 课程头部 end -->
 			<header id="info_header" style="height:255px;">
