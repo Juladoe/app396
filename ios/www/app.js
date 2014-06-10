@@ -125,7 +125,7 @@ define(function(require, exports) {
 
 	window.SettingJumpToMain = function() {
 		$("#backToSetting").show();
-		load_mian();
+		$.ui.loadContent('qrSearchPanel', false, false, 'slide');
 	}
 
 	window.jumpToSetting = function() {
