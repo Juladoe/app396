@@ -4,15 +4,11 @@
     android:layout_height="match_parent">
     <include layout="@layout/actionbar_title"/>
     <RelativeLayout
-        android:layout_marginTop="8dp"
+        android:id="@+id/favoirte_content"
+        android:background="@color/system_window_bg"
+        android:paddingTop="8dp"
         android:layout_below="@+id/edusoho_actionbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ViewStub
-            android:id="@+id/favoirte_content_vs"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout="@layout/course_content" />
-        <include layout="@layout/list_empty_info" />
     </RelativeLayout>
 </RelativeLayout>

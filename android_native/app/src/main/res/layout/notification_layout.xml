@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include layout="@layout/actionbar_title" />
 
-    <ListView
-        android:layout_margin="8dp"
-        android:dividerHeight="8dp"
-        android:divider="@null"
-        android:layout_below="@+id/edusoho_actionbar"
-        android:id="@+id/notification_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
-
     <RelativeLayout
+        android:id="@+id/notify_content"
         android:layout_below="@+id/edusoho_actionbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/list_empty_info" />
     </RelativeLayout>
 </RelativeLayout>

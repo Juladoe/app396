@@ -75,6 +75,7 @@
     <orderEntry type="library" exported="" name="android-query-full.0.26.8" level="project" />
     <orderEntry type="library" exported="" name="gson-2.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
+    <orderEntry type="module" module-name="ukphoto" exported="" />
     <orderEntry type="module" module-name="slidingmenu" exported="" />
   </component>
 </module>

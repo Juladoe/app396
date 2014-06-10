@@ -36,6 +36,11 @@ public class AppUtil {
         return about.replaceAll("<[^>]+>", "");
     }
 
+    public static String coverLessonContent(String content)
+    {
+        return content.replaceAll("href=[^=]+\\s", "href='javascript:void();' ");
+    }
+
     public static String coverTime(String time)
     {
         return time.substring(0, 10);

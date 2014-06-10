@@ -79,7 +79,6 @@ public class BaseActivity extends ActivityGroup {
             }
         });
         emptyLayout.inflate();
-        return;
     }
 
     protected void showErrorLayout(final String text, final ListErrorListener listener)
@@ -160,14 +159,18 @@ public class BaseActivity extends ActivityGroup {
         Toast.makeText(mContext, title, Toast.LENGTH_LONG).show();
     }
 
-    public void ajaxGetString(
-            String url, final ResultCallback rcl, Object... params)
+    public void ajax(String url, ResultCallback rcl, boolean showLoading)
     {
-        boolean isShowLoading = true;
-        if (params.length > 0) {
-            isShowLoading = (Boolean) params[0];
+        if (showLoading) {
+            ajaxGetString(url, rcl);
+        } else {
+            ajaxNormalGet(url, rcl);
         }
+    }
 
+    public void ajaxGetString(
+            String url, final ResultCallback rcl)
+    {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
         app.query.ajax(url, String.class, new AjaxCallback<String>(){
@@ -190,7 +193,7 @@ public class BaseActivity extends ActivityGroup {
                 }
 
                 if (code != Const.OK) {
-                    longToast("网络异常");
+                    longToast("网络访问异常！请检查是否链接网络。");
                     rcl.error(url, status);
                     return;
                 }
@@ -217,7 +220,7 @@ public class BaseActivity extends ActivityGroup {
                     //result error
                 }
                 if (code != Const.OK) {
-                    longToast("网络异常");
+                    longToast("网络访问异常！请检查是否链接网络。");
                     rcl.error(url, status);
                     return;
                 }

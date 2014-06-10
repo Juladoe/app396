@@ -2,10 +2,13 @@ package com.edusohoapp.app.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.androidquery.AQuery;
@@ -21,14 +24,21 @@ import com.edusohoapp.listener.CourseListScrollListener;
 import com.edusohoapp.listener.MoveListener;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public class SearchActivity extends BaseActivity {
 
     private AQuery aq;
     private View load_layout;
-    private EditText actionbar_search_edt;
+    private AutoCompleteTextView actionbar_search_edt;
     private EdusohoListView listView;
     private OverScrollView scrollView;
     private ViewGroup mSearchContent;
+
+    private static final String SEARCH_HISTORY = "search";
+    private ArrayList<String> mSearchList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +58,7 @@ public class SearchActivity extends BaseActivity {
         mSearchContent = (ViewGroup) findViewById(R.id.search_content);
 
         listView = (EdusohoListView) findViewById(R.id.course_liseview);
-        actionbar_search_edt = (EditText) findViewById(R.id.actionbar_search_edt);
+        actionbar_search_edt = (AutoCompleteTextView) findViewById(R.id.actionbar_search_edt);
 
         aq.id(R.id.actionbar_back).clicked(new View.OnClickListener() {
             @Override
@@ -69,8 +79,36 @@ public class SearchActivity extends BaseActivity {
                 View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
                 mSearchContent.addView(course_content);
                 loadSearchList(0, searchStr, false);
+                saveSearchHistory(searchStr);
             }
         });
+
+        loadSearchHistory();
+    }
+
+    private void saveSearchHistory(String text)
+    {
+        SharedPreferences sp = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        Map<String, ?> allHistory = sp.getAll();
+        int size = allHistory != null ? allHistory.size() : 0;
+        editor.putString(size + "", text);
+        editor.commit();
+    }
+
+    private void loadSearchHistory()
+    {
+        mSearchList = new ArrayList<String>();
+        SharedPreferences sp = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE);
+        Map<String, ?> schools = sp.getAll();
+        for (String key : schools.keySet()) {
+            mSearchList.add(schools.get(key).toString());
+        }
+
+        ArrayAdapter adapter = new ArrayAdapter(
+                mContext, R.layout.search_dropdown_item, mSearchList);
+
+        actionbar_search_edt.setAdapter(adapter);
     }
 
     private void loadSearchList(int start, final String searchStr, final boolean isAppend)

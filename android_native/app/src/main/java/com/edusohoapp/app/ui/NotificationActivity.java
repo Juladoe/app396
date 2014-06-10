@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import com.edusohoapp.app.R;
 import com.edusohoapp.app.adapter.NotificationListAdapter;
 import com.edusohoapp.app.model.Notify;
 import com.edusohoapp.app.util.Const;
+import com.edusohoapp.app.view.EdusohoListView;
 import com.edusohoapp.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,8 +22,7 @@ import java.util.ArrayList;
 
 
 public class NotificationActivity extends BaseActivity {
-
-    private ListView notification_list;
+    private ViewGroup mNotifyContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,16 @@ public class NotificationActivity extends BaseActivity {
             }
         });
 
-        notification_list = (ListView) findViewById(R.id.notification_list);
+        mNotifyContent = (ViewGroup) findViewById(R.id.notify_content);
 
+        setPagerContent(mNotifyContent);
+    }
+
+    private void setPagerContent(ViewGroup parent)
+    {
+        parent.removeAllViews();
+        View course_content = getLayoutInflater().inflate(R.layout.normal_content, null);
+        parent.addView(course_content);
         loadNotificationList();
     }
 
@@ -80,21 +89,33 @@ public class NotificationActivity extends BaseActivity {
         }
         String url = app.bindToken2Url(Const.NOTICE, true);
 
+        final ListView listView = (ListView) findViewById(R.id.normal_listview);
         ajaxGetString(url, new ResultCallback() {
             @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                super.error(url, ajaxStatus);
+                findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
+                showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
+                    @Override
+                    public void error(View errorBtn) {
+                        setPagerContent(mNotifyContent);
+                    }
+                });
+                findViewById(R.id.load_layout).setVisibility(View.GONE);
+            }
+
+            @Override
             public void callback(String url, String object, AjaxStatus status) {
+                findViewById(R.id.load_layout).setVisibility(View.GONE);
                 ArrayList<Notify> result = app.gson.fromJson(
                         object, new TypeToken<ArrayList<Notify>>(){}.getType());
                 if (result == null || result.size() == 0) {
                     showEmptyLayout("暂无系统通知");
                 }
-                if (result != null) {
-                    NotificationListAdapter adapter = new NotificationListAdapter(
-                            mContext, result, R.layout.notification_list_item);
-                    notification_list.setAdapter(adapter);
-                } else {
-                    longToast("加载系统通知失败！请检查网络状态或者登录状态");
-                }
+
+                NotificationListAdapter adapter = new NotificationListAdapter(
+                        mContext, result, R.layout.notification_list_item);
+                listView.setAdapter(adapter);
             }
         });
     }

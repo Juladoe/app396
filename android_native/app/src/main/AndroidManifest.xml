@@ -134,6 +134,16 @@
             android:launchMode="singleTop"
             android:name="com.edusohoapp.plugin.video.EduSohoVideoActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
+        <activity
+            android:launchMode="singleTop"
+            android:name="com.edusohoapp.plugin.photo.ViewPagerActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
+
+        <receiver android:name=".broadcast.NetStatusReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <uses-sdk

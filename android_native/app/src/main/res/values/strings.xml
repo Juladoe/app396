@@ -3,7 +3,7 @@
 
     <string name="host">http://try3.edusoho.cn/mapi/</string>
     <string name="file">http://try3.edusoho.cn/files/</string>
-    <string name="app_name">我的名称</string>
+    <string name="app_name">阔知学堂</string>
     <string name="go">Snap</string>
     <string name="action_settings">action_settings</string>
     <string name="recomemnd_course_str">推荐课程</string>

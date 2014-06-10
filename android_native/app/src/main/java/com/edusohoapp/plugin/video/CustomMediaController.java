@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -42,6 +43,7 @@ public class CustomMediaController extends RelativeLayout {
     private VideoView mVideoView;
     private boolean mIsShowController;
     private boolean mIsSetTotalTime;
+    private boolean mIsStop;
 
     private Timer updateTimer;
     private Timer autoHideTimer;
@@ -158,6 +160,10 @@ public class CustomMediaController extends RelativeLayout {
     public void play()
     {
         playBtn.setImageResource(R.drawable.custom_pause);
+        if (mIsStop) {
+            mVideoView.seekTo(0);
+            mIsStop = false;
+        }
         mVideoView.start();
     }
 
@@ -167,10 +173,11 @@ public class CustomMediaController extends RelativeLayout {
         mVideoView.pause();
     }
 
-    public void stop()
+    public void stop(MediaPlayer mediaPlayer)
     {
+        mIsStop = true;
+        mediaPlayer.pause();
         playBtn.setImageResource(R.drawable.custom_play);
-        mVideoView.seekTo(0);
     }
 
     /**

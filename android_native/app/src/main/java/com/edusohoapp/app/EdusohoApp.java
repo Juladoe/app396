@@ -25,6 +25,7 @@ import com.edusohoapp.app.model.School;
 import com.edusohoapp.app.model.User;
 import com.edusohoapp.app.util.Const;
 import com.edusohoapp.app.util.SqliteUtil;
+import com.edusohoapp.handler.EduSohoUncaughtExceptionHandler;
 import com.google.gson.Gson;
 import com.edusohoapp.app.entity.RecommendSchoolItem;
 import com.google.gson.reflect.TypeToken;
@@ -81,6 +82,8 @@ public class EdusohoApp extends Application{
         sqliteUtil = new SqliteUtil(getApplicationContext(), null, null);
         initWorkSpace();
         loadConfig();
+
+        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
     }
 
     public void setCurrentSchool(School school)

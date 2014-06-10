@@ -53,16 +53,11 @@
         android:layout_height="match_parent">
 
         <WebView
+            android:background="#000000"
             android:id="@+id/normal_lesson_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></WebView>
-
-        <FrameLayout
-            android:id="@+id/customViewContainer"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:visibility="gone" />
-
+        <include layout="@layout/loading_layout"/>
         <include layout="@layout/audio_layout" />
 
         <include layout="@layout/video_layout" />

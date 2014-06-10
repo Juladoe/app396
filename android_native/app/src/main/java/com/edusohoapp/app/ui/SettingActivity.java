@@ -94,7 +94,6 @@ public class SettingActivity extends BaseActivity
             public void onClick(View view) {
                 Intent schIntent = new Intent();
                 schIntent.setClass(mContext, SchCourseActivity.class);
-                schIntent.putExtra("", "");
                 startActivity(schIntent);
             }
         });

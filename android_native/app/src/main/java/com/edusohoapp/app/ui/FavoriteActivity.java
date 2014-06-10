@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.TextView;
 
@@ -18,9 +19,12 @@ import com.edusohoapp.app.view.EdusohoListView;
 import com.edusohoapp.app.view.OverScrollView;
 import com.edusohoapp.listener.CourseListScrollListener;
 import com.edusohoapp.listener.MoveListener;
+import com.edusohoapp.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 public class FavoriteActivity extends BaseActivity {
+
+    private ViewGroup mFavoirteContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,9 @@ public class FavoriteActivity extends BaseActivity {
             LoginActivity.startForResult(mActivity);
             return;
         }
-        loadCourse(0, false);
+
+        mFavoirteContent = (ViewGroup) findViewById(R.id.favoirte_content);
+        setPagerContent(mFavoirteContent);
     }
 
     @Override
@@ -51,7 +57,7 @@ public class FavoriteActivity extends BaseActivity {
         switch (resultCode) {
             case LoginActivity.OK:
                 if (app.loginUser != null) {
-                    loadCourse(0, false);
+                    loadCourse(0, false, true);
                 }
                 break;
             case LoginActivity.EXIT:
@@ -59,22 +65,22 @@ public class FavoriteActivity extends BaseActivity {
                 break;
             case Const.NORMAL_RESULT_REFRESH:
                 if (app.loginUser != null) {
-                    loadCourse(0, false);
+                    loadCourse(0, false, true);
                 }
                 break;
         }
     }
 
-    /**
-     *
-     *
-     */
-    private void loadCourse(int page, final boolean isAppend)
+    private void setPagerContent(ViewGroup parent)
     {
-        ViewStub vStub = (ViewStub) findViewById(R.id.favoirte_content_vs);
-        if (vStub != null) {
-            vStub.inflate();
-        }
+        parent.removeAllViews();
+        View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
+        parent.addView(course_content);
+        loadCourse(0, false, false);
+    }
+
+    private void loadCourse(int page, final boolean isAppend, boolean showLoading)
+    {
         final EdusohoListView listView = (EdusohoListView) findViewById(R.id.course_liseview);
 
         StringBuffer param = new StringBuffer(Const.FAVORITES);
@@ -82,12 +88,23 @@ public class FavoriteActivity extends BaseActivity {
 
         String url = app.bindToken2Url(param.toString(), true);
 
-        app.query.ajax(
-                url, String.class, new AjaxCallback<String>(){
+        ajax(url, new ResultCallback(){
             @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                super.callback(url, object, status);
-                //hide loading layout
+            public void error(String url, AjaxStatus ajaxStatus) {
+                super.error(url, ajaxStatus);
+                findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
+                showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
+                    @Override
+                    public void error(View errorBtn) {
+                        setPagerContent(mFavoirteContent);
+                    }
+                });
+                findViewById(R.id.load_layout).setVisibility(View.GONE);
+            }
+
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
                 findViewById(R.id.load_layout).setVisibility(View.GONE);
                 final CourseResult result = app.gson.fromJson(
                         object, new TypeToken<CourseResult>(){}.getType());
@@ -111,7 +128,7 @@ public class FavoriteActivity extends BaseActivity {
                             View course_more_btn = findViewById(R.id.course_more_btn);
                             if (course_more_btn.getVisibility() == View.VISIBLE) {
                                 course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
-                                loadCourse((result.start + 1) * Const.LIMIT, true);
+                                loadCourse((result.start + 1) * Const.LIMIT, true, false);
                             }
                         }
                     });
@@ -130,6 +147,7 @@ public class FavoriteActivity extends BaseActivity {
                     course_more_btn.setVisibility(View.GONE);
                 }
             }
-        });
+        }, showLoading);
+
     }
 }

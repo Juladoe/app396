@@ -25,4 +25,5 @@ dependencies {
     compile files('libs/gson-2.1.jar')
     compile files('libs/core-2.2.jar')
     compile project(':slidingmenu')
+    compile project(':ukphoto')
 }

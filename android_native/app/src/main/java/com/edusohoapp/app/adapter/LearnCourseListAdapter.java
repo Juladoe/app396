@@ -101,7 +101,7 @@ public class LearnCourseListAdapter extends BaseAdapter {
         }
 
         holder.aq.id(R.id.course_pic).image(
-                course.middlePicture, false, true);
+                course.largePicture, false, true);
         return view;
     }
 

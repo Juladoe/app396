@@ -51,6 +51,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(final MediaPlayer mediaPlayer) {
+                System.out.println("start play");
                 mVideoView.videoWidth = mediaPlayer.getVideoWidth();
                 mVideoView.videoHeight = mediaPlayer.getVideoHeight();
                 mediaPlayer.start();
@@ -64,6 +65,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
         mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
+
                 PopupDialog.createNormal(mContext, "播放错误", "设备不能播放该视频！").show();
                 return true;
             }
@@ -73,7 +75,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 System.out.println("stop play");
-                mMediaController.stop();
+                mMediaController.stop(mediaPlayer);
             }
         });
         initView();
@@ -148,6 +150,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
 
     @Override
     protected void onDestroy() {
+        System.out.println("video player distory");
         super.onDestroy();
         if (autoHideTimer != null) {
             autoHideTimer.cancel();

@@ -67,6 +67,7 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
        exports.isRefresh = false;
        exports.sort = "";
        exports.scroller = null;
+       exports.isShow = false;
        
        /**
         * page == offset
@@ -75,6 +76,7 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
         {
         	exports.sort = sort;
         	exports.isRefresh = false;
+            exports.isShow = true;
         	$("#currentSchoolName").text(schoolName);
         	var offset = isappend == true ? $("#data_list").attr("start"): 0;
         	simpleJsonP(
@@ -99,10 +101,9 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
         			if (start < data.total) {
         				$("#data_list").attr("start", start);
         				exports.isRefresh = true;
-                   //refresh_div = "<li id='bottom_refresh_div' class='bottom_refresh_div' onclick='courselist_model.init_courselist_data(true, \"" + sort + "\");'>加载中...</li>";
+                   
                }
                if (isappend) {
-                   //$("#data_list").find("#bottom_refresh_div").remove();
                    $("#data_list").html($("#data_list").html() + list_str);
                } else {
                		courselist_model.scroller.scrollToTop(10);

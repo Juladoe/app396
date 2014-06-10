@@ -108,6 +108,15 @@ define(function(require, exports) {
 		setTimeout(hideToast, 1000);
 	}
 
+	window.jumpToCourseList = function()
+	{
+		if (courselist_model.isShow && courselist_model.isShow == true) {
+			goback();
+		} else {
+			load_courselist_page();
+		}
+	}
+
 	window.goback = function() {
 		$.ui.goBack();
 	}

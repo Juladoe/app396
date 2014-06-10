@@ -8,11 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <ViewStub
-            android:id="@+id/course_info_content_vs"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout="@layout/course_comment_item_content" />
+        <include layout="@layout/course_comment_item_content" />
     </ScrollView>
-
+    <include layout="@layout/loading_layout" />
 </RelativeLayout>
