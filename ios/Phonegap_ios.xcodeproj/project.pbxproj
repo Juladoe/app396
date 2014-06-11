@@ -48,6 +48,10 @@
 		507199E219417663008A72DE /* XHZoomingImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 507199DA19417663008A72DE /* XHZoomingImageView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		509E9D02192DE81500ED81DA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 509E9D01192DE81500ED81DA /* CoreMotion.framework */; };
 		50BCE58919415008007E03D7 /* ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50BCE58819415008007E03D7 /* ImagePlugin.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		50C124C1194855F400133A38 /* WelcomePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C124C0194855F400133A38 /* WelcomePlugin.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		50C124CA1948606200133A38 /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C124C91948606200133A38 /* WelcomeViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		50C124D0194865A300133A38 /* MYBlurIntroductionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C124CD194865A300133A38 /* MYBlurIntroductionView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		50C124D1194865A300133A38 /* MYIntroductionPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C124CF194865A300133A38 /* MYIntroductionPanel.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		5AA0E66D1729F45B000DC89A /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66C1729F45B000DC89A /* OpenAL.framework */; };
 		5AA0E66F1729F460000DC89A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA0E66E1729F460000DC89A /* ImageIO.framework */; };
 		5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE5B34173C68D80009041E /* CoreLocation.framework */; };
@@ -142,6 +146,14 @@
 		509E9D01192DE81500ED81DA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		50BCE58719415008007E03D7 /* ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePlugin.h; sourceTree = "<group>"; };
 		50BCE58819415008007E03D7 /* ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePlugin.m; sourceTree = "<group>"; };
+		50C124BF194855F400133A38 /* WelcomePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomePlugin.h; sourceTree = "<group>"; };
+		50C124C0194855F400133A38 /* WelcomePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomePlugin.m; sourceTree = "<group>"; };
+		50C124C81948606200133A38 /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
+		50C124C91948606200133A38 /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
+		50C124CC194865A300133A38 /* MYBlurIntroductionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYBlurIntroductionView.h; sourceTree = "<group>"; };
+		50C124CD194865A300133A38 /* MYBlurIntroductionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYBlurIntroductionView.m; sourceTree = "<group>"; };
+		50C124CE194865A300133A38 /* MYIntroductionPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYIntroductionPanel.h; sourceTree = "<group>"; };
+		50C124CF194865A300133A38 /* MYIntroductionPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYIntroductionPanel.m; sourceTree = "<group>"; };
 		5AA0E66C1729F45B000DC89A /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5AA0E66E1729F460000DC89A /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		5AEE5B34173C68D80009041E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -213,6 +225,8 @@
 				72E53C7D1923167200ABF7DE /* AlipayViewController.xib */,
 				72E53CC41923641500ABF7DE /* HeaderViewController.h */,
 				72E53CC51923641500ABF7DE /* HeaderViewController.m */,
+				50C124C81948606200133A38 /* WelcomeViewController.h */,
+				50C124C91948606200133A38 /* WelcomeViewController.m */,
 			);
 			name = Classes;
 			path = Phonegap_ios/Classes;
@@ -271,6 +285,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				50C124CB194865A300133A38 /* MYBlurIntroductionView */,
 				507199CA19417663008A72DE /* XHImageViewer */,
 				30A0434214DC770100060A13 /* de.lproj */,
 				30A0434514DC770100060A13 /* se.lproj */,
@@ -331,6 +346,8 @@
 				724A5072191C763700BECABE /* VideoPlugin.m */,
 				50BCE58719415008007E03D7 /* ImagePlugin.h */,
 				50BCE58819415008007E03D7 /* ImagePlugin.m */,
+				50C124BF194855F400133A38 /* WelcomePlugin.h */,
+				50C124C0194855F400133A38 /* WelcomePlugin.m */,
 				72E53C751923121600ABF7DE /* AlipayPlugin.h */,
 				72E53C761923121600ABF7DE /* AlipayPlugin.m */,
 				72E53CC71923B85E00ABF7DE /* UtilPlugin.h */,
@@ -402,6 +419,17 @@
 				507199DA19417663008A72DE /* XHZoomingImageView.m */,
 			);
 			path = XHImageViewer;
+			sourceTree = "<group>";
+		};
+		50C124CB194865A300133A38 /* MYBlurIntroductionView */ = {
+			isa = PBXGroup;
+			children = (
+				50C124CC194865A300133A38 /* MYBlurIntroductionView.h */,
+				50C124CD194865A300133A38 /* MYBlurIntroductionView.m */,
+				50C124CE194865A300133A38 /* MYIntroductionPanel.h */,
+				50C124CF194865A300133A38 /* MYIntroductionPanel.m */,
+			);
+			path = MYBlurIntroductionView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -531,10 +559,14 @@
 				507199E119417663008A72DE /* XHViewState.m in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				723FC7D0191DC7A1004AC6B1 /* CDVBarcodeScanner.mm in Sources */,
+				50C124CA1948606200133A38 /* WelcomeViewController.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
+				50C124D0194865A300133A38 /* MYBlurIntroductionView.m in Sources */,
 				72E53CC61923641500ABF7DE /* HeaderViewController.m in Sources */,
 				507199DE19417663008A72DE /* XHCacheManager.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
+				50C124C1194855F400133A38 /* WelcomePlugin.m in Sources */,
+				50C124D1194865A300133A38 /* MYIntroductionPanel.m in Sources */,
 				507199E019417663008A72DE /* XHImageViewer.m in Sources */,
 				723FC7D1191DC7A1004AC6B1 /* zxing-all-in-one.cpp in Sources */,
 				724A5074191C763700BECABE /* VideoPlugin.m in Sources */,
@@ -599,8 +631,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -625,7 +657,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "E0D4610D-62CD-4A3E-B00F-530D22011379";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -635,8 +667,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -659,7 +691,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "EF0A0B89-34F7-4DE5-AE8B-5FB57980DB81";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -700,7 +732,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "86777CD3-16EF-4D1E-83C3-8896628544CB";
+				PROVISIONING_PROFILE = "EF0A0B89-34F7-4DE5-AE8B-5FB57980DB81";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -713,8 +745,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -737,7 +769,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "EF0A0B89-34F7-4DE5-AE8B-5FB57980DB81";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = AdHoc;
@@ -778,7 +810,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "8C0E2911-F767-4618-981D-9C3DE332D78F";
+				PROVISIONING_PROFILE = "E0D4610D-62CD-4A3E-B00F-530D22011379";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -822,7 +854,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "86777CD3-16EF-4D1E-83C3-8896628544CB";
+				PROVISIONING_PROFILE = "EF0A0B89-34F7-4DE5-AE8B-5FB57980DB81";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
