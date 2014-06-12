@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.edusohoapp.app.view.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.edusoho.kowzhi.view.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/net_sch_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/recommend_sch_info" >
 
-    <com.edusohoapp.app.view.EdusohoPullRrefreshView
+    <com.edusoho.kowzhi.view.EdusohoPullRrefreshView
         android:id="@+id/pull_refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,6 +46,6 @@
             android:layout_height="wrap_content"
             android:background="@android:color/black"
             />
-    </com.edusohoapp.app.view.EdusohoPullRrefreshView>
+    </com.edusoho.kowzhi.view.EdusohoPullRrefreshView>
 
-</com.edusohoapp.app.view.OverScrollView>
+</com.edusoho.kowzhi.view.OverScrollView>

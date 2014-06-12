@@ -75,4 +75,5 @@
     <color name="white">#FFFFFF</color>
 
     <color name="image_view_bg">#000000</color>
+    <color name="enter_sch">#ffffff</color>
 </resources>

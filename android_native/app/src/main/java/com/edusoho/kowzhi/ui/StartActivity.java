@@ -2,11 +2,6 @@ package com.edusoho.kowzhi.ui;
 
 import com.edusoho.kowzhi.EdusohoApp;
 import com.edusoho.kowzhi.R;
-import com.edusoho.kowzhi.model.AppUpdateInfo;
-import com.edusoho.kowzhi.util.AppUtil;
-import com.edusoho.kowzhi.util.Const;
-import com.edusoho.kowzhi.view.PopupDialog;
-import com.edusoho.listener.NormalCallback;
 
 import android.app.Activity;
 import android.content.Intent;

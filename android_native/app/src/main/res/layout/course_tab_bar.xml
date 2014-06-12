@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.edusohoapp.app.view.EduSohoTabRadio
+        <com.edusoho.kowzhi.view.EduSohoTabRadio
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,7 +31,7 @@
             android:textColor="@color/course_head_color_sel"
             android:textSize="@dimen/course_content_head" />
 
-        <com.edusohoapp.app.view.EduSohoTabRadio
+        <com.edusoho.kowzhi.view.EduSohoTabRadio
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.edusohoapp.app.view.EduSohoIconView
+<com.edusoho.kowzhi.view.EduSohoIconView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="center_vertical"
     android:id="@+id/sch_favorite_btn"

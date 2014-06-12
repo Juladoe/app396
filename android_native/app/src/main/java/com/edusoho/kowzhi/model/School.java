@@ -1,7 +1,5 @@
 package com.edusoho.kowzhi.model;
 
-import com.edusoho.kowzhi.util.Const;
-
 import java.util.HashMap;
 
 /**

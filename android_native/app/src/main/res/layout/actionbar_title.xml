@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-        <com.edusohoapp.app.view.EduSohoIconView
+        <com.edusoho.kowzhi.view.EduSohoIconView
             android:id="@+id/actionbar_back_icon"
             android:textColor="@color/actionBarMenu"
             android:textSize="@dimen/actionbarMenu"

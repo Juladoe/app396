@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -16,7 +15,6 @@ import com.edusoho.kowzhi.util.Const;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLStreamHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

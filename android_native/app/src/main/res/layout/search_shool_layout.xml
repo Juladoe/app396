@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.edusohoapp.app.view.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.edusoho.kowzhi.view.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 
-    xmlns:scrollview="http://schemas.android.com/apk/res/com.edusohoapp.app"
+    xmlns:scrollview="http://schemas.android.com/apk/res/com.edusoho.kowzhi"
     android:layout_below="@+id/search_layout"
     android:id="@+id/net_sch_layout"
     android:layout_width="match_parent"
@@ -18,7 +18,7 @@
 
         <include layout="@layout/loading_layout" />
 
-        <com.edusohoapp.app.view.EdusohoListView
+        <com.edusoho.kowzhi.view.EdusohoListView
             android:id="@+id/refresh_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:divider="@null"
             android:listSelector="@android:color/transparent">
 
-        </com.edusohoapp.app.view.EdusohoListView>
+        </com.edusoho.kowzhi.view.EdusohoListView>
 
         <TextView
             android:id="@+id/bottom_refresh_btn"
@@ -46,4 +46,4 @@
             android:layout_height="wrap_content"
             android:background="@android:color/black" />
     </LinearLayout>
-</com.edusohoapp.app.view.OverScrollView>
+</com.edusoho.kowzhi.view.OverScrollView>

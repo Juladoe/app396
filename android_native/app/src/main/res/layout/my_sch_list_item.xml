@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.edusohoapp.app.view.EduSohoIconView
+            <com.edusoho.kowzhi.view.EduSohoIconView
                 android:textSize="@dimen/font_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

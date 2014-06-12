@@ -18,7 +18,6 @@ import com.edusoho.kowzhi.util.AppUtil;
 import com.edusoho.kowzhi.util.Const;
 import com.edusoho.kowzhi.view.LoadDialog;
 import com.edusoho.kowzhi.view.PopupDialog;
-import com.edusoho.kowzhi.view.plugin.PopupLoaingDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
 import com.edusoho.plugin.qr.CaptureActivity;

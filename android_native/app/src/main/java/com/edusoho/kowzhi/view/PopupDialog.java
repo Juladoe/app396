@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import com.edusoho.kowzhi.R;
 
-import org.w3c.dom.Text;
-
 public class PopupDialog extends Dialog{
 
     private TextView popTitle;

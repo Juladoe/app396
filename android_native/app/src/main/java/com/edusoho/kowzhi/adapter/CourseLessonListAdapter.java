@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.entity.CourseLessonType;
 import com.edusoho.kowzhi.model.LessonItem;

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <include layout="@layout/actionbar_title"/>
-    <com.edusohoapp.plugin.photo.HackyViewPager
+    <com.edusoho.plugin.photo.HackyViewPager
         android:layout_below="@+id/edusoho_actionbar"
         android:id="@+id/images_pager"
         android:layout_width="match_parent"

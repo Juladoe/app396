@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content">
 
-    <com.edusohoapp.app.view.EduSohoIconView
+    <com.edusoho.kowzhi.view.EduSohoIconView
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingLeft="8dp"

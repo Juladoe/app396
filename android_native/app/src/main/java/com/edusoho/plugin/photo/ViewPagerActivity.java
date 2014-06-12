@@ -10,7 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
 
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.ui.BaseActivity;
