@@ -33,7 +33,7 @@
         for (int i = 0; i < [urls count]; i ++) {
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
             [imageView loadWithURL:[NSURL URLWithString:[urls objectAtIndex:i]]
-                        placeholer:nil
+                        placeholer:[UIImage imageNamed:@"HolderImage"]
          showActivityIndicatorView:YES];
             
             MYIntroductionPanel *panel = [[MYIntroductionPanel alloc] initWithFrame:self.view.bounds];
