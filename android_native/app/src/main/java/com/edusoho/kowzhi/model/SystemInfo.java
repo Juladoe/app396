@@ -1,0 +1,10 @@
+package com.edusoho.kowzhi.model;
+
+/**
+ * Created by howzhi on 14-5-23.
+ */
+public class SystemInfo {
+    public String version;
+    public String mobileApiVersion;
+    public String mobileApiUrl;
+}
