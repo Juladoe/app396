@@ -91,8 +91,9 @@ define(function(require, exports){
 				appstore_model.saveUserInfo(data.user, data.token);
 			}
 			var school = data.site;
-			var versionCheckResult = checkMobileVersion(school.versionRange);
-			if (versionCheckResult == window.HEIGHT_VERSION) {
+			var apiVersionRange = data.site.apiVersionRange;
+			var versionCheckResult = comparVersion(apiVersion, versionCheckResult.min);
+			if (versionCheckResult == window.LOW_VERSION) {
 				$("#afui").popup({
 					title: school.name + "-网校提示",
 					message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
@@ -100,7 +101,7 @@ define(function(require, exports){
 					cancelCallback: function() {
 						console.log("cancelled");
 					},
-					doneText: "提醒管理员",
+					doneText: "立即下载",
 					doneCallback: function() {
 						$.jsonP({
 							url: schoolurl + "/notify_mobile_version?callback=?"
@@ -112,7 +113,8 @@ define(function(require, exports){
 				return;
 			}
 
-			if (versionCheckResult == window.LOW_VERSION) {
+			versionCheckResult = comparVersion(apiVersion, versionCheckResult.max);
+			if (versionCheckResult == window.HEIGHT_VERSION) {
 				$("#afui").popup({
 					title: school.name  + "-网校提示",
 					message: "服务器维护中，请稍后再试",
@@ -176,12 +178,13 @@ define(function(require, exports){
 		{
 			url: url + "/login_with_site" + '?callback=?',
 			success:function(data){
-				var versionCheckResult = checkMobileVersion(data.site.apiVersionRange);
-				if (versionCheckResult == window.HEIGHT_VERSION) {
+				var apiVersionRange = data.site.apiVersionRange;
+				var versionCheckResult = comparVersion(apiVersion,  apiVersionRange.min);
+				if (versionCheckResult == window.LOW_VERSION) {
 					showMuiltDialog({
 						title: "网校提示",
-						message: "当前网校服务器版本较低。请联系网校管理员更新版本！",
-						doneText: "提醒管理员",
+						message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+						doneText: "立即下载",
 						doneCallback: function() {
 							$.jsonP({
 								url: url+ "/notify_mobile_version?callback=?"
@@ -192,7 +195,8 @@ define(function(require, exports){
 					return;
 				}
 
-				if (versionCheckResult == window.LOW_VERSION) {
+				versionCheckResult = comparVersion(apiVersion,  apiVersionRange.max);
+				if (versionCheckResult == window.HEIGHT_VERSION) {
 					$("#afui").popup("服务器维护中，请稍后再试。");
 					$.ui.hideMask();
 					return;

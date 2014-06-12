@@ -9,7 +9,7 @@ define(function(require, exports) {
 	window.schoolName = "";
 	window.normalLimit = 10;
 	window.courseCurrentPage = 1;
-	window.apiVersion = "0.0.0";
+	window.apiVersion = "1.0.0";
 	window.version = 1.0;
 
 	window.NORMAL_VERSION = 0;
@@ -379,7 +379,7 @@ define(function(require, exports) {
 		setTitle(favorite_model.title);
 	}
 
-	function comparVersion(oldVersion, newVersion)
+	window.comparVersion = function(oldVersion, newVersion)
 	{
 		var oldVersions = oldVersion.split(".");
 		var newVersions = newVersion.split(".");
@@ -388,15 +388,15 @@ define(function(require, exports) {
 			first = parseInt(oldVersions[i]);
 			second = parseInt(newVersions[i]);
 			if (first > second) {
-				return 1;
+				return window.HEIGHT_VERSION;
 			}
 
 			if (first < second) {
-				return -1;
+				return window.LOW_VERSION;
 			}
 		}
 
-		return 0;
+		return window.NORMAL_VERSION;
 	}
 
 	window.checkToUpdataApp = function(showLoading)
