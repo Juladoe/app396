@@ -37,4 +37,11 @@
  */
 - (void)systemVersion:(CDVInvokedUrlCommand *)command;
 
+/**
+ *  Visit App Store to update
+ *
+ *  @param command url string
+ */
+- (void)visitAppStore:(CDVInvokedUrlCommand *)command;
+
 @end

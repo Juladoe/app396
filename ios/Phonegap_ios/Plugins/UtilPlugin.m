@@ -102,4 +102,18 @@
     [self writeJavascript:[result toSuccessCallbackString:callbackId]];
 }
 
+
+- (void)visitAppStore:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult* pluginResult = nil;
+    NSString *urlString = [command.arguments objectAtIndex:0];
+    if (urlString) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    }
+    else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+}
+
 @end
