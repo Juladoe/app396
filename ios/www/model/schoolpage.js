@@ -24,7 +24,7 @@ define(function(require, exports){
 		</textarea>
 		 <ul class="list">
 			<li class="divider" style="text-align:center;padding-right:1px;">
-				<input value="try3.edusoho.cn" id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:90%;">
+				<input value="" id="searchWord" type="text" placeholder="输入域名添加网校 如(www.name.com)" style="width:90%;">
 				
 			</li>
 			<li class="divider" style="text-align:center;padding-right:1px;">

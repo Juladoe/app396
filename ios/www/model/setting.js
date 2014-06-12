@@ -38,7 +38,7 @@ define(function(require, exports){
 						<li><a  onclick="load_about_page();">关于网校</a></li>
 					</div>
 					<li id="exitBtn" style="text-align:center;padding-right:1px;">
-						<span onclick="logout();" class="button white custom_button_red">退出登陆</span>
+						<span onclick="logout();" class="button white custom_button_red">退出登录</span>
 					</li>
 				</ul>
 			</div>

@@ -191,7 +191,6 @@ exports.changeTab = function(radioId)
 		index = $(this).attr("id");
 		if (index == exports.currentIndex) {
 			$(this).show();
-			//$.ui.scrollToTop("courseinfo");
 			return;
 		}
 		$(this).hide();
@@ -433,18 +432,7 @@ exports.showCourseInfo = function(type, id, mediaUri, lesson_id)
 		return;
 	}
 	if (!exports.isStudent && !exports.isTeacher ) {
-		$("#afui").popup({
-	        title: "课程提示",
-	        message: '课程尚未加入学习?\r\n是否加入学习?',
-
-	        cancelText: "取消",
-	        cancelCallback: function () {},
-	        doneText: "确定",
-	        doneCallback: function () {
-	        	exports.buyDialog();
-	        },
-	        cancelOnly: false
-	    });
+		exports.buyDialog();
 		return;
 	}
 	load_course_lesson_page(id, lesson_id);

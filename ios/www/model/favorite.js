@@ -137,7 +137,7 @@ exports.load_data = function(isappend)
 	}
 	var token = appstore_model.getToken();
 	simpleJsonP(
-		webRoot + "/me/favorite_courses" + '?callback=?&token=' + token,
+		schoolHost + "/me/favorite_courses" + '?callback=?&token=' + token,
 		function(data){
 			if (data.error) {
 				$("#afui").popup(data.message);

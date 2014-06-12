@@ -19,6 +19,11 @@
     font-weight: normal;
 }
 
+.createdTime
+{
+    color: #999;
+}
+
 .course_lesson_table_1:after {
   position: absolute;
   right: 8px;

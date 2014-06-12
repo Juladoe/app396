@@ -2383,8 +2383,9 @@
     $.maskblockUI = function (opacity) {
         if (uiMaskBlocked)
             return;
+
         var height = window.screen.height;
-        opacity = opacity ? " style='height:" + height + "px; opacity:" + opacity + ";'" : "";
+        opacity = opacity ? " style='position: relative;top:0px;height:" + height + "px; opacity:" + opacity + ";'" : "";
         $.query("BODY").prepend($("<div id='loadmask'" + opacity + "></div>"));
         $.query("BODY DIV#loadmask").bind("touchstart", function (e) {
             e.preventDefault();

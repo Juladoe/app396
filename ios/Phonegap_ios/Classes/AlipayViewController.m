@@ -38,6 +38,8 @@
     self = [super init];
     if (self){
         _url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURL* tempUrl = [NSURL URLWithString:url];
+        _host = tempUrl.host;
     }
     return self;
 }
@@ -72,6 +74,7 @@
         return true;
     }
     NSString* scheme = queryURL.scheme;
+    
     if ([scheme isEqualToString:@"objc"]) {
         NSString* host = queryURL.host;
         if ([host isEqualToString:@"alipayCallback"]) {

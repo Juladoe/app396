@@ -188,7 +188,7 @@
         if (uiBlocked)
             return;
         var height = window.screen.height;
-        opacity = opacity ? " style='height:" + height + "px; opacity:" + opacity + ";'" : "";
+        opacity = opacity ? " style='position: relative;top:0px;height:" + height + "px; opacity:" + opacity + ";'" : "";
         $.query("BODY").prepend($("<div id='mask'" + opacity + "></div>"));
         $.query("BODY DIV#mask").bind("touchstart", function (e) {
             e.preventDefault();

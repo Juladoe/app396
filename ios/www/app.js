@@ -70,7 +70,8 @@ define(function(require, exports) {
 
 	function toastblockUI(opacity) {
 		if (uiToastBlocked) return;
-		opacity = opacity ? " style='opacity:" + opacity + ";'": "";
+		var height = window.screen.height;
+        		opacity = opacity ? " style='height:" + height + "px; opacity:" + opacity + ";'" : "";
 		$.query("BODY").prepend($("<div id='toastmask'" + opacity + "></div>"));
 		$.query("BODY DIV#toastmask").bind("touchstart",
 		function(e) {
@@ -594,7 +595,7 @@ define(function(require, exports) {
 			},
 			doneCallback: function() {
 				var token = appstore_model.getToken();
-				simpleJsonP(webRoot + "/logout" + '?callback=?&token=' + token,
+				simpleJsonP(schoolHost + "/logout" + '?callback=?&token=' + token,
 				function(data) {
 					if (data) {
 						appstore_model.clearUserInfo();
@@ -623,16 +624,20 @@ define(function(require, exports) {
 			}
 			$("#afui").popup({
 				title: "注册成功",
-				message: "注册成功！同时生成了第二课堂的账号，您可以用它来登录其他网校.<br> 邮箱：" + email + "<br> 账号：" + name,
+				message: "注册成功！<br> 邮箱：" + email + "<br> 账号：" + name,
 				cancelText: "确定",
 				doneText: "返回",
 				cancelCallback: function() {
 					appstore_model.saveUserInfo(data.user, data.token);
 					load_setting_page();
+					clearHistory("login");
+					clearHistory("regist");
 				},
 				doneCallback: function() {
 					appstore_model.saveUserInfo(data.user, data.token);
 					load_setting_page();
+					clearHistory("login");
+					clearHistory("regist");
 				}
 			});
 		});
@@ -657,10 +662,10 @@ define(function(require, exports) {
 			if (window.historyAction) {
 				window.historyAction(window.historyActionParams);
 				clearHistoryAction();
-				clearHistory("login");
 			} else {
 				load_setting_page();
 			}
+			clearHistory("login");
 		});
 	}
 

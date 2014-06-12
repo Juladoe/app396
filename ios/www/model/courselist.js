@@ -51,7 +51,7 @@ data-footer="courselist_footer" data-height="80">
                         </li>
                 </textarea>
                 <!-- templ input list end -->
-                <ul class="list card-ul-bg ul_bg_null" id="data_list" start="0">
+                <ul style="padding-top:0px;" class="list card-ul-bg ul_bg_null" id="data_list" start="0">
                 </ul>
         </div>
 </div>

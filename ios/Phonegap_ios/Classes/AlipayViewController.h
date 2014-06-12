@@ -11,6 +11,7 @@
 @interface AlipayViewController : UIViewController<UIWebViewDelegate>
 
 @property (nonatomic, retain)NSString *url;
+@property (nonatomic, retain)NSString *host;
 @property (nonatomic, retain)UIWebView *webView;
 
 - (id)initWithUrl:(NSString *)url;
