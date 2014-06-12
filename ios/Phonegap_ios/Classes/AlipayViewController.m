@@ -37,7 +37,7 @@
 {
     self = [super init];
     if (self){
-        _url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        _urlString = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     }
     return self;
 }
@@ -49,7 +49,7 @@
     _webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     _webView.delegate = self;
     [self.view addSubview:_webView];
-    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:_url]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:_urlString]];
     [_webView loadRequest:request];
 }
 
@@ -67,10 +67,18 @@
 }
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType{
-    NSURL* queryURL = request.URL;
+    NSURL *queryURL = request.URL;
+    NSURL *originUrl = [NSURL URLWithString:_urlString];
     if (! queryURL) {
-        return true;
+        return YES;
     }
+    if ([queryURL.host isEqualToString:originUrl.host] && (![[queryURL absoluteString] isEqualToString:_urlString])) {
+        //发送支付回调信息
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayCallback" object:queryURL.query];
+        [self dismissViewControllerAnimated:YES completion:nil];
+        return NO;
+    }
+    
     NSString* scheme = queryURL.scheme;
     if ([scheme isEqualToString:@"objc"]) {
         NSString* host = queryURL.host;
@@ -79,10 +87,10 @@
             //发送支付回调信息
             [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayCallback" object:query];
             [self dismissViewControllerAnimated:YES completion:nil];
-            return false;
+            return NO;
         }
     }
-    return true;
+    return YES;
 }
 
 @end
