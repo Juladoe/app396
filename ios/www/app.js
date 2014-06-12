@@ -9,6 +9,7 @@ define(function(require, exports) {
 	window.schoolName = "";
 	window.normalLimit = 10;
 	window.courseCurrentPage = 1;
+	window.apiVersion = "0.0.0";
 	window.version = 1.0;
 
 	window.NORMAL_VERSION = 0;
@@ -62,6 +63,7 @@ define(function(require, exports) {
 		function(audio) {
 			window.audio_model = audio;
 		});
+		checkToUpdataApp();
 	}
 
 	var uiToastBlocked = false;
@@ -375,6 +377,69 @@ define(function(require, exports) {
 		}
 
 		setTitle(favorite_model.title);
+	}
+
+	function comparVersion(oldVersion, newVersion)
+	{
+		var oldVersions = oldVersion.split(".");
+		var newVersions = newVersion.split(".");
+		var length = oldVersion.length;
+		for (var i=0; i < length; i++) {
+			first = parseInt(oldVersions[i]);
+			second = parseInt(newVersions[i]);
+			if (first > second) {
+				return 1;
+			}
+
+			if (first < second) {
+				return -1;
+			}
+		}
+
+		return 0;
+	}
+
+	window.checkToUpdataApp = function(showLoading)
+	{
+		simpleJsonP(
+			"http://open.edusoho.com/mobile/meta.php", 
+			function(data){
+				if (!data.iPhoneVersion) {
+					return;
+				}
+
+				var result = comparVersion(apiVersion, data.iPhoneVersion);
+
+				if (result  == -1) {
+					$("#afui").popup({
+						title: "版本检查",
+						message: "当前客户端有新版本，是否更新?" ,
+						cancelText: "取消",
+						doneText: "立即更新",
+						cancelCallback: function() {
+							//cancel
+						},
+						doneCallback: function() {
+							cordova.exec(
+							                function(version) {
+							                    //success
+							                },
+							                function(error) {
+							                    //error
+							                },
+							                 "UtilPlugin",
+							                 "visitAppStore",
+							                 [data.updateUrl]
+							);
+						}
+					});
+				}
+			},
+			showLoading,
+			function(){
+				//error
+			}
+		);
 	}
 
 	window.load_courselist_page = function() {
