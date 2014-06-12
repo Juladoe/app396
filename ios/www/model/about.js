@@ -16,7 +16,7 @@ define(function(require, exports){
 		simpleJsonP(
 			schoolHost + "/about" + '?callback=?',
 			function(data){
-				$("#about").html(data);
+				$("#about").html(data.about);
 			},
 			false,
 			function()

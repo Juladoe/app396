@@ -1,6 +1,7 @@
 define(function(require, exports) {
 
-	window.webRoot = "http://try3.edusoho.cn/mapi";
+	window.rootApi = "/systeminfo";
+	window.webRoot = "http://try3.edusoho.cn/";
 	window.defalut_avatar = "images/avatar.png";
 	window.debug = true;
 	window.appconfig = {};
@@ -34,10 +35,8 @@ define(function(require, exports) {
 			window.init_model = init;
 			window.appstore_model = appstore;
 
-			appstore_model.loadUserInfo();
-			//_load_carousel();
 			loadDefaultSchool();
-			//appstore_model.loadSchoolList(true);
+			appstore_model.loadUserInfo();
 		});
 
 		require(['courseinfo', 'learning', 'schoolpage', 'course_lesson_list', 'searchlist'],
@@ -89,9 +88,14 @@ define(function(require, exports) {
 		$("BODY DIV#toastmask").remove();
 	};
 
+	window.loadSchoolPanel = function()
+	{
+		load_courselist_page();
+		$.ui.clearHistory();
+	}
+
 	window.playIframeVideo = function(mediaUri) {
 		if ($.ui.android) {
-			alert(2);
 			cordova.exec(function(result) {},
 			function(error) {
 				$("#afui").popup("播放错误: " + error);
@@ -100,10 +104,10 @@ define(function(require, exports) {
 		}
 	}
 
-	window.verifyMobileVersion = function(successCallback, errorCallback)
+	window.verifyMobileVersion = function(url, successCallback, errorCallback)
 	{
 		simpleJsonP(
-			webRoot + "/mobile_version?callback=?",
+			url + rootApi + "?callback=?",
 			function(data)
 			{
 				successCallback(data);
@@ -197,7 +201,7 @@ define(function(require, exports) {
 		if (url[url.length - 1] == "/") {
 			url = url.substring(0, url.length - 1);
 		}
-		schoolHost = url + "/mapi";
+		schoolHost = url;
 		schoolName = name;
 	}
 
@@ -546,7 +550,7 @@ define(function(require, exports) {
 			return;
 		}
 
-		simpleJsonP(webRoot + "/user_register" + '?callback=?&email=' + email + "&nickname=" + name + "&password=" + pass,
+		simpleJsonP(schoolHost + "/user_register" + '?callback=?&email=' + email + "&nickname=" + name + "&password=" + pass,
 		function(data) {
 			if (data && data.error) {
 				$("#afui").popup(data.error.message);
@@ -577,7 +581,7 @@ define(function(require, exports) {
 			return;
 		}
 
-		simpleJsonP(webRoot + "/login" + '?callback=?&_username=' + account + "&_password=" + password,
+		simpleJsonP(schoolHost + "/login" + '?callback=?&_username=' + account + "&_password=" + password,
 		function(data) {
 			if (data.error) {
 				$("#afui").popup(data.error.message);

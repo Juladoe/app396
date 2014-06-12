@@ -95,7 +95,7 @@ define(function(require, exports){
 			if (versionCheckResult == window.HEIGHT_VERSION) {
 				$("#afui").popup({
 					title: school.name + "-网校提示",
-					message: "当前网校服务器版本较低。请联系网校管理员更新版本！",
+					message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
 					cancelText: "取消",
 					cancelCallback: function() {
 						console.log("cancelled");
@@ -115,16 +115,12 @@ define(function(require, exports){
 			if (versionCheckResult == window.LOW_VERSION) {
 				$("#afui").popup({
 					title: school.name  + "-网校提示",
-					message: "当前网校服务器版本已更新。请更新客户端版本！",
+					message: "服务器维护中，请稍后再试",
 					cancelText: "取消",
 					cancelCallback: function() {
 						console.log("cancelled");
 					},
-					doneText: "更新",
-					doneCallback: function() {
-						//更新
-					},
-					cancelOnly: false
+					cancelOnly: true
 				});
 				$.ui.hideMask();
 				return;
@@ -140,30 +136,7 @@ define(function(require, exports){
 		                 "WelcomePlugin",
 		                 "showWelcomeImages",
 		                 [school.splashs]);
-			/*
-			var isStart = false;
-			var isCancel = false;
-
-			var pop = $("#afui").popup({
-				title: "扫描结果",
-				message: "正在进入网校...<img src='images/sch_load.gif' >",
-				cancelText: "取消",
-				cancelCallback: function() {
-					isCancel = true;
-					pop.hide();
-					applog("qr search cancelled");
-				},
-				cancelOnly: true
-			});
-			setTimeout(function() {
-				if (isStart || isCancel) {
-					return;
-				}
-				appstore_model.saveSchool(school.title, school.logo, school.url);
-				pop.hide();
-			},
-			3000);
-			*/
+			appstore_model.saveSchoolToStore(school.name, school.logo, url);
 		});
 	}
 
@@ -183,31 +156,27 @@ define(function(require, exports){
 		}
 		$.ui.showMask('加载中...');
 		verifyMobileVersion(
+			search,
 			function(data) {
-				if (data.mobileVersion == 0) {
+				if (data.mobileApiUrl) {
+					loginSchoolWithSite(data.mobileApiUrl);
+				} else {
 					$("#afui").popup("当前网校不支持移动端访问!");
-					return;
-				}
-
-				if (data.mobileVersion == 1) {
-					loginSchoolWithSite(search);
 				}
 			},
 			function(data){
 				$("#afui").popup("访问服务器失败!");
 			}
 		);
-
-		
 	}
 
-	function loginSchoolWithSite(search)
+	function loginSchoolWithSite(url)
 	{
 		$.jsonP(
 		{
-			url: search + "/mapi/login_with_site" + '?callback=?',
+			url: url + "/login_with_site" + '?callback=?',
 			success:function(data){
-				var versionCheckResult = checkMobileVersion(data.site.versionRange);
+				var versionCheckResult = checkMobileVersion(data.site.apiVersionRange);
 				if (versionCheckResult == window.HEIGHT_VERSION) {
 					showMuiltDialog({
 						title: "网校提示",
@@ -215,7 +184,7 @@ define(function(require, exports){
 						doneText: "提醒管理员",
 						doneCallback: function() {
 							$.jsonP({
-								url: data.site.url + "/notify_mobile_version?callback=?"
+								url: url+ "/notify_mobile_version?callback=?"
 							});
 						}
 					});
@@ -224,19 +193,13 @@ define(function(require, exports){
 				}
 
 				if (versionCheckResult == window.LOW_VERSION) {
-					showMuiltDialog({
-						title: "网校提示",
-						message: "当前网校服务器版本已更新。请更新客户端版本！",
-						doneText: "提醒管理员",
-						doneCallback: function() {
-							
-						}
-					});
+					$("#afui").popup("服务器维护中，请稍后再试。");
 					$.ui.hideMask();
 					return;
 				}
 
-				alert(data.site.splashs);
+				var school = data.site;
+
 				cordova.exec(
 			                function(version) {
 			                    //success
@@ -246,36 +209,10 @@ define(function(require, exports){
 			                },
 			                 "WelcomePlugin",
 			                 "showWelcomeImages",
-			                 [data.site.splashs]
-			                 );
-				/*
-				var school = data.site;
-				var school_info = "正在进入... <b>" 
-						+ school.name 
-						+ "</b><p></p><img src='images/sch_load.gif' >";
-
-				var isStart = false;
-				var isCancel = false;
-				var pop = $("#afui").popup(
-				{
-					title:"<span/>",
-					message: school_info,
-    				cancelText: "取消",
-					cancelCallback: function () {
-			        	isCancel = true;
-			        	pop.hide();
-			        },
-			        cancelOnly: true
-				});
-				setTimeout(function(){
-					if (isStart || isCancel) {
-						return;
-					}
-			    	appstore_model.saveSchool(school.name, school.logo, school.url);
-			    	pop.hide();
-			    },3000);
-				$.ui.hideMask();
-			*/
+			                 [school.splashs]
+			            );
+				appstore_model.saveSchoolToStore(school.name, school.logo, url);
+				
 			},
 			timeout:"5000",
 			error: function(){
@@ -285,10 +222,10 @@ define(function(require, exports){
 		});
 	}
 
-	function checkMobileVersion(versionRange)
+	function checkMobileVersion(apiVersionRange)
 	{
-		var min = versionRange.min;
-		var max = versionRange.max;
+		var min = parseFloat(apiVersionRange.min);
+		var max = parseFloat(apiVersionRange.max);
 		if (window.version < min) {
 			return window.LOW_VERSION;
 		}

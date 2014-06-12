@@ -74,7 +74,7 @@ define(function(require, exports){
 		setTimeout(function(){
 			$.jsonP(
 			{
-				url:webRoot + "/login_with_token" + '?callback=?&token=' + token,
+				url:schoolHost + "/login_with_token" + '?callback=?&token=' + token,
 				success:function(data){
 					if (data.error) {
 						//token异常
@@ -167,6 +167,13 @@ define(function(require, exports){
 			}
 		}
 		return false;
+	}
+
+	exports.saveSchoolToStore = function(name, cover, url)
+	{
+		setSchoolHost(url, name);
+		appstore_model.setStoreCache("defaultSchool", url);
+		appstore_model.setStoreCache("defaultSchoolName", name);
 	}
 
 	exports.saveSchool = function(name, cover, url)
