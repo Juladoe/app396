@@ -35,7 +35,7 @@ define(function(require, exports){
 					<div class="setting_mulit_card">
 						<li><a onclick="load_notification_page();">系统通知</a></li>
 						<li onclick="clearCache();">清理缓存</li>
-						<li><a  onclick="load_about_page();">关于我们</a></li>
+						<li><a  onclick="load_about_page();">关于网校</a></li>
 					</div>
 					<li id="exitBtn" style="text-align:center;padding-right:1px;">
 						<span onclick="logout();" class="button white custom_button_red">退出登陆</span>

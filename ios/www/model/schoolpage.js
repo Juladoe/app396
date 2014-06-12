@@ -77,7 +77,6 @@ define(function(require, exports){
 					}
 				});
 				$("#school_list").html(list_str);
-				//appstore_model.setCache("addschool", "cache");
 		});
 	}
 
@@ -92,7 +91,79 @@ define(function(require, exports){
 				appstore_model.saveUserInfo(data.user, data.token);
 			}
 			var school = data.site;
-			appstore_model.saveSchool(school.title, school.logo, school.url);
+			var versionCheckResult = checkMobileVersion(school.versionRange);
+			if (versionCheckResult == window.HEIGHT_VERSION) {
+				$("#afui").popup({
+					title: school.name + "-网校提示",
+					message: "当前网校服务器版本较低。请联系网校管理员更新版本！",
+					cancelText: "取消",
+					cancelCallback: function() {
+						console.log("cancelled");
+					},
+					doneText: "提醒管理员",
+					doneCallback: function() {
+						$.jsonP({
+							url: schoolurl + "/notify_mobile_version?callback=?"
+						});
+					},
+					cancelOnly: false
+				});
+				$.ui.hideMask();
+				return;
+			}
+
+			if (versionCheckResult == window.LOW_VERSION) {
+				$("#afui").popup({
+					title: school.name  + "-网校提示",
+					message: "当前网校服务器版本已更新。请更新客户端版本！",
+					cancelText: "取消",
+					cancelCallback: function() {
+						console.log("cancelled");
+					},
+					doneText: "更新",
+					doneCallback: function() {
+						//更新
+					},
+					cancelOnly: false
+				});
+				$.ui.hideMask();
+				return;
+			}
+
+			cordova.exec(
+		                function(version) {
+		                    //success
+		                },
+		                function(error) {
+		                    //error
+		                },
+		                 "WelcomePlugin",
+		                 "showWelcomeImages",
+		                 [school.splashs]);
+			/*
+			var isStart = false;
+			var isCancel = false;
+
+			var pop = $("#afui").popup({
+				title: "扫描结果",
+				message: "正在进入网校...<img src='images/sch_load.gif' >",
+				cancelText: "取消",
+				cancelCallback: function() {
+					isCancel = true;
+					pop.hide();
+					applog("qr search cancelled");
+				},
+				cancelOnly: true
+			});
+			setTimeout(function() {
+				if (isStart || isCancel) {
+					return;
+				}
+				appstore_model.saveSchool(school.title, school.logo, school.url);
+				pop.hide();
+			},
+			3000);
+			*/
 		});
 	}
 
@@ -111,12 +182,77 @@ define(function(require, exports){
 			search = search.substring(0, search.length - 1);
 		}
 		$.ui.showMask('加载中...');
+		verifyMobileVersion(
+			function(data) {
+				if (data.mobileVersion == 0) {
+					$("#afui").popup("当前网校不支持移动端访问!");
+					return;
+				}
+
+				if (data.mobileVersion == 1) {
+					loginSchoolWithSite(search);
+				}
+			},
+			function(data){
+				$("#afui").popup("访问服务器失败!");
+			}
+		);
+
+		
+	}
+
+	function loginSchoolWithSite(search)
+	{
 		$.jsonP(
 		{
 			url: search + "/mapi/login_with_site" + '?callback=?',
 			success:function(data){
+				var versionCheckResult = checkMobileVersion(data.site.versionRange);
+				if (versionCheckResult == window.HEIGHT_VERSION) {
+					showMuiltDialog({
+						title: "网校提示",
+						message: "当前网校服务器版本较低。请联系网校管理员更新版本！",
+						doneText: "提醒管理员",
+						doneCallback: function() {
+							$.jsonP({
+								url: data.site.url + "/notify_mobile_version?callback=?"
+							});
+						}
+					});
+					$.ui.hideMask();
+					return;
+				}
+
+				if (versionCheckResult == window.LOW_VERSION) {
+					showMuiltDialog({
+						title: "网校提示",
+						message: "当前网校服务器版本已更新。请更新客户端版本！",
+						doneText: "提醒管理员",
+						doneCallback: function() {
+							
+						}
+					});
+					$.ui.hideMask();
+					return;
+				}
+
+				alert(data.site.splashs);
+				cordova.exec(
+			                function(version) {
+			                    //success
+			                },
+			                function(error) {
+			                    //error
+			                },
+			                 "WelcomePlugin",
+			                 "showWelcomeImages",
+			                 [data.site.splashs]
+			                 );
+				/*
 				var school = data.site;
-				var school_info = "正在进入... <b>" + school.name + "</b><p></p><img src='images/sch_load.gif' >";
+				var school_info = "正在进入... <b>" 
+						+ school.name 
+						+ "</b><p></p><img src='images/sch_load.gif' >";
 
 				var isStart = false;
 				var isCancel = false;
@@ -139,6 +275,7 @@ define(function(require, exports){
 			    	pop.hide();
 			    },3000);
 				$.ui.hideMask();
+			*/
 			},
 			timeout:"5000",
 			error: function(){
@@ -146,6 +283,21 @@ define(function(require, exports){
 				$("#afui").popup("网校不存在!");
 			}
 		});
+	}
+
+	function checkMobileVersion(versionRange)
+	{
+		var min = versionRange.min;
+		var max = versionRange.max;
+		if (window.version < min) {
+			return window.LOW_VERSION;
+		}
+
+		if (window.version > max) {
+			return window.HEIGHT_VERSION;
+		}
+
+		return window.NORMAL_VERSION;
 	}
 
 });

@@ -8,6 +8,12 @@ define(function(require, exports) {
 	window.schoolName = "";
 	window.normalLimit = 10;
 	window.courseCurrentPage = 1;
+	window.version = 1.0;
+
+	window.NORMAL_VERSION = 0;
+	window.HEIGHT_VERSION = 1;
+	window.LOW_VERSION = -1;
+
 	window.testToken = "15isuvjja7s0k4k4gk08w4ggogo880g";
 
 	exports.init = function() {
@@ -86,14 +92,51 @@ define(function(require, exports) {
 	window.playIframeVideo = function(mediaUri) {
 		if ($.ui.android) {
 			alert(2);
-			cordova.exec(function(result) {
-
-},
+			cordova.exec(function(result) {},
 			function(error) {
 				$("#afui").popup("播放错误: " + error);
 			},
 			"IFramePlayerPlugin", "playVideo", [mediaUri]);
 		}
+	}
+
+	window.verifyMobileVersion = function(successCallback, errorCallback)
+	{
+		simpleJsonP(
+			webRoot + "/mobile_version?callback=?",
+			function(data)
+			{
+				successCallback(data);
+			},
+			false,
+			function(data)
+			{
+				errorCallback(data);
+			}
+		);
+	}
+
+	window.showMuiltDialog = function(option)
+	{
+		option = option ? option : {
+			title : "网校提示",
+			message : "",
+			cancelText : "取消",
+			doneText : "确定",
+			cancelOnly: false,
+			cancelCallback : null,
+			doneCallback : null
+		};
+
+		$("#afui").popup({
+			title: option.title ? option.title : "网校提示",
+			message: option.message ? option.message : "",
+			cancelText: option.cancelText ? option.cancelText : "取消",
+			cancelCallback: option.cancelCallback ? option.cancelCallback : null,
+			doneText: option.doneText ? option.doneText : "确定",
+			doneCallback: option.doneCallback ? option.doneCallback : "",
+			cancelOnly: false
+		});
 	}
 
 	window.lessonBackCourse = function() {
@@ -597,28 +640,7 @@ define(function(require, exports) {
 				if (result.text.replace(/(^\s*)|(\s*$)/g, "") == "") {
 					return;
 				}
-				var isStart = false;
-				var isCancel = false;
-
-				var pop = $("#afui").popup({
-					title: "扫描结果",
-					message: "正在进入网校...<img src='images/sch_load.gif' >",
-					cancelText: "取消",
-					cancelCallback: function() {
-						isCancel = true;
-						pop.hide();
-						applog("qr search cancelled");
-					},
-					cancelOnly: true
-				});
-				setTimeout(function() {
-					if (isStart || isCancel) {
-						return;
-					}
-					successCallback(result.text);
-					pop.hide();
-				},
-				3000);
+				successCallback(result.text);
 			},
 			function(error) {
 				$("#afui").popup("扫描错误: " + error);

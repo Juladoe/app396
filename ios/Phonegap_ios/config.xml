@@ -127,4 +127,7 @@
     <feature name="ImagePlugin">
         <param name="ios-package" value="ImagePlugin" />
     </feature>
+    <feature name="WelcomePlugin">
+        <param name="ios-package" value="WelcomePlugin" />
+    </feature>
 </widget>
