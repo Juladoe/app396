@@ -20,78 +20,17 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
+        if (IOS7_OR_LATER) {
+            self.edgesForExtendedLayout = UIRectEdgeNone;
+            self.extendedLayoutIncludesOpaqueBars = NO;
+            self.automaticallyAdjustsScrollViewInsets = NO;
+        }
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                              target:self
+                                                                                              action:@selector(leftBtnClick:)];
     }
     return self;
-}
-
-- (UIView*)buildOverlayView {
-
-    CGRect bounds = self.view.bounds;
-    bounds = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
-    
-    UIView* overlayView = [[[UIView alloc] initWithFrame:bounds] autorelease];
-    overlayView.autoresizesSubviews = YES;
-    overlayView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    overlayView.opaque              = NO;
-    
-    UIToolbar* toolbar = [[[UIToolbar alloc] init] autorelease];
-    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    
-    id cancelButton = [[[UIBarButtonItem alloc] autorelease]
-                       initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                       target:(id)self
-                       action:@selector(leftBtnClick:)
-                       ];
-    
-    id flexSpace = [[[UIBarButtonItem alloc] autorelease]
-                    initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                    target:nil
-                    action:nil
-                    ];
-    
-#if USE_SHUTTER
-    id shutterButton = [[UIBarButtonItem alloc]
-                        initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
-                        target:(id)self
-                        action:@selector(shutterButtonPressed)
-                        ];
-    
-    toolbar.items = [NSArray arrayWithObjects:flexSpace,cancelButton,flexSpace,shutterButton,nil];
-#else
-    toolbar.items = [NSArray arrayWithObjects:flexSpace,cancelButton,flexSpace,nil];
-#endif
-    bounds = overlayView.bounds;
-    
-    [toolbar sizeToFit];
-    CGFloat toolbarHeight  = [toolbar frame].size.height;
-    CGFloat rootViewHeight = CGRectGetHeight(bounds);
-    CGFloat rootViewWidth  = CGRectGetWidth(bounds);
-    CGRect  rectArea       = CGRectMake(0, rootViewHeight - toolbarHeight, rootViewWidth, toolbarHeight);
-    [toolbar setFrame:rectArea];
-    
-    [overlayView addSubview: toolbar];
-    
-    
-    CGRect r = [ UIScreen mainScreen ].bounds;
-    CGRect frame = [ UIScreen mainScreen ].applicationFrame;
-    
-    _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, r.size.width, frame.size.height - toolbarHeight)];
-    _webView.delegate = self;
-    
-    [overlayView addSubview: _webView];
-    
-    return overlayView;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-         CGRect viewBounds = [_webView bounds];
-         viewBounds.origin.y = 20;
-         viewBounds.size.height = viewBounds.size.height - 20;
-         _webView.frame = viewBounds;
-     }
-    [super viewWillAppear:animated];
 }
 
 -(id) initWithUrl:(NSString*)url
@@ -106,15 +45,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-  
+    
+    _webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+    _webView.delegate = self;
+    [self.view addSubview:_webView];
     NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:_url]];
-
-    [self.view addSubview:[self buildOverlayView]];
     [_webView loadRequest:request];
-    NSLog(@"init webview %@", _url);
 }
 
--(void)leftBtnClick:(id)sender{
+- (void)leftBtnClick:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
     //发送支付回调信息
     [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayCallback" object:@"error"];
 }
@@ -137,12 +78,11 @@
             NSString* query = queryURL.query;
             //发送支付回调信息
             [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayCallback" object:query];
-            [self.view removeFromSuperview];
+            [self dismissViewControllerAnimated:YES completion:nil];
             return false;
         }
     }
     return true;
 }
-
 
 @end

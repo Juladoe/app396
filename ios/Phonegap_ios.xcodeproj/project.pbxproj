@@ -53,8 +53,8 @@
 		724A5074191C763700BECABE /* VideoPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 724A5072191C763700BECABE /* VideoPlugin.m */; };
 		724A507D191C775C00BECABE /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 724A507C191C775C00BECABE /* libiconv.dylib */; };
 		724A5080191C77B700BECABE /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 724A507F191C77B700BECABE /* CoreVideo.framework */; };
-		72E53C771923121600ABF7DE /* AlipayPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E53C761923121600ABF7DE /* AlipayPlugin.m */; };
-		72E53C7E1923167200ABF7DE /* AlipayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E53C7C1923167200ABF7DE /* AlipayViewController.m */; };
+		72E53C771923121600ABF7DE /* AlipayPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E53C761923121600ABF7DE /* AlipayPlugin.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		72E53C7E1923167200ABF7DE /* AlipayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E53C7C1923167200ABF7DE /* AlipayViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		72E53C7F1923167200ABF7DE /* AlipayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 72E53C7D1923167200ABF7DE /* AlipayViewController.xib */; };
 		72E53CC61923641500ABF7DE /* HeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E53CC51923641500ABF7DE /* HeaderViewController.m */; };
 		72E53CC91923B85E00ABF7DE /* UtilPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E53CC81923B85E00ABF7DE /* UtilPlugin.m */; };

@@ -27,11 +27,16 @@
     
     if (url != nil && [url length] > 0) {
         _alipayView = [[AlipayViewController alloc] initWithUrl:url];
-        //注册回调事件
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayFinishCallback:) name:@"alipayCallback" object:nil];
-        
-        [_alipayView.view setFrame:[self.webView bounds]];
-        [self.webView addSubview:_alipayView.view];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:_alipayView];
+        [[[[UIApplication sharedApplication] delegate] window].rootViewController presentViewController:nav
+                                                                                               animated:YES
+                                                                                             completion:^{
+            //注册回调事件
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(alipayFinishCallback:)
+                                                         name:@"alipayCallback"
+                                                       object:nil];
+        }];
     } else {
         _pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
         [self.commandDelegate sendPluginResult:_pluginResult callbackId:command.callbackId];
@@ -40,12 +45,9 @@
 
 - (void)alipayFinishCallback:(NSNotification*)noitfy
 {
-    NSLog(@"alipay finish");
-    [_alipayView.view removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:@"alipayCallback"
                                                   object:nil];
-    
     NSString* result = [noitfy object];
     _pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
     [self.commandDelegate sendPluginResult:_pluginResult callbackId:_callbackId];
