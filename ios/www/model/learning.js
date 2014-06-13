@@ -10,7 +10,7 @@ define(function(require, exports){
 				<a class="card-bg-a" onclick="load_courseinfo_page('${id}', 0);">
 				<table style="width:100%;" border="0" cellpadding="0" cellspacing="0">
 					<tr valign="top">
-						<td><img src="${cb:middlePicture}" width="100%" height="120" /></td>
+						<td><img class="learn_course_pic" src="${cb:middlePicture}" width="100%" height="120" /></td>
 					</tr>
 					<tr>
 						<td style="padding:10px;">
@@ -104,6 +104,13 @@ define(function(require, exports){
 						learning_model.scroller.scrollToTop(10);
 						$("#learn_list").html(list_str);
 					}
+
+					 $(".learn_course_pic").each(function(){
+				                        var width = $(this).width();
+				                        var height = width /480 * 270;
+				                        $(this).height(height);
+				               });
+					 
 					if (callback) {
 						callback();
 					}

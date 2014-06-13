@@ -219,7 +219,8 @@ define(function(require, exports) {
 		if (startWithSchool == "true") {
 			defaultSchool = appstore_model.getStoreCache("defaultSchool");
 			defaultSchoolName = appstore_model.getStoreCache("defaultSchoolName");
-			if (defaultSchool) {
+			if ("" != defaultSchool) {
+				
 				setSchoolHost(defaultSchool, defaultSchoolName);
 				load_courselist_page();
 				return;
@@ -291,8 +292,21 @@ define(function(require, exports) {
 		$.jsonP({
 			url: url_path,
 			success: function(data) {
-				success_func(data);
 				$.ui.hideMask();
+				if (data.error && data.error.name == "client_closed") {
+					$("#afui").popup({
+						title : "系统提示",
+						message : data.error.message,
+						cancelText: "确定",
+						cancelCallback: function() {
+							appstore_model.removeSchool();
+							$.ui.loadContent('qrSearchPanel', false, false, 'slide');
+						},
+						cancelOnly : true
+					});
+					return;
+				}
+				success_func(data);
 			},
 			timeout: "5000",
 			error: function() {

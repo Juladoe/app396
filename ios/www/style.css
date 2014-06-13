@@ -1054,3 +1054,9 @@ background: white;
     background-color:#03b884 !important;
     color:white !important;
 }
+
+@media screen and (min-width:960px){
+     body{
+        
+     }
+}

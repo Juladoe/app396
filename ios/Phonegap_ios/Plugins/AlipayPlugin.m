@@ -9,7 +9,7 @@
 #import "AlipayPlugin.h"
 #import "AlipayViewController.h"
 
-@interface AlipayPlugin ()
+@interface AlipayPlugin()
 
 @property (nonatomic, strong)AlipayViewController *alipayView;
 @property (nonatomic, strong)CDVPluginResult *pluginResult;

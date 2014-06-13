@@ -12,7 +12,7 @@ data-footer="courselist_footer" data-height="80">
                                         <table style="width:100%;" border="0" cellpadding="0" cellspacing="0">
                                                 <tr class="card-bg-line" valign="top">
                                                         <td style="width:48%;">
-                                                                <img src="${cb:middlePicture}" width="100%" height="90" />
+                                                                <img class="course_pic" src="${cb:middlePicture}" width="100%" height="90" />
                                                         </td>
                                                         <td style="text-align:left;" class="list_content">
                                                                 <h4 class="custom_normal_color course_title">
@@ -112,6 +112,13 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
                $(".course_title").each(function(){
                		wrapText(this);
                });
+
+               $(".course_pic").each(function(){
+                        var width = $(this).width();
+                        var height = width /480 * 270;
+                        $(this).height(height);
+               });
+
                if (callback) {
                	callback();
                }

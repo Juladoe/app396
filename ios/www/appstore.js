@@ -169,6 +169,12 @@ define(function(require, exports){
 		return false;
 	}
 
+	exports.removeSchool = function()
+	{
+		appstore_model.setStoreCache("defaultSchool", "");
+		appstore_model.setStoreCache("defaultSchoolName", "");
+	}
+
 	exports.saveSchoolToStore = function(name, cover, url)
 	{
 		setSchoolHost(url, name);

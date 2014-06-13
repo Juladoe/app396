@@ -127,7 +127,7 @@ define(function(require, exports){
 				return;
 			}
 
-			appstore_model.saveSchoolToStore(school.name, "", school.url);
+			appstore_model.saveSchoolToStore(school.name, "",  school.url);
 			cordova.exec(
 		                function(version) {
 		                    //success
@@ -173,56 +173,59 @@ define(function(require, exports){
 		);
 	}
 
+	function loginSchoolWithSiteSuccess(data)
+	{
+		var apiVersionRange = data.site.apiVersionRange;
+		var versionCheckResult = comparVersion(apiVersion,  apiVersionRange.min);
+		if (versionCheckResult == window.LOW_VERSION) {
+			showMuiltDialog({
+				title: "网校提示",
+				message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+				doneText: "立即下载",
+				doneCallback: function() {
+					checkToUpdataApp();
+				}
+			});
+			$.ui.hideMask();
+			return;
+		}
+
+		versionCheckResult = comparVersion(apiVersion,  apiVersionRange.max);
+		if (versionCheckResult == window.HEIGHT_VERSION) {
+			$("#afui").popup("服务器维护中，请稍后再试。");
+			$.ui.hideMask();
+			return;
+		}
+
+		var school = data.site;
+
+		appstore_model.saveSchoolToStore(school.name, "", school.url);
+
+		cordova.exec(
+	                function(version) {
+	                    //success
+	                },
+	                function(error) {
+	                    //error
+	                },
+	                 "WelcomePlugin",
+	                 "showWelcomeImages",
+	                 [school.splashs]
+	            );
+	}
+
 	function loginSchoolWithSite(url)
 	{
-		$.jsonP(
-		{
-			url: url + "/login_with_site" + '?callback=?',
-			success:function(data){
-				var apiVersionRange = data.site.apiVersionRange;
-				var versionCheckResult = comparVersion(apiVersion,  apiVersionRange.min);
-				if (versionCheckResult == window.LOW_VERSION) {
-					showMuiltDialog({
-						title: "网校提示",
-						message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
-						doneText: "立即下载",
-						doneCallback: function() {
-							checkToUpdataApp();
-						}
-					});
-					$.ui.hideMask();
-					return;
-				}
-
-				versionCheckResult = comparVersion(apiVersion,  apiVersionRange.max);
-				if (versionCheckResult == window.HEIGHT_VERSION) {
-					$("#afui").popup("服务器维护中，请稍后再试。");
-					$.ui.hideMask();
-					return;
-				}
-
-				var school = data.site;
-
-				cordova.exec(
-			                function(version) {
-			                    //success
-			                },
-			                function(error) {
-			                    //error
-			                },
-			                 "WelcomePlugin",
-			                 "showWelcomeImages",
-			                 [school.splashs]
-			            );
-				appstore_model.saveSchoolToStore(school.name, school.logo, url);
-				
+		simpleJsonP(
+			url + "/login_with_site" + '?callback=?',
+			function(data) {
+				loginSchoolWithSiteSuccess(data);
 			},
-			timeout:"5000",
-			error: function(){
+			function(){
 				$.ui.hideMask();
 				$("#afui").popup("没有搜索到网校!");
 			}
-		});
+		);
 	}
 
 	function checkMobileVersion(apiVersionRange)

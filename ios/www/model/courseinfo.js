@@ -49,7 +49,7 @@ var courseinfo_text = new String(function(){
 	<textarea id="courseinfo_list_item" style="display:none;">
 		<div id="course_header">
 		<!--
-			<img style="width:100%;height:160px;" src="${cb:largePicture}"/>
+			<img style="width:100%;height:40%;" src="${cb:largePicture}"/>
 		-->
 			<input type="hidden" id="course_payment" value="alipay" />
 			<input type="hidden" id="course_title" value="${course.title}" />
@@ -131,7 +131,7 @@ var courseinfo_text = new String(function(){
 	</textarea>
 	<!-- templ input list end -->
 
-	<div id="course_content">
+	<div id="course_content" >
 		
 	</div>
 </div>
@@ -352,6 +352,9 @@ function courseTemplHandler(a, b)
 				pic = a.course.largePicture;
 			}
 			$("#course_pic").attr("src", pic);
+			var width = $("#course_pic").width();
+	                        var height = width /480 * 270;
+	                        $("#course_pic").height(height);
 			return;
 		case "location":
 			return schoolName;
