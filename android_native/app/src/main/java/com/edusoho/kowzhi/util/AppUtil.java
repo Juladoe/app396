@@ -33,6 +33,24 @@ public class AppUtil {
         return about.replaceAll("<[^>]+>", "");
     }
 
+    public static int getCourseCorverHeight(int width)
+    {
+        float scale = (float)width / 480;
+        return (int)(270 * scale);
+    }
+
+    public static int getCourseListCoverHeight(int width)
+    {
+        float scale = (float)width * 0.5f / 480;
+        return (int)(270 * scale);
+    }
+
+    public static int getLearnCourseListCoverHeight(int width)
+    {
+        float scale = (float)width * 0.9f / 480;
+        return (int)(270 * scale);
+    }
+
     public static String coverLessonContent(String content)
     {
         return content.replaceAll("href=[^=]+\\s", "href='javascript:void();' ");

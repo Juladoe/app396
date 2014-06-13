@@ -2,6 +2,7 @@ package com.edusoho.kowzhi.ui;
 
 import android.app.ActivityGroup;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,8 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kowzhi.R;
 
 import com.edusoho.kowzhi.EdusohoApp;
-import com.edusoho.kowzhi.model.AppUpdateInfo;
-import com.edusoho.kowzhi.model.ErrorResult;
-import com.edusoho.kowzhi.model.School;
+import com.edusoho.kowzhi.model.*;
+import com.edusoho.kowzhi.model.Error;
 import com.edusoho.kowzhi.util.AppUtil;
 import com.edusoho.kowzhi.util.Const;
 import com.edusoho.kowzhi.view.LoadDialog;
@@ -191,16 +191,8 @@ public class BaseActivity extends ActivityGroup {
                     loading.dismiss();
                 }
                 int code = status.getCode();
-                try {
-                    ErrorResult result = app.gson.fromJson(
-                            object, new TypeToken<ErrorResult>() {
-                    }.getType());
-                    if (result != null) {
-                        longToast(result.error.message);
-                        return;
-                    }
-                } catch (Exception e) {
-                    //error
+                if (handlerError(object)) {
+                    return;
                 }
 
                 if (code != Const.OK) {
@@ -219,16 +211,8 @@ public class BaseActivity extends ActivityGroup {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 int code = status.getCode();
-                try {
-                    ErrorResult result = app.gson.fromJson(
-                            object, new TypeToken<ErrorResult>() {
-                    }.getType());
-                    if (result != null) {
-                        longToast(result.error.message);
-                        return;
-                    }
-                } catch (Exception e) {
-                    //result error
+                if (handlerError(object)) {
+                    return;
                 }
                 if (code != Const.OK) {
                     longToast("网络访问异常！请检查是否链接网络。");
@@ -238,6 +222,46 @@ public class BaseActivity extends ActivityGroup {
                 rcl.callback(url,object,status);
             }
         });
+    }
+
+    private boolean handlerError(String errorStr)
+    {
+        try {
+            ErrorResult result = app.gson.fromJson(
+                    errorStr, new TypeToken<ErrorResult>() {
+            }.getType());
+            if (result != null) {
+                Error error = result.error;
+                if (Const.CLIENT_CLOSE.equals(error.name)) {
+                    PopupDialog.createMuilt(
+                            mContext,
+                            "系统提示",
+                            error.message,
+                            new PopupDialog.PopupClickListener() {
+                                @Override
+                                public void onClick(int button) {
+                                    if (button == PopupDialog.OK) {
+                                        removeSchoolItem();
+                                        QrSchoolActivity.start(mActivity);
+                                        finish();
+                                    }
+                                }
+                            }).show();
+                    return true;
+                }
+                longToast(result.error.message);
+                return true;
+            }
+        } catch (Exception e) {
+            //result error
+        }
+        return false;
+    }
+
+    public void removeSchoolItem()
+    {
+        SharedPreferences sp = getSharedPreferences(Const.DEFAULT_SCHOOL, MODE_PRIVATE);
+        sp.edit().clear().commit();
     }
 
     /**

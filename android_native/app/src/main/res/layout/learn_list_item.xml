@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/course_pic"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="160dp"
             android:layout_margin="0dp"
             android:scaleType="fitXY"
             android:src="@drawable/defaultpic" />

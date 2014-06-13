@@ -20,7 +20,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:padding="8dp"
-            android:text="try3.edusoho.cn"
+            android:text=""
             android:hint="输入域名添加网校 如(www.name.com)"
             android:background="@drawable/search_edit_input_bg"
             android:layout_width="match_parent"

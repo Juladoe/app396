@@ -3,8 +3,8 @@
 
     <ImageView
         android:id="@+id/course_pic"
-        android:layout_width="300dp"
-        android:layout_height="170dp"
+        android:layout_width="300dip"
+        android:layout_height="170dip"
         android:scaleType="fitXY"
         android:src="@drawable/defaultpic" />
 

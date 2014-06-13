@@ -5,9 +5,9 @@
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#EE30A7"
+        android:centerColor="#03b884"
         android:centerY="0.45"
-        android:endColor="#EE30A7"
-        android:startColor="#EE30A7" />
+        android:endColor="#03b884"
+        android:startColor="#03b884" />
 
 </shape>

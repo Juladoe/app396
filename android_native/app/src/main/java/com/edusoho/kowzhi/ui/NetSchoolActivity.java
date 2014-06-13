@@ -177,7 +177,7 @@ public class NetSchoolActivity extends BaseActivity {
                                 return;
                             };
 
-                            showSchSplash(site.splashs);
+                            showSchSplash(site.name, site.splashs);
                             app.setCurrentSchool(site);
                         }
                     });
@@ -210,9 +210,9 @@ public class NetSchoolActivity extends BaseActivity {
                 }).show();
     }
 
-    private void showSchSplash(String[] splashs)
+    private void showSchSplash(String schoolName, String[] splashs)
     {
-        SchoolSplashActivity.start(mContext, splashs);
+        SchoolSplashActivity.start(mContext, schoolName, splashs);
         finish();
     }
 

@@ -4,6 +4,7 @@ package com.edusoho.plugin.photo;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -56,12 +57,30 @@ public class SchoolSplashActivity extends Activity {
         finish();
     }
 
-    public static void start(Context context, String[] imageArray)
+    public static void start(Context context, String schoolName, String[] imageArray)
     {
         Intent intent = new Intent();
         intent.setClass(context, SchoolSplashActivity.class);
-        intent.putExtra("images", imageArray);
+        if (!checkIsSaveSchool(context, schoolName)) {
+            intent.putExtra("images", imageArray);
+        }
+        saveSchoolHistory(context, schoolName);
         context.startActivity(intent);
+    }
+
+    private static boolean checkIsSaveSchool(Context context, String schoolName)
+    {
+        SharedPreferences sp = context.getSharedPreferences("school_history", Context.MODE_APPEND);
+        int count = sp.getInt(schoolName, 0);
+        return count > 0 ? true: false;
+    }
+
+    private static void saveSchoolHistory(Context context, String schoolName)
+    {
+        SharedPreferences sp = context.getSharedPreferences("school_history", Context.MODE_APPEND);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(schoolName, 1);
+        editor.commit();
     }
 
     public class SamplePagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
@@ -82,7 +101,7 @@ public class SchoolSplashActivity extends Activity {
             for (int i = 0; i < images.length; i++) {
                 ImageView indexView = new ImageView(mContext);
                 indexView.setLayoutParams(new LayoutParams(15, 15));
-                indexView.setPadding(1, 1, 1, 1);
+                indexView.setPadding(2, 2, 2, 2);
                 if (i == 0) {
                     indexView.setImageResource(R.drawable.viewpager_index_bg_sel);
                 } else {

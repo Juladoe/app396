@@ -151,6 +151,10 @@ public class SchCourseActivity extends BaseActivity{
         nav_my_btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                Activity settingActivity = EdusohoApp.runTask.get("SettingActivity");
+                if (settingActivity != null) {
+                    settingActivity.finish();
+                }
                 Intent setIntent = new Intent();
                 setIntent.setClass(mContext, SettingActivity.class);
                 startActivity(setIntent);

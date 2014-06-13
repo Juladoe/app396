@@ -17,6 +17,7 @@ public class Const {
     public static final String RESULT_OK = "ok";
     public static final String RESULT_SUCCESS = "success";
     public static final String RESULT_ERROR = "error";
+    public static final String CLIENT_CLOSE = "client_closed";
 
     public static final String DB_NAME = "edusoho";
     public static final String T_CAROUSEL = "edusoho_carousel";
@@ -70,12 +71,12 @@ public class Const {
 
     public static final int FAVORITE_REQUEST = 0x1004;
     public static final int COURSEINFO_REQUEST = 0x1005;
-
     public static final int COURSELESSON_REQUEST = 0x1001;
-
 
     //服务器api版本
     public static final int NORMAL_VERSIO = 0;
     public static final int HEIGHT_VERSIO = 1;
     public static final int LOW_VERSIO = -1;
+
+    public static final String DEFAULT_SCHOOL = "defaultSchool";
 }

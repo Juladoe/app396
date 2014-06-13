@@ -9,7 +9,7 @@
         android:layout_below="@id/edusoho_actionbar"
         android:id="@+id/courseInfo_pic"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="320dip"
         android:scaleType="fitXY"
         android:src="@drawable/defaultpic" />
     <RelativeLayout

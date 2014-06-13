@@ -356,8 +356,16 @@ public class CourseInfoActivity extends BaseActivity {
                         AlipayActivity.startForResult(mActivity, payurl);
                     }
 
+                } else if(Const.RESULT_ERROR.equals(status)) {
+                    String message = result.get("message");
+
+                    PopupDialog.createNormal(
+                            mContext,
+                            "课程提示",
+                            message != null ? message : "加入课程失败,请联系网站管理员!"
+                    ).show();
                 } else {
-                    longToast("加入课程失败");
+                    longToast("加入课程失败,请联系网站管理员!");
                 }
             }
         });
@@ -650,11 +658,10 @@ public class CourseInfoActivity extends BaseActivity {
 
         aq = new AQuery(this);
         String largePic = dataIntent.getStringExtra("largePicture");
-        if (TextUtils.isEmpty(largePic)) {
-            aq.id(R.id.courseInfo_pic).image(R.drawable.noram_course);
-        } else {
-            aq.id(R.id.courseInfo_pic).image(dataIntent.getStringExtra("largePicture"), false, true);
-        }
+        aq.id(R.id.courseInfo_pic).image(
+                largePic, false, true, 0, R.drawable.noram_course);
+
+        aq.id(R.id.courseInfo_pic).height(AppUtil.getCourseCorverHeight(app.screenW), false);
 
         head_radiogroup = (RadioGroup) findViewById(R.id.head_radiogroup);
         head_radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

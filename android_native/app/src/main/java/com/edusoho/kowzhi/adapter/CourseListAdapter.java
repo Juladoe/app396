@@ -12,10 +12,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.edusoho.kowzhi.EdusohoApp;
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.model.Course;
 import com.edusoho.kowzhi.model.CourseResult;
 import com.edusoho.kowzhi.model.Teacher;
+import com.edusoho.kowzhi.util.AppUtil;
 
 public class CourseListAdapter extends BaseAdapter {
 
@@ -92,12 +94,15 @@ public class CourseListAdapter extends BaseAdapter {
             holder.course_studentNum.setText(course.studentNum + " 学员");
         }
 
-        if (TextUtils.isEmpty(course.middlePicture)) {
+        if (TextUtils.isEmpty(course.largePicture)) {
             holder.aq.id(R.id.course_pic).image(R.drawable.noram_course);
         } else {
             holder.aq.id(R.id.course_pic).image(
-                    course.middlePicture, false, true);
+                    course.largePicture, false, true);
         }
+
+        int width = EdusohoApp.app.screenW;
+        holder.aq.id(R.id.course_pic).height(AppUtil.getCourseListCoverHeight(width), false);
 
         holder.course_ratingbar.setRating((float) course.rating);
         if (course.teachers.length > 0) {

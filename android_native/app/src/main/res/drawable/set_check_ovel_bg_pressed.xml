@@ -6,7 +6,7 @@
         <shape android:shape="oval" >
             <stroke
                 android:width="1px"
-                android:color="#00EE76" />
+                android:color="#03b884" />
 
             <size
                 android:height="30dp"
@@ -14,10 +14,10 @@
             <!-- shape的颜色，支持渐变 -->
             <gradient
                 android:angle="270"
-                android:centerColor="#00EE76"
+                android:centerColor="#03b884"
                 android:centerY="0.45"
-                android:endColor="#00EE76"
-                android:startColor="#00EE76" />
+                android:endColor="#03b884"
+                android:startColor="#03b884" />
         </shape>
     </item>
     <item android:left="5dp"
@@ -29,7 +29,7 @@
 
             <stroke
                 android:width="1px"
-                android:color="#00EE76" />
+                android:color="#03b884" />
 
             <size
 
@@ -38,10 +38,10 @@
             <!-- shape的颜色，支持渐变 -->
             <gradient
                 android:angle="270"
-                android:centerColor="#00EE76"
+                android:centerColor="#03b884"
                 android:centerY="0.45"
-                android:endColor="#00EE76"
-                android:startColor="#00EE76" />
+                android:endColor="#03b884"
+                android:startColor="#03b884" />
         </shape>
     </item>
     <item android:left="30dp">
@@ -50,7 +50,7 @@
 
             <stroke
                 android:width="3px"
-                android:color="#00EE76" />
+                android:color="#03b884" />
 
             <size
                 android:height="30dp"

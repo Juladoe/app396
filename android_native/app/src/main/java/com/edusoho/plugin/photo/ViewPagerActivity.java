@@ -66,7 +66,7 @@ public class ViewPagerActivity extends BaseActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
-            app.query.id(photoView).image(R.drawable.defaultpic).image(mImages[position], false, true);
+            app.query.id(photoView).image(mImages[position], false, true, 0, R.drawable.defaultpic);
             // Now just add PhotoView to ViewPager and return it
             container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             return photoView;

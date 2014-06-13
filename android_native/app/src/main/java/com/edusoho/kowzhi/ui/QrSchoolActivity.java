@@ -102,28 +102,25 @@ public class QrSchoolActivity extends BaseActivity {
                     return;
                 }
                 try {
-                    final TokenResult result = app.gson.fromJson(
+                    final TokenResult schoolResult = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
                     }.getType());
 
-                    if (result == null) {
+                    if (schoolResult == null) {
                         longToast("二维码信息错误!");
                         return;
                     }
 
-                    SchoolResult schoolResult = app.gson.fromJson(
-                            object, new TypeToken<SchoolResult>() {
-                    }.getType());
-
-                    if (schoolResult == null) {
-
-                    }
                     School site = schoolResult.site;
                     if (!checkMobileVersion(site.apiVersionRange)) {
                         return;
                     };
 
-                    showSchSplash(site.splashs);
+                    showSchSplash(site.name, site.splashs);
+
+                    if (schoolResult.token != null && ! "".equals(schoolResult.token)) {
+                        app.saveToken(schoolResult);
+                    }
                     app.setCurrentSchool(site);
 
                 }catch (Exception e) {
@@ -134,9 +131,9 @@ public class QrSchoolActivity extends BaseActivity {
 
     }
 
-    private void showSchSplash(String[] splashs)
+    private void showSchSplash(String schoolName, String[] splashs)
     {
-        SchoolSplashActivity.start(mContext, splashs);
+        SchoolSplashActivity.start(mContext, schoolName, splashs);
         finish();
     }
 

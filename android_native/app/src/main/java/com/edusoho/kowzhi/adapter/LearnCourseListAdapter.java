@@ -9,8 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.edusoho.kowzhi.EdusohoApp;
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.model.LearnCourse;
+import com.edusoho.kowzhi.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +98,8 @@ public class LearnCourseListAdapter extends BaseAdapter {
 
         holder.aq.id(R.id.course_pic).image(
                 course.largePicture, false, true);
+        int width = EdusohoApp.app.screenW;
+        holder.aq.id(R.id.course_pic).height(AppUtil.getLearnCourseListCoverHeight(width), false);
         return view;
     }
 
