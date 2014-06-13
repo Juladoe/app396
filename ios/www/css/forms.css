@@ -198,7 +198,7 @@
   float: none;
 }
 #afui input.toggle:checked + label {
-  background: #00EE76;
+  background: #03b884;
   line-height: -1em;
 }
 #afui input.toggle + label > span {
@@ -218,7 +218,7 @@
   -webkit-transition: -webkit-transform 100ms linear;
 }
 #afui input.toggle:checked + label > span {
-  border: 1px solid #00EE76;
+  border: 1px solid #03b884;
   transform: translate3d(27px, 0, 0);
   -webkit-transform: translate3d(27px, 0, 0);
 }

@@ -876,6 +876,10 @@ define(function(require, exports) {
 					} else {
 						load_pay_page(data.payUrl, course_id);
 					}
+				} else if (data.status == "error") {
+					$("#afui").popup(data.message);
+				} else {
+					$("#afui").popup("支付失败！请联系网站管理员");
 				}
 			});
 		} else {

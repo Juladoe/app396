@@ -90,9 +90,10 @@ define(function(require, exports){
 			if (data.token) {
 				appstore_model.saveUserInfo(data.user, data.token);
 			}
+
 			var school = data.site;
 			var apiVersionRange = data.site.apiVersionRange;
-			var versionCheckResult = comparVersion(apiVersion, versionCheckResult.min);
+			var versionCheckResult = comparVersion(apiVersion, apiVersionRange.min);
 			if (versionCheckResult == window.LOW_VERSION) {
 				$("#afui").popup({
 					title: school.name + "-网校提示",
@@ -103,9 +104,7 @@ define(function(require, exports){
 					},
 					doneText: "立即下载",
 					doneCallback: function() {
-						$.jsonP({
-							url: schoolurl + "/notify_mobile_version?callback=?"
-						});
+						checkToUpdataApp();
 					},
 					cancelOnly: false
 				});
@@ -113,7 +112,7 @@ define(function(require, exports){
 				return;
 			}
 
-			versionCheckResult = comparVersion(apiVersion, versionCheckResult.max);
+			versionCheckResult = comparVersion(apiVersion, apiVersionRange.max);
 			if (versionCheckResult == window.HEIGHT_VERSION) {
 				$("#afui").popup({
 					title: school.name  + "-网校提示",
@@ -137,8 +136,9 @@ define(function(require, exports){
 		                },
 		                 "WelcomePlugin",
 		                 "showWelcomeImages",
-		                 [school.splashs]);
-			appstore_model.saveSchoolToStore(school.name, school.logo, url);
+		                 [school.splashs]
+		            );
+			appstore_model.saveSchoolToStore(school.name, school.logo, school.url);
 		});
 	}
 
@@ -167,7 +167,7 @@ define(function(require, exports){
 				}
 			},
 			function(data){
-				$("#afui").popup("访问服务器失败!");
+				$("#afui").popup("没有搜索到网校!");
 			}
 		);
 	}
@@ -186,9 +186,7 @@ define(function(require, exports){
 						message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
 						doneText: "立即下载",
 						doneCallback: function() {
-							$.jsonP({
-								url: url+ "/notify_mobile_version?callback=?"
-							});
+							checkToUpdataApp();
 						}
 					});
 					$.ui.hideMask();
@@ -221,7 +219,7 @@ define(function(require, exports){
 			timeout:"5000",
 			error: function(){
 				$.ui.hideMask();
-				$("#afui").popup("网校不存在!");
+				$("#afui").popup("没有搜索到网校!");
 			}
 		});
 	}
