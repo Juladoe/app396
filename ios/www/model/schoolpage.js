@@ -127,6 +127,7 @@ define(function(require, exports){
 				return;
 			}
 
+			appstore_model.saveSchoolToStore(school.name, "", school.url);
 			cordova.exec(
 		                function(version) {
 		                    //success
@@ -138,7 +139,7 @@ define(function(require, exports){
 		                 "showWelcomeImages",
 		                 [school.splashs]
 		            );
-			appstore_model.saveSchoolToStore(school.name, school.logo, school.url);
+
 		});
 	}
 
