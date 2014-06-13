@@ -3,6 +3,7 @@ package com.edusoho.kowzhi.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -33,6 +34,9 @@ public class AboutActivity extends BaseActivity {
         setBackMode("关于网校", true, null);
 
         about_content = (WebView) findViewById(R.id.about_content);
+        about_content.getSettings().setJavaScriptEnabled(false);
+        about_content.getSettings().setDefaultTextEncodingName("UTF-8");
+        about_content.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         loadContent();
     }
 

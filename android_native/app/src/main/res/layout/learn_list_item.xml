@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:singleLine="true"
             android:text="标题"
             android:textSize="@dimen/course_list_item_title"
             android:textStyle="bold" />
@@ -41,6 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             android:text="副标题"
             android:textColor="@color/learn_subtitle"
             android:textSize="@dimen/course_teacher_nickname" />

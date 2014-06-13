@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.entity.CourseLessonType;
 import com.edusoho.kowzhi.model.LessonItem;
+import com.edusoho.kowzhi.util.Const;
 
 public class CourseLessonListAdapter extends BaseAdapter {
 
@@ -121,6 +122,9 @@ public class CourseLessonListAdapter extends BaseAdapter {
                 holder.course_lesson_length.setText(lesson.length);
                 break;
 		}
+        if (!Const.PUBLISHED.equals(lesson.status)) {
+            typeIcon = R.string.unpublished_text;
+        }
 
         holder.course_lesson_typeimg.setText(mContext.getString(typeIcon));
 		String learnStatus = mUserLearns.get(lesson.id);

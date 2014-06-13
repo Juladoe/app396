@@ -57,24 +57,8 @@ public class NotificationListAdapter extends BaseAdapter{
             holder = (ViewHolder) view.getTag();
         }
         Notify item = mList.get(index);
-        String message = item.content.message;
-        if (item.content.message != null) {
-            holder.notification_message.setText(message.replaceAll("<[^>]+>", ""));
-        } else {
-            Notify.NotifyEnum ne = Notify.NotifyEnum.cover(item.content.threadType);
-            switch (ne) {
-                case QUESTION:
-                    StringBuffer buffer = new StringBuffer(item.content.threadUserNickname);
-                    buffer.append("  在课程  ")
-                          .append(item.content.courseTitle)
-                          .append("  发表了问题  ")
-                          .append(item.content.threadTitle);
-                    holder.notification_message.setText(buffer.toString());
-                    break;
-                case EMPTY:
-                    break;
-            }
-        }
+        String message = item.message;
+        holder.notification_message.setText(message.replaceAll("<[^>]+>", ""));
         holder.notification_time.setText(AppUtil.coverTime(item.createdTime));
         return view;
     }

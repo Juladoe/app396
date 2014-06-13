@@ -44,36 +44,49 @@ define(function(require, exports){
 						var item_type = "fa-youtube-play";
 						switch (lessonItem.type) {
 							case "text":
-							item_type = "fa-picture-o";
-							break;
+								item_type = "fa-picture-o";
+								break;
 							case "testpaper":
-							item_type = "fa-file-text-o";
-							break;
+								item_type = "fa-file-text-o";
+								break;
 							case "audio":
-							item_type = "fa-microphone";
-							break;
+								item_type = "fa-microphone";
+								break;
 						}
 						//li id == course_lesson `s id
 						var sel_class = "li_a_item";
 						if (lesson_id == lessonItem.id) {
 							loadLesson(course_lesson_list_model.courseId, lesson_id);
 						}
+						var title = splitLessonTitle(lessonItem.title);
+						if (lessonItem.status != "published") {
+							title  =  "(未发布) " + title;
+						}
+
 						list_str += "<li id='lesson_" 
 						+ lessonItem.id + "'"
 						+ " type='" + lessonItem.type + "'"
-						+ " title='" + lessonItem.title + "'"
+						+ " title='" + title + "'"
 						+ " mediaUri='" + lessonItem.mediaUri + "'"
 						+ " onclick='course_lesson_list_model.selCourseLessonMenu(" + lessonItem.id  + ");'><a class='" 
 						+ sel_class 
 						+ "'>"
 						+ "<i class='lesson_type_normal_color fa " + item_type + "'></i>&nbsp;"
-						+ lessonItem.title 
+						+ title 
 						+ "</a><textarea class='tab_hide content'>" + lessonItem.content + "</textarea></li>";
 					}
 				$("#course_lesson_menu").html(list_str);
 			}
 		}
 	);
+}
+
+function splitLessonTitle(title)
+{
+	if (title.length > 15) {
+		return title.substring(0, 15);
+	}
+	return title;
 }
 
 function loadLesson(courseId, lessonId)
@@ -87,8 +100,12 @@ function loadLesson(courseId, lessonId)
 			$(li).find("a").addClass("li_sel li_sel_color");
 			$("#course_lesson_title").text(lessonItem.title);
 
+			var lessonContent = lessonItem.content;
+			if (lessonItem.status  != "") {
+				lessonContent = "当前课时正在编辑中，暂时无法观看。";
+			}
 			setLessonContent(
-				lessonItem.content, 
+				lessonContent,
 				lessonItem.type, 
 				lessonId, 
 				lessonItem.mediaUri, 

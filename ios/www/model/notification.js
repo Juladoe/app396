@@ -50,22 +50,11 @@ define(function(require, exports){
 					function(a,b) {
 						switch (b[1]) {
 							case "message":
-							message = a.content.message;
-							if (message) {
+								message = a.message;
 								message = message.replace(/<[^>]+>/g, "");
 								return message;
-							}
-							switch(a.content.threadType) {
-								case "question":
-								message = a.content.threadUserNickname
-								+ " 在课程 "
-								+ a.content.courseTitle
-								+ " 发表了问题 "
-								+ a.content.threadTitle;
-								return message;
-							}
 							case "createdTime":
-							return a.createdTime.substring(0, 10);
+								return a.createdTime.substring(0, 10);
 						}
 					}
 				);

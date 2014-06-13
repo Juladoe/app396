@@ -79,4 +79,5 @@ public class Const {
     public static final int LOW_VERSIO = -1;
 
     public static final String DEFAULT_SCHOOL = "defaultSchool";
+    public static final String PUBLISHED = "published";
 }

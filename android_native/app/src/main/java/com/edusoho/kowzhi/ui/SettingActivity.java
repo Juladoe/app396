@@ -169,7 +169,18 @@ public class SettingActivity extends BaseActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        logout();
+                        PopupDialog.createMuilt(
+                                mContext,
+                                "退出提示",
+                                "确定退出登录?",
+                                new PopupDialog.PopupClickListener() {
+                                    @Override
+                                    public void onClick(int button) {
+                                        if (button == PopupDialog.OK) {
+                                            logout();
+                                        }
+                                    }
+                                }).show();
                     }
         });
     }

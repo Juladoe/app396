@@ -51,6 +51,7 @@
             android:text="评论内容评论内容评论内容评论内容评论内容评论内容" />
 
         <TextView
+            android:textColor="@color/lesson_menu_icon"
             android:id="@+id/course_comment_user_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

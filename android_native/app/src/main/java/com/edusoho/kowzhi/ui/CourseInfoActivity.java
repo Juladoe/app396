@@ -315,7 +315,7 @@ public class CourseInfoActivity extends BaseActivity {
 
         String message = courseInfo.price <= 0
                 ? "此课程为免费课程，无需购买，可直接加入学习"
-                : "课程价格:" + courseInfo.price + " \r\n 支付方式：支付宝";
+                : "课程价格:" + courseInfo.price + "元\r\n支付方式：支付宝";
 
         PopupDialog.createMuilt(
                 mContext, "加入学习",

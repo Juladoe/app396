@@ -726,8 +726,13 @@ function templ_courselist_handler(a, b, userLearns)
 					return "<span class='lesson_item_title'>第" 
 							+ a.number + "章&nbsp;&nbsp;" + a.title + "</span>";
 				case "lesson":
-					var lessonTypeHtml = '<span style="display:block;"> <span>${type}</span> <span class="lesson_length">${lessonLength}</span> </span>';
-					lessonTypeHtml = lessonTypeHtml.replace("${type}", setLessonTypeIcon(a.type));
+					var lessonTypeHtml = '<span style="display:block;"> <span class="lesson_length">${type}</span> <span class="lesson_length">${lessonLength}</span> </span>';
+					var lessonType = "未发布";
+					if (a.status == "published") {
+						lessonType = setLessonTypeIcon(a.type);
+					} 
+
+					lessonTypeHtml = lessonTypeHtml.replace("${type}", lessonType);
 					lessonTypeHtml = lessonTypeHtml.replace("${lessonLength}", a.length == "0" ? "" : a.length);
 					return "<span class='lesson_item_title'>" + a.title + "</span>" + lessonTypeHtml;
 

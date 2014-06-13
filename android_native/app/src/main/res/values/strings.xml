@@ -47,4 +47,6 @@
     <string name="font_loading_btn">&#xf021;</string>
     <string name="font_search_btn">&#xf002;</string>
     <string name="font_check_btn">&#xf00c;</string>
+
+    <string name="unpublished_text">未发布</string>
 </resources>

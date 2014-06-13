@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.entity.CourseLessonType;
 import com.edusoho.kowzhi.model.LessonItem;
+import com.edusoho.kowzhi.util.Const;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -84,7 +85,12 @@ public class LessonAdapter extends BaseAdapter {
 
         switch (LessonItem.ItemType.cover(itemType)) {
             case LESSON:
-                holder.lesson_title.setText(item.title);
+                String title = item.title;
+                if (!Const.PUBLISHED.equals(item.status)) {
+                    title = "(未发布) " + title;
+                }
+                holder.lesson_title.setText(title);
+
                 int typeIcon = R.string.font_empty;
                 switch (CourseLessonType.value(item.type)) {
                     case VIDEO:
@@ -100,6 +106,7 @@ public class LessonAdapter extends BaseAdapter {
                         typeIcon = R.string.font_microphone;
                         break;
                 }
+
                 holder.lesson_bg.setBackgroundResource(R.color.lesson_menu_bg);
                 holder.lesson_type_img.setText(mContext.getResources().getString(typeIcon));
 
@@ -115,7 +122,7 @@ public class LessonAdapter extends BaseAdapter {
                 StringBuilder builder = new StringBuilder("第");
                 builder.append(item.number)
                        .append(
-                               "unit".equals(item.type) ? "小节  " : "章节  "
+                               "unit".equals(item.type) ? "节  " : "章  "
                        )
                        .append(item.title);
 

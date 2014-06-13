@@ -396,7 +396,6 @@ public class CourseLessonActivity extends BaseActivity {
      */
     private void loadLessonContent(LessonItem lesson) {
         setLearnStatus(lesson.courseId, lesson.id);
-
         String url = app.bindToken2Url(
                 "courses/" + lesson.courseId + "/lessons/" + lesson.id + "?", true);
 
@@ -441,6 +440,10 @@ public class CourseLessonActivity extends BaseActivity {
             default:
                 content = "暂不支持此功能";
                 break;
+        }
+
+        if (!Const.PUBLISHED.equals(items.status)) {
+            content = "当前课时正在编辑中，暂时无法观看。";
         }
 
         video_layout.setVisibility(View.GONE);

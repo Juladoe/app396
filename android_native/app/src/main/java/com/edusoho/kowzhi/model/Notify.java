@@ -9,6 +9,7 @@ public class Notify {
     public String createdTime;
     public int isRead;
     public Content content;
+    public String message;
 
     public class Content{
         public int threadId;

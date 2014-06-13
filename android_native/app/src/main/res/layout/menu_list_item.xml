@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <com.edusoho.kowzhi.view.EduSohoIconView
-            android:textColor="@color/lesson_icon"
+            android:textColor="@color/lesson_menu_icon"
             android:layout_centerVertical="true"
             android:padding="5dp"
             android:id="@+id/lesson_type_img"
@@ -21,6 +21,8 @@
             android:textColor="@color/lesson_item_sel"
             android:layout_toRightOf="@id/lesson_type_img"
             android:padding="5dp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:id="@+id/lesson_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kowzhi.EdusohoApp;
 import com.edusoho.kowzhi.R;
 import com.edusoho.kowzhi.entity.TokenResult;
 import com.edusoho.kowzhi.model.AppUpdateInfo;
@@ -43,6 +44,10 @@ public class QrSchoolActivity extends BaseActivity {
     }
 
     public static void start(Activity context) {
+        Activity qrSchoolActivity = EdusohoApp.runTask.get("QrSchoolActivity");
+        if (qrSchoolActivity != null) {
+            qrSchoolActivity.finish();
+        }
         Intent intent = new Intent();
         intent.setClass(context, QrSchoolActivity.class);
         context.startActivity(intent);
@@ -134,6 +139,7 @@ public class QrSchoolActivity extends BaseActivity {
     private void showSchSplash(String schoolName, String[] splashs)
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         finish();
     }
 

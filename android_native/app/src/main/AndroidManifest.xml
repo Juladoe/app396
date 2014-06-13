@@ -132,6 +132,7 @@
             android:name="com.edusoho.plugin.qr.CaptureActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
         <activity
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:name="com.edusoho.plugin.video.EduSohoVideoActivity"
             android:configChanges="keyboardHidden|orientation"></activity>

@@ -131,6 +131,7 @@ public class SchoolSplashActivity extends Activity {
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setScaleType(ImageView.ScaleType.FIT_XY);
+            app.query.id(photoView).image(R.drawable.defaultpic);
             app.query.id(photoView).image(mImages[position], false, true, 0, R.drawable.defaultpic);
             container.addView(photoView);
             return photoView;
