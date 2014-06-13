@@ -82,65 +82,23 @@ define(function(require, exports){
 
 	exports.searchSchoolForQr = function(url)
 	{
-		simpleJsonP(url, function(data){
-			if (data.error) {
-				$("#afui").popup(data.error.message);
-				return;
-			}
-			if (data.token) {
-				appstore_model.saveUserInfo(data.user, data.token);
-			}
-
-			var school = data.site;
-			var apiVersionRange = data.site.apiVersionRange;
-			var versionCheckResult = comparVersion(apiVersion, apiVersionRange.min);
-			if (versionCheckResult == window.LOW_VERSION) {
-				$("#afui").popup({
-					title: school.name + "-网校提示",
-					message: "您的客户端版本过低，无法登录，请立即更新至最新版本。",
-					cancelText: "取消",
-					cancelCallback: function() {
-						console.log("cancelled");
-					},
-					doneText: "立即下载",
-					doneCallback: function() {
-						checkToUpdataApp();
-					},
-					cancelOnly: false
-				});
+		simpleJsonP(
+			url, 
+			function(data){
+				if (data.error) {
+					$("#afui").popup(data.error.message);
+					return;
+				}
+				if (data.token) {
+					appstore_model.saveUserInfo(data.user, data.token);
+				}
+				loginSchoolWithSiteSuccess(data);
+			},
+			function(){
 				$.ui.hideMask();
-				return;
+				$("#afui").popup("没有搜索到网校!");
 			}
-
-			versionCheckResult = comparVersion(apiVersion, apiVersionRange.max);
-			if (versionCheckResult == window.HEIGHT_VERSION) {
-				$("#afui").popup({
-					title: school.name  + "-网校提示",
-					message: "服务器维护中，请稍后再试",
-					cancelText: "取消",
-					cancelCallback: function() {
-						console.log("cancelled");
-					},
-					cancelOnly: true
-				});
-				$.ui.hideMask();
-				return;
-			}
-
-			appstore_model.saveSchoolToStore(school.name, "",  school.url);
-			cordova.exec(
-		                function(version) {
-		                    //success
-		                },
-		                function(error) {
-		                    //error
-		                },
-		                 "WelcomePlugin",
-		                 "showWelcomeImages",
-		                 [school.splashs]
-		            );
-
-		});
+		);
 	}
 
 	exports.searchSchool = function()
@@ -198,20 +156,31 @@ define(function(require, exports){
 		}
 
 		var school = data.site;
-
+		$.ui.showMask('加载中...');
 		appstore_model.saveSchoolToStore(school.name, "", school.url);
-
-		cordova.exec(
-	                function(version) {
-	                    //success
-	                },
-	                function(error) {
-	                    //error
-	                },
-	                 "WelcomePlugin",
-	                 "showWelcomeImages",
-	                 [school.splashs]
-	            );
+		setTimeout(function(){
+			$.ui.hideMask();
+			loadSchoolPanel();
+			var schoolName = appstore_model.getStoreCache(school.name);
+			if (schoolName) {
+				return;
+			}
+			
+			appstore_model.setStoreCache(school.name, "true");
+			cordova.exec(
+		                function(version) {
+		                    //success
+		                    $.ui.hideMask();
+		                },
+		                function(error) {
+		                    //error
+		                    $.ui.hideMask();
+		                },
+		                 "WelcomePlugin",
+		                 "showWelcomeImages",
+		                 [school.splashs]
+		            );
+		}, 1000);
 	}
 
 	function loginSchoolWithSite(url)
