@@ -594,8 +594,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaobo zhuge (V5K5KZ43S6)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -620,8 +620,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "E0D4610D-62CD-4A3E-B00F-530D22011379";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -632,8 +632,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -656,8 +656,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "1B30C1A5-C821-43A0-A560-2EF25F8839DE";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -697,7 +697,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "EF0A0B89-34F7-4DE5-AE8B-5FB57980DB81";
+				PROVISIONING_PROFILE = "1B30C1A5-C821-43A0-A560-2EF25F8839DE";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -712,8 +712,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hangzhou Kuozhi Network Technology Co., Ltd. (ZKQ4HP5426)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phonegap_ios/Phonegap_ios-Prefix.pch";
@@ -736,8 +736,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Phonegap_ios;
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "1B30C1A5-C821-43A0-A560-2EF25F8839DE";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = AdHoc;
 		};
@@ -821,7 +821,7 @@
 					"${TARGET_BUILD_DIR}/libCordova.a",
 					"-ObjC",
 				);
-				PROVISIONING_PROFILE = "EF0A0B89-34F7-4DE5-AE8B-5FB57980DB81";
+				PROVISIONING_PROFILE = "1B30C1A5-C821-43A0-A560-2EF25F8839DE";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
