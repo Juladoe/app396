@@ -19,7 +19,7 @@ data-footer="courselist_footer" data-height="80">
                                                                         ${title}
                                                                 </h4>
                                                                 <p class="course_teacher">
-                                                                        教师:${cb:teacher}
+                                                                        ${cb:teacher}
                                                                 </p>
                                                         </td>
                                                         <td>
@@ -79,22 +79,22 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
             exports.isShow = true;
         	$("#currentSchoolName").text(schoolName);
         	var offset = isappend == true ? $("#data_list").attr("start"): 0;
+            $("#data_list").html("");
         	simpleJsonP(
         		schoolHost + "/courses" + '?callback=?&start=' + offset + "&sort=" + sort,
         		function(data){
         			list_str = zy_tmpl($("#list_item").val(), data.data, zy_tmpl_count(data.data), function(a, b) {
         				switch (b[1]){
         					case "middlePicture":
-        					if (a.middlePicture == null || a.middlePicture == "") {
-        						return "images/img1.jpg";
-        					}
-        					return a.middlePicture;
+            					if (a.middlePicture == null || a.middlePicture == "") {
+            						return "images/img1.jpg";
+            					}
+            					return a.middlePicture;
 
         					case "teacher":
-        					return a.teachers[0].nickname;
-
+        					    return a.teachers[0] ? "教师:" + a.teachers[0].nickname : "";
         					default:
-        					return templ_handler(a, b);
+        					    return templ_handler(a, b);
         				}
         			});
         			var start = (data.start + 1) * normalLimit;

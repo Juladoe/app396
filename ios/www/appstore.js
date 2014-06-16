@@ -50,7 +50,10 @@ define(function(require, exports){
 	exports.saveUserInfo = function(user,token)
 	{
 		window.loginUser = user;
-		appStore.setItem("username", user.nickname);
+		if (!user) {
+			return;
+		}
+		appStore.setItem("username", user.nickname );
 		appStore.setItem("usertitle", user.title);
 		appStore.setItem("userid", user.id);
 		appStore.setItem("userAvatar", user.mediumAvatar);

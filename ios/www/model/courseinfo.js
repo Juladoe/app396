@@ -85,7 +85,7 @@ var courseinfo_text = new String(function(){
 								<tr style="height:30px;">
 									<td style="float:left;">
 										<p>
-											教师:${cb:teacher}
+											${cb:teacher}
 											<span>
 												${cb:studentNum}
 											</span>
@@ -360,10 +360,10 @@ function courseTemplHandler(a, b)
 			return schoolName;
 		case "teacher":
 			var teacher = a.course.teachers[0];
-			return teacher.nickname;
+			return teacher ? "教师:" + teacher.nickname : "";
 		case "studentNum":
-			if ("opened" == a.showStudentNumType) {
-				return "学员数:" + a.studentNum;
+			if ("opened" == a.course.showStudentNumType) {
+				return "学员数:" + a.course.studentNum;
 			}
 			return "";
 	}
