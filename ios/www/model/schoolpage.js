@@ -91,6 +91,8 @@ define(function(require, exports){
 				}
 				if (data.token) {
 					appstore_model.saveUserInfo(data.user, data.token);
+				} else {
+					appstore_model.clearUserInfo();
 				}
 				loginSchoolWithSiteSuccess(data);
 			},
@@ -120,6 +122,7 @@ define(function(require, exports){
 			search,
 			function(data) {
 				if (data.mobileApiUrl) {
+					appstore_model.clearUserInfo();
 					loginSchoolWithSite(data.mobileApiUrl);
 				} else {
 					$("#afui").popup("当前网校不支持移动端访问!");
