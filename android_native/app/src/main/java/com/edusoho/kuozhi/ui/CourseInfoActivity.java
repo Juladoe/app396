@@ -248,14 +248,17 @@ public class CourseInfoActivity extends BaseActivity {
      */
     private void loadCourseInfoLayout(CourseInfoResult result) {
         CourseInfoViewPagerItem pagerItem = mPagerMap.get(popular);
-
         if (pagerItem == null || pagerItem.data == null) {
             return;
         }
 
         AQuery aquery = new AQuery(pagerItem.pager);
         mCourseInfo = result.course;
-        Teacher teacher = result.course.teachers[0];
+        Teacher teacher = null;
+        if (result.course.teachers.length > 0) {
+            teacher = result.course.teachers[0];
+        }
+
         aquery.id(R.id.course_info_title).text(mCourseInfo.title);
         aquery.id(R.id.course_rating).rating((float) mCourseInfo.rating);
 
@@ -503,7 +506,8 @@ public class CourseInfoActivity extends BaseActivity {
      */
     private void loadCommentLayout(CourseInfoResult result) {
         CourseInfoViewPagerItem pagerItem = mPagerMap.get(recommended);
-        if (pagerItem == null || pagerItem.data == null) {
+        if (pagerItem == null ||
+                pagerItem.data == null) {
             return;
         }
         listCommentView = (EduSohoList) pagerItem.pager.findViewById(R.id.course_comment_listview);

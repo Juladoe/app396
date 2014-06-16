@@ -47,7 +47,6 @@
     </layouts>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="-&gt;" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: com.edusoho.kuozhi" />
   </component>
   <component name="BookmarkManager">
@@ -1890,7 +1889,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/login.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/my_sch_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/nav_courselist.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/nav_setting.xml" />
@@ -1924,9 +1922,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/AboutActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/QrSchoolActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/SettingActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/CourseInfoActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/color.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/course_comment_item_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/menu_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/my_setting.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
@@ -1936,11 +1931,15 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/model/Notify.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/adapter/NotificationListAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/adapter/LessonAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/photo/SchoolSplashActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/AlipayActivity.java" />
         <option value="$PROJECT_DIR$/.idea/modules.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/search_shool_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/course_info_item_content.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/photo/SchoolSplashActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/color.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/course_comment_item_list_item.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/CourseInfoActivity.java" />
       </list>
     </option>
   </component>
@@ -2001,6 +2000,38 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -2028,11 +2059,11 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
     <property name="recentsLimit" value="5" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="TA744035VX" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="3beb610b" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="avd" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.SHOW" value="false" />
     <property name="UI_DESIGNER_EDITOR_MODE.PaletteToolWindowManager.WIDTH" value="185" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../android_lib/SwipeBackLayout-master/build.gradle" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../apk_splash_720p" />
     <property name="FullScreen" value="false" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -2290,6 +2321,7 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4836272" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2299,19 +2331,18 @@
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24169184" sideWeight="0.5004205" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28847772" sideWeight="0.5010661" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24320242" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2960725" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26435044" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32968882" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35323802" sideWeight="0.4989339" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29688814" sideWeight="0.4989339" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24924472" sideWeight="0.4995795" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4836272" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39274925" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -2364,26 +2395,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/IndexPageActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="13" selection-start="1275" selection-end="1275" vertical-scroll-proportion="0.0" vertical-offset="2" max-vertical-offset="3195" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/adapter/CourseListAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="96" column="44" selection-start="2865" selection-end="2865" vertical-scroll-proportion="0.4125" vertical-offset="1020" max-vertical-offset="1740" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/util/AppUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="0" selection-start="1168" selection-end="1168" vertical-scroll-proportion="0.0" vertical-offset="242" max-vertical-offset="2895" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/view/EdusohoListView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="16" selection-start="586" selection-end="586" vertical-scroll-proportion="0.33333334" vertical-offset="200" max-vertical-offset="795" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/adapter/LearnCourseListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="13" selection-start="518" selection-end="518" vertical-scroll-proportion="0.0" vertical-offset="990" max-vertical-offset="1575" />
@@ -2415,19 +2426,6 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/QrSchoolActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="45" column="23" selection-start="1420" selection-end="1420" vertical-scroll-proportion="0.33333334" vertical-offset="530" max-vertical-offset="2685" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/color.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="33" selection-start="1598" selection-end="1614" vertical-scroll-proportion="0.3678161" vertical-offset="395" max-vertical-offset="1305" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_comment_item_list_item.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="0" selection-start="2080" selection-end="2080" vertical-scroll-proportion="0.50735295" vertical-offset="558" max-vertical-offset="1035" />
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/menu_list_item.xml">
@@ -2466,11 +2464,6 @@
         <state line="81" column="40" selection-start="3611" selection-end="3620" vertical-scroll-proportion="0.0" vertical-offset="898" max-vertical-offset="1335" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/CourseInfoActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="397" column="23" selection-start="14245" selection-end="14245" vertical-scroll-proportion="0.0" vertical-offset="4875" max-vertical-offset="10425" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/model/Notify.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="23" column="0" selection-start="550" selection-end="550" vertical-scroll-proportion="0.33333334" vertical-offset="200" max-vertical-offset="675" />
@@ -2494,11 +2487,6 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/NotificationActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="112" column="33" selection-start="3758" selection-end="3758" vertical-scroll-proportion="0.8333333" vertical-offset="990" max-vertical-offset="1515" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/photo/SchoolSplashActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="850" selection-end="850" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2415" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/icon.png">
@@ -2654,6 +2642,69 @@
     <entry file="file://$PROJECT_DIR$/EdusohoApp.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1" column="21" selection-start="59" selection-end="60" vertical-scroll-proportion="0.03529412" vertical-offset="0" max-vertical-offset="425">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_info_item_content.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="36" selection-start="1713" selection-end="1713" vertical-scroll-proportion="0.56782335" vertical-offset="480" max-vertical-offset="2805">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/load_bg.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="459">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/icon_loading.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/load.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="38" selection-start="169" selection-end="169" vertical-scroll-proportion="0.06535948" vertical-offset="0" max-vertical-offset="459">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/photo/SchoolSplashActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="136" column="58" selection-start="4730" selection-end="4730" vertical-scroll-proportion="0.0" vertical-offset="1441" max-vertical-offset="2445">
+          <folding>
+            <element signature="e#4396#4397#0" expanded="true" />
+            <element signature="e#4441#4442#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/color.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="36" selection-start="1649" selection-end="1668" vertical-scroll-proportion="0.0" vertical-offset="402" max-vertical-offset="1320">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/course_comment_item_list_item.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="40" selection-start="1856" selection-end="1856" vertical-scroll-proportion="0.4097222" vertical-offset="513" max-vertical-offset="1005">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/CourseInfoActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="508" column="32" selection-start="18303" selection-end="18303" vertical-scroll-proportion="0.39869282" vertical-offset="6252" max-vertical-offset="10440">
           <folding />
         </state>
       </provider>

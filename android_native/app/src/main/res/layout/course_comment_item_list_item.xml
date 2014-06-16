@@ -47,18 +47,16 @@
             android:layout_below="@id/course_comment_rating"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/course_comment_user_avatar"
-            android:padding="2dp"
-            android:text="评论内容评论内容评论内容评论内容评论内容评论内容" />
+            android:padding="2dp" />
 
         <TextView
-            android:textColor="@color/lesson_menu_icon"
+            android:textColor="@color/lesson_comment_time"
             android:id="@+id/course_comment_user_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/course_comment_user_nickname"
-            android:padding="2dp"
-            android:text="2014-3-2" />
+            android:padding="2dp" />
     </RelativeLayout>
 
 </LinearLayout>

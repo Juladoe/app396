@@ -36,6 +36,7 @@
     <color name="login_text">#ffffff</color>
     <color name="lesson_icon">#ccc</color>
     <color name="lesson_menu_icon">#2BA3F3</color>
+    <color name="lesson_comment_time">#ccc</color>
     <color name="notify_icon">#03b884</color>
     <color name="lesson_chapter_bg">#EEEEEE</color>
     <color name="lesson_menu_text_normal">#000000</color>

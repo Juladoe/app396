@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.androidquery.callback.AjaxStatus;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.SchCourseActivity;
@@ -131,8 +134,8 @@ public class SchoolSplashActivity extends Activity {
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setScaleType(ImageView.ScaleType.FIT_XY);
-            app.query.id(photoView).image(R.drawable.defaultpic);
-            app.query.id(photoView).image(mImages[position], false, true, 0, R.drawable.defaultpic);
+            app.query.id(photoView).progress(R.drawable.load).
+                    image(mImages[position], false, true, 0, R.drawable.defaultpic);
             container.addView(photoView);
             return photoView;
         }
