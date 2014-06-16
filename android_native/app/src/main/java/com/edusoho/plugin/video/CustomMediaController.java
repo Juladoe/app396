@@ -15,7 +15,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.edusoho.kowzhi.R;
+import com.edusoho.kuozhi.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

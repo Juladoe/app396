@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
-import com.edusoho.kowzhi.model.Course;
-import com.edusoho.kowzhi.ui.CourseInfoActivity;
-import com.edusoho.kowzhi.util.Const;
-import com.edusoho.kowzhi.view.EdusohoListView;
+import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.ui.CourseInfoActivity;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EdusohoListView;
 
 /**
  *

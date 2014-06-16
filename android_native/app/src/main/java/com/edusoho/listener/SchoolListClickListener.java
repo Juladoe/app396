@@ -1,8 +1,8 @@
 package com.edusoho.listener;
 
-import com.edusoho.kowzhi.model.School;
-import com.edusoho.kowzhi.ui.BaseActivity;
-import com.edusoho.kowzhi.ui.SchCourseActivity;
+import com.edusoho.kuozhi.model.School;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.SchCourseActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

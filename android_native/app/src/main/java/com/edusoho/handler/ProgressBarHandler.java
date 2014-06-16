@@ -3,7 +3,7 @@ package com.edusoho.handler;
 import android.os.Handler;
 import android.os.Message;
 
-import com.edusoho.kowzhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.BaseActivity;
 
 public class ProgressBarHandler extends Handler {
 

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.edusoho.kowzhi.view.EduSohoIconView
+        <com.edusoho.kuozhi.view.EduSohoIconView
             android:padding="5dp"
             android:textColor="@color/notify_icon"
             android:textSize="@dimen/notify_icon"

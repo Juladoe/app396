@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
-            <com.edusoho.kowzhi.view.EduSohoIconView
+            <com.edusoho.kuozhi.view.EduSohoIconView
                 android:id="@+id/actionbar_back_icon"
                 android:textColor="@color/actionBarMenu"
                 android:textSize="@dimen/actionbarMenu"
@@ -40,7 +40,7 @@
                 android:text="返回" />
         </LinearLayout>
 
-        <com.edusoho.kowzhi.view.EduSohoIconView
+        <com.edusoho.kuozhi.view.EduSohoIconView
             android:id="@+id/actionbar_search_btn"
             android:gravity="center_vertical"
             android:clickable="true"

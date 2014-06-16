@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.edusoho.kowzhi.view.EduSohoIconView
+            <com.edusoho.kuozhi.view.EduSohoIconView
                 android:textColor="@color/lesson_item_sel"
                 android:textSize="@dimen/navBtn"
                 android:layout_width="wrap_content"

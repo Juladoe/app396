@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.edusoho.kowzhi.view.EduSohoIconView
+            <com.edusoho.kuozhi.view.EduSohoIconView
                 android:layout_centerVertical="true"
                 android:text="@string/font_email"
                 android:layout_width="30dp"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.edusoho.kowzhi.view.EduSohoIconView
+            <com.edusoho.kuozhi.view.EduSohoIconView
                 android:textSize="@dimen/login_icon"
                 android:layout_centerVertical="true"
                 android:text="@string/font_user"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.edusoho.kowzhi.view.EduSohoIconView
+            <com.edusoho.kuozhi.view.EduSohoIconView
                 android:textSize="@dimen/login_icon"
                 android:layout_centerVertical="true"
                 android:text="@string/font_unlock"

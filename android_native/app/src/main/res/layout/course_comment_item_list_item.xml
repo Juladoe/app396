@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <com.edusoho.kowzhi.view.plugin.CircleImageView
+        <com.edusoho.kuozhi.view.plugin.CircleImageView
             android:scaleType="centerCrop"
             android:id="@+id/course_comment_user_avatar"
             android:layout_width="50dp"

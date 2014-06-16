@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
-import com.edusoho.kowzhi.R;
-import com.edusoho.kowzhi.ui.BaseActivity;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.BaseActivity;
 
 public class ViewPagerActivity extends BaseActivity {
 

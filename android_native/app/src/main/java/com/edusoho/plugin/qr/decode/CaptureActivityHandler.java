@@ -25,7 +25,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.edusoho.plugin.qr.CaptureActivity;
-import com.edusoho.kowzhi.R;
+import com.edusoho.kuozhi.R;
 import com.edusoho.plugin.qr.camera.CameraManager;
 import com.edusoho.plugin.qr.view.ViewfinderResultPointCallback;
 

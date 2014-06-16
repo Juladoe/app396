@@ -1,8 +1,8 @@
 package com.edusoho.plugin.qr;
 
-import com.edusoho.kowzhi.R;
-import com.edusoho.kowzhi.ui.BaseActivity;
-import com.edusoho.kowzhi.ui.NetSchoolActivity;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.NetSchoolActivity;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;

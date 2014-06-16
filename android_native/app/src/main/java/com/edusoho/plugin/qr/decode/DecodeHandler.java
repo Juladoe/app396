@@ -25,7 +25,7 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.edusoho.plugin.qr.CaptureActivity;
-import com.edusoho.kowzhi.R;
+import com.edusoho.kuozhi.R;
 
 import android.os.Bundle;
 import android.os.Handler;

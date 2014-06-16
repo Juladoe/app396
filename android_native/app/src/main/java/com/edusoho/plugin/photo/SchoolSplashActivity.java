@@ -15,9 +15,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.edusoho.kowzhi.EdusohoApp;
-import com.edusoho.kowzhi.R;
-import com.edusoho.kowzhi.ui.SchCourseActivity;
+import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.SchCourseActivity;
 
 import java.util.ArrayList;
 

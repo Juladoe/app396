@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.edusoho.kowzhi.view.EduSohoPopBtn
+        <com.edusoho.kuozhi.view.EduSohoPopBtn
             android:textColor="@color/popup_btn_color"
             android:id="@+id/popup_cancel_btn"
             android:layout_weight="1"
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.edusoho.kowzhi.view.EduSohoPopBtn
+        <com.edusoho.kuozhi.view.EduSohoPopBtn
             android:textColor="@color/popup_btn_color"
             android:id="@+id/popup_ok_btn"
             android:layout_weight="1"

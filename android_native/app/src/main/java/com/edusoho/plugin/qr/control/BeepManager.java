@@ -12,7 +12,7 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import com.edusoho.kowzhi.R;
+import com.edusoho.kuozhi.R;
 
 public final class BeepManager {
 

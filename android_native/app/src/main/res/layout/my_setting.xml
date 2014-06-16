@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.edusoho.kowzhi.view.plugin.CircleImageView
+                <com.edusoho.kuozhi.view.plugin.CircleImageView
                     android:scaleType="centerCrop"
                     android:src="@drawable/course_teacher_avatar"
                     android:id="@+id/setting_user_avatar"
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <com.edusoho.kowzhi.view.EduSohoIconView
+                <com.edusoho.kuozhi.view.EduSohoIconView
                     android:layout_centerVertical="true"
                     android:text="@string/font_angle_right"
                     android:layout_alignParentRight="true"
@@ -156,7 +156,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <com.edusoho.kowzhi.view.EduSohoIconView
+                    <com.edusoho.kuozhi.view.EduSohoIconView
                         android:layout_centerVertical="true"
                         android:text="@string/font_angle_right"
                         android:layout_alignParentRight="true"
@@ -203,7 +203,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <com.edusoho.kowzhi.view.EduSohoIconView
+                    <com.edusoho.kuozhi.view.EduSohoIconView
                         android:layout_centerVertical="true"
                         android:text="@string/font_angle_right"
                         android:layout_alignParentRight="true"

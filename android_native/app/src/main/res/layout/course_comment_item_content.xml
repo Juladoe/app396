@@ -5,12 +5,12 @@
     android:background="@color/system_window_bg"
     android:orientation="vertical" >
 
-    <com.edusoho.kowzhi.view.EduSohoList
+    <com.edusoho.kuozhi.view.EduSohoList
         android:orientation="vertical"
         android:id="@+id/course_comment_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </com.edusoho.kowzhi.view.EduSohoList>
+    </com.edusoho.kuozhi.view.EduSohoList>
     <include layout="@layout/list_empty_info"/>
     <Button
         android:visibility="gone"

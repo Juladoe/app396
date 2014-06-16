@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-import com.edusoho.kowzhi.R;
-import com.edusoho.kowzhi.view.PopupDialog;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.view.PopupDialog;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -1,7 +1,7 @@
 package com.edusoho.plugin.qr.view;
 
 import com.google.zxing.ResultPoint;
-import com.edusoho.kowzhi.R;
+import com.edusoho.kuozhi.R;
 import com.edusoho.plugin.qr.camera.CameraManager;
 
 import android.content.Context;

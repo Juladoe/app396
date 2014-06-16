@@ -47,7 +47,7 @@
             android:ellipsize="end"
             android:text="课程标题" />
 
-        <com.edusoho.kowzhi.view.EduSohoIconView
+        <com.edusoho.kuozhi.view.EduSohoIconView
             android:layout_below="@id/course_lesson_title"
             android:id="@+id/course_lesson_typeimg"
             android:padding="2dp"

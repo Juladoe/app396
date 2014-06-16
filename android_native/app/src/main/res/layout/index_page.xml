@@ -54,7 +54,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="40dp">
-        <com.edusoho.kowzhi.view.EduSohoIconView
+        <com.edusoho.kuozhi.view.EduSohoIconView
             android:textSize="@dimen/large_font_cancel"
             android:text="@string/font_cancel"
             android:layout_width="wrap_content"
