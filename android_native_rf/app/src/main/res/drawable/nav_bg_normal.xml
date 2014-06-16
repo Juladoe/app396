@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- shape的颜色，支持渐变 -->
+    <gradient
+        android:angle="270"
+        android:centerColor="@color/header_bg"
+        android:centerY="0.45"
+        android:endColor="@color/header_bg"
+        android:startColor="@color/header_bg" />
+
+</shape>

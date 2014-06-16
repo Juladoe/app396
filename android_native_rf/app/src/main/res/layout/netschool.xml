@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/actionbar_title" />
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:layout_below="@+id/edusoho_actionbar"
+        android:orientation="vertical"
+        android:id="@+id/search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/search_edt"
+            android:textSize="@dimen/school_search"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text=""
+            android:hint="输入域名添加网校 如(www.name.com)"
+            android:background="@drawable/search_edit_input_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/search_qr_btn"
+            android:clickable="true"
+            android:padding="3dp"
+            android:layout_margin="5dp"
+            android:layout_weight="0"
+            android:scaleType="fitXY"
+            android:src="@drawable/qr_normal"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <Button
+            android:layout_margin="5dp"
+            android:id="@+id/search_btn"
+            android:padding="10dp"
+            android:textSize="@dimen/searchBtn"
+            android:textColor="@color/login_text"
+            android:text="搜  索"
+            android:background="@drawable/login_btn_sel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/search_layout" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/recommend_sch_sel"
+         >
+
+        <ImageView
+            android:id="@+id/recommend_sch_logo"
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:scaleType="fitXY"
+            android:layout_centerVertical="true"
+            android:src="@drawable/img1" />
+
+        <TextView
+            android:id="@+id/recommend_sch_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/recommend_sch_logo"
+            android:background="@null"
+            android:padding="5dp"
+            android:text="网校名称"
+            android:ellipsize="end"
+            android:textSize="@dimen/recommend_sch_size" />
+
+        <TextView
+            android:layout_toRightOf="@id/recommend_sch_logo"
+            android:id="@+id/recommend_sch_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recommend_sch_name"
+            android:background="@null"
+            android:padding="5dp"
+            android:text="网校简介"
+            android:ellipsize="end"
+            android:textColor="@color/recommend_sch_info"
+            android:textSize="@dimen/recommend_sch_info_size" />
+    </RelativeLayout>
+
+</LinearLayout>
