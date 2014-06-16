@@ -79,7 +79,6 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
             exports.isShow = true;
         	$("#currentSchoolName").text(schoolName);
         	var offset = isappend == true ? $("#data_list").attr("start"): 0;
-            $("#data_list").html("");
         	simpleJsonP(
         		schoolHost + "/courses" + '?callback=?&start=' + offset + "&sort=" + sort,
         		function(data){
@@ -106,6 +105,7 @@ var refresh_div = "<div id='bottom_refresh_div' class='bottom_refresh_div'><img 
                if (isappend) {
                    $("#data_list").html($("#data_list").html() + list_str);
                } else {
+                        $("#data_list").html("");
                		courselist_model.scroller.scrollToTop(10);
                		$("#data_list").html(list_str);
                }
