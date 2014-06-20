@@ -446,9 +446,8 @@ exports.buyDialog = function()
 {
 	var courseId = $("#course_courseId").val();
 	if (! appstore_model.checkIsLogin()) {
-		setTitle("");
 		setHistoryAction(window.load_courseinfo_page, courseId);
-		$.ui.loadContent('login',false,false,'slide');
+        load_login_page();
 		return;
 	}
 	var payment = $("#course_payment").val();

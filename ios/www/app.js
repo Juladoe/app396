@@ -170,6 +170,11 @@ define(function(require, exports) {
 	window.goback = function() {
 		$.ui.goBack();
 	}
+    
+    window.registBack = function(){
+       $.ui.goBack();
+       setTitle("登录");
+    }
 
 	window.clearHistory = function(name) {
 		var history = $.ui.history;
@@ -339,15 +344,16 @@ define(function(require, exports) {
 
 	//load_learn_page
 	window.load_learn_page = function() {
+        setTitle(learning_model.title);
 		if (appstore_model.checkIsLogin()) {
 			$.ui.loadContent('learning', false, false, 'slide');
 			learning_model.init_learn_data();
 		} else {
 			setTitle("");
 			setHistoryAction(window.load_learn_page);
-			$.ui.loadContent('login', false, false, 'slide');
+			load_login_page();
 		}
-		setTitle(learning_model.title);
+		
 	}
 
 	//load_learned_page
@@ -358,13 +364,8 @@ define(function(require, exports) {
 			learned_model.init_learned_data();
 		} else {
 			setHistoryAction(window.load_learned_page);
-			$.ui.loadContent('login', false, false, 'slide');
+            load_login_page();
 		}
-	}
-
-	window.load_regist_page = function() {
-		$.ui.loadContent('regist', false, false, 'slide');
-		appconfig.page = "regist";
 	}
 
 	window.load_notification_page = function() {
@@ -376,12 +377,13 @@ define(function(require, exports) {
 			setTitle("");
 			setHistoryAction(window.load_notification_page);
 			appconfig.page = "login";
-			$.ui.loadContent('login', false, false, 'slide');
+			load_login_page();
 		}
 		setTitle(notification_model.title);
 	}
 
-	window.load_favorite_page = function() {
+    window.load_favorite_page = function() {
+       setTitle(favorite_model.title);
 		if (appstore_model.checkIsLogin()) {
 			appconfig.page = "favorite";
 			$.ui.loadContent('favorite', false, false, 'slide');
@@ -390,10 +392,8 @@ define(function(require, exports) {
 			setTitle("");
 			setHistoryAction(window.load_favorite_page);
 			appconfig.page = "login";
-			$.ui.loadContent('login', false, false, 'slide');
+			load_login_page();
 		}
-
-		setTitle(favorite_model.title);
 	}
 
 	window.comparVersion = function(oldVersion, newVersion)
@@ -466,6 +466,16 @@ define(function(require, exports) {
 		$.ui.clearHistory();
 	}
 
+    window.load_login_page = function(){
+       $.ui.loadContent('login', false, false, 'slide');
+       setTitle("登录");
+    }
+       
+    window.load_regist_page = function(){
+       $.ui.loadContent('regist', false, false, 'slide');
+       setTitle("注册网校");
+    }
+       
 	window.load_about_page = function() {
 		appconfig.page = "about";
 		$.ui.loadContent('about', false, false, 'slide');
@@ -830,7 +840,7 @@ define(function(require, exports) {
 
 		} else {
 			setHistoryAction(window.load_courseinfo_page, $("#favorite_btn").attr("courseId"));
-			$.ui.loadContent('login', false, false, 'slide');
+			load_login_page();
 		}
 	}
 
@@ -852,7 +862,7 @@ define(function(require, exports) {
 			});
 		} else {
 			setHistoryAction(window.load_courseinfo_page, course_id);
-			$.ui.loadContent('login', false, false, 'slide');
+			load_login_page();
 		}
 	}
 
@@ -900,7 +910,7 @@ define(function(require, exports) {
 			});
 		} else {
 			setHistoryAction(window.load_courseinfo_page, course_id);
-			$.ui.loadContent('login', false, false, 'slide');
+			load_login_page();
 		}
 	}
 

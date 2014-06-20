@@ -13,6 +13,7 @@ define(function(require, exports){
 	
 	exports.init_about_data = function()
 	{
+        setTitle("关于网校");
 		simpleJsonP(
 			schoolHost + "/about" + '?callback=?',
 			function(data){

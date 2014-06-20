@@ -62,7 +62,7 @@ exports.init_setting_data = function()
 		$("#loginuser_layout").bind("click", function(){
 			setHistoryAction();
 			appconfig.page = "login";
-			$.ui.loadContent('login',false,false,'slide');
+            load_login_page();
 		});
 		$("#exitBtn").hide();
 	}
