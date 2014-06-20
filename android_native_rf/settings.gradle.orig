@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+include ':app', ':slidingmenu', ':ukphoto'
+=======
+include ':app', ':slidingmenu', ':ukphoto', ':bdvideoplayer'
+>>>>>>> master
