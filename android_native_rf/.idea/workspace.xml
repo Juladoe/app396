@@ -87,11 +87,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CourseListAdapter.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/adapter/CourseListAdapter.java">
+      <file leaf-file-name="CaptureActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/CaptureActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="45" selection-start="635" selection-end="635" vertical-scroll-proportion="0.13071896" vertical-offset="0" max-vertical-offset="1740">
-              <folding />
+            <state line="89" column="49" selection-start="2834" selection-end="2834" vertical-scroll-proportion="0.57174885" vertical-offset="510" max-vertical-offset="3645">
+              <folding>
+                <element signature="e#2521#3545#0" expanded="true" />
+                <element signature="e#2731#3519#0" expanded="true" />
+                <element signature="e#3500#3501#0" expanded="true" />
+                <element signature="e#3534#3535#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -2500,8 +2505,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/course_tab_left_btn_10_normal.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/course_tab_left_btn_10_pressed.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/course_tab_left_btn_normal.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/course_tab_left_btn_pressed.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
@@ -2551,6 +2554,8 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/recommend_school_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/splash.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/SplashActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/camera/CameraManager.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/CaptureActivity.java" />
       </list>
     </option>
   </component>
@@ -2701,6 +2706,78 @@
               <option name="myItemId" value="edusoho" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native_rf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native_rf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="edusoho" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="qr" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native_rf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android_native_rf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="edusoho" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2796,7 +2873,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.SHOW" value="false" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="TA744035VX" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="avd" />
     <property name="SearchEverywhereHistory" value="P" />
     <property name="DEBUGGABLE_DEVICE" value="TA744035VX" />
@@ -3127,48 +3204,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/logout_btn_pressed.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="27" selection-start="329" selection-end="329" vertical-scroll-proportion="0.28391168" vertical-offset="0" max-vertical-offset="634">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/logout_btn_sel.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="634">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/more_btn_anim_load.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="634">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/my_sch_bg_normal.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="60" selection-start="545" selection-end="545" vertical-scroll-proportion="0.3548896" vertical-offset="0" max-vertical-offset="634">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/my_sch_bg_pressed.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="68" selection-start="569" selection-end="569" vertical-scroll-proportion="0.3548896" vertical-offset="0" max-vertical-offset="634">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/my_sch_list_selbg.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="8" selection-start="568" selection-end="568" vertical-scroll-proportion="0.4258675" vertical-offset="0" max-vertical-offset="634">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/my_sch_logo_bg.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="634">
@@ -3483,10 +3518,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/camera/AutoFocusManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="32" selection-start="2758" selection-end="2758" vertical-scroll-proportion="0.43137255" vertical-offset="792" max-vertical-offset="1560">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/widget/TextView.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="240" column="22" selection-start="9765" selection-end="9765" vertical-scroll-proportion="0.33183858" vertical-offset="3437" max-vertical-offset="7920">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/camera/CameraConfigurationManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="179" column="12" selection-start="5639" selection-end="5639" vertical-scroll-proportion="0.0" vertical-offset="2072" max-vertical-offset="4515">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/hardware/Camera.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="45" selection-start="3513" selection-end="3523" vertical-scroll-proportion="0.0" vertical-offset="1007" max-vertical-offset="6195">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/camera/CameraManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="184" column="29" selection-start="5434" selection-end="5434" vertical-scroll-proportion="0.33333334" vertical-offset="2217" max-vertical-offset="5055">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/adapter/CourseListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="45" selection-start="635" selection-end="635" vertical-scroll-proportion="0.13071896" vertical-offset="0" max-vertical-offset="1740">
+        <state line="21" column="45" selection-start="635" selection-end="635" vertical-scroll-proportion="-0.62091506" vertical-offset="345" max-vertical-offset="1740">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/qr/CaptureActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="49" selection-start="2834" selection-end="2834" vertical-scroll-proportion="0.57174885" vertical-offset="510" max-vertical-offset="3645">
+          <folding>
+            <element signature="e#2521#3545#0" expanded="true" />
+            <element signature="e#2731#3519#0" expanded="true" />
+            <element signature="e#3500#3501#0" expanded="true" />
+            <element signature="e#3534#3535#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

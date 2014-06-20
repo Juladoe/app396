@@ -28,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -87,7 +88,10 @@ public final class CaptureActivity extends BaseActivity implements
                 btn_torch.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if (!cameraManager.isSupportFlashMode()) {
+                            Toast.makeText(mContext, "开启闪光灯异常，可能不支持闪光灯", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         if (isTorchOn) {
                             isTorchOn = false;
                             btn_torch.setText("开灯");

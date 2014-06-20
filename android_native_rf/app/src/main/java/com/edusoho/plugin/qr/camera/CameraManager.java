@@ -62,6 +62,16 @@ public final class CameraManager {
 		previewCallback = new PreviewCallback(configManager);
 	}
 
+    public boolean isSupportFlashMode()
+    {
+        Camera.Parameters parameters = camera.getParameters();
+        if (parameters != null) {
+            if (parameters.getSupportedFlashModes() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
 	/**
 	 * Opens the camera driver and initializes the hardware parameters.
 	 * 
