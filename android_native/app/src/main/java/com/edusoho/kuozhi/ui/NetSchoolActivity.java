@@ -140,6 +140,11 @@ public class NetSchoolActivity extends BaseActivity {
 
         String url = "http://" + searchStr + Const.VERIFYVERSION;
 
+        if (!checkNetConnect()) {
+            PopupDialog.createNormal(mContext, "网络提示", "网络无连接，或者网络连接异常").show();
+            return;
+        }
+
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
         app.query.ajax(url, String.class, new AjaxCallback<String>() {
@@ -148,7 +153,7 @@ public class NetSchoolActivity extends BaseActivity {
                 loading.dismiss();
                 int code = status.getCode();
                 if (code != Const.OK) {
-                    PopupDialog.createNormal(mContext, "提示信息", "网络异常！请检查网络链接").show();
+                    PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }
 

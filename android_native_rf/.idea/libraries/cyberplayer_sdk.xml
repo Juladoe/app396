@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="cyberplayer-sdk">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/exploded-bundles/Android_native_rfBdvideoplayerUnspecified.aar/libs/cyberplayer-sdk.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
