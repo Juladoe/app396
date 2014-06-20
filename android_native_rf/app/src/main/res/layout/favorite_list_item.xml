@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/system_window_bg"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <RelativeLayout
+        android:id="@+id/course_list_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/recommend_sch_sel"
+        >
+
+        <include layout="@layout/course_main_item"/>
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/course_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/favorite_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/learn_btn_sel"
+            android:padding="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="取消收藏"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:textColor="@color/learn_btn_color_sel"
+            android:textSize="@dimen/course_info_normal" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

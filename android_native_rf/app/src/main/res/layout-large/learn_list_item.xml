@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/system_window_bg"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <RelativeLayout
+        android:id="@+id/course_list_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/recommend_sch_sel">
+
+        <ImageView
+            android:id="@+id/course_pic"
+            android:layout_width="match_parent"
+            android:layout_height="280dip"
+            android:layout_margin="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/defaultpic" />
+
+        <TextView
+            android:ellipsize="marquee"
+            android:layout_marginTop="3dp"
+            android:layout_below="@id/course_pic"
+            android:id="@+id/course_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="标题"
+            android:textSize="@dimen/course_list_item_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/course_title"
+            android:id="@+id/course_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="副标题"
+            android:textColor="@color/learn_subtitle"
+            android:textSize="@dimen/course_teacher_nickname" />
+
+
+        <ProgressBar
+            android:layout_margin="8dp"
+            android:layout_below="@id/course_subtitle"
+            android:maxHeight="10dp"
+            android:minHeight="10dp"
+            android:progressDrawable="@drawable/video_sk"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:id="@+id/course_learn_progress"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:indeterminate="false" />
+
+        <TextView
+            android:textColor="@color/learn_subtitle"
+            android:paddingLeft="8dp"
+            android:paddingBottom="5dp"
+            android:text="已学1课时"
+            android:layout_below="@id/course_learn_progress"
+            android:id="@+id/course_memberLearnedNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/course_teacher_nickname" />
+    </RelativeLayout>
+
+</LinearLayout>

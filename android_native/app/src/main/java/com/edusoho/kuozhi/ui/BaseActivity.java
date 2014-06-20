@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.ui;
 import android.app.ActivityGroup;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,6 +167,18 @@ public class BaseActivity extends ActivityGroup {
         public void bind(View menuView);
     }
 
+    public boolean checkNetConnect()
+    {
+        ConnectivityManager connManager = (ConnectivityManager)
+                getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        }
+        return false;
+    }
+
     public void longToast(String title)
     {
         Toast.makeText(mContext, title, Toast.LENGTH_LONG).show();
@@ -196,7 +210,7 @@ public class BaseActivity extends ActivityGroup {
                 }
 
                 if (code != Const.OK) {
-                    longToast("网络访问异常！请检查是否链接网络。");
+                    longToast("服务器访问异常！请重新尝试!。");
                     rcl.error(url, status);
                     return;
                 }
@@ -215,7 +229,7 @@ public class BaseActivity extends ActivityGroup {
                     return;
                 }
                 if (code != Const.OK) {
-                    longToast("网络访问异常！请检查是否链接网络。");
+                    longToast("服务器访问异常！请重新尝试!。");
                     rcl.error(url, status);
                     return;
                 }
