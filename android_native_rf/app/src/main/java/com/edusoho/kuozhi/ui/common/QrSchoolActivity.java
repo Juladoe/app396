@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.common;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,10 +14,11 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
+import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.LoadDialog;
-import com.edusoho.kuozhi.view.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
 import com.edusoho.plugin.qr.CaptureActivity;

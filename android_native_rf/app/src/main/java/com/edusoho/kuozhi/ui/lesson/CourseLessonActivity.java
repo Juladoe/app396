@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.lesson;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.adapter.LessonAdapter;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LessonInfo;
 import com.edusoho.kuozhi.model.LessonItem;
+import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;

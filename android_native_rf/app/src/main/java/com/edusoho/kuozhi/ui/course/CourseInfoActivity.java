@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.course;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +31,16 @@ import com.edusoho.kuozhi.model.CourseInfoResult;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.Teacher;
+import com.edusoho.kuozhi.ui.common.AlipayActivity;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.lesson.CourseLessonActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.CommentPopupDialog;
+import com.edusoho.kuozhi.view.dialog.CommentPopupDialog;
 import com.edusoho.kuozhi.view.EduSohoList;
-import com.edusoho.kuozhi.view.ExitCoursePopupDialog;
-import com.edusoho.kuozhi.view.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.handler.ProgressBarHandler;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;

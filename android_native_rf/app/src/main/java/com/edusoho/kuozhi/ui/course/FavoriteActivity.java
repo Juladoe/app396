@@ -1,17 +1,17 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.course;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.LearnCourseListAdapter;
-import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.model.LearnCourseResult;
+import com.edusoho.kuozhi.adapter.FavoriteCourseListAdapter;
+import com.edusoho.kuozhi.model.CourseResult;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoListView;
 import com.edusoho.kuozhi.view.OverScrollView;
@@ -20,32 +20,34 @@ import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-public class LearningActivity extends BaseActivity {
+public class FavoriteActivity extends BaseActivity {
 
-    private ViewGroup mLearnContent;
+    private ViewGroup mFavoirteContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.learn_layout);
+        setContentView(R.layout.favorite_layout);
         initView();
     }
 
-    public static void start(Activity context) {
+    public static void start(Activity context)
+    {
         Intent intent = new Intent();
-        intent.setClass(context, LearningActivity.class);
-        context.startActivityForResult(intent, Const.LEARNING_REQUEST);
+        intent.setClass(context, FavoriteActivity.class);
+        context.startActivityForResult(intent, Const.FAVORITE_REQUEST);
     }
 
     private void initView() {
-        setBackMode("在学", true, null);
-        mLearnContent = (ViewGroup) findViewById(R.id.learn_content);
+        setBackMode("收藏的课程", true, null);
+        mFavoirteContent = (ViewGroup) findViewById(R.id.favoirte_content);
+
         if (app.loginUser == null) {
             LoginActivity.startForResult(mActivity);
             return;
         }
 
-        setPagerContent(mLearnContent, false);
+        setPagerContent(mFavoirteContent, false);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class LearningActivity extends BaseActivity {
         switch (resultCode) {
             case LoginActivity.OK:
                 if (app.loginUser != null) {
-                    setPagerContent(mLearnContent, true);
+                    setPagerContent(mFavoirteContent, true);
                 }
                 break;
             case LoginActivity.EXIT:
@@ -61,7 +63,7 @@ public class LearningActivity extends BaseActivity {
                 break;
             case Const.NORMAL_RESULT_REFRESH:
                 if (app.loginUser != null) {
-                    setPagerContent(mLearnContent, true);
+                    setPagerContent(mFavoirteContent, true);
                 }
                 break;
         }
@@ -75,50 +77,50 @@ public class LearningActivity extends BaseActivity {
         loadCourse(0, false, showLoading);
     }
 
-    private void loadCourse(int page, final boolean isAppend, boolean showLoading) {
-
+    private void loadCourse(int page, final boolean isAppend, boolean showLoading)
+    {
         final EdusohoListView listView = (EdusohoListView) findViewById(R.id.course_liseview);
 
-        StringBuffer param = new StringBuffer(Const.LEARN);
+        StringBuffer param = new StringBuffer(Const.FAVORITES);
         param.append("?start=").append(page);
 
         String url = app.bindToken2Url(param.toString(), true);
 
-        ajax(url, new ResultCallback() {
+        ajax(url, new ResultCallback(){
             @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                //hide loading layout
+            public void error(String url, AjaxStatus ajaxStatus) {
+                super.error(url, ajaxStatus);
+                findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
+                showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
+                    @Override
+                    public void error(View errorBtn) {
+                        setPagerContent(mFavoirteContent, false);
+                    }
+                });
                 findViewById(R.id.load_layout).setVisibility(View.GONE);
-                final LearnCourseResult result = app.gson.fromJson(
-                        object, new TypeToken<LearnCourseResult>() {
-                }.getType());
+            }
 
-                if (result == null || result.data.size() == 0) {
-                    showEmptyLayout("暂无学习中的课程");
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                findViewById(R.id.load_layout).setVisibility(View.GONE);
+                final CourseResult result = app.gson.fromJson(
+                        object, new TypeToken<CourseResult>(){}.getType());
+
+                if (result == null || result.data.length == 0) {
+                    showEmptyLayout("暂无收藏课程");
                     return;
                 }
-                if (!isAppend) {
-                    LearnCourseListAdapter adapter = new LearnCourseListAdapter(
-                            mContext, result.data, R.layout.learn_list_item);
+                if (! isAppend) {
+                    FavoriteCourseListAdapter adapter = new FavoriteCourseListAdapter(
+                            mContext, result, R.layout.course_list_normal_item);
 
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView) {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int index, long arg3) {
-                            Course course = (Course) parent.getItemAtPosition(index);
-
-                            Intent intent = new Intent(mContext, CourseInfoActivity.class);
-                            intent.putExtra("courseId", course.id);
-                            intent.putExtra("largePicture", course.largePicture);
-                            intent.putExtra("courseTitle", course.title);
-                            intent.putExtra("currentPage", 0);
-                            startActivityForResult(intent, Const.COURSEINFO_REQUEST);
-                        }
-                    };
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
                     listView.setOnItemClickListener(listener);
 
                     OverScrollView scrollView = (OverScrollView) findViewById(R.id.course_content_scrollview);
-                    scrollView.setMoveListener(new MoveListener() {
+                    scrollView.setMoveListener(new MoveListener(){
                         @Override
                         public void moveToBottom() {
                             View course_more_btn = findViewById(R.id.course_more_btn);
@@ -130,8 +132,8 @@ public class LearningActivity extends BaseActivity {
                     });
 
                 } else {
-                    LearnCourseListAdapter adapter = (LearnCourseListAdapter) listView.getAdapter();
-                    adapter.addItem(result.data);
+                    FavoriteCourseListAdapter adapter = (FavoriteCourseListAdapter) listView.getAdapter();
+                    adapter.addItem(result);
                     listView.initListHeight();
                 }
 
@@ -142,18 +144,6 @@ public class LearningActivity extends BaseActivity {
                 } else {
                     course_more_btn.setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void error(String url, AjaxStatus ajaxStatus) {
-                findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
-                showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
-                    @Override
-                    public void error(View errorBtn) {
-                        setPagerContent(mLearnContent, false);
-                    }
-                });
-                findViewById(R.id.load_layout).setVisibility(View.GONE);
             }
         }, showLoading);
 

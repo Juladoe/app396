@@ -2,7 +2,7 @@ package com.edusoho.listener;
 
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.ui.SchCourseActivity;
+import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +27,7 @@ public class SchoolListClickListener implements OnItemClickListener{
         }
 		setCurrentSchool((School)parent.getItemAtPosition(index));
 		Intent courseIntent = new Intent(mContext,
-				SchCourseActivity.class);
+				SchoolCourseActivity.class);
 		mContext.startActivity(courseIntent);
 		afterClick(parent, index);
 	}

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.common;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.Const;
 
 import java.lang.reflect.Method;

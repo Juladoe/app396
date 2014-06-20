@@ -10,9 +10,9 @@
 
     <gradient
         android:angle="270"
-        android:centerColor="#ff067BD4"
+        android:centerColor="@color/video_thum_gradient_pressed"
         android:centerY="0.45"
-        android:endColor="#ff067BD4"
-        android:startColor="#ff067BD4" />
+        android:endColor="@color/video_thum_gradient_pressed"
+        android:startColor="@color/video_thum_gradient_pressed" />
 
 </shape>

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,13 +27,15 @@ import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoListView;
-import com.edusoho.kuozhi.view.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.OverScrollView;
-import com.edusoho.kuozhi.view.PopupDialog;
-import com.edusoho.kuozhi.view.plugin.PopupLoaingDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.PopupLoaingDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.SchoolListClickListener;
@@ -203,7 +205,7 @@ public class NetSchoolActivity extends BaseActivity {
                     public void success() {
                         app.setCurrentSchool(site);
                         Intent courseIntent = new Intent(mContext,
-                                SchCourseActivity.class);
+                                SchoolCourseActivity.class);
                         startActivity(courseIntent);
                         finish();
                     }

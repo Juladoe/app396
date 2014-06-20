@@ -26,7 +26,7 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
-import com.edusoho.kuozhi.view.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.NormalCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

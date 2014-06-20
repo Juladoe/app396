@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.view;
+package com.edusoho.kuozhi.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EduSohoAutoView;
 
 public class CommentPopupDialog extends Dialog{
 

@@ -7,10 +7,10 @@
 
             <gradient
                 android:angle="270"
-                android:centerColor="#ccc"
+                android:centerColor="@color/video_sk_bg_gradient"
                 android:centerY="0.45"
-                android:endColor="#ccc"
-                android:startColor="#ccc" />
+                android:endColor="@color/video_sk_bg_gradient"
+                android:startColor="@color/video_sk_bg_gradient" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -20,10 +20,10 @@
 
                 <gradient
                     android:angle="270"
-                    android:centerColor="#03b884"
+                    android:centerColor="@color/video_sk_gradient"
                     android:centerY="0.45"
-                    android:endColor="#03b884"
-                    android:startColor="#03b884" />
+                    android:endColor="@color/video_sk_gradient"
+                    android:startColor="@color/video_sk_gradient" />
             </shape>
         </clip>
     </item>

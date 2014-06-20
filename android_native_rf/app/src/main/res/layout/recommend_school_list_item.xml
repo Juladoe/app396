@@ -16,8 +16,7 @@
             android:layout_width="140dp"
             android:layout_height="80dp"
             android:scaleType="fitXY"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img1" />
+            android:layout_centerVertical="true" />
 
         <TextView
             android:id="@+id/recommend_sch_name"

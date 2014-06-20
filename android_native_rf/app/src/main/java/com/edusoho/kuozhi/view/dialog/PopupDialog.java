@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.view;
+package com.edusoho.kuozhi.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

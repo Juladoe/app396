@@ -11,9 +11,9 @@
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#3c3645"
+        android:centerColor="@color/video_thum_gradient"
         android:centerY="0.45"
-        android:endColor="#3c3645"
-        android:startColor="#3c3645" />
+        android:endColor="@color/video_thum_gradient"
+        android:startColor="@color/video_thum_gradient" />
 
 </shape>

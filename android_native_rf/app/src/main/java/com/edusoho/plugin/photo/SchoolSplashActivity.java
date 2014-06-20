@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -16,11 +15,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.ui.SchCourseActivity;
+import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 
 import java.util.ArrayList;
 
@@ -56,7 +53,7 @@ public class SchoolSplashActivity extends Activity {
             return;
         }
 
-        SchCourseActivity.start(this);
+        SchoolCourseActivity.start(this);
         finish();
     }
 
@@ -119,7 +116,7 @@ public class SchoolSplashActivity extends Activity {
             mEnterSchBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SchCourseActivity.start(mActivity);
+                    SchoolCourseActivity.start(mActivity);
                     finish();
                 }
             });

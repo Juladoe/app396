@@ -2,11 +2,11 @@ package com.edusoho.kuozhi.ui;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.plugin.edusoho.bdvideoplayer.BdPlayerManager;
+import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
+import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -48,7 +48,7 @@ public class StartActivity extends Activity {
         Intent startIntent;
         EdusohoApp app = (EdusohoApp) getApplication();
         if (app.config.startWithSchool && app.defaultSchool != null) {
-            startIntent = new Intent(this, SchCourseActivity.class);
+            startIntent = new Intent(this, SchoolCourseActivity.class);
             startActivity(startIntent);
             overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
             finish();

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.common;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +11,12 @@ import android.widget.CompoundButton;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.course.FavoriteActivity;
+import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.LoadDialog;
-import com.edusoho.kuozhi.view.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 
 /**
@@ -82,7 +85,7 @@ public class SettingActivity extends BaseActivity
             @Override
             public void onClick(View view) {
                 Intent schIntent = new Intent();
-                schIntent.setClass(mContext, SchCourseActivity.class);
+                schIntent.setClass(mContext, SchoolCourseActivity.class);
                 startActivity(schIntent);
             }
         });
@@ -113,8 +116,8 @@ public class SettingActivity extends BaseActivity
         aq.id(R.id.nav_courselist_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!app.taskIsRun("SchCourseActivity")) {
-                    SchCourseActivity.start(mActivity);
+                if (!app.taskIsRun(SchoolCourseActivity.TAG)) {
+                    SchoolCourseActivity.start(mActivity);
                 }
                 finish();
             }

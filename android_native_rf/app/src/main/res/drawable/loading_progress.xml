@@ -7,10 +7,10 @@
 
             <gradient
                 android:angle="270"
-                android:centerColor="#ddd"
+                android:centerColor="@color/loading_progress_bg_gradient"
                 android:centerY="0.45"
-                android:endColor="#ddd"
-                android:startColor="#ddd" />
+                android:endColor="@color/loading_progress_bg_gradient"
+                android:startColor="@color/loading_progress_bg_gradient" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -20,10 +20,10 @@
 
                 <gradient
                     android:angle="270"
-                    android:centerColor="#03b884"
+                    android:centerColor="@color/loading_progress_gradient"
                     android:centerY="0.45"
-                    android:endColor="#03b884"
-                    android:startColor="#03b884" />
+                    android:endColor="@color/loading_progress_gradient"
+                    android:startColor="@color/loading_progress_gradient" />
             </shape>
         </clip>
     </item>

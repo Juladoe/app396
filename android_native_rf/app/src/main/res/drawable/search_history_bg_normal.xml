@@ -6,9 +6,9 @@
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#55cccccc"
+        android:centerColor="@color/search_history_bg_gradient"
         android:centerY="0.45"
-        android:endColor="#55cccccc"
-        android:startColor="#55cccccc" />
+        android:endColor="@color/search_history_bg_gradient"
+        android:startColor="@color/search_history_bg_gradient" />
 
 </shape>

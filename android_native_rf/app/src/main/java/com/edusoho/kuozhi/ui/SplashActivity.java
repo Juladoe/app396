@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.IndexPagerAdapter;
+import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,9 +19,6 @@ import android.widget.LinearLayout;
 public class SplashActivity extends Activity {
 
 	private int[] splashImages = {
-			R.drawable.img1,
-			R.drawable.img1,
-			R.drawable.img1
 	};
 
     private Context mContext;
@@ -53,7 +50,7 @@ public class SplashActivity extends Activity {
 				query.id(R.id.splash_notice_btn).visibility(View.VISIBLE).clicked(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent startIntent = new Intent(mContext, IndexPageActivity.class);
+                        Intent startIntent = new Intent(mContext, SchoolCourseActivity.class);
                         startActivity(startIntent);
                         app.config.showSplash = false;
                         app.saveConfig();
@@ -63,10 +60,5 @@ public class SplashActivity extends Activity {
 			}
 			viewList.add(pager);
 		}
-
-        IndexPagerAdapter ipAdapter = new IndexPagerAdapter(mContext, viewList, inflater, indexLayout);
-
-		image_viewpager.setAdapter(ipAdapter);
-		image_viewpager.setOnPageChangeListener(ipAdapter);
 	}
 }

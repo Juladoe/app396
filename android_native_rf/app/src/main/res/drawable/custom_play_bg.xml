@@ -6,15 +6,15 @@
     
     <stroke
 	    android:width="1px"
-	    android:color="#463F37"
+	    android:color="@color/custom_play_bg_stroke"
 
 	    />
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#ff242320"
+        android:centerColor="@color/custom_play_bg_gradient_center"
         android:centerY="0.45"
-        android:endColor="#ff0F0D0E"
-        android:startColor="#ff37403F" />
+        android:endColor="@color/custom_play_bg_gradient_end"
+        android:startColor="@color/custom_play_bg_gradient_start" />
 
 </shape>

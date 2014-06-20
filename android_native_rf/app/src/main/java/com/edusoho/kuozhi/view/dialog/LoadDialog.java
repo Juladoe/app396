@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.view;
+package com.edusoho.kuozhi.view.dialog;
 
 import com.edusoho.kuozhi.R;
 

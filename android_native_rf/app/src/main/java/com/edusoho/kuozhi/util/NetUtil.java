@@ -5,7 +5,7 @@ import android.content.Context;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.view.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 
 public class NetUtil {
 

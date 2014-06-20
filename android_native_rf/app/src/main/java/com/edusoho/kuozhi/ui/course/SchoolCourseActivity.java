@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui;
+package com.edusoho.kuozhi.ui.course;
 
 import java.util.ArrayList;
 
@@ -19,9 +19,12 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.model.CourseResult;
+import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.common.SearchActivity;
+import com.edusoho.kuozhi.ui.common.SettingActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.OverScrollView;
-import com.edusoho.kuozhi.view.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.ResultCallback;
@@ -36,7 +39,7 @@ import com.edusoho.kuozhi.R;
  * @author howzhi
  * 
  */
-public class SchCourseActivity extends BaseActivity{
+public class SchoolCourseActivity extends BaseActivity {
 
 	private static final int latest = 0;
 	private static final int popular = 1;
@@ -49,6 +52,8 @@ public class SchCourseActivity extends BaseActivity{
     private Activity mActivity;
     private LayoutInflater mInflater;
 
+    public static final String TAG = "SchoolCourseActivity";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,18 +64,18 @@ public class SchCourseActivity extends BaseActivity{
 		loadCoursePager();
 		changeContentHead(popular);
         app.checkToken();
-        app.addTask("SchCourseActivity", this);
+        app.addTask(TAG, this);
         updateApp();
     }
 
     public static void start(Activity context)
     {
-        Activity schCourseActivity = EdusohoApp.runTask.get("SchCourseActivity");
+        Activity schCourseActivity = EdusohoApp.runTask.get(TAG);
         if (schCourseActivity != null) {
             schCourseActivity.finish();
         }
         Intent intent = new Intent();
-        intent.setClass(context, SchCourseActivity.class);
+        intent.setClass(context, SchoolCourseActivity.class);
         context.startActivity(intent);
     }
 
@@ -115,7 +120,7 @@ public class SchCourseActivity extends BaseActivity{
 
         bindNavOnClick();
 
-        app.addTask("SchCourseActivity", this);
+        app.addTask(TAG, this);
 	}
 
     @Override
