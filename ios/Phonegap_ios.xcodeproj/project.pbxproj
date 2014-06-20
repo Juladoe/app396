@@ -621,7 +621,7 @@
 				);
 				PRODUCT_NAME = Phonegap_ios;
 				PROVISIONING_PROFILE = "9E61BBEB-17F8-4B97-ACA7-C3AC9AD1E2BD";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -657,7 +657,7 @@
 				);
 				PRODUCT_NAME = Phonegap_ios;
 				PROVISIONING_PROFILE = "CC5289A2-8215-4798-B99F-8F6A17A74F06";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -737,7 +737,7 @@
 				);
 				PRODUCT_NAME = Phonegap_ios;
 				PROVISIONING_PROFILE = "CC5289A2-8215-4798-B99F-8F6A17A74F06";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = AdHoc;
 		};
