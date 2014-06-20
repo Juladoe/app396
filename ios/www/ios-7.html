@@ -137,8 +137,7 @@
                             </span>
                         </i>
                     </button>
-                    <h1 id="pageTitle">
-                    </h1>
+                    <h1 id="pageTitle"></h1>
                     <div style="float:right;">
                         <input type="radio" name="favorite" id="favorite_radio">
                         <button id="menu_btn" class="topcoat-tab-bar__button">
@@ -177,7 +176,7 @@
                 <div title="" id="main" selected="true" class="panel" data-footer="none"
                 data-header="none">
                 </div>
-                <div title="注册网校" id="regist" class="panel" data-header="normal_header"
+                <div title="注册网校" id="regist" class="panel" data-header="regist_header"
                 data-footer="none">
                     <div style="padding:60px 30px 30px 40px;maring:0 auto;text-align:center;">
                         <div class="icon mail input_bg big">
@@ -200,7 +199,7 @@
                         </div>
                     </div>
                 </div>
-                <div title="登陆网校" id="login" class="panel" data-header="login_header"
+                <div title="登录网校" id="login" class="panel" data-header="login_header"
                 data-footer="none">
                     <div style="padding:60px 30px 30px 40px;maring:0 auto;text-align:center;">
                         <div class="icon user input_bg big">
@@ -220,7 +219,7 @@
                     </div>
                 </div>
             </div>
-            <!-- 分类内容 -->
+
             <!-- 分类内容 -->
             <div id="navbar">
                 <div class="topcoat-tab-bar">
@@ -354,7 +353,7 @@
                     </i>
                 </button>
                 <h1 id="pageTitle">
-                    登陆
+                    登录
                 </h1>
                 <a onclick="load_regist_page();" data-title="注册" class="button" style="float:right;font-size:16px;">
                     注册
@@ -432,6 +431,19 @@
             <header id="setting_header" class="custom_header">
                 <h1>
                     个人中心
+                </h1>
+            </header>
+            <header id="regist_header" class="custom_header">
+                <input type="radio" name="aboutback" checked="checked">
+                <button onclick="goback();" class="topcoat-tab-bar__button backButton_left">
+                    <i class="fa fa-2x fa-angle-left pressed">
+                        <span class="back_text">
+                            返回
+                        </span>
+                    </i>
+                </button>
+                <h1 id="pageTitle">
+                    注册用户
                 </h1>
             </header>
             <!-- 课程头部 -->

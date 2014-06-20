@@ -230,7 +230,7 @@ define(function(require, exports) {
 	}
 
 	window.setTitle = function(title) {
-		$("#header").find("#pageTitle").text(title);
+		$("#normal_header").find("#pageTitle").text(title);
 	}
 
 	function _load_carousel() {
@@ -343,6 +343,7 @@ define(function(require, exports) {
 			$.ui.loadContent('learning', false, false, 'slide');
 			learning_model.init_learn_data();
 		} else {
+			setTitle("");
 			setHistoryAction(window.load_learn_page);
 			$.ui.loadContent('login', false, false, 'slide');
 		}
@@ -364,7 +365,6 @@ define(function(require, exports) {
 	window.load_regist_page = function() {
 		$.ui.loadContent('regist', false, false, 'slide');
 		appconfig.page = "regist";
-		setTitle("注册网校");
 	}
 
 	window.load_notification_page = function() {
@@ -373,6 +373,7 @@ define(function(require, exports) {
 			$.ui.loadContent('notification', false, false, 'slide');
 			notification_model.init_notification_data();
 		} else {
+			setTitle("");
 			setHistoryAction(window.load_notification_page);
 			appconfig.page = "login";
 			$.ui.loadContent('login', false, false, 'slide');
@@ -386,6 +387,7 @@ define(function(require, exports) {
 			$.ui.loadContent('favorite', false, false, 'slide');
 			favorite_model.init_favorite_data();
 		} else {
+			setTitle("");
 			setHistoryAction(window.load_favorite_page);
 			appconfig.page = "login";
 			$.ui.loadContent('login', false, false, 'slide');
