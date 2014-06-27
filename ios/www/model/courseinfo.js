@@ -224,7 +224,7 @@ exports.addComment = function()
         				+ "&rating=" + rating + "&content=" + content,
         		function(data){
         			if (data) {
-						if (! data.error) {
+						if (! data.	error) {
 							courseinfo_model.getComments();
 						} else {
 							$("#afui").popup(data.message);
@@ -266,13 +266,12 @@ exports.getComments = function()
 			$(".ui-content").find(".no_course_content").hide();
 			var course_comment_templ = $("#courseinfo_cb_course_comment").val();
 			list_str = zy_tmpl(
-				course_comment_templ, data.data, 
-				zy_tmpl_count(data.data), 
+				course_comment_templ, data, 
+				zy_tmpl_count(data), 
 				function(a,b) {
 					return course_comment_handler(a, b);
 				}
 			);
-
 			$(".ui-content").find("#course_comment_table").html(list_str);
 		}
 	);

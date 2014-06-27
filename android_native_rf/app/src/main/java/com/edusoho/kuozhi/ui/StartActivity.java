@@ -37,7 +37,8 @@ public class StartActivity extends Activity {
         mWorkHandler.postAtTime(new Runnable() {
             @Override
             public void run() {
-                startApp();
+                app.mEngine.runApkPlugin("plugDemo", mActivity);
+                //startApp();
             }
         }, SystemClock.uptimeMillis() + 1200);
     }
@@ -55,7 +56,7 @@ public class StartActivity extends Activity {
             return;
         }
 
-        startIntent = new Intent(this, QrSchoolActivity.class);
+        startIntent = new Intent(this, SchoolCourseActivity.class);
         startActivity(startIntent);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
 
