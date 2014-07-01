@@ -107,7 +107,7 @@ public class EdusohoApp extends Application{
         mWorkHandler.post(new Runnable() {
             @Override
             public void run() {
-                mEngine.init();
+                mEngine.installApkPlugin();
                 sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
             }
         });

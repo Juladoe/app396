@@ -37,7 +37,7 @@ public class StartActivity extends Activity {
         mWorkHandler.postAtTime(new Runnable() {
             @Override
             public void run() {
-                //startApp();
+                startApp();
             }
         }, SystemClock.uptimeMillis() + 1200);
     }
@@ -45,20 +45,16 @@ public class StartActivity extends Activity {
 
     private void startApp()
     {
-        Intent startIntent;
         EdusohoApp app = (EdusohoApp) getApplication();
         if (app.config.startWithSchool && app.defaultSchool != null) {
-            startIntent = new Intent(this, SchoolCourseActivity.class);
-            startActivity(startIntent);
+            app.mEngine.runNormalPlugin("SchoolCourseActivity", this, null);
             overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
             finish();
             return;
         }
 
-        startIntent = new Intent(this, SchoolCourseActivity.class);
-        startActivity(startIntent);
+        app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-
         finish();
     }
 }

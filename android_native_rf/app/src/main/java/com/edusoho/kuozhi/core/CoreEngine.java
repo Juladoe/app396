@@ -44,6 +44,7 @@ public class CoreEngine {
     private CoreEngine(Context context)
     {
         mContext = context;
+        init();
     }
 
     public static CoreEngine create(Context context)
@@ -62,7 +63,7 @@ public class CoreEngine {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
-            startIntent.setAction(pluginModel.packAge);
+            startIntent.setClassName(serverActivity, pluginModel.packAge);
             if (callback != null) {
                 callback.setIntentDate(startIntent);
             }
@@ -115,10 +116,14 @@ public class CoreEngine {
         method.invoke(instance, params);
     }
 
-    public void init()
+    private void init()
+    {
+        initPluginFromXml();
+    }
+
+    public void installApkPlugin()
     {
         try {
-            initPluginFromXml();
             copyPluginFromAsset(getAssetPlugins());
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,8 +146,12 @@ public class CoreEngine {
                         if ("plugin".equals(parser.getName())) {
                             String name = parser.getAttributeValue(null, "name");
                             String version = parser.getAttributeValue(null, "version");
-                            String packAge = parser.getText();
-                            pluginModel = new PluginModel(name, version, packAge);
+                            String packAge = parser.nextText();
+                            pluginModel = new PluginModel();
+                            pluginModel.packAge = packAge;
+                            pluginModel.version = version;
+                            pluginModel.name = name;
+                            parser.nextTag();
                         }
                         break;
                     case XmlPullParser.END_TAG:
@@ -163,7 +172,7 @@ public class CoreEngine {
     private void initPluginFromXml()
     {
         mPluginModelHashMap = parsePluginXml();
-        System.out.println("map->" + mPluginModelHashMap);
+        System.out.println("mPluginModelHashMap->" + mPluginModelHashMap);
     }
 
     public String[] getAssetPlugins() throws IOException
