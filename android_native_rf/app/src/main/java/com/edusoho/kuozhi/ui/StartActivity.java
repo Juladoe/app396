@@ -37,7 +37,6 @@ public class StartActivity extends Activity {
         mWorkHandler.postAtTime(new Runnable() {
             @Override
             public void run() {
-                app.mEngine.runApkPlugin("plugDemo", mActivity);
                 //startApp();
             }
         }, SystemClock.uptimeMillis() + 1200);

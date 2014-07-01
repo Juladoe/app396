@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.AssetManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.PluginModel;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -52,6 +54,20 @@ public class CoreEngine {
             }
         }
         return engine;
+    }
+
+    public void runNormalPlugin(
+            String pluginName, Activity serverActivity, PluginRunCallback callback)
+    {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setAction(pluginModel.packAge);
+            if (callback != null) {
+                callback.setIntentDate(startIntent);
+            }
+            serverActivity.startActivity(startIntent);
+        }
     }
 
     public void runApkPlugin(String pluginName, Activity proxyActivity)
@@ -123,9 +139,10 @@ public class CoreEngine {
                         break;
                     case XmlPullParser.START_TAG:
                         if ("plugin".equals(parser.getName())) {
-                            String name = parser.getAttributeValue("name", "");
-                            String version = parser.getAttributeValue("version", "");
-                            pluginModel = new PluginModel(name, version);
+                            String name = parser.getAttributeValue(null, "name");
+                            String version = parser.getAttributeValue(null, "version");
+                            String packAge = parser.getText();
+                            pluginModel = new PluginModel(name, version, packAge);
                         }
                         break;
                     case XmlPullParser.END_TAG:
@@ -134,7 +151,6 @@ public class CoreEngine {
                         }
                         break;
                 }
-
                 type = parser.next();
             }
         } catch (Exception e) {
