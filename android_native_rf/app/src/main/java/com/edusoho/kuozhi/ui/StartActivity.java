@@ -4,12 +4,17 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
+import com.edusoho.plugin.video.EduSohoVideoActivity;
+import com.ffplay.ffplayActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaCodec;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.view.Window;
 
 public class StartActivity extends Activity {
 
@@ -53,8 +58,13 @@ public class StartActivity extends Activity {
             return;
         }
 
-        app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+
+        Intent intent = new Intent(this, EduSohoVideoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("url", "http://bcs.duapp.com/bimbucket/ios_rtencode_stream.ts");
+        startActivity(intent);
+        //app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
+        //overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         finish();
     }
 }
