@@ -1,1 +1,1 @@
-include ':app', ':slidingmenu', ':ukphoto', ':videoplayer'
+include ':app', ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer'

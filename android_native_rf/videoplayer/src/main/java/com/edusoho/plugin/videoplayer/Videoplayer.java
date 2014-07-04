@@ -21,7 +21,7 @@ public class Videoplayer extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videoplayer);
-        //readSettings();
+        readSettings();
         String filename =   playList[0];
         Intent intent = new Intent();
 

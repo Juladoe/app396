@@ -32,8 +32,8 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
 {
     private final String TAG = "BdVideoPlayerActivity";
 
-    private String AK = "6ZB2kShzunG7baVCPLWe7Ebc";
-    private String SK = "wt18pcUSSryXdl09jFvGvsuNHhGCZTvF";
+    private String AK = "";
+    private String SK = "";
 
 
     private String mVideoSource = null;
