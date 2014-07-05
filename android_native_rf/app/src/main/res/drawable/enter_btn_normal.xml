@@ -6,9 +6,9 @@
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#99ffffff"
+        android:centerColor="@color/enter_btn_normal_gradient"
         android:centerY="0.45"
-        android:endColor="#99ffffff"
-        android:startColor="#99ffffff" />
+        android:endColor="@color/enter_btn_normal_gradient"
+        android:startColor="@color/enter_btn_normal_gradient" />
 
 </shape>

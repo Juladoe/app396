@@ -8,15 +8,15 @@
 
     <stroke
         android:width="1px"
-        android:color="#03b884"
+        android:color="@color/course_tab_stroke"
 
         />
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#03b884"
+        android:centerColor="@color/course_tab_pressed_gradient"
         android:centerY="0.45"
-        android:endColor="#03b884"
-        android:startColor="#03b884" />
+        android:endColor="@color/course_tab_pressed_gradient"
+        android:startColor="@color/course_tab_pressed_gradient" />
 
 </shape>

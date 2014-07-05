@@ -26,5 +26,6 @@ dependencies {
     compile files('libs/core-2.2.jar')
     compile project(':slidingmenu')
     compile project(':ukphoto')
+    compile project(':videoplayer')
     compile project(':bdvideoplayer')
 }

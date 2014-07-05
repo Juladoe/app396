@@ -7,7 +7,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 
 import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.ui.CourseInfoActivity;
+import com.edusoho.kuozhi.ui.course.CourseInfoActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoListView;
 

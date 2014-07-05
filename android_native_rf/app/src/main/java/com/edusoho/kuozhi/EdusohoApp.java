@@ -20,13 +20,14 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
-import com.edusoho.kuozhi.view.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.NormalCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +44,8 @@ public class EdusohoApp extends Application{
     public String apiVersion;
     public String schoolHost = "";
 
+    public CoreEngine mEngine;
+
     public String token;
 
     public static HashMap<String, Activity> runTask;
@@ -52,6 +55,8 @@ public class EdusohoApp extends Application{
 
     public static EdusohoApp app;
     public static boolean debug = true;
+    public static final String PLUGIN_CONFIG = "plugin_config";
+    public static final String INSTALL_PLUGIN = "install_plugin";
 
     private android.os.Handler mWorkHandler;
 
@@ -82,13 +87,30 @@ public class EdusohoApp extends Application{
         Log.i(null, "init");
         app = this;
         gson = new Gson();
+        apiVersion = "1.0.0";
         query = new AQuery(this);
         host = getString(R.string.host);
-        apiVersion = "1.0.0";
         sqliteUtil = new SqliteUtil(getApplicationContext(), null, null);
         initWorkSpace();
         loadConfig();
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+
+        mEngine = CoreEngine.create(this);
+        installPlugin();
+    }
+
+    private void installPlugin()
+    {
+        final SharedPreferences sp = getSharedPreferences(PLUGIN_CONFIG, MODE_APPEND);
+        if (sp.contains(INSTALL_PLUGIN)) {
+            return;
+        }
+        mWorkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mEngine.installApkPlugin();
+                sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
+            }
+        });
     }
 
     private double getApkVersion()

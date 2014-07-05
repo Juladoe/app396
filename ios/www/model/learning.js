@@ -64,10 +64,12 @@ define(function(require, exports) {
                 $.ui.goBack();
                 return;
             }
+            
             if (data.data.length == 0) {
                 $("#learn_list").html(exports.noData);
                 return;
             }
+
             list_str = zy_tmpl($("#learning_list_item").val(), data.data, zy_tmpl_count(data.data),
             function(a, b) {
                 switch (b[1]) {

@@ -3,14 +3,14 @@
 
     <stroke
 	    android:width="1px"
-	    android:color="#DFDFDF"
+	    android:color="@color/action_bg_stroke"
 	    />
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#F9F9F9"
+        android:centerColor="@color/action_bg_gradient"
         android:centerY="0.45"
-        android:endColor="#F9F9F9"
-        android:startColor="#F9F9F9" />
+        android:endColor="@color/action_bg_gradient"
+        android:startColor="@color/action_bg_gradient" />
 
 </shape>

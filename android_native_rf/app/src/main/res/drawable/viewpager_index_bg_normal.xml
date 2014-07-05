@@ -5,9 +5,9 @@
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#03b884"
+        android:centerColor="@color/viewpager_index_bg_gradinet"
         android:centerY="0.45"
-        android:endColor="#03b884"
-        android:startColor="#03b884" />
+        android:endColor="@color/viewpager_index_bg_gradinet"
+        android:startColor="@color/viewpager_index_bg_gradinet" />
 
 </shape>

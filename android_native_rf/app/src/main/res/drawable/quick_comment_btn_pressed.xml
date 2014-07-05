@@ -6,14 +6,14 @@
     
     <stroke
 	    android:width="1px"
-	    android:color="#ccc"
+	    android:color="@color/quick_comment_btn_stroke"
 	    />
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="#ddd"
+        android:centerColor="@color/quick_comment_btn_gradient_pressed"
         android:centerY="0.45"
-        android:endColor="#ddd"
-        android:startColor="#ddd" />
+        android:endColor="@color/quick_comment_btn_gradient_pressed"
+        android:startColor="@color/quick_comment_btn_gradient_pressed" />
 
 </shape>

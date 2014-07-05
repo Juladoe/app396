@@ -3,16 +3,13 @@
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-
-
     -->
+
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
-
-
         -->
     </style>
 
@@ -27,6 +24,7 @@
 
     <style name="startTheme" parent="edusohoTheme">
         <item name="android:windowBackground">@drawable/app_splah_1280_800</item>
+        <item name="android:textColor">@color/system_text</item>
     </style>
 
     <style name="loadDlgTheme" parent="android:Theme.Dialog">
@@ -45,11 +43,13 @@
         <item name="android:minHeight">16dip</item>
         <item name="android:maxHeight">24dip</item>
     </style>
+
     <style name="courseLargeRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/course_big_ratingbar</item>
         <item name="android:minHeight">32dip</item>
         <item name="android:maxHeight">48dip</item>
     </style>
+
     <style name="lessonLearnRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/lesson_learn_ratingbar</item>
     </style>
@@ -62,8 +62,10 @@
         <item name="android:textColor">@color/titleTextColor</item>
         <item name="android:textSize">@dimen/course_content_head</item>
     </style>
+
     <style name="schLoaingStyle" parent="@android:style/Widget.ProgressBar.Large">
         <item name="android:indeterminateDrawable">@anim/sch_loading</item>
         <item name="android:maxWidth">322px</item>
     </style>
+
 </resources>

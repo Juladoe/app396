@@ -9,7 +9,7 @@
 
             <stroke
                 android:width="3dp"
-                android:color="#03b884" />
+                android:color="@color/audio_thum_nomal_stroke" />
 
             <size
 
@@ -18,10 +18,10 @@
             <!-- shape的颜色，支持渐变 -->
             <gradient
                 android:angle="270"
-                android:centerColor="#ccc"
+                android:centerColor="@color/audio_thum_nomal_gradient"
                 android:centerY="0.45"
-                android:endColor="#ccc"
-                android:startColor="#ccc" />
+                android:endColor="@color/audio_thum_nomal_gradient"
+                android:startColor="@color/audio_thum_nomal_gradient" />
         </shape>
     </item>
 </layer-list>

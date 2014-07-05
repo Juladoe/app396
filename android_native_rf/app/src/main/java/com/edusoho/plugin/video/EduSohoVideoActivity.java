@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.view.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 
 import java.util.Timer;
 import java.util.TimerTask;
