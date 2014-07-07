@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="core-2.2">
+  <library name="cyberplayer-sdk">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/edusoho/libs/core-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bdvideoplayer/libs/cyberplayer-sdk.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

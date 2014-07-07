@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">好知网</string>
+    <string name="app_host">http://192.168.11.14</string>
+</resources>

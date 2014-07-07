@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.howzhi">
+
+    <application
+        android:name="com.edusoho.kuozhi.EdusohoApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/edusohoTheme">
+        <activity
+            android:theme="@style/startTheme"
+            android:name=".HowzhiActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:name=".HowzhiSchoolActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:name=".HowzhiSettingActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
+    </application>
+
+</manifest>

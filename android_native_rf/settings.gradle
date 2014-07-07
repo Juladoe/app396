@@ -1,1 +1,1 @@
-include ':app', ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer'
+include ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer', ':kuozhi', ':howzhi', 'edusoho'

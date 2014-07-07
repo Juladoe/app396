@@ -8,7 +8,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/bdvideoplayer" />
+            <option value="$PROJECT_DIR$/edusoho" />
+            <option value="$PROJECT_DIR$/howzhi" />
+            <option value="$PROJECT_DIR$/kuozhi" />
             <option value="$PROJECT_DIR$/slidingmenu" />
             <option value="$PROJECT_DIR$/ukphoto" />
             <option value="$PROJECT_DIR$/videoplayer" />

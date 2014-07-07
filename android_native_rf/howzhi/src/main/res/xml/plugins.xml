@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugins>
+    <plugin name="SchoolCourseActivity" version="1.0" package="com.howzhi.HowzhiSchoolActivity"></plugin>
+    <plugin name="SettingActivity" version="1.0" package="com.howzhi.HowzhiSettingActivity"></plugin>
+</plugins>
