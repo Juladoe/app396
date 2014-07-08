@@ -6,7 +6,10 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
+import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.course.CourseInfoActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoListView;
@@ -17,14 +20,12 @@ import com.edusoho.kuozhi.view.EdusohoListView;
  */
 public class CourseListScrollListener implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener
 {
-    private View mParent;
-    private View course_more_btn;
     private EdusohoListView mListView;
-    private Activity mContext;
+    private Activity mActivity;
 
-    public CourseListScrollListener(Activity context, EdusohoListView listView)
+    public CourseListScrollListener(Activity activity, EdusohoListView listView)
     {
-        mContext = context;
+        mActivity = activity;
         mListView = listView;
     }
 
@@ -41,12 +42,16 @@ public class CourseListScrollListener implements AbsListView.OnScrollListener, A
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int index,
                             long arg3) {
-        Course course = (Course) parent.getItemAtPosition(index);
+        final Course course = (Course) parent.getItemAtPosition(index);
 
-        Intent intent = new Intent(mContext, CourseInfoActivity.class);
-        intent.putExtra("courseId", course.id);
-        intent.putExtra("largePicture", course.largePicture);
-        intent.putExtra("courseTitle", course.title);
-        mContext.startActivityForResult(intent, Const.COURSEINFO_REQUEST);
+        EdusohoApp.app.mEngine.runNormalPluginForResult(
+                "CourseInfoActivity", mActivity, Const.COURSEINFO_REQUEST, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra("courseId", course.id);
+                startIntent.putExtra("largePicture", course.largePicture);
+                startIntent.putExtra("courseTitle", course.title);
+            }
+        });
     }
 }

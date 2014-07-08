@@ -378,7 +378,7 @@ public class CourseInfoActivity extends BaseActivity {
         });
     }
 
-    private void hideEmptyLayout(View inflated) {
+    public void hideEmptyLayout(View inflated) {
         View emptyLayout = inflated.findViewById(R.id.list_empty_text);
         if (emptyLayout != null) {
             emptyLayout.setVisibility(View.GONE);
@@ -470,34 +470,40 @@ public class CourseInfoActivity extends BaseActivity {
     private CourseCommentListAdapter cllAdapter;
     private EduSohoList listCommentView;
 
+    public void showCommentDlg(Review loginUserComment, final View parent)
+    {
+        CommentPopupDialog dlg = CommentPopupDialog.create(mContext);
+        dlg.showDlg(loginUserComment, new CommentPopupDialog.PopupClickListener() {
+            @Override
+            public void onClick(int button, String message, float rating) {
+                switch (button) {
+                    case CommentPopupDialog.OK:
+                        addComment(message, rating, new NormalCallback() {
+                            @Override
+                            public void success(Object obj) {
+                                hideEmptyLayout(parent);
+                            }
+                        });
+                        break;
+                }
+            }
+        });
+    }
+
     private void loadCommentStatus(final View parent) {
         if (cllAdapter.getCount() == 0) {
             showEmptyLayout(parent, "课程暂无评价内容");
         } else {
             hideEmptyLayout(parent);
         }
+
         View commentBtn = parent.findViewById(R.id.course_comment_btn);
         if (app.loginUser != null && (mIsStudent || mIsTeacher)) {
             commentBtn.setVisibility(View.VISIBLE);
             commentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CommentPopupDialog dlg = CommentPopupDialog.create(mContext);
-                    dlg.showDlg(cllAdapter.loginUserComment, new CommentPopupDialog.PopupClickListener() {
-                        @Override
-                        public void onClick(int button, String message, float rating) {
-                            switch (button) {
-                                case CommentPopupDialog.OK:
-                                    addComment(message, rating, new NormalCallback() {
-                                        @Override
-                                        public void success(Object obj) {
-                                            hideEmptyLayout(parent);
-                                        }
-                                    });
-                                    break;
-                            }
-                        }
-                    });
+                    showCommentDlg(cllAdapter.loginUserComment, parent);
                 }
             });
         } else {
@@ -527,7 +533,7 @@ public class CourseInfoActivity extends BaseActivity {
         pagerItem.clear();
     }
 
-    private void addComment(String message, float rating, final NormalCallback callBack) {
+    public void addComment(String message, float rating, final NormalCallback callBack) {
         StringBuilder params = new StringBuilder(wrapUrl(Const.ADDCOMMENT, mCourseId));
         params.append("?rating=").append(rating);
         params.append("&content=").append(message);
@@ -713,6 +719,7 @@ public class CourseInfoActivity extends BaseActivity {
             String courseId, final NormalCallback<CourseInfoResult> callback, boolean showLoading)
     {
         String url = app.bindToken2Url(Const.COURSE + courseId + "?", true);
+        System.out.println("url->" + url);
 
         ajax(url, new ResultCallback() {
             @Override

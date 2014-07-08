@@ -28,6 +28,11 @@
             android:launchMode="singleTop"
             android:name=".HowzhiSettingActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:name=".HowzhiCourseInfoActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
     </application>
 
 </manifest>

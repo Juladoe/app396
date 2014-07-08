@@ -31,7 +31,7 @@ public class BaseActivity extends ActivityGroup {
 
     protected BaseActivity mActivity;
     protected Context mContext;
-    protected EdusohoApp app;
+    public EdusohoApp app;
     protected TextView mActionBarTitle;
     protected LinearLayout mActionBarBack;
     protected TextView mActionBarBackIcon;

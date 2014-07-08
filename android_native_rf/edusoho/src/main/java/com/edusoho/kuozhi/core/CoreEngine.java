@@ -58,6 +58,21 @@ public class CoreEngine {
         return engine;
     }
 
+    public void runNormalPluginForResult(
+            String pluginName, Activity serverActivity, int requestCode, PluginRunCallback callback)
+    {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setClassName(serverActivity, pluginModel.packAge);
+            if (callback != null) {
+                callback.setIntentDate(startIntent);
+            }
+
+            serverActivity.startActivityForResult(startIntent, requestCode);
+        }
+    }
+
     public void runNormalPlugin(
             String pluginName, Activity serverActivity, PluginRunCallback callback)
     {
