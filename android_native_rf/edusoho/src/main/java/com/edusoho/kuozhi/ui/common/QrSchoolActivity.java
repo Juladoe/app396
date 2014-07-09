@@ -37,6 +37,7 @@ public class QrSchoolActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startSplash();
         setContentView(R.layout.qrsch_layout);
         initView();
         app.addTask("QrSchoolActivity", this);

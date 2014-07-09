@@ -33,6 +33,13 @@
             android:launchMode="singleTop"
             android:name=".HowzhiCourseInfoActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
+
+        <activity
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
+            android:name=".HowzhiSplashActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
     </application>
 
 </manifest>

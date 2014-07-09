@@ -37,6 +37,7 @@
         </activity>
 
         <activity
+            android:theme="@style/SplashTheme"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             android:name="com.edusoho.kuozhi.ui.SplashActivity"

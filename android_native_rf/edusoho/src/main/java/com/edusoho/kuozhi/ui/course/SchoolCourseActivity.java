@@ -21,7 +21,6 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.common.SearchActivity;
-import com.edusoho.kuozhi.ui.common.SettingActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
@@ -57,6 +56,7 @@ public class SchoolCourseActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        startSplash();
 		setContentView(R.layout.sch_course);
         mActivity = this;
         mInflater = getLayoutInflater();

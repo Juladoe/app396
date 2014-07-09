@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/JazzyViewPager" />
             <option value="$PROJECT_DIR$/bdvideoplayer" />
             <option value="$PROJECT_DIR$/edusoho" />
             <option value="$PROJECT_DIR$/howzhi" />

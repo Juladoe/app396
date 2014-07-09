@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":edusoho" />
+        <option name="GRADLE_PROJECT_PATH" value=":JazzyViewPager" />
       </configuration>
     </facet>
     <facet type="android" name="Android">
@@ -57,11 +57,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/resources" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../app/build/apk" />
-      <excludeFolder url="file://$MODULE_DIR$/../app/build/bundles" />
-      <excludeFolder url="file://$MODULE_DIR$/../app/build/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/../app/build/dependency-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/../app/build/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/apk" />
       <excludeFolder url="file://$MODULE_DIR$/build/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/bundles" />
@@ -76,16 +71,9 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="core-2.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.1" level="project" />
-    <orderEntry type="library" exported="" name="android-query-full.0.26.8" level="project" />
     <orderEntry type="library" exported="" name="nineoldandroids-2.4.0" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
-    <orderEntry type="module" module-name="videoplayer" exported="" />
-    <orderEntry type="module" module-name="ukphoto" exported="" />
-    <orderEntry type="module" module-name="JazzyViewPager" exported="" />
-    <orderEntry type="module" module-name="slidingmenu" exported="" />
   </component>
 </module>
 

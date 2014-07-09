@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" filepath="$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" />
       <module fileurl="file://$PROJECT_DIR$/android_native_rf.iml" filepath="$PROJECT_DIR$/android_native_rf.iml" />
       <module fileurl="file://$PROJECT_DIR$/bdvideoplayer/bdvideoplayer.iml" filepath="$PROJECT_DIR$/bdvideoplayer/bdvideoplayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/edusoho/edusoho.iml" filepath="$PROJECT_DIR$/edusoho/edusoho.iml" />

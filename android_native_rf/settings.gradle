@@ -1,1 +1,1 @@
-include ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer', ':kuozhi', ':howzhi', 'edusoho'
+include ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer', ':kuozhi', ':howzhi', ':JazzyViewPager', 'edusoho'
