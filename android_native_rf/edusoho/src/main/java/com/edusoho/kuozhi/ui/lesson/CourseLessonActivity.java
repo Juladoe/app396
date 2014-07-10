@@ -170,13 +170,13 @@ public class CourseLessonActivity extends BaseActivity {
     private void setWebView(WebView webView)
     {
         if (Build.VERSION.SDK_INT >= 11) {
-            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         webView.getSettings().setDefaultTextEncodingName("UTF-8");
-        webView.addJavascriptInterface(new JavaScriptObj(), "jsobj");
+        //webView.addJavascriptInterface(new JavaScriptObj(), "jsobj");
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
         mDefaultUA = webView.getSettings().getUserAgentString();
@@ -472,14 +472,18 @@ public class CourseLessonActivity extends BaseActivity {
         switch (mtype) {
             case YOUKU:
             case TUDOU:
+                /*
                 if (mtype == LessonItem.MediaSourceType.YOUKU) {
                     normal_lesson_content.getSettings().setUserAgentString(IOS_UA);
                 } else {
                     normal_lesson_content.getSettings().setUserAgentString(mDefaultUA);
                 }
+                */
+                normal_lesson_content.getSettings().setUserAgentString(mDefaultUA);
                 content = items.mediaUri;
                 video_layout.setVisibility(View.GONE);
                 normal_lesson_content.setVisibility(View.VISIBLE);
+                System.out.println("content->" + content);
                 normal_lesson_content.loadUrl(content);
                 return;
             case SELF:
@@ -709,24 +713,6 @@ public class CourseLessonActivity extends BaseActivity {
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
             mCustomView = view;
-            if (view != null) {
-                ViewGroup vg = (ViewGroup) view;
-                int count = vg.getChildCount();
-                for (int i = 0; i < count; i++) {
-                    View child = vg.getChildAt(i);
-                    if (child instanceof VideoView) {
-                        VideoView videoView = (VideoView) child;
-                        videoView.setMediaController(null);
-                        final CustomMediaController customController = (CustomMediaController) getLayoutInflater().inflate(
-                                R.layout.custom_controller_layout, null);
-
-                        vg.addView(customController);
-                        customController.setVideoView(videoView);
-                        customController.ready();
-                        break;
-                    }
-                }
-            }
         }
 
         @Override
@@ -749,6 +735,7 @@ public class CourseLessonActivity extends BaseActivity {
         @Override
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
+            /*
             if (mCurrentLessonType == CourseLessonType.VIDEO) {
                 view.loadUrl("javascript:" +
                         "var video = document.getElementsByTagName('video')[0];" +
@@ -758,6 +745,7 @@ public class CourseLessonActivity extends BaseActivity {
                         "window.jsobj.showHtml(video.src);" +
                         "video.src = '';});");
             }
+            */
         }
 
         @Override

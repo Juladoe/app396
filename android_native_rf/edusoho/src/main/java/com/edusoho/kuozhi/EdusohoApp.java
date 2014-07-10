@@ -168,7 +168,7 @@ public class EdusohoApp extends Application{
 
     private void loadConfig()
     {
-        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("config", MODE_WORLD_READABLE);
         config = new AppConfig();
         config.showSplash = sp.getBoolean("showSplash", true);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
@@ -181,19 +181,19 @@ public class EdusohoApp extends Application{
 
     private void loadToken()
     {
-        SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         token = sp.getString("token", "");
     }
 
     public void saveToken(TokenResult result)
     {
-        SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         SharedPreferences.Editor edit =  sp.edit();
         edit.putString("token", result.token);
         edit.commit();
 
-        token = result.token;
-        loginUser = result.user;
+        token = "".equals(result.token) ? null : result.token;
+        loginUser = token == null || "".equals(token) ? null : result.user;
     }
 
     public void removeToken()

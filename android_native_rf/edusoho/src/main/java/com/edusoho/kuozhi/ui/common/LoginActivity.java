@@ -107,7 +107,6 @@ public class LoginActivity extends BaseActivity {
                 params.append("&_password=").append(pass);
 
                 String url = app.bindToken2Url(params.toString(), false);
-
                 ajaxGetString(url, new ResultCallback(){
                     @Override
                     public void callback(String url, String object, AjaxStatus status) {

@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.howzhi">
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
     <application
         android:name="com.edusoho.kuozhi.EdusohoApp"
         android:allowBackup="true"
@@ -42,4 +49,7 @@
             android:configChanges="keyboardHidden|orientation"></activity>
     </application>
 
+    <uses-sdk
+        android:targetSdkVersion="8"
+        android:minSdkVersion="2" />
 </manifest>
