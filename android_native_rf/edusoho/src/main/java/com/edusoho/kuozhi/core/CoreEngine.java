@@ -15,7 +15,9 @@ import android.util.Log;
 
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.core.model.PluginModel;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -27,7 +29,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import dalvik.system.DexClassLoader;
 
@@ -38,14 +43,37 @@ public class CoreEngine {
 
     private Context mContext;
     private static final String PLUGIN = "plugin";
+    private static final String INSTALL = "install";
     private static CoreEngine engine;
 
+
+    private ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>> mMessageMap;
     private HashMap<String, PluginModel> mPluginModelHashMap;
 
     private CoreEngine(Context context)
     {
         mContext = context;
         init();
+    }
+
+    public void receiveMsg(String msgId, CoreEngineMsgCallback callback)
+    {
+        ArrayList<CoreEngineMsgCallback> callbackList = mMessageMap.get(msgId);
+        if (callbackList == null) {
+            callbackList = new ArrayList<CoreEngineMsgCallback>();
+        }
+        callbackList.add(callback);
+        mMessageMap.put(msgId, callbackList);
+    }
+
+    public void sendMsg(String msgId, MessageModel messageModel)
+    {
+        ArrayList<CoreEngineMsgCallback> callbackList = mMessageMap.get(msgId);
+        if (callbackList != null) {
+            for (CoreEngineMsgCallback callback : callbackList) {
+                callback.invoke(messageModel);
+            }
+        }
     }
 
     public static CoreEngine create(Context context)
@@ -86,6 +114,11 @@ public class CoreEngine {
 
             serverActivity.startActivity(startIntent);
         }
+    }
+
+    public File getPluginFile(String pluginName)
+    {
+        return new File(mContext.getFilesDir(), pluginName);
     }
 
     public void runApkPlugin(String pluginName, Activity proxyActivity)
@@ -135,6 +168,7 @@ public class CoreEngine {
 
     private void init()
     {
+        mMessageMap = new ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>>();
         initPluginFromXml();
         try{
             PackageManager packageManager = mContext.getPackageManager();
@@ -153,7 +187,8 @@ public class CoreEngine {
     public void installApkPlugin()
     {
         try {
-            copyPluginFromAsset(getAssetPlugins());
+            copyPluginFromAsset(getAssetPlugins(PLUGIN));
+            copyInstallApkFromAsset(getAssetPlugins(INSTALL));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,10 +239,10 @@ public class CoreEngine {
         System.out.println("mPluginModelHashMap->" + mPluginModelHashMap);
     }
 
-    public String[] getAssetPlugins() throws IOException
+    public String[] getAssetPlugins(String dirName) throws IOException
     {
         AssetManager assetManager = mContext.getAssets();
-        return assetManager.list(PLUGIN);
+        return assetManager.list(dirName);
     }
 
     public void copyPluginFromAsset(String[] dirPath) throws Exception
@@ -217,6 +252,15 @@ public class CoreEngine {
         for (String path : dirPath) {
             OutputStream target = new FileOutputStream(new File(pluginDir, path));
             copyFile(assetManager.open(PLUGIN + "/" +path), target);
+        }
+    }
+
+    private void copyInstallApkFromAsset(String[] dirPath) throws Exception
+    {
+        AssetManager assetManager = mContext.getAssets();
+        for (String path : dirPath) {
+            OutputStream target = mContext.openFileOutput(path, mContext.MODE_WORLD_READABLE);
+            copyFile(assetManager.open(INSTALL + "/" +path), target);
         }
     }
 

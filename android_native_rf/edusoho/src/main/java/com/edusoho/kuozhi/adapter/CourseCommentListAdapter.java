@@ -35,6 +35,12 @@ public class CourseCommentListAdapter extends BaseAdapter {
 		inflater = LayoutInflater.from(context);
 	}
 
+    public void addItem(Review[] list)
+    {
+        listAddItem(list);
+        notifyDataSetChanged();
+    }
+
     public void setData(Review[] list)
     {
         mList.clear();
@@ -108,7 +114,7 @@ public class CourseCommentListAdapter extends BaseAdapter {
 		holder.course_comment_user_nickname.setText(user.nickname);
 		holder.course_comment_rating.setRating((float) item.rating);
 		
-		holder.aq.id(R.id.course_comment_user_avatar).image(user.avatar, false, true);
+		holder.aq.id(R.id.course_comment_user_avatar).image(user.avatar, false, true, 0, R.drawable.course_teacher_avatar);
 
 		return view;
 	}

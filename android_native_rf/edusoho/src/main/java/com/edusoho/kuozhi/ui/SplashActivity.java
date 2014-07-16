@@ -25,13 +25,20 @@ import android.widget.TextView;
 public class SplashActivity extends Activity {
 
     private JazzyViewPager mJazzy;
-    private ArrayList<View> mViewList;
+    protected ArrayList<View> mViewList;
+    protected JazzyViewPager.TransitionEffect mSplashMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-        setupJazziness(JazzyViewPager.TransitionEffect.ZoomIn);
+        loadConfig();
+        setupJazziness(mSplashMode);
+    }
+
+    protected void loadConfig()
+    {
+        mSplashMode = JazzyViewPager.TransitionEffect.ZoomIn;
     }
 
     private void setWindowAlpha(float alpha)
@@ -48,7 +55,7 @@ public class SplashActivity extends Activity {
     private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
         mJazzy = (JazzyViewPager) findViewById(R.id.jazzy_pager);
         mJazzy.setTransitionEffect(effect);
-        mViewList = setSplashList();
+        mViewList = initSplashList();
 
         if (mViewList == null || mViewList.isEmpty()) {
             finish();
@@ -86,7 +93,19 @@ public class SplashActivity extends Activity {
         });
     }
 
-    public ArrayList<View> setSplashList()
+    protected ArrayList<View> createSplashList(int[] imageIds)
+    {
+        ArrayList<View> mViewList = new ArrayList<View>();
+        for (int imageId : imageIds) {
+            ImageView imageView = new ImageView(this);
+            imageView.setImageResource(imageId);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            mViewList.add(imageView);
+        }
+        return mViewList;
+    }
+
+    public ArrayList<View> initSplashList()
     {
         return null;
     }

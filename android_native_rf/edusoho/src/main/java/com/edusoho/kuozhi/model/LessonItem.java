@@ -46,7 +46,7 @@ public class LessonItem {
     }
 
     public static enum MediaSourceType{
-        YOUKU, SELF, TUDOU, EMPTY;
+        YOUKU, SELF, TUDOU, EMPTY, QQVIDEO;
 
         public static MediaSourceType cover(String name)
         {

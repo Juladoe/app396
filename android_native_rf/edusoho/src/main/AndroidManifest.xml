@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.edusoho.kuozhi"
+    android:sharedUserId="com.android.activitygrouptest"
     android:versionCode="1"
     android:versionName="1.0.0"
     android:windowSoftInputMode="adjustPan">
@@ -31,6 +32,7 @@
         android:hardwareAccelerated="true"
         android:theme="@style/edusohoTheme">
         <activity
+            android:screenOrientation="portrait"
             android:theme="@style/startTheme"
             android:name="com.edusoho.kuozhi.ui.StartActivity"
             android:configChanges="orientation|keyboardHidden">
@@ -120,6 +122,12 @@
             android:launchMode="singleTop"
             android:name="com.edusoho.plugin.photo.ViewPagerActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
+
+        <activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:name="com.edusoho.plugin.video.WebVideoActivity" >
+        </activity>
 
         <activity
             android:launchMode="singleTop"

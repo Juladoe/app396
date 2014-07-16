@@ -1,9 +1,15 @@
 package com.edusoho.kuozhi.ui.lesson;
 
-import android.app.Activity;
+
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,28 +30,33 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.VideoView;
+
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LessonAdapter;
+import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
+import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LessonInfo;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.ViewPagerActivity;
-import com.edusoho.plugin.video.CustomMediaController;
 
 import com.edusoho.plugin.video.EduSohoVideoActivity;
+import com.edusoho.plugin.video.VideoPlayerCallback;
+import com.edusoho.plugin.video.WebVideoActivity;
 import com.google.gson.reflect.TypeToken;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,6 +70,7 @@ public class CourseLessonActivity extends BaseActivity {
     private ViewGroup lesson_status_btn;
     private View lesson_status_layout;
     private View lesson_content;
+    private VideoPlayerCallback mVideoPlayerCallback;
 
     private ViewGroup mLesson_layout;
     private Handler webViewHandler;
@@ -67,7 +79,11 @@ public class CourseLessonActivity extends BaseActivity {
     private static final int PLAY_VIDEO = 0001;
     private static final int SHOW_IMAGES = 0002;
 
-    private static final String IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25";
+    private static final String ANDROID_UA = "Mozilla/5.0 (Linux; Android 4.4.4; Nexus 5 Build/KTU84P) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36";
+
+    private static final String IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit" +
+            "/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25";
     private String mDefaultUA = "";
     private boolean isShowVideo;
     private boolean mIsPlayerVideo;
@@ -170,20 +186,24 @@ public class CourseLessonActivity extends BaseActivity {
     private void setWebView(WebView webView)
     {
         if (Build.VERSION.SDK_INT >= 11) {
-            //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAllowFileAccess(true);
-        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-        webView.getSettings().setDefaultTextEncodingName("UTF-8");
-        //webView.addJavascriptInterface(new JavaScriptObj(), "jsobj");
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setSupportMultipleWindows(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setPluginState(WebSettings.PluginState.ON);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setDefaultTextEncodingName("utf-8");
+        webView.addJavascriptInterface(new JavaScriptObj(), "jsobj");
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
-        mDefaultUA = webView.getSettings().getUserAgentString();
-        mWebViewClient = new myWebViewClient();
-        webView.setWebViewClient(mWebViewClient);
+        //mDefaultUA = webView.getSettings().getUserAgentString();
         mWebChromeClient = new myWebChromeClient();
+        mWebViewClient = new myWebViewClient();
         webView.setWebChromeClient(mWebChromeClient);
+        webView.setWebViewClient(mWebViewClient);
     }
 
     /**
@@ -374,14 +394,18 @@ public class CourseLessonActivity extends BaseActivity {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             menu.toggle();
-                            Object item = adapterView.getItemAtPosition(i);
+                            final Object item = adapterView.getItemAtPosition(i);
                             if (mAudioPlayer != null && mAudioPlayer.isPlaying()) {
                                 mAudioPlayer.stop();
                             }
-                            clearVideoPlayer();
-                            LessonItem lesson = (LessonItem) item;
-                            loadLessonContent(lesson);
-                            adapter.setmCurrentLessonId(lesson.id);
+                            clearVideoPlayer(new NormalCallback() {
+                                @Override
+                                public void success(Object obj) {
+                                    LessonItem lesson = (LessonItem) item;
+                                    loadLessonContent(lesson);
+                                    adapter.setmCurrentLessonId(lesson.id);
+                                }
+                            });
                         }
                     });
                 }
@@ -472,19 +496,11 @@ public class CourseLessonActivity extends BaseActivity {
         switch (mtype) {
             case YOUKU:
             case TUDOU:
-                /*
-                if (mtype == LessonItem.MediaSourceType.YOUKU) {
-                    normal_lesson_content.getSettings().setUserAgentString(IOS_UA);
-                } else {
-                    normal_lesson_content.getSettings().setUserAgentString(mDefaultUA);
-                }
-                */
-                normal_lesson_content.getSettings().setUserAgentString(mDefaultUA);
+            case QQVIDEO:
                 content = items.mediaUri;
-                video_layout.setVisibility(View.GONE);
-                normal_lesson_content.setVisibility(View.VISIBLE);
-                System.out.println("content->" + content);
-                normal_lesson_content.loadUrl(content);
+                video_layout.setVisibility(View.VISIBLE);
+                normal_lesson_content.setVisibility(View.GONE);
+                playWebVideo(content);
                 return;
             case SELF:
                 normal_lesson_content.setVisibility(View.GONE);
@@ -504,14 +520,58 @@ public class CourseLessonActivity extends BaseActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private void clearVideoPlayer()
+    private void clearVideoPlayer(NormalCallback clearFinishCallback)
     {
-        Activity videoplayer = getLocalActivityManager().getActivity("videoplayer");
+        VideoPlayerCallback videoplayer = (VideoPlayerCallback) getLocalActivityManager()
+                .getActivity("videoplayer");
         if (videoplayer != null) {
-            getLocalActivityManager().removeAllActivities();
-            video_layout.removeAllViews();
+            videoplayer.clear(new NormalCallback() {
+                @Override
+                public void success(Object obj) {
+                    getLocalActivityManager().removeAllActivities();
+                    video_layout.removeAllViews();
+                }
+            });
         }
+        clearFinishCallback.success(null);
         mIsPlayerVideo = false;
+    }
+
+    private void playWebVideo(String url)
+    {
+        Intent intent = new Intent(mContext, WebVideoActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("url", url);
+        Window videoWindow = getLocalActivityManager().startActivity(
+                "videoplayer", intent);
+        View rootView = videoWindow.getDecorView();
+        video_layout.addView(rootView);
+
+        app.addMessageListener(WebVideoActivity.MESSAGE_ID, new CoreEngineMsgCallback() {
+            @Override
+            public void invoke(MessageModel messageModel) {
+                switch (messageModel.what) {
+                    case WebVideoActivity.MESSAGE_OPEN_FULL:
+                        hideMenuAndTools();
+                        toggleScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        break;
+                    case WebVideoActivity.MESSAGE_CLOSE_FULL:
+                        showMenuAndTools();
+                        toggleScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void toggleScreenOrientation(int screenOrientation)
+    {
+        //水平
+        int oldScreenOrientation = mActivity.getRequestedOrientation();
+        if (screenOrientation ==  oldScreenOrientation) {
+            return;
+        }
+        mActivity.setRequestedOrientation(screenOrientation);
     }
 
     private void playVideo(String mediaUri) {
@@ -656,9 +716,6 @@ public class CourseLessonActivity extends BaseActivity {
             }
             mAudioPlayer.release();
         }
-        if (normal_lesson_content != null) {
-            normal_lesson_content.destroy();
-        }
     }
 
     @Override
@@ -677,8 +734,12 @@ public class CourseLessonActivity extends BaseActivity {
     private void goBack() {
         releaseWebView();
         setResult(Const.NORMAL_RESULT_REFRESH);
-        clearVideoPlayer();
-        finish();
+        clearVideoPlayer(new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                finish();
+            }
+        });
     }
 
     private void releaseWebView() {
@@ -765,13 +826,11 @@ public class CourseLessonActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        normal_lesson_content.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        normal_lesson_content.onResume();
     }
 
     @Override

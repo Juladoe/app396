@@ -126,7 +126,8 @@ public class LearningActivity extends BaseActivity {
                             View course_more_btn = findViewById(R.id.course_more_btn);
                             if (course_more_btn.getVisibility() == View.VISIBLE) {
                                 course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
-                                loadCourse((result.start + 1) * Const.LIMIT, true, false);
+                                Integer startPage = (Integer) mLearnContent.getTag();
+                                loadCourse(startPage, true, false);
                             }
                         }
                     });
@@ -138,8 +139,9 @@ public class LearningActivity extends BaseActivity {
                 }
 
                 View course_more_btn = findViewById(R.id.course_more_btn);
-                int start = (result.start + 1) * Const.LIMIT;
+                int start = result.start + Const.LIMIT;
                 if (start < result.total) {
+                    mLearnContent.setTag(start);
                     course_more_btn.setVisibility(View.VISIBLE);
                 } else {
                     course_more_btn.setVisibility(View.GONE);

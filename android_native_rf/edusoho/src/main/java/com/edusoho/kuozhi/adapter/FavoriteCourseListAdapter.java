@@ -87,7 +87,7 @@ public class FavoriteCourseListAdapter extends BaseAdapter {
         holder.course_title.setText(course.title);
         holder.course_studentNum.setText("学员数:" + course.studentNum);
         holder.aq.id(R.id.course_pic).image(
-                course.largePicture, false, true);
+                course.largePicture, false, true, 0, R.drawable.noram_course);
 
         if (course.teachers.length > 0) {
             Teacher user = course.teachers[0];

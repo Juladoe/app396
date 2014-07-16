@@ -11,12 +11,13 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.listener.NormalCallback;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErrorListener,
-        MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnCompletionListener, VideoPlayerCallback {
 
     private CustomPlayerView mVideoView;
     private Context mContext;
@@ -73,6 +74,21 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
             }
         });
         initView();
+    }
+
+    @Override
+    public void clear(NormalCallback normalCallback) {
+
+    }
+
+    @Override
+    public boolean isFullScreen() {
+        return false;
+    }
+
+    @Override
+    public void exitFullScreen() {
+
     }
 
     private void hideController()

@@ -35,6 +35,11 @@ public class EduSohoList extends LinearLayout {
         initView();
     }
 
+    public Adapter getAdapter()
+    {
+        return mAdapter;
+    }
+
     public void setAdapter(Adapter adapter)
     {
         DataSetObserver mDataSetObserver = new DataSetObserver() {

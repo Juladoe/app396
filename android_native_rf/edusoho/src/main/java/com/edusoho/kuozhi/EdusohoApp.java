@@ -3,6 +3,7 @@ package com.edusoho.kuozhi;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Activity;
 import android.app.Application;
@@ -25,6 +26,8 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.core.CoreEngine;
+import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
+import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
@@ -57,6 +60,7 @@ public class EdusohoApp extends Application{
     public static int screenW;
     public static int screenH;
 
+    private HashMap<String, Object> paramsMap;
     public static EdusohoApp app;
     public static boolean debug = true;
     public static final String PLUGIN_CONFIG = "plugin_config";
@@ -78,6 +82,26 @@ public class EdusohoApp extends Application{
         }
     }
 
+    public void setParame(String key, Object obj)
+    {
+        paramsMap.put(key, obj);
+    }
+
+    public Object getParame(String key)
+    {
+        return paramsMap.get(key);
+    }
+
+    public void addMessageListener(String msgId, CoreEngineMsgCallback callback)
+    {
+        mEngine.receiveMsg(msgId, callback);
+    }
+
+    public void sendMessage(String msgId, MessageModel obj)
+    {
+        mEngine.sendMsg(msgId, obj);
+    }
+
     public void exit()
     {
         for (Activity activity : runTask.values()) {
@@ -95,6 +119,7 @@ public class EdusohoApp extends Application{
         schoolHost = "";
         query = new AQuery(this);
         host = getString(R.string.host);
+        paramsMap = new HashMap<String, Object>();
         sqliteUtil = new SqliteUtil(getApplicationContext(), null, null);
         initWorkSpace();
         loadConfig();
@@ -110,6 +135,26 @@ public class EdusohoApp extends Application{
         item.url = url;
         item.logo = "";
         return item;
+    }
+
+    public String getPluginFile(String pluginName)
+    {
+        File file = mEngine.getPluginFile(pluginName);
+        return file.getAbsolutePath();
+    }
+
+    public void installApk(String file)
+    {
+        if (file == null || "".equals(file)) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+
+        intent.setDataAndType(Uri.parse("file://" + file),
+                "application/vnd.android.package-archive");
+        this.startActivity(intent);
     }
 
     private void installPlugin()

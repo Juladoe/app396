@@ -10,12 +10,14 @@
         android:smallScreens="true" />
 
     <application
+        android:hardwareAccelerated="true"
         android:name="com.edusoho.kuozhi.EdusohoApp"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/edusohoTheme">
         <activity
+            android:screenOrientation="portrait"
             android:theme="@style/startTheme"
             android:name=".HowzhiActivity"
             android:label="@string/app_name">

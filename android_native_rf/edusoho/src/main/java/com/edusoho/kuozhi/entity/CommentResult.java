@@ -4,7 +4,8 @@ import java.util.HashMap;
 
 public class CommentResult {
 
-    public String status;
-	public CourseCommentItem[] course_comment;
-    public HashMap<String, UserItem> commentUsers;
+    public int start;
+    public int total;
+    public int limit;
+	public CourseCommentItem[] data;
 }

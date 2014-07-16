@@ -97,7 +97,7 @@ public class LearnCourseListAdapter extends BaseAdapter {
         }
 
         holder.aq.id(R.id.course_pic).image(
-                course.largePicture, false, true);
+                course.largePicture, false, true, 0, R.drawable.noram_course);
         int width = EdusohoApp.app.screenW;
         holder.aq.id(R.id.course_pic).height(AppUtil.getLearnCourseListCoverHeight(width), false);
         return view;

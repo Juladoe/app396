@@ -42,6 +42,7 @@ public class HowzhiActivity extends Activity {
             final LoadDialog loading = LoadDialog.create(mActivity);
             loading.show();
             String app_host = getResources().getString(R.string.app_host);
+
             app.query.ajax(app_host + Const.VERIFYVERSION, String.class, new AjaxCallback<String>() {
                 @Override
                 public void callback(String url, String object, AjaxStatus status) {
@@ -50,7 +51,6 @@ public class HowzhiActivity extends Activity {
                     SystemInfo info = app.gson.fromJson(
                             object, new TypeToken<SystemInfo>() {
                     }.getType());
-
                     if (info == null
                             ||info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
                         PopupDialog.createNormal(mActivity, "提示信息", "网校客户端已关闭或网校服务器出现异常，请联系管理员！").show();

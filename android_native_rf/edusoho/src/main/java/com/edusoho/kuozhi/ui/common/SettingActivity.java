@@ -170,7 +170,7 @@ public class SettingActivity extends BaseActivity
         }
 
         aq.id(R.id.setting_user_layout).enabled(false);
-        aq.id(R.id.setting_user_avatar).image(app.loginUser.largeAvatar, false, true);
+        aq.id(R.id.setting_user_avatar).image(app.loginUser.largeAvatar, false, true, 0, R.drawable.course_teacher_avatar);
         aq.id(R.id.setting_user_nickname).text(app.loginUser.nickname);
         aq.id(R.id.setting_user_info).text(app.loginUser.title);
         aq.id(R.id.setting_logout_btn).visibility(View.VISIBLE).clicked(

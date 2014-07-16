@@ -82,7 +82,6 @@
     <orderEntry type="library" exported="" name="nineoldandroids-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
-    <orderEntry type="module" module-name="videoplayer" exported="" />
     <orderEntry type="module" module-name="ukphoto" exported="" />
     <orderEntry type="module" module-name="JazzyViewPager" exported="" />
     <orderEntry type="module" module-name="slidingmenu" exported="" />

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,12 +25,15 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseCommentListAdapter;
 import com.edusoho.kuozhi.adapter.CourseLessonListAdapter;
 import com.edusoho.kuozhi.adapter.CoursePagerAdapter;
+import com.edusoho.kuozhi.adapter.LearnCourseListAdapter;
 import com.edusoho.kuozhi.entity.CommentResult;
 import com.edusoho.kuozhi.entity.CourseInfoViewPagerItem;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseInfoResult;
+import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.Review;
+import com.edusoho.kuozhi.model.ReviewResult;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.ui.common.AlipayActivity;
 import com.edusoho.kuozhi.ui.BaseActivity;
@@ -37,11 +41,14 @@ import com.edusoho.kuozhi.ui.lesson.CourseLessonActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.kuozhi.view.dialog.CommentPopupDialog;
 import com.edusoho.kuozhi.view.EduSohoList;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.handler.ProgressBarHandler;
+import com.edusoho.listener.CourseListScrollListener;
+import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -491,12 +498,6 @@ public class CourseInfoActivity extends BaseActivity {
     }
 
     private void loadCommentStatus(final View parent) {
-        if (cllAdapter.getCount() == 0) {
-            showEmptyLayout(parent, "课程暂无评价内容");
-        } else {
-            hideEmptyLayout(parent);
-        }
-
         View commentBtn = parent.findViewById(R.id.course_comment_btn);
         if (app.loginUser != null && (mIsStudent || mIsTeacher)) {
             commentBtn.setVisibility(View.VISIBLE);
@@ -515,21 +516,13 @@ public class CourseInfoActivity extends BaseActivity {
      * @param result
      */
     private void loadCommentLayout(CourseInfoResult result) {
-        CourseInfoViewPagerItem pagerItem = mPagerMap.get(recommended);
-        if (pagerItem == null ||
-                pagerItem.data == null) {
+        final CourseInfoViewPagerItem pagerItem = mPagerMap.get(recommended);
+        if (pagerItem == null || pagerItem.data == null) {
             return;
         }
-        listCommentView = (EduSohoList) pagerItem.pager.findViewById(R.id.course_comment_listview);
-        cllAdapter = new CourseCommentListAdapter(
-                mContext,
-                result.reviews,
-                R.layout.course_comment_item_list_item
-        );
-
-        listCommentView.setAdapter(cllAdapter);
         loadCommentStatus(pagerItem.pager);
-
+        listCommentView = (EduSohoList) pagerItem.pager.findViewById(R.id.course_comment_listview);
+        getComments(pagerItem.pager, 0, false, false);
         pagerItem.clear();
     }
 
@@ -557,11 +550,73 @@ public class CourseInfoActivity extends BaseActivity {
         });
     }
 
-    private void getComments() {
-        StringBuilder params = new StringBuilder(Const.COMMENTLIST);
-        params.append(mCourseId);
+    private void getComments(
+            final View parent, int start, final boolean isAppend, boolean showLoading) {
+
+        StringBuilder params = new StringBuilder(wrapUrl(Const.COMMENTLIST, mCourseId));
+        params.append("?start=").append(start);
 
         String url = app.bindToken2Url(params.toString(), true);
+        ajax(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                //hide loading layout
+                findViewById(R.id.load_layout).setVisibility(View.GONE);
+                final ReviewResult result = app.gson.fromJson(
+                        object, new TypeToken<ReviewResult>() {
+                }.getType());
+
+                if (result == null || result.data.length == 0) {
+                    showEmptyLayout("课程暂无评价内容");
+                    return;
+                }
+                hideEmptyLayout(parent);
+
+                if (!isAppend) {
+                    cllAdapter = new CourseCommentListAdapter(
+                            mContext,
+                            result.data,
+                            R.layout.course_comment_item_list_item
+                    );
+
+                    listCommentView.setAdapter(cllAdapter);
+
+                    OverScrollView scrollView = (OverScrollView) parent.findViewById(
+                            R.id.course_content_scrollview);
+                    scrollView.setMoveListener(new MoveListener() {
+                        @Override
+                        public void moveToBottom() {
+                            View course_more_btn = findViewById(R.id.course_more_btn);
+                            if (course_more_btn.getVisibility() == View.VISIBLE) {
+                                course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
+                                Integer startPage = (Integer) parent.getTag();
+                                getComments(parent, startPage, true, false);
+                            }
+                        }
+                    });
+
+                } else {
+                    cllAdapter = (CourseCommentListAdapter) listCommentView.getAdapter();
+                    cllAdapter.addItem(result.data);
+                }
+
+                View course_more_btn = findViewById(R.id.course_more_btn);
+                int start = result.start + Const.LIMIT;
+                if (start < result.total) {
+                    parent.setTag(start);
+                    course_more_btn.setVisibility(View.VISIBLE);
+                } else {
+                    course_more_btn.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                longToast("网络数据加载错误！请重新尝试刷新");
+                findViewById(R.id.load_layout).setVisibility(View.GONE);
+            }
+        }, showLoading);
+        /*
         ajaxNormalGet(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
@@ -580,6 +635,7 @@ public class CourseInfoActivity extends BaseActivity {
                 }
             }
         });
+        */
     }
 
     /**

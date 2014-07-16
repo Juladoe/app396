@@ -35,7 +35,7 @@ public class Const {
     public static final String REGIST = "user_register";
     public static final String LOGIN = "login";
     public static final String ADDCOMMENT = "courses/{courseId}/review_create";
-    public static final String COMMENTLIST = "commentlist/";
+    public static final String COMMENTLIST = "courses/{courseId}/reviews";
     public static final String ABOUT = "about";
     public static final String NOTICE = "me/notifications?";
     public static final String LEARN = "me/learning_courses";

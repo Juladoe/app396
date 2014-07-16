@@ -21,6 +21,7 @@ public class LoadDialog extends Dialog{
 
     private void initView() {
         loading_txt = (TextView) findViewById(R.id.loading_txt);
+        setCanceledOnTouchOutside(false);
     }
 
     public LoadDialog(Context context, int theme) {
