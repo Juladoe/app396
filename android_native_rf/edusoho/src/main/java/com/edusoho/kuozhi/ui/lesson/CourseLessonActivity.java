@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.ViewPagerActivity;
@@ -185,9 +186,6 @@ public class CourseLessonActivity extends BaseActivity {
 
     private void setWebView(WebView webView)
     {
-        if (Build.VERSION.SDK_INT >= 11) {
-            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
@@ -418,7 +416,7 @@ public class CourseLessonActivity extends BaseActivity {
 
     /**
      *
-     */
+    */
     private void loadLessonContent(LessonItem lesson) {
         setLearnStatus(lesson.courseId, lesson.id);
         String url = app.bindToken2Url(
@@ -490,17 +488,18 @@ public class CourseLessonActivity extends BaseActivity {
     /**
      * @param items
      */
-    private void switchPlayVideo(LessonInfo items) {
+    private void switchPlayVideo(final LessonInfo items) {
         String content = "";
         LessonItem.MediaSourceType mtype = LessonItem.MediaSourceType.cover(items.mediaSource);
         switch (mtype) {
             case YOUKU:
             case TUDOU:
             case QQVIDEO:
+            case FALLBACK:
                 content = items.mediaUri;
                 video_layout.setVisibility(View.VISIBLE);
                 normal_lesson_content.setVisibility(View.GONE);
-                playWebVideo(content);
+                playWebVideo(content, true);
                 return;
             case SELF:
                 normal_lesson_content.setVisibility(View.GONE);
@@ -508,11 +507,36 @@ public class CourseLessonActivity extends BaseActivity {
                 playVideo(items.mediaUri);
                 return;
             default:
-                video_layout.setVisibility(View.GONE);
-                normal_lesson_content.setVisibility(View.VISIBLE);
-                normal_lesson_content.loadDataWithBaseURL(null, "客户端暂不支持此功能", "text/html", "UTF-8", null);
-                break;
+                content = items.mediaUri;
+                if (content == null && "".equals(content)) {
+                    video_layout.setVisibility(View.GONE);
+                    normal_lesson_content.setVisibility(View.VISIBLE);
+                    normal_lesson_content.loadDataWithBaseURL(null, "客户端暂不支持此功能", "text/html", "UTF-8", null);
+                    return;
+                }
+
+                PopupDialog.createMuilt(
+                        mContext,
+                        "课程提示",
+                        "该课程视频不支持客户端播放，是否打开浏览器学习",
+                        new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.OK) {
+                                    startDefaultWebBrowser(items.mediaUri);
+                                }
+                            }
+                }).show();
+
         }
+    }
+
+    private void startDefaultWebBrowser(String url)
+    {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
     @Override
@@ -537,10 +561,13 @@ public class CourseLessonActivity extends BaseActivity {
         mIsPlayerVideo = false;
     }
 
-    private void playWebVideo(String url)
+    private void playWebVideo(String url, boolean isIframe)
     {
         Intent intent = new Intent(mContext, WebVideoActivity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        if (isIframe) {
+            url = "<iframe height='100%' width='100%' src='" + url + "' frameborder=0 allowfullscreen></iframe>";
+        }
+
         intent.putExtra("url", url);
         Window videoWindow = getLocalActivityManager().startActivity(
                 "videoplayer", intent);
@@ -836,8 +863,5 @@ public class CourseLessonActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (inCustomView()) {
-            hideCustomView();
-        }
     }
 }

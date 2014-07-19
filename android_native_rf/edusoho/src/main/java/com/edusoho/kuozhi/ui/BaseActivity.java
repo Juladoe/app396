@@ -56,6 +56,7 @@ public class BaseActivity extends ActivityGroup {
     }
 
     public void startSplash() {
+
         if (app.config.showSplash) {
             app.mEngine.runNormalPlugin("SplashActivity", this, null);
             app.config.showSplash = false;

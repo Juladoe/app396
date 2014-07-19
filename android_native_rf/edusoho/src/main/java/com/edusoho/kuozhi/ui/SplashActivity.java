@@ -15,16 +15,19 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class SplashActivity extends Activity {
 
     private JazzyViewPager mJazzy;
+    protected View mSplashOkBtn;
     protected ArrayList<View> mViewList;
     protected JazzyViewPager.TransitionEffect mSplashMode;
 
@@ -56,7 +59,6 @@ public class SplashActivity extends Activity {
         mJazzy = (JazzyViewPager) findViewById(R.id.jazzy_pager);
         mJazzy.setTransitionEffect(effect);
         mViewList = initSplashList();
-
         if (mViewList == null || mViewList.isEmpty()) {
             finish();
             return;
@@ -67,6 +69,7 @@ public class SplashActivity extends Activity {
 
         mJazzy.setAdapter(new SplashAdapter(mViewList));
         mJazzy.setPageMargin(30);
+
         mJazzy.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -93,15 +96,44 @@ public class SplashActivity extends Activity {
         });
     }
 
+    private RelativeLayout createLastSplashView(int imageId)
+    {
+        RelativeLayout relativeLayout = new RelativeLayout(this);
+        relativeLayout.setLayoutParams(new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        ImageView imageView = new ImageView(this);
+        imageView.setImageResource(imageId);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        relativeLayout.addView(imageView);
+
+        mSplashOkBtn = LayoutInflater.from(this).inflate(R.layout.splash_ok_btn_layout, relativeLayout);
+        mSplashOkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        return relativeLayout;
+    }
+
     protected ArrayList<View> createSplashList(int[] imageIds)
     {
         ArrayList<View> mViewList = new ArrayList<View>();
-        for (int imageId : imageIds) {
+        int size = imageIds.length;
+
+        for (int i=0; i < size; i++) {
+            if (i == (size - 1)) {
+                mViewList.add(createLastSplashView(imageIds[i]));
+                continue;
+            }
             ImageView imageView = new ImageView(this);
-            imageView.setImageResource(imageId);
+            imageView.setImageResource(imageIds[i]);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             mViewList.add(imageView);
         }
+
         return mViewList;
     }
 

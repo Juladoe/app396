@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -67,23 +69,36 @@ public class SearchActivity extends BaseActivity {
             }
         });
 
+        actionbar_search_edt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                searchCourseList();
+                return true;
+            }
+        });
+
         aq.id(R.id.actionbar_search_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String searchStr = actionbar_search_edt.getText().toString();
-                if (TextUtils.isEmpty(searchStr)) {
-                    longToast("请输入搜索内容!");
-                    return;
-                }
-                mSearchContent.removeAllViews();
-                View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
-                mSearchContent.addView(course_content);
-                loadSearchList(0, searchStr, false);
-                saveSearchHistory(searchStr);
+                searchCourseList();
             }
         });
 
         loadSearchHistory();
+    }
+
+    private void searchCourseList()
+    {
+        String searchStr = actionbar_search_edt.getText().toString();
+        if (TextUtils.isEmpty(searchStr)) {
+            longToast("请输入搜索内容!");
+            return;
+        }
+        mSearchContent.removeAllViews();
+        View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
+        mSearchContent.addView(course_content);
+        loadSearchList(0, searchStr, false);
+        saveSearchHistory(searchStr);
     }
 
     private void saveSearchHistory(String text)

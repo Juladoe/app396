@@ -520,7 +520,7 @@ public class CourseInfoActivity extends BaseActivity {
         if (pagerItem == null || pagerItem.data == null) {
             return;
         }
-        loadCommentStatus(pagerItem.pager);
+
         listCommentView = (EduSohoList) pagerItem.pager.findViewById(R.id.course_comment_listview);
         getComments(pagerItem.pager, 0, false, false);
         pagerItem.clear();
@@ -560,6 +560,7 @@ public class CourseInfoActivity extends BaseActivity {
         ajax(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
+                loadCommentStatus(parent);
                 //hide loading layout
                 findViewById(R.id.load_layout).setVisibility(View.GONE);
                 final ReviewResult result = app.gson.fromJson(
@@ -581,17 +582,20 @@ public class CourseInfoActivity extends BaseActivity {
 
                     listCommentView.setAdapter(cllAdapter);
 
-                    OverScrollView scrollView = (OverScrollView) parent.findViewById(
-                            R.id.course_content_scrollview);
-                    scrollView.setMoveListener(new MoveListener() {
+                    listCommentView.setMoveListener(new MoveListener() {
                         @Override
                         public void moveToBottom() {
-                            View course_more_btn = findViewById(R.id.course_more_btn);
-                            if (course_more_btn.getVisibility() == View.VISIBLE) {
-                                course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
-                                Integer startPage = (Integer) parent.getTag();
-                                getComments(parent, startPage, true, false);
+                            if (listCommentView.isShowMoreBtn()) {
+                                return;
                             }
+
+                            int startPage = parent.getTag() == null ? 0 : (Integer) parent.getTag();
+                            if (startPage > result.total) {
+                                return;
+                            }
+
+                            listCommentView.showMoreBtn();
+                            getComments(parent, startPage, true, false);
                         }
                     });
 
@@ -600,14 +604,12 @@ public class CourseInfoActivity extends BaseActivity {
                     cllAdapter.addItem(result.data);
                 }
 
-                View course_more_btn = findViewById(R.id.course_more_btn);
                 int start = result.start + Const.LIMIT;
                 if (start < result.total) {
                     parent.setTag(start);
-                    course_more_btn.setVisibility(View.VISIBLE);
-                } else {
-                    course_more_btn.setVisibility(View.GONE);
                 }
+
+                listCommentView.hideMoreBtn();
             }
 
             @Override
@@ -616,26 +618,7 @@ public class CourseInfoActivity extends BaseActivity {
                 findViewById(R.id.load_layout).setVisibility(View.GONE);
             }
         }, showLoading);
-        /*
-        ajaxNormalGet(url, new ResultCallback() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                if (status.getCode() != Const.OK) {
-                    longToast("网络异常！");
-                    return;
-                }
-                CommentResult result = app.gson.fromJson(
-                        object, new TypeToken<CommentResult>() {
-                }.getType());
-                if (result != null && Const.RESULT_SUCCESS.equals(result.status)) {
-                    cllAdapter.setData(null);
-                    listCommentView.refresh();
-                } else {
-                    longToast("评论提示,课程不存在或已关闭!");
-                }
-            }
-        });
-        */
+
     }
 
     /**

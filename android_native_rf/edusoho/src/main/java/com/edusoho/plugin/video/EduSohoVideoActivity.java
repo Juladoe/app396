@@ -3,6 +3,7 @@ package com.edusoho.plugin.video;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -148,6 +149,11 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
         }
 
         super.onResume();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     public boolean onError(MediaPlayer player, int arg1, int arg2) {

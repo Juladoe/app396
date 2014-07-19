@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.edusoho.kuozhi"
-    android:sharedUserId="com.android.activitygrouptest"
     android:versionCode="1"
     android:versionName="1.0.0"
     android:windowSoftInputMode="adjustPan">
@@ -114,10 +113,9 @@
             android:name="com.edusoho.plugin.qr.CaptureActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
         <activity
-            android:hardwareAccelerated="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:name="com.edusoho.plugin.video.EduSohoVideoActivity"
-            android:configChanges="keyboardHidden|orientation"></activity>
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
             android:launchMode="singleTop"
             android:name="com.edusoho.plugin.photo.ViewPagerActivity"

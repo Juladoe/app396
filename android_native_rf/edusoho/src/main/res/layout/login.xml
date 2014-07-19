@@ -30,11 +30,12 @@
                 android:layout_height="wrap_content" />
 
             <EditText
+                android:singleLine="true"
                 android:id="@+id/login_email_edt"
                 android:layout_centerVertical="true"
                 android:background="@null"
                 android:paddingLeft="30dp"
-                android:hint="输入用户名/Email地址"
+                android:hint="输入Email地址"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
@@ -57,6 +58,7 @@
                 android:layout_height="wrap_content" />
 
             <EditText
+                android:singleLine="true"
                 android:id="@+id/login_pass_edt"
                 android:inputType="textPassword"
                 android:layout_centerVertical="true"

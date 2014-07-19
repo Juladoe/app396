@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.MessageModel;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 
@@ -45,6 +46,8 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
     public static final String MESSAGE_ID = "WebVideoActivity";
     public static final int MESSAGE_OPEN_FULL = 0001;
     public static final int MESSAGE_CLOSE_FULL = 0002;
+
+    private LoadDialog mLoadDialog;
 
     private static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36";
     private static final String IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25";
@@ -91,6 +94,13 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
         return false;
     }
 
+    private LoadDialog getLoadView()
+    {
+        mLoadDialog = LoadDialog.create(mContext);
+        mLoadDialog.show();
+        return mLoadDialog;
+    }
+
     private void initView()
     {
         Intent dataIntent = getIntent();
@@ -99,8 +109,13 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
             Toast.makeText(this, "无效播放网址!", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        mLoadDialog = getLoadView();
         Log.i(null, "WebVideoActivity url->" + url);
         mWebView = (WebView) findViewById(R.id.webView);
+        if (Build.VERSION.SDK_INT >= 11) {
+            mWebView.setLayerType(View.LAYER_TYPE_NONE, null);
+        }
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -134,12 +149,12 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
 
         mWebView.setWebViewClient(new WebVideoWebViewClient());
         mWebView.loadDataWithBaseURL(
-                null, "<iframe height='100%' width='100%' src='" + url + "' frameborder=0 allowfullscreen></iframe>", "text/html", "utf-8", null);
+                null, url, "text/html", "utf-8", null);
     }
 
     /**
      * js注入对象
-     */
+    */
     public class JavaScriptObj
     {
         @JavascriptInterface
@@ -171,8 +186,8 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
                 Intent intent = new Intent(mContext, EduSohoVideoActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtra("url", url);
-                System.out.println("url->" + url);
                 startActivity(intent);
+                webViewStop();
                 return;
             }
             super.onLoadResource(view, url);
@@ -203,8 +218,11 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
     private class WebVideoWebChromClient extends WebChromeClient
     {
         @Override
-        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-            return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+            if (newProgress == 100) {
+                mLoadDialog.dismiss();
+            }
         }
 
         @Override
@@ -300,16 +318,10 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
     @Override
     protected void onPause() {
         super.onPause();
-        if (mWebView != null){
-
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mWebView != null){
-
-        }
     }
 }

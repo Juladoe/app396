@@ -22,4 +22,5 @@ dependencies {
     compile project(':slidingmenu')
     compile project(':ukphoto')
     compile project(':JazzyViewPager')
+    compile files('libs/nineoldandroids-2.4.0.jar')
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,15 +14,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.adapter.CourseMenuItemAdapter;
+import com.edusoho.kuozhi.model.CourseMenu;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.common.SearchActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.CourseListScrollListener;
@@ -33,6 +41,10 @@ import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.view.EdusohoListView;
 
 import com.edusoho.kuozhi.R;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
+
+
 /**
  * 
  * @author howzhi
@@ -50,6 +62,8 @@ public class SchoolCourseActivity extends BaseActivity {
     private View nav_my_btn;
     public Activity mActivity;
     private LayoutInflater mInflater;
+    private TextView mCourseMenuBtn;
+    private String mChannel;
 
     public static final String TAG = "SchoolCourseActivity";
 
@@ -107,10 +121,82 @@ public class SchoolCourseActivity extends BaseActivity {
 			}
 				});
 
+        mCourseMenuLayout = (ViewGroup) findViewById(R.id.course_menu_layout);
+        mCourseMenuBtn = (TextView) findViewById(R.id.course_menu_btn);
+        mCourseMenuBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCourseMenuPopWindow();
+            }
+        });
+
         bindNavOnClick();
 
+        mChannel = "all";
         app.addTask(TAG, this);
 	}
+
+    private boolean mIsShowCourseMenu;
+    private ViewGroup mCourseMenuLayout;
+
+    private static CourseMenu[] COURSE_MENUS = {
+            new CourseMenu("all", "所有"),
+            new CourseMenu("programme", "编程"),
+            new CourseMenu("photography", "摄影"),
+            new CourseMenu("interest", "兴趣"),
+            new CourseMenu("computer", "电脑"),
+            new CourseMenu("language", "语言"),
+            new CourseMenu("life", "生活"),
+            new CourseMenu("career", "职场"),
+            new CourseMenu("culture", "文化"),
+            new CourseMenu("openclass", "公开课"),
+    };
+
+    private void showCourseMenuPopWindow()
+    {
+        AnimatorSet set = new AnimatorSet();
+        EdusohoAnimWrap edusohoAnimWrap = new EdusohoAnimWrap(mCourseMenuLayout);
+
+        int contentHeight = (int) (0.6f * content_pager.getHeight());
+        if (mIsShowCourseMenu) {
+            set.playTogether(
+                    ObjectAnimator.ofInt(edusohoAnimWrap, "height", contentHeight, 0)
+            );
+        } else {
+            if (mCourseMenuLayout.getChildCount() == 0) {
+                View v = mInflater.inflate(R.layout.course_menu_btn_layout, null);
+                GridView gridView = (GridView)v.findViewById(R.id.course_menu_grid);
+
+                CourseMenuItemAdapter arrayAdapter = new CourseMenuItemAdapter(
+                        mContext, COURSE_MENUS, R.layout.course_mentu_item_layout);
+                gridView.setAdapter(arrayAdapter);
+
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int positon, long l) {
+                        CourseMenu courseMenu = (CourseMenu) adapterView.getItemAtPosition(positon);
+                        selectCourseMenu(courseMenu);
+                    }
+                });
+                mCourseMenuLayout.addView(v);
+            }
+
+            set.playTogether(
+                    ObjectAnimator.ofInt(edusohoAnimWrap, "height", 0, contentHeight)
+            );
+        }
+        set.start();
+        mIsShowCourseMenu = ! mIsShowCourseMenu;
+    }
+
+    private void selectCourseMenu(CourseMenu courseMenu)
+    {
+        mChannel = courseMenu.type;
+        mCourseMenuBtn.setText(courseMenu.name);
+        showCourseMenuPopWindow();
+        loadCoursePager();
+        changeContentHead(popular);
+    }
 
     public void setActionBar()
     {
@@ -247,6 +333,7 @@ public class SchoolCourseActivity extends BaseActivity {
         StringBuffer param = new StringBuffer(Const.COURSE_LIST);
         param.append("?start=").append(page);
         param.append("&sort=").append(Const.SORT[content_pager.getCurrentItem()]);
+        param.append("&channel=").append(mChannel);
 
         String url = app.bindToken2Url(param.toString(), false);
         ajaxNormalGet(url, new ResultCallback() {

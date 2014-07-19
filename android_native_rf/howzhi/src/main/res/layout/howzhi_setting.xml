@@ -14,6 +14,8 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -81,36 +83,11 @@
             <LinearLayout
                 android:id="@+id/sch_sel_layout"
                 android:orientation="vertical"
-                android:layout_margin="8dp"
                 android:layout_below="@id/setting_favorite_layout"
                 android:background="@drawable/card_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:id="@+id/setting_entersch_layout"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_centerVertical="true"
-                        android:text="自动进入网校"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <CheckBox
-                        android:background="@drawable/set_check_sel"
-                        android:id="@+id/setting_check"
-                        android:button="@null"
-                        android:focusable="false"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true" />
-                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -179,7 +156,7 @@
 
                     <TextView
                         android:layout_centerVertical="true"
-                        android:text="关于网校"
+                        android:text="关于好知"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 

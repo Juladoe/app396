@@ -15,7 +15,7 @@ public class HowzhiSplashActivity extends SplashActivity{
 
     @Override
     protected void loadConfig() {
-        mSplashMode = JazzyViewPager.TransitionEffect.Accordion;
+        mSplashMode = JazzyViewPager.TransitionEffect.Standard;
     }
 
     @Override

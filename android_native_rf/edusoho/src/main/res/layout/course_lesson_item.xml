@@ -4,12 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/system_window_bg">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <include layout="@layout/course_lesson_item_content" />
-    </ScrollView>
+    <include layout="@layout/course_lesson_item_content" />
 
     <include layout="@layout/loading_layout" />
 </RelativeLayout>

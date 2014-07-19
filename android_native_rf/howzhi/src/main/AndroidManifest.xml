@@ -18,7 +18,7 @@
         android:theme="@style/edusohoTheme">
         <activity
             android:screenOrientation="portrait"
-            android:theme="@style/startTheme"
+            android:theme="@style/howzhiStartTheme"
             android:name=".HowzhiActivity"
             android:label="@string/app_name">
             <intent-filter>

@@ -42,7 +42,9 @@ public class SettingActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        setting_check.setChecked(app.config.startWithSchool);
+        if (setting_check != null) {
+            setting_check.setChecked(app.config.startWithSchool);
+        }
     }
 
     public void setSettingLayout()
@@ -68,13 +70,15 @@ public class SettingActivity extends BaseActivity
 
     private void bindClickListener()
     {
-        setting_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                app.config.startWithSchool = b;
-                app.saveConfig();
-            }
-        });
+        if (setting_check != null) {
+            setting_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    app.config.startWithSchool = b;
+                    app.saveConfig();
+                }
+            });
+        }
 
         aq.id(R.id.setting_user_layout).clicked(new View.OnClickListener() {
             @Override

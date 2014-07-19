@@ -16,6 +16,12 @@ public class CoursePagerAdapter extends PagerAdapter implements
 		mViewList = viewList;
 	}
 
+    public void clear()
+    {
+        mViewList.clear();
+        notifyDataSetChanged();
+    }
+
 	@Override
 	public int getCount() {
 		return mViewList.size();

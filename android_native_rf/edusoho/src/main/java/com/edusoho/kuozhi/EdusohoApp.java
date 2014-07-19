@@ -213,7 +213,7 @@ public class EdusohoApp extends Application{
 
     private void loadConfig()
     {
-        SharedPreferences sp = getSharedPreferences("config", MODE_WORLD_READABLE);
+        SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         config = new AppConfig();
         config.showSplash = sp.getBoolean("showSplash", true);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
@@ -265,7 +265,7 @@ public class EdusohoApp extends Application{
 
     public void saveConfig()
     {
-        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("showSplash", config.showSplash);
         edit.putBoolean("startWithSchool", config.startWithSchool);
