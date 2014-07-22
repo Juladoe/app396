@@ -24,9 +24,14 @@ import android.widget.TextView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.adapter.CourseMenuItemAdapter;
+import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.MessageModel;
+import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseMenu;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.common.CourseColumnActivity;
 import com.edusoho.kuozhi.ui.common.SearchActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
@@ -58,16 +63,14 @@ public class SchoolCourseActivity extends BaseActivity {
 
 	private ViewPager content_pager;
 	private RadioGroup head_radiogroup;
-    private View nav_learn_btn;
-    private View nav_my_btn;
     public Activity mActivity;
     private LayoutInflater mInflater;
-    private TextView mCourseMenuBtn;
-    private String mChannel;
+    private CourseMenu mCourseMenu;
 
     public static final String TAG = "SchoolCourseActivity";
+    public static final String REFRESH_COURSE = "refresh";
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         startSplash();
@@ -79,7 +82,25 @@ public class SchoolCourseActivity extends BaseActivity {
 		changeContentHead(popular);
         app.checkToken();
         app.addTask(TAG, this);
+        addMessageListener();
         updateApp();
+    }
+
+    private void addMessageListener()
+    {
+        app.addMessageListener(REFRESH_COURSE, new CoreEngineMsgCallback() {
+            @Override
+            public void invoke(MessageModel messageModel) {
+                refreshCourse((CourseMenu)messageModel.obj);
+            }
+        });
+    }
+
+    public void refreshCourse(CourseMenu courseMenu)
+    {
+        this.mCourseMenu = courseMenu;
+        loadCoursePager();
+        changeContentHead(popular);
     }
 
     public static void start(Activity context)
@@ -119,84 +140,11 @@ public class SchoolCourseActivity extends BaseActivity {
 							}
 						}
 			}
-				});
+		});
 
-        mCourseMenuLayout = (ViewGroup) findViewById(R.id.course_menu_layout);
-        mCourseMenuBtn = (TextView) findViewById(R.id.course_menu_btn);
-        mCourseMenuBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCourseMenuPopWindow();
-            }
-        });
-
-        bindNavOnClick();
-
-        mChannel = "all";
+        mCourseMenu = new CourseMenu("", "类别", "");
         app.addTask(TAG, this);
 	}
-
-    private boolean mIsShowCourseMenu;
-    private ViewGroup mCourseMenuLayout;
-
-    private static CourseMenu[] COURSE_MENUS = {
-            new CourseMenu("all", "所有"),
-            new CourseMenu("programme", "编程"),
-            new CourseMenu("photography", "摄影"),
-            new CourseMenu("interest", "兴趣"),
-            new CourseMenu("computer", "电脑"),
-            new CourseMenu("language", "语言"),
-            new CourseMenu("life", "生活"),
-            new CourseMenu("career", "职场"),
-            new CourseMenu("culture", "文化"),
-            new CourseMenu("openclass", "公开课"),
-    };
-
-    private void showCourseMenuPopWindow()
-    {
-        AnimatorSet set = new AnimatorSet();
-        EdusohoAnimWrap edusohoAnimWrap = new EdusohoAnimWrap(mCourseMenuLayout);
-
-        int contentHeight = (int) (0.6f * content_pager.getHeight());
-        if (mIsShowCourseMenu) {
-            set.playTogether(
-                    ObjectAnimator.ofInt(edusohoAnimWrap, "height", contentHeight, 0)
-            );
-        } else {
-            if (mCourseMenuLayout.getChildCount() == 0) {
-                View v = mInflater.inflate(R.layout.course_menu_btn_layout, null);
-                GridView gridView = (GridView)v.findViewById(R.id.course_menu_grid);
-
-                CourseMenuItemAdapter arrayAdapter = new CourseMenuItemAdapter(
-                        mContext, COURSE_MENUS, R.layout.course_mentu_item_layout);
-                gridView.setAdapter(arrayAdapter);
-
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int positon, long l) {
-                        CourseMenu courseMenu = (CourseMenu) adapterView.getItemAtPosition(positon);
-                        selectCourseMenu(courseMenu);
-                    }
-                });
-                mCourseMenuLayout.addView(v);
-            }
-
-            set.playTogether(
-                    ObjectAnimator.ofInt(edusohoAnimWrap, "height", 0, contentHeight)
-            );
-        }
-        set.start();
-        mIsShowCourseMenu = ! mIsShowCourseMenu;
-    }
-
-    private void selectCourseMenu(CourseMenu courseMenu)
-    {
-        mChannel = courseMenu.type;
-        mCourseMenuBtn.setText(courseMenu.name);
-        showCourseMenuPopWindow();
-        loadCoursePager();
-        changeContentHead(popular);
-    }
 
     public void setActionBar()
     {
@@ -210,48 +158,6 @@ public class SchoolCourseActivity extends BaseActivity {
                         SearchActivity.start(mActivity);
                     }
                 });
-            }
-        });
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            PopupDialog.createMuilt(
-                    mContext, "退出应用", "确定退出应用?", new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    if (button == PopupDialog.OK) {
-                        app.exit();
-                        finish();
-                    }
-                }
-            }).show();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void bindNavOnClick()
-    {
-        nav_my_btn = findViewById(R.id.nav_my_btn);
-        nav_learn_btn = findViewById(R.id.nav_learn_btn);
-
-        nav_learn_btn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LearningActivity.start(mActivity);
-            }
-        });
-
-        nav_my_btn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity settingActivity = EdusohoApp.runTask.get("SettingActivity");
-                if (settingActivity != null) {
-                    settingActivity.finish();
-                }
-                app.mEngine.runNormalPlugin("SettingActivity", mActivity, null);
             }
         });
     }
@@ -333,8 +239,7 @@ public class SchoolCourseActivity extends BaseActivity {
         StringBuffer param = new StringBuffer(Const.COURSE_LIST);
         param.append("?start=").append(page);
         param.append("&sort=").append(Const.SORT[content_pager.getCurrentItem()]);
-        param.append("&channel=").append(mChannel);
-
+        param.append("&channel=").append(mCourseMenu.type);
         String url = app.bindToken2Url(param.toString(), false);
         ajaxNormalGet(url, new ResultCallback() {
             @Override

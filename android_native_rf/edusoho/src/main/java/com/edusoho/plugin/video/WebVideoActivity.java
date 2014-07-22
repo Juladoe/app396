@@ -9,19 +9,15 @@ import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.EdusohoApp;
@@ -40,10 +36,12 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
 
     private boolean isFullScreen;
     private Context mContext;
+    private boolean isAutoScreen;
     private NormalCallback mNormalCallback;
     private WebVideoWebChromClient mWebVideoWebChromClient;
     private WebView mWebView;
     public static final String MESSAGE_ID = "WebVideoActivity";
+    public static final String AUTO_SCREEN = "auto_screen";
     public static final int MESSAGE_OPEN_FULL = 0001;
     public static final int MESSAGE_CLOSE_FULL = 0002;
 
@@ -105,6 +103,7 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
     {
         Intent dataIntent = getIntent();
         String url = dataIntent.getStringExtra("url");
+        isAutoScreen = dataIntent.getBooleanExtra(WebVideoActivity.AUTO_SCREEN, false);
         if (url == null || "".equals(url)) {
             Toast.makeText(this, "无效播放网址!", Toast.LENGTH_SHORT).show();
             return;
@@ -120,9 +119,13 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
         webSettings.setJavaScriptEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setPluginState(WebSettings.PluginState.ON);
-        webSettings.setAllowFileAccess(true);
         webSettings.setDefaultTextEncodingName("utf-8");
+        webSettings.setAllowFileAccess(true);
 
+        if (isAutoScreen) {
+            webSettings.setUseWideViewPort(true);
+            webSettings.setLoadWithOverviewMode(true);
+        }
         // 4.1以下
         if (Build.VERSION.SDK_INT < 16) {
             webSettings.setUserAgentString(USER_AGENT);
@@ -139,17 +142,21 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
                                 }
                                 finish();
                             }
-                }).show();
+                        }).show();
                 return;
             }
         }
 
         mWebVideoWebChromClient = new WebVideoWebChromClient();
         mWebView.setWebChromeClient(mWebVideoWebChromClient);
-
         mWebView.setWebViewClient(new WebVideoWebViewClient());
-        mWebView.loadDataWithBaseURL(
-                null, url, "text/html", "utf-8", null);
+
+        if (isAutoScreen) {
+            mWebView.loadUrl(url);
+        } else {
+            mWebView.loadDataWithBaseURL(
+                    null, url, "text/html", "utf-8", null);
+        }
     }
 
     /**
@@ -182,7 +189,7 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
 
         @Override
         public void onLoadResource(WebView view, String url) {
-            if (url.matches(".+\\.flv\\??.*")) {
+            if (Build.VERSION.SDK_INT >= 16 && url.matches(".+\\.flv\\??.*")) {
                 Intent intent = new Intent(mContext, EduSohoVideoActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtra("url", url);
@@ -191,13 +198,18 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
                 return;
             }
             super.onLoadResource(view, url);
-            Log.i(null, "load->" + url);
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             Log.i(null, "WebVideoActivity onPageFinished->" + url);
+            if (isAutoScreen) {
+                view.loadUrl("javascript:var videos = document.getElementsByTagName('video');" +
+                        "for (var i=0; i < videos.length; i++){" +
+                        "videos[i].height = '1500';" +
+                        "}");
+            }
             if (url.endsWith("javascript:;")) {
                 if (mNormalCallback != null) {
                     mNormalCallback.success(null);

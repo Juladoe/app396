@@ -15,7 +15,9 @@ import com.edusoho.kuozhi.model.LearnCourse;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class LearnCourseListAdapter extends BaseAdapter {
 
@@ -26,7 +28,7 @@ public class LearnCourseListAdapter extends BaseAdapter {
     public int page = 0;
     public int count = 0;
 
-    public LearnCourseListAdapter(Context context, HashMap<String,LearnCourse> list,
+    public LearnCourseListAdapter(Context context, LinkedHashMap<String,LearnCourse> list,
                                   int resource) {
         mList = new ArrayList<LearnCourse>();
         listAddItem(list);
@@ -39,14 +41,14 @@ public class LearnCourseListAdapter extends BaseAdapter {
      *
      * @param courseItems
      */
-    private void listAddItem(HashMap<String,LearnCourse> courseItems)
+    private void listAddItem(LinkedHashMap<String,LearnCourse> courseItems)
     {
         for (LearnCourse item : courseItems.values()) {
             mList.add(item);
         }
     }
 
-    public void addItem(HashMap<String,LearnCourse> list)
+    public void addItem(LinkedHashMap<String,LearnCourse> list)
     {
         listAddItem(list);
         notifyDataSetChanged();

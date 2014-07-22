@@ -165,4 +165,5 @@
     <color name="viewpager_index_bg_sel_gradinet">#ffffff</color>
 
     <color name="circle_btn_normal">#03b884</color>
+    <color name="course_menu_list_selector">#5503b884</color>
 </resources>

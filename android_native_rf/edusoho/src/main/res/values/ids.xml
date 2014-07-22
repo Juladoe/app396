@@ -29,6 +29,7 @@
 
     <!-- setting ui id -->
     <item type="id" name="setting_user_layout"></item>
+    <item type="id" name="setting_learn_layout"></item>
     <item type="id" name="setting_favorite_layout"></item>
     <item type="id" name="setting_about_layout"></item>
     <item type="id" name="setting_notification_layout"></item>

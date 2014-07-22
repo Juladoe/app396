@@ -3,13 +3,19 @@ package com.edusoho.kuozhi.ui.course;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.CoursePagerAdapter;
 import com.edusoho.kuozhi.adapter.LearnCourseListAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
@@ -22,9 +28,16 @@ import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+
 public class LearningActivity extends BaseActivity {
 
-    private ViewGroup mLearnContent;
+    private ViewPager content_pager;
+    private RadioGroup head_radiogroup;
+    public static final int LEARNING = 0;
+    public static final int LEARNED = 1;
+    private ArrayList<View> mViewList;
+    private int mSelectType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +52,77 @@ public class LearningActivity extends BaseActivity {
         context.startActivityForResult(intent, Const.LEARNING_REQUEST);
     }
 
+    private void selectPage(int index)
+    {
+        ViewGroup parent = (ViewGroup) mViewList.get(index);
+        String tag = parent.getTag().toString();
+        if ("false".equals(tag)) {
+            parent.setTag("true");
+            setPagerContent(parent, false);
+        }
+    }
+
+    private void loadCoursePager() {
+        mViewList = new ArrayList<View>();
+        View pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+        mViewList.add(pager);
+
+        pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+        mViewList.add(pager);
+
+        CoursePagerAdapter adapter = new CoursePagerAdapter(mViewList) {
+            @Override
+            public void onPageSelected(int index) {
+                changeContentHead(index);
+                selectPage(index);
+            }
+        };
+
+        content_pager.setAdapter(adapter);
+        content_pager.setOnPageChangeListener(adapter);
+    }
+
     private void initView() {
-        setBackMode("在学", true, null);
-        mLearnContent = (ViewGroup) findViewById(R.id.learn_content);
+        mSelectType = LEARNING;
+        setBackMode("学习计划", true, null);
         if (app.loginUser == null) {
             LoginActivity.startForResult(mActivity);
             return;
         }
 
-        setPagerContent(mLearnContent, false);
+        head_radiogroup = (RadioGroup) findViewById(R.id.learn_head_radiogroup);
+        content_pager = (ViewPager) findViewById(R.id.content_pager);
+
+        head_radiogroup
+                .setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        int count = group.getChildCount();
+                        for (int i = 0; i < count; i++) {
+                            RadioButton rb = (RadioButton) group.getChildAt(i);
+                            if (rb.getId() == checkedId) {
+                                changeContentHead(i);
+                                break;
+                            }
+                        }
+                    }
+                });
+
+        loadCoursePager();
+        changeContentHead(LEARNING);
+    }
+
+    private void changeContentHead(int index) {
+        mSelectType = index;
+        if (index > head_radiogroup.getChildCount()) {
+            return;
+        }
+        RadioButton rb = (RadioButton) head_radiogroup.getChildAt(index);
+        rb.setChecked(true);
+        content_pager.setCurrentItem(index);
+        if (content_pager.getCurrentItem() == index) {
+            selectPage(index);
+        }
     }
 
     @Override
@@ -55,7 +130,7 @@ public class LearningActivity extends BaseActivity {
         switch (resultCode) {
             case LoginActivity.OK:
                 if (app.loginUser != null) {
-                    setPagerContent(mLearnContent, true);
+                    setPagerContent((ViewGroup)mViewList.get(mSelectType), true);
                 }
                 break;
             case LoginActivity.EXIT:
@@ -63,34 +138,32 @@ public class LearningActivity extends BaseActivity {
                 break;
             case Const.NORMAL_RESULT_REFRESH:
                 if (app.loginUser != null) {
-                    setPagerContent(mLearnContent, true);
+                    setPagerContent((ViewGroup)mViewList.get(mSelectType), true);
                 }
                 break;
         }
     }
 
-    private void setPagerContent(ViewGroup parent, boolean showLoading)
-    {
+    private void setPagerContent(ViewGroup parent, boolean showLoading) {
         parent.removeAllViews();
         View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
         parent.addView(course_content);
-        loadCourse(0, false, showLoading);
+        loadCourse(parent, 0, false, showLoading);
     }
 
-    private void loadCourse(int page, final boolean isAppend, boolean showLoading) {
+    private void loadCourse(
+            final ViewGroup parent, int page, final boolean isAppend, boolean showLoading) {
 
-        final EdusohoListView listView = (EdusohoListView) findViewById(R.id.course_liseview);
-
-        StringBuffer param = new StringBuffer(Const.LEARN);
+        final EdusohoListView listView = (EdusohoListView) parent.findViewById(R.id.course_liseview);
+        StringBuffer param = new StringBuffer(mSelectType == LEARNING ? Const.LEARNING : Const.LEARNED);
         param.append("?start=").append(page);
 
         String url = app.bindToken2Url(param.toString(), true);
-
         ajax(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 //hide loading layout
-                findViewById(R.id.load_layout).setVisibility(View.GONE);
+                parent.findViewById(R.id.load_layout).setVisibility(View.GONE);
                 final LearnCourseResult result = app.gson.fromJson(
                         object, new TypeToken<LearnCourseResult>() {
                 }.getType());
@@ -107,27 +180,30 @@ public class LearningActivity extends BaseActivity {
                     CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView) {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int index, long arg3) {
-                            Course course = (Course) parent.getItemAtPosition(index);
+                            final Course course = (Course) parent.getItemAtPosition(index);
 
-                            Intent intent = new Intent(mContext, CourseInfoActivity.class);
-                            intent.putExtra("courseId", course.id);
-                            intent.putExtra("largePicture", course.largePicture);
-                            intent.putExtra("courseTitle", course.title);
-                            intent.putExtra("currentPage", 0);
-                            startActivityForResult(intent, Const.COURSEINFO_REQUEST);
+                            EdusohoApp.app.mEngine.runNormalPluginForResult(
+                                    "CourseInfoActivity", mActivity, Const.COURSEINFO_REQUEST, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra("courseId", course.id);
+                                    startIntent.putExtra("largePicture", course.largePicture);
+                                    startIntent.putExtra("courseTitle", course.title);
+                                }
+                            });
                         }
                     };
                     listView.setOnItemClickListener(listener);
 
-                    OverScrollView scrollView = (OverScrollView) findViewById(R.id.course_content_scrollview);
+                    OverScrollView scrollView = (OverScrollView) parent.findViewById(R.id.course_content_scrollview);
                     scrollView.setMoveListener(new MoveListener() {
                         @Override
                         public void moveToBottom() {
                             View course_more_btn = findViewById(R.id.course_more_btn);
                             if (course_more_btn.getVisibility() == View.VISIBLE) {
                                 course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
-                                Integer startPage = (Integer) mLearnContent.getTag();
-                                loadCourse(startPage, true, false);
+                                Integer startPage = (Integer) parent.getTag();
+                                loadCourse(parent, startPage, true, false);
                             }
                         }
                     });
@@ -138,10 +214,10 @@ public class LearningActivity extends BaseActivity {
                     listView.initListHeight();
                 }
 
-                View course_more_btn = findViewById(R.id.course_more_btn);
+                View course_more_btn = parent.findViewById(R.id.course_more_btn);
                 int start = result.start + Const.LIMIT;
                 if (start < result.total) {
-                    mLearnContent.setTag(start);
+                    parent.setTag(start);
                     course_more_btn.setVisibility(View.VISIBLE);
                 } else {
                     course_more_btn.setVisibility(View.GONE);
@@ -154,10 +230,10 @@ public class LearningActivity extends BaseActivity {
                 showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
                     @Override
                     public void error(View errorBtn) {
-                        setPagerContent(mLearnContent, false);
+                        setPagerContent(parent, false);
                     }
                 });
-                findViewById(R.id.load_layout).setVisibility(View.GONE);
+                parent.findViewById(R.id.load_layout).setVisibility(View.GONE);
             }
         }, showLoading);
 

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.core;
 
 import android.app.Activity;
+import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,8 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 
 
 import com.edusoho.kuozhi.R;
@@ -99,6 +102,24 @@ public class CoreEngine {
 
             serverActivity.startActivityForResult(startIntent, requestCode);
         }
+    }
+
+    public View runNormalPluginInGroup(
+            String pluginName, ActivityGroup serverActivity, PluginRunCallback callback
+    )
+    {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setClassName(serverActivity, pluginModel.packAge);
+            if (callback != null) {
+                callback.setIntentDate(startIntent);
+            }
+            Window window = serverActivity.getLocalActivityManager()
+                    .startActivity(pluginName, startIntent);
+            return window.getDecorView();
+        }
+        return new View(serverActivity);
     }
 
     public void runNormalPlugin(

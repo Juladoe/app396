@@ -60,6 +60,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CourseLessonActivity extends BaseActivity {
 
@@ -472,7 +474,7 @@ public class CourseLessonActivity extends BaseActivity {
         video_layout.setVisibility(View.GONE);
         audio_layout.setVisibility(View.GONE);
         normal_lesson_content.setVisibility(View.VISIBLE);
-        normal_lesson_content.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
+        normal_lesson_content.loadDataWithBaseURL(null, wrapWebViewContent(content), "text/html", "UTF-8", null);
         normal_lesson_content.loadUrl("javascript:" +
                 "var imgs = document.getElementsByTagName('img');" +
                 "var imageArray = new Array();" +
@@ -483,6 +485,15 @@ public class CourseLessonActivity extends BaseActivity {
                 "function(){" +
                 "window.jsobj.showImages(this.alt, imageArray);" +
                 "})};");
+    }
+
+    private String wrapWebViewContent(String content)
+    {
+        StringBuilder stringBuilder = new StringBuilder("<html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0\"></head><body>");
+        stringBuilder.append(content);
+        stringBuilder.append("</body></html>");
+        return stringBuilder.toString();
     }
 
     /**
@@ -499,8 +510,17 @@ public class CourseLessonActivity extends BaseActivity {
                 content = items.mediaUri;
                 video_layout.setVisibility(View.VISIBLE);
                 normal_lesson_content.setVisibility(View.GONE);
-                playWebVideo(content, true);
+                playWebVideo(content, false);
                 return;
+            case NETEASEOPENCOURSE:
+                video_layout.setVisibility(View.VISIBLE);
+                normal_lesson_content.setVisibility(View.GONE);
+                if (Build.VERSION.SDK_INT < 16) {
+                    playWebVideo(items.swfUrl, true);
+                } else {
+                    playWebVideo(content, true);
+                }
+                break;
             case SELF:
                 normal_lesson_content.setVisibility(View.GONE);
                 video_layout.setVisibility(View.VISIBLE);
@@ -514,20 +534,6 @@ public class CourseLessonActivity extends BaseActivity {
                     normal_lesson_content.loadDataWithBaseURL(null, "客户端暂不支持此功能", "text/html", "UTF-8", null);
                     return;
                 }
-
-                PopupDialog.createMuilt(
-                        mContext,
-                        "课程提示",
-                        "该课程视频不支持客户端播放，是否打开浏览器学习",
-                        new PopupDialog.PopupClickListener() {
-                            @Override
-                            public void onClick(int button) {
-                                if (button == PopupDialog.OK) {
-                                    startDefaultWebBrowser(items.mediaUri);
-                                }
-                            }
-                }).show();
-
         }
     }
 
@@ -561,11 +567,13 @@ public class CourseLessonActivity extends BaseActivity {
         mIsPlayerVideo = false;
     }
 
-    private void playWebVideo(String url, boolean isIframe)
+    private void playWebVideo(String url, boolean isAutoScreen)
     {
         Intent intent = new Intent(mContext, WebVideoActivity.class);
-        if (isIframe) {
-            url = "<iframe height='100%' width='100%' src='" + url + "' frameborder=0 allowfullscreen></iframe>";
+        if (isAutoScreen) {
+            intent.putExtra(WebVideoActivity.AUTO_SCREEN, isAutoScreen);
+        } else {
+            url = "<iframe height='99%' width='100%' src='" + url + "' frameborder=0 allowfullscreen></iframe>";
         }
 
         intent.putExtra("url", url);

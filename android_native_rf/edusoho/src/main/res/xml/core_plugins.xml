@@ -14,5 +14,7 @@
     <plugin name="RegistActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.RegistActivity"></plugin>
     <plugin name="SearchActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.SearchActivity"></plugin>
     <plugin name="SettingActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.SettingActivity"></plugin>
+    <plugin name="CourseColumnActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.CourseColumnActivity"></plugin>
     <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.ui.SplashActivity"></plugin>
+    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.DefaultPageActivity"></plugin>
 </plugins>

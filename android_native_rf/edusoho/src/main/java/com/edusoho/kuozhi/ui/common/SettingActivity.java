@@ -11,8 +11,10 @@ import android.widget.CompoundButton;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.course.FavoriteActivity;
+import com.edusoho.kuozhi.ui.course.LearningActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -27,8 +29,6 @@ import com.edusoho.listener.ResultCallback;
 public class SettingActivity extends BaseActivity
 {
     private CheckBox setting_check;
-    private ViewGroup nav_courselist_btn;
-    private ViewGroup nav_my_btn;
     private AQuery aq;
 
 	@Override
@@ -61,10 +61,6 @@ public class SettingActivity extends BaseActivity
         aq = new AQuery(this);
 
         setting_check = (CheckBox) findViewById(R.id.setting_check);
-        nav_courselist_btn = (ViewGroup) findViewById(R.id.nav_courselist_btn);
-        nav_my_btn = (ViewGroup) findViewById(R.id.nav_my_btn);
-
-        enableBtn(nav_my_btn, false);
         bindClickListener();
 	}
 
@@ -90,19 +86,17 @@ public class SettingActivity extends BaseActivity
             }
         });
 
-        aq.id(R.id.nav_courselist_btn).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent schIntent = new Intent();
-                schIntent.setClass(mContext, SchoolCourseActivity.class);
-                startActivity(schIntent);
-            }
-        });
-
         aq.id(R.id.setting_favorite_layout).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FavoriteActivity.start(mActivity);
+            }
+        });
+
+        aq.id(R.id.setting_learn_layout).clicked(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LearningActivity.start(mActivity);
             }
         });
 
@@ -121,16 +115,6 @@ public class SettingActivity extends BaseActivity
             }
         });
 
-        //启动默认网校
-        aq.id(R.id.nav_courselist_btn).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!app.taskIsRun(SchoolCourseActivity.TAG)) {
-                    SchoolCourseActivity.start(mActivity);
-                }
-                finish();
-            }
-        });
 
         aq.id(R.id.sel_sch_layout).clicked(new View.OnClickListener() {
             @Override
@@ -219,14 +203,6 @@ public class SettingActivity extends BaseActivity
                 }
             }
         });
-    }
-
-    private void enableBtn(ViewGroup vg, boolean isEnable)
-    {
-        int count = vg.getChildCount();
-        for (int i=0; i < count; i++) {
-            vg.getChildAt(i).setEnabled(isEnable);
-        }
     }
 
     @Override

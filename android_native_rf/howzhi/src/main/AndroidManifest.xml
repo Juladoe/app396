@@ -29,7 +29,6 @@
 
         <activity
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"
             android:name=".HowzhiSchoolActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
         <activity

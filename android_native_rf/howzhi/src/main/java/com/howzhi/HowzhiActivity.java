@@ -78,7 +78,7 @@ public class HowzhiActivity extends Activity {
     private void startApp() {
         EdusohoApp app = (EdusohoApp) getApplication();
         if (app.config.startWithSchool && app.defaultSchool != null) {
-            app.mEngine.runNormalPlugin("SchoolCourseActivity", this, null);
+            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
             return;

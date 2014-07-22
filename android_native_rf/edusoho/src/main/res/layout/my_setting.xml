@@ -5,10 +5,7 @@
 
     <include layout="@layout/actionbar_title" />
 
-    <include layout="@layout/nav_setting" />
-
     <ScrollView
-        android:layout_above="@+id/nav_bottom_layout"
         android:layout_below="@id/edusoho_actionbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -56,35 +53,68 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:clickable="true"
+            <LinearLayout
+                android:id="@+id/my_group_layout"
+                android:orientation="vertical"
                 android:layout_margin="8dp"
-                android:id="@id/setting_favorite_layout"
                 android:layout_below="@id/setting_user_layout"
-                android:padding="15dp"
-                android:background="@drawable/set_item_bg"
+                android:background="@drawable/card_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:text="收藏的课程"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <RelativeLayout
+                    android:clickable="true"
+                    android:id="@id/setting_favorite_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.edusoho.kuozhi.view.EduSohoIconView
-                    android:layout_centerVertical="true"
-                    android:text="@string/font_angle_right"
-                    android:layout_alignParentRight="true"
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="收藏课程"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.edusoho.kuozhi.view.EduSohoIconView
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_angle_right"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/setting_line"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
+                    android:layout_height="1px" />
+
+                <RelativeLayout
+                    android:clickable="true"
+                    android:id="@id/setting_learn_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="学习计划"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.edusoho.kuozhi.view.EduSohoIconView
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_angle_right"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/sch_sel_layout"
                 android:orientation="vertical"
                 android:layout_margin="8dp"
-                android:layout_below="@id/setting_favorite_layout"
+                android:layout_below="@id/my_group_layout"
                 android:background="@drawable/card_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

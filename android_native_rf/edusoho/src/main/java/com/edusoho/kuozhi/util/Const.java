@@ -20,25 +20,21 @@ public class Const {
     public static final String CLIENT_CLOSE = "client_closed";
 
     public static final String DB_NAME = "edusoho";
-    public static final String T_CAROUSEL = "edusoho_carousel";
     public static final String INIT_SQL = "create table edusoho_carousel (title varchar(100), image varchar(200), action varchar(50))";
-    public static final String CLEAR_DB = "delete from edusoho_carousel";
 
-    public static final String RECOMMEND_SCHOOL = "recommendschool";
-    public static final String CAROUSEL = "carousel";
-    public static final String SEARCH = "searchschool/";
     public static final String COURSE_LIST = "courses";
     public static final String COURSE = "courses/";
     public static final String COURSELESSON = "courses/{courseId}/items?";
     public static final String CHECKTOKEN = "login_with_token?";
-    public static final String USER = "user/";
     public static final String REGIST = "user_register";
     public static final String LOGIN = "login";
     public static final String ADDCOMMENT = "courses/{courseId}/review_create";
     public static final String COMMENTLIST = "courses/{courseId}/reviews";
     public static final String ABOUT = "about";
+    public static final String COURSE_COLUMN = "course_column";
     public static final String NOTICE = "me/notifications?";
-    public static final String LEARN = "me/learning_courses";
+    public static final String LEARNING = "me/learning_courses";
+    public static final String LEARNED = "me/learned_courses";
     public static final String FAVORITES = "me/favorite_courses";
     public static final String PAYCOURSE = "courses/{courseId}/pay";
     public static final String FAVORITE = "courses/{courseId}/favorite?";

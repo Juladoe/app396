@@ -17,4 +17,5 @@ public class LessonInfo {
     public int mediaId;
     public String mediaSource;
     public String mediaUri;
+    public String swfUrl;
 }

@@ -2,9 +2,10 @@ package com.edusoho.kuozhi.ui;
 
 import android.app.ActivityGroup;
 import android.content.Context;
-import android.content.Intent;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -52,6 +53,19 @@ public class BaseActivity extends ActivityGroup {
     {
         if (EdusohoApp.debug) {
             System.out.println(String.format(format, strs));
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    public void enableBtn(ViewGroup vg, boolean isEnable)
+    {
+        int count = vg.getChildCount();
+        for (int i=0; i < count; i++) {
+            vg.getChildAt(i).setEnabled(isEnable);
         }
     }
 
