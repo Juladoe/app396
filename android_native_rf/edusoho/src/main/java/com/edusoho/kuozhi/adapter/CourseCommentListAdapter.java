@@ -54,6 +54,7 @@ public class CourseCommentListAdapter extends BaseAdapter {
         } else {
             mLoginUserReviewIndex = 0;
         }
+
         mList.add(mLoginUserReviewIndex, review);
         notifyDataSetChanged();
     }

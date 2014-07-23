@@ -17,8 +17,6 @@
         <include layout="@layout/course_tab_bar" />
     </RelativeLayout>
 
-    <include layout="@layout/nav_setting" />
-
     <android.support.v4.view.ViewPager
         android:layout_above="@id/nav_bottom_layout"
         android:id="@+id/content_pager"

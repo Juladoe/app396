@@ -25,8 +25,10 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.core.AppCache;
 import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
+import com.edusoho.kuozhi.core.model.Cache;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
@@ -50,7 +52,6 @@ public class EdusohoApp extends Application{
     public User loginUser;
     public String apiVersion;
     public String schoolHost;
-
     public CoreEngine mEngine;
 
     public String token;
@@ -80,6 +81,23 @@ public class EdusohoApp extends Application{
         if (EdusohoApp.debug) {
             System.out.println(msg);
         }
+    }
+
+    public <T> void queryUrl(String url, Class<T> tClass, final AjaxCallback<T> ajaxCallback)
+    {
+        Cache cache = mEngine.appCache.getCache(url);
+        if (cache == null) {
+            query.ajax(url, tClass, new AjaxCallback<T>(){
+                @Override
+                public void callback(String url, T object, AjaxStatus status) {
+                    mEngine.appCache.setCache(url, object);
+                    ajaxCallback.callback(url, object, status);
+                }
+            });
+            return;
+        }
+
+        mEngine.appCache.cacheCallback(url, cache, ajaxCallback);
     }
 
     public void setParame(String key, Object obj)

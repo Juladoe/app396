@@ -214,6 +214,11 @@ public class SchoolCourseActivity extends BaseActivity {
 	}
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }

@@ -48,6 +48,7 @@ public class CoreEngine {
     private static final String PLUGIN = "plugin";
     private static final String INSTALL = "install";
     private static CoreEngine engine;
+    public AppCache appCache;
 
 
     private ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>> mMessageMap;
@@ -189,6 +190,7 @@ public class CoreEngine {
 
     private void init()
     {
+        appCache = AppCache.getInstance();
         mMessageMap = new ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>>();
         initPluginFromXml();
         try{

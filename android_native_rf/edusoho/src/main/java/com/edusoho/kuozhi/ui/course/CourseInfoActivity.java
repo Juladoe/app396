@@ -134,7 +134,7 @@ public class CourseInfoActivity extends BaseActivity {
                                 loadCourseInfoLayout(mCourseInfoResult);
                                 break;
                             case recommended:
-                                loadCommentLayout(mCourseInfoResult);
+                                loadCommentLayout();
                                 break;
                         }
                         load_layout.setVisibility(View.GONE);
@@ -156,7 +156,7 @@ public class CourseInfoActivity extends BaseActivity {
                 mIsStudent = result.userIsStudent;
                 setPagerData(mCourseInfoResult);
                 loadCourseInfoLayout(result);
-                loadCommentLayout(result);
+                loadCommentLayout();
                 loadLessonLayout(result);
             }
         }, false);
@@ -504,7 +504,7 @@ public class CourseInfoActivity extends BaseActivity {
             commentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showCommentDlg(cllAdapter.loginUserComment, parent);
+                    showCommentDlg(cllAdapter == null ? null :cllAdapter.loginUserComment, parent);
                 }
             });
         } else {
@@ -512,12 +512,9 @@ public class CourseInfoActivity extends BaseActivity {
         }
     }
 
-    /**
-     * @param result
-     */
-    private void loadCommentLayout(CourseInfoResult result) {
+    private void loadCommentLayout() {
         final CourseInfoViewPagerItem pagerItem = mPagerMap.get(recommended);
-        if (pagerItem == null || pagerItem.data == null) {
+        if (pagerItem == null) {
             return;
         }
 
@@ -540,7 +537,7 @@ public class CourseInfoActivity extends BaseActivity {
                         object, new TypeToken<Review>() {
                 }.getType());
                 if (review != null) {
-                    cllAdapter.setLoginUserComment(review);
+                    loadCommentLayout();
                     longToast("评论成功!");
                     callBack.success(null);
                 } else {

@@ -50,9 +50,18 @@ public class CourseMenuItemAdapter extends BaseAdapter{
             view = inflater.inflate(mResouce, null);
         }
         CourseMenu courseMenus = mList.get(index);
-        View course_menu_angle = view.findViewById(R.id.course_menu_angle);
         TextView courseMenuItem = (TextView) view.findViewById(R.id.course_menu_item);
-        courseMenuItem.setText(courseMenus.name);
+        switch (courseMenus.action) {
+            case CourseMenu.ALL:
+                courseMenuItem.setText("全部");
+                break;
+            case CourseMenu.BACK:
+                courseMenuItem.setText("返回");
+                break;
+            default:
+                courseMenuItem.setText(courseMenus.name);
+        }
+
         return view;
     }
 

@@ -56,11 +56,6 @@ public class BaseActivity extends ActivityGroup {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return false;
-    }
-
     public void enableBtn(ViewGroup vg, boolean isEnable)
     {
         int count = vg.getChildCount();
@@ -209,7 +204,7 @@ public class BaseActivity extends ActivityGroup {
     {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.query.ajax(url, String.class, new AjaxCallback<String>(){
+        app.queryUrl(url, String.class, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 if (loading != null) {
@@ -232,7 +227,7 @@ public class BaseActivity extends ActivityGroup {
 
     public void ajaxNormalGet(String url, final ResultCallback rcl)
     {
-        app.query.ajax(url, String.class, new AjaxCallback<String>(){
+        app.queryUrl(url, String.class, new AjaxCallback<String>(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 int code = status.getCode();

@@ -169,7 +169,7 @@ public class LearningActivity extends BaseActivity {
                 }.getType());
 
                 if (result == null || result.data.size() == 0) {
-                    showEmptyLayout("暂无学习中的课程");
+                    showEmptyLayout("暂无课程");
                     return;
                 }
                 if (!isAppend) {

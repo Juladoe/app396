@@ -34,15 +34,12 @@ import java.util.Stack;
 public class CourseColumnActivity extends BaseActivity {
 
     private ListView course_menu_list;
-    private ViewGroup nav_column_btn;
 
     public static final String LOAD_COURSE_BY_COLUMN = "loadCourseByColumn";
     public static final String COLUMN_PARENT = "columnParent";
 
     public static final String TYPE = "type";
-    private ArrayList<CourseMenu> lastData;
-    private String mCourseMenuParent;
-    private Stack<CourseMenu[]> historyStack;
+    private CourseMenu mCurrentCourseMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +50,15 @@ public class CourseColumnActivity extends BaseActivity {
     }
 
     private void initView() {
-        setBackMode("课程分类", false, null);
+        setBackMode("课程分类-所有", false, null);
         Intent dataIntent = getIntent();
-        mCourseMenuParent = dataIntent.hasExtra(COLUMN_PARENT) ? dataIntent.getStringExtra(COLUMN_PARENT) : "";
+        String currentType = dataIntent.hasExtra(COLUMN_PARENT)
+                ? dataIntent.getStringExtra(COLUMN_PARENT) : "";
 
-        nav_column_btn = (ViewGroup) findViewById(R.id.nav_column_btn);
+        mCurrentCourseMenu = new CourseMenu(currentType, "", "true");
+
         course_menu_list = (ListView) findViewById(R.id.course_menu_list);
-        lastData = new ArrayList<CourseMenu>();
-        historyStack = new Stack<CourseMenu[]>();
+        loadContent(mCurrentCourseMenu.type);
     }
 
     private void loadContent(String channel)
@@ -68,21 +66,25 @@ public class CourseColumnActivity extends BaseActivity {
         StringBuilder stringBuilder = new StringBuilder(Const.COURSE_COLUMN);
         stringBuilder.append("?channel=").append(channel);
         String url = app.bindToken2Url(stringBuilder.toString(), false);
-
         ajaxGetString(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                CourseMenu[] result = app.gson.fromJson(
-                        object, new TypeToken<CourseMenu[]>(){}.getType());
+                CourseMenuResult result = app.gson.fromJson(
+                        object, new TypeToken<CourseMenuResult>() {
+                }.getType());
 
                 if (result == null) {
                     return;
                 }
 
-                setListData(createArrayList(result));
-                historyStack.push(result);
+                setListData(result);
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
     }
 
     private ArrayList<CourseMenu> createArrayList(CourseMenu[] courseMenus)
@@ -94,14 +96,17 @@ public class CourseColumnActivity extends BaseActivity {
         return temp;
     }
 
-    private void setListData(ArrayList<CourseMenu> result)
+    private void setListData(CourseMenuResult result)
     {
-        if(!historyStack.empty()) {
-            result.add(0, new CourseMenu(mCourseMenuParent, "返回", "back"));
+        ArrayList<CourseMenu> list = result.data;
+        CourseMenu parent = result.parent;
+        if (parent != null) {
+            list.add(0, new CourseMenu(mCurrentCourseMenu, "false", CourseMenu.ALL));
+            list.add(0, new CourseMenu(parent, "true", CourseMenu.BACK));
         }
 
         CourseMenuItemAdapter arrayAdapter = new CourseMenuItemAdapter(
-                mContext, result, R.layout.course_mentu_item_layout);
+                mContext, list, R.layout.course_mentu_item_layout);
         course_menu_list.setAdapter(arrayAdapter);
 
         course_menu_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,16 +125,9 @@ public class CourseColumnActivity extends BaseActivity {
             return;
         }
 
-        if ("back".equals(courseMenu.parentId)) {
-            historyStack.pop();
-            CourseMenu[] courseMenus = historyStack.size() > 1 ? historyStack.pop() : historyStack.peek();
-            setListData(createArrayList(courseMenus));
-            return;
-        }
-
-        mCourseMenuParent = courseMenu.type;
         if ("true".equals(courseMenu.parentId)) {
-            changeTitle("课程分类－" + courseMenu.name);
+            mCurrentCourseMenu = courseMenu;
+            changeTitle("课程分类-" + mCurrentCourseMenu.name);
             loadContent(courseMenu.type);
             return;
         }
@@ -143,6 +141,5 @@ public class CourseColumnActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadContent(mCourseMenuParent);
     }
 }

@@ -169,6 +169,12 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
         {
             Log.i(null, "html->" + html);
         }
+
+        @JavascriptInterface
+        public void fullscreenCallback()
+        {
+            Log.i(null, "html->");
+        }
     }
 
     private View mView;
@@ -239,11 +245,13 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
 
         @Override
         public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
+            System.out.println("onShowCustomView->1");
             super.onShowCustomView(view, callback);
         }
 
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
+            System.out.println("onShowCustomView->2");
             if (mCustomViewCallback != null) {
                 mCustomViewCallback.onCustomViewHidden();
                 mCustomViewCallback = null;

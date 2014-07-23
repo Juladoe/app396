@@ -73,7 +73,6 @@ public class CourseLessonActivity extends BaseActivity {
     private ViewGroup lesson_status_btn;
     private View lesson_status_layout;
     private View lesson_content;
-    private VideoPlayerCallback mVideoPlayerCallback;
 
     private ViewGroup mLesson_layout;
     private Handler webViewHandler;

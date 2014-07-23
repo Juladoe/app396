@@ -5,8 +5,8 @@
     android:background="@color/system_window_bg"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
 
     <RelativeLayout
         android:id="@+id/course_list_item_layout"

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.common;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -203,6 +204,11 @@ public class SettingActivity extends BaseActivity
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
     }
 
     @Override
