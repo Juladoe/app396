@@ -23,7 +23,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name="com.edusoho.plugin.videoplayer.Videoplayer"
+            android:name=".VideoPlayerActivity"
             android:label="@string/title_activity_videoplayer" >
         </activity>
     </application>

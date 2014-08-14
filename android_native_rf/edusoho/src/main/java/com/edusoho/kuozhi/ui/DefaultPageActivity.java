@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.androidquery.callback.BitmapAjaxCallback;
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 
@@ -18,6 +20,7 @@ import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.ui.common.CourseColumnActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 /**
  * Created by howzhi on 14-7-22.
@@ -26,14 +29,27 @@ public class DefaultPageActivity extends BaseActivity {
 
     private ViewGroup mNavBtnLayout;
     private NavBtnClickListener mNavBtnClickListener;
+    public static final String COLUMN_MENU = "column_menu";
+    public static final String TAG = "DefaultPageActivity";
 
     private ViewGroup viewContent;
+    private SlidingMenu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.defalt_layout);
         initView();
+        removeRunActivity();
+        app.addTask(TAG, this);
+    }
+
+    private void removeRunActivity()
+    {
+        Activity activity = app.runTask.get(TAG);
+        if (activity != null) {
+            activity.finish();
+        }
     }
 
     private void initView() {
@@ -41,6 +57,64 @@ public class DefaultPageActivity extends BaseActivity {
         mNavBtnClickListener = new NavBtnClickListener();
         bindNavOnClick();
         selectNavBtn(R.id.nav_courselist_btn);
+        addListener();
+    }
+
+    protected void setCoulumMenu()
+    {
+        menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.RIGHT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+
+        menu.setBehindWidth(getResources().getDimensionPixelSize(R.dimen.slidingMenuWidth));
+        menu.setShadowDrawable(R.drawable.card_bg);
+
+        menu.setFadeDegree(0.35f);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+
+        View view = app.mEngine.runNormalPluginInGroup("CourseColumnActivity", mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(CourseColumnActivity.COLUMN_PARENT, "");
+            }
+        });
+        menu.setMenu(view);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AQUtility.cleanCacheAsync(this);
+        BitmapAjaxCallback.clearCache();
+    }
+
+    private void addListener()
+    {
+        app.addMessageListener(
+                CourseColumnActivity.LOAD_COURSE_BY_COLUMN, new CoreEngineMsgCallback() {
+            @Override
+            public void invoke(MessageModel obj) {
+                app.sendMessage(SchoolCourseActivity.REFRESH_COURSE, obj);
+                selectNavBtn(R.id.nav_courselist_btn);
+            }
+        });
+
+        app.addMessageListener(
+                COLUMN_MENU, new CoreEngineMsgCallback() {
+            @Override
+            public void invoke(MessageModel obj) {
+                menu.toggle();
+            }
+        });
+
+        app.addMessageListener(
+                CourseColumnActivity.LOAD_COURSE_BY_COLUMN, new CoreEngineMsgCallback() {
+            @Override
+            public void invoke(MessageModel obj) {
+                app.sendMessage(SchoolCourseActivity.REFRESH_COURSE, obj);
+                selectNavBtn(R.id.nav_courselist_btn);
+            }
+        });
     }
 
     @Override
@@ -65,23 +139,6 @@ public class DefaultPageActivity extends BaseActivity {
         View contentView = null;
         if (id == R.id.nav_my_btn) {
             contentView = app.mEngine.runNormalPluginInGroup("SettingActivity", mActivity, null);
-        } else if (id == R.id.nav_column_btn) {
-            app.addMessageListener(
-                    CourseColumnActivity.LOAD_COURSE_BY_COLUMN, new CoreEngineMsgCallback() {
-                        @Override
-                        public void invoke(MessageModel obj) {
-                            app.sendMessage(SchoolCourseActivity.REFRESH_COURSE, obj);
-                            selectNavBtn(R.id.nav_courselist_btn);
-                        }
-            });
-
-            contentView = app.mEngine.runNormalPluginInGroup(
-                    "CourseColumnActivity", mActivity, new PluginRunCallback() {
-                        @Override
-                        public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(CourseColumnActivity.COLUMN_PARENT, "");
-                        }
-            });
         } else if (id == R.id.nav_courselist_btn) {
             contentView = app.mEngine.runNormalPluginInGroup("SchoolCourseActivity", mActivity, null);
         }

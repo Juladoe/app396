@@ -4,6 +4,7 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
 import android.app.Activity;
+import android.util.Log;
 
 public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 
@@ -46,24 +47,25 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 
 	public Boolean usergeneratedexitApp 	 = false;
 	public Boolean playnextfileFromDirectory = true;
+	public Boolean playFromList              = true;
 	String         nextFile 				 = Globals.fileName;
 	public boolean fileInfoUpdated			 = false;
 	private int    loopselected              = 0;
 
 	DemoRenderer(Activity _context)
 	{
-		System.out.println("DemoRenderer instance created:");
+		Log.d(null, "DemoRenderer instance created:");
 		context = _context;
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
 	{
-		System.out.println("Surface Created");
+		Log.d(null, "Surface Created");
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) 
 	{
-		System.out.println("OnSurfaceChanged");
+		Log.d(null, "OnSurfaceChanged");
 		nativeResize(w, h);
 	}
 	
@@ -103,7 +105,7 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 
 	public void onDrawFrame(GL10 gl) 
 	{
-		System.out.println("Inside on DrawFrame");
+		Log.d(null, "Inside on DrawFrame");
 
 		nativeInitJavaCallbacks();
 
@@ -111,9 +113,9 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 		//Thread.currentThread().setPriority((Thread.currentThread().getPriority() + Thread.MIN_PRIORITY)/2);
 		//Thread.currentThread().setPriority(Thread.MAX_PRIORITY-2);
 
-		//System.out.println("Calling playerInit");
-		//System.out.println("Show subtitle:"+FileManager.getshow_subtitle());
-		//System.out.println("Subtitle size:"+FileManager.getSubTitleSize());
+		//Log.d(null, "Calling playerInit");
+		//Log.d(null, "Show subtitle:"+FileManager.getshow_subtitle());
+		//Log.d(null, "Subtitle size:"+FileManager.getSubTitleSize());
 		
 		if (Globals.getNativeVideoPlayer()) {
 			nativeVideoPlayerInit(Globals.dbSubtitleFont, FileManager.getshow_subtitle(), FileManager.getSubTitleSize(), Globals.dbSubtitleEncoding, rgb565);
@@ -122,25 +124,25 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 			nativePlayerInit(Globals.dbSubtitleFont, FileManager.getshow_subtitle(), FileManager.getSubTitleSize(), Globals.dbSubtitleEncoding, rgb565);
 		}
 
-		System.out.println("Player Filename:"+Globals.fileName);
+		Log.d(null, "Player Filename:"+Globals.fileName);
 
 		switch(FileManager.loopOptionForFile(Globals.fileName)){
 		case Globals.PLAY_ONCE:
-			System.out.println("PLAY_ONCE");
+			Log.d(null, "PLAY_ONCE");
 			playnextfileFromDirectory = false;
 			loopselected = 0;
 			break;
 		case Globals.PLAY_ALL:
-			System.out.println("PLAY_ALL");
+			Log.d(null, "PLAY_ALL");
 			loopselected = 0;
 			break;
 		case Globals.REPEAT_ONE:
-			System.out.println("REPEAT_ONE");
+			Log.d(null, "REPEAT_ONE");
 			loopselected=1;
 			playnextfileFromDirectory =false;
 			break;
 		case Globals.REPEAT_ALL:
-			System.out.println("REPEAT_ALL");
+			Log.d(null, "REPEAT_ALL");
 			loopselected=0;
 			break;
 		}
@@ -151,7 +153,7 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 		
 		if (audioFileType == 1) { syncType = AV_SYNC_TYPE_AUDIO; }
 
-		System.out.println("nativePlayerMain(NewPlayer.fileName:"+Globals.fileName+", loopselected:"+loopselected+", audioFileType: "+audioFileType+");");
+		Log.d(null, "nativePlayerMain(NewPlayer.fileName:"+Globals.fileName+", loopselected:"+loopselected+", audioFileType: "+audioFileType+");");
 		////101 - Next button  100 - Previous button  0 - Song played finished
 
 		int retValue;
@@ -197,25 +199,29 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 		//clear the array of already played items 
 		FileManager.alreadyPlayed.clear();
 
-		System.out.println("Returned from NativePlayerMainValue:"+ retValue);
-		while (!usergeneratedexitApp && playnextfileFromDirectory ){
+		Log.d(null, "Returned from NativePlayerMainValue:"+ retValue);
+		while (!usergeneratedexitApp && (playnextfileFromDirectory || playFromList) ){
 			if (retValue == 100){
 				nextFile =	FileManager.getPrevFileInDirectory(nextFile);
 				Globals.fileName = nextFile;
 				fileInfoUpdated = true;
 			}else{
-				nextFile =	FileManager.getNextFileInDirectory(nextFile);
-				Globals.fileName = nextFile;
-				fileInfoUpdated = true;
-
+                if (playFromList) {
+                    nextFile = Globals.getNextFileNameFromList(Globals.currentFileIndex);
+                    Globals.fileName = nextFile;
+                } else {
+                    nextFile =	FileManager.getNextFileInDirectory(nextFile);
+                    Globals.fileName = nextFile;
+                };
+                fileInfoUpdated = true;
 			}
-            System.out.println("next-->" + nextFile);
+            Log.d(null, "next-->" + nextFile);
 			if (nextFile == "") {
-				System.out.println("All files are played in directory:");
+				Log.d(null, "All files are played in directory:");
 				break;
 			}
 
-			System.out.println("nextFile before:"+nextFile);
+			Log.d(null, "nextFile before:"+nextFile);
 			if (FileManager.isAudioFile(nextFile)) {
 				audioFileType = 1; 
 			} else {
@@ -224,7 +230,7 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 			if (audioFileType == 1) { syncType = AV_SYNC_TYPE_AUDIO; }
 
 			
-			System.out.println("nativePlayerMain(fileName:"+nextFile+", loopselected:"+loopselected+", audioFileType: "+audioFileType+");");
+			Log.d(null, "nativePlayerMain(fileName:"+nextFile+", loopselected:"+loopselected+", audioFileType: "+audioFileType+");");
 
 			if (Globals.getNativeVideoPlayer()){
 				if ((audioFileType == 1) && FileManager.isAudioStream(nextFile)){
@@ -263,17 +269,17 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 				}
 			}
 
-			System.out.println("Returned from NativePlayerMainValue:"+ retValue);
+			Log.d(null, "Returned from NativePlayerMainValue:"+ retValue);
 		}
 
-		System.out.println("Exited after nativePlayerMain");
+		Log.d(null, "Exited after nativePlayerMain");
 		if (Globals.getNativeVideoPlayer()) {
 			nativeVideoPlayerExit();
 
 		} else {
 			nativePlayerExit();
 		}
-		System.out.println("Exited after nativePlayerExit");
+		Log.d(null, "Exited after nativePlayerExit");
 
 		context.finish();
 	}
@@ -285,7 +291,7 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 
 	public void exitApp() 
 	{
-		System.out.println("Calling nativeDone");
+		Log.d(null, "Calling nativeDone");
 
 		usergeneratedexitApp = true;
 		nativeDone();
@@ -293,7 +299,7 @@ public class DemoRenderer extends GLSurfaceView_SDL.Renderer {
 
 	public int exitFromNativePlayerView()
 	{
-		System.out.println("Inside exitFromNativePlayerView()");
+		Log.d(null, "Inside exitFromNativePlayerView()");
 		return 1;
 	}
 

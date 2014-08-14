@@ -112,9 +112,10 @@ public class NetSchoolActivity extends BaseActivity {
     {
         SharedPreferences sp = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE);
         Editor editor = sp.edit();
-        Map<String, ?> allHistory = sp.getAll();
-        int size = allHistory != null ? allHistory.size() : 0;
-        editor.putString(size + "", text);
+        if (sp.contains(text)) {
+            return;
+        }
+        editor.putString(text, "");
         editor.commit();
     }
 
@@ -124,7 +125,7 @@ public class NetSchoolActivity extends BaseActivity {
         SharedPreferences sp = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE);
         Map<String, ?> schools = sp.getAll();
         for (String key : schools.keySet()) {
-            mSchoolList.add(schools.get(key).toString());
+            mSchoolList.add(key);
         }
 
         ArrayAdapter adapter = new ArrayAdapter(
@@ -172,7 +173,8 @@ public class NetSchoolActivity extends BaseActivity {
                             }.getType());
 
                             if (schoolResult == null) {
-
+                                PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
+                                return;
                             }
                             School site = schoolResult.site;
                             if (!checkMobileVersion(site.apiVersionRange)) {
@@ -181,6 +183,7 @@ public class NetSchoolActivity extends BaseActivity {
 
                             showSchSplash(site.name, site.splashs);
                             app.setCurrentSchool(site);
+                            app.removeToken();
                         }
                     });
 
@@ -216,50 +219,6 @@ public class NetSchoolActivity extends BaseActivity {
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
         finish();
-    }
-
-    private boolean checkMobileVersion(HashMap<String, String> versionRange)
-    {
-        String min = versionRange.get("min");
-        String max = versionRange.get("max");
-
-        int result = AppUtil.compareVersion(app.apiVersion, min);
-        if (result == Const.LOW_VERSIO) {
-            PopupDialog dlg = PopupDialog.createMuilt(
-                    mContext,
-                    "网校提示",
-                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
-                    new PopupDialog.PopupClickListener() {
-                        @Override
-                        public void onClick(int button) {
-                            if (button == PopupDialog.OK) {
-                                app.updateApp(true, new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
-                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-            dlg.setOkText("立即下载");
-            dlg.show();
-            return false;
-        }
-
-        result = AppUtil.compareVersion(app.apiVersion, max);
-        if (result == Const.HEIGHT_VERSIO) {
-            PopupDialog.createNormal(
-                    mContext,
-                    "网校提示",
-                    "服务器维护中，请稍后再试。"
-            ).show();
-            return false;
-        }
-
-        return true;
     }
 
     private void showQrResultDlg(String result) {

@@ -16,7 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
-
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -33,7 +33,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,6 +67,11 @@ public class CoreEngine {
         }
         callbackList.add(callback);
         mMessageMap.put(msgId, callbackList);
+    }
+
+    public void removeMsg(String msgId)
+    {
+        mMessageMap.remove(msgId);
     }
 
     public void sendMsg(String msgId, MessageModel messageModel)
@@ -116,6 +120,7 @@ public class CoreEngine {
             if (callback != null) {
                 callback.setIntentDate(startIntent);
             }
+
             Window window = serverActivity.getLocalActivityManager()
                     .startActivity(pluginName, startIntent);
             return window.getDecorView();

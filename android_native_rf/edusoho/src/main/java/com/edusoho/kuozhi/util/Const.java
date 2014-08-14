@@ -22,7 +22,9 @@ public class Const {
     public static final String DB_NAME = "edusoho";
     public static final String INIT_SQL = "create table edusoho_carousel (title varchar(100), image varchar(200), action varchar(50))";
 
-    public static final String COURSE_LIST = "courses";
+    public static final String SEARCH = "search";
+    public static final String REGIST_DEVICE = "regist_device";
+    public static final String COURSES = "courses";
     public static final String COURSE = "courses/";
     public static final String COURSELESSON = "courses/{courseId}/items?";
     public static final String CHECKTOKEN = "login_with_token?";
@@ -46,6 +48,8 @@ public class Const {
     public static final String LOGOUT = "logout?";
     public static final String LESSONITEM = "courses//lessons/?";
     public static final String LEARNSTATUS = "courses/{courseId}/lessons/{lessonId}/learn_status";
+    public static final String DEFAULT_UPDATE_URL = "http://open.edusoho.com/mobile/meta.php";
+    public static final String MOBILE_SCHOOL_LOGIN = "mobile_school_login";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;

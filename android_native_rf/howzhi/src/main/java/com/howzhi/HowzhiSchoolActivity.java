@@ -6,9 +6,12 @@ import android.view.View;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
+import com.edusoho.kuozhi.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.ui.common.CourseColumnActivity;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.ui.common.SearchActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
@@ -37,9 +40,7 @@ public class HowzhiSchoolActivity extends SchoolCourseActivity {
                 sch_qr_search_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent qrIntent = new Intent();
-                        qrIntent.setClass(mContext, CaptureActivity.class);
-                        startActivityForResult(qrIntent, QrSchoolActivity.REQUEST_QR);
+                        app.sendMessage(DefaultPageActivity.COLUMN_MENU, null);
                     }
                 });
 
@@ -47,7 +48,7 @@ public class HowzhiSchoolActivity extends SchoolCourseActivity {
                 sch_search_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        SearchActivity.start(mActivity);
+                        app.mEngine.runNormalPlugin("SearchActivity", mActivity, null);
                     }
                 });
             }
@@ -113,54 +114,36 @@ public class HowzhiSchoolActivity extends SchoolCourseActivity {
         });
     }
 
-    private boolean checkMobileVersion(HashMap<String, String> versionRange)
-    {
-        String min = versionRange.get("min");
-        String max = versionRange.get("max");
-
-        int result = AppUtil.compareVersion(app.apiVersion, min);
-        if (result == Const.LOW_VERSIO) {
-            PopupDialog dlg = PopupDialog.createMuilt(
-                    mContext,
-                    "网校提示",
-                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
-                    new PopupDialog.PopupClickListener() {
-                        @Override
-                        public void onClick(int button) {
-                            if (button == PopupDialog.OK) {
-                                app.updateApp(true, new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
-                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-            dlg.setOkText("立即下载");
-            dlg.show();
-            return false;
-        }
-
-        result = AppUtil.compareVersion(app.apiVersion, max);
-        if (result == Const.HEIGHT_VERSIO) {
-            PopupDialog.createNormal(
-                    mContext,
-                    "网校提示",
-                    "服务器维护中，请稍后再试。"
-            ).show();
-            return false;
-        }
-
-        return true;
-    }
-
     private void showSchSplash(String schoolName, String[] splashs)
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         finish();
+    }
+
+    @Override
+    protected void updateApp()
+    {
+        app.updateApp(app.schoolHost + "app_version", false, new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                final AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
+                String newVersion = appUpdateInfo.androidVersion;
+                int result = AppUtil.compareVersion(app.getApkVersion(), newVersion);
+                if (result == Const.LOW_VERSIO) {
+                    PopupDialog.createMuilt(
+                            mActivity,
+                            "版本更新",
+                            "当前有新版本，是否更新?", new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            if (button == PopupDialog.OK) {
+                                app.startUpdateWebView(appUpdateInfo.updateUrl);
+                            }
+                        }
+                    }).show();
+                }
+            }
+        });
     }
 }

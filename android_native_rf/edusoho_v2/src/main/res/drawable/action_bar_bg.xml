@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape>
+            <size android:height="48dp"/>
+            <stroke android:width="0dp"/>
+            <!-- shape的颜色，支持渐变 -->
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/action_bar_bg"
+                android:centerY="0.45"
+                android:endColor="@color/action_bar_bg"
+                android:startColor="@color/action_bar_bg" />
+
+        </shape>
+    </item>
+
+    <item android:top="46dp">
+        <shape android:shape="line">
+            <size android:height="2dp" />
+            <stroke
+                android:dashWidth="4px"
+                android:color="@color/action_bar_bg_stroke" />
+        </shape>
+    </item>
+</layer-list>

@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -15,7 +16,9 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CoursePagerAdapter;
 import com.edusoho.kuozhi.adapter.LearnCourseListAdapter;
+import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
@@ -27,23 +30,40 @@ import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.util.ArrayList;
 
 public class LearningActivity extends BaseActivity {
 
-    private ViewPager content_pager;
-    private RadioGroup head_radiogroup;
+    protected ViewPager content_pager;
+    protected RadioGroup head_radiogroup;
     public static final int LEARNING = 0;
     public static final int LEARNED = 1;
-    private ArrayList<View> mViewList;
-    private int mSelectType;
+    protected ArrayList<View> mViewList;
+    protected int mSelectType;
+    protected View mMenuLoadBtn;
+    protected LearnCourseListAdapter mAdapter;
+    public static final String REFRESH_DATA = "learn_refresh_data";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.learn_layout);
         initView();
+        app.addMessageListener(REFRESH_DATA, new CoreEngineMsgCallback() {
+            @Override
+            public void invoke(MessageModel messageModel) {
+                if (mAdapter != null) {
+                    mAdapter.refreshItem(messageModel.arg, (Boolean) messageModel.obj);
+                }
+            }
+        });
+        hideTabBar();
+    }
+
+    protected void hideTabBar(){
     }
 
     public static void start(Activity context) {
@@ -52,7 +72,7 @@ public class LearningActivity extends BaseActivity {
         context.startActivityForResult(intent, Const.LEARNING_REQUEST);
     }
 
-    private void selectPage(int index)
+    protected void selectPage(int index)
     {
         ViewGroup parent = (ViewGroup) mViewList.get(index);
         String tag = parent.getTag().toString();
@@ -62,12 +82,16 @@ public class LearningActivity extends BaseActivity {
         }
     }
 
-    private void loadCoursePager() {
+    protected void loadCoursePager() {
         mViewList = new ArrayList<View>();
-        View pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+        ViewGroup pager = (ViewGroup)getLayoutInflater().inflate(R.layout.latest_course, null);
+        View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
+        pager.addView(course_content);
         mViewList.add(pager);
 
-        pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+        pager = (ViewGroup)getLayoutInflater().inflate(R.layout.latest_course, null);
+        course_content = getLayoutInflater().inflate(R.layout.course_content, null);
+        pager.addView(course_content);
         mViewList.add(pager);
 
         CoursePagerAdapter adapter = new CoursePagerAdapter(mViewList) {
@@ -85,10 +109,13 @@ public class LearningActivity extends BaseActivity {
     private void initView() {
         mSelectType = LEARNING;
         setBackMode("学习计划", true, null);
-        if (app.loginUser == null) {
-            LoginActivity.startForResult(mActivity);
-            return;
-        }
+        setMenu(R.layout.menu_load_btn, new MenuListener() {
+            @Override
+            public void bind(View menuView) {
+                mMenuLoadBtn = menuView.findViewById(R.id.menu_load_btn);
+                mMenuLoadBtn.setVisibility(View.GONE);
+            }
+        });
 
         head_radiogroup = (RadioGroup) findViewById(R.id.learn_head_radiogroup);
         content_pager = (ViewPager) findViewById(R.id.content_pager);
@@ -108,11 +135,15 @@ public class LearningActivity extends BaseActivity {
                     }
                 });
 
+        if (app.loginUser == null) {
+            LoginActivity.startForResult(mActivity);
+            return;
+        }
         loadCoursePager();
         changeContentHead(LEARNING);
     }
 
-    private void changeContentHead(int index) {
+    protected void changeContentHead(int index) {
         mSelectType = index;
         if (index > head_radiogroup.getChildCount()) {
             return;
@@ -130,54 +161,58 @@ public class LearningActivity extends BaseActivity {
         switch (resultCode) {
             case LoginActivity.OK:
                 if (app.loginUser != null) {
-                    setPagerContent((ViewGroup)mViewList.get(mSelectType), true);
+                    mMenuLoadBtn.setVisibility(View.VISIBLE);
+                    setPagerContent((ViewGroup) mViewList.get(mSelectType), false);
                 }
                 break;
             case LoginActivity.EXIT:
                 finish();
                 break;
             case Const.NORMAL_RESULT_REFRESH:
-                if (app.loginUser != null) {
-                    setPagerContent((ViewGroup)mViewList.get(mSelectType), true);
-                }
                 break;
         }
     }
 
-    private void setPagerContent(ViewGroup parent, boolean showLoading) {
-        parent.removeAllViews();
-        View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
-        parent.addView(course_content);
+    protected void setPagerContent(ViewGroup parent, boolean showLoading) {
         loadCourse(parent, 0, false, showLoading);
     }
 
-    private void loadCourse(
-            final ViewGroup parent, int page, final boolean isAppend, boolean showLoading) {
+    protected void loadCourse(
+            final ViewGroup parent, int page, final boolean isAppend, final boolean showLoading) {
 
-        final EdusohoListView listView = (EdusohoListView) parent.findViewById(R.id.course_liseview);
+        final PullToRefreshListView pullToRefreshListView = (PullToRefreshListView) parent.findViewById(R.id.course_liseview);
+        pullToRefreshListView.setMode(PullToRefreshBase.Mode.BOTH);
+        final ListView listView = pullToRefreshListView.getRefreshableView();
+
         StringBuffer param = new StringBuffer(mSelectType == LEARNING ? Const.LEARNING : Const.LEARNED);
         param.append("?start=").append(page);
-
         String url = app.bindToken2Url(param.toString(), true);
         ajax(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 //hide loading layout
+                mMenuLoadBtn.setVisibility(View.GONE);
                 parent.findViewById(R.id.load_layout).setVisibility(View.GONE);
                 final LearnCourseResult result = app.gson.fromJson(
                         object, new TypeToken<LearnCourseResult>() {
                 }.getType());
 
                 if (result == null || result.data.size() == 0) {
+                    if (isAppend) {
+                        longToast("没有更多收藏课程!");
+                        pullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                        return;
+                    }
                     showEmptyLayout("暂无课程");
                     return;
                 }
+
                 if (!isAppend) {
-                    LearnCourseListAdapter adapter = new LearnCourseListAdapter(
+                    mAdapter = new LearnCourseListAdapter(
                             mContext, result.data, R.layout.learn_list_item);
 
-                    listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView) {
+                    listView.setAdapter(mAdapter);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity) {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int index, long arg3) {
                             final Course course = (Course) parent.getItemAtPosition(index);
@@ -189,44 +224,41 @@ public class LearningActivity extends BaseActivity {
                                     startIntent.putExtra("courseId", course.id);
                                     startIntent.putExtra("largePicture", course.largePicture);
                                     startIntent.putExtra("courseTitle", course.title);
+                                    startIntent.putExtra("currentPage", 0);
                                 }
                             });
                         }
                     };
                     listView.setOnItemClickListener(listener);
 
-                    OverScrollView scrollView = (OverScrollView) parent.findViewById(R.id.course_content_scrollview);
-                    scrollView.setMoveListener(new MoveListener() {
+                    pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
                         @Override
-                        public void moveToBottom() {
-                            View course_more_btn = findViewById(R.id.course_more_btn);
-                            if (course_more_btn.getVisibility() == View.VISIBLE) {
-                                course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
-                                Integer startPage = (Integer) parent.getTag();
-                                loadCourse(parent, startPage, true, false);
-                            }
+                        public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                            loadCourse(parent, 0, false, false);
+                        }
+
+                        @Override
+                        public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                            Integer startPage = (Integer) parent.getTag();
+                            loadCourse(parent, startPage, true, false);
                         }
                     });
 
                 } else {
-                    LearnCourseListAdapter adapter = (LearnCourseListAdapter) listView.getAdapter();
-                    adapter.addItem(result.data);
-                    listView.initListHeight();
+                    mAdapter.addItem(result.data);
                 }
 
-                View course_more_btn = parent.findViewById(R.id.course_more_btn);
+                pullToRefreshListView.onRefreshComplete();
                 int start = result.start + Const.LIMIT;
                 if (start < result.total) {
                     parent.setTag(start);
-                    course_more_btn.setVisibility(View.VISIBLE);
                 } else {
-                    course_more_btn.setVisibility(View.GONE);
+                    pullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
             }
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
-                findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
                 showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
                     @Override
                     public void error(View errorBtn) {

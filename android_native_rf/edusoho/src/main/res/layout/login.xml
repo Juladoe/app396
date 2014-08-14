@@ -1,20 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <include layout="@layout/actionbar_title" />
 
     <RelativeLayout
-        android:padding="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="10dp"
         android:layout_below="@id/edusoho_actionbar"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.edusoho.kuozhi.view.plugin.CircularImageView
+            android:scaleType="centerCrop"
+            android:clickable="true"
+            android:layout_margin="8dp"
+            android:padding="1dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/qr_login_btn"
+            android:src="@drawable/login_qr_btn_sel"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <TextView
+            android:textColor="@color/regit_text"
+            android:layout_below="@id/qr_login_btn"
+            android:layout_centerHorizontal="true"
+            android:text="扫一扫登录"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <RelativeLayout
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="60dp"
+            android:layout_below="@id/qr_login_btn"
+            android:layout_marginBottom="15dp"
             android:id="@+id/input_email_layout"
             android:padding="10dp"
             android:background="@drawable/card_bg"
@@ -35,13 +58,13 @@
                 android:layout_centerVertical="true"
                 android:background="@null"
                 android:paddingLeft="30dp"
-                android:hint="输入Email地址"
+                android:hint="输入Email地址/用户名"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="15dp"
             android:id="@+id/input_pass_layout"
             android:layout_below="@id/input_email_layout"
             android:padding="10dp"
@@ -78,6 +101,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_pass_layout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/regist_btn"
+            android:padding="10dp"
+            android:textColor="@color/regit_text"
+            android:text="注  册"
+            android:background="@drawable/regist_btn_sel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_btn"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>

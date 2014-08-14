@@ -1,5 +1,8 @@
 package com.howzhi;
 
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+
 import com.edusoho.kuozhi.ui.common.SettingActivity;
 
 /**

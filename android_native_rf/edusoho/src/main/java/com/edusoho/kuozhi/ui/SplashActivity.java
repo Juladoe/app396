@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.edusoho.kuozhi.R;
@@ -8,6 +9,8 @@ import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.OutlineContainer;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -99,11 +103,18 @@ public class SplashActivity extends Activity {
     private RelativeLayout createLastSplashView(int imageId)
     {
         RelativeLayout relativeLayout = new RelativeLayout(this);
-        relativeLayout.setLayoutParams(new RelativeLayout.LayoutParams(
+        relativeLayout.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        relativeLayout.setBackgroundColor(Color.WHITE);
 
         ImageView imageView = new ImageView(this);
-        imageView.setImageResource(imageId);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        imageView.setLayoutParams(layoutParams);
+
+        Bitmap bitmap = getBitmap(imageId);
+
+        imageView.setImageBitmap(bitmap);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         relativeLayout.addView(imageView);
 
@@ -118,6 +129,23 @@ public class SplashActivity extends Activity {
         return relativeLayout;
     }
 
+    private Bitmap getBitmap(int imageId)
+    {
+        BitmapFactory.Options opts=new BitmapFactory.Options();
+        opts.inPreferredConfig = Bitmap.Config.RGB_565;
+        opts.inPurgeable = true;
+        opts.inInputShareable = true;
+        InputStream inputStream = getResources().openRawResource(imageId);
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, opts);
+
+        try {
+            inputStream.close();
+        } catch (Exception e){
+            //
+        }
+        return bitmap;
+    }
+
     protected ArrayList<View> createSplashList(int[] imageIds)
     {
         ArrayList<View> mViewList = new ArrayList<View>();
@@ -129,7 +157,9 @@ public class SplashActivity extends Activity {
                 continue;
             }
             ImageView imageView = new ImageView(this);
-            imageView.setImageResource(imageIds[i]);
+            Bitmap bitmap = getBitmap(imageIds[i]);
+            imageView.setImageBitmap(bitmap);
+
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             mViewList.add(imageView);
         }
@@ -145,6 +175,7 @@ public class SplashActivity extends Activity {
     private class SplashAdapter extends PagerAdapter
     {
         private ArrayList<View> mViewList;
+
         public SplashAdapter(ArrayList<View> viewList)
         {
             this.mViewList = viewList;

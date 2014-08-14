@@ -37,7 +37,6 @@ public class QrSchoolActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startSplash();
         setContentView(R.layout.qrsch_layout);
         initView();
         app.addTask("QrSchoolActivity", this);
@@ -124,7 +123,9 @@ public class QrSchoolActivity extends BaseActivity {
 
                     showSchSplash(site.name, site.splashs);
 
-                    if (schoolResult.token != null && ! "".equals(schoolResult.token)) {
+                    if (schoolResult.token == null || "".equals(schoolResult.token)) {
+                        app.removeToken();
+                    } else {
                         app.saveToken(schoolResult);
                     }
                     app.setCurrentSchool(site);
@@ -140,11 +141,10 @@ public class QrSchoolActivity extends BaseActivity {
     private void showSchSplash(String schoolName, String[] splashs)
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         finish();
     }
 
-    private boolean checkMobileVersion(HashMap<String, String> versionRange)
+    public boolean checkMobileVersion(HashMap<String, String> versionRange)
     {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
@@ -159,7 +159,7 @@ public class QrSchoolActivity extends BaseActivity {
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                app.updateApp(true, new NormalCallback() {
+                                app.updateApp(Const.DEFAULT_UPDATE_URL, true, new NormalCallback() {
                                     @Override
                                     public void success(Object obj) {
                                         AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;

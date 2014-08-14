@@ -5,4 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="kuozhiStartTheme" parent="edusohoTheme">
+        <item name="android:windowBackground">@drawable/app_splah_1280_800</item>
+        <item name="android:textColor">@color/system_text</item>
+    </style>
 </resources>

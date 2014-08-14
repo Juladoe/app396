@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugins>
+    <plugin name="SchoolCourseActivity" version="1.0" package="com.custom.CustomSchoolActivity"></plugin>
+    <plugin name="SettingActivity" version="1.0" package="com.custom.CustomSettingActivity"></plugin>
+    <plugin name="SplashActivity" version="1.0" package="com.custom.CustomSplashActivity"></plugin>
+</plugins>

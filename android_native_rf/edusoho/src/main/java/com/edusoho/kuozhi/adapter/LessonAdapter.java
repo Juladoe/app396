@@ -23,6 +23,7 @@ public class LessonAdapter extends BaseAdapter {
     private boolean isDelMode = false;
     private ArrayList<LessonItem> mList;
     private int mCurrentLessonId;
+    private int mCurrentIndex;
     private SelectLessonCallback mSelectCB;
     private boolean isFirst = true;
 
@@ -37,6 +38,7 @@ public class LessonAdapter extends BaseAdapter {
         mCurrentLessonId = currentLessonId;
         mList = new ArrayList<LessonItem>();
         addLessonItem(items);
+        mCurrentIndex = getCurrentIndex(mCurrentLessonId);
         mContext = context;
         mResouce = resource;
         inflater = LayoutInflater.from(context);
@@ -46,6 +48,17 @@ public class LessonAdapter extends BaseAdapter {
         for (String key : items.keySet()) {
             mList.add(items.get(key));
         }
+    }
+
+    private int getCurrentIndex(int lessonId)
+    {
+        for (int i=0; i < mList.size(); i++) {
+            LessonItem item = mList.get(i);
+            if (item.id == lessonId) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -147,7 +160,25 @@ public class LessonAdapter extends BaseAdapter {
 
     public void setmCurrentLessonId(int lessonId) {
         this.mCurrentLessonId = lessonId;
+        mCurrentIndex = getCurrentIndex(lessonId);
         notifyDataSetInvalidated();
+    }
+
+    public LessonItem getNextLessonItem()
+    {
+        mCurrentIndex = mCurrentIndex + 1;
+        if (mCurrentIndex < mList.size()) {
+            LessonItem lessonItem = mList.get(mCurrentIndex);
+            if (lessonItem == null) {
+                return null;
+            }
+            LessonItem.ItemType itemType = LessonItem.ItemType.cover(lessonItem.itemType);
+            if (itemType == LessonItem.ItemType.CHAPTER) {
+                return getNextLessonItem();
+            }
+            return lessonItem;
+        }
+        return null;
     }
 
     public static interface SelectLessonCallback {

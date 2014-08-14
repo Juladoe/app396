@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -25,12 +26,13 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseCommentListAdapter;
 import com.edusoho.kuozhi.adapter.CourseLessonListAdapter;
 import com.edusoho.kuozhi.adapter.CoursePagerAdapter;
-import com.edusoho.kuozhi.adapter.LearnCourseListAdapter;
-import com.edusoho.kuozhi.entity.CommentResult;
+import com.edusoho.kuozhi.adapter.LessonPinnedAdapter;
+import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.entity.CourseInfoViewPagerItem;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseInfoResult;
-import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.ReviewResult;
@@ -41,17 +43,17 @@ import com.edusoho.kuozhi.ui.lesson.CourseLessonActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.OverScrollView;
+import com.edusoho.kuozhi.view.EdusohoListView;
 import com.edusoho.kuozhi.view.dialog.CommentPopupDialog;
 import com.edusoho.kuozhi.view.EduSohoList;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.handler.ProgressBarHandler;
-import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.hb.views.PinnedSectionListView;
 
 /**
  * @author howzhi
@@ -72,9 +74,11 @@ public class CourseInfoActivity extends BaseActivity {
 
     private Handler UIRefreshHandler;
 
-    private static final int latest = 0;
-    private static final int popular = 1;
-    private static final int recommended = 2;
+    private static final int lessons = 0;
+    private static final int info = 1;
+    private static final int comment = 2;
+    private static final String VIEW_LESSON = "view_lesson";
+    private static final int PAGER_LOAD_SUCCESS = 0001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +91,7 @@ public class CourseInfoActivity extends BaseActivity {
         app.addTask("CourseInfoActivity", this);
     }
 
-    public static void start(Activity context)
-    {
+    public static void start(Activity context) {
         Intent intent = new Intent();
         intent.setClass(context, CourseInfoActivity.class);
         context.startActivityForResult(intent, Const.COURSEINFO_REQUEST);
@@ -96,7 +99,7 @@ public class CourseInfoActivity extends BaseActivity {
 
     /**
      * 载入课程页面
-    */
+     */
     private void loadCourseInfoPager() {
         final ArrayList<View> mViewList = new ArrayList<View>();
         View pager = getLayoutInflater().inflate(R.layout.course_lesson_item, null);
@@ -114,40 +117,46 @@ public class CourseInfoActivity extends BaseActivity {
             public void onPageSelected(final int index) {
                 changeContentHead(index);
                 final View parent = mViewList.get(index);
-                final View load_layout = parent.findViewById(R.id.load_layout);
                 if (!mPagerMap.containsKey(index)) {
                     CourseInfoViewPagerItem pagerItem = new CourseInfoViewPagerItem();
                     pagerItem.pager = parent;
                     pagerItem.data = mCourseInfoResult;
                     mPagerMap.put(index, pagerItem);
-                    load_layout.setVisibility(View.VISIBLE);
                 }
 
-                UIRefreshHandler.postAtTime(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (index) {
-                            case latest:
+                final View load_layout;
+                switch (index) {
+                    case lessons:
+                        load_layout = parent.findViewById(R.id.load_layout);
+                        UIRefreshHandler.postAtTime(new Runnable() {
+                            @Override
+                            public void run() {
                                 loadLessonLayout(mCourseInfoResult);
-                                break;
-                            case popular:
+                                load_layout.setVisibility(View.GONE);
+                            }
+                        }, android.os.SystemClock.uptimeMillis() + 500);
+                        break;
+                    case info:
+                        load_layout = parent.findViewById(R.id.load_layout);
+                        UIRefreshHandler.postAtTime(new Runnable() {
+                            @Override
+                            public void run() {
                                 loadCourseInfoLayout(mCourseInfoResult);
-                                break;
-                            case recommended:
-                                loadCommentLayout();
-                                break;
-                        }
-                        load_layout.setVisibility(View.GONE);
-                    }
-                }, android.os.SystemClock.uptimeMillis() + 500);
+                                load_layout.setVisibility(View.GONE);
+                            }
+                        }, android.os.SystemClock.uptimeMillis() + 500);
+                        break;
+                    case comment:
+                        loadCommentLayout(mCourseInfoResult);
+                        break;
+                }
             }
         };
         content_pager.setAdapter(adapter);
         content_pager.setOnPageChangeListener(adapter);
     }
 
-    private void refresh()
-    {
+    private void refresh() {
         getCourseInfoFromNet(mCourseId, new NormalCallback<CourseInfoResult>() {
             @Override
             public void success(CourseInfoResult result) {
@@ -156,18 +165,16 @@ public class CourseInfoActivity extends BaseActivity {
                 mIsStudent = result.userIsStudent;
                 setPagerData(mCourseInfoResult);
                 loadCourseInfoLayout(result);
-                loadCommentLayout();
+                loadCommentLayout(result);
                 loadLessonLayout(result);
             }
         }, false);
     }
 
     /**
-     *
      * @param courseInfoResult
      */
-    private void setPagerData(CourseInfoResult courseInfoResult)
-    {
+    private void setPagerData(CourseInfoResult courseInfoResult) {
         for (Integer index : mPagerMap.keySet()) {
             CourseInfoViewPagerItem pagerItem = mPagerMap.get(index);
             pagerItem.data = courseInfoResult;
@@ -176,6 +183,7 @@ public class CourseInfoActivity extends BaseActivity {
 
     /**
      * 退出课程
+     *
      * @param courseId
      */
     private void exitCourse(final String courseId) {
@@ -208,7 +216,8 @@ public class CourseInfoActivity extends BaseActivity {
                             }
                         }
                     });
-                };
+                }
+                ;
             }
         }).show();
     }
@@ -258,7 +267,7 @@ public class CourseInfoActivity extends BaseActivity {
      * @param result
      */
     private void loadCourseInfoLayout(CourseInfoResult result) {
-        CourseInfoViewPagerItem pagerItem = mPagerMap.get(popular);
+        CourseInfoViewPagerItem pagerItem = mPagerMap.get(info);
         if (pagerItem == null || pagerItem.data == null) {
             return;
         }
@@ -365,12 +374,15 @@ public class CourseInfoActivity extends BaseActivity {
                         mCourseInfoResult.userIsStudent = true;
                         setPagerData(mCourseInfoResult);
                         setLearnBtnStatus(true, mCourseInfo);
+                        content_pager.setCurrentItem(lessons);
+                        app.sendMessage(VIEW_LESSON, null);
+                        app.delMessageListener(VIEW_LESSON);
                     } else {
                         String payurl = result.get("payUrl");
                         AlipayActivity.startForResult(mActivity, payurl);
                     }
 
-                } else if(Const.RESULT_ERROR.equals(status)) {
+                } else if (Const.RESULT_ERROR.equals(status)) {
                     String message = result.get("message");
 
                     PopupDialog.createNormal(
@@ -407,9 +419,8 @@ public class CourseInfoActivity extends BaseActivity {
         emptyLayout.inflate();
     }
 
-    private void setLessonItemData(EduSohoList listView, CourseInfoResult result)
-    {
-        CourseLessonListAdapter adapter = new CourseLessonListAdapter(
+    private void setLessonItemData(PinnedSectionListView listView, CourseInfoResult result) {
+        LessonPinnedAdapter adapter = new LessonPinnedAdapter(
                 mContext,
                 result.items,
                 result.userLearns,
@@ -419,14 +430,13 @@ public class CourseInfoActivity extends BaseActivity {
         listView.setAdapter(adapter);
     }
 
-    private EduSohoList mLessonListView;
+    private PinnedSectionListView mLessonListView;
 
     /**
-     *
      * @param result
      */
     private void loadLessonLayout(CourseInfoResult result) {
-        CourseInfoViewPagerItem pagerItem = mPagerMap.get(latest);
+        CourseInfoViewPagerItem pagerItem = mPagerMap.get(lessons);
         if (pagerItem == null || pagerItem.data == null) {
             return;
         }
@@ -436,32 +446,47 @@ public class CourseInfoActivity extends BaseActivity {
             return;
         }
 
-        mLessonListView = (EduSohoList) pagerItem.pager.findViewById(R.id.course_lesson_listview);
+        mLessonListView = (PinnedSectionListView) pagerItem.pager.findViewById(R.id.course_lesson_listview);
         setLessonItemData(mLessonListView, result);
 
-        mLessonListView.setOnItemClickListener(new EduSohoList.EduSohoItemClickListener() {
+        mLessonListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(Object item, int index, View view) {
-
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final LessonItem lesson = (LessonItem) adapterView.getItemAtPosition(i);
                 if (app.loginUser == null || !(mIsStudent || mIsTeacher)) {
+                    app.addMessageListener(VIEW_LESSON, new CoreEngineMsgCallback() {
+                        @Override
+                        public void invoke(MessageModel obj) {
+                            viewLessonByLesson(lesson);
+                        }
+                    });
                     joinLearnCourse(mCourseInfo);
                     return;
                 }
 
-                LessonItem lesson = (LessonItem) item;
                 if (!"lesson".equals(lesson.itemType)) {
                     return;
                 }
-                Intent lessonIntent = new Intent();
-                lessonIntent.setClass(mContext, CourseLessonActivity.class);
-                lessonIntent.putExtra("courseId", lesson.courseId);
-                lessonIntent.putExtra("lessonId", lesson.id);
-                lessonIntent.putExtra("lessonTitle", lesson.title);
-                startActivityForResult(lessonIntent, Const.COURSELESSON_REQUEST);
+                viewLessonByLesson(lesson);
             }
         });
 
         pagerItem.clear();
+    }
+
+    private void viewLessonByLesson(final LessonItem lesson) {
+        app.mEngine.runNormalPluginForResult(
+                "CourseLessonActivity",
+                mActivity,
+                Const.COURSELESSON_REQUEST,
+                new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra("courseId", lesson.courseId);
+                        startIntent.putExtra("lessonId", lesson.id);
+                        startIntent.putExtra("lessonTitle", lesson.title);
+                    }
+        });
     }
 
     @Override
@@ -477,8 +502,7 @@ public class CourseInfoActivity extends BaseActivity {
     private CourseCommentListAdapter cllAdapter;
     private EduSohoList listCommentView;
 
-    public void showCommentDlg(Review loginUserComment, final View parent)
-    {
+    public void showCommentDlg(Review loginUserComment, final View parent) {
         CommentPopupDialog dlg = CommentPopupDialog.create(mContext);
         dlg.showDlg(loginUserComment, new CommentPopupDialog.PopupClickListener() {
             @Override
@@ -504,7 +528,7 @@ public class CourseInfoActivity extends BaseActivity {
             commentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showCommentDlg(cllAdapter == null ? null :cllAdapter.loginUserComment, parent);
+                    showCommentDlg(cllAdapter == null ? null : cllAdapter.loginUserComment, parent);
                 }
             });
         } else {
@@ -512,14 +536,14 @@ public class CourseInfoActivity extends BaseActivity {
         }
     }
 
-    private void loadCommentLayout() {
-        final CourseInfoViewPagerItem pagerItem = mPagerMap.get(recommended);
-        if (pagerItem == null) {
+    private void loadCommentLayout(CourseInfoResult result) {
+        final CourseInfoViewPagerItem pagerItem = mPagerMap.get(comment);
+        if (pagerItem == null || pagerItem.data == null) {
             return;
         }
 
         listCommentView = (EduSohoList) pagerItem.pager.findViewById(R.id.course_comment_listview);
-        getComments(pagerItem.pager, 0, false, false);
+        getComments(pagerItem.pager, 0, false, true);
         pagerItem.clear();
     }
 
@@ -529,7 +553,6 @@ public class CourseInfoActivity extends BaseActivity {
         params.append("&content=").append(message);
 
         String url = app.bindToken2Url(params.toString(), true);
-
         ajaxGetString(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
@@ -537,7 +560,9 @@ public class CourseInfoActivity extends BaseActivity {
                         object, new TypeToken<Review>() {
                 }.getType());
                 if (review != null) {
-                    loadCommentLayout();
+                    CourseInfoViewPagerItem pagerItem = mPagerMap.get(comment);
+                    pagerItem.data = review;
+                    loadCommentLayout(mCourseInfoResult);
                     longToast("评论成功!");
                     callBack.success(null);
                 } else {
@@ -548,10 +573,14 @@ public class CourseInfoActivity extends BaseActivity {
     }
 
     private void getComments(
-            final View parent, int start, final boolean isAppend, boolean showLoading) {
+            final View parent, int start, final boolean isAppend, final boolean showLoading) {
 
         StringBuilder params = new StringBuilder(wrapUrl(Const.COMMENTLIST, mCourseId));
         params.append("?start=").append(start);
+        if (showLoading) {
+            View load_layout = parent.findViewById(R.id.load_layout);
+            load_layout.setVisibility(View.VISIBLE);
+        }
 
         String url = app.bindToken2Url(params.toString(), true);
         ajax(url, new ResultCallback() {
@@ -559,7 +588,9 @@ public class CourseInfoActivity extends BaseActivity {
             public void callback(String url, String object, AjaxStatus status) {
                 loadCommentStatus(parent);
                 //hide loading layout
-                findViewById(R.id.load_layout).setVisibility(View.GONE);
+                if (showLoading) {
+                    parent.findViewById(R.id.load_layout).setVisibility(View.GONE);
+                }
                 final ReviewResult result = app.gson.fromJson(
                         object, new TypeToken<ReviewResult>() {
                 }.getType());
@@ -602,9 +633,7 @@ public class CourseInfoActivity extends BaseActivity {
                 }
 
                 int start = result.start + Const.LIMIT;
-                if (start < result.total) {
-                    parent.setTag(start);
-                }
+                parent.setTag(start);
 
                 listCommentView.hideMoreBtn();
             }
@@ -614,7 +643,7 @@ public class CourseInfoActivity extends BaseActivity {
                 longToast("网络数据加载错误！请重新尝试刷新");
                 findViewById(R.id.load_layout).setVisibility(View.GONE);
             }
-        }, showLoading);
+        }, false);
 
     }
 
@@ -638,11 +667,10 @@ public class CourseInfoActivity extends BaseActivity {
             param.append(wrapUrl(Const.UNFAVORITE, mCourseId));
 
             String url = app.bindToken2Url(param.toString(), true);
-
             ajaxNormalGet(url, new ResultCallback() {
                 @Override
                 public void callback(String url, String object, AjaxStatus status) {
-
+                    favoriteBtn.setEnabled(true);
                     if ("true".equals(object)) {
                         longToast("取消收藏成功！");
                         favoriteBtn.setTextColor(getResources().getColor(R.color.nav_btn_normal));
@@ -656,6 +684,7 @@ public class CourseInfoActivity extends BaseActivity {
             ajaxNormalGet(url, new ResultCallback() {
                 @Override
                 public void callback(String url, String object, AjaxStatus status) {
+                    favoriteBtn.setEnabled(true);
                     if ("true".equals(object)) {
                         longToast("收藏成功！");
                         favoriteBtn.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
@@ -676,7 +705,16 @@ public class CourseInfoActivity extends BaseActivity {
             return;
         }
 
-        UIRefreshHandler = new Handler();
+        UIRefreshHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case PAGER_LOAD_SUCCESS:
+                        break;
+                }
+            }
+        };
 
         mCurrentPage = dataIntent.getIntExtra("currentPage", 1);
         mCourseId = dataIntent.getStringExtra("courseId");
@@ -700,6 +738,7 @@ public class CourseInfoActivity extends BaseActivity {
                             LoginActivity.start(mActivity);
                             return;
                         }
+                        favoriteBtn.setEnabled(false);
                         favoriteCourse();
                     }
                 });
@@ -709,7 +748,7 @@ public class CourseInfoActivity extends BaseActivity {
         aq = new AQuery(this);
         String largePic = dataIntent.getStringExtra("largePicture");
         aq.id(R.id.courseInfo_pic).image(
-                largePic, false, true, 0, R.drawable.noram_course);
+                largePic, false, true, (int) (app.screenW * 0.9f), R.drawable.noram_course);
 
         aq.id(R.id.courseInfo_pic).height(AppUtil.getCourseCorverHeight(app.screenW), false);
 
@@ -743,8 +782,8 @@ public class CourseInfoActivity extends BaseActivity {
                 mIsStudent = result.userIsStudent;
                 mCourseInfoResult = result;
                 loadCourseInfoPager();
-                changeContentHead(popular);
-                if (mCurrentPage != popular) {
+                changeContentHead(info);
+                if (mCurrentPage != info) {
                     changeContentHead(mCurrentPage);
                 }
             }
@@ -752,11 +791,8 @@ public class CourseInfoActivity extends BaseActivity {
     }
 
     private void getCourseInfoFromNet(
-            String courseId, final NormalCallback<CourseInfoResult> callback, boolean showLoading)
-    {
+            String courseId, final NormalCallback<CourseInfoResult> callback, boolean showLoading) {
         String url = app.bindToken2Url(Const.COURSE + courseId + "?", true);
-        System.out.println("url->" + url);
-
         ajax(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
@@ -774,6 +810,16 @@ public class CourseInfoActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //Create the search view
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mCourseInfo != null) {
+            app.sendMessage(FavoriteActivity.REFRESH_DATA, new MessageModel(mCourseInfo.id, mFavoriteStatus));
+            app.sendMessage(LearningActivity.REFRESH_DATA, new MessageModel(mCourseInfo.id, mIsStudent));
+        }
+        app.delMessageListener(VIEW_LESSON);
+        super.onDestroy();
     }
 
     @Override
@@ -803,6 +849,7 @@ public class CourseInfoActivity extends BaseActivity {
                 break;
             case AlipayActivity.ALIPAY_SUCCESS:
             case AlipayActivity.ALIPAY_EXIT:
+                content_pager.setCurrentItem(lessons);
                 showPayResultDlg(resultCode);
                 break;
         }
@@ -810,11 +857,9 @@ public class CourseInfoActivity extends BaseActivity {
     }
 
     /**
-     *
      * @param resultCode
      */
-    private void showPayResultDlg(final int resultCode)
-    {
+    private void showPayResultDlg(final int resultCode) {
         //支付成功
         PopupDialog.createMuilt(
                 mContext, "支付完成", "确定支付是否成功?", new PopupDialog.PopupClickListener() {

@@ -31,6 +31,7 @@ public class SettingActivity extends BaseActivity
 {
     private CheckBox setting_check;
     private AQuery aq;
+    private CheckBox mAutoLearnBtn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,9 @@ public class SettingActivity extends BaseActivity
         super.onStart();
         if (setting_check != null) {
             setting_check.setChecked(app.config.startWithSchool);
+        }
+        if (mAutoLearnBtn != null) {
+            mAutoLearnBtn.setChecked(app.config.isAutoLearn);
         }
     }
 
@@ -61,6 +65,7 @@ public class SettingActivity extends BaseActivity
         setBackMode("个人中心", false, null);
         aq = new AQuery(this);
 
+        mAutoLearnBtn = (CheckBox) findViewById(R.id.setting_auto_learn_check);
         setting_check = (CheckBox) findViewById(R.id.setting_check);
         bindClickListener();
 	}
@@ -76,6 +81,14 @@ public class SettingActivity extends BaseActivity
                 }
             });
         }
+
+        mAutoLearnBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                app.config.isAutoLearn = b;
+                app.saveConfig();
+            }
+        });
 
         aq.id(R.id.setting_user_layout).clicked(new View.OnClickListener() {
             @Override
@@ -97,7 +110,8 @@ public class SettingActivity extends BaseActivity
         aq.id(R.id.setting_learn_layout).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LearningActivity.start(mActivity);
+                app.mEngine.runNormalPluginForResult(
+                        "LearningActivity", mActivity, Const.LEARNING_REQUEST, null);
             }
         });
 
@@ -209,16 +223,6 @@ public class SettingActivity extends BaseActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return true;
     }
 
 }

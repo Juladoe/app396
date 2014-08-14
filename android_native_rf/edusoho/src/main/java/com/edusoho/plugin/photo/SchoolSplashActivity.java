@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
@@ -29,6 +31,7 @@ public class SchoolSplashActivity extends Activity {
     protected EdusohoApp app;
     private Context mContext;
     private Activity mActivity;
+    private Bitmap cacheBitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class SchoolSplashActivity extends Activity {
         mActivity = this;
         setContentView(R.layout.sch_splash_layout);
         app = (EdusohoApp) getApplication();
+        cacheBitmap = app.query.getCachedImage(R.drawable.defaultpic);
         initView();
     }
 
@@ -53,7 +57,13 @@ public class SchoolSplashActivity extends Activity {
             return;
         }
 
-        SchoolCourseActivity.start(this);
+        startMain();
+    }
+
+    private void startMain()
+    {
+        app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, null);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
 
@@ -116,8 +126,7 @@ public class SchoolSplashActivity extends Activity {
             mEnterSchBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SchoolCourseActivity.start(mActivity);
-                    finish();
+                    startMain();
                 }
             });
         }
@@ -131,8 +140,7 @@ public class SchoolSplashActivity extends Activity {
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setScaleType(ImageView.ScaleType.FIT_XY);
-            app.query.id(photoView).progress(R.drawable.load).
-                    image(mImages[position], false, true, 0, R.drawable.defaultpic);
+            app.query.id(photoView).image(mImages[position], false, true, 0, 0, cacheBitmap, AQuery.FADE_IN);
             container.addView(photoView);
             return photoView;
         }

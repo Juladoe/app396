@@ -1,1 +1,3 @@
-include ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer', ':kuozhi', ':howzhi', ':JazzyViewPager', 'edusoho'
+include ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer', ':kuozhi', ':custom'
+include ':howzhi', ':JazzyViewPager', ':edusoho',':PinnedSectionListView' , ':pullRefresh'
+include ':edusoho_v2', ':kuozhiv2'

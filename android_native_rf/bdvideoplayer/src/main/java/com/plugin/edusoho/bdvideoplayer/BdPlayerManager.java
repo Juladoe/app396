@@ -95,13 +95,12 @@ public class BdPlayerManager {
         });
     }
 
-    public void playerVideo(String url)
+    public void playerVideo(final String url)
     {
         checkPlayerVersion(new CheckPlayerVersionCallback() {
             @Override
             public void success() {
                 Intent startIntent = new Intent(mContext, BdVideoPlayerActivity.class);
-                String url = "http://devimages.apple.com/iphone/samples/bipbop/gear4/prog_index.m3u8";
                 startIntent.setData(Uri.parse(url));
                 startIntent.putExtra("soLibDir", mSoLibDir);
                 System.out.println("solib->" + mSoLibDir);

@@ -8,22 +8,29 @@ import java.util.concurrent.ConcurrentHashMap;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.core.AppCache;
 import com.edusoho.kuozhi.core.CoreEngine;
@@ -37,7 +44,9 @@ import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
+import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -51,7 +60,7 @@ public class EdusohoApp extends Application{
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
-    public String schoolHost;
+    public String schoolHost = "";
     public CoreEngine mEngine;
 
     public String token;
@@ -115,6 +124,11 @@ public class EdusohoApp extends Application{
         mEngine.receiveMsg(msgId, callback);
     }
 
+    public void delMessageListener(String msgId)
+    {
+        mEngine.removeMsg(msgId);
+    }
+
     public void sendMessage(String msgId, MessageModel obj)
     {
         mEngine.sendMsg(msgId, obj);
@@ -134,9 +148,8 @@ public class EdusohoApp extends Application{
         app = this;
         gson = new Gson();
         apiVersion = "1.0.0";
-        schoolHost = "";
         query = new AQuery(this);
-        host = getString(R.string.host);
+        host = "";
         paramsMap = new HashMap<String, Object>();
         sqliteUtil = new SqliteUtil(getApplicationContext(), null, null);
         initWorkSpace();
@@ -144,6 +157,72 @@ public class EdusohoApp extends Application{
 
         mEngine = CoreEngine.create(this);
         installPlugin();
+        registDevice();
+    }
+
+    public void logToServer(
+            String url, Map<String, String> params, AjaxCallback<String> ajaxCallback)
+    {
+        if (ajaxCallback == null) {
+            ajaxCallback = new AjaxCallback<String>();
+        }
+        app.query.ajax(url, params, String.class, ajaxCallback);
+    }
+
+    public Map<String, String> getPlatformInfo()
+    {
+        Map<String, String> params = new HashMap<String, String>();
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+
+        params.put("imei", telephonyManager.getDeviceId());
+        params.put("platform", "Android " + Build.MODEL);
+        params.put("version", Build.VERSION.SDK);
+        params.put("screenresolution", displayMetrics.widthPixels + "x" + displayMetrics.heightPixels);
+        params.put("kernel", Build.VERSION.RELEASE);
+
+        return params;
+    }
+
+    public void registDevice()
+    {
+        if (app.config.isRegistDevice) {
+            return;
+        }
+
+        Map<String, String> params = getPlatformInfo();
+
+        logToServer("http://open.edusoho.com/mobile/mobile_install_stat.php", params, null);
+        logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                super.callback(url, object, status);
+                Log.d(null, "regist device->" + object);
+                try {
+                    Boolean result = app.gson.fromJson(
+                            object, new TypeToken<Boolean>() {
+                    }.getType());
+
+                    if (true == result) {
+                        app.config.isRegistDevice = true;
+                        app.saveConfig();
+                    }
+                } catch (Exception e) {
+                    //none
+                }
+            }
+        });
+    }
+
+    private boolean getNetStatus()
+    {
+        ConnectivityManager connManager = (ConnectivityManager)
+                getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isAvailable();
     }
 
     public School getDefaultSchool(String url, String appName)
@@ -190,15 +269,14 @@ public class EdusohoApp extends Application{
         });
     }
 
-    private double getApkVersion()
+    public String getApkVersion()
     {
-        double version = 0.0;
+        String version = "0.0.0";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String versionStr = packageInfo.versionName;
-            version = Double.parseDouble(versionStr);
+            version = packageInfo.versionName;
         } catch (Exception e) {
-            version = 0.0;
+            version = "0.0.0";
         }
         return version;
     }
@@ -212,6 +290,7 @@ public class EdusohoApp extends Application{
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("name", school.name);
         edit.putString("url", school.url);
+        edit.putString("host", school.host);
         edit.putString("logo", school.logo);
         edit.commit();
     }
@@ -224,7 +303,9 @@ public class EdusohoApp extends Application{
             School item = new School();
             item.name = map.get("name");
             item.url = map.get("url");
+            item.host = map.get("host");
             item.logo = map.get("logo");
+            host = item.host;
             setCurrentSchool(item);
         }
     }
@@ -233,7 +314,9 @@ public class EdusohoApp extends Application{
     {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         config = new AppConfig();
+        config.isAutoLearn = sp.getBoolean("autoLearn", true);
         config.showSplash = sp.getBoolean("showSplash", true);
+        config.isRegistDevice = sp.getBoolean("registDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
         if (config.startWithSchool) {
             loadDefaultSchool();
@@ -276,6 +359,11 @@ public class EdusohoApp extends Application{
         return activity != null;
     }
 
+    public void removeTask(String name)
+    {
+        runTask.remove(name);
+    }
+
     public void addTask(String name, Activity activity)
     {
         runTask.put(name, activity);
@@ -286,8 +374,28 @@ public class EdusohoApp extends Application{
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("showSplash", config.showSplash);
+        edit.putBoolean("registDevice", config.isRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
+        edit.putBoolean("autoLearn", config.isAutoLearn);
         edit.commit();
+    }
+
+    public void query(String url, final ResultCallback callback, Activity mActivity)
+    {
+        if (!getNetStatus()) {
+            PopupDialog.createNormal(
+                    mActivity, "提示信息", "无网络,请检查网络和手机设置!").show();
+            mActivity.finish();
+            return;
+        }
+
+        query.ajax(url, String.class, new AjaxCallback<String>(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                super.callback(url, object, status);
+                callback.callback(url, object, status);
+            }
+        });
     }
 
     private void initWorkSpace()
@@ -323,19 +431,32 @@ public class EdusohoApp extends Application{
         return sb.toString();
     }
 
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        AQUtility.cleanCacheAsync(this);
+        BitmapAjaxCallback.clearCache();
+    }
+
     public void checkToken()
     {
-        String url = bindToken2Url(Const.CHECKTOKEN, true);
-        query.ajax(url, String.class, new AjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                TokenResult result = app.gson.fromJson(
-                        object, new TypeToken<TokenResult>(){}.getType());
-                if (result != null) {
-                    saveToken(result);
-                }
+        synchronized (this) {
+            if (loginUser != null) {
+                return;
             }
-        });
+            String url = bindToken2Url(Const.CHECKTOKEN, true);
+            query.ajax(url, String.class, new AjaxCallback<String>() {
+                @Override
+                public void callback(String url, String object, AjaxStatus status) {
+                    TokenResult result = app.gson.fromJson(
+                            object, new TypeToken<TokenResult>(){}.getType());
+                    if (result != null) {
+                        saveToken(result);
+                    }
+                }
+            });
+        }
+
     }
 
     public static int tabLeftBtnSel;
@@ -372,7 +493,7 @@ public class EdusohoApp extends Application{
 
     private boolean mIsNotifyUpdate;
 
-    public void updateApp(boolean isShowLoading, final NormalCallback callback)
+    public void updateApp(String url, boolean isShowLoading, final NormalCallback callback)
     {
         if (mIsNotifyUpdate) {
             return;
@@ -385,7 +506,7 @@ public class EdusohoApp extends Application{
         }
 
         query.ajax(
-                "http://open.edusoho.com/mobile/meta.php",
+                url,
                 String.class,
                 new AjaxCallback<String>(){
                     @Override

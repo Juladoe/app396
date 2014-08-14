@@ -1,0 +1,94 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <style name="SplashTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="edusohoTheme" parent="EdusohoAppTheme">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="startTheme" parent="EdusohoAppTheme">
+        <item name="android:windowBackground">@drawable/app_splah_1280_800</item>
+        <item name="android:textColor">@color/system_text</item>
+    </style>
+
+    <style name="loadDlgTheme" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
+    <style name="courseRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/course_ratingbar</item>
+        <item name="android:minHeight">27px</item>
+        <item name="android:maxHeight">27dp</item>
+        <item name="android:minWidth">27px</item>
+        <item name="android:maxWidth">27dp</item>
+    </style>
+
+    <style name="courseLargeRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/course_big_ratingbar</item>
+        <item name="android:minHeight">32dip</item>
+        <item name="android:maxHeight">48dip</item>
+    </style>
+
+    <style name="lessonLearnRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/lesson_learn_ratingbar</item>
+    </style>
+
+    <style name="EdusohoAppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="titleTextStyle">@style/CustomTitleTextStyle</item>
+        <item name="android:actionBarStyle">@style/EdusohoActionBarStyle</item>
+        <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>
+    </style>
+
+    <style name="EdusohoActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:background">@drawable/action_bar_bg</item>
+        <item name="background">@drawable/action_bar_bg</item>
+        <item name="android:titleTextStyle">@style/EdusohoActionBarTextStyle</item>
+        <item name="titleTextStyle">@style/EdusohoActionBarTextStyle</item>
+    </style>
+
+    <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/action_bar_back</item>
+        <item name="android:textSize">@dimen/action_bar_title</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="CustomTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/titleTextColor</item>
+        <item name="android:textSize">@dimen/course_content_head</item>
+    </style>
+
+    <style name="schLoaingStyle" parent="@android:style/Widget.ProgressBar.Large">
+        <item name="android:indeterminateDrawable">@anim/sch_loading</item>
+        <item name="android:maxWidth">322px</item>
+    </style>
+
+</resources>

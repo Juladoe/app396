@@ -2,6 +2,7 @@ package com.plugin.edusoho.bdvideoplayer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,10 +14,11 @@ import android.os.PowerManager.WakeLock;
 import android.os.Process;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
-import com.baidu.cyberplayer.core.BMediaController;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
 import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
@@ -32,16 +34,25 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
 {
     private final String TAG = "BdVideoPlayerActivity";
 
-    private String AK = "";
-    private String SK = "";
+    private String AK = "6ZB2kShzunG7baVCPLWe7Ebc";
+    private String SK = "wt18pcUSSryXdl09jFvGvsuNHhGCZTvF";
 
 
     private String mVideoSource = null;
 
     private BVideoView mVV = null;
-    private BMediaController mVVCtl = null;
-    private RelativeLayout mViewHolder = null;
-    private LinearLayout mControllerHolder = null;
+    private Activity mContext = null;
+
+    private ImageButton mPlaybtn = null;
+    private ImageButton mBackbtn = null;
+    private ImageButton mForwardbtn = null;
+    private ImageButton mFullBtn = null;
+
+    private LinearLayout mController = null;
+
+    private SeekBar mProgress = null;
+    private TextView mDuration = null;
+    private TextView mCurrPostion = null;
 
     private boolean mIsHwDecode = false;
 
@@ -52,6 +63,7 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
     private final Object SYNC_Playing = new Object();
 
     private final int EVENT_PLAY = 0;
+    private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
 
     private WakeLock mWakeLock = null;
     private static final String POWER_LOCK = "BdVideoPlayerActivity";
@@ -71,7 +83,27 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
      */
     private int mLastPos = 0;
 
+    Handler mUIHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                /**
+                 * 更新进度及时间
+                 */
+                case UI_EVENT_UPDATE_CURRPOSITION:
+                    int currPosition = mVV.getCurrentPosition();
+                    int duration = mVV.getDuration();
+                    updateTextViewWithTimeFormat(mCurrPostion, currPosition);
+                    updateTextViewWithTimeFormat(mDuration, duration);
+                    mProgress.setMax(duration);
+                    mProgress.setProgress(currPosition);
 
+                    mUIHandler.sendEmptyMessageDelayed(UI_EVENT_UPDATE_CURRPOSITION, 200);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     class EventHandler extends Handler {
         public EventHandler(Looper looper) {
@@ -166,8 +198,8 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.bd_videoplayer_layout);
+        mContext = this;
+        setContentView(R.layout.controllerplaying);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
@@ -199,9 +231,17 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
      * 初始化界面
      */
     private void initUI() {
-        mViewHolder = (RelativeLayout)findViewById(R.id.bd_vp_view_holder);
-        mControllerHolder = (LinearLayout )findViewById(R.id.bd_vp_controller_holder);
+        mPlaybtn = (ImageButton)findViewById(R.id.play_btn);
+        mBackbtn = (ImageButton)findViewById(R.id.back_btn);
+        mForwardbtn = (ImageButton)findViewById(R.id.forward_btn);
+        mFullBtn = (ImageButton)findViewById(R.id.full_btn);
+        mController = (LinearLayout)findViewById(R.id.controlbar);
 
+        mProgress = (SeekBar)findViewById(R.id.media_progress);
+        mDuration = (TextView)findViewById(R.id.time_total);
+        mCurrPostion = (TextView)findViewById(R.id.time_current);
+
+        registerCallbackForControl();
         /**
          * 设置ak及sk的前16位
          */
@@ -213,10 +253,12 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
         /**
          *创建BVideoView和BMediaController
          */
-        mVV = new BVideoView(this);
+        mVV = (BVideoView) findViewById(R.id.video_view);
+        /*
         mVVCtl = new BMediaController(this);
         mViewHolder.addView(mVV);
         mControllerHolder.addView(mVVCtl);
+         */
 
         /**
          * 注册listener
@@ -225,12 +267,11 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
         mVV.setOnCompletionListener(this);
         mVV.setOnErrorListener(this);
         mVV.setOnInfoListener(this);
-        mVVCtl.setPreNextListener(mPreListener, mNextListener);
 
         /**
          * 关联BMediaController
          */
-        mVV.setMediaController(mVVCtl);
+        //mVV.setMediaController(mVVCtl);
         /**
          * 设置解码模式
          */
@@ -322,7 +363,109 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
             SYNC_Playing.notify();
         }
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mUIHandler.removeMessages(UI_EVENT_UPDATE_CURRPOSITION);
         return true;
+    }
+
+    /**
+     * 为控件注册回调处理函数
+     */
+    private void registerCallbackForControl(){
+        mFullBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //水平
+                int screenOrientation = mContext.getRequestedOrientation();
+                if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                } else {
+                    mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+            }
+        });
+
+        mPlaybtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+                if (mVV.isPlaying()) {
+                    mPlaybtn.setImageResource(R.drawable.play_btn_style);
+                    /**
+                     * 暂停播放
+                     */
+                    mVV.pause();
+                } else {
+                    mPlaybtn.setImageResource(R.drawable.pause_btn_style);
+                    /**
+                     * 继续播放
+                     */
+                    mVV.resume();
+                }
+
+            }
+        });
+
+        /**
+         * 实现切换示例
+         */
+        mBackbtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mVV.seekTo(mProgress.getProgress() - 5);
+                mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+            }
+        });
+
+
+        mForwardbtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mVV.seekTo(mProgress.getProgress() + 5);
+                mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+            }
+        });
+
+        SeekBar.OnSeekBarChangeListener osbc1 = new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser) {
+                // TODO Auto-generated method stub
+                //Log.v(TAG, "progress: " + progress);
+                updateTextViewWithTimeFormat(mCurrPostion, progress);
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                /**
+                 * SeekBar开始seek时停止更新
+                */
+                mUIHandler.removeMessages(UI_EVENT_UPDATE_CURRPOSITION);
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                int iseekPos = seekBar.getProgress();
+
+                /**
+                 * SeekBark完成seek时执行seekTo操作并更新界面
+                 *
+                */
+                mVV.seekTo(iseekPos);
+                Log.v(TAG, "seek to " + iseekPos);
+                mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+            }
+        };
+        mProgress.setOnSeekBarChangeListener(osbc1);
+    }
+
+    private void updateTextViewWithTimeFormat(TextView view, int second){
+        int hh = second / 3600;
+        int mm = second % 3600 / 60;
+        int ss = second % 60;
+        String strTemp = null;
+        if (0 != hh) {
+            strTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
+        } else {
+            strTemp = String.format("%02d:%02d", mm, ss);
+        }
+        view.setText(strTemp);
     }
 
     /**
@@ -337,6 +480,7 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
             SYNC_Playing.notify();
         }
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mUIHandler.removeMessages(UI_EVENT_UPDATE_CURRPOSITION);
     }
 
     /**
@@ -347,5 +491,6 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
         // TODO Auto-generated method stub
         Log.v(TAG, "onPrepared");
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
+        mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
     }
 }

@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.ui.course;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,8 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -30,6 +35,7 @@ import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseMenu;
 import com.edusoho.kuozhi.model.CourseResult;
+import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.common.CourseColumnActivity;
 import com.edusoho.kuozhi.ui.common.SearchActivity;
@@ -46,6 +52,8 @@ import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.view.EdusohoListView;
 
 import com.edusoho.kuozhi.R;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -66,6 +74,7 @@ public class SchoolCourseActivity extends BaseActivity {
     public Activity mActivity;
     private LayoutInflater mInflater;
     private CourseMenu mCourseMenu;
+    private HashMap<Integer, Adapter> adapterHashMap;
 
     public static final String TAG = "SchoolCourseActivity";
     public static final String REFRESH_COURSE = "refresh";
@@ -73,7 +82,6 @@ public class SchoolCourseActivity extends BaseActivity {
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        startSplash();
 		setContentView(R.layout.sch_course);
         mActivity = this;
         mInflater = getLayoutInflater();
@@ -81,9 +89,19 @@ public class SchoolCourseActivity extends BaseActivity {
 		loadCoursePager();
 		changeContentHead(popular);
         app.checkToken();
-        app.addTask(TAG, this);
         addMessageListener();
         updateApp();
+        logSchoolInfoToServer();
+    }
+
+    private void logSchoolInfoToServer()
+    {
+        Map<String, String> params = app.getPlatformInfo();
+        School school = app.defaultSchool;
+        params.put("name", school.name);
+        params.put("host", school.host);
+        app.logToServer("http://open.edusoho.com/mobile/mobile_login_stat.php", params, null);
+        app.logToServer(app.schoolHost + Const.MOBILE_SCHOOL_LOGIN, params, null);
     }
 
     private void addMessageListener()
@@ -99,6 +117,8 @@ public class SchoolCourseActivity extends BaseActivity {
     public void refreshCourse(CourseMenu courseMenu)
     {
         this.mCourseMenu = courseMenu;
+        String name = "".equals(courseMenu.name) ? "" : "-" + courseMenu.name;
+        changeTitle("好知网" + name);
         loadCoursePager();
         changeContentHead(popular);
     }
@@ -142,6 +162,7 @@ public class SchoolCourseActivity extends BaseActivity {
 			}
 		});
 
+        adapterHashMap = new HashMap<Integer, Adapter>();
         mCourseMenu = new CourseMenu("", "类别", "");
         app.addTask(TAG, this);
 	}
@@ -155,7 +176,7 @@ public class SchoolCourseActivity extends BaseActivity {
                 sch_search_btn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        SearchActivity.start(mActivity);
+                        app.mEngine.runNormalPlugin("SearchActivity", mActivity, null);
                     }
                 });
             }
@@ -167,14 +188,20 @@ public class SchoolCourseActivity extends BaseActivity {
 	*/
 	private void loadCoursePager() {
 		final ArrayList<View> mViewList = new ArrayList<View>();
-		View pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+		ViewGroup pager = (ViewGroup) getLayoutInflater().inflate(R.layout.latest_course, null);
 		mViewList.add(pager);
+        View course_content = mInflater.inflate(R.layout.course_content, null);
+        pager.addView(course_content);
 
-		pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+		pager = (ViewGroup) getLayoutInflater().inflate(R.layout.latest_course, null);
 		mViewList.add(pager);
+        course_content = mInflater.inflate(R.layout.course_content, null);
+        pager.addView(course_content);
 
-		pager = getLayoutInflater().inflate(R.layout.latest_course, null);
+		pager = (ViewGroup) getLayoutInflater().inflate(R.layout.latest_course, null);
 		mViewList.add(pager);
+        course_content = mInflater.inflate(R.layout.course_content, null);
+        pager.addView(course_content);
 
 		CoursePagerAdapter adapter = new CoursePagerAdapter(mViewList) {
 			@Override
@@ -194,9 +221,6 @@ public class SchoolCourseActivity extends BaseActivity {
 
     private void setPagerContent(ViewGroup parent)
     {
-        parent.removeAllViews();
-        View course_content = mInflater.inflate(R.layout.course_content, null);
-        parent.addView(course_content);
         loadCourse(parent, 0, false);
     }
 
@@ -218,30 +242,18 @@ public class SchoolCourseActivity extends BaseActivity {
         return false;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return true;
-    }
-
     /**
 	 * 
 	 * @param parent
 	*/
 	private void loadCourse(final ViewGroup parent, int page, final boolean isAppend)
 	{
-        final EdusohoListView listView = (EdusohoListView) parent.findViewById(R.id.course_liseview);
+        final PullToRefreshListView pullToRefreshListView = (PullToRefreshListView) parent.findViewById(R.id.course_liseview);
+        pullToRefreshListView.setMode(PullToRefreshBase.Mode.BOTH);
 
-        StringBuffer param = new StringBuffer(Const.COURSE_LIST);
+        final ListView listView = pullToRefreshListView.getRefreshableView();
+
+        StringBuffer param = new StringBuffer(Const.COURSES);
         param.append("?start=").append(page);
         param.append("&sort=").append(Const.SORT[content_pager.getCurrentItem()]);
         param.append("&channel=").append(mCourseMenu.type);
@@ -256,7 +268,6 @@ public class SchoolCourseActivity extends BaseActivity {
                 }.getType());
 
                 if (result == null || result.data.length == 0) {
-                    parent.findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
                     showEmptyLayout("暂无相应课程！");
                     return;
                 }
@@ -264,42 +275,38 @@ public class SchoolCourseActivity extends BaseActivity {
                 if (!isAppend) {
                     CourseListAdapter adapter = new CourseListAdapter(
                             mContext, result, R.layout.course_list_normal_item);
+                    adapterHashMap.put(content_pager.getCurrentItem(), adapter);
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity, listView);
+                    CourseListScrollListener listener = new CourseListScrollListener(mActivity);
                     listView.setOnItemClickListener(listener);
-
-                    OverScrollView scrollView = (OverScrollView) parent.findViewById(R.id.course_content_scrollview);
-                    scrollView.setMoveListener(new MoveListener() {
+                    pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
                         @Override
-                        public void moveToBottom() {
-                            View course_more_btn = parent.findViewById(R.id.course_more_btn);
-                            if (course_more_btn.getVisibility() == View.VISIBLE) {
-                                course_more_btn.findViewById(R.id.more_btn_loadbar).setVisibility(View.VISIBLE);
-                                Integer startPage = (Integer) parent.getTag();
-                                loadCourse(parent, startPage, true);
-                            }
+                        public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                            loadCourse(parent, 0, false);
+                        }
+
+                        @Override
+                        public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                            Integer startPage = (Integer) parent.getTag();
+                            loadCourse(parent, startPage, true);
                         }
                     });
-
                 } else {
-                    CourseListAdapter adapter = (CourseListAdapter) listView.getAdapter();
+                    CourseListAdapter adapter = (CourseListAdapter) adapterHashMap.get(content_pager.getCurrentItem());
                     adapter.addItem(result);
-                    listView.initListHeight();
                 }
 
-                View course_more_btn = parent.findViewById(R.id.course_more_btn);
+                pullToRefreshListView.onRefreshComplete();
                 int start = result.start + Const.LIMIT;
                 if (start < result.total) {
                     parent.setTag(start);
-                    course_more_btn.setVisibility(View.VISIBLE);
                 } else {
-                    course_more_btn.setVisibility(View.GONE);
+                    pullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
             }
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
-                parent.findViewById(R.id.course_content_scrollview).setVisibility(View.GONE);
                 showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
                     @Override
                     public void error(View errorBtn) {

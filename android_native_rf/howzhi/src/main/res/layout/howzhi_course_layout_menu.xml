@@ -3,12 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <com.edusoho.kuozhi.view.EduSohoIconView
-        android:id="@+id/sch_qr_search_btn"
+        android:id="@+id/sch_search_btn"
         android:gravity="center_vertical"
         android:clickable="true"
         android:background="@drawable/actionbar_back_bg"
-        android:text="@string/font_qr"
+        android:text="@string/search"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:paddingLeft="8dp"
@@ -19,11 +20,11 @@
         android:layout_height="match_parent" />
 
     <com.edusoho.kuozhi.view.EduSohoIconView
-        android:id="@+id/sch_search_btn"
+        android:id="@+id/sch_qr_search_btn"
         android:gravity="center_vertical"
         android:clickable="true"
         android:background="@drawable/actionbar_back_bg"
-        android:text="@string/search"
+        android:text="@string/font_list"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:paddingLeft="8dp"

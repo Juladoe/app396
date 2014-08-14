@@ -46,6 +46,7 @@ public class CustomMediaController extends RelativeLayout {
     private Timer autoHideTimer;
 
     private Handler updateHandler;
+    private MediaPlayer mMediaPlayer;
     private static final int UPDATE_PLAY_TIME = 0001;
     private static final int SET_TOTALTIME = 0002;
     private static final int HIDE = 0003;
@@ -69,13 +70,19 @@ public class CustomMediaController extends RelativeLayout {
         initView();
     }
 
+    public void setmMediaPlayer(MediaPlayer mMediaPlayer)
+    {
+        this.mMediaPlayer = mMediaPlayer;
+    }
+
     public void setActivity(Activity activity)
     {
         mActivity = activity;
     }
 
-    public void ready()
+    public void ready(MediaPlayer mMediaPlayer)
     {
+        setmMediaPlayer(mMediaPlayer);
         updateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -156,17 +163,21 @@ public class CustomMediaController extends RelativeLayout {
 
     public void play()
     {
-        playBtn.setImageResource(R.drawable.custom_pause);
+        playBtn.setImageResource(R.drawable.vp_pause_shadow);
         if (mIsStop) {
             mVideoView.seekTo(0);
             mIsStop = false;
+            if (mMediaPlayer != null) {
+                mMediaPlayer.start();
+                return;
+            }
         }
         mVideoView.start();
     }
 
     public void pause()
     {
-        playBtn.setImageResource(R.drawable.custom_play);
+        playBtn.setImageResource(R.drawable.vp_play_shadow);
         mVideoView.pause();
     }
 
@@ -174,7 +185,7 @@ public class CustomMediaController extends RelativeLayout {
     {
         mIsStop = true;
         mediaPlayer.pause();
-        playBtn.setImageResource(R.drawable.custom_play);
+        playBtn.setImageResource(R.drawable.vp_play_shadow);
     }
 
     /**

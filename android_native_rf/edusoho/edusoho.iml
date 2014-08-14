@@ -79,13 +79,18 @@
     <orderEntry type="library" exported="" name="core-2.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.1" level="project" />
     <orderEntry type="library" exported="" name="android-query-full.0.26.8" level="project" />
+    <orderEntry type="library" exported="" name="1_android-query-full.0.26.8" level="project" />
     <orderEntry type="library" exported="" name="nineoldandroids-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="1_nineoldandroids-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="cyberplayer-sdk" level="project" />
     <orderEntry type="library" exported="" name="gson-2.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
+    <orderEntry type="module" module-name="pullRefresh" exported="" />
     <orderEntry type="module" module-name="ukphoto" exported="" />
     <orderEntry type="module" module-name="JazzyViewPager" exported="" />
     <orderEntry type="module" module-name="slidingmenu" exported="" />
+    <orderEntry type="module" module-name="PinnedSectionListView" exported="" />
+    <orderEntry type="module" module-name="bdvideoplayer" exported="" />
   </component>
 </module>
 

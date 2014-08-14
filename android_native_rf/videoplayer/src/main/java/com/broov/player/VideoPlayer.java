@@ -2,6 +2,7 @@ package com.broov.player;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 
 import android.app.Activity;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -30,7 +32,7 @@ import android.os.PowerManager;
 
 import com.edusoho.plugin.videoplayer.R;
 
-public class VideoPlayer extends Activity  {
+public class VideoPlayer extends Activity {
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -39,10 +41,10 @@ public class VideoPlayer extends Activity  {
 
 	@Override
 	public void onBackPressed() {
-
 		mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 		seekBarUpdater.stopIt();
 		demoRenderer.exitApp();
+        finish();
 	}
 
 	@Override
@@ -62,10 +64,10 @@ public class VideoPlayer extends Activity  {
 		public void onCallStateChanged(int state, String incomingNumber) {
 			if (state == TelephonyManager.CALL_STATE_RINGING) {
 				//Incoming call: Pause music
-				System.out.println("Video call state ringing");
+				Log.d(null, "Video call state ringing");
 				//Pause the video, only if video is playing 
 				if ((demoRenderer != null) && (!paused)) { 
-					System.out.println("Triggered");
+					Log.d(null, "Triggered");
 					demoRenderer.nativePlayerPlay();
 				}
 
@@ -73,19 +75,19 @@ public class VideoPlayer extends Activity  {
 				//mHandler.postDelayed(seekBarUpdater, 500);
 			} else if(state == TelephonyManager.CALL_STATE_IDLE) {
 				//Not in call: Play music
-				System.out.println("Video call state idle");
+				Log.d(null, "Video call state idle");
 				//do not resume, if already paused by User  
 				if ((demoRenderer != null) && (!paused)) {
-					System.out.println("Triggered");
+					Log.d(null, "Triggered");
 					demoRenderer.nativePlayerPause();
 				}
 				//seekBarUpdater.stopIt();
 			} else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
 				//A call is dialing, active or on hold
-				System.out.println("Video call state offhook");
+				Log.d(null, "Video call state offhook");
 				
 				if ((demoRenderer != null) && (!paused)) {
-					System.out.println("Triggered");
+					Log.d(null, "Triggered");
 					demoRenderer.nativePlayerPlay();
 				}
 				//seekBarUpdater = new Updater();
@@ -101,7 +103,7 @@ public class VideoPlayer extends Activity  {
 		super.onCreate(savedInstanceState);
 
         Globals.setNativeVideoPlayer(false);
-		System.out.println("VideoPlayer onCreate");
+		Log.d(null, "VideoPlayer onCreate");
 		paused = false;
 
 		// fullscreen mode
@@ -111,22 +113,13 @@ public class VideoPlayer extends Activity  {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-//		 Window win = getWindow();
-//	     WindowManager.LayoutParams winParams = win.getAttributes();
-//	     winParams.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-//	     win.setAttributes(winParams);
-	     setContentView(R.layout.video_player);
-
-		//Utils.hideSystemUi(getWindow().getDecorView());
-		//Utils.hideSystemUi(this.findViewById(R.id.glsurfaceview).getRootView());
-		
+	    setContentView(R.layout.video_player);
 		i = getIntent();
 
 		if (i!= null) {
 			Uri uri = i.getData();
 			if (uri!= null) {
-				openfileFromBrowser = uri.getEncodedPath();	
+				openfileFromBrowser = uri.getEncodedPath();
 
 				//Change from 1.6
 				String decodedOpenFileFromBrowser = null;
@@ -142,31 +135,38 @@ public class VideoPlayer extends Activity  {
 				}
 			}	
 		}
-		System.out.println("openfileFromBrowser:"+openfileFromBrowser);
+		Log.d(null, "openfileFromBrowser:"+openfileFromBrowser);
 
 		if(FileManager.isVideoFile(openfileFromBrowser)){
 			Globals.setFileName(openfileFromBrowser);	
-			System.out.println("================openfileFromBrowser:"+openfileFromBrowser+"=============");			
+			Log.d(null, "================openfileFromBrowser:"+openfileFromBrowser+"=============");			
 
 		}	
 		else {
 			Bundle extras = i.getExtras();
 			if (extras != null) {
-				String tmpFileName = extras.getString("videofilename");
+                String tmpFileName = null;
+                if (extras.containsKey("videofilenames")) {
+                    ArrayList<String> fileNames = extras.getStringArrayList("videofilenames");
+                    Globals.setFileList(fileNames);
+                    tmpFileName = fileNames.isEmpty() ? "" : fileNames.get(0);
+                } else {
+                    tmpFileName = extras.getString("videofilename");
+                }
 
 				if (FileManager.isVideoFile(tmpFileName)) {
 					Globals.setFileName(tmpFileName);
-					System.out.println("================extras.getString videofilename:"+tmpFileName+"============");
+					Log.d(null, "================extras.getString videofilename:"+tmpFileName+"============");
 				}
 			}
 		}
 
-		System.out.println("=======================Playing filename:" + Globals.fileName);
+		Log.d(null, "=======================Playing filename:" + Globals.fileName);
 
 		mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-		System.out.println("TelephoneManager : "+mgr);
+		Log.d(null, "TelephoneManager : "+mgr);
 		if(mgr != null) {
-			System.out.println("telephonemanager start");
+			Log.d(null, "telephonemanager start");
 			mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 			
 		}
@@ -184,11 +184,6 @@ public class VideoPlayer extends Activity  {
 		imgBackward = findViewById(R.id.img_vp_backward);
 		imgAspectRatio = findViewById(R.id.fs_shadow);
 
-		//trScrolledTime = findViewById(R.id.trscrolledtime);
-		//scrolledtime = (TextView) findViewById(R.id.scrolledtime);
-
-		//trScrolledTime.setVisibility(View.INVISIBLE);
-		//trScrolledTime.setVisibility(View.GONE);
 		mHideContainer = findViewById(R.id.hidecontainer);
 		mHideContainer.setOnClickListener(mVisibleListener);
 		
@@ -200,8 +195,6 @@ public class VideoPlayer extends Activity  {
 		imgForward.setOnTouchListener(imgForwardTouchListener);
 		imgBackward.setOnTouchListener(imgBackwardTouchListener);
 		mSeekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
-
-		//System.out.println("Start - InitSDL()");
 
 		initSDL();
 	}
@@ -216,33 +209,33 @@ public class VideoPlayer extends Activity  {
 			
 			wakeLock.acquire();
 		} catch (Exception e) {
-			System.out.println("Inside wake lock exception"+e.toString());
+			Log.d(null, "Inside wake lock exception" + e.toString());
 		}
-		System.out.println("Acquired wakeup lock");
+		Log.d(null, "Acquired wakeup lock");
 
 		//Native libraries loading code
 		Globals.LoadNativeLibraries();
-		System.out.println("native libraries loaded");
+		Log.d(null, "native libraries loaded");
 
 		//Audio thread initializer
 		mAudioThread = new AudioThread(this);
-		System.out.println("Audio thread initialized");
+		Log.d(null, "Audio thread initialized");
 
 		GLSurfaceView_SDL surfaceView = (GLSurfaceView_SDL) findViewById(R.id.glsurfaceview);
-		System.out.println("got the surface view:");
+		Log.d(null, "got the surface view:");
 
 		surfaceView.setOnClickListener(mGoneListener);
 
 		DemoRenderer demoRenderer = new DemoRenderer(this);
 		this.demoRenderer = demoRenderer;
 		surfaceView.setRenderer(demoRenderer); 
-		System.out.println("Set the surface view renderer");
+		Log.d(null, "Set the surface view renderer");
 
 		SurfaceHolder holder = surfaceView.getHolder();
 		holder.addCallback(surfaceView);
-		System.out.println("Added the holder callback");
+		Log.d(null, "Added the holder callback");
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-		System.out.println("Hold type set");
+		Log.d(null, "Hold type set");
 
 		surfaceView.setFocusable(true);
 		surfaceView.requestFocus();
@@ -251,18 +244,6 @@ public class VideoPlayer extends Activity  {
 		totalTime.setText(Utils.formatTime(totalDuration));
 
 		mHandler.postDelayed(seekBarUpdater, 100);
-		
-		//Hide ICS System bar/Navigation bar
-//		Window win = getWindow();
-//	     WindowManager.LayoutParams winParams = win.getAttributes();
-//	     winParams.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-//	     win.setAttributes(winParams);
-//		
-		//Utils.hideSystemUi(surfaceView);
-		//Utils.hideSystemUi(this.findViewById(R.id.glsurfaceview).getRootView());
-
-		//Utils.hideSystemUi(getWindow().getDecorView());
-		
 	}
 
 	public void restartUpdater() {
@@ -275,7 +256,7 @@ public class VideoPlayer extends Activity  {
 		private boolean stop;
 
 		public void stopIt() {
-			System.out.println("Stopped updater");
+			Log.d(null, "Stopped updater");
 			stop = true;
 		}
 
@@ -292,9 +273,6 @@ public class VideoPlayer extends Activity  {
 					totalTime.setText(Utils.formatTime(totalDuration));
 				}						
 				if (demoRenderer.fileInfoUpdated) {
-					//if (Globals.fileName != null) {
-					//	videoInfo.setText(FileManager.getFileName(Globals.fileName));
-					//}
 					demoRenderer.fileInfoUpdated = false;
 				}
 			}
@@ -314,7 +292,7 @@ public class VideoPlayer extends Activity  {
 	{
 		public void onClick(View v) 
 		{
-			System.out.println("Inside mGone Click");
+			Log.d(null, "Inside mGone Click");
 			if ((mHideContainer.getVisibility() == View.INVISIBLE) ||
 					(mHideContainer.getVisibility() == View.GONE))
 			{
@@ -352,7 +330,7 @@ public class VideoPlayer extends Activity  {
 		public void onClick(View v) 
 		{
 			//Do not hide the control panel par, when clicked
-			//System.out.println("CONTROL PANEL  LISTENER ONCLICK ");
+			//Log.d(null, "CONTROL PANEL  LISTENER ONCLICK ");
 		}
 	};
 
@@ -390,7 +368,7 @@ public class VideoPlayer extends Activity  {
 			ImageView img = (ImageView) v;				
 
 			if (event.getAction() == MotionEvent.ACTION_DOWN ) {	
-				System.out.println("Down paused:" + paused);
+				Log.d(null, "Down paused:" + paused);
 				if(paused) {
 					img.setImageResource(R.drawable.vp_play);
 				}
@@ -399,8 +377,8 @@ public class VideoPlayer extends Activity  {
 				}
 			}
 			else if (event.getAction() == MotionEvent.ACTION_UP ) {
-				System.out.println("Up paused:" + paused);		  
-				System.out.println("Total:" + demoRenderer.nativePlayerTotalDuration() + "---Current:" + demoRenderer.nativePlayerDuration());
+				Log.d(null, "Up paused:" + paused);		  
+				Log.d(null, "Total:" + demoRenderer.nativePlayerTotalDuration() + "---Current:" + demoRenderer.nativePlayerDuration());
 				if(paused) {
 					demoRenderer.nativePlayerPause();
 					seekBarUpdater = new Updater();
@@ -454,14 +432,7 @@ public class VideoPlayer extends Activity  {
 	OnSeekBarChangeListener mSeekBarChangeListener = new OnSeekBarChangeListener() {
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			//System.out.println("Should be visible:" + trScrolledTime.getVisibility());
-			//trScrolledTime.setVisibility(View.GONE);
-			//trScrolledTime.setVisibility(View.INVISIBLE);
-			//System.out.println("Should be gone:" + trScrolledTime.getVisibility());
-
 			int progress = seekBar.getProgress();
-			//System.out.println("Seeked to new progress" + (float) (progress / 10F ));
-			//System.out.println("Progress new:"+progress);
 			demoRenderer.nativePlayerSeek(progress);
 			if (!paused) {
 				restartUpdater();
@@ -477,15 +448,10 @@ public class VideoPlayer extends Activity  {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
-			// TODO Auto-generated method stub
-			//System.out.println("Progress Changed = " + progress);
-			//System.out.println("Progres change percent=" + (float) (progress / 10F ));				
 			if(fromUser) {
 				long currentSecsMoved = (long)((totalDuration * ((float) (progress / 10F ))) / 100);
 				String timeMoved = Utils.formatTime(currentSecsMoved);
-				//scrolledtime.setText(timeMoved);
 				currentTime.setText(timeMoved);
-				//resetAutoHider();
 			}
 		}
 	};
@@ -509,7 +475,8 @@ public class VideoPlayer extends Activity  {
 	private Handler mHandler = new Handler();
 
 	private Updater seekBarUpdater = new Updater();
-	private static int current_aspect_ratio_type=1; //Default Aspect Ratio of the file
+	private static int current_aspect_ratio_type=1;
+	//Default Aspect Ratio of the file
 	private static boolean paused;
 	String openfileFromBrowser = "";
 	Intent i = getIntent();

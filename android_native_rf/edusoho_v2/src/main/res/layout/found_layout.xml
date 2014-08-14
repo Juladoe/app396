@@ -1,0 +1,13 @@
+<RelativeLayout
+    android:background="@color/system_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditText
+        android:hint="搜索"
+        android:layout_margin="12dp"
+        android:background="@drawable/found_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/popup_bg"
+    android:layout_margin="20dp">
+
+    <TextView
+        android:textColor="@color/popup_color"
+        android:textSize="@dimen/popup_title"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:text="退出课程学习"
+        android:id="@+id/popup_title"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:textColor="@color/popup_color"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/popup_title"
+        android:id="@+id/popup_select_label"
+        android:text="退学原因"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:padding="10dp"
+        android:background="@drawable/card_bg"
+        android:entries="@array/exitcourse_array"
+        android:layout_margin="10dp"
+        android:layout_below="@id/popup_select_label"
+        android:id="@+id/popup_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </Spinner>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_below="@id/popup_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.edusoho.kuozhi.view.EduSohoPopBtn
+            android:textColor="@color/popup_btn_color"
+            android:id="@+id/popup_cancel_btn"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:tag="left"
+            android:background="@drawable/popup_left_btn"
+            android:text="取消"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.view.EduSohoPopBtn
+            android:tag="right"
+            android:textColor="@color/popup_btn_color"
+            android:id="@+id/popup_ok_btn"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:background="@drawable/popup_right_btn"
+            android:text="退出学习"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</RelativeLayout>

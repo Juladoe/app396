@@ -166,10 +166,44 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_margin="8dp"
+                android:id="@+id/sch_auto_learn_layout"
+                android:orientation="vertical"
+                android:layout_below="@id/sch_sel_layout"
+                android:background="@drawable/card_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="自动学习下一课时"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <CheckBox
+                        android:background="@drawable/set_check_sel"
+                        android:id="@+id/setting_auto_learn_check"
+                        android:button="@null"
+                        android:focusable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/setting_layout_one"
                 android:orientation="vertical"
                 android:layout_margin="8dp"
-                android:layout_below="@id/sch_sel_layout"
+                android:layout_below="@id/sch_auto_learn_layout"
                 android:background="@drawable/card_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

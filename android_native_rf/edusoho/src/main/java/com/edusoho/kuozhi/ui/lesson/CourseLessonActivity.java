@@ -1,15 +1,11 @@
 package com.edusoho.kuozhi.ui.lesson;
 
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,8 +22,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -43,12 +39,13 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.ViewPagerActivity;
 
-import com.edusoho.plugin.video.EduSohoVideoActivity;
+import com.edusoho.plugin.video.EduSohoVideoFragment;
+import com.edusoho.plugin.video.EdusohoVideoManagerActivity;
 import com.edusoho.plugin.video.VideoPlayerCallback;
 import com.edusoho.plugin.video.WebVideoActivity;
 import com.google.gson.reflect.TypeToken;
@@ -57,11 +54,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CourseLessonActivity extends BaseActivity {
 
@@ -73,6 +67,7 @@ public class CourseLessonActivity extends BaseActivity {
     private ViewGroup lesson_status_btn;
     private View lesson_status_layout;
     private View lesson_content;
+    protected LessonAdapter mLessonAdapter;
 
     private ViewGroup mLesson_layout;
     private Handler webViewHandler;
@@ -80,6 +75,11 @@ public class CourseLessonActivity extends BaseActivity {
 
     private static final int PLAY_VIDEO = 0001;
     private static final int SHOW_IMAGES = 0002;
+
+    private static final int FULLSCREEN = 0011;
+    private static final int NORMALSCREEN = 0012;
+
+    private static final int LOAD_LESSON_ITEM = 0100;
 
     private static final String ANDROID_UA = "Mozilla/5.0 (Linux; Android 4.4.4; Nexus 5 Build/KTU84P) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36";
@@ -132,7 +132,7 @@ public class CourseLessonActivity extends BaseActivity {
             }
         });
 
-        webViewHandler = new Handler(){
+        webViewHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -150,7 +150,17 @@ public class CourseLessonActivity extends BaseActivity {
                         }
                         break;
                     case SHOW_IMAGES:
-                        ViewPagerActivity.start(mContext, msg.arg1, (String[])msg.obj);
+                        ViewPagerActivity.start(mContext, msg.arg1, (String[]) msg.obj);
+                        break;
+                    case FULLSCREEN:
+                        hideMenuAndTools();
+                        break;
+                    case NORMALSCREEN:
+                        showMenuAndTools();
+                        break;
+                    case LOAD_LESSON_ITEM:
+                        LessonItem lessonItem = (LessonItem) msg.obj;
+                        selectLessonItem(lessonItem);
                         break;
                 }
             }
@@ -171,13 +181,20 @@ public class CourseLessonActivity extends BaseActivity {
 
         menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.RIGHT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
 
         menu.setBehindWidth(getResources().getDimensionPixelSize(R.dimen.slidingMenuWidth));
         menu.setShadowDrawable(R.drawable.card_bg);
 
         menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW, true);
+        menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+            @Override
+            public void onOpened() {
+                video_layout.setLayoutParams(new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+            }
+        });
         menu.setMenu(R.layout.lesson_menu);
 
         mLesson_layout.removeView(lesson_content);
@@ -185,8 +202,7 @@ public class CourseLessonActivity extends BaseActivity {
         loadCourseLesson(dataIntent.getIntExtra("courseId", 0));
     }
 
-    private void setWebView(WebView webView)
-    {
+    private void setWebView(WebView webView) {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
@@ -208,11 +224,9 @@ public class CourseLessonActivity extends BaseActivity {
     /**
      * js注入对象
      */
-    public class JavaScriptObj
-    {
+    public class JavaScriptObj {
         @JavascriptInterface
-        public void showHtml(String src)
-        {
+        public void showHtml(String src) {
             if (src != null && !"".equals(src)) {
                 log("src-->%s", src);
                 webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
@@ -220,8 +234,7 @@ public class CourseLessonActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void showImages(String index, String[] imageArray)
-        {
+        public void showImages(String index, String[] imageArray) {
             Message msg = webViewHandler.obtainMessage(SHOW_IMAGES);
             msg.obj = imageArray;
             msg.arg1 = Integer.parseInt(index);
@@ -229,20 +242,21 @@ public class CourseLessonActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void show(String html)
-        {
+        public void show(String html) {
             log("html-->%s", html);
         }
     }
 
     private void hideMenuAndTools() {
         isShowVideo = false;
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         mActionBar.setVisibility(View.GONE);
         lesson_status_layout.setVisibility(View.GONE);
     }
 
     private void showMenuAndTools() {
         isShowVideo = true;
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         mActionBar.setVisibility(View.VISIBLE);
         lesson_status_layout.setVisibility(View.VISIBLE);
     }
@@ -260,6 +274,7 @@ public class CourseLessonActivity extends BaseActivity {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 if ("true".equals(object)) {
+                    autoNextLesson();
                     setLearnBtnClick(courseId, lessonId, true);
                     setLayoutEnable(lesson_status_btn, false);
                 } else {
@@ -270,14 +285,12 @@ public class CourseLessonActivity extends BaseActivity {
     }
 
     /**
-     *
      * @param courseId
      * @param lessonId
      * @param isLearn
      */
     private void setLearnBtnClick(
-            final int courseId, final int lessonId, boolean isLearn)
-    {
+            final int courseId, final int lessonId, boolean isLearn) {
         if (isLearn) {
             lesson_status_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -292,6 +305,26 @@ public class CourseLessonActivity extends BaseActivity {
                     finishLesson(courseId, lessonId);
                 }
             });
+        }
+    }
+
+    protected void autoNextLesson(){
+        final LessonItem lessonItem = mLessonAdapter.getNextLessonItem();
+        if (!app.config.isAutoLearn) {
+            return;
+        }
+
+        if (lessonItem != null) {
+            LoadDialog loadDialog = LoadDialog.create(mActivity, new LoadDialog.LoadingCompleCallback() {
+                @Override
+                public void success() {
+                    Message message = webViewHandler.obtainMessage(LOAD_LESSON_ITEM);
+                    message.obj = lessonItem;
+                    message.sendToTarget();
+                }
+            });
+            loadDialog.setAutoLoadTime(500);
+            loadDialog.showAutoHide("正在跳转下一课时...");
         }
     }
 
@@ -347,8 +380,7 @@ public class CourseLessonActivity extends BaseActivity {
     }
 
     private int findLessonIndex(
-            LinkedHashMap<String, LessonItem> items, int lessonId)
-    {
+            LinkedHashMap<String, LessonItem> items, int lessonId) {
         int index = 0;
         String value = "lesson-" + lessonId;
         for (String key : items.keySet()) {
@@ -373,7 +405,7 @@ public class CourseLessonActivity extends BaseActivity {
 
                 if (items != null) {
                     ListView listView = (ListView) menu.findViewById(R.id.menu_listview);
-                    final LessonAdapter adapter = new LessonAdapter(
+                    mLessonAdapter = new LessonAdapter(
                             mContext,
                             items,
                             R.layout.menu_list_item,
@@ -385,7 +417,7 @@ public class CourseLessonActivity extends BaseActivity {
                                 }
                             });
 
-                    listView.setAdapter(adapter);
+                    listView.setAdapter(mLessonAdapter);
                     int index = findLessonIndex(items, mLessonId);
                     listView.setSelection(index);
 
@@ -393,31 +425,37 @@ public class CourseLessonActivity extends BaseActivity {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             menu.toggle();
-                            final Object item = adapterView.getItemAtPosition(i);
-                            if (mAudioPlayer != null && mAudioPlayer.isPlaying()) {
-                                mAudioPlayer.stop();
-                            }
-                            clearVideoPlayer(new NormalCallback() {
-                                @Override
-                                public void success(Object obj) {
-                                    LessonItem lesson = (LessonItem) item;
-                                    loadLessonContent(lesson);
-                                    adapter.setmCurrentLessonId(lesson.id);
-                                }
-                            });
+                            final LessonItem lesson = (LessonItem) adapterView.getItemAtPosition(i);
+                            selectLessonItem(lesson);
                         }
                     });
                 }
             }
         });
+    }
 
+    protected void selectLessonItem(final LessonItem lesson)
+    {
+        if (LessonItem.ItemType.LESSON != LessonItem.ItemType.cover(lesson.itemType)) {
+            return;
+        }
+        if (mAudioPlayer != null && mAudioPlayer.isPlaying()) {
+            mAudioPlayer.stop();
+        }
+        clearVideoPlayer(new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                loadLessonContent(lesson);
+                mLessonAdapter.setmCurrentLessonId(lesson.id);
+            }
+        });
     }
 
     private MediaPlayer mAudioPlayer;
 
     /**
      *
-    */
+     */
     private void loadLessonContent(LessonItem lesson) {
         setLearnStatus(lesson.courseId, lesson.id);
         String url = app.bindToken2Url(
@@ -441,8 +479,7 @@ public class CourseLessonActivity extends BaseActivity {
         });
     }
 
-    private void switchLessonToShow(LessonInfo items)
-    {
+    private void switchLessonToShow(LessonInfo items) {
         String content = "";
         mCurrentLessonType = CourseLessonType.value(items.type);
         switch (mCurrentLessonType) {
@@ -474,24 +511,14 @@ public class CourseLessonActivity extends BaseActivity {
         audio_layout.setVisibility(View.GONE);
         normal_lesson_content.setVisibility(View.VISIBLE);
         normal_lesson_content.loadDataWithBaseURL(null, wrapWebViewContent(content), "text/html", "UTF-8", null);
-        normal_lesson_content.loadUrl("javascript:" +
-                "var imgs = document.getElementsByTagName('img');" +
-                "var imageArray = new Array();" +
-                "for(var i=0; i < imgs.length; i++){" +
-                "imageArray.push(imgs[i].src);" +
-                "imgs[i].alt = i;" +
-                "imgs[i].addEventListener('click', " +
-                "function(){" +
-                "window.jsobj.showImages(this.alt, imageArray);" +
-                "})};");
     }
 
-    private String wrapWebViewContent(String content)
-    {
+    private String wrapWebViewContent(String content) {
         StringBuilder stringBuilder = new StringBuilder("<html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0\"></head><body>");
+                "<meta name=\"viewport\" content=\"width=device-width, target-densitydpi=device-dpi,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0\">" +
+                "<style>body{font-size: 120%}</style></head><body>");
         stringBuilder.append(content);
-        stringBuilder.append("</body></html>");
+        stringBuilder.append("<script type='text/javascript'>function getScreenWidth(){var width=window.screen.width;switch(window.orientation){case 0:width=window.screen.width;break;case 90:case-90:width=window.screen.height;break}width=width*0.98;return width}function zoomImage(img,width){var oldH=img.height;var oldW=img.width;img.width=width;img.height=width/oldW*oldH}function adaptationImage(){var width=getScreenWidth();var imgs=document.getElementsByTagName('img');for(var i=0;i<imgs.length;i++){zoomImage(imgs[i],width)}}var imageArray=new Array();var imgs=document.getElementsByTagName('img');for(var i=0;i<imgs.length;i++){var img=imgs[i];img.addEventListener('load',function(){var width=getScreenWidth();zoomImage(this,width)});img.alt=i;imageArray.push(img.src);img.addEventListener('click',function(){window.jsobj.showImages(this.alt,imageArray)})}window.addEventListener('orientationchange',function(){adaptationImage()},false);</script></body></html>");
         return stringBuilder.toString();
     }
 
@@ -505,19 +532,19 @@ public class CourseLessonActivity extends BaseActivity {
             case YOUKU:
             case TUDOU:
             case QQVIDEO:
-            case FALLBACK:
                 content = items.mediaUri;
                 video_layout.setVisibility(View.VISIBLE);
                 normal_lesson_content.setVisibility(View.GONE);
-                playWebVideo(content, false);
+                playWebVideo(content, false, mtype);
                 return;
             case NETEASEOPENCOURSE:
+                content = items.mediaUri;
                 video_layout.setVisibility(View.VISIBLE);
                 normal_lesson_content.setVisibility(View.GONE);
                 if (Build.VERSION.SDK_INT < 16) {
-                    playWebVideo(items.swfUrl, true);
+                    playWebVideo(items.swfUrl, true, mtype);
                 } else {
-                    playWebVideo(content, true);
+                    playWebVideo(content, true, mtype);
                 }
                 break;
             case SELF:
@@ -525,32 +552,25 @@ public class CourseLessonActivity extends BaseActivity {
                 video_layout.setVisibility(View.VISIBLE);
                 playVideo(items.mediaUri);
                 return;
+            case FALLBACK:
             default:
-                content = items.mediaUri;
-                if (content == null && "".equals(content)) {
-                    video_layout.setVisibility(View.GONE);
-                    normal_lesson_content.setVisibility(View.VISIBLE);
-                    normal_lesson_content.loadDataWithBaseURL(null, "客户端暂不支持此功能", "text/html", "UTF-8", null);
-                    return;
-                }
+                video_layout.setVisibility(View.GONE);
+                normal_lesson_content.setVisibility(View.VISIBLE);
+                normal_lesson_content.loadDataWithBaseURL(null, "客户端暂不支持该课程播放浏览功能", "text/html", "UTF-8", null);
         }
-    }
-
-    private void startDefaultWebBrowser(String url)
-    {
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.VIEW");
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            showMenuAndTools();
+        } else {
+            hideMenuAndTools();
+        }
     }
 
-    private void clearVideoPlayer(NormalCallback clearFinishCallback)
-    {
+    private void clearVideoPlayer(NormalCallback clearFinishCallback) {
         VideoPlayerCallback videoplayer = (VideoPlayerCallback) getLocalActivityManager()
                 .getActivity("videoplayer");
         if (videoplayer != null) {
@@ -566,16 +586,14 @@ public class CourseLessonActivity extends BaseActivity {
         mIsPlayerVideo = false;
     }
 
-    private void playWebVideo(String url, boolean isAutoScreen)
-    {
+    private void playWebVideo(String url, boolean isAutoScreen, LessonItem.MediaSourceType type) {
         Intent intent = new Intent(mContext, WebVideoActivity.class);
         if (isAutoScreen) {
             intent.putExtra(WebVideoActivity.AUTO_SCREEN, isAutoScreen);
-        } else {
-            url = "<iframe height='99%' width='100%' src='" + url + "' frameborder=0 allowfullscreen></iframe>";
         }
 
         intent.putExtra("url", url);
+        intent.putExtra("MediaSourceType", type);
         Window videoWindow = getLocalActivityManager().startActivity(
                 "videoplayer", intent);
         View rootView = videoWindow.getDecorView();
@@ -586,11 +604,11 @@ public class CourseLessonActivity extends BaseActivity {
             public void invoke(MessageModel messageModel) {
                 switch (messageModel.what) {
                     case WebVideoActivity.MESSAGE_OPEN_FULL:
-                        hideMenuAndTools();
+                        webViewHandler.obtainMessage(FULLSCREEN).sendToTarget();
                         toggleScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                         break;
                     case WebVideoActivity.MESSAGE_CLOSE_FULL:
-                        showMenuAndTools();
+                        webViewHandler.obtainMessage(NORMALSCREEN).sendToTarget();
                         toggleScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                         break;
                 }
@@ -598,37 +616,23 @@ public class CourseLessonActivity extends BaseActivity {
         });
     }
 
-    private void toggleScreenOrientation(int screenOrientation)
-    {
+    private void toggleScreenOrientation(int screenOrientation) {
         //水平
         int oldScreenOrientation = mActivity.getRequestedOrientation();
-        if (screenOrientation ==  oldScreenOrientation) {
+        if (screenOrientation == oldScreenOrientation) {
             return;
         }
         mActivity.setRequestedOrientation(screenOrientation);
     }
 
     private void playVideo(String mediaUri) {
-        Intent intent = new Intent(mContext, EduSohoVideoActivity.class);
+        Intent intent = new Intent(mContext, EdusohoVideoManagerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("url", mediaUri);
         Window videoWindow = getLocalActivityManager().startActivity(
                 "videoplayer", intent);
         View rootView = videoWindow.getDecorView();
 
-        final ImageView fullBtn = (ImageView) rootView.findViewById(R.id.custom_full_btn);
-        fullBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isShowVideo) {
-                    fullBtn.setImageResource(R.drawable.custom_full_screen);
-                    hideMenuAndTools();
-                } else {
-                    fullBtn.setImageResource(R.drawable.custom_normal_screen);
-                    showMenuAndTools();
-                }
-            }
-        });
         video_layout.addView(rootView);
     }
 

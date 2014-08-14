@@ -29,6 +29,8 @@ import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.HashMap;
+
 public class BaseActivity extends ActivityGroup {
 
     protected BaseActivity mActivity;
@@ -94,6 +96,50 @@ public class BaseActivity extends ActivityGroup {
             return title.substring(0, 10) + "...";
         }
         return title;
+    }
+
+    public boolean checkMobileVersion(HashMap<String, String> versionRange)
+    {
+        String min = versionRange.get("min");
+        String max = versionRange.get("max");
+
+        int result = AppUtil.compareVersion(app.apiVersion, min);
+        if (result == Const.LOW_VERSIO) {
+            PopupDialog dlg = PopupDialog.createMuilt(
+                    mContext,
+                    "网校提示",
+                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+                    new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            if (button == PopupDialog.OK) {
+                                app.updateApp(Const.DEFAULT_UPDATE_URL, true, new NormalCallback() {
+                                    @Override
+                                    public void success(Object obj) {
+                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
+                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+            dlg.setOkText("立即下载");
+            dlg.show();
+            return false;
+        }
+
+        result = AppUtil.compareVersion(app.apiVersion, max);
+        if (result == Const.HEIGHT_VERSIO) {
+            PopupDialog.createNormal(
+                    mContext,
+                    "网校提示",
+                    "服务器维护中，请稍后再试。"
+            ).show();
+            return false;
+        }
+
+        return true;
     }
 
     protected void showEmptyLayout(final String text)
@@ -216,11 +262,16 @@ public class BaseActivity extends ActivityGroup {
                 }
 
                 if (code != Const.OK) {
-                    longToast("网络访问异常！请检查是否链接网络。");
+                    longToast("网络访问异常！请检查网络设置。");
                     rcl.error(url, status);
                     return;
                 }
-                rcl.callback(url,object,status);
+                try {
+                    rcl.callback(url,object,status);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    rcl.error(url, status);
+                }
             }
         });
     }
@@ -235,11 +286,16 @@ public class BaseActivity extends ActivityGroup {
                     return;
                 }
                 if (code != Const.OK) {
-                    longToast("网络访问异常！请检查是否链接网络。");
+                    longToast("网络访问异常！请检查网络设置。");
                     rcl.error(url, status);
                     return;
                 }
-                rcl.callback(url,object,status);
+                try {
+                    rcl.callback(url,object,status);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    rcl.error(url, status);
+                }
             }
         });
     }
@@ -292,14 +348,14 @@ public class BaseActivity extends ActivityGroup {
         public void error(View errorBtn);
     }
 
-    public void updateApp()
+    protected void updateApp()
     {
-        app.updateApp(false, new NormalCallback() {
+        app.updateApp("http://open.edusoho.com/mobile/meta.php", false, new NormalCallback() {
             @Override
             public void success(Object obj) {
                 final AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
                 String newVersion = appUpdateInfo.androidVersion;
-                int result = AppUtil.compareVersion(app.apiVersion, newVersion);
+                int result = AppUtil.compareVersion(app.getApkVersion(), newVersion);
                 if (result == Const.LOW_VERSIO) {
                     PopupDialog.createMuilt(
                             mActivity,
