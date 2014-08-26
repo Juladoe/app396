@@ -3,7 +3,6 @@ package com.edusoho.kuozhi;
 import android.app.Activity;
 import android.os.Bundle;
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.*;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
@@ -12,6 +11,7 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.crashlytics.android.Crashlytics;
 
 public class KuozhiActivity extends BaseActivity {
 
@@ -22,6 +22,7 @@ public class KuozhiActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kuozhi_start);
         mActivity = this;
+        Crashlytics.start(this);
         initApp();
     }
 
@@ -31,8 +32,10 @@ public class KuozhiActivity extends BaseActivity {
     }
 
     private void initApp() {
-        if (app.host == null || "".equals(app.host)) {
-            startApp();
+        if (app.defaultSchool == null || !app.config.startWithSchool) {
+            app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
             return;
         }
 
@@ -67,7 +70,6 @@ public class KuozhiActivity extends BaseActivity {
                         if (!checkMobileVersion(site.apiVersionRange)) {
                             return;
                         }
-                        ;
 
                         app.setCurrentSchool(site);
                         startApp();
@@ -85,15 +87,7 @@ public class KuozhiActivity extends BaseActivity {
     }
 
     private void startApp() {
-        EdusohoApp app = (EdusohoApp) getApplication();
-        if (app.config.startWithSchool && app.defaultSchool != null) {
-            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-            return;
-        }
-
-        app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
+        app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }

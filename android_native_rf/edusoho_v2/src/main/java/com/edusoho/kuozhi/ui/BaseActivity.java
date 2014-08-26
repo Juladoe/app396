@@ -80,7 +80,7 @@ public class BaseActivity extends ActivityGroup {
             return;
         }
 
-        app.sendMessage(SplashActivity.INIT_APP, new MessageModel(null));
+        app.sendMessage(SplashActivity.INIT_APP, null);
     }
 
     public String wrapUrl(String url, String... params)

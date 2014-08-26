@@ -74,7 +74,7 @@ public class SchoolCourseActivity extends BaseActivity {
     public Activity mActivity;
     private LayoutInflater mInflater;
     private CourseMenu mCourseMenu;
-    private HashMap<Integer, Adapter> adapterHashMap;
+    private HashMap<Integer, CourseListAdapter> adapterHashMap;
 
     public static final String TAG = "SchoolCourseActivity";
     public static final String REFRESH_COURSE = "refresh";
@@ -162,7 +162,7 @@ public class SchoolCourseActivity extends BaseActivity {
 			}
 		});
 
-        adapterHashMap = new HashMap<Integer, Adapter>();
+        adapterHashMap = new HashMap<Integer, CourseListAdapter>();
         mCourseMenu = new CourseMenu("", "类别", "");
         app.addTask(TAG, this);
 	}
@@ -307,9 +307,18 @@ public class SchoolCourseActivity extends BaseActivity {
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
+                int currentIndex = content_pager.getCurrentItem();
+                CourseListAdapter adapter = adapterHashMap.get(currentIndex);
+                if (adapter != null && adapter.getCount() > 0) {
+                    longToast("网络数据加载错误！请重新尝试刷新。");
+                    return;
+                }
                 showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
                     @Override
                     public void error(View errorBtn) {
+                        parent.removeAllViews();
+                        View course_content = mInflater.inflate(R.layout.course_content, null);
+                        parent.addView(course_content);
                         setPagerContent(parent);
                     }
                 });

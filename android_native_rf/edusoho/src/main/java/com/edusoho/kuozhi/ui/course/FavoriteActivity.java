@@ -71,8 +71,6 @@ public class FavoriteActivity extends BaseActivity {
             return;
         }
 
-        View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
-        mFavoirteContent.addView(course_content);
         setPagerContent(mFavoirteContent, false);
     }
 
@@ -95,6 +93,8 @@ public class FavoriteActivity extends BaseActivity {
 
     private void setPagerContent(ViewGroup parent, boolean showLoading)
     {
+        View course_content = getLayoutInflater().inflate(R.layout.course_content, null);
+        parent.addView(course_content);
         loadCourse(0, false, showLoading);
     }
 
@@ -112,6 +112,10 @@ public class FavoriteActivity extends BaseActivity {
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
                 super.error(url, ajaxStatus);
+                if (mAdapter != null && mAdapter.getCount() > 0) {
+                    longToast("网络数据加载错误！请重新尝试刷新。");
+                    return;
+                }
                 showErrorLayout("网络数据加载错误！请重新尝试刷新。", new ListErrorListener() {
                     @Override
                     public void error(View errorBtn) {

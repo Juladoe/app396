@@ -167,7 +167,7 @@ public class SettingActivity extends BaseActivity
     private void loadUser()
     {
         if (app.loginUser == null) {
-            aq.id(R.id.setting_user_nickname).text("点击登录网校");
+            aq.id(R.id.setting_user_nickname).text("点击登录");
             aq.id(R.id.setting_user_info).text("暂无个人简介");
             return;
         }
@@ -205,7 +205,7 @@ public class SettingActivity extends BaseActivity
                 if ("true".equals(object)) {
                     app.removeToken();
                     aq.id(R.id.setting_user_avatar).image(R.drawable.course_teacher_avatar);
-                    aq.id(R.id.setting_user_nickname).text("点击登录网校");
+                    aq.id(R.id.setting_user_nickname).text("点击登录");
                     aq.id(R.id.setting_user_info).text("暂无个人简介");
                     aq.id(R.id.setting_logout_btn).visibility(View.GONE);
                     aq.id(R.id.setting_user_layout).enabled(true);

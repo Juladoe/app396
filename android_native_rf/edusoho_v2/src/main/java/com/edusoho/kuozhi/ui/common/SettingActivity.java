@@ -105,7 +105,6 @@ public class SettingActivity extends BaseActivity
         aq.id(R.id.setting_about_layout).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AboutActivity.start(mActivity);
             }
         });
 

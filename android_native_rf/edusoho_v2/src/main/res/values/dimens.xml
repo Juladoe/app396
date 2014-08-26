@@ -63,4 +63,17 @@
     <dimen name="recommend_announcement_label">22sp</dimen>
     <dimen name="recommend_view_more">18sp</dimen>
     <dimen name="material_normal_btn">18sp</dimen>
+    <dimen name="found_search_text">18sp</dimen>
+    <dimen name="found_search_text_icon">22sp</dimen>
+    <dimen name="found_list_item_text">22sp</dimen>
+    <dimen name="myinfo_plugin_list_item_text">18sp</dimen>
+    <dimen name="myinfo_name">16sp</dimen>
+    <dimen name="myinfo_group">12sp</dimen>
+    <dimen name="myinfo_content">14sp</dimen>
+    <dimen name="learn_status_widget_learnbtn">15sp</dimen>
+
+    <dimen name="search_popwindow_cancel_btn">18dp</dimen>
+    <dimen name="login_btn_text">22sp</dimen>
+    <dimen name="login_edt_text">18dp</dimen>
+    <dimen name="more_setting_text">18sp</dimen>
 </resources>

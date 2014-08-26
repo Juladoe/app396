@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -576,6 +577,7 @@ public class CourseInfoActivity extends BaseActivity {
             final View parent, int start, final boolean isAppend, final boolean showLoading) {
 
         StringBuilder params = new StringBuilder(wrapUrl(Const.COMMENTLIST, mCourseId));
+        Log.d(null, "start->" + start);
         params.append("?start=").append(start);
         if (showLoading) {
             View load_layout = parent.findViewById(R.id.load_layout);
@@ -609,32 +611,7 @@ public class CourseInfoActivity extends BaseActivity {
                     );
 
                     listCommentView.setAdapter(cllAdapter);
-
-                    listCommentView.setMoveListener(new MoveListener() {
-                        @Override
-                        public void moveToBottom() {
-                            if (listCommentView.isShowMoreBtn()) {
-                                return;
-                            }
-
-                            int startPage = parent.getTag() == null ? 0 : (Integer) parent.getTag();
-                            if (startPage > result.total) {
-                                return;
-                            }
-
-                            listCommentView.showMoreBtn();
-                            getComments(parent, startPage, true, false);
-                        }
-                    });
-
-                } else {
-                    cllAdapter = (CourseCommentListAdapter) listCommentView.getAdapter();
-                    cllAdapter.addItem(result.data);
                 }
-
-                int start = result.start + Const.LIMIT;
-                parent.setTag(start);
-
                 listCommentView.hideMoreBtn();
             }
 

@@ -47,6 +47,8 @@
 
     <style name="courseRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/course_ratingbar</item>
+        <item name="android:width">27px</item>
+        <item name="android:height">27px</item>
         <item name="android:minHeight">27px</item>
         <item name="android:maxHeight">27dp</item>
         <item name="android:minWidth">27px</item>
@@ -64,16 +66,35 @@
     </style>
 
     <style name="EdusohoAppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
         <item name="titleTextStyle">@style/CustomTitleTextStyle</item>
         <item name="android:actionBarStyle">@style/EdusohoActionBarStyle</item>
         <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>
+        <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
+        <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
+    </style>
+
+    <style name="EdusohoActionBarMenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="EdusohoActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:indeterminateProgressStyle">@style/EdusohoIndeterminateProgress</item>
         <item name="android:background">@drawable/action_bar_bg</item>
         <item name="background">@drawable/action_bar_bg</item>
         <item name="android:titleTextStyle">@style/EdusohoActionBarTextStyle</item>
         <item name="titleTextStyle">@style/EdusohoActionBarTextStyle</item>
+    </style>
+
+    <style name="EdusohoIndeterminateProgress" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/load</item>
+        <item name="android:minWidth">24dp</item>
+        <item name="android:maxWidth">24dp</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:maxHeight">24dp</item>
+        <item name="android:layout_margin">3dp</item>
     </style>
 
     <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">
@@ -91,4 +112,10 @@
         <item name="android:maxWidth">322px</item>
     </style>
 
+    <style name="SearchDialogTheme">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@color/search_popwindow_bg</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

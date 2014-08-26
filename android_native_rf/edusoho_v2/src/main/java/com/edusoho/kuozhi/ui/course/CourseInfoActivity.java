@@ -808,8 +808,8 @@ public class CourseInfoActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         if (mCourseInfo != null) {
-            app.sendMessage(FavoriteActivity.REFRESH_DATA, new MessageModel(mCourseInfo.id, mFavoriteStatus));
-            app.sendMessage(LearningActivity.REFRESH_DATA, new MessageModel(mCourseInfo.id, mIsStudent));
+            //app.sendMessage(FavoriteActivity.REFRESH_DATA, new MessageModel(mCourseInfo.id, mFavoriteStatus));
+            //app.sendMessage(LearningActivity.REFRESH_DATA, new MessageModel(mCourseInfo.id, mIsStudent));
         }
         app.delMessageListener(VIEW_LESSON);
         super.onDestroy();

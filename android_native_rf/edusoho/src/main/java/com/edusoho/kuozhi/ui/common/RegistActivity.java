@@ -38,60 +38,64 @@ public class RegistActivity extends BaseActivity {
         findViewById(R.id.regist_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CharSequence email = aq.id(R.id.regist_email_edt).getText();
+                String email = aq.id(R.id.regist_email_edt).getText().toString();
                 if (TextUtils.isEmpty(email)) {
                     longToast("请输入邮箱地址");
                     return;
                 }
 
-                CharSequence user =  aq.id(R.id.regist_user_edt).getText();
+                String user =  aq.id(R.id.regist_user_edt).getText().toString();
                 if (TextUtils.isEmpty(user)) {
                     longToast("请输入昵称");
                     return;
                 }
 
-                CharSequence pass =  aq.id(R.id.regist_pass_edt).getText();
+                String pass =  aq.id(R.id.regist_pass_edt).getText().toString();
                 if (TextUtils.isEmpty(pass)) {
                     longToast("请输入密码");
                     return;
                 }
 
-                StringBuffer params = new StringBuffer();
-                params.append("?email=").append(email);
-                params.append("&nickname=").append(user);
-                params.append("&password=").append(pass);
+                registUser(email, user, pass);
+            }
+        });
+    }
 
-                String url = app.bindToken2Url(Const.REGIST + params.toString(), false);
+    protected void registUser(String email, String user, String pass)
+    {
+        StringBuffer params = new StringBuffer();
+        params.append("?email=").append(email);
+        params.append("&nickname=").append(user);
+        params.append("&password=").append(pass);
 
-                ajaxGetString(url, new ResultCallback() {
-                    @Override
-                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                        if (ajaxStatus.getCode() != Const.OK) {
-                            longToast("网络异常！");
-                            return;
-                        }
-                        TokenResult result = app.gson.fromJson(
-                                object, new TypeToken<TokenResult>(){}.getType());
-                        if (result != null) {
-                            app.saveToken(result);
-                            PopupDialog.createMuilt(
-                                    mContext,
-                                    "注册成功",
-                                    "恭喜你！网校账号注册成功！",
-                                    new PopupDialog.PopupClickListener() {
-                                    @Override
-                                    public void onClick(int button) {
-                                        setResult(RESULT);
-                                        finish();
-                                    }
+        String url = app.bindToken2Url(Const.REGIST + params.toString(), false);
+
+        ajaxGetString(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                if (ajaxStatus.getCode() != Const.OK) {
+                    longToast("网络异常！");
+                    return;
+                }
+                TokenResult result = app.gson.fromJson(
+                        object, new TypeToken<TokenResult>(){}.getType());
+                if (result != null) {
+                    app.saveToken(result);
+                    PopupDialog.createMuilt(
+                            mContext,
+                            "注册成功",
+                            "恭喜你！网校账号注册成功！",
+                            new PopupDialog.PopupClickListener() {
+                                @Override
+                                public void onClick(int button) {
+                                    setResult(RESULT);
+                                    finish();
+                                }
                             }).show();
-                        } else {
-                            PopupDialog.createNormal(
-                                    mContext, "注册失败", "账号注册失败！请重新尝试！").show();
-                        }
-                    }
-                });
-
+                } else {
+                    PopupDialog.createNormal(
+                            mContext, "注册失败", "账号注册失败！请重新尝试！").show();
+                }
             }
         });
     }

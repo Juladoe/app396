@@ -57,7 +57,9 @@ public class CourseListWidget extends LinearLayout {
 
     private View initLoadView()
     {
-        return LayoutInflater.from(mContext).inflate(R.layout.loading_layout, null);
+        View loadView = LayoutInflater.from(mContext).inflate(R.layout.loading_layout, null);
+        loadView.findViewById(R.id.load_text).setVisibility(View.GONE);
+        return loadView;
     }
 
     private View createShowMoreBtn()

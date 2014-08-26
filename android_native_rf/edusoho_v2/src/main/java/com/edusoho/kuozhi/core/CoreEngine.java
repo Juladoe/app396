@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.core.model.PluginModel;
+import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -51,6 +52,7 @@ public class CoreEngine {
     private static final String INSTALL = "install";
     private static CoreEngine engine;
     public AppCache appCache;
+    private MessageEngine messageEngine;
 
 
     private ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>> mMessageMap;
@@ -70,6 +72,11 @@ public class CoreEngine {
         }
         callbackList.add(callback);
         mMessageMap.put(msgId, callbackList);
+    }
+
+    public MessageEngine getMessageEngine()
+    {
+        return messageEngine;
     }
 
     public void removeMsg(String msgId)
@@ -113,8 +120,9 @@ public class CoreEngine {
     }
 
     public void runService(
-            String serviceName, Activity serverActivity, PluginRunCallback callback)
+            String serviceName, Context serverActivity, PluginRunCallback callback)
     {
+        Log.d(null, "name->" + serviceName + mPluginModelHashMap);
         PluginModel pluginModel = mPluginModelHashMap.get(serviceName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -127,18 +135,21 @@ public class CoreEngine {
         }
     }
 
-    public Fragment runPluginWithFragment(String pluginName, Activity activity, PluginFragmentCallback callback)
+    public BaseFragment runPluginWithFragment(String pluginName, Activity activity, PluginFragmentCallback callback)
     {
-        Fragment fragment = null;
+        BaseFragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
-            fragment = Fragment.instantiate(activity, pluginModel.packAge);
+            fragment = (BaseFragment) Fragment.instantiate(activity, pluginModel.packAge);
             if (callback != null) {
-                callback.setArguments(fragment.getArguments());
+                Bundle bundle = new Bundle();
+                fragment.setArguments(bundle);
+                callback.setArguments(bundle);
             }
+
             return fragment;
         }
-        return new Fragment();
+        return null;
     }
 
     public View runNormalPluginInGroup(
@@ -224,11 +235,23 @@ public class CoreEngine {
         method.invoke(instance, params);
     }
 
+    public void registMsgSrc(MessageEngine.MessageCallback source)
+    {
+        messageEngine.registMessageSource(source);
+    }
+
+    public void unRegistMessageSource(MessageEngine.MessageCallback source)
+    {
+        messageEngine.unRegistMessageSource(source);
+    }
+
     private void init()
     {
         appCache = AppCache.getInstance();
+        messageEngine = MessageEngine.init();
         mMessageMap = new ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>>();
         initPluginFromXml();
+
         try{
             PackageManager packageManager = mContext.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(mContext.getPackageName(), 1);

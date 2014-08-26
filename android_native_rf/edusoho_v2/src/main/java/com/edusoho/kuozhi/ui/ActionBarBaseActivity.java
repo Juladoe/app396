@@ -2,15 +2,18 @@ package com.edusoho.kuozhi.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +22,8 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.model.*;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
@@ -43,19 +48,36 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     protected Context mContext;
     public EdusohoApp app;
     protected ActionBar mActionBar;
+    protected CoreEngine mCoreEngine;
     public Gson gson;
     protected FragmentManager mFragmentManager;
+    private TextView mTitleTextView;
+
+    protected EdusohoMainService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         mActivity = this;
         mContext = this;
         app = (EdusohoApp) getApplication();
         app.setDisplay(this);
         gson = app.gson;
+        mCoreEngine = app.mEngine;
+        mService = app.getService();
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
+    }
+
+    public CoreEngine getCoreEngine()
+    {
+        return mCoreEngine;
+    }
+
+    public Bitmap getBitmap(int redId)
+    {
+        return app.query.getCachedImage(redId);
     }
 
     public void runService(String serviceName)
@@ -84,15 +106,25 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.hide();
     }
 
+    public void showActionBar()
+    {
+        mActionBar.show();
+    }
+
+    public void setTitle(String title)
+    {
+        mTitleTextView.setText(title == null ? "" : title);
+    }
+
     public void setBackMode(String backTitle, String title)
     {
-        TextView titleTextView = (TextView) getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
-        titleTextView.setText(title);
+        mTitleTextView = (TextView) getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
 
-        mActionBar.setCustomView(titleTextView, layoutParams);
+        mActionBar.setCustomView(mTitleTextView, layoutParams);
         mActionBar.setDisplayUseLogoEnabled(false);
 
         if (backTitle == null) {
@@ -107,6 +139,14 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.setDisplayShowCustomEnabled(true);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public void startSplash() {
         if (app.config.showSplash) {
             app.mEngine.runNormalPlugin("SplashActivity", this, null);
@@ -115,7 +155,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             return;
         }
 
-        app.sendMessage(SplashActivity.INIT_APP, new MessageModel(null));
+        app.sendMessage(SplashActivity.INIT_APP, null);
     }
 
     public String wrapUrl(String url, String... params)
@@ -288,12 +328,49 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
+    public void ajaxPostByLoding(
+            String url, HashMap<String, String> params, final ResultCallback rcl)
+    {
+        final LoadDialog loading = LoadDialog.create(mContext);
+        loading.show();
+        app.postUrl(url, params, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                if (loading != null) {
+                    loading.dismiss();
+                }
+                if (!app.getNetStatus()) {
+                    longToast("没有网络服务！请检查网络设置。");
+                    return;
+                }
+                int code = status.getCode();
+                if (handlerError(object)) {
+                    return;
+                }
+                if (code != Const.OK) {
+                    longToast("服务器访问异常！请检查网络设置。");
+                    rcl.error(url, status);
+                    return;
+                }
+                try {
+                    rcl.callback(url,object,status);
+                }catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+        });
+    }
+
     public void ajaxPost(
             String url, HashMap<String, String> params, final ResultCallback rcl)
     {
-        app.postUrl(url, params, String.class, new AjaxCallback<String>(){
+        app.postUrl(url, params, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
+                if (!app.getNetStatus()) {
+                    longToast("没有网络服务！请检查网络设置。");
+                    return;
+                }
                 int code = status.getCode();
                 if (handlerError(object)) {
                     return;

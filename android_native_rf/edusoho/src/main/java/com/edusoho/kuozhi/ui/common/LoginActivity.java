@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -56,7 +57,7 @@ public class LoginActivity extends BaseActivity {
 
     public static void startForResult(Activity context)
     {
-        EdusohoApp.app.mEngine.runNormalPluginForResult("", context, LOGIN, null);
+        EdusohoApp.app.mEngine.runNormalPluginForResult("LoginActivity", context, LOGIN, null);
     }
 
     @Override
@@ -88,8 +89,9 @@ public class LoginActivity extends BaseActivity {
 
     private void showQrResultDlg(final String result)
     {
+        Log.d(null, "qr result->" + result + " app.host->" + app.host);
         if (!result.startsWith(app.host)) {
-            longToast("请登录" + getString(R.string.app_name) + "－网校！");
+            longToast("请登录" + app.defaultSchool.name + "－网校！");
             return;
         }
 
@@ -187,25 +189,30 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
 
-                StringBuffer params = new StringBuffer(Const.LOGIN);
-                params.append("?_username=").append(email);
-                params.append("&_password=").append(pass);
+                loginUser(email, pass);
+            }
+        });
+    }
 
-                String url = app.bindToken2Url(params.toString(), false);
-                ajaxGetString(url, new ResultCallback(){
-                    @Override
-                    public void callback(String url, String object, AjaxStatus status) {
-                        TokenResult result = app.gson.fromJson(
-                                object, new TypeToken<TokenResult>(){}.getType());
-                        if (result != null) {
-                            app.saveToken(result);
-                            setResult(OK);
-                            finish();
-                        } else {
-                            longToast("用户名或密码错误！");
-                        }
-                    }
-                });
+    protected void loginUser(String email, String pass)
+    {
+        StringBuffer params = new StringBuffer(Const.LOGIN);
+        params.append("?_username=").append(email);
+        params.append("&_password=").append(pass);
+
+        String url = app.bindToken2Url(params.toString(), false);
+        ajaxGetString(url, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                TokenResult result = app.gson.fromJson(
+                        object, new TypeToken<TokenResult>(){}.getType());
+                if (result != null) {
+                    app.saveToken(result);
+                    setResult(OK);
+                    finish();
+                } else {
+                    longToast("用户名或密码错误！");
+                }
             }
         });
     }

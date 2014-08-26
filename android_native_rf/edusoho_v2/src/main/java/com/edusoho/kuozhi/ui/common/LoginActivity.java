@@ -5,35 +5,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.View;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.TokenResult;
-import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
-import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.ui.fragment.LoginFragment;
+import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.NormalCallback;
-import com.edusoho.listener.ResultCallback;
-import com.edusoho.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+import java.util.List;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends ActionBarBaseActivity {
     public static final int EXIT = 1002;
     public static final int LOGIN = 1001;
     public static final int OK = 1003;
-    private AQuery aq;
+    public static final int LOGIN_TYPE = 1010;
+    public static final int REGIST_TYPE = 1011;
 
+    public static final String FRAGMENT_TYPE = "fragment_type";
+    private int mFramgmentType = LOGIN_TYPE;
     private Handler workHandler;
 
     @Override
@@ -55,16 +53,6 @@ public class LoginActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(context, LoginActivity.class);
         context.startActivityForResult(intent, LOGIN);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            setResult(EXIT);
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -141,70 +129,36 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initView() {
-        setBackMode("登录", true, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setResult(EXIT);
-                finish();
-            }
-        });
+        Intent data = getIntent();
+        if (data != null) {
+            mFramgmentType = data.getIntExtra(FRAGMENT_TYPE, LOGIN_TYPE);
+        }
 
-        workHandler = new Handler();
-        aq = new AQuery(this);
+        setBackMode(BACK, mFramgmentType == LOGIN_TYPE ? "登录" : "注册");
 
-        aq.id(R.id.regist_btn).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent registIntent = new Intent();
-                registIntent.setClass(mContext, RegistActivity.class);
-                startActivityForResult(registIntent, RegistActivity.REQUEST);
-            }
-        });
+        String tag = null;
+        switch (mFramgmentType) {
+            case LOGIN_TYPE:
+                tag = LoginFragment.TAG;
+                break;
+            case REGIST_TYPE:
+                tag = RegistFragment.TAG;
+                break;
+        }
+        showFragment(tag);
+    }
 
-        aq.id(R.id.qr_login_btn).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent qrIntent = new Intent();
-                qrIntent.setClass(mContext, CaptureActivity.class);
-                startActivityForResult(qrIntent, QrSchoolActivity.REQUEST_QR);
-            }
-        });
+    public void showFragment(String tag)
+    {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        BaseFragment fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+        fragmentTransaction.replace(R.id.login_container, fragment);
+        List<Fragment> fragmentList =  mFragmentManager.getFragments();
+        if (fragmentList != null && ! fragmentList.isEmpty()) {
+            fragmentTransaction.addToBackStack(tag);
+        }
 
-        aq.id(R.id.login_btn).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = aq.id(R.id.login_email_edt).getText().toString();
-                if (TextUtils.isEmpty(email)) {
-                    longToast("请输入用户名或者邮箱");
-                    return;
-                }
-
-                String pass = aq.id(R.id.login_pass_edt).getText().toString();
-                if (TextUtils.isEmpty(pass)) {
-                    longToast("请输入密码");
-                    return;
-                }
-
-                StringBuffer params = new StringBuffer(Const.LOGIN);
-                params.append("?_username=").append(email);
-                params.append("&_password=").append(pass);
-
-                String url = app.bindToken2Url(params.toString(), false);
-                ajaxGetString(url, new ResultCallback(){
-                    @Override
-                    public void callback(String url, String object, AjaxStatus status) {
-                        TokenResult result = app.gson.fromJson(
-                                object, new TypeToken<TokenResult>(){}.getType());
-                        if (result != null) {
-                            app.saveToken(result);
-                            setResult(OK);
-                            finish();
-                        } else {
-                            longToast("用户名或密码错误！");
-                        }
-                    }
-                });
-            }
-        });
+        fragmentTransaction.commit();
+        setTitle(fragment.getTitle());
     }
 }

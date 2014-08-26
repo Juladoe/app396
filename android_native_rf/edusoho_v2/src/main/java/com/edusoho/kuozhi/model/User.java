@@ -8,7 +8,7 @@ public class User {
     public String email;
     public int id;
     public String smallAvatar;
-    public String[] roles;
+    public UserRole[] roles;
     public String password;
     public String salt;
     public String uri;

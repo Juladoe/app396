@@ -570,20 +570,23 @@ public class CourseLessonActivity extends BaseActivity {
         }
     }
 
-    private void clearVideoPlayer(NormalCallback clearFinishCallback) {
+    private void clearVideoPlayer(final NormalCallback clearFinishCallback) {
         VideoPlayerCallback videoplayer = (VideoPlayerCallback) getLocalActivityManager()
                 .getActivity("videoplayer");
-        if (videoplayer != null) {
-            videoplayer.clear(new NormalCallback() {
-                @Override
-                public void success(Object obj) {
-                    getLocalActivityManager().removeAllActivities();
-                    video_layout.removeAllViews();
-                }
-            });
-        }
-        clearFinishCallback.success(null);
+
         mIsPlayerVideo = false;
+        if (videoplayer == null) {
+            clearFinishCallback.success(null);
+            return;
+        }
+        videoplayer.clear(new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                getLocalActivityManager().removeAllActivities();
+                video_layout.removeAllViews();
+                clearFinishCallback.success(null);
+            }
+        });
     }
 
     private void playWebVideo(String url, boolean isAutoScreen, LessonItem.MediaSourceType type) {
@@ -597,6 +600,7 @@ public class CourseLessonActivity extends BaseActivity {
         Window videoWindow = getLocalActivityManager().startActivity(
                 "videoplayer", intent);
         View rootView = videoWindow.getDecorView();
+
         video_layout.addView(rootView);
 
         app.addMessageListener(WebVideoActivity.MESSAGE_ID, new CoreEngineMsgCallback() {

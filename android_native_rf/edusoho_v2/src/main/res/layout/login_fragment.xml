@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="21dp"
+    android:paddingRight="21dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="31dp"
+        android:id="@+id/input_email_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingBottom="3dp"
+            android:layout_centerVertical="true"
+            android:paddingLeft="12dp"
+            android:textSize="@dimen/login_edt_text"
+            android:text="账号"
+            android:layout_width="88dp"
+            android:textColor="@color/system_light_text"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_centerVertical="true"
+            android:paddingLeft="88dp"
+            android:background="@drawable/login_edt_bg_sel"
+            android:textSize="@dimen/login_edt_text"
+            android:textColorHint="@color/login_edt_hit"
+            android:singleLine="true"
+            android:id="@+id/login_email_edt"
+            android:hint="输入用户名/Email地址"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginBottom="42dp"
+        android:id="@+id/input_pass_layout"
+        android:layout_below="@id/input_email_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingBottom="3dp"
+            android:layout_centerVertical="true"
+            android:paddingLeft="12dp"
+            android:textSize="@dimen/login_edt_text"
+            android:text="密码"
+            android:layout_width="88dp"
+            android:textColor="@color/system_light_text"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:paddingLeft="88dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/login_edt_bg_sel"
+            android:textSize="@dimen/login_edt_text"
+            android:textColorHint="@color/login_edt_hit"
+            android:singleLine="true"
+            android:id="@+id/login_pass_edt"
+            android:inputType="textPassword"
+            android:hint="输入密码"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/login_btn"
+        android:padding="14dp"
+        android:textSize="@dimen/login_btn_text"
+        android:textColor="@color/login_text"
+        android:text="登  录"
+        android:background="@drawable/login_btn_sel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_pass_layout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:gravity="center"
+        android:layout_marginTop="14dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/login_btn"
+        android:id="@+id/login_regist_btn"
+        android:clickable="true"
+        android:paddingTop="8dp"
+        android:textColor="@color/login_regist_btn_sel"
+        android:paddingBottom="8dp"
+        android:textSize="@dimen/enter_sch_size"
+        android:text="免费注册"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

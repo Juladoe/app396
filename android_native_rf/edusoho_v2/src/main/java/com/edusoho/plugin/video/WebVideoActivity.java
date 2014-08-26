@@ -331,14 +331,14 @@ public class WebVideoActivity extends Activity implements VideoPlayerCallback{
     private void fullScreen()
     {
         isFullScreen = true;
-        EdusohoApp.app.sendMessage(MESSAGE_ID, new MessageModel(MESSAGE_OPEN_FULL));
+        //EdusohoApp.app.sendMessage(MESSAGE_ID, new MessageModel(MESSAGE_OPEN_FULL));
     }
 
     private void hide()
     {
         isFullScreen = false;
 
-        EdusohoApp.app.sendMessage(MESSAGE_ID, new MessageModel(MESSAGE_CLOSE_FULL));
+        //EdusohoApp.app.sendMessage(MESSAGE_ID, new MessageModel(MESSAGE_CLOSE_FULL));
         if (mView == null) {
             return;
         }

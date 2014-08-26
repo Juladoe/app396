@@ -3,32 +3,48 @@ package com.kuozhiv2;
 import android.os.Bundle;
 
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
-import com.edusoho.kuozhi.core.model.MessageModel;
+import com.edusoho.kuozhi.core.MessageEngine;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
+import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
+
 import com.edusoho.kuozhi.ui.SplashActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-public class KuozhiActivity extends ActionBarBaseActivity {
+public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kuozhi_start);
-        app.addMessageListener(SplashActivity.INIT_APP, new CoreEngineMsgCallback() {
-            @Override
-            public void invoke(MessageModel obj) {
-                initApp();
-            }
-        });
+        app.registMsgSource(this);
         startSplash();
+    }
+
+    @Override
+    protected void onDestroy() {
+        app.unRegistMsgSource(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(MessageType.NONE, SplashActivity.INIT_APP)
+        };
+
+        return messageTypes;
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        initApp();
     }
 
     private void initApp() {

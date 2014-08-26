@@ -24,15 +24,15 @@ public class Const {
 
     public static final String SEARCH = "search";
     public static final String REGIST_DEVICE = "regist_device";
-    public static final String COURSES = "courses";
+    public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "courses/";
     public static final String COURSELESSON = "courses/{courseId}/items?";
-    public static final String CHECKTOKEN = "login_with_token?";
-    public static final String REGIST = "user_register";
-    public static final String LOGIN = "login";
+    public static final String CHECKTOKEN = "User/loginWithToken";
+    public static final String REGIST = "User/regist";
+    public static final String LOGIN = "User/login";
     public static final String ADDCOMMENT = "courses/{courseId}/review_create";
     public static final String COMMENTLIST = "courses/{courseId}/reviews";
-    public static final String ABOUT = "about";
+    public static final String ABOUT = "School/getSchoolInfo";
     public static final String COURSE_COLUMN = "course_column";
     public static final String NOTICE = "me/notifications?";
     public static final String LEARNING = "me/learning_courses";
@@ -44,7 +44,7 @@ public class Const {
     public static final String REFUNDCOURSE = "courses/{courseId}/refund";
     public static final String CHECKORDER = "courses/{courseId}/can_learn?";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
-    public static final String VERIFYVERSION = "/systeminfo";
+    public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "logout?";
     public static final String LESSONITEM = "courses//lessons/?";
     public static final String LEARNSTATUS = "courses/{courseId}/lessons/{lessonId}/learn_status";
@@ -54,6 +54,9 @@ public class Const {
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";
     public static final String RECOMMEND_COURSES = "School/getRecommendCourses";
     public static final String WEEK_COURSES = "School/getWeekRecommendCourses";
+    public static final String CATEGORY = "Category/getCategories";
+    public static final String CATEGORYS = "Category/getAllCategories";
+    public static final String USERTERMS = "School/getUserterms";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;

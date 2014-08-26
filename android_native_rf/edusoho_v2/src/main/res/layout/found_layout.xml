@@ -1,13 +1,50 @@
 <RelativeLayout
-    android:background="@color/system_bg"
+    android:background="@color/found_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditText
-        android:hint="搜索"
-        android:layout_margin="12dp"
+    <LinearLayout
+        android:id="@+id/found_search_layout"
         android:background="@drawable/found_search_layout"
+        android:layout_margin="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <com.edusoho.kuozhi.view.EduSohoIconView
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:textSize="@dimen/found_search_text_icon"
+            android:text="@string/font_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:textSize="@dimen/found_search_text"
+            android:textColor="@color/system_normal_text"
+            android:text="搜索"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <com.edusoho.kuozhi.ui.widget.CategoryListView
+        android:background="@color/system_bg"
+        android:paddingLeft="17dp"
+        android:paddingRight="17dp"
+        android:dividerHeight="1px"
+        android:id="@+id/found_category_list"
+        android:layout_below="@id/found_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

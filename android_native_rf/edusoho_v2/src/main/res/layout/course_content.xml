@@ -2,23 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/system_window_bg">
+    android:background="@color/found_bg">
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
+    <com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget
         android:id="@+id/course_liseview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
         android:cacheColorHint="#00000000"
-        android:dividerHeight="4dp"
+        android:divider="@color/course_divider"
+        android:dividerHeight="1dp"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
-        android:smoothScrollbar="true"
-        android:listSelector="@android:color/transparent">
-
-    </com.handmark.pulltorefresh.library.PullToRefreshListView>
+        android:smoothScrollbar="true" />
 
     <include layout="@layout/loading_layout" />
 

@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
@@ -12,10 +11,10 @@ import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 
+import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
-import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
-
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,7 +27,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private boolean mIsExit;
     private ViewGroup mNavBtnLayout;
     private NavBtnClickListener mNavBtnClickListener;
-    private static final String FRAGMENT_TAG = "fragment";
+    private String mCurrentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +36,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         setBackMode(null, "推荐");
         initView();
         mExitTimer = new Timer();
+
+        mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
     }
 
     private void initView() {
@@ -55,9 +56,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         BitmapAjaxCallback.clearCache();
     }
 
-    private void addListener()
-    {
-
+    private void addListener(){
     }
 
     @Override
@@ -66,8 +65,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             synchronized (mContext) {
                 if (mIsExit) {
                     mIsExit = false;
-                    app.exit();
                     finish();
+                    app.exit();
                 }
                 longToast("再按一次退出应用");
                 mIsExit = true;
@@ -84,19 +83,59 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     }
 
     private void selectNavBtn(int id) {
-        Fragment fragment = null;
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        String tag = null;
+        BaseFragment fragment = null;
+
         if (id == R.id.nav_recommend_btn) {
-            fragment = app.mEngine.runPluginWithFragment("RecommendFragment", mActivity, null);
-        } else {
+            tag = "RecommendFragment";
+        } else if(id == R.id.nav_found_btn) {
+            tag = "FoundFragment";
+        }else if(id == R.id.nav_me_btn) {
+            tag = "MyInfoFragment";
+        }else if(id == R.id.nav_more_btn) {
+            tag = "MoreSettingFragment";
+        }else {
             return;
         }
 
-        if (mFragmentManager.findFragmentByTag(FRAGMENT_TAG) != null) {
-            mFragmentManager.popBackStack();
+        hideFragment(mCurrentTag);
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
+        if (fragment != null) {
+            fragmentTransaction.show(fragment);
+        } else {
+            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
-        fragmentTransaction.add(R.id.fragment_container, fragment, FRAGMENT_TAG).commit();
+
+        fragmentTransaction.commit();
+        mCurrentTag = tag;
+        setTitle(fragment.getTitle());
         changeNavBtn(id);
+    }
+
+    private void hideFragment(String tag)
+    {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            return;
+        }
+        fragmentTransaction.hide(fragment);
+        fragmentTransaction.commit();
+    }
+
+    private void hideAllFragments()
+    {
+        List<Fragment> fragments = mFragmentManager.getFragments();
+        if (fragments == null) {
+            return;
+        }
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        for (Fragment fragment: fragments) {
+            fragmentTransaction.hide(fragment);
+        }
+        fragmentTransaction.commit();
     }
 
     private void changeNavBtn(int id)

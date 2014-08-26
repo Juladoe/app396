@@ -23,4 +23,5 @@
     <declare-styleable name="CourseListWidget">
         <attr name="showMoreBtn" format="boolean" />
     </declare-styleable>
+
 </resources>

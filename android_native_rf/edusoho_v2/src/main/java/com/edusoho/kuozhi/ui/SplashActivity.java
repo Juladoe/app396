@@ -149,8 +149,8 @@ public class SplashActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        EdusohoApp.app.sendMessage(INIT_APP, null);
         super.onDestroy();
-        EdusohoApp.app.sendMessage(INIT_APP, new MessageModel(null));
     }
 
     protected ArrayList<View> createSplashList(int[] imageIds)

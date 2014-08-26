@@ -18,6 +18,15 @@
     <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.ui.SplashActivity"></plugin>
     <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.DefaultPageActivity"></plugin>
 
+    <plugin name="CourseListActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseListActivity"></plugin>
+    <!-- service -->
+    <plugin name="EdusohoMainService" version="1.0" package="com.edusoho.kuozhi.Service.EdusohoMainService"></plugin>
     <!-- fragment -->
+    <plugin name="MyInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MyInfoFragment"></plugin>
+    <plugin name="FoundFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FoundFragment"></plugin>
     <plugin name="RecommendFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendFragment"></plugin>
+    <plugin name="LoginFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LoginFragment"></plugin>
+    <plugin name="RegistFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RegistFragment"></plugin>
+    <plugin name="MoreSettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MoreSettingFragment"></plugin>
+    <plugin name="CourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseFragment"></plugin>
 </plugins>

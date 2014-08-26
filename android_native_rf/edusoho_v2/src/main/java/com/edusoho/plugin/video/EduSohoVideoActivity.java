@@ -82,7 +82,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
                 if (Build.VERSION.SDK_INT < 19) {
-                    EdusohoApp.app.sendMessage(EdusohoVideoManagerActivity.SUPPORTMAP_CHANGE, new MessageModel(null));
+                    //EdusohoApp.app.sendMessage(EdusohoVideoManagerActivity.SUPPORTMAP_CHANGE, new MessageModel(null));
                 } else {
                     PopupDialog.createNormal(
                             mContext, "视频播放", "不好意思～此视频不能在该设备上播放，请联系网站管理员！").show();

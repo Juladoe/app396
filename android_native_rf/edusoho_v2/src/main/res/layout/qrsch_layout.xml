@@ -50,6 +50,7 @@
     </LinearLayout>
 
     <com.edusoho.kuozhi.view.HtmlTextView
+        android:textColor="@color/system_light_text"
         android:id="@+id/qr_other_btn"
         android:textSize="@dimen/material_normal_btn"
         android:layout_marginBottom="30dp"

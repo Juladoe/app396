@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -274,6 +275,39 @@ public class BaseActivity extends ActivityGroup {
                 }
             }
         });
+    }
+
+    public void ajaxPostString(
+            String url, HashMap<String, String> params, final ResultCallback rcl)
+    {
+        final LoadDialog loading = LoadDialog.create(mContext);
+        loading.show();
+        AjaxCallback<String> ajaxCallback = new AjaxCallback<String>(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                if (loading != null) {
+                    loading.dismiss();
+                }
+                int code = status.getCode();
+                if (handlerError(object)) {
+                    return;
+                }
+
+                if (code != Const.OK) {
+                    longToast("网络访问异常！请检查网络设置。");
+                    rcl.error(url, status);
+                    return;
+                }
+                try {
+                    rcl.callback(url,object,status);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    rcl.error(url, status);
+                }
+            }
+        };
+        ajaxCallback.method(AQuery.METHOD_POST);
+        app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
     public void ajaxNormalGet(String url, final ResultCallback rcl)

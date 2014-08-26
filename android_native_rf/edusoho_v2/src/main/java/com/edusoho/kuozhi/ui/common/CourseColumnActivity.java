@@ -148,7 +148,7 @@ public class CourseColumnActivity extends BaseActivity {
 
     private void goBack(CourseMenu courseMenu)
     {
-        app.sendMessage(LOAD_COURSE_BY_COLUMN, new MessageModel(courseMenu));
+        app.sendMessage(LOAD_COURSE_BY_COLUMN, null);
     }
 
     @Override

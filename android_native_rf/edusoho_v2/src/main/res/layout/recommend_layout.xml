@@ -94,6 +94,6 @@
             android:gravity="center"
             android:layout_below="@id/recommend_announcement_label"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
+            android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
     </RelativeLayout>
 </ScrollView>

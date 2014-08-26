@@ -67,6 +67,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop" />
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name="com.edusoho.kuozhi.ui.common.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -122,6 +123,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.course.CourseListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.plugin.video.WebVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -148,11 +154,13 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name="com.edusoho.plugin.video.EduSohoVideoActivity" >
         </activity>
+
+        <service android:name=".Service.EdusohoMainService"/>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="5b77ea360739afd264b46fcd671aafa558c092b1"/>
     </application>
 
     <uses-sdk
-        android:minSdkVersion="2"
+        android:minSdkVersion="4"
         android:targetSdkVersion="8" />
 
 </manifest>

@@ -14,6 +14,7 @@
     <string name="search_str">搜索</string>
     <string name="search_alt_str">输入网校地址</string>
     <string name="my_sch_str">我收藏的网校</string>
+    <string name="login_qr_btn">二维码登录</string>
 
     <string-array name="exitcourse_array">
         <item>老师服务态度不好</item>

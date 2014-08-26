@@ -39,6 +39,7 @@ public class RecommendFragment extends BaseFragment {
     private TextView mSchoolAnnouncement;
     private CourseListWidget mRecommendCourses;
     private HorizontalListWidget mWeekCourse;
+    public String mTitle = "推荐";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,12 @@ public class RecommendFragment extends BaseFragment {
         setContainerView(R.layout.recommend_layout);
     }
 
+    @Override
+    public String getTitle() {
+        return mTitle;
+    }
+
+    @Override
     protected void initView(View view)
     {
         mWeekCourse = (HorizontalListWidget) view.findViewById(R.id.recommend_week_course);

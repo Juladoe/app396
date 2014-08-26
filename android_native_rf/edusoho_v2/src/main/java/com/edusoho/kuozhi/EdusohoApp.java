@@ -3,8 +3,11 @@ package com.edusoho.kuozhi;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 
 import android.content.Context;
@@ -15,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -28,7 +32,9 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CoreEngine;
+import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.model.Cache;
 import com.edusoho.kuozhi.core.model.MessageModel;
@@ -77,6 +83,7 @@ public class EdusohoApp extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(null, "create application");
         mWorkHandler = new android.os.Handler();
         init();
     }
@@ -88,18 +95,28 @@ public class EdusohoApp extends Application{
         }
     }
 
-    public <T> void postUrl(
-            String url, HashMap<String, String> params, Class<T> tClass, final AjaxCallback<T> ajaxCallback)
+    public EdusohoMainService getService()
+    {
+        return EdusohoMainService.getService();
+    }
+
+    public void postUrl(
+            String url, HashMap<String, String> params,final ResultCallback callback)
     {
         Cache cache = mEngine.appCache.getCache(url);
+
+        AjaxCallback<String> ajaxCallback = new AjaxCallback<String>(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                mEngine.appCache.setCache(url, object);
+                callback.callback(url, object, status);
+            }
+        };
+
+        ajaxCallback.header("token", token);
+        ajaxCallback.method(AQuery.METHOD_POST);
         if (cache == null) {
-            query.ajax(url, params, tClass, new AjaxCallback<T>(){
-                @Override
-                public void callback(String url, T object, AjaxStatus status) {
-                    mEngine.appCache.setCache(url, object);
-                    ajaxCallback.callback(url, object, status);
-                }
-            });
+            query.ajax(url, params, String.class, ajaxCallback);
             return;
         }
 
@@ -138,14 +155,34 @@ public class EdusohoApp extends Application{
         mEngine.receiveMsg(msgId, callback);
     }
 
+    public void registMsgSource(MessageEngine.MessageCallback messageCallback)
+    {
+        mEngine.registMsgSrc(messageCallback);
+    }
+
+    public void unRegistMsgSource(MessageEngine.MessageCallback messageCallback)
+    {
+        mEngine.unRegistMessageSource(messageCallback);
+    }
+
+    public ConcurrentHashMap<String, MessageEngine.MessageCallback> getSourceMap()
+    {
+        return mEngine.getMessageEngine().getSourceMap();
+    }
+
     public void delMessageListener(String msgId)
     {
         mEngine.removeMsg(msgId);
     }
 
-    public void sendMessage(String msgId, MessageModel obj)
+    public void sendMessage(String msgId, Bundle bundle)
     {
-        mEngine.sendMsg(msgId, obj);
+        mEngine.getMessageEngine().sendMsg(msgId, bundle);
+    }
+
+    public void sendMsgToTarget(int msgType, Bundle body, Class target)
+    {
+        mEngine.getMessageEngine().sendMsgToTaget(msgType, body, target);
     }
 
     public void exit()
@@ -153,6 +190,10 @@ public class EdusohoApp extends Application{
         for (Activity activity : runTask.values()) {
             activity.finish();
         }
+
+        query.clear();
+        paramsMap.clear();
+        runTask.clear();
         System.exit(0);
     }
 
@@ -173,6 +214,12 @@ public class EdusohoApp extends Application{
         installPlugin();
 
         registDevice();
+        startMainService();
+    }
+
+    public void startMainService()
+    {
+        app.mEngine.runService(EdusohoMainService.TAG, this, null);
     }
 
     public Map<String, String> getPlatformInfo()
@@ -231,7 +278,7 @@ public class EdusohoApp extends Application{
         });
     }
 
-    private boolean getNetStatus()
+    public boolean getNetStatus()
     {
         ConnectivityManager connManager = (ConnectivityManager)
                 getSystemService(CONNECTIVITY_SERVICE);
@@ -365,6 +412,7 @@ public class EdusohoApp extends Application{
         token = null;
         loginUser = null;
     }
+
 
     public boolean taskIsRun(String name)
     {

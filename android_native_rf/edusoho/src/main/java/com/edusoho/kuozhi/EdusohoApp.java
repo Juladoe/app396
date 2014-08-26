@@ -149,7 +149,7 @@ public class EdusohoApp extends Application{
         gson = new Gson();
         apiVersion = "1.0.0";
         query = new AQuery(this);
-        host = "";
+        host = null;
         paramsMap = new HashMap<String, Object>();
         sqliteUtil = new SqliteUtil(getApplicationContext(), null, null);
         initWorkSpace();
@@ -283,6 +283,15 @@ public class EdusohoApp extends Application{
 
     public void setCurrentSchool(School school)
     {
+        if (school.host == null) {
+            int index = school.url.lastIndexOf("/");
+            if (index == -1) {
+                school.host = null;
+            }
+            school.host = school.url.substring(0, index);
+        }
+
+        app.host = school.host;
         app.defaultSchool = school;
         app.schoolHost = school.url + "/";
 
@@ -290,7 +299,7 @@ public class EdusohoApp extends Application{
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("name", school.name);
         edit.putString("url", school.url);
-        edit.putString("host", school.host);
+        edit.putString("host", app.host);
         edit.putString("logo", school.logo);
         edit.commit();
     }
@@ -305,6 +314,13 @@ public class EdusohoApp extends Application{
             item.url = map.get("url");
             item.host = map.get("host");
             item.logo = map.get("logo");
+            if (item.host == null) {
+                int index = item.url.lastIndexOf("/");
+                if (index == -1) {
+                    item.host = null;
+                }
+                item.host = item.url.substring(0, index);
+            }
             host = item.host;
             setCurrentSchool(item);
         }
