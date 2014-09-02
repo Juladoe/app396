@@ -9,7 +9,9 @@ import android.widget.AdapterView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.BaseActivity;
+import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseInfoActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoListView;
@@ -20,9 +22,9 @@ import com.edusoho.kuozhi.view.EdusohoListView;
  */
 public class CourseListScrollListener implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener
 {
-    private Activity mActivity;
+    private ActionBarBaseActivity mActivity;
 
-    public CourseListScrollListener(Activity activity)
+    public CourseListScrollListener(ActionBarBaseActivity activity)
     {
         mActivity = activity;
     }
@@ -41,14 +43,12 @@ public class CourseListScrollListener implements AbsListView.OnScrollListener, A
     public void onItemClick(AdapterView<?> parent, View view, int index,
                             long arg3) {
         final Course course = (Course) parent.getItemAtPosition(index);
-
-        EdusohoApp.app.mEngine.runNormalPluginForResult(
-                "CourseInfoActivity", mActivity, Const.COURSEINFO_REQUEST, new PluginRunCallback() {
+        mActivity.app.mEngine.runNormalPlugin(
+                CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra("courseId", course.id);
-                startIntent.putExtra("largePicture", course.largePicture);
-                startIntent.putExtra("courseTitle", course.title);
+                startIntent.putExtra(CourseDetailsActivity.COURSE_ID, course.id);
+                startIntent.putExtra(CourseDetailsActivity.TITLE, course.title);
             }
         });
     }

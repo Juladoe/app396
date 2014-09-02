@@ -73,4 +73,5 @@
     <dimen name="learn_status_widget_learnbtn">15sp</dimen>
 
     <dimen name="search_popwindow_cancel_btn">18dp</dimen>
+    <dimen name="course_details_pic">220dp</dimen>
 </resources>

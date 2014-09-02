@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.ui.widget.ScrollWidget
+    android:paddingTop="@dimen/course_details_pic"
+    android:paddingBottom="@dimen/course_details_btn_layout_height"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:background="@color/found_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/course_details_info_layout" />
+
+        <com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget
+            android:layout_below="@+id/course_details_info_layout"
+            android:id="@+id/course_details_goals"
+            app:labelTitle="课程目标"
+            android:paddingTop="9dp"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget
+            android:layout_below="@id/course_details_goals"
+            android:id="@+id/course_details_audiences"
+            app:labelTitle="适应人群"
+            android:paddingTop="9dp"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget
+            android:layout_below="@id/course_details_audiences"
+            android:id="@+id/course_details_about"
+            app:labelTitle="课程介绍"
+            android:paddingTop="9dp"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget
+            android:layout_below="@id/course_details_about"
+            android:id="@+id/course_details_teacher"
+            app:labelTitle="教师简介"
+            android:paddingTop="9dp"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.ui.widget.CourseDetailsReviewWidget
+            android:layout_below="@id/course_details_teacher"
+            android:id="@+id/course_details_review"
+            app:labelTitle="课程评价"
+            android:paddingTop="9dp"
+            app:isInitHeight="true"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
+            android:layout_below="@id/course_details_review"
+            android:id="@+id/course_details_lesson"
+            app:labelTitle="课程列表"
+            android:paddingTop="9dp"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+</com.edusoho.kuozhi.ui.widget.ScrollWidget>

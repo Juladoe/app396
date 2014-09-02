@@ -1,24 +1,14 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.entity.RecommendSchoolItem;
 import com.edusoho.kuozhi.model.Category;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.nineoldandroids.animation.Animator;
@@ -28,9 +18,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.WeakHashMap;
 
 public class CategoryListAdapter extends BaseAdapter{
 

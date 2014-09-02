@@ -53,6 +53,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         super.onDestroy();
     }
 
+    protected void showProgress(boolean isShow)
+    {
+        mActivity.setProgressBarIndeterminateVisibility(isShow);
+    }
+
     @Override
     public void invoke(WidgetMessage message) {
 

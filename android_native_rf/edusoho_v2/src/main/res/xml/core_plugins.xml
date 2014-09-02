@@ -19,6 +19,9 @@
     <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.DefaultPageActivity"></plugin>
 
     <plugin name="CourseListActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseListActivity"></plugin>
+    <plugin name="CourseDetailsActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"></plugin>
+    <plugin name="CourseDetailsTabActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"></plugin>
+
     <!-- service -->
     <plugin name="EdusohoMainService" version="1.0" package="com.edusoho.kuozhi.Service.EdusohoMainService"></plugin>
     <!-- fragment -->
@@ -29,4 +32,8 @@
     <plugin name="RegistFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RegistFragment"></plugin>
     <plugin name="MoreSettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MoreSettingFragment"></plugin>
     <plugin name="CourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseFragment"></plugin>
+    <plugin name="CourseDetailsFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseDetailsFragment"></plugin>
+    <plugin name="TeacherInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment"></plugin>
+    <plugin name="CourseInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseInfoFragment"></plugin>
+    <plugin name="ReviewInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment"></plugin>
 </plugins>

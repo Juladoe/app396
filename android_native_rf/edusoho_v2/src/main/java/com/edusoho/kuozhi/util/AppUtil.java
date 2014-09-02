@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -69,6 +70,9 @@ public class AppUtil {
         for (String goal : goals) {
             sb.append("・").append(goal).append("\n");
         }
+        if (TextUtils.isEmpty(sb)) {
+            return "暂无相关信息";
+        }
         return sb.toString();
     }
 
@@ -77,6 +81,9 @@ public class AppUtil {
         StringBuffer sb = new StringBuffer();
         for (String audience : audiences) {
             sb.append("・").append(audience).append("\n");
+        }
+        if (TextUtils.isEmpty(sb)) {
+            return "暂无相关信息";
         }
         return sb.toString();
     }

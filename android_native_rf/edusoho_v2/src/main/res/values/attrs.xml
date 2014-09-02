@@ -24,4 +24,11 @@
         <attr name="showMoreBtn" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CourseDetailsLabelWidget">
+        <attr name="labelTitle" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="CourseDetailsReviewWidget">
+        <attr name="isInitHeight" format="boolean" />
+    </declare-styleable>
 </resources>

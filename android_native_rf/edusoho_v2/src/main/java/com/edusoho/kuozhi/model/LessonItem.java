@@ -4,6 +4,8 @@ package com.edusoho.kuozhi.model;
  * Created by howzhi on 14-5-24.
  */
 public class LessonItem {
+    public static final int FREE = 1;
+
     public int id;
     public int courseId;
     public int chapterId;

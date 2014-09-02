@@ -25,7 +25,7 @@ public class Const {
     public static final String SEARCH = "search";
     public static final String REGIST_DEVICE = "regist_device";
     public static final String COURSES = "Course/getCourses";
-    public static final String COURSE = "courses/";
+    public static final String COURSE = "Course/getCourse";
     public static final String COURSELESSON = "courses/{courseId}/items?";
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";
@@ -39,8 +39,8 @@ public class Const {
     public static final String LEARNED = "me/learned_courses";
     public static final String FAVORITES = "me/favorite_courses";
     public static final String PAYCOURSE = "courses/{courseId}/pay";
-    public static final String FAVORITE = "courses/{courseId}/favorite?";
-    public static final String UNFAVORITE = "courses/{courseId}/unfavorite?";
+    public static final String FAVORITE = "Course/favoriteCourse";
+    public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String REFUNDCOURSE = "courses/{courseId}/refund";
     public static final String CHECKORDER = "courses/{courseId}/can_learn?";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
@@ -57,6 +57,11 @@ public class Const {
     public static final String CATEGORY = "Category/getCategories";
     public static final String CATEGORYS = "Category/getAllCategories";
     public static final String USERTERMS = "School/getUserterms";
+    public static final String USERINFO = "User/getUserInfo";
+    public static final String REVIEWS = "Course/getReviews";
+    public static final String LESSONS = "Lesson/getCourseLessons";
+    public static final String SEARCH_COURSE = "Course/searchCourse";
+    public static final String TEACHER_COURSES = "Course/getTeacherCourses";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;

@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.model;
 
+import java.io.Serializable;
+
 /**
  * Created by howzhi on 14-5-23.
  */
-public class Course {
+public class Course implements Serializable{
     public String title;
     public String studentNum;
     public String teacher;
@@ -31,6 +33,7 @@ public class Course {
     public String address;
     public String hitNum;
     public String userId;
+    public int vipLevelId;
     public String createdTime;
     public Teacher[] teachers;
 }

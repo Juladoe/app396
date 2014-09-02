@@ -15,6 +15,7 @@
     <string name="search_alt_str">输入网校地址</string>
     <string name="my_sch_str">我收藏的网校</string>
     <string name="login_qr_btn">二维码登录</string>
+    <string name="course_details_menu_more">更多</string>
 
     <string-array name="exitcourse_array">
         <item>老师服务态度不好</item>
@@ -56,4 +57,7 @@
     <string name="font_found">&#xe61e;</string>
     <string name="font_more">&#xe616;</string>
     <string name="font_search">&#xe61d;</string>
+    <string name="font_favoirte">&#xe631;</string>
+    <string name="font_clear">&#xe646;</string>
+    <string name="font_favorited">&#xe60a;</string>
 </resources>

@@ -19,6 +19,8 @@ public class EduSohoTextBtn extends LinearLayout {
     private String icon;
     private int size;
     private ColorStateList color;
+    private TextView mText;
+    private EduSohoIconView mIcon;
 
     public EduSohoTextBtn(Context context) {
         super(context);
@@ -44,17 +46,49 @@ public class EduSohoTextBtn extends LinearLayout {
         layoutParams.gravity = Gravity.CENTER;
         setLayoutParams(layoutParams);
 
-        EduSohoIconView iconView = new EduSohoIconView(mContext);
-        iconView.setText(icon);
-        iconView.setTextColor(color);
-        iconView.setTextSize(size * 2.4f);
-        addView(iconView);
+        mIcon = new EduSohoIconView(mContext);
+        mIcon.setText(icon);
+        mIcon.setTextColor(color);
+        mIcon.setTextSize(size * 2.4f);
+        addView(mIcon);
 
-        TextView textView = new TextView(mContext);
-        textView.setText(text);
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(color);
-        textView.setTextSize(size);
-        addView(textView);
+        mText = new TextView(mContext);
+        mText.setText(text);
+        mText.setGravity(Gravity.CENTER);
+        mText.setTextColor(color);
+        mText.setTextSize(size);
+        addView(mText);
+    }
+
+    public void setText(String text)
+    {
+        mText.setText(text);
+    }
+
+    public void setText(int resId)
+    {
+        mText.setText(resId);
+    }
+
+    public void setText(String text, int iconId)
+    {
+        mText.setText(text);
+        mIcon.setText(iconId);
+    }
+
+    public void setTextColor(int color)
+    {
+        mText.setTextColor(color);
+        mIcon.setTextColor(color);
+    }
+
+    public void setIcon(String icon)
+    {
+        mIcon.setText(icon);
+    }
+
+    public void setIcon(int iconId)
+    {
+        mIcon.setText(iconId);
     }
 }

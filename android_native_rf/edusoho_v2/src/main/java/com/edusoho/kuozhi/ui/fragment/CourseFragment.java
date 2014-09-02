@@ -1,17 +1,24 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.course.CourseListActivity;
 import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -29,6 +36,7 @@ public class CourseFragment extends BaseFragment {
 
     private int mCategoryId;
     private String mTitle;
+    private String mSearchText;
     private int mStart;
 
     @Override
@@ -63,10 +71,13 @@ public class CourseFragment extends BaseFragment {
             }
         });
 
+        mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
+
         Bundle bundle = getArguments();
         if (bundle != null) {
+            mSearchText = bundle.getString(CourseListActivity.SEARCH_TEXT);
             mTitle = bundle.getString(TITLE);
-            mCategoryId = bundle.getInt("categoryId", 0);
+            mCategoryId = bundle.getInt(CourseListActivity.CATEGORY_ID, 0);
         }
 
         loadCourseFromNet(0);
@@ -74,9 +85,14 @@ public class CourseFragment extends BaseFragment {
 
     private void loadCourseFromNet(int start)
     {
-        String url = app.bindUrl(Const.COURSES);
+        String baseUrl = Const.COURSES;
+        if (mSearchText != null) {
+            baseUrl = Const.SEARCH_COURSE;
+        }
+        String url = app.bindUrl(baseUrl);
         HashMap<String, String> params = app.createParams(true, null);
-        params.put("categoryId", mCategoryId + "");
+        params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");
+        params.put(CourseListActivity.SEARCH_TEXT, mSearchText);
         params.put("start", start + "");
         params.put("limit", Const.LIMIT + "");
 

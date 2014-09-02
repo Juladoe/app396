@@ -5,7 +5,6 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,36 +12,27 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.entity.RecommendSchoolItem;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAutoCompleteTextView;
-import com.edusoho.kuozhi.view.EdusohoListView;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.view.dialog.PopupLoaingDialog;
 import com.edusoho.listener.ResultCallback;
-import com.edusoho.listener.SchoolListClickListener;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
-import com.edusoho.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -280,12 +270,5 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 showQrResultDlg(result);
             }
         }
-    }
-
-    private void saveRecommendSchool(RecommendSchoolItem item) {
-        SharedPreferences sp = getSharedPreferences("recommend_school", MODE_PRIVATE);
-        Editor edit = sp.edit();
-        edit.putString(item.title, app.gson.toJson(item));
-        edit.commit();
     }
 }

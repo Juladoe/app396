@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -62,6 +63,11 @@ public class CourseListWidget extends LinearLayout {
         return loadView;
     }
 
+    public void setItemClick(AdapterView.OnItemClickListener onItemClickListener)
+    {
+        mEdusohoListView.setOnItemClickListener(onItemClickListener);
+    }
+
     private View createShowMoreBtn()
     {
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);
@@ -76,11 +82,6 @@ public class CourseListWidget extends LinearLayout {
             return;
         }
         mShowMoreBtn.setOnClickListener(onClickListener);
-    }
-
-    public void setShowListNum(int num)
-    {
-
     }
 
     public void setFullHeight(boolean fullHeight)

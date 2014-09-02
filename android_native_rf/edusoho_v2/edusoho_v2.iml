@@ -71,6 +71,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="android-support-v4" level="project" />
     <orderEntry type="library" exported="" name="core-2.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.1" level="project" />
     <orderEntry type="library" exported="" name="android-query-full.0.26.8" level="project" />
@@ -80,8 +81,10 @@
     <orderEntry type="library" exported="" name="cyberplayer-sdk" level="project" />
     <orderEntry type="library" exported="" name="gson-2.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
+    <orderEntry type="module" module-name="PagerSlidingTabStrip" exported="" />
     <orderEntry type="module" module-name="pullRefresh" exported="" />
     <orderEntry type="module" module-name="ukphoto" exported="" />
+    <orderEntry type="module" module-name="PinterestLikeAdapterView" exported="" />
     <orderEntry type="module" module-name="JazzyViewPager" exported="" />
     <orderEntry type="module" module-name="slidingmenu" exported="" />
     <orderEntry type="module" module-name="PinnedSectionListView" exported="" />

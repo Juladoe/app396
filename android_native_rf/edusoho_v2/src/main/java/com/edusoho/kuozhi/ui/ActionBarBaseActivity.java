@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -68,6 +70,20 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mService = app.getService();
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
+    }
+
+    public <T> T parseJsonValue(String json, TypeToken<T> typeToken)
+    {
+        T value = null;
+        try {
+            value = mActivity.gson.fromJson(
+                    json, typeToken.getType());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return value;
+        }
+
+        return value;
     }
 
     public CoreEngine getCoreEngine()
@@ -122,6 +138,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
+        layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
 
         mActionBar.setCustomView(mTitleTextView, layoutParams);
@@ -314,7 +331,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 }
 
                 if (code != Const.OK) {
-                    longToast("服务器访问异常！请检查网络设置。");
+                    longToast("服务器访问异常！");
                     rcl.error(url, status);
                     return;
                 }
@@ -348,7 +365,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                     return;
                 }
                 if (code != Const.OK) {
-                    longToast("服务器访问异常！请检查网络设置。");
+                    longToast("服务器访问异常！");
                     rcl.error(url, status);
                     return;
                 }
@@ -376,7 +393,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                     return;
                 }
                 if (code != Const.OK) {
-                    longToast("服务器访问异常！请检查网络设置。");
+                    longToast("服务器访问异常!");
                     rcl.error(url, status);
                     return;
                 }
@@ -399,7 +416,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                     return;
                 }
                 if (code != Const.OK) {
-                    longToast("服务器访问异常！请检查网络设置。");
+                    longToast("服务器访问异常！");
                     rcl.error(url, status);
                     return;
                 }

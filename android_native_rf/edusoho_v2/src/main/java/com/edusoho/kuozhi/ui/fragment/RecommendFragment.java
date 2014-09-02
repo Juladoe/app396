@@ -7,8 +7,10 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -23,6 +25,7 @@ import com.edusoho.kuozhi.ui.widget.CourseListWidget;
 import com.edusoho.kuozhi.ui.widget.HorizontalListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoViewPager;
+import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -72,6 +75,7 @@ public class RecommendFragment extends BaseFragment {
         HashMap<String, String> params = app.createParams(true, null);
 
         mWeekCourse.initialise(mActivity, url, params);
+        mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
     }
 
     private void initSchoolBanner()
@@ -103,12 +107,16 @@ public class RecommendFragment extends BaseFragment {
         HashMap<String, String> params = app.createParams(true, null);
 
         mRecommendCourses.setFullHeight(true);
+        mRecommendCourses.initialise(mActivity, url, params);
+        
         mRecommendCourses.setShowMoreBtnClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             }
         });
-        mRecommendCourses.initialise(mActivity, url, params);
+
+        mRecommendCourses.setItemClick(new CourseListScrollListener(mActivity));
+
     }
 
     private void initSchoolAnnouncement()

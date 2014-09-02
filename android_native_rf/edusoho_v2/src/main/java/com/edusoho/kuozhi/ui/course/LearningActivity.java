@@ -210,7 +210,7 @@ public class LearningActivity extends BaseActivity {
                             mContext, result.data, R.layout.learn_list_item);
 
                     listView.setAdapter(mAdapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity) {
+                    CourseListScrollListener listener = new CourseListScrollListener(null) {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int index, long arg3) {
                             final Course course = (Course) parent.getItemAtPosition(index);

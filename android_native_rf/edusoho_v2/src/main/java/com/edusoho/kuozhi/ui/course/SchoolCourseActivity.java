@@ -292,7 +292,7 @@ public class SchoolCourseActivity extends BaseActivity {
                             mContext, result, R.layout.course_list_normal_item);
                     adapterHashMap.put(content_pager.getCurrentItem(), adapter);
                     listView.setAdapter(adapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity);
+                    CourseListScrollListener listener = new CourseListScrollListener(null);
                     listView.setOnItemClickListener(listener);
                     pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
                         @Override

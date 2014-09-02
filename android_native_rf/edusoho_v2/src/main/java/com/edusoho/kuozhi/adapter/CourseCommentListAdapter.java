@@ -27,17 +27,16 @@ public class CourseCommentListAdapter extends BaseAdapter {
 	private Context mContext;
 	private ArrayList<Review> mList;
 
-	public CourseCommentListAdapter(Context context, Review[] list, int resource) {
-		mList = new ArrayList<Review>();
-		listAddItem(list);
+	public CourseCommentListAdapter(Context context, ArrayList<Review> list, int resource) {
+		mList = list;
 		mContext = context;
 		mResouce = resource;
 		inflater = LayoutInflater.from(context);
 	}
 
-    public void addItem(Review[] list)
+    public void addItem(ArrayList<Review> list)
     {
-        listAddItem(list);
+        mList.addAll(list);
         notifyDataSetChanged();
     }
 

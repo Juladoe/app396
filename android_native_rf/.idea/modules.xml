@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" filepath="$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PagerSlidingTabStrip/PagerSlidingTabStrip.iml" filepath="$PROJECT_DIR$/PagerSlidingTabStrip/PagerSlidingTabStrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/PinnedSectionListView/PinnedSectionListView.iml" filepath="$PROJECT_DIR$/PinnedSectionListView/PinnedSectionListView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PinterestLikeAdapterView/PinterestLikeAdapterView.iml" filepath="$PROJECT_DIR$/PinterestLikeAdapterView/PinterestLikeAdapterView.iml" />
       <module fileurl="file://$PROJECT_DIR$/android_native_rf.iml" filepath="$PROJECT_DIR$/android_native_rf.iml" />
       <module fileurl="file://$PROJECT_DIR$/bdvideoplayer/bdvideoplayer.iml" filepath="$PROJECT_DIR$/bdvideoplayer/bdvideoplayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/custom/custom.iml" filepath="$PROJECT_DIR$/custom/custom.iml" />

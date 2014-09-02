@@ -491,6 +491,16 @@ public class EdusohoApp extends Application{
         return sb.toString();
     }
 
+    public HashMap<String, String> initParams(String[] arges)
+    {
+        HashMap<String, String> params = new HashMap<String, String>();
+        for (int i=0; i < arges.length; i = i + 2) {
+            params.put(arges[i], arges[i+1]);
+        }
+
+        return params;
+    }
+
     public HashMap<String, String> createParams(
             boolean addToken, RequestParamsCallback callback)
     {

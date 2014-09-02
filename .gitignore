@@ -23,7 +23,7 @@ DerivedData
 # Built application files
 *.apk
 *.ap_
-build.gradle
+#build.gradle
 
 # Files for the Dalvik VM
 *.dex

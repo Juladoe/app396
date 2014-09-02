@@ -219,6 +219,7 @@
     <color name="action_bar_back">#ffffff</color>
     <color name="found_bg">#f5f5f5</color>
     <color name="system_normal_text">#808080</color>
+    <color name="system_normal_text_pressed">#77808080</color>
     <color name="system_light_text">#4d4d4d</color>
     <color name="found_search_bg">#ffffff</color>
     <color name="myinfo_bg">#f5f5f5</color>
@@ -234,4 +235,9 @@
     <color name="login_regist_btn_pressed">#38bf6c</color>
     <color name="more_setting_line">#e5e5e5</color>
     <color name="course_divider">#e5e5e5</color>
+    <color name="course_details_info_bg">#ffffff</color>
+    <color name="course_details_btn">#ffffff</color>
+    <color name="lesson_item_free">#ffc947</color>
+
+    <color name="course_favorited">#ff6a47</color>
 </resources>

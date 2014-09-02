@@ -3,7 +3,7 @@
     package="com.edusoho.kuozhi"
     android:versionCode="1"
     android:versionName="1.0.0"
-    android:windowSoftInputMode="adjustPan" >
+    android:windowSoftInputMode="adjustPan">
 
     <supports-screens
         android:anyDensity="true"
@@ -30,13 +30,12 @@
 
     <application
         android:hardwareAccelerated="true"
-        android:theme="@style/EdusohoAppTheme" >
+        android:theme="@style/EdusohoAppTheme">
         <activity
             android:name="com.edusoho.kuozhi.ui.StartActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/startTheme" >
-        </activity>
+            android:theme="@style/startTheme"></activity>
         <activity
             android:name="com.edusoho.kuozhi.ui.SplashActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -125,20 +124,28 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.course.CourseDetailsActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.course.CourseListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.course.CourseDetailsTabActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.plugin.video.WebVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true" >
-        </activity>
+            android:hardwareAccelerated="true"></activity>
         <activity
             android:name="com.edusoho.plugin.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop" />
 
-        <receiver android:name="com.edusoho.kuozhi.broadcast.NetStatusReceiver" >
+        <receiver android:name="com.edusoho.kuozhi.broadcast.NetStatusReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -147,16 +154,16 @@
         <activity
             android:launchMode="singleInstance"
             android:configChanges="keyboardHidden|orientation"
-            android:name="com.edusoho.plugin.video.EdusohoVideoManagerActivity" >
-        </activity>
+            android:name="com.edusoho.plugin.video.EdusohoVideoManagerActivity"></activity>
         <activity
             android:launchMode="singleInstance"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name="com.edusoho.plugin.video.EduSohoVideoActivity" >
-        </activity>
+            android:name="com.edusoho.plugin.video.EduSohoVideoActivity"></activity>
 
-        <service android:name=".Service.EdusohoMainService"/>
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="5b77ea360739afd264b46fcd671aafa558c092b1"/>
+        <service android:name=".Service.EdusohoMainService" />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
     </application>
 
     <uses-sdk

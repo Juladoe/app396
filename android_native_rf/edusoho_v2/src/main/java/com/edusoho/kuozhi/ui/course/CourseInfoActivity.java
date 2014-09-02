@@ -588,7 +588,7 @@ public class CourseInfoActivity extends BaseActivity {
                         object, new TypeToken<ReviewResult>() {
                 }.getType());
 
-                if (result == null || result.data.length == 0) {
+                if (result == null || result.data.size() == 0) {
                     showEmptyLayout("课程暂无评价内容");
                     return;
                 }

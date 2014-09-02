@@ -53,7 +53,7 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
             return;
         }
 
-        ajaxGetString(app.host + Const.VERIFYVERSION, new ResultCallback() {
+        ajaxNormalGet(app.host + Const.VERIFYVERSION, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

@@ -177,7 +177,7 @@ public class SearchActivity extends BaseActivity {
                     mAdapter = new CourseListAdapter(
                             mContext, result, R.layout.course_list_normal_item);
                     listView.setAdapter(mAdapter);
-                    CourseListScrollListener listener = new CourseListScrollListener(mActivity);
+                    CourseListScrollListener listener = new CourseListScrollListener(null);
                     listView.setOnItemClickListener(listener);
 
                     pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {

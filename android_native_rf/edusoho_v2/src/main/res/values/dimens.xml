@@ -76,4 +76,11 @@
     <dimen name="login_btn_text">22sp</dimen>
     <dimen name="login_edt_text">18dp</dimen>
     <dimen name="more_setting_text">18sp</dimen>
+    <dimen name="course_details_widget">18sp</dimen>
+    <dimen name="course_details_widget_label_padding">6dp</dimen>
+    <dimen name="course_details_lesson_item_chapter">18sp</dimen>
+    <dimen name="course_details_lesson_item_title">16sp</dimen>
+    <dimen name="course_details_lesson_item_type">12sp</dimen>
+    <dimen name="course_details_info_tab">18sp</dimen>
+    <dimen name="review_course_student">14sp</dimen>
 </resources>

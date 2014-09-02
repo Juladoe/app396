@@ -76,4 +76,5 @@
     <dimen name="search_popwindow_cancel_btn">18dp</dimen>
     <dimen name="regist_info_label">14sp</dimen>
     <dimen name="course_empty_text">18sp</dimen>
+    <dimen name="course_details_pic">190dp</dimen>
 </resources>

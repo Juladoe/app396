@@ -41,6 +41,16 @@ public class EdusohoAnimWrap {
         return mTarget.getDrawingCacheBackgroundColor();
     }
 
+    public int getPaddingTop()
+    {
+        return mTarget.getPaddingTop();
+    }
+
+    public void setPaddingTop(int top)
+    {
+        mTarget.setPadding(mTarget.getPaddingLeft(), top, mTarget.getPaddingRight(), mTarget.getPaddingBottom());
+    }
+
     public void setPaddingLeft(int left)
     {
         mTarget.setPadding(left, mTarget.getPaddingTop(), mTarget.getPaddingRight(), mTarget.getPaddingBottom());

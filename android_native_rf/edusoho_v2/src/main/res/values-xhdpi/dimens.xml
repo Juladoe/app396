@@ -73,4 +73,13 @@
     <dimen name="learn_status_widget_learnbtn">15sp</dimen>
 
     <dimen name="search_popwindow_cancel_btn">18dp</dimen>
+    <dimen name="course_details_pic">189dp</dimen>
+    <dimen name="course_details_info_title">18sp</dimen>
+    <dimen name="course_details_info_subtitle">16sp</dimen>
+    <dimen name="course_details_info_teacher">14sp</dimen>
+    <dimen name="course_details_info_nickname">18sp</dimen>
+    <dimen name="course_details_info_sign">14sp</dimen>
+    <dimen name="course_details_btn_layout_height">60dp</dimen>
+    <dimen name="auto_course_title">18sp</dimen>
+    <dimen name="review_course_commit">22sp</dimen>
 </resources>

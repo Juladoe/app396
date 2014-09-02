@@ -17,9 +17,11 @@ public class CourseListActivity extends ActionBarBaseActivity {
 
     public static final String TITLE = "title";
     public static final String CATEGORY_ID = "categoryId";
+    public static final String SEARCH_TEXT = "search";
 
     private String mTitle;
     private int mCategoryId;
+    private String mSearchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
     {
         Intent data = getIntent();
         if (data != null) {
+            mSearchText = data.getStringExtra(SEARCH_TEXT);
             mTitle = data.hasExtra(TITLE) ? data.getStringExtra(TITLE) : "课程列表";
             mCategoryId = data.getIntExtra(CATEGORY_ID, 0);
         }
@@ -43,6 +46,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
             @Override
             public void setArguments(Bundle bundle) {
                 bundle.putInt(CATEGORY_ID, mCategoryId);
+                bundle.putString(SEARCH_TEXT, mSearchText);
                 bundle.putString(CourseFragment.TITLE, mTitle);
             }
         });

@@ -33,4 +33,5 @@ public class User {
     public String newNotificationNum;
     public String createdIp;
     public String createdTime;
+    public String about;
 }
