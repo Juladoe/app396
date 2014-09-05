@@ -14,11 +14,14 @@
         app:dividerColor="@color/transparent"
         app:indicatorColor="@color/action_bar_bg"
         app:tabPaddingLeftRight="14dip"
-        app:underlineColor="@color/action_bg_stroke" />
+        app:underlineHeight="0dp"
+        android:background="@drawable/course_details_tab_bg"
+        app:underlineColor="@color/transparent" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/course_details_info_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/course_details_info_tabs" />
+
 </RelativeLayout>

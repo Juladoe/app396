@@ -6,24 +6,37 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.PayStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.widget.ScrollWidget;
+import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-26.
@@ -40,9 +53,13 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
 
     private String mTitle;
     private String mCourseId;
+    private CourseDetailsResult mCourseDetailsResult;
 
     private View mCoursePic;
+    private View mBtnLayout;
+    private View mLoadView;
     private TextView mHeadView;
+    private FrameLayout mFragmentLayout;
     private Button mVipLearnBtn;
     private Button mLearnBtn;
     private int mVipLevelId;
@@ -90,8 +107,21 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 } else {
                     mVipLearnBtn.setVisibility(View.GONE);
                 }
+
+                showBtnLayout();
                 break;
         }
+    }
+
+    private void showBtnLayout()
+    {
+        mBtnLayout.measure(0, 0);
+        int height = mBtnLayout.getMeasuredHeight();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
+                new EdusohoAnimWrap(mBtnLayout), "height", 0, height);
+        objectAnimator.setDuration(240);
+        objectAnimator.setInterpolator(new AccelerateInterpolator());
+        objectAnimator.start();
     }
 
     @Override
@@ -103,12 +133,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         return messageTypes;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.course_details_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
     private void initView()
     {
         Intent data = getIntent();
@@ -118,25 +142,129 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         }
 
         setBackMode(BACK, mTitle);
+        mFragmentLayout = (FrameLayout) findViewById(android.R.id.list);
+        mBtnLayout = findViewById(R.id.course_details_btn_layouts);
         mVipLearnBtn = (Button) findViewById(R.id.course_details_vip_learnbtn);
         mLearnBtn = (Button) findViewById(R.id.course_details_learnbtn);
         mHeadView = (TextView) findViewById(R.id.course_details_head_label);
-        mCoursePic = findViewById(R.id.course_details_pic);
-        loadCoureDetailsFragment();
+
+        loadCourseInfo();
+        bindBtnClick();
     }
 
-    private void loadCoureDetailsFragment()
+    private void loadCourseInfo()
+    {
+        mLoadView = getLoadView();
+        mFragmentLayout.addView(mLoadView);
+
+        String url = app.bindUrl(Const.COURSE);
+        HashMap<String, String> params = app.createParams(true, null);
+        params.put("courseId", mCourseId);
+
+        ajaxPost(url, params, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mLoadView.setVisibility(View.GONE);
+                mCourseDetailsResult = mActivity.parseJsonValue(
+                        object, new TypeToken<CourseDetailsResult>() {
+                });
+                if (mCourseDetailsResult == null) {
+                    longToast("加载课程信息出现错误！请尝试重新打开课程！");
+                    return;
+                }
+
+                String fragment = mCourseDetailsResult.userIsStudent
+                        ? "CourseLearningFragment" : "CourseDetailsFragment";
+                loadCoureDetailsFragment(fragment);
+            }
+        });
+    }
+
+    private void bindBtnClick()
+    {
+        mLearnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPrice > 0) {
+                    app.mEngine.runNormalPlugin(
+                            "PayCourseActivity",
+                            mActivity,
+                            new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra("price", mPrice);
+                                    startIntent.putExtra("title", mTitle);
+                                    startIntent.putExtra("courseId", mCourseId);
+                                }
+                    });
+                } else {
+                    if (app.loginUser == null) {
+                        LoginActivity.start(mActivity);
+                        return;
+                    }
+                    learnCourse();
+                }
+            }
+        });
+    }
+
+    private void learnCourse()
+    {
+        setProgressBarIndeterminateVisibility(true);
+        String url = app.bindUrl(Const.PAYCOURSE);
+        HashMap<String, String> params = app.initParams(new String[] {
+                "payment", "alipay",
+                "courseId", mCourseId
+        });
+        ajaxPost(url, params, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
+                PayStatus payStatus = parseJsonValue(
+                        object, new TypeToken<PayStatus>(){});
+
+                if (payStatus == null) {
+                    longToast("加入学习失败！");
+                    return;
+                }
+
+                if (!Const.RESULT_OK.equals(payStatus.status)) {
+                    longToast(payStatus.message);
+                    return;
+                }
+
+                if (payStatus.paid) {
+                    //免费课程
+                    loadCoureDetailsFragment("CourseLearningFragment");
+                }
+            }
+        });
+    }
+
+    public CourseDetailsResult getCourseDetailsInfo()
+    {
+        return mCourseDetailsResult;
+    }
+
+    private View getLoadView()
+    {
+        View loadView = LayoutInflater.from(mContext).inflate(R.layout.loading_layout, null);
+        loadView.findViewById(R.id.load_text).setVisibility(View.GONE);
+        return loadView;
+    }
+
+    private void loadCoureDetailsFragment(String fragmentName)
     {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(
-                "CourseDetailsFragment", mActivity, new PluginFragmentCallback() {
+                fragmentName, mActivity, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
                 bundle.putString(COURSE_ID, mCourseId);
                 bundle.putString(TITLE, mTitle);
             }
         });
-        fragmentTransaction.add(R.id.course_details_fragment, fragment);
+        fragmentTransaction.replace(android.R.id.list, fragment);
         fragmentTransaction.commit();
     }
 }

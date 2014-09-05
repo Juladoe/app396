@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.listener.NormalCallback;
+import com.edusoho.listener.ResultCallback;
 
 import org.w3c.dom.Text;
 
@@ -25,10 +27,11 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
     protected Context mContext;
     protected View mLoadView;
+    protected boolean isLoad;
 
     private TextView mTitleView;
     private View mContentView;
-    private ViewGroup mContainer;
+    protected ViewGroup mContainer;
 
     public CourseDetailsLabelWidget(Context context) {
         super(context);
@@ -39,6 +42,9 @@ public class CourseDetailsLabelWidget extends LinearLayout {
         super(context, attrs);
         mContext = context;
         initView(attrs);
+    }
+
+    public void onShow(){
     }
 
     protected View initLoadView()
@@ -58,9 +64,14 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
         mContainer = new FrameLayout(mContext);
         mContainer.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         addView(mContainer);
+    }
+
+    public void hideTitle()
+    {
+        mTitleView.setVisibility(View.GONE);
     }
 
     public boolean isMoveToTop(int top)

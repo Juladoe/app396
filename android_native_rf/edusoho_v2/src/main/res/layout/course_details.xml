@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/found_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/course_details_pic"
-        android:scaleType="centerCrop"
-        android:src="@drawable/noram_course"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/course_details_pic" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/course_details_pic"
-        android:id="@+id/course_details_fragment" />
-
     <LinearLayout
+        android:id="@+id/course_details_btn_layouts"
         android:gravity="center"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/course_details_btn_layout_bg"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/course_details_btn_layout_height">
+        android:layout_height="0dp">
 
         <Button
             android:id="@+id/course_details_vip_learnbtn"
@@ -53,6 +41,12 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <FrameLayout
+        android:layout_above="@id/course_details_btn_layouts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@android:id/list" />
+
     <TextView
         android:layout_marginLeft="19dp"
         android:layout_marginRight="19dp"
@@ -64,8 +58,8 @@
         android:background="@drawable/course_details_widget_bg"
         android:paddingTop="@dimen/course_details_widget_label_padding"
         android:paddingBottom="@dimen/course_details_widget_label_padding"
-        android:layout_gravity="top"
+        android:layout_alignParentTop="true"
         android:id="@+id/course_details_head_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-</FrameLayout>
+</RelativeLayout>

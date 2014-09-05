@@ -40,13 +40,17 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     private MyPagerAdapter fragmentAdapter;
     private String[] fragmentArrayList;
     private String[] titles;
-    private String mFragmentName = "TeacherInfoFragment";
+    private String mTitle;
+    private String mFragmentName = null;
 
     private Drawable oldBackground = null;
     private int currentColor = R.color.action_bar_bg;
 
     public static final String FRAGMENT = "fragment";
-    public static final String LIST = "list";
+    public static final String LISTS = "lists";
+    public static final String TITLES = "titles";
+    public static final String TITLE = "title";
+    public static final String FRAGMENT_DATA = "fragment_data";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,32 +59,21 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
         initView();
     }
 
-    public String[] getDefaultTitles()
-    {
-        return new String[]{ "课程", "教师", "评价"};
-    }
-
-    public String[] getDefaultFragments()
-    {
-        return new String[] {
-                "CourseInfoFragment",
-                "TeacherInfoFragment",
-                "ReviewInfoFragment"
-        };
-    }
-
     private void initView()
     {
-        setBackMode(BACK, "课程详细");
-
         Intent data = getIntent();
         if (data != null) {
-            mFragmentName = data.hasExtra(FRAGMENT) ? data.getStringExtra(FRAGMENT) : "TeacherInfoFragment";
+            mTitle = data.getStringExtra(TITLE);
+            titles = data.getStringArrayExtra(TITLES);
+            fragmentArrayList = data.getStringArrayExtra(LISTS);
+            mFragmentName = data.getStringExtra(FRAGMENT);
         }
 
-        titles = getDefaultTitles();
-        fragmentArrayList = getDefaultFragments();
-
+        if (titles == null || fragmentArrayList == null) {
+            longToast("无效列表数据！");
+            return;
+        }
+        setBackMode(BACK, mTitle);
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.course_details_info_tabs);
         mFragmentPager = (ViewPager) findViewById(R.id.course_details_info_pager);
         fragmentAdapter = new MyPagerAdapter(
@@ -100,7 +93,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     private void setPagetItem(String name)
     {
         for(int i=0; i < fragmentArrayList.length; i++) {
-            if (name.equals(fragmentArrayList[i])) {
+            if (fragmentArrayList[i].equals(name)) {
                 mFragmentPager.setCurrentItem(i);
                 return;
             }
@@ -166,22 +159,10 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
                 @Override
                 public void setArguments(Bundle bundle) {
                     Intent data = getIntent();
-                    switch (position){
-                        case 0:
-                            bundle.putSerializable(CourseInfoFragment.COURSE, data.getSerializableExtra(
-                                    CourseInfoFragment.COURSE));
-                            break;
-                        case 1:
-                            bundle.putInt(TeacherInfoFragment.TEACHER_ID, data.getIntExtra(
-                                    TeacherInfoFragment.TEACHER_ID, 0));
-                            break;
-                        case 2:
-                            bundle.putString(ReviewInfoFragment.COURSE_ID, data.getStringExtra(
-                                    ReviewInfoFragment.COURSE_ID));
-                            break;
-                    }
+                    bundle.putAll(data.getBundleExtra(FRAGMENT_DATA));
                 }
             });
+            Log.d(null, "fragment name->" + fragments[position]);
             return fragment;
         }
 

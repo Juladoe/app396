@@ -72,7 +72,9 @@
     </RelativeLayout>
 
     <com.edusoho.kuozhi.ui.widget.CourseDetailsReviewWidget
-        android:background="@color/action_bar_bg"
+        android:background="@color/white"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:layout_above="@id/review_course_commit_layout"
         android:layout_below="@id/review_course_info_layout"
         android:id="@+id/review_course_reviewlist"

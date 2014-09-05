@@ -54,7 +54,7 @@
             android:layout_below="@id/course_subtitle"
             android:maxHeight="10dp"
             android:minHeight="10dp"
-            android:progressDrawable="@drawable/video_sk"
+            android:progressDrawable="@drawable/course_learn_status_progress"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:id="@+id/course_learn_progress"
             android:layout_width="match_parent"

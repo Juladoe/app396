@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.ui.common.AboutActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
+import com.edusoho.listener.ResultCallback;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-25.
@@ -53,6 +58,37 @@ public class MoreSettingFragment extends BaseFragment {
         });
 
         mLogoutBtn = view.findViewById(R.id.more_setting_logout_btn);
+        mLogoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EdusohoMaterialDialog.createMuilt(
+                        mActivity,
+                        "退出提示",
+                        "是否退出登录?",
+                        new EdusohoMaterialDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == EdusohoMaterialDialog.OK) {
+                                    logout();
+                                }
+                            }
+                }).show();
+            }
+        });
+    }
+
+    private void logout()
+    {
+        showProgress(true);
+        String url = app.bindUrl(Const.LOGOUT);
+        mActivity.ajaxPost(url, null, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                showProgress(false);
+                app.removeToken();
+            }
+        });
     }
 
     @Override

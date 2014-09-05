@@ -5,12 +5,11 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.BounceInterpolator;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ScrollView;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -20,10 +19,11 @@ import com.nineoldandroids.animation.ObjectAnimator;
 public class ScrollWidget extends ScrollView {
 
     private int mPaddingHeight;
-    private boolean isMoveing;
+    private View mHeadView;
     private GestureDetector mGestureDetector;
     private boolean isTop;
-    private boolean isDown;
+    private boolean isBottom;
+    private float lastdistanceY;
     private ScrollListener mScrollListener;
     private ScrollChangeListener mScrollChangeListener;
 
@@ -35,6 +35,33 @@ public class ScrollWidget extends ScrollView {
     public ScrollWidget(Context context, android.util.AttributeSet attrs) {
         super(context, attrs);
         initListener();
+    }
+
+    @Override
+    protected void onScrollChanged(
+            int leftOfVisibleView, int topOfVisibleView, int oldLeftOfVisibleView, int oldTopOfVisibleView) {
+        super.onScrollChanged(
+                leftOfVisibleView, topOfVisibleView, oldLeftOfVisibleView, oldTopOfVisibleView);
+        if (mScrollChangeListener == null) {
+            return;
+        }
+        mScrollChangeListener.onScroll(
+                leftOfVisibleView, topOfVisibleView, oldLeftOfVisibleView, oldTopOfVisibleView);
+        int height = getHeight();
+        int childHeight = getChildAt(0).getHeight();
+        if (childHeight < height) {
+            return;
+        }
+
+        if (topOfVisibleView >= (childHeight - height)) {
+            if (isBottom) {
+                return;
+            }
+            isBottom = true;
+            mScrollChangeListener.onBottom();
+        } else {
+            isBottom = false;
+        }
     }
 
     public void setScrollChangeListener(ScrollChangeListener listener)
@@ -50,7 +77,7 @@ public class ScrollWidget extends ScrollView {
     private void scrollToUpAnim()
     {
         ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
-                new EdusohoAnimWrap(this), "paddingTop", this.getPaddingTop(), 0);
+                new EdusohoAnimWrap(mHeadView), "height", mHeadView.getHeight(), 0);
         objectAnimator.setDuration(240);
         objectAnimator.setInterpolator(new DecelerateInterpolator());
         objectAnimator.start();
@@ -59,8 +86,8 @@ public class ScrollWidget extends ScrollView {
     private void scrollToDwonAnim()
     {
         ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
-                new EdusohoAnimWrap(this), "paddingTop", this.getPaddingTop(), mPaddingHeight);
-        objectAnimator.setDuration(100);
+                new EdusohoAnimWrap(mHeadView), "height", 0, mPaddingHeight);
+        objectAnimator.setDuration(160);
         objectAnimator.setInterpolator(new DecelerateInterpolator());
         objectAnimator.start();
     }
@@ -68,113 +95,91 @@ public class ScrollWidget extends ScrollView {
     private void setContentFragmentPaddingTop(int top)
     {
         int oldTop = this.getPaddingTop();
+        int spaceTop = oldTop - top;
+        spaceTop = spaceTop < 0 ? 0 : spaceTop;
+        spaceTop = spaceTop > mPaddingHeight ? mPaddingHeight : spaceTop;
         this.setPadding(
                 this.getPaddingLeft(),
-                oldTop - top,
+                spaceTop,
                 this.getPaddingRight(),
                 this.getPaddingBottom()
         );
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return super.onTouchEvent(ev);
+    }
+
+    private void setHeadViewHeight(int y)
+    {
+        ViewGroup.LayoutParams layoutParams = mHeadView.getLayoutParams();
+
+        int height = layoutParams.height;
+        layoutParams.height = height - y;
+        Log.d(null, "layoutParams.height->" + layoutParams.height);
+        mHeadView.setLayoutParams(layoutParams);
+    }
+
+    private int getHeadViewHeight()
+    {
+        return mHeadView.getLayoutParams().height;
+    }
+
+    public void setHeadView(View view)
+    {
+        mHeadView = view;
+    }
+
     private void initListener()
     {
-        mPaddingHeight = getPaddingTop();
+        mPaddingHeight = getResources().getDimensionPixelOffset(R.dimen.course_details_pic);
         mScrollListener = new DefaultScrollListener();
         mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                int paddingTop = getPaddingTop();
-                if (paddingTop > 0 && distanceY > 0) {
-                    mScrollListener.scrollUp((int)distanceY);
-                    return true;
-                }
-
-                if (distanceY < 0 && paddingTop < mPaddingHeight) {
-                    mScrollListener.scrollDown((int)distanceY);
-                    return true;
+                if (distanceY > 0) {
+                    //mScrollListener.scrollUp((int)distanceY);
+                } else {
+                    //mScrollListener.scrollDown((int)distanceY);
                 }
                 return super.onScroll(e1, e2, distanceX, distanceY);
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                int paddingTop = getPaddingTop();
-                if (paddingTop < mPaddingHeight && velocityY > 0) {
-                    Log.d(null, "下滑动");
-                    isDown = true;
-                    isTop = false;
-                    mScrollListener.scrollToDown();
-                    return true;
-                }
-                if (paddingTop >= 0 && velocityY < 0) {
-                    Log.d(null, "上滑动");
-                    isTop = true;
-                    isDown = false;
-                    mScrollListener.scrollToUp();
-                    return true;
-                }
-                return super.onFling(e1, e2, velocityX, velocityY);
             }
         });
 
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                int scrollY = getScrollY();
-                if (scrollY > 0) {
-                    return false;
-                }
-                boolean result = mGestureDetector.onTouchEvent(motionEvent);
-                switch (motionEvent.getAction()){
-                    case MotionEvent.ACTION_MOVE:
-                        int paddingTop = getPaddingTop();
-                        Log.d(null, "padding->" + paddingTop);
-                        if (paddingTop > 0 && paddingTop < mPaddingHeight) {
-                            return true;
-                        }
-                }
-                return result;
+                return mGestureDetector.onTouchEvent(motionEvent);
             }
         });
 
         setScrollListener(new ScrollWidget.DefaultScrollListener(){
             @Override
             public void scrollToDown() {
-                scrollToDwonAnim();
+                Log.d(null, "scrollToDown->");
             }
 
             @Override
             public void scrollToUp() {
-                scrollToUpAnim();
+                Log.d(null, "scrollToUp->");
             }
 
             @Override
             public void scrollUp(int distanceY) {
-                setContentFragmentPaddingTop(distanceY);
+                setHeadViewHeight(distanceY);
             }
 
             @Override
             public void scrollDown(int distanceY) {
-                setContentFragmentPaddingTop(distanceY);
+                setHeadViewHeight(distanceY);
             }
         });
-    }
 
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-        if (mScrollChangeListener == null) {
-            return;
-        }
-        mScrollChangeListener.onScroll(l, t, oldl, oldt);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        int paddingTop = getPaddingTop();
-        if (paddingTop > 0 && paddingTop < mPaddingHeight) {
-            return true;
-        }
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -188,6 +193,7 @@ public class ScrollWidget extends ScrollView {
 
     public static interface ScrollChangeListener
     {
+        public void onBottom();
         public void onScroll(int l, int t, int oldl, int oldt);
     }
 

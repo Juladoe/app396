@@ -25,10 +25,7 @@
     </declare-styleable>
 
     <declare-styleable name="CourseDetailsLabelWidget">
-        <attr name="labelTitle" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="CourseDetailsReviewWidget">
         <attr name="isInitHeight" format="boolean" />
+        <attr name="labelTitle" format="string" />
     </declare-styleable>
 </resources>

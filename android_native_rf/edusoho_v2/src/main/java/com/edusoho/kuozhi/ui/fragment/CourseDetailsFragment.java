@@ -1,9 +1,18 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -16,8 +25,10 @@ import com.edusoho.kuozhi.model.CourseInfoResult;
 import com.edusoho.kuozhi.model.GsonType;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.VipLevel;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLabelWidget;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
@@ -29,6 +40,8 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +57,7 @@ public class CourseDetailsFragment extends BaseFragment {
     private Teacher mTeacher;
 
     private AQuery aQuery;
+    private Handler handler;
     private CourseDetailsGoalsWidget mCourseGoalsView;
     private CourseDetailsGoalsWidget mCourseAudiencesView;
     private CourseDetailsGoalsWidget mCourseAboutView;
@@ -57,6 +71,7 @@ public class CourseDetailsFragment extends BaseFragment {
     private ArrayList<CourseDetailsLabelWidget> mViewList;
     private ScrollWidget mScrollView;
     private View mCourseInfoLayout;
+    private View mHeadView;
 
     private CourseDetailsResult mCourseResult;
 
@@ -68,14 +83,27 @@ public class CourseDetailsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        setContainerView(R.layout.course_details_fragment);
+        handler = new Handler();
         mHeadStack = new Stack<String>();
         mViewList = new ArrayList<CourseDetailsLabelWidget>();
-        setContainerView(R.layout.course_details_fragment);
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.course_details_menu, menu);
+    }
+
+
+    @Override
     protected void initView(View view) {
-        mScrollView = (ScrollWidget) view;
+        mScrollView = (ScrollWidget) view.findViewById(R.id.course_details_scorllview);
         mCourseInfoLayout = view.findViewById(R.id.course_details_info_layout);
         mFavoriteBtn = (EduSohoTextBtn) view.findViewById(R.id.course_details_favorite);
         mCourseReviewView = (CourseDetailsReviewWidget) view.findViewById(R.id.course_details_review);
@@ -84,15 +112,16 @@ public class CourseDetailsFragment extends BaseFragment {
         mCourseGoalsView = (CourseDetailsGoalsWidget) view.findViewById(R.id.course_details_goals);
         mCourseAboutView = (CourseDetailsGoalsWidget) view.findViewById(R.id.course_details_about);
         mCourseTeacherView = (CourseDetailsTeacherWidget) view.findViewById(R.id.course_details_teacher);
+        mHeadView = view.findViewById(R.id.course_details_header);
 
         mViewList.add(mCourseGoalsView);
         mViewList.add(mCourseAudiencesView);
         mViewList.add(mCourseAboutView);
-        mViewList.add(mCourseTeacherView);
-        mViewList.add(mCourseReviewView);
-        mViewList.add(mCourseLessonView);
 
-        showProgress(true);
+        mViewList.add(mCourseLessonView);
+        mViewList.add(mCourseReviewView);
+        mViewList.add(mCourseTeacherView);
+
         aQuery = new AQuery(view);
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -100,9 +129,16 @@ public class CourseDetailsFragment extends BaseFragment {
             mCourseId = bundle.getString(CourseDetailsActivity.COURSE_ID);
         }
 
-        getCourse();
+        CourseDetailsActivity activity = (CourseDetailsActivity) getActivity();
+        initViewData(activity.getCourseDetailsInfo());
 
+        mScrollView.setHeadView(mHeadView);
         mScrollView.setScrollChangeListener(new ScrollWidget.ScrollChangeListener() {
+            @Override
+            public void onBottom() {
+                Log.d(null, "bottom->");
+            }
+
             @Override
             public void onScroll(int l, int t, int oldl, int oldt) {
                 setHeadTitle(t);
@@ -187,7 +223,7 @@ public class CourseDetailsFragment extends BaseFragment {
             app.sendMsgToTarget(
                     CourseDetailsActivity.HIDEHEAD, null, CourseDetailsActivity.class);
         }
-        Log.d(null, "height->" + mScrollView.getHeight());
+
         for (CourseDetailsLabelWidget view : mViewList) {
             Object tag = view.getTag();
             if (tag == null && view.isMoveToTop(t)) {
@@ -259,41 +295,48 @@ public class CourseDetailsFragment extends BaseFragment {
         mCourseReviewView.initReview(course.id, mActivity, false);
         mCourseLessonView.initLesson(course.id, mActivity);
 
-        mCourseTeacherView.setOnClickListener(new View.OnClickListener() {
+        showCourseMoreInfoListener();
+    }
+
+    private String getFragmetName(int id)
+    {
+        if (id == R.id.course_details_teacher) {
+            return "TeacherInfoFragment";
+        } else if (id == R.id.course_details_review) {
+            return "ReviewInfoFragment";
+        }
+
+        return "CourseInfoFragment";
+    }
+
+    private void showCourseMoreInfoListener()
+    {
+        View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 app.mEngine.runNormalPlugin(
                         "CourseDetailsTabActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(TeacherInfoFragment.TEACHER_ID, mTeacher.id);
-                        startIntent.putExtra(CourseInfoFragment.COURSE, mCourseResult.course);
-                        startIntent.putExtra(ReviewInfoFragment.COURSE_ID, mCourseResult.course.id);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(TeacherInfoFragment.TEACHER_ID, mTeacher.id);
+                        bundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
+                        bundle.putString(ReviewInfoFragment.COURSE_ID, mCourseResult.course.id);
+
+                        startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, bundle);
+                        startIntent.putExtra(CourseDetailsTabActivity.TITLE, "课程详情");
+                        startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
+                        startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
+                        startIntent.putExtra(
+                                CourseDetailsTabActivity.FRAGMENT, getFragmetName(view.getId()));
+
                     }
                 });
             }
-        });
-    }
+        };
 
-    private void getCourse()
-    {
-        String url = app.bindUrl(Const.COURSE);
-        HashMap<String, String> params = app.createParams(true, null);
-        params.put("courseId", mCourseId);
-
-        mActivity.ajaxPost(url, params, new ResultCallback(){
-            @Override
-            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                showProgress(false);
-                CourseDetailsResult result = mActivity.parseJsonValue(
-                        object, new TypeToken<CourseDetailsResult>(){});
-                if (result == null) {
-                    return;
-                }
-
-                initViewData(result);
-            }
-        });
-
+        mCourseTeacherView.setOnClickListener(clickListener);
+        mCourseAboutView.setOnClickListener(clickListener);
+        mCourseReviewView.setOnClickListener(clickListener);
     }
 }

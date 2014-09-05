@@ -2,6 +2,9 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -79,8 +82,25 @@ public class TeacherInfoFragment extends BaseFragment {
                 }
 
                 adapter.addItemLast(list);
+                initTeacherCourseListHeight();
             }
         });
     }
 
+    private void initTeacherCourseListHeight()
+    {
+        int totalHeight = 0;
+
+        ListAdapter adapter = mTeacherCoursesView.getAdapter();
+        int count = adapter.getCount();
+        for (int i=0; i < count; i = i + 2) {
+            View child = adapter.getView(i, null, mTeacherCoursesView);
+            child.measure(0, 0);
+            totalHeight += child.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams lp = mTeacherCoursesView.getLayoutParams();
+        lp.height = totalHeight;
+        mTeacherCoursesView.setLayoutParams(lp);
+    }
 }

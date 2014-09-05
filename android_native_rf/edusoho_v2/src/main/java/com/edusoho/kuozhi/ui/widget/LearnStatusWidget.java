@@ -47,8 +47,6 @@ public class LearnStatusWidget extends FrameLayout {
 
         mContainer = initLoadContainer();
         addView(mContainer);
-
-        setVisibility(View.GONE);
     }
 
     private View initLoadContainer()

@@ -166,7 +166,7 @@
     <color name="splash_notice_btn_gtadient">#ffffff</color>
 
     <color name="video_sk_bg_gradient">#ccc</color>
-    <color name="video_sk_gradient">#03b884</color>
+    <color name="video_sk_gradient">#ffc947</color>
     <color name="video_thum_gradient">#3c3645</color>
     <color name="video_thum_gradient_pressed">#ff067BD4</color>
 
@@ -183,6 +183,7 @@
     <color name="splash_ok_btn">#ffffff</color>
     <color name="qr_logo_text">#808080</color>
     <color name="action_bar_bg_stroke">#298c4f</color>
+    <color name="action_bar_bg_stroke_alpha">#33298c4f</color>
     <color name="qr_layout_label">#ebebeb</color>
     <color name="qr_search_btn_normal">#ffca4a</color>
     <color name="qr_search_btn_text">#ffffff</color>
@@ -194,6 +195,7 @@
 
     <color name="action_bar_title">#ffffff</color>
     <color name="action_bar_bg">#38bf6c</color>
+    <color name="action_bar_bg_alpha">#3338bf6c</color>
     <color name="system_bg">#ffffff</color>
     <color name="nav_layout_bg">#494a4d</color>
     <color name="nav_layout_bg_stroke">#000000</color>
@@ -238,6 +240,8 @@
     <color name="course_details_info_bg">#ffffff</color>
     <color name="course_details_btn">#ffffff</color>
     <color name="lesson_item_free">#ffc947</color>
+    <color name="pay_course_old_price">#ffc947</color>
+    <color name="pay_course_end_price">#ff4747</color>
 
     <color name="course_favorited">#ff6a47</color>
 </resources>

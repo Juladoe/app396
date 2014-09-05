@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.hb.views.PinnedSectionListView;
@@ -29,7 +31,10 @@ import java.util.HashMap;
  */
 public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
 
-    private PinnedSectionListView mContentView;
+    private ActionBarBaseActivity mActivity;
+    private ListView mContentView;
+    private boolean isInitHeight;
+    private String mCourseId;
     private AQuery mAQuery;
 
     public CourseDetailsLessonWidget(Context context) {
@@ -49,7 +54,10 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     @Override
     protected void initView(AttributeSet attrs) {
         super.initView(attrs);
-        mContentView = new PinnedSectionListView(mContext, attrs);
+        TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.CourseDetailsLabelWidget);
+        isInitHeight = ta.getBoolean(R.styleable.CourseDetailsLabelWidget_isInitHeight, false);
+
+        mContentView = new ListView(mContext, attrs);
         mContentView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContentView.setPadding(0, 0, 0, 0);
@@ -78,19 +86,21 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         listView.setLayoutParams(lp);
     }
 
-    public void initLesson(String courseId, final ActionBarBaseActivity mActivity)
+    @Override
+    public void onShow() {
+    }
+
+    private void getLessons()
     {
         String url = mActivity.app.bindUrl(Const.LESSONS);
         HashMap<String, String> params = mActivity.app.createParams(true, null);
-        params.put("courseId", courseId);
-
+        params.put("courseId", mCourseId);
         mActivity.ajaxPost(url, params, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);
                 ArrayList<LessonItem> lessonItems = mActivity.parseJsonValue(
                         object, new TypeToken<ArrayList<LessonItem>>(){});
-
                 if (lessonItems == null) {
                     return;
                 }
@@ -98,8 +108,17 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
                 LessonListAdapter adapter = new LessonListAdapter(
                         mContext, lessonItems, null, R.layout.course_details_lesson_item);
                 mContentView.setAdapter(adapter);
-                initListHeight(mContentView);
+                if (isInitHeight) {
+                    initListHeight(mContentView);
+                }
             }
         });
+    }
+
+    public void initLesson(String courseId, final ActionBarBaseActivity activity)
+    {
+        mCourseId = courseId;
+        mActivity = activity;
+        getLessons();
     }
 }

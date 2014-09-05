@@ -34,7 +34,7 @@
             android:minHeight="10dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:progressDrawable="@drawable/video_sk"
+            android:progressDrawable="@drawable/course_learn_status_progress"
             android:thumb="@drawable/audio_thum_sel" />
 
         <TextView

@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +30,7 @@ public class MyInfoPluginListView extends LinearLayout {
     private Context mContext;
     private View mLoadView;
     private ListView mPluginListView;
+    private PluginItemClick mPluginItemClick;
 
     public MyInfoPluginListView(Context context) {
         super(context);
@@ -59,9 +58,19 @@ public class MyInfoPluginListView extends LinearLayout {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d(null, "onItemClick->");
+                if (mPluginItemClick == null) {
+                    return;
+                }
+                MyInfoPlugin plugin = (MyInfoPlugin) adapterView.getItemAtPosition(i);
+                mPluginItemClick.onClick(plugin);
             }
         });
         addView(mPluginListView);
+    }
+
+    public void setItemOnClick(PluginItemClick pluginItemClick)
+    {
+        mPluginItemClick = pluginItemClick;
     }
 
     private View initLoadView()
@@ -103,5 +112,10 @@ public class MyInfoPluginListView extends LinearLayout {
                 mPluginListView.setAdapter(adapter);
             }
         });
+    }
+
+    public interface PluginItemClick
+    {
+        public void onClick(MyInfoPlugin plugin);
     }
 }

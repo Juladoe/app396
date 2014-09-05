@@ -8,6 +8,8 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:scaleType="centerCrop"
+        android:src="@drawable/noram_course"
         android:layout_weight="0"
         android:id="@+id/learn_status_widget_coursepic"
         android:layout_width="49dp"
@@ -34,12 +36,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <ProgressBar
+            android:progressDrawable="@drawable/course_learn_status_progress"
             android:layout_marginTop="5dp"
             android:id="@+id/learn_status_widget_learnProgress"
             android:layout_below="@id/learn_status_widget_learnProgressNum"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="10dp" />
+            android:layout_height="6dp" />
     </RelativeLayout>
 
     <Button

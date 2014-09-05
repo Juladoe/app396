@@ -6,6 +6,27 @@ public class Const {
     public static final String[] SORT = {
         "latest", "popular", "recommended"
     };
+
+    public static final String[] COURSE_INFO_TITLE = {
+            "课程", "教师", "评价"
+    };
+
+    public static final String[] MY_COURSE_TITLE = {
+            "在学课程", "收藏课程", "已学课程"
+    };
+
+    public static final String[] MY_COURSE_FRAGMENT = {
+            "LearningCourseFragment",
+            "FavoriteCourseFragment",
+            "LearnedCourseFragment"
+    };
+
+    public static final String[] COURSE_INFO_FRAGMENT = {
+            "CourseInfoFragment",
+            "TeacherInfoFragment",
+            "ReviewInfoFragment"
+    };
+
     //默认分页数量
     public static final int LIMIT = 10;
 
@@ -35,17 +56,17 @@ public class Const {
     public static final String ABOUT = "School/getSchoolInfo";
     public static final String COURSE_COLUMN = "course_column";
     public static final String NOTICE = "me/notifications?";
-    public static final String LEARNING = "me/learning_courses";
-    public static final String LEARNED = "me/learned_courses";
-    public static final String FAVORITES = "me/favorite_courses";
-    public static final String PAYCOURSE = "courses/{courseId}/pay";
+    public static final String LEARNING = "Course/getLearningCourse";
+    public static final String LEARNED = "Course/getLearnedCourse";
+    public static final String FAVORITES = "Course/getFavoriteCoruse";
+    public static final String PAYCOURSE = "Order/payCourse";
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String REFUNDCOURSE = "courses/{courseId}/refund";
     public static final String CHECKORDER = "courses/{courseId}/can_learn?";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
-    public static final String LOGOUT = "logout?";
+    public static final String LOGOUT = "User/logout";
     public static final String LESSONITEM = "courses//lessons/?";
     public static final String LEARNSTATUS = "courses/{courseId}/lessons/{lessonId}/learn_status";
     public static final String DEFAULT_UPDATE_URL = "http://open.edusoho.com/mobile/meta.php";
@@ -62,6 +83,8 @@ public class Const {
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String SEARCH_COURSE = "Course/searchCourse";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
+    public static final String COURSE_NOTICE = "Course/getCourseNotice";
+    public static final String UN_LEARN_COURSE = "Course/unLearnCourse";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;

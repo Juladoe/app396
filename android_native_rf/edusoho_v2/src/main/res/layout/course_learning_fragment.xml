@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/found_bg"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/course_learning_notice"
+        android:gravity="center_vertical"
+        android:layout_marginTop="7dp"
+        android:background="@color/white"
+        android:drawablePadding="12dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:textSize="@dimen/course_learning_notify"
+        android:textColor="@color/system_light_text"
+        android:drawableLeft="@drawable/notify_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.edusoho.kuozhi.ui.widget.LearnStatusWidget
+        android:visibility="gone"
+        android:layout_below="@id/course_learning_notice"
+        android:id="@+id/course_learning_status_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/course_details_btn_layouts"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/course_details_btn_layout_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <Button
+            android:id="@+id/course_details_commit_btn"
+            android:layout_centerVertical="true"
+            android:textColor="@color/course_details_btn"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="14dp"
+            android:paddingLeft="14dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:text="评价"
+            android:textSize="@dimen/review_course_commit"
+            android:background="@drawable/login_btn_sel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:layout_above="@id/course_details_btn_layouts"
+        android:id="@+id/course_learning_lessonlist"
+        android:layout_below="@id/course_learning_status_widget"
+        app:labelTitle="课程列表"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

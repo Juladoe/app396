@@ -80,6 +80,8 @@
     <dimen name="course_details_info_nickname">18sp</dimen>
     <dimen name="course_details_info_sign">14sp</dimen>
     <dimen name="course_details_btn_layout_height">60dp</dimen>
+    <dimen name="course_details_btn_layout_bottom">-60dp</dimen>
     <dimen name="auto_course_title">18sp</dimen>
     <dimen name="review_course_commit">22sp</dimen>
+    <dimen name="course_learning_notify">18sp</dimen>
 </resources>

@@ -38,6 +38,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
 
     private PullToRefreshListView mContentView;
     private AQuery mAQuery;
+    private String mCourseId;
     private ActionBarBaseActivity mActivity;
     private ReviewListAdapter mAdapter;
     private boolean isInitHeight;
@@ -53,16 +54,17 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
     @Override
     protected void initView(AttributeSet attrs) {
         super.initView(attrs);
-        TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.CourseDetailsReviewWidget);
-        isInitHeight = ta.getBoolean(R.styleable.CourseDetailsReviewWidget_isInitHeight, false);
+        TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.CourseDetailsLabelWidget);
+        isInitHeight = ta.getBoolean(R.styleable.CourseDetailsLabelWidget_isInitHeight, false);
 
+        mContainer.setPadding(0, -2, 0, 0);
         mContentView = new PullToRefreshListView(mContext);
+        mContentView.setFocusable(false);
+        mContentView.setFocusableInTouchMode(false);
         mContentView.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         mContentView.setMode(PullToRefreshBase.Mode.DISABLED);
-        mContentView.setBackgroundColor(getResources().getColor(R.color.found_bg));
         mContentView.getRefreshableView().setDividerHeight(1);
-        mContentView.getRefreshableView().setBackgroundColor(getResources().getColor(R.color.found_bg));
         mContentView.getRefreshableView().setSelector(new ColorDrawable(0));
 
         mAQuery = new AQuery(mContentView);
@@ -129,7 +131,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
         });
     }
 
-    public void initListHeight(ListView listView)
+    private void initListHeight(ListView listView)
     {
         int totalHeight = 0;
 
@@ -149,11 +151,16 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
     public void initReview(
             String courseId, ActionBarBaseActivity actionBarBaseActivity, boolean isRefresh)
     {
+        mCourseId = courseId;
         mActivity = actionBarBaseActivity;
         mAdapter = new ReviewListAdapter(
                 mContext, null, R.layout.course_details_review_item);
         mContentView.setAdapter(mAdapter);
         setRefresh(isRefresh);
-        getReviews(0, courseId);
+        getReviews(0, mCourseId);
+    }
+
+    @Override
+    public void onShow() {
     }
 }

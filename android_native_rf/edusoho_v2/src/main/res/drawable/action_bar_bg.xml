@@ -18,7 +18,7 @@
 
     <item android:top="46dp">
         <shape android:shape="line">
-            <size android:height="2dp" />
+            <size android:height="1dp" />
             <stroke
                 android:dashWidth="4px"
                 android:color="@color/action_bar_bg_stroke" />

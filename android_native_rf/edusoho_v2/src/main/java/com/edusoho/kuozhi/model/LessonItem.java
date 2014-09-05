@@ -18,6 +18,8 @@ public class LessonItem {
     public String tag;
     public String type;
     public String content;
+    private int giveCredit;
+    private int requireCredit;
     public int mediaId;
     public String mediaSource;
     public String mediaName;

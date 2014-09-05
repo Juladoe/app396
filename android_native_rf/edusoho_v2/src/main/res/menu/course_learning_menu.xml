@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/course_details_menu_more"
+        android:orderInCategory="100"
+        yourapp:showAsAction="ifRoom"
+        android:icon="@drawable/course_details_menu_more"
+        android:title="@string/course_details_menu_more">
+        <menu>
+            <item
+                android:id="@+id/course_details_menu_shard"
+                yourapp:showAsAction="ifRoom"
+                android:icon="@drawable/course_details_menu_shared"
+                android:title="分享"/>
+            <item
+                android:id="@+id/course_details_menu_exit"
+                yourapp:showAsAction="ifRoom"
+                android:icon="@drawable/course_details_menu_courseinfo"
+                android:title="课程详情"/>
+            <item
+                android:id="@+id/course_details_menu_exit"
+                yourapp:showAsAction="ifRoom"
+                android:icon="@drawable/course_details_menu_exitcourse"
+                android:title="退出学习"/>
+        </menu>
+    </item>
+</menu>

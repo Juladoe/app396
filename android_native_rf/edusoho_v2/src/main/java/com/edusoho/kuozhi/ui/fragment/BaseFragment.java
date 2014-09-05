@@ -8,12 +8,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.WeakHashMap;
 
@@ -58,6 +61,17 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         mActivity.setProgressBarIndeterminateVisibility(isShow);
     }
 
+    protected void showBtnLayout(View view)
+    {
+        view.measure(0, 0);
+        int height = view.getMeasuredHeight();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
+                new EdusohoAnimWrap(view), "height", 0, height);
+        objectAnimator.setDuration(240);
+        objectAnimator.setInterpolator(new AccelerateInterpolator());
+        objectAnimator.start();
+    }
+
     @Override
     public void invoke(WidgetMessage message) {
 
@@ -77,9 +91,15 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContainerView = inflater.inflate(mViewId, null);
-        initView(mContainerView);
+        if (mContainerView == null) {
+            mContainerView = inflater.inflate(mViewId, null);
+            initView(mContainerView);
+        }
 
+        ViewGroup parent = (ViewGroup) mContainerView.getParent();
+        if (parent != null) {
+            parent.removeView(mContainerView);
+        }
         return mContainerView;
     }
 

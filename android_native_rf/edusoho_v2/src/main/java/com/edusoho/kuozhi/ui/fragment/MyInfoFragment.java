@@ -11,12 +11,16 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.MyInfoPlugin;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
+import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.ui.widget.MyInfoPluginListView;
+import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 
 /**
@@ -82,7 +86,7 @@ public class MyInfoFragment extends BaseFragment {
 
         AQuery aQuery = new AQuery(mActivity);
         aQuery.id(mUserLogo).image(app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
-        mLearnStatusWidget.initialise(mActivity, "", null);
+        //mLearnStatusWidget.initialise(mActivity, "", null);
     }
 
     @Override
@@ -96,7 +100,37 @@ public class MyInfoFragment extends BaseFragment {
         mLearnStatusWidget = (LearnStatusWidget) view.findViewById(R.id.myinfo_learnStatusWidget);
 
         mMyInfoPluginListView.initFromLocal(mActivity);
+        mMyInfoPluginListView.setItemOnClick(new MyInfoPluginListView.PluginItemClick() {
+            @Override
+            public void onClick(final MyInfoPlugin plugin) {
+                switch (plugin.action) {
+                    case QUESTION:
+                    case COURSE:
+                        showMyCourse();
+                    case TEST:
+                    case DISCUSS:
+                    case NOTE:
+                }
+            }
+        });
         loadUser();
+    }
+
+    private void showMyCourse()
+    {
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, new Bundle());
+                startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.MY_COURSE_FRAGMENT);
+                startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.MY_COURSE_TITLE);
+                startIntent.putExtra(CourseDetailsTabActivity.TITLE, "我的课程");
+                startIntent.putExtra(
+                        CourseDetailsTabActivity.FRAGMENT, "");
+            }
+        };
+        app.mEngine.runNormalPlugin("CourseDetailsTabActivity", mActivity, callback);
+
     }
 
     @Override
