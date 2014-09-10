@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/found_bg"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.edusoho.kuozhi.ui.widget.ScrollWidget
@@ -11,15 +12,14 @@
         android:id="@+id/course_details_scorllview">
 
         <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:background="@color/found_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/course_details_header"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
                 android:src="@drawable/noram_course"
@@ -32,7 +32,7 @@
                 android:layout_below="@+id/course_details_info_layout"
                 android:id="@+id/course_details_goals"
                 app:labelTitle="课程目标"
-                android:paddingTop="9dp"
+                android:paddingTop="18dp"
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                 android:layout_below="@id/course_details_goals"
                 android:id="@+id/course_details_audiences"
                 app:labelTitle="适应人群"
-                android:paddingTop="9dp"
+                android:paddingTop="18dp"
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                 android:layout_below="@id/course_details_audiences"
                 android:id="@+id/course_details_about"
                 app:labelTitle="课程介绍"
-                android:paddingTop="9dp"
+                android:paddingTop="18dp"
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                 android:layout_below="@id/course_details_about"
                 android:id="@+id/course_details_teacher"
                 app:labelTitle="教师简介"
-                android:paddingTop="9dp"
+                android:paddingTop="18dp"
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                 android:layout_below="@id/course_details_teacher"
                 android:id="@+id/course_details_review"
                 app:labelTitle="课程评价"
-                android:paddingTop="9dp"
+                android:paddingTop="18dp"
                 app:isInitHeight="true"
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
@@ -84,7 +84,7 @@
                 android:id="@+id/course_details_lesson"
                 app:labelTitle="课程列表"
                 app:isInitHeight="true"
-                android:paddingTop="9dp"
+                android:paddingTop="18dp"
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"

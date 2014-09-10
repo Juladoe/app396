@@ -3,11 +3,9 @@ package com.edusoho.kuozhi;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Application;
 
 import android.content.Context;
@@ -37,7 +35,6 @@ import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.model.Cache;
-import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
@@ -470,7 +467,7 @@ public class EdusohoApp extends Application{
         } else {
             Toast.makeText(this, "设备没有内存卡,数据将保存在手机内存中！", Toast.LENGTH_LONG).show();
         }
-        loadCustomBtn();
+        loadCustomBtnStyle();
         runTask = new HashMap<String, Activity>();
     }
 
@@ -555,7 +552,7 @@ public class EdusohoApp extends Application{
     public static int popLeftBtnSel;
     public static int popRightBtnSel;
 
-    private void loadCustomBtn()
+    private void loadCustomBtnStyle()
     {
         int version = Build.VERSION.SDK_INT;
         if ((version >= 8) && (version <= 10)) {

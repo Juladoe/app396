@@ -32,9 +32,11 @@ import java.util.HashMap;
 public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
 
     private ActionBarBaseActivity mActivity;
-    private ListView mContentView;
+    protected ListView mContentView;
     private boolean isInitHeight;
     private String mCourseId;
+    private static int defaultRes = R.layout.course_details_lesson_item;
+    protected int mResourceRes;
     private AQuery mAQuery;
 
     public CourseDetailsLessonWidget(Context context) {
@@ -51,9 +53,15 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         return super.isMoveToTop(top);
     }
 
+    protected void setResource(int resource)
+    {
+        mResourceRes = resource;
+    }
+
     @Override
     protected void initView(AttributeSet attrs) {
         super.initView(attrs);
+        setResource(defaultRes);
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.CourseDetailsLabelWidget);
         isInitHeight = ta.getBoolean(R.styleable.CourseDetailsLabelWidget_isInitHeight, false);
 
@@ -88,6 +96,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
 
     @Override
     public void onShow() {
+        getLessons();
     }
 
     private void getLessons()
@@ -101,13 +110,13 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
                 mLoadView.setVisibility(View.GONE);
                 ArrayList<LessonItem> lessonItems = mActivity.parseJsonValue(
                         object, new TypeToken<ArrayList<LessonItem>>(){});
+
+                Log.d(null, "lessonItems->" + lessonItems);
                 if (lessonItems == null) {
                     return;
                 }
 
-                LessonListAdapter adapter = new LessonListAdapter(
-                        mContext, lessonItems, null, R.layout.course_details_lesson_item);
-                mContentView.setAdapter(adapter);
+                setAdapter(lessonItems);
                 if (isInitHeight) {
                     initListHeight(mContentView);
                 }
@@ -115,10 +124,16 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         });
     }
 
+    protected void setAdapter(ArrayList<LessonItem> lessonItems)
+    {
+        LessonListAdapter adapter = new LessonListAdapter(
+                mContext, lessonItems, null, mResourceRes);
+        mContentView.setAdapter(adapter);
+    }
+
     public void initLesson(String courseId, final ActionBarBaseActivity activity)
     {
         mCourseId = courseId;
         mActivity = activity;
-        getLessons();
     }
 }

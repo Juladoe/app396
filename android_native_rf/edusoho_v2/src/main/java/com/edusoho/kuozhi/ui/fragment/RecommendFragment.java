@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +20,11 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.SchoolAnnouncement;
 import com.edusoho.kuozhi.model.SchoolBanner;
+import com.edusoho.kuozhi.ui.course.CourseListActivity;
 import com.edusoho.kuozhi.ui.widget.CourseListWidget;
 import com.edusoho.kuozhi.ui.widget.HorizontalListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -72,7 +76,10 @@ public class RecommendFragment extends BaseFragment {
     private void initWeekCourse()
     {
         String url = app.bindUrl(Const.WEEK_COURSES);
-        HashMap<String, String> params = app.createParams(true, null);
+        HashMap<String, String> params = app.initParams(new String[]{
+                "start", "0",
+                "limit", "3"
+        });
 
         mWeekCourse.initialise(mActivity, url, params);
         mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
@@ -104,7 +111,10 @@ public class RecommendFragment extends BaseFragment {
     private void initRecommendCourse()
     {
         String url = app.bindUrl(Const.RECOMMEND_COURSES);
-        HashMap<String, String> params = app.createParams(true, null);
+        HashMap<String, String> params = app.initParams(new String[]{
+                "start", "0",
+                "limit", "2"
+        });
 
         mRecommendCourses.setFullHeight(true);
         mRecommendCourses.initialise(mActivity, url, params);
@@ -112,6 +122,14 @@ public class RecommendFragment extends BaseFragment {
         mRecommendCourses.setShowMoreBtnClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(null, "mRecommendCourses click->");
+                app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(CourseListActivity.TITLE, "推荐课程");
+                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.RECOMMEND);
+                    }
+                });
             }
         });
 

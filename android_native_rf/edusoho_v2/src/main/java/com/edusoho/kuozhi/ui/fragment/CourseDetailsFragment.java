@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -68,11 +69,11 @@ public class CourseDetailsFragment extends BaseFragment {
     private EduSohoTextBtn mFavoriteBtn;
 
     private Stack<String> mHeadStack;
+    private Stack<CourseDetailsLabelWidget> mLabelsStack;
     private ArrayList<CourseDetailsLabelWidget> mViewList;
     private ScrollWidget mScrollView;
     private View mCourseInfoLayout;
     private View mHeadView;
-
     private CourseDetailsResult mCourseResult;
 
     @Override
@@ -88,6 +89,7 @@ public class CourseDetailsFragment extends BaseFragment {
         handler = new Handler();
         mHeadStack = new Stack<String>();
         mViewList = new ArrayList<CourseDetailsLabelWidget>();
+        mLabelsStack = new Stack<CourseDetailsLabelWidget>();
     }
 
     @Override
@@ -99,7 +101,6 @@ public class CourseDetailsFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.course_details_menu, menu);
     }
-
 
     @Override
     protected void initView(View view) {
@@ -117,10 +118,10 @@ public class CourseDetailsFragment extends BaseFragment {
         mViewList.add(mCourseGoalsView);
         mViewList.add(mCourseAudiencesView);
         mViewList.add(mCourseAboutView);
-
-        mViewList.add(mCourseLessonView);
         mViewList.add(mCourseReviewView);
         mViewList.add(mCourseTeacherView);
+
+        mLabelsStack.push(mCourseLessonView);
 
         aQuery = new AQuery(view);
         Bundle bundle = getArguments();
@@ -137,6 +138,7 @@ public class CourseDetailsFragment extends BaseFragment {
             @Override
             public void onBottom() {
                 Log.d(null, "bottom->");
+                showMoreView();
             }
 
             @Override
@@ -153,6 +155,7 @@ public class CourseDetailsFragment extends BaseFragment {
                     LoginActivity.startForResult(mActivity);
                     return;
                 }
+
                 showProgress(true);
                 mFavoriteBtn.setEnabled(false);
                 String courseId = mCourseResult.course.id;
@@ -163,6 +166,15 @@ public class CourseDetailsFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    private void showMoreView()
+    {
+        if (mLabelsStack.empty()) {
+            return;
+        }
+        CourseDetailsLabelWidget view = mLabelsStack.pop();
+        view.onShow();
     }
 
     private void unFavoriteCourse(String courseId)

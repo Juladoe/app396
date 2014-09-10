@@ -29,6 +29,7 @@ public class EdusohoMainService extends Service {
     public static final String TAG = "EdusohoMainService";
     private static EdusohoMainService mService;
     private Handler workHandler;
+    private User mLoginUser;
 
     public static final int LOGIN_WITH_TOKEN = 0001;
 
@@ -59,11 +60,11 @@ public class EdusohoMainService extends Service {
         message.sendToTarget();
     }
 
-    private void loginWithToken()
+    private User loginWithToken()
     {
         synchronized (this) {
-            if (app.loginUser != null) {
-                return;
+            if (mLoginUser != null) {
+                return mLoginUser;
             }
             Log.d(null, "send loginwithtoken message token->" + app.token);
             String url = app.bindUrl(Const.CHECKTOKEN);
@@ -76,11 +77,14 @@ public class EdusohoMainService extends Service {
                             object, new TypeToken<TokenResult>() {
                     }.getType());
                     if (result != null) {
+                        mLoginUser = result.user;
                         app.saveToken(result);
                     }
                 }
             });
         }
+
+        return null;
     }
 
     public static EdusohoMainService getService()

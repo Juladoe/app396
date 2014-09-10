@@ -38,6 +38,7 @@
     </LinearLayout>
 
     <com.edusoho.kuozhi.ui.widget.CategoryListView
+        android:scrollbars="none"
         android:background="@color/system_bg"
         android:paddingLeft="17dp"
         android:paddingRight="17dp"

@@ -18,9 +18,13 @@ public class CourseListActivity extends ActionBarBaseActivity {
     public static final String TITLE = "title";
     public static final String CATEGORY_ID = "categoryId";
     public static final String SEARCH_TEXT = "search";
+    public static final String TYPE = "type";
+
+    public static final int RECOMMEND= 0001;
 
     private String mTitle;
     private int mCategoryId;
+    private int mType;
     private String mSearchText;
 
     @Override
@@ -35,6 +39,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
         Intent data = getIntent();
         if (data != null) {
             mSearchText = data.getStringExtra(SEARCH_TEXT);
+            mType = data.getIntExtra(TYPE, RECOMMEND);
             mTitle = data.hasExtra(TITLE) ? data.getStringExtra(TITLE) : "课程列表";
             mCategoryId = data.getIntExtra(CATEGORY_ID, 0);
         }

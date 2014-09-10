@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -18,8 +19,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
-public class CategoryListAdapter extends BaseAdapter{
+public class CategoryListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private int mResouce;
@@ -39,28 +41,22 @@ public class CategoryListAdapter extends BaseAdapter{
     }
 
     @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
     public int getCount() {
         return mList.size();
     }
 
     @Override
-    public Object getItem(int index) {
-        return mList.get(index);
+    public Object getItem(int i) {
+        return mList.get(i);
     }
 
     @Override
-    public long getItemId(int arg0) {
-        return arg0;
-    }
-
-    @Override
-    public boolean isEnabled(int position) {
-        Category category = mList.get(position);
-        return !Category.GROUP.equals(category.code);
-    }
-
-    @Override
-    public View getView(int index, View view, ViewGroup vg) {
+    public View getView(int index, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         View currentView;
         Category category = mList.get(index);
@@ -75,9 +71,10 @@ public class CategoryListAdapter extends BaseAdapter{
         }
 
         holder.mTitle.setText(category.name);
-        moveView(holder.mTitle, (category.depth - 1) * 30, category.id);
+        //moveView(holder.mTitle, (category.depth - 1) * 30, category.id);
         return currentView;
     }
+
 
     private void moveView(View view, int left, int id)
     {

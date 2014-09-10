@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
 import com.edusoho.kuozhi.R;
@@ -106,9 +107,12 @@ public class ScrollWidget extends ScrollView {
         );
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return super.onTouchEvent(ev);
+    private void setMarginTop(int top)
+    {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
+        int oldTopMargin = layoutParams.topMargin;
+        layoutParams.topMargin = oldTopMargin - top;
+        setLayoutParams(layoutParams);
     }
 
     private void setHeadViewHeight(int y)
@@ -138,11 +142,6 @@ public class ScrollWidget extends ScrollView {
         mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                if (distanceY > 0) {
-                    //mScrollListener.scrollUp((int)distanceY);
-                } else {
-                    //mScrollListener.scrollDown((int)distanceY);
-                }
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
         });
@@ -150,7 +149,11 @@ public class ScrollWidget extends ScrollView {
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
+                if(mGestureDetector.onTouchEvent(motionEvent)) {
+                    return true;
+                }
+
+                return false;
             }
         });
 

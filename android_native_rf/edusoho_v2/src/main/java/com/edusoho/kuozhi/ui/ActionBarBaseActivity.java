@@ -49,7 +49,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     protected ActionBarBaseActivity mActivity;
     protected Context mContext;
     public EdusohoApp app;
-    protected ActionBar mActionBar;
+    public ActionBar mActionBar;
     protected CoreEngine mCoreEngine;
     public Gson gson;
     protected FragmentManager mFragmentManager;

@@ -41,7 +41,6 @@ public class Const {
     public static final String CLIENT_CLOSE = "client_closed";
 
     public static final String DB_NAME = "edusoho";
-    public static final String INIT_SQL = "create table edusoho_carousel (title varchar(100), image varchar(200), action varchar(50))";
 
     public static final String SEARCH = "search";
     public static final String REGIST_DEVICE = "regist_device";

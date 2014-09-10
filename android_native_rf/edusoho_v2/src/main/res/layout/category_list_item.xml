@@ -4,13 +4,30 @@
     android:paddingTop="9dp"
     android:paddingBottom="6dp"
     android:paddingLeft="8dp"
-    android:layout_width="wrap_content"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
+        android:layout_weight="1"
         android:textColor="@color/system_normal_text"
         android:textSize="@dimen/found_list_item_text"
         android:id="@+id/category_list_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.edusoho.kuozhi.view.EduSohoIconView
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:clickable="true"
+        android:textColor="@color/system_normal_text"
+        android:visibility="gone"
+        android:layout_weight="0"
+        android:textSize="@dimen/found_search_text_icon"
+        android:id="@+id/category_list_item_expand"
+        android:text="@string/font_expand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

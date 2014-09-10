@@ -55,9 +55,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
-        android:paddingLeft="19dp"
-        android:paddingRight="19dp"
+    <com.edusoho.kuozhi.ui.widget.CourseDetailsLearnLessonWidget
         android:layout_above="@id/course_details_btn_layouts"
         android:id="@+id/course_learning_lessonlist"
         android:layout_below="@id/course_learning_status_widget"

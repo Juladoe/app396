@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Announcement;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.widget.CourseDetailsLearnLessonWidget;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -36,7 +37,7 @@ public class CourseLearningFragment extends BaseFragment {
 
     private TextView mCourseNoticeView;
     private LearnStatusWidget mCourseStatusView;
-    private CourseDetailsLessonWidget mCourseLessonList;
+    private CourseDetailsLearnLessonWidget mCourseLessonList;
     private View mBtnLayout;
 
     @Override
@@ -83,7 +84,7 @@ public class CourseLearningFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
         mBtnLayout = view.findViewById(R.id.course_details_btn_layouts);
-        mCourseLessonList = (CourseDetailsLessonWidget) view.findViewById(R.id.course_learning_lessonlist);
+        mCourseLessonList = (CourseDetailsLearnLessonWidget) view.findViewById(R.id.course_learning_lessonlist);
         mCourseStatusView = (LearnStatusWidget) view.findViewById(R.id.course_learning_status_widget);
         mCourseNoticeView = (TextView) view.findViewById(R.id.course_learning_notice);
 
@@ -98,6 +99,7 @@ public class CourseLearningFragment extends BaseFragment {
 
         mCourseLessonList.hideTitle();
         mCourseLessonList.initLesson(mCourseId, mActivity);
+        mCourseLessonList.onShow();
         showBtnLayout(mBtnLayout);
     }
 

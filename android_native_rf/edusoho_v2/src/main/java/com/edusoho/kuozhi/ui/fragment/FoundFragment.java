@@ -103,10 +103,9 @@ public class FoundFragment extends BaseFragment {
         HashMap<String, String> params = app.createParams(true, null);
 
         mCategoryListView.initialise(mActivity, url, params);
-        mCategoryListView.setItemClick(new AdapterView.OnItemClickListener() {
+        mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final Category category = (Category) adapterView.getItemAtPosition(i);
+            public void click(final Category category) {
                 app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {

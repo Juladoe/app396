@@ -183,7 +183,7 @@
     <color name="splash_ok_btn">#ffffff</color>
     <color name="qr_logo_text">#808080</color>
     <color name="action_bar_bg_stroke">#298c4f</color>
-    <color name="action_bar_bg_stroke_alpha">#33298c4f</color>
+    <color name="action_bar_bg_stroke_alpha">#00298c4f</color>
     <color name="qr_layout_label">#ebebeb</color>
     <color name="qr_search_btn_normal">#ffca4a</color>
     <color name="qr_search_btn_text">#ffffff</color>
@@ -195,7 +195,7 @@
 
     <color name="action_bar_title">#ffffff</color>
     <color name="action_bar_bg">#38bf6c</color>
-    <color name="action_bar_bg_alpha">#3338bf6c</color>
+    <color name="action_bar_bg_alpha">#0038bf6c</color>
     <color name="system_bg">#ffffff</color>
     <color name="nav_layout_bg">#494a4d</color>
     <color name="nav_layout_bg_stroke">#000000</color>
@@ -237,11 +237,14 @@
     <color name="login_regist_btn_pressed">#38bf6c</color>
     <color name="more_setting_line">#e5e5e5</color>
     <color name="course_divider">#e5e5e5</color>
-    <color name="course_details_info_bg">#ffffff</color>
+    <color name="course_details_info_bg">#bbffffff</color>
     <color name="course_details_btn">#ffffff</color>
     <color name="lesson_item_free">#ffc947</color>
     <color name="pay_course_old_price">#ffc947</color>
     <color name="pay_course_end_price">#ff4747</color>
 
     <color name="course_favorited">#ff6a47</color>
+    <color name="lesson_item_chapter_bg">#e6e6e6</color>
+    <color name="lesson_item_unit_bg">#f2f2f2</color>
+    <color name="lesson_item_lesson_bg">#ffffff</color>
 </resources>

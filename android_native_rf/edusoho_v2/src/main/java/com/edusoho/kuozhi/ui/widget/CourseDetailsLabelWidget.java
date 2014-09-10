@@ -92,6 +92,15 @@ public class CourseDetailsLabelWidget extends LinearLayout {
         mContainer.addView(mLoadView);
     }
 
+    public void show() {
+        setVisibility(VISIBLE);
+        int count = getChildCount();
+        for (int i=0; i < count; i++) {
+            View view = getChildAt(i);
+            view.setVisibility(VISIBLE);
+        }
+    }
+
     protected View setShowMoreBtn(OnClickListener clickListener)
     {
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);

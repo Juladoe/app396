@@ -38,6 +38,8 @@ public class CourseFragment extends BaseFragment {
     private String mTitle;
     private String mSearchText;
     private int mStart;
+    private int mType;
+    private String baseUrl;
 
     @Override
     public void invoke(WidgetMessage message) {
@@ -75,9 +77,17 @@ public class CourseFragment extends BaseFragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
+            mType = bundle.getInt(CourseListActivity.TYPE);
             mSearchText = bundle.getString(CourseListActivity.SEARCH_TEXT);
             mTitle = bundle.getString(TITLE);
             mCategoryId = bundle.getInt(CourseListActivity.CATEGORY_ID, 0);
+        }
+
+        baseUrl = Const.COURSES;
+        if (mSearchText != null) {
+            baseUrl = Const.SEARCH_COURSE;
+        } else if (mType == CourseListActivity.RECOMMEND) {
+            baseUrl = Const.RECOMMEND_COURSES;
         }
 
         loadCourseFromNet(0);
@@ -85,10 +95,6 @@ public class CourseFragment extends BaseFragment {
 
     private void loadCourseFromNet(int start)
     {
-        String baseUrl = Const.COURSES;
-        if (mSearchText != null) {
-            baseUrl = Const.SEARCH_COURSE;
-        }
         String url = app.bindUrl(baseUrl);
         HashMap<String, String> params = app.createParams(true, null);
         params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");
