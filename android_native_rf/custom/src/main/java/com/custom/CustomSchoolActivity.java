@@ -7,19 +7,15 @@ import android.view.View;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.entity.TokenResult;
-import com.edusoho.kuozhi.model.AppUpdateInfo;
-import com.edusoho.kuozhi.model.School;;
+import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.NormalCallback;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+;
 
 /**
  * Created by howzhi on 14-7-7.
@@ -28,8 +24,8 @@ public class CustomSchoolActivity extends SchoolCourseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        startSplash();
         super.onCreate(savedInstanceState);
+        startSplash();
     }
 
     @Override
