@@ -8,6 +8,27 @@ android {
         minSdkVersion 8
         targetSdkVersion 19
     }
+
+    productFlavors {
+        edianshang {
+            packageName "com.edusoho.edianshang"
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("wangwei.keystore")
+            storePassword "howzhi123"
+            keyAlias "wangwei.keystore"
+            keyPassword "howzhi123"
+        }
+    }
+
+    sourceSets {
+        edianshang {
+            res.srcDirs = ['src/custom/res']
+        }
+    }
 }
 
 dependencies {
