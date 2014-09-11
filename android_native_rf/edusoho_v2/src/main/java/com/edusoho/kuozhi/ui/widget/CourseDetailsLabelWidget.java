@@ -28,6 +28,7 @@ public class CourseDetailsLabelWidget extends LinearLayout {
     protected Context mContext;
     protected View mLoadView;
     protected boolean isLoad;
+    protected boolean isShowTitle;
 
     private TextView mTitleView;
     private View mContentView;
@@ -59,6 +60,8 @@ public class CourseDetailsLabelWidget extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.CourseDetailsLabelWidget);
         String title = ta.getString(R.styleable.CourseDetailsLabelWidget_labelTitle);
+        isShowTitle = ta.getBoolean(R.styleable.CourseDetailsLabelWidget_showTitle, true);
+
         mTitleView = initTitleView(title);
         addView(mTitleView);
 
@@ -101,7 +104,7 @@ public class CourseDetailsLabelWidget extends LinearLayout {
         }
     }
 
-    protected View setShowMoreBtn(OnClickListener clickListener)
+    public void setShowMoreBtn(OnClickListener clickListener)
     {
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -112,7 +115,6 @@ public class CourseDetailsLabelWidget extends LinearLayout {
         view.setOnClickListener(clickListener);
 
         addView(view);
-        return view;
     }
 
     protected void setContentView(int layoutId)
@@ -139,24 +141,13 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
     private TextView initTitleView(String title)
     {
-        TextView textView = new TextView(mContext);
-        Resources resources = mContext.getResources();
-
+        TextView textView = (TextView) LayoutInflater.from(mContext).inflate(
+                R.layout.course_details_label, null);
         textView.setText(title);
-        textView.setTextColor(resources.getColor(R.color.system_light_text));
-        textView.setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimensionPixelSize(R.dimen.course_details_widget));
 
-        textView.setEllipsize(TextUtils.TruncateAt.END);
-        textView.setSingleLine();
-        int padding = resources.getDimensionPixelSize(R.dimen.course_details_widget_label_padding) * 2;
-        textView.setPadding(padding, padding, padding, padding);
-        textView.setBackgroundResource(R.drawable.course_details_widget_bg);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        textView.setLayoutParams(layoutParams);
+        if (!isShowTitle) {
+            textView.setVisibility(GONE);
+        }
         return textView;
     }
 }

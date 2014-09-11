@@ -23,8 +23,10 @@ import android.text.TextUtils;
 import android.util.StringBuilderPrinter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.listener.NormalCallback;
 
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
@@ -45,6 +47,18 @@ public class AppUtil {
     public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    public static void viewTreeObserver(View view, final NormalCallback callback)
+    {
+        final ViewTreeObserver observer = view.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                callback.success(null);
+                observer.removeGlobalOnLayoutListener(this);
+            }
+        });
     }
 
     public static String coverUrlToCacheKey(RequestUrl requestUrl)

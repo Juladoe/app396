@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -146,16 +147,25 @@ public class CourseDetailsFragment extends BaseFragment {
         bindListener();
     }
 
-    private void showLessonLayoutByAnim()
+    private void showLessonLayoutByAnim(View lessonLayout)
     {
-        EdusohoAnimWrap animWrap = new EdusohoAnimWrap(mLessonLayout);
+        View widget = lessonLayout.findViewById(R.id.course_details_lesson);
+        View titleView = lessonLayout.findViewById(R.id.course_details_lesson_label);
 
-        ObjectAnimator widthAnim = ObjectAnimator.ofInt(
-                animWrap, "height", mLessonLayout.getHeight(), EdusohoApp.screenH);
-        widthAnim.setDuration(380);
-        widthAnim.setInterpolator(new AccelerateInterpolator());
+        int height = lessonLayout.getHeight() - titleView.getHeight();
+        EdusohoAnimWrap animWrap = new EdusohoAnimWrap(widget);
+        ObjectAnimator bgAnim = ObjectAnimator.ofFloat(lessonLayout, "alpha", 0.0f, 1.0f);
+        ObjectAnimator heightAnim = ObjectAnimator.ofInt(
+                animWrap, "height", 0, height);
 
-        widthAnim.start();
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                bgAnim,
+                heightAnim
+        );
+        set.setDuration(480);
+        set.setInterpolator(new AccelerateInterpolator());
+        set.start();
     }
 
     private void bindListener()
@@ -163,11 +173,19 @@ public class CourseDetailsFragment extends BaseFragment {
         mLessonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewGroup parent = (ViewGroup) mLessonLayout.getParent();
-                parent.removeView(mLessonLayout);
+                mLessonLayout.setVisibility(View.INVISIBLE);
+
+                final View lessonLayout = LayoutInflater.from(mContext).inflate(
+                        R.layout.course_details_lesson_content, null);
                 ViewGroup rootView = (ViewGroup) mContainerView;
-                rootView.addView(mLessonLayout);
-                //showLessonLayoutByAnim();
+                rootView.addView(lessonLayout);
+
+                AppUtil.viewTreeObserver(lessonLayout, new NormalCallback() {
+                    @Override
+                    public void success(Object obj) {
+                        showLessonLayoutByAnim(lessonLayout);
+                    }
+                });
             }
         });
 
@@ -400,8 +418,8 @@ public class CourseDetailsFragment extends BaseFragment {
             }
         };
 
-        mCourseTeacherView.setOnClickListener(clickListener);
-        mCourseAboutView.setOnClickListener(clickListener);
-        mCourseReviewView.setOnClickListener(clickListener);
+        mCourseTeacherView.setShowMoreBtn(clickListener);
+        mCourseAboutView.setShowMoreBtn(clickListener);
+        mCourseReviewView.setShowMoreBtn(clickListener);
     }
 }

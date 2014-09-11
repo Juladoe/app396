@@ -129,19 +129,12 @@ public class EdusohoApp extends Application{
 
     public <T> void queryUrl(String url, Class<T> tClass, final AjaxCallback<T> ajaxCallback)
     {
-        Cache cache = mEngine.appCache.getCache(url);
-        if (cache == null) {
-            query.ajax(url, tClass, new AjaxCallback<T>(){
-                @Override
-                public void callback(String url, T object, AjaxStatus status) {
-                    mEngine.appCache.setCache(url, object);
-                    ajaxCallback.callback(url, object, status);
-                }
-            });
-            return;
-        }
-
-        mEngine.appCache.cacheCallback(url, cache, ajaxCallback);
+        query.ajax(url, tClass, new AjaxCallback<T>(){
+            @Override
+            public void callback(String url, T object, AjaxStatus status) {
+                ajaxCallback.callback(url, object, status);
+            }
+        });
     }
 
     public void setParame(String key, Object obj)

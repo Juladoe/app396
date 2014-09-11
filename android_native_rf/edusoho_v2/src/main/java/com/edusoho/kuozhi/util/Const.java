@@ -107,6 +107,8 @@ public class Const {
     public static final int COURSEINFO_REQUEST = 0x1005;
     public static final int COURSELESSON_REQUEST = 0x1001;
 
+    public static final int CACHE_CODE = 0x1111;
+
     //服务器api版本
     public static final int NORMAL_VERSIO = 0;
     public static final int HEIGHT_VERSIO = 1;

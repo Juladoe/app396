@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/found_bg"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="bottom"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/course_details_lesson_label" />
+
+    <com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
+        app:showTitle="false"
+        android:id="@+id/course_details_lesson"
+        app:labelTitle="课程列表"
+        app:isInitHeight="true"
+        android:paddingTop="18dp"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+</LinearLayout>

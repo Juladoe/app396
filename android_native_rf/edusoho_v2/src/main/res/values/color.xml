@@ -214,6 +214,7 @@
     <color name="recommend_announcement_label_icon_bg">#ffc947</color>
     <color name="recommend_weed_label_icon_bg">#ffff291c</color>
     <color name="recommend_view_more">#ffc947</color>
+    <color name="recommend_view_more_pressed">#55ffc947</color>
     <color name="recommend_bg">#f5f5f5</color>
     <color name="week_course_title">#808080</color>
     <color name="qr_other_btn">#ffca4a</color>

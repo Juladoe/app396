@@ -90,12 +90,6 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
             });
             return;
         }
-
-        setShowMoreBtn(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
     }
 
     public void getReviews(int start, String courseId)

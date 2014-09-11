@@ -26,6 +26,7 @@
 
     <declare-styleable name="CourseDetailsLabelWidget">
         <attr name="isInitHeight" format="boolean" />
+        <attr name="showTitle" format="boolean" />
         <attr name="labelTitle" format="string" />
     </declare-styleable>
 </resources>
