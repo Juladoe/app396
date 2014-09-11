@@ -7,6 +7,7 @@
     android:paddingTop="19dp"
     android:paddingLeft="19dp"
     android:paddingRight="19dp"
+    android:layout_below="@+id/course_details_header"
     android:background="@color/course_details_info_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

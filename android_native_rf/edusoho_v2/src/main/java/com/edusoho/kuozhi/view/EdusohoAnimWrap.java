@@ -36,6 +36,26 @@ public class EdusohoAnimWrap {
         mTarget.setBackgroundColor(color);
     }
 
+    public float getScaleX()
+    {
+        return mTarget.getScaleX();
+    }
+
+    public void setScaleX(float x)
+    {
+        mTarget.setScaleX(x);
+    }
+
+    public void setScaleY(float y)
+    {
+        mTarget.setScaleY(y);
+    }
+
+    public float getScaleY()
+    {
+        return mTarget.getScaleY();
+    }
+
     public int getBackground()
     {
         return mTarget.getDrawingCacheBackgroundColor();

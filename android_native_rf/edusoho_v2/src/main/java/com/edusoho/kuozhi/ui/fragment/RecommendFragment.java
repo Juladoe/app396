@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.SchoolAnnouncement;
 import com.edusoho.kuozhi.model.SchoolBanner;
@@ -75,22 +76,21 @@ public class RecommendFragment extends BaseFragment {
 
     private void initWeekCourse()
     {
-        String url = app.bindUrl(Const.WEEK_COURSES);
-        HashMap<String, String> params = app.initParams(new String[]{
+        RequestUrl url = app.bindUrl(Const.WEEK_COURSES, false);
+        url.setParams(new String[]{
                 "start", "0",
                 "limit", "3"
         });
 
-        mWeekCourse.initialise(mActivity, url, params);
+        mWeekCourse.initialise(mActivity, url);
         mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
     }
 
     private void initSchoolBanner()
     {
-        String url = app.bindUrl(Const.SCHOOL_BANNER);
-        HashMap<String, String> params = app.createParams(true, null);
+        RequestUrl url = app.bindUrl(Const.SCHOOL_BANNER, false);
 
-        mActivity.ajaxPost(url, params, new ResultCallback() {
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
@@ -110,14 +110,14 @@ public class RecommendFragment extends BaseFragment {
 
     private void initRecommendCourse()
     {
-        String url = app.bindUrl(Const.RECOMMEND_COURSES);
-        HashMap<String, String> params = app.initParams(new String[]{
+        RequestUrl url = app.bindUrl(Const.RECOMMEND_COURSES, false);
+        url.setParams(new String[]{
                 "start", "0",
                 "limit", "2"
         });
 
         mRecommendCourses.setFullHeight(true);
-        mRecommendCourses.initialise(mActivity, url, params);
+        mRecommendCourses.initialise(mActivity, url);
         
         mRecommendCourses.setShowMoreBtnClick(new View.OnClickListener() {
             @Override
@@ -139,9 +139,8 @@ public class RecommendFragment extends BaseFragment {
 
     private void initSchoolAnnouncement()
     {
-        String url = app.bindUrl(Const.SCHOOL_Announcement);
-        HashMap<String, String> params = app.createParams(true, null);
-        mActivity.ajaxPost(url, params, new ResultCallback() {
+        RequestUrl url = app.bindUrl(Const.SCHOOL_Announcement, false);
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

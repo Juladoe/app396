@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical"
     android:paddingTop="9dp"
     android:paddingBottom="6dp"
@@ -17,10 +18,8 @@
         android:layout_height="wrap_content" />
 
     <com.edusoho.kuozhi.view.EduSohoIconView
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:gravity="right"
+        android:padding="8dp"
         android:clickable="true"
         android:textColor="@color/system_normal_text"
         android:visibility="gone"

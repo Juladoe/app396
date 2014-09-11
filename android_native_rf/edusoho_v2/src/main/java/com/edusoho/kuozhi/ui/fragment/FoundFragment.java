@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CategoryListAdapter;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Category;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -99,10 +100,9 @@ public class FoundFragment extends BaseFragment {
             }
         });
 
-        String url = app.bindUrl(Const.CATEGORYS);
-        HashMap<String, String> params = app.createParams(true, null);
+        RequestUrl url = app.bindUrl(Const.CATEGORYS, false);
 
-        mCategoryListView.initialise(mActivity, url, params);
+        mCategoryListView.initialise(mActivity, url);
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {

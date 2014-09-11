@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.ui.common.AboutActivity;
 import com.edusoho.kuozhi.ui.widget.ButtonWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -120,13 +121,13 @@ public class RegistFragment extends BaseFragment{
             return false;
         }
 
-        String url = app.bindUrl(Const.REGIST);
-        HashMap<String, String> params = app.createParams(true, null);
+        RequestUrl url = app.bindUrl(Const.REGIST, false);
+        HashMap<String, String> params = url.getParams();
         params.put("email", email);
         params.put("nickname", nickname);
         params.put("password", pass);
 
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

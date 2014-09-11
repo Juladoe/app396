@@ -8,6 +8,7 @@ import android.view.View;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -52,11 +53,12 @@ public class CourseDetailsTeacherWidget extends CourseDetailsLabelWidget {
 
     private void getUserInfo()
     {
-        String url = mActivity.app.bindUrl(Const.USERINFO);
-        HashMap<String, String> params = mActivity.app.createParams(true, null);
-        params.put("userId", mUserId + "");
+        RequestUrl url = mActivity.app.bindUrl(Const.USERINFO, true);
+        url.setParams(new String[] {
+                "userId", mUserId + ""
+        });
 
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);

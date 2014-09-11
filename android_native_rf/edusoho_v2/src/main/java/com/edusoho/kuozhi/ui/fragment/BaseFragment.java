@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
 import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -74,7 +75,6 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     @Override
     public void invoke(WidgetMessage message) {
-
     }
 
     public abstract String getTitle();

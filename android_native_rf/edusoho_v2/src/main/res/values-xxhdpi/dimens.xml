@@ -74,4 +74,5 @@
 
     <dimen name="search_popwindow_cancel_btn">18dp</dimen>
     <dimen name="course_details_pic">220dp</dimen>
+    <dimen name="course_details_about">220dp</dimen>
 </resources>

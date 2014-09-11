@@ -5,15 +5,17 @@ package com.edusoho.kuozhi.core.model;
  */
 public class Cache {
 
-    public Object data;
+    public String value;
+    public String key;
 
-    public Cache(Object data)
+    public Cache(String key, String value)
     {
-        this.data = data;
+        this.key = key;
+        this.value = value;
     }
 
-    public <T> T get()
+    public String get()
     {
-        return (T)data;
+        return value;
     }
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import android.app.Activity;
 import android.app.Application;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,10 +36,12 @@ import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.model.Cache;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -97,27 +100,31 @@ public class EdusohoApp extends Application{
         return EdusohoMainService.getService();
     }
 
-    public void postUrl(
-            String url, HashMap<String, String> params,final ResultCallback callback)
+    public AjaxCallback postUrl(
+            RequestUrl requestUrl, final ResultCallback callback)
     {
-        Cache cache = mEngine.appCache.getCache(url);
+        final String cacheKey = AppUtil.coverUrlToCacheKey(requestUrl);
+        Cache cache = mEngine.appCache.getCache(cacheKey);
 
         AjaxCallback<String> ajaxCallback = new AjaxCallback<String>(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                mEngine.appCache.setCache(url, object);
+                mEngine.appCache.setCache(cacheKey, object);
                 callback.callback(url, object, status);
             }
         };
 
-        ajaxCallback.header("token", token);
+        ajaxCallback.headers(requestUrl.heads);
         ajaxCallback.method(AQuery.METHOD_POST);
+
         if (cache == null) {
-            query.ajax(url, params, String.class, ajaxCallback);
-            return;
+            query.ajax(requestUrl.url, requestUrl.params, String.class, ajaxCallback);
+            return ajaxCallback;
         }
 
-        mEngine.appCache.cacheCallback(url, cache, ajaxCallback);
+        Log.d(null, "get to cache->" + requestUrl.url);
+        mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
+        return ajaxCallback;
     }
 
     public <T> void queryUrl(String url, Class<T> tClass, final AjaxCallback<T> ajaxCallback)
@@ -203,7 +210,6 @@ public class EdusohoApp extends Application{
         query = new AQuery(this);
         host = getString(R.string.app_host);
         paramsMap = new HashMap<String, Object>();
-        sqliteUtil = new SqliteUtil(getApplicationContext(), null, null);
         initWorkSpace();
         loadConfig();
 
@@ -281,15 +287,6 @@ public class EdusohoApp extends Application{
                 getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isAvailable();
-    }
-
-    public School getDefaultSchool(String url, String appName)
-    {
-        School item = new School();
-        item.name = appName;
-        item.url = url;
-        item.logo = "";
-        return item;
     }
 
     public String getPluginFile(String pluginName)
@@ -395,8 +392,8 @@ public class EdusohoApp extends Application{
         edit.putString("token", result.token);
         edit.commit();
 
-        token = "".equals(result.token) ? null : result.token;
-        loginUser = token == null || "".equals(token) ? null : result.user;
+        token = result.token == null || "".equals(result.token) ? "" : result.token;
+        loginUser = "".equals(token) ? null : result.user;
     }
 
     public void removeToken()
@@ -512,11 +509,16 @@ public class EdusohoApp extends Application{
         return params;
     }
 
-    public String bindUrl(String url)
+    public RequestUrl bindUrl(String url, boolean addToken)
     {
         StringBuffer sb = new StringBuffer(app.schoolHost);
         sb.append(url);
-        return sb.toString();
+        RequestUrl requestUrl = new RequestUrl(sb.toString());
+
+        if (addToken) {
+            requestUrl.heads.put("token", token);
+        }
+        return requestUrl;
     }
 
     @Override

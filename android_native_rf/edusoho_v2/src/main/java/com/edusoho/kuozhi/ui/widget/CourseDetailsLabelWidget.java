@@ -150,7 +150,7 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setSingleLine();
-        int padding = resources.getDimensionPixelSize(R.dimen.course_details_widget_label_padding);
+        int padding = resources.getDimensionPixelSize(R.dimen.course_details_widget_label_padding) * 2;
         textView.setPadding(padding, padding, padding, padding);
         textView.setBackgroundResource(R.drawable.course_details_widget_bg);
 

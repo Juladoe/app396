@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -18,8 +19,10 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.CourseInfoResult;
@@ -39,10 +42,13 @@ import com.edusoho.kuozhi.ui.widget.ScrollWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,9 +70,9 @@ public class CourseDetailsFragment extends BaseFragment {
     private CourseDetailsGoalsWidget mCourseAboutView;
     private CourseDetailsReviewWidget mCourseReviewView;
     private CourseDetailsTeacherWidget mCourseTeacherView;
-    private CourseDetailsLessonWidget mCourseLessonView;
 
     private EduSohoTextBtn mFavoriteBtn;
+    private ViewGroup mLessonLayout;
 
     private Stack<String> mHeadStack;
     private Stack<CourseDetailsLabelWidget> mLabelsStack;
@@ -75,6 +81,7 @@ public class CourseDetailsFragment extends BaseFragment {
     private View mCourseInfoLayout;
     private View mHeadView;
     private CourseDetailsResult mCourseResult;
+    private TextView mHeadTextView;
 
     @Override
     public String getTitle() {
@@ -104,11 +111,13 @@ public class CourseDetailsFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
+
+        mHeadTextView = (TextView) view.findViewById(R.id.course_details_head_label);
+        mLessonLayout = (ViewGroup) view.findViewById(R.id.course_details_lesson_layout);
         mScrollView = (ScrollWidget) view.findViewById(R.id.course_details_scorllview);
         mCourseInfoLayout = view.findViewById(R.id.course_details_info_layout);
         mFavoriteBtn = (EduSohoTextBtn) view.findViewById(R.id.course_details_favorite);
         mCourseReviewView = (CourseDetailsReviewWidget) view.findViewById(R.id.course_details_review);
-        mCourseLessonView = (CourseDetailsLessonWidget) view.findViewById(R.id.course_details_lesson);
         mCourseAudiencesView = (CourseDetailsGoalsWidget) view.findViewById(R.id.course_details_audiences);
         mCourseGoalsView = (CourseDetailsGoalsWidget) view.findViewById(R.id.course_details_goals);
         mCourseAboutView = (CourseDetailsGoalsWidget) view.findViewById(R.id.course_details_about);
@@ -121,8 +130,6 @@ public class CourseDetailsFragment extends BaseFragment {
         mViewList.add(mCourseReviewView);
         mViewList.add(mCourseTeacherView);
 
-        mLabelsStack.push(mCourseLessonView);
-
         aQuery = new AQuery(view);
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -134,6 +141,36 @@ public class CourseDetailsFragment extends BaseFragment {
         initViewData(activity.getCourseDetailsInfo());
 
         mScrollView.setHeadView(mHeadView);
+        showHeadViewByAnim();
+
+        bindListener();
+    }
+
+    private void showLessonLayoutByAnim()
+    {
+        EdusohoAnimWrap animWrap = new EdusohoAnimWrap(mLessonLayout);
+
+        ObjectAnimator widthAnim = ObjectAnimator.ofInt(
+                animWrap, "height", mLessonLayout.getHeight(), EdusohoApp.screenH);
+        widthAnim.setDuration(380);
+        widthAnim.setInterpolator(new AccelerateInterpolator());
+
+        widthAnim.start();
+    }
+
+    private void bindListener()
+    {
+        mLessonLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ViewGroup parent = (ViewGroup) mLessonLayout.getParent();
+                parent.removeView(mLessonLayout);
+                ViewGroup rootView = (ViewGroup) mContainerView;
+                rootView.addView(mLessonLayout);
+                //showLessonLayoutByAnim();
+            }
+        });
+
         mScrollView.setScrollChangeListener(new ScrollWidget.ScrollChangeListener() {
             @Override
             public void onBottom() {
@@ -168,6 +205,26 @@ public class CourseDetailsFragment extends BaseFragment {
         });
     }
 
+    private void showHeadViewByAnim()
+    {
+        EdusohoAnimWrap animWrap = new EdusohoAnimWrap(mHeadView);
+        AnimatorSet set = new AnimatorSet();
+
+        ObjectAnimator widthAnim = ObjectAnimator.ofFloat(animWrap, "scaleX", 3.0f, 1.0f);
+        widthAnim.setDuration(380);
+        widthAnim.setInterpolator(new AccelerateInterpolator());
+
+        ObjectAnimator heightAnim = ObjectAnimator.ofFloat(animWrap, "scaleY", 3.0f, 1.0f);
+        widthAnim.setDuration(360);
+
+        widthAnim.setInterpolator(new AccelerateInterpolator());
+        set.playTogether(
+                widthAnim,
+                heightAnim
+        );
+        set.start();
+    }
+
     private void showMoreView()
     {
         if (mLabelsStack.empty()) {
@@ -179,11 +236,11 @@ public class CourseDetailsFragment extends BaseFragment {
 
     private void unFavoriteCourse(String courseId)
     {
-        String url = app.bindUrl(Const.UNFAVORITE);
-        HashMap<String, String> params = app.initParams(new String[] {
+        RequestUrl url = app.bindUrl(Const.UNFAVORITE, true);
+        url.setParams(new String[] {
                 "courseId", courseId
         });
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
@@ -203,11 +260,11 @@ public class CourseDetailsFragment extends BaseFragment {
 
     private void favoriteCourse(String courseId)
     {
-        String url = app.bindUrl(Const.FAVORITE);
-        HashMap<String, String> params = app.initParams(new String[] {
+        RequestUrl url = app.bindUrl(Const.FAVORITE, true);
+        url.setParams(new String[] {
                 "courseId", courseId
         });
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
@@ -227,13 +284,10 @@ public class CourseDetailsFragment extends BaseFragment {
     {
         if (!mHeadStack.isEmpty()) {
             String head = mHeadStack.peek();
-            Bundle bundle =  new Bundle();
-            bundle.putString("text", head);
-            app.sendMsgToTarget(
-                    CourseDetailsActivity.SHOWHEAD, bundle, CourseDetailsActivity.class);
+            mHeadTextView.setVisibility(View.VISIBLE);
+            mHeadTextView.setText(head);
         } else {
-            app.sendMsgToTarget(
-                    CourseDetailsActivity.HIDEHEAD, null, CourseDetailsActivity.class);
+            mHeadTextView.setVisibility(View.GONE);
         }
 
         for (CourseDetailsLabelWidget view : mViewList) {
@@ -294,6 +348,7 @@ public class CourseDetailsFragment extends BaseFragment {
 
         setCourseStatus();
 
+        aQuery.id(mHeadView).image(course.largePicture, false, true, 0, R.drawable.noram_course);
         aQuery.id(R.id.course_details_rating).rating((float)course.rating);
         String price = course.price <= 0 ? "免费" : "￥" + course.price;
         aQuery.id(R.id.course_details_price).text(price);
@@ -305,8 +360,6 @@ public class CourseDetailsFragment extends BaseFragment {
         mCourseAboutView.setText(AppUtil.coverCourseAbout(course.about));
         mCourseTeacherView.initUser(mTeacher.id, mActivity);
         mCourseReviewView.initReview(course.id, mActivity, false);
-        mCourseLessonView.initLesson(course.id, mActivity);
-
         showCourseMoreInfoListener();
     }
 

@@ -8,6 +8,7 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.ui.common.AboutActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
@@ -80,8 +81,8 @@ public class MoreSettingFragment extends BaseFragment {
     private void logout()
     {
         showProgress(true);
-        String url = app.bindUrl(Const.LOGOUT);
-        mActivity.ajaxPost(url, null, new ResultCallback(){
+        RequestUrl url = app.bindUrl(Const.LOGOUT, true);
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

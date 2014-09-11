@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Announcement;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
@@ -63,11 +64,8 @@ public class CourseLearningFragment extends BaseFragment {
 
     private void unLearnCourse()
     {
-        String url = app.bindUrl(Const.UN_LEARN_COURSE);
-        HashMap<String, String> params = app.initParams(new String[] {
-                "", ""
-        });
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        RequestUrl url = app.bindUrl(Const.UN_LEARN_COURSE, true);
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
@@ -105,11 +103,11 @@ public class CourseLearningFragment extends BaseFragment {
 
     private void initCourseAnnouncement()
     {
-        String url = app.bindUrl(Const.COURSE_NOTICE);
-        HashMap<String, String> params = app.initParams(new String[]{
+        RequestUrl url = app.bindUrl(Const.COURSE_NOTICE, true);
+        url.setParams(new String[]{
                 "courseId", mCourseId
         });
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 ArrayList<Announcement> announcements = mActivity.parseJsonValue(

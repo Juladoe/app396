@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.model.MessageModel;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.*;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -70,6 +71,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mService = app.getService();
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
+    }
+
+    public EdusohoMainService getService()
+    {
+        return mService;
     }
 
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken)
@@ -346,11 +352,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void ajaxPostByLoding(
-            String url, HashMap<String, String> params, final ResultCallback rcl)
+            RequestUrl url, final ResultCallback rcl)
     {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.postUrl(url, params, new ResultCallback(){
+        app.postUrl(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 if (loading != null) {
@@ -379,9 +385,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void ajaxPost(
-            String url, HashMap<String, String> params, final ResultCallback rcl)
+            RequestUrl url, final ResultCallback rcl)
     {
-        app.postUrl(url, params, new ResultCallback(){
+        app.postUrl(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 if (!app.getNetStatus()) {

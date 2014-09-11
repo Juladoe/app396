@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
@@ -58,7 +59,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private View mCoursePic;
     private View mBtnLayout;
     private View mLoadView;
-    private TextView mHeadView;
     private FrameLayout mFragmentLayout;
     private Button mVipLearnBtn;
     private Button mLearnBtn;
@@ -86,13 +86,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     public void invoke(WidgetMessage message) {
         int type = message.type.code;
         switch (type) {
-            case SHOWHEAD:
-                mHeadView.setVisibility(View.VISIBLE);
-                mHeadView.setText(message.data.getString("text"));
-                break;
-            case HIDEHEAD:
-                mHeadView.setVisibility(View.GONE);
-                break;
             case SET_LEARN_BTN:
                 Bundle data = message.data;
                 mVipLevelId = data.getInt("vipLevelId", 0);
@@ -146,7 +139,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mBtnLayout = findViewById(R.id.course_details_btn_layouts);
         mVipLearnBtn = (Button) findViewById(R.id.course_details_vip_learnbtn);
         mLearnBtn = (Button) findViewById(R.id.course_details_learnbtn);
-        mHeadView = (TextView) findViewById(R.id.course_details_head_label);
 
         loadCourseInfo();
         bindBtnClick();
@@ -157,11 +149,12 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mLoadView = getLoadView();
         mFragmentLayout.addView(mLoadView);
 
-        String url = app.bindUrl(Const.COURSE);
-        HashMap<String, String> params = app.createParams(true, null);
-        params.put("courseId", mCourseId);
+        RequestUrl url = app.bindUrl(Const.COURSE, true);
+        url.setParams(new String[] {
+                "courseId", mCourseId
+        });
 
-        ajaxPost(url, params, new ResultCallback() {
+        ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);
@@ -211,12 +204,12 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private void learnCourse()
     {
         setProgressBarIndeterminateVisibility(true);
-        String url = app.bindUrl(Const.PAYCOURSE);
-        HashMap<String, String> params = app.initParams(new String[] {
+        RequestUrl url = app.bindUrl(Const.PAYCOURSE, true);
+        url.setParams(new String[] {
                 "payment", "alipay",
                 "courseId", mCourseId
         });
-        ajaxPost(url, params, new ResultCallback() {
+        ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 setProgressBarIndeterminateVisibility(false);

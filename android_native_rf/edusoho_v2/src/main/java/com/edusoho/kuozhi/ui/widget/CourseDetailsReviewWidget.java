@@ -17,6 +17,7 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ReviewListAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.ReviewResult;
 import com.edusoho.kuozhi.model.User;
@@ -99,12 +100,13 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
 
     public void getReviews(int start, String courseId)
     {
-        String url = mActivity.app.bindUrl(Const.REVIEWS);
-        HashMap<String, String> params = mActivity.app.createParams(true, null);
-        params.put("courseId", courseId);
-        params.put("start", start + "");
+        RequestUrl url = mActivity.app.bindUrl(Const.REVIEWS, true);
+        url.setParams(new String[] {
+                "courseId", courseId,
+                "start", start + ""
+        });
 
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);

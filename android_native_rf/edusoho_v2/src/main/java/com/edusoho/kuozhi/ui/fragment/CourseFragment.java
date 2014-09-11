@@ -11,6 +11,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -95,14 +96,14 @@ public class CourseFragment extends BaseFragment {
 
     private void loadCourseFromNet(int start)
     {
-        String url = app.bindUrl(baseUrl);
-        HashMap<String, String> params = app.createParams(true, null);
+        RequestUrl url = app.bindUrl(baseUrl, true);
+        HashMap<String, String> params = url.getParams();
         params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");
         params.put(CourseListActivity.SEARCH_TEXT, mSearchText);
         params.put("start", start + "");
         params.put("limit", Const.LIMIT + "");
 
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);

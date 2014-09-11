@@ -8,6 +8,7 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
@@ -76,12 +77,13 @@ public class LearningCourseFragment extends BaseFragment {
 
     private void loadCourseFromNet(int start)
     {
-        String url = app.bindUrl(Const.LEARNING);
-        HashMap<String, String> params = app.createParams(true, null);
-        params.put("start", start + "");
-        params.put("limit", Const.LIMIT + "");
+        RequestUrl url = app.bindUrl(Const.LEARNING, true);
+        url.setParams(new String[] {
+                "start", start + "",
+                "limit", Const.LIMIT + ""
+        });
 
-        mActivity.ajaxPost(url, params, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mCourseListView.onRefreshComplete();

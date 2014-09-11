@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.view.EdusohoListView;
@@ -90,9 +91,9 @@ public class CourseListWidget extends LinearLayout {
     }
 
     public void initialise(
-            final ActionBarBaseActivity mActivity, String url, HashMap<String, String> params)
+            final ActionBarBaseActivity mActivity, RequestUrl url)
     {
-        mActivity.ajaxPost(url, params, new ResultCallback() {
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CategoryListAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Category;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.listener.ResultCallback;
@@ -62,9 +63,9 @@ public class LearnStatusWidget extends FrameLayout {
     }
 
     public void initialise(
-            final ActionBarBaseActivity mActivity, String url, HashMap<String, String> params)
+            final ActionBarBaseActivity mActivity, RequestUrl url)
     {
-        mActivity.ajaxPost(url, params, new ResultCallback() {
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

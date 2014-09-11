@@ -9,6 +9,7 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ScrollListAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -66,11 +67,11 @@ public class TeacherInfoFragment extends BaseFragment {
         final ScrollListAdapter adapter = new ScrollListAdapter(mContext);
         mTeacherCoursesView.setAdapter(adapter);
 
-        String url = app.bindUrl(Const.TEACHER_COURSES);
-        HashMap<String, String> params = app.initParams(new String[]{
+        RequestUrl url = app.bindUrl(Const.TEACHER_COURSES, true);
+        url.setParams(new String[]{
                 "userId", mTeacherId + ""
         });
-        mActivity.ajaxPost(url, params, new ResultCallback() {
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);

@@ -171,7 +171,9 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
                     int groupId = (Integer) view.getTag();
                     if (mExpandableListView.isGroupExpanded(groupId)) {
                         mExpandableListView.collapseGroup(groupId);
+                        rotation(view, -180, 0);
                     } else {
+                        rotation(view, 0, -180);
                         mExpandableListView.expandGroup(groupId);
                     }
                 }
@@ -182,6 +184,13 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         holder.mTitle.setText(category.name);
         //moveView(holder.mTitle, (category.depth - 1) * 30, category.id);
         return currentView;
+    }
+
+    private void rotation(View view, float start, float end)
+    {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
+        objectAnimator.setDuration(180);
+        objectAnimator.start();
     }
 
     private void moveView(View view, int left, int id)

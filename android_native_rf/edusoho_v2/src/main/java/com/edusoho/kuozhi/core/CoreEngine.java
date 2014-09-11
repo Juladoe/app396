@@ -247,7 +247,7 @@ public class CoreEngine {
 
     private void init()
     {
-        appCache = AppCache.getInstance();
+        appCache = AppDbCache.getInstance(mContext);
         messageEngine = MessageEngine.init();
         mMessageMap = new ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>>();
         initPluginFromXml();

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="1_android-query-full.0.26.8">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/edusoho_v2/build/exploded-bundles/Android_native_rfBdvideoplayerUnspecified.aar/libs/android-query-full.0.26.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/edusoho/build/exploded-bundles/Android_native_rfBdvideoplayerUnspecified.aar/libs/android-query-full.0.26.8.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

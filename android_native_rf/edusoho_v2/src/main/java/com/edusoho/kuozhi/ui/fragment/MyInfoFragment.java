@@ -1,16 +1,17 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.MessageEngine;
+import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.MyInfoPlugin;
@@ -36,17 +37,22 @@ public class MyInfoFragment extends BaseFragment {
     private TextView mUserName;
     private TextView mUserGroup;
     private TextView mUserContent;
+    private FrameLayout mStatusLayout;
 
     public static final int REFRESH = 0010;
+    public static final int LOGINT_WITH_TOKEN = 0020;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.myinfo_layout);
+    }
 
-        if (app.loginUser == null) {
-            LoginActivity.startForResult(mActivity);
-        }
+    private void setStatusLoginLayout()
+    {
+        mStatusLayout.removeAllViews();
+        View view = LayoutInflater.from(mContext).inflate(R.layout.no_login_layout, null);
+        mStatusLayout.addView(view);
     }
 
     @Override
@@ -54,7 +60,13 @@ public class MyInfoFragment extends BaseFragment {
         super.invoke(message);
         switch (message.type.code) {
             case REFRESH:
-                loadUser();
+                Log.d(null, "REFRESH->");
+                setUserStatus();
+                break;
+            case LOGINT_WITH_TOKEN:
+                Log.d(null, "LOGINT_WITH_TOKEN->");
+                setUserStatus();
+                break;
         }
     }
 
@@ -62,14 +74,17 @@ public class MyInfoFragment extends BaseFragment {
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(REFRESH, source)
+                new MessageType(REFRESH, source),
+                new MessageType(LOGINT_WITH_TOKEN, source)
         };
         return messageTypes;
     }
 
-    public void loadUser()
+    public void setUserStatus()
     {
+        Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
+            setStatusLoginLayout();
             mUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -79,18 +94,22 @@ public class MyInfoFragment extends BaseFragment {
             return;
         }
 
+        mStatusLayout.removeAllViews();
         mUserLayout.setEnabled(false);
         mUserName.setText(app.loginUser.nickname);
         mUserGroup.setText(UserRole.coverRoleToStr(app.loginUser.roles));
         mUserContent.setText(app.loginUser.title);
 
         AQuery aQuery = new AQuery(mActivity);
-        aQuery.id(mUserLogo).image(app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
+        aQuery.id(mUserLogo).image(
+                app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
         //mLearnStatusWidget.initialise(mActivity, "", null);
     }
 
     @Override
     protected void initView(View view) {
+
+        mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
         mUserLogo = (CircularImageView) view.findViewById(R.id.myinfo_logo);
         mUserName = (TextView) view.findViewById(R.id.myinfo_name);
         mUserGroup = (TextView) view.findViewById(R.id.myinfo_group);
@@ -105,15 +124,27 @@ public class MyInfoFragment extends BaseFragment {
             public void onClick(final MyInfoPlugin plugin) {
                 switch (plugin.action) {
                     case QUESTION:
+                        break;
                     case COURSE:
                         showMyCourse();
+                        break;
                     case TEST:
+                        break;
                     case DISCUSS:
+                        break;
                     case NOTE:
+                        break;
                 }
             }
         });
-        loadUser();
+
+        if (app.loginUser == null && !"".equals(app.token)) {
+            Log.d(null, "checkout token->");
+            mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+            return;
+        }
+
+        setUserStatus();
     }
 
     private void showMyCourse()

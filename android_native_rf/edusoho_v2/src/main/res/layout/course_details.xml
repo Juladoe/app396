@@ -47,19 +47,4 @@
         android:layout_height="match_parent"
         android:id="@android:id/list" />
 
-    <TextView
-        android:layout_marginLeft="19dp"
-        android:layout_marginRight="19dp"
-        android:visibility="gone"
-        android:textSize="@dimen/course_details_widget"
-        android:textColor="@color/system_light_text"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:background="@drawable/course_details_widget_bg"
-        android:paddingTop="@dimen/course_details_widget_label_padding"
-        android:paddingBottom="@dimen/course_details_widget_label_padding"
-        android:layout_alignParentTop="true"
-        android:id="@+id/course_details_head_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </RelativeLayout>

@@ -1,16 +1,33 @@
 package com.edusoho.kuozhi.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.StringBuilderPrinter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.edusoho.kuozhi.core.model.RequestUrl;
+
+import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.FileUtils;
 
 public class AppUtil {
 
@@ -30,6 +47,77 @@ public class AppUtil {
         return (int) (pxValue / scale + 0.5f);
     }
 
+    public static String coverUrlToCacheKey(RequestUrl requestUrl)
+    {
+        StringBuilder builder = new StringBuilder(requestUrl.url);
+
+        HashMap<String, String> map = requestUrl.heads;
+        map.putAll(requestUrl.params);
+
+        for(String key : map.keySet()) {
+            builder.append("&").append(key);
+            builder.append("&").append(map.get(key));
+        }
+
+        return DigestUtils.md5(builder.toString());
+    }
+
+    public static String gzip(String input)
+    {
+        String result = null;
+        ByteArrayInputStream reader = null;
+        GZIPOutputStream gzipOutputStream = null;
+        try {
+            reader = new ByteArrayInputStream(input.getBytes());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+            gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream);
+
+            int len = -1;
+            byte[] buffer = new byte[1024];
+            while ( (len = reader.read(buffer)) != -1) {
+                gzipOutputStream.write(buffer, 0, len);
+            }
+
+            result = byteArrayOutputStream.toString("utf-8");
+        } catch (Exception e) {
+            //nothing
+        } finally {
+            try {
+                reader.close();
+                gzipOutputStream.close();
+            }catch (Exception e){
+                //nothing}
+            }
+        }
+
+        return result;
+    }
+
+    public static String unGzip(String input)
+    {
+        StringBuilder builder = new StringBuilder();
+        GZIPInputStream gzipInputStream = null;
+        try {
+            int len = -1;
+            byte[] buffer = new byte[1024];
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(input.getBytes());
+            gzipInputStream = new GZIPInputStream(byteArrayInputStream);
+
+            while ( (len = gzipInputStream.read(buffer)) != -1) {
+                builder.append(new String(buffer, 0, len));
+            }
+        } catch (Exception e) {
+            //nothing
+        } finally {
+            try {
+                gzipInputStream.close();
+            }catch (Exception e){
+                //nothing}
+            }
+        }
+
+        return builder.toString();
+    }
 
     public static String coverCourseAbout(String about)
     {

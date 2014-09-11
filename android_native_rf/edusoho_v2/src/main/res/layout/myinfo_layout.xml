@@ -11,7 +11,7 @@
         android:paddingRight="15dp"
         android:paddingTop="11dp"
         android:paddingBottom="11dp"
-        android:background="@color/system_bg"
+        android:background="@drawable/normal_layout_bg"
         android:layout_width="match_parent"
         android:layout_height="87dp">
 
@@ -27,7 +27,6 @@
             android:textSize="@dimen/myinfo_name"
             android:id="@+id/myinfo_name"
             android:layout_toRightOf="@id/myinfo_logo"
-            android:text="姓名"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -37,7 +36,6 @@
             android:layout_below="@id/myinfo_name"
             android:id="@+id/myinfo_group"
             android:layout_toRightOf="@id/myinfo_logo"
-            android:text="头衔"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -46,9 +44,17 @@
             android:layout_alignBottom="@id/myinfo_logo"
             android:id="@+id/myinfo_content"
             android:layout_toRightOf="@id/myinfo_logo"
-            android:text="个人签名"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@+id/myinfo_status_layout"
+            android:layout_toRightOf="@id/myinfo_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/user_loading_layout" />
+        </FrameLayout>
     </RelativeLayout>
 
     <com.edusoho.kuozhi.ui.widget.MyInfoPluginListView
@@ -59,7 +65,7 @@
         android:id="@+id/myinfo_plugin_list"
         android:layout_below="@id/myinfo_user_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.edusoho.kuozhi.ui.widget.LearnStatusWidget
         android:id="@+id/myinfo_learnStatusWidget"

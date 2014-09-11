@@ -13,6 +13,7 @@ import android.view.View;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
@@ -78,12 +79,12 @@ public class LoginFragment extends BaseFragment {
                     return;
                 }
 
-                String url = app.bindUrl(Const.LOGIN);
-                HashMap<String, String> params = app.createParams(true, null);
+                RequestUrl url = app.bindUrl(Const.LOGIN, false);
+                HashMap<String, String> params = url.getParams();
                 params.put("_username", email);
                 params.put("_password", pass);
 
-                mActivity.ajaxPostByLoding(url, params, new ResultCallback() {
+                mActivity.ajaxPostByLoding(url, new ResultCallback() {
                     @Override
                     public void callback(String url, String object, AjaxStatus ajaxStatus) {
                         TokenResult result = app.gson.fromJson(

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="1_nineoldandroids-2.4.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/edusoho_v2/build/exploded-bundles/Android_native_rfJazzyViewPagerUnspecified.aar/libs/nineoldandroids-2.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/edusoho/build/exploded-bundles/Android_native_rfJazzyViewPagerUnspecified.aar/libs/nineoldandroids-2.4.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

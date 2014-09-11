@@ -28,6 +28,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private ViewGroup mNavBtnLayout;
     private NavBtnClickListener mNavBtnClickListener;
     private String mCurrentTag;
+    private int mSelectBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +37,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         setBackMode(null, "推荐");
         initView();
         mExitTimer = new Timer();
-
         mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
     }
 
     private void initView() {
         mNavBtnClickListener = new NavBtnClickListener();
         bindNavOnClick();
-        selectNavBtn(R.id.nav_recommend_btn);
-        addListener();
+        if ("".equals(app.token)) {
+            mSelectBtn = R.id.nav_recommend_btn;
+        } else {
+            mSelectBtn = R.id.nav_me_btn;
+        }
+
+        selectNavBtn(mSelectBtn);
     }
 
     @Override
@@ -54,9 +59,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mExitTimer = null;
         AQUtility.cleanCacheAsync(this);
         BitmapAjaxCallback.clearCache();
-    }
-
-    private void addListener(){
     }
 
     @Override

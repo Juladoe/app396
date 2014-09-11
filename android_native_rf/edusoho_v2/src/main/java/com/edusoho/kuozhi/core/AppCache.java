@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.core;
 
+import android.content.Context;
+
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.core.model.Cache;
@@ -14,73 +16,17 @@ import java.util.regex.Pattern;
 /**
  * Created by howzhi on 14-7-23.
  */
-public class AppCache {
+public interface AppCache {
 
-    private HashMap<String, Cache> cacheMap;
-    private static AppCache instance;
+    public <T> void cacheCallback(String url, Cache cache, AjaxCallback<T> ajaxCallback);
 
-    private AppCache(){
-        cacheMap = new HashMap<String, Cache>();
-    }
+    public boolean hasCache(String key);
 
-    private static String[] routing = {
-            Const.COURSE_COLUMN
-    };
+    public Cache getCache(String key);
 
-    public static AppCache getInstance()
-    {
-        synchronized (AppCache.class) {
-            if (instance == null) {
-                instance = new AppCache();
-            }
-        }
-        return instance;
-    }
+    public void setCache(String key, Object cache);
 
-    private boolean isCache(String url)
-    {
-        int result = Arrays.binarySearch(routing, url, new Comparator<String>() {
-            @Override
-            public int compare(String s, String s2) {
-                if (s2.contains(s)) {
-                    return 0;
-                }
-                return -1;
-            }
-        });
-        return result >= 0;
-    }
+    public void delCaceh(String key);
 
-    public <T> void cacheCallback(String url, Cache cache, AjaxCallback<T> ajaxCallback)
-    {
-        AjaxStatus ajaxStatus = new AjaxStatus(200, "cache");
-        ajaxCallback.callback(url, (T)cache.get(), ajaxStatus);
-    }
-
-    public boolean hasCache(String key)
-    {
-        return cacheMap.containsKey(key);
-    }
-
-    public Cache getCache(String key)
-    {
-        return cacheMap.get(key);
-    }
-
-    public void setCache(String key, Object cache)
-    {
-        if (isCache(key)) {
-            cacheMap.put(key, new Cache(cache));
-        }
-    }
-
-    public void delCaceh(String key)
-    {
-        cacheMap.remove(key);
-    }
-
-    public void clear()
-    {
-        cacheMap.clear();
-    }
+    public void clear();
 }

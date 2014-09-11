@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.edusoho.kuozhi.core.model.Cache;
+
 import org.apache.http.client.HttpClient;
 
 import java.io.BufferedReader;
@@ -60,12 +62,28 @@ public class SqliteUtil extends SQLiteOpenHelper{
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
 	}
-	
+
+    public Cache query(String selection, String... selectionArgs)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(selection, selectionArgs);
+
+        Cache cache = null;
+        if (cursor.moveToNext()) {
+            String key = cursor.getString(cursor.getColumnIndex("key"));
+            String value = cursor.getString(cursor.getColumnIndex("value"));
+            cache = new Cache(key, value);
+        }
+        cursor.close();
+        db.close();
+
+        return cache;
+    }
+
 	public void query(QueryCallBack callback, String selection, String... selectionArgs)
 	{
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.rawQuery(selection, selectionArgs);
-
 		while (cursor.moveToNext()) {
 			callback.query(cursor);
 		}
@@ -80,11 +98,12 @@ public class SqliteUtil extends SQLiteOpenHelper{
 		db.close();
 	}
 	
-	public void insert(String table, ContentValues cv)
+	public long insert(String table, ContentValues cv)
 	{
 		SQLiteDatabase db = getWritableDatabase();
-		db.insert(table, null, cv);
+		long lastId = db.insert(table, null, cv);
 		db.close();
+        return lastId;
 	}
 	
 	public static class QueryCallBack

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:background="@color/found_bg"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:id="@+id/course_details_scorllview">
 
-        <LinearLayout
+        <RelativeLayout
+            android:paddingBottom="8dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
@@ -19,6 +20,7 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:layout_gravity="center"
                 android:id="@+id/course_details_header"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
@@ -56,7 +58,7 @@
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="@dimen/course_details_about" />
 
             <com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget
                 android:layout_below="@id/course_details_about"
@@ -79,6 +81,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <RelativeLayout
+                android:layout_below="@id/course_details_review"
+                android:id="@+id/course_details_lesson_layout"
+                android:clickable="true"
+                android:background="@drawable/normal_layout_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:paddingRight="19dp"
+                    android:paddingLeft="19dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="@color/system_light_text"
+                    android:text="课程列表"
+                    android:textSize="@dimen/course_details_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.edusoho.kuozhi.view.EduSohoIconView
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/found_search_text_icon"
+                    android:textColor="@color/system_light_text"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/font_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <!--
             <com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
                 android:layout_below="@id/course_details_review"
                 android:id="@+id/course_details_lesson"
@@ -89,7 +122,22 @@
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-        </LinearLayout>
+            -->
+        </RelativeLayout>
     </com.edusoho.kuozhi.ui.widget.ScrollWidget>
+
+    <TextView
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="19dp"
+        android:visibility="gone"
+        android:textSize="@dimen/course_details_widget"
+        android:textColor="@color/system_light_text"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:background="@drawable/course_details_widget_bg"
+        android:paddingTop="@dimen/course_details_widget_label_padding"
+        android:paddingBottom="@dimen/course_details_widget_label_padding"
+        android:id="@+id/course_details_head_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </FrameLayout>

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="core-2.2">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/edusoho/libs/core-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/custom/build/exploded-bundles/Android_native_rfEdusohoUnspecified.aar/libs/core-2.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
