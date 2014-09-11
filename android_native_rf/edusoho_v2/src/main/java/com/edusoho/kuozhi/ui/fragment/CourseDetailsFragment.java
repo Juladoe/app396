@@ -155,15 +155,16 @@ public class CourseDetailsFragment extends BaseFragment {
         int height = lessonLayout.getHeight() - titleView.getHeight();
         EdusohoAnimWrap animWrap = new EdusohoAnimWrap(widget);
         ObjectAnimator bgAnim = ObjectAnimator.ofFloat(lessonLayout, "alpha", 0.0f, 1.0f);
+        bgAnim.setDuration(240);
         ObjectAnimator heightAnim = ObjectAnimator.ofInt(
                 animWrap, "height", 0, height);
+        heightAnim.setDuration(480);
 
         AnimatorSet set = new AnimatorSet();
         set.playTogether(
                 bgAnim,
                 heightAnim
         );
-        set.setDuration(480);
         set.setInterpolator(new AccelerateInterpolator());
         set.start();
     }
