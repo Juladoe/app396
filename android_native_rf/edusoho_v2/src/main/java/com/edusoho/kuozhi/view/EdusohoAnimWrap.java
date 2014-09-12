@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.view;
 
 import android.view.View;
+import android.widget.FrameLayout;
 
 /**
  * Created by howzhi on 14-7-18.
@@ -54,6 +55,32 @@ public class EdusohoAnimWrap {
     public float getScaleY()
     {
         return mTarget.getScaleY();
+    }
+
+    public int getLeftMargin()
+    {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mTarget.getLayoutParams();
+        return layoutParams.leftMargin;
+    }
+
+    public void setLeftMargin(int leftMargin)
+    {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mTarget.getLayoutParams();
+        layoutParams.leftMargin = leftMargin;
+        mTarget.requestLayout();
+    }
+
+    public int getRightMargin()
+    {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mTarget.getLayoutParams();
+        return layoutParams.rightMargin;
+    }
+
+    public void setRightMargin(int rightMargin)
+    {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mTarget.getLayoutParams();
+        layoutParams.rightMargin = rightMargin;
+        mTarget.requestLayout();
     }
 
     public int getBackground()

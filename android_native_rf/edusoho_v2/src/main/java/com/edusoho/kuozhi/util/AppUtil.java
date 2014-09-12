@@ -21,6 +21,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.StringBuilderPrinter;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -47,6 +49,18 @@ public class AppUtil {
     public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    public static void touchByGestureDetector(
+            View view, GestureDetector.SimpleOnGestureListener gestureListener)
+    {
+        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
     }
 
     public static void viewTreeObserver(View view, final NormalCallback callback)

@@ -2,19 +2,17 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.ScrollView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -25,11 +23,8 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
-import com.edusoho.kuozhi.model.CourseInfoResult;
-import com.edusoho.kuozhi.model.GsonType;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.VipLevel;
-import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
@@ -46,31 +41,33 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import net.simonvt.menudrawer.MenuDrawer;
+import net.simonvt.menudrawer.Position;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Stack;
 
 /**
  * Created by howzhi on 14-8-26.
  */
-public class CourseDetailsFragment extends BaseFragment {
+public class CourseDetailsFragment extends BaseFragment{
 
     private String mTitle;
     private String mCourseId;
     private Teacher mTeacher;
 
     private AQuery aQuery;
-    private Handler handler;
     private CourseDetailsGoalsWidget mCourseGoalsView;
     private CourseDetailsGoalsWidget mCourseAudiencesView;
     private CourseDetailsGoalsWidget mCourseAboutView;
     private CourseDetailsReviewWidget mCourseReviewView;
     private CourseDetailsTeacherWidget mCourseTeacherView;
+    private CourseDetailsLessonWidget mCourseLessonView;
 
     private EduSohoTextBtn mFavoriteBtn;
     private ViewGroup mLessonLayout;
@@ -79,10 +76,12 @@ public class CourseDetailsFragment extends BaseFragment {
     private Stack<CourseDetailsLabelWidget> mLabelsStack;
     private ArrayList<CourseDetailsLabelWidget> mViewList;
     private ScrollWidget mScrollView;
-    private View mCourseInfoLayout;
     private View mHeadView;
     private CourseDetailsResult mCourseResult;
     private TextView mHeadTextView;
+
+    private MenuDrawer mMenuDrawer;
+    private CourseDetailsActivity mCourseDetailsActivity;
 
     @Override
     public String getTitle() {
@@ -94,7 +93,6 @@ public class CourseDetailsFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setContainerView(R.layout.course_details_fragment);
-        handler = new Handler();
         mHeadStack = new Stack<String>();
         mViewList = new ArrayList<CourseDetailsLabelWidget>();
         mLabelsStack = new Stack<CourseDetailsLabelWidget>();
@@ -103,6 +101,21 @@ public class CourseDetailsFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mCourseDetailsActivity = (CourseDetailsActivity) activity;
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mTitle = bundle.getString(CourseDetailsActivity.TITLE);
+            mCourseId = bundle.getString(CourseDetailsActivity.COURSE_ID);
+        }
+
+        mMenuDrawer = mCourseDetailsActivity.getMenuDrawer();
+        mCourseLessonView = (CourseDetailsLessonWidget) LayoutInflater.from(activity).inflate(
+                R.layout.course_details_lesson_content, null);
+        mMenuDrawer.setMenuView(mCourseLessonView);
+
+        mCourseLessonView.initLesson(mCourseId, mCourseDetailsActivity);
+        mCourseLessonView.onShow();
     }
 
     @Override
@@ -116,7 +129,6 @@ public class CourseDetailsFragment extends BaseFragment {
         mHeadTextView = (TextView) view.findViewById(R.id.course_details_head_label);
         mLessonLayout = (ViewGroup) view.findViewById(R.id.course_details_lesson_layout);
         mScrollView = (ScrollWidget) view.findViewById(R.id.course_details_scorllview);
-        mCourseInfoLayout = view.findViewById(R.id.course_details_info_layout);
         mFavoriteBtn = (EduSohoTextBtn) view.findViewById(R.id.course_details_favorite);
         mCourseReviewView = (CourseDetailsReviewWidget) view.findViewById(R.id.course_details_review);
         mCourseAudiencesView = (CourseDetailsGoalsWidget) view.findViewById(R.id.course_details_audiences);
@@ -132,14 +144,7 @@ public class CourseDetailsFragment extends BaseFragment {
         mViewList.add(mCourseTeacherView);
 
         aQuery = new AQuery(view);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            mTitle = bundle.getString(CourseDetailsActivity.TITLE);
-            mCourseId = bundle.getString(CourseDetailsActivity.COURSE_ID);
-        }
-
-        CourseDetailsActivity activity = (CourseDetailsActivity) getActivity();
-        initViewData(activity.getCourseDetailsInfo());
+        initViewData(mCourseDetailsActivity.getCourseDetailsInfo());
 
         mScrollView.setHeadView(mHeadView);
         showHeadViewByAnim();
@@ -147,46 +152,12 @@ public class CourseDetailsFragment extends BaseFragment {
         bindListener();
     }
 
-    private void showLessonLayoutByAnim(View lessonLayout)
-    {
-        View widget = lessonLayout.findViewById(R.id.course_details_lesson);
-        View titleView = lessonLayout.findViewById(R.id.course_details_lesson_label);
-
-        int height = lessonLayout.getHeight() - titleView.getHeight();
-        EdusohoAnimWrap animWrap = new EdusohoAnimWrap(widget);
-        ObjectAnimator bgAnim = ObjectAnimator.ofFloat(lessonLayout, "alpha", 0.0f, 1.0f);
-        bgAnim.setDuration(240);
-        ObjectAnimator heightAnim = ObjectAnimator.ofInt(
-                animWrap, "height", 0, height);
-        heightAnim.setDuration(480);
-
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(
-                bgAnim,
-                heightAnim
-        );
-        set.setInterpolator(new AccelerateInterpolator());
-        set.start();
-    }
-
     private void bindListener()
     {
         mLessonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mLessonLayout.setVisibility(View.INVISIBLE);
-
-                final View lessonLayout = LayoutInflater.from(mContext).inflate(
-                        R.layout.course_details_lesson_content, null);
-                ViewGroup rootView = (ViewGroup) mContainerView;
-                rootView.addView(lessonLayout);
-
-                AppUtil.viewTreeObserver(lessonLayout, new NormalCallback() {
-                    @Override
-                    public void success(Object obj) {
-                        showLessonLayoutByAnim(lessonLayout);
-                    }
-                });
+                mMenuDrawer.openMenu();
             }
         });
 

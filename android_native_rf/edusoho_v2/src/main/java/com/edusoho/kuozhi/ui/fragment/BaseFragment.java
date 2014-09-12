@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
@@ -36,10 +37,15 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = (ActionBarBaseActivity) getActivity();
+        registMsgSrc();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (ActionBarBaseActivity) activity;
         mContext = mActivity.getBaseContext();
         app = mActivity.app;
-        registMsgSrc();
     }
 
     protected void registMsgSrc(){

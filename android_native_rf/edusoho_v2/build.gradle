@@ -21,6 +21,7 @@ dependencies {
     compile project(':ukphoto')
     compile project(':JazzyViewPager')
     compile project(':bdvideoplayer')
+    compile project(':menudrawer')
     compile project(':pullRefresh')
     compile project(':PagerSlidingTabStrip')
     compile project(':PinnedSectionListView')

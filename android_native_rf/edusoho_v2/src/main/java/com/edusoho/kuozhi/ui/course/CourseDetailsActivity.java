@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
@@ -36,6 +38,9 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import net.simonvt.menudrawer.MenuDrawer;
+import net.simonvt.menudrawer.Position;
 
 import java.util.HashMap;
 
@@ -56,7 +61,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private String mCourseId;
     private CourseDetailsResult mCourseDetailsResult;
 
-    private View mCoursePic;
     private View mBtnLayout;
     private View mLoadView;
     private FrameLayout mFragmentLayout;
@@ -65,12 +69,43 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private int mVipLevelId;
     private double mPrice;
 
+    protected MenuDrawer mMenuDrawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.course_details);
+        initMenuDrawer();
         initView();
         app.registMsgSource(this);
+    }
+
+    private void initMenuDrawer()
+    {
+        mMenuDrawer = MenuDrawer.attach(
+                mActivity, MenuDrawer.Type.OVERLAY, Position.RIGHT, MenuDrawer.MENU_DRAG_WINDOW);
+        mMenuDrawer.setContentView(R.layout.course_details);
+        mMenuDrawer.setMenuSize(EdusohoApp.screenW);
+        mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
+
+        mMenuDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
+            @Override
+            public void onDrawerStateChange(int oldState, int newState) {
+                if (newState == MenuDrawer.STATE_OPEN) {
+                    mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+                } else if (newState == MenuDrawer.STATE_CLOSED) {
+                    mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
+                }
+            }
+
+            @Override
+            public void onDrawerSlide(float openRatio, int offsetPixels) {
+            }
+        });
+    }
+
+    public MenuDrawer getMenuDrawer()
+    {
+        return mMenuDrawer;
     }
 
     @Override
@@ -80,6 +115,15 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mMenuDrawer.isMenuVisible()) {
+            mMenuDrawer.closeMenu();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
