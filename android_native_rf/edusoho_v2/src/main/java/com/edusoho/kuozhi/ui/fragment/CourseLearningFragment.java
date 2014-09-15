@@ -89,7 +89,7 @@ public class CourseLearningFragment extends BaseFragment {
         initCourseAnnouncement();
 
         mCourseLessonList.hideTitle();
-        mCourseLessonList.initLesson(mCourseId, mActivity);
+        mCourseLessonList.initLesson(mCourseId, mActivity, true);
         mCourseLessonList.onShow();
         showBtnLayout(mBtnLayout);
 
