@@ -97,25 +97,50 @@ public class CourseListWidget extends LinearLayout {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                mLoadView.setVisibility(View.GONE);
-                CourseResult courseResult = mActivity.gson.fromJson(
-                        object, new TypeToken<CourseResult>() {
-                }.getType());
+                parseRequestData(mActivity, object);
+            }
 
-                if (courseResult == null) {
-                    return;
-                }
-                CourseListAdapter adapter = new CourseListAdapter(
-                        mActivity, courseResult, R.layout.recommend_school_list_item);
-                mEdusohoListView.setAdapter(adapter);
-                if (isFullHeight) {
-                    mEdusohoListView.initListHeight();
-                }
-                if (isShowMoreBtn) {
-                    mShowMoreBtn = createShowMoreBtn();
-                    addView(mShowMoreBtn);
-                }
+            @Override
+            public void update(String url, String object, AjaxStatus ajaxStatus) {
+                super.update(url, object, ajaxStatus);
+                updateRequestData(mActivity, object);
             }
         });
+    }
+
+    private void updateRequestData(ActionBarBaseActivity mActivity, String object)
+    {
+        CourseResult courseResult = mActivity.gson.fromJson(
+                object, new TypeToken<CourseResult>() {
+        }.getType());
+
+        if (courseResult == null) {
+            return;
+        }
+        CourseListAdapter adapter = (CourseListAdapter) mEdusohoListView.getAdapter();
+        adapter.setItems(courseResult);
+    }
+
+    private void parseRequestData(ActionBarBaseActivity mActivity, String object)
+    {
+        mLoadView.setVisibility(View.GONE);
+        CourseResult courseResult = mActivity.gson.fromJson(
+                object, new TypeToken<CourseResult>() {
+        }.getType());
+
+        if (courseResult == null) {
+            return;
+        }
+        CourseListAdapter adapter = new CourseListAdapter(
+                mActivity, courseResult, R.layout.recommend_school_list_item);
+        mEdusohoListView.setAdapter(adapter);
+        if (isFullHeight) {
+            mEdusohoListView.initListHeight();
+        }
+
+        if (isShowMoreBtn) {
+            mShowMoreBtn = createShowMoreBtn();
+            addView(mShowMoreBtn);
+        }
     }
 }

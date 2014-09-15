@@ -9,7 +9,7 @@ public class CourseDetailsResult implements Serializable {
     public Course course;
     public boolean userIsStudent;
     public boolean userFavorited;
-    public Object member;
+    public Member member;
     public Vip vip;
     public VipLevel[] vipLevels;
 }

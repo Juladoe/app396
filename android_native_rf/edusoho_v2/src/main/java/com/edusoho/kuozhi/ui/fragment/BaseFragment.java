@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -33,6 +34,8 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     protected View mContainerView;
     public String mTitle;
     protected Context mContext;
+
+    public static final int DATA_UPDATE = 0010;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,11 +75,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     {
         view.measure(0, 0);
         int height = view.getMeasuredHeight();
-        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
-                new EdusohoAnimWrap(view), "height", 0, height);
-        objectAnimator.setDuration(240);
-        objectAnimator.setInterpolator(new AccelerateInterpolator());
-        objectAnimator.start();
+        AppUtil.animForHeight(new EdusohoAnimWrap(view), 0, height, 240);
     }
 
     @Override

@@ -5,20 +5,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.ImageView;
 
+import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
@@ -27,12 +23,14 @@ import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
+import com.edusoho.kuozhi.model.Member;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.widget.ScrollWidget;
+import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
@@ -42,8 +40,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
-import java.util.HashMap;
-
 /**
  * Created by howzhi on 14-8-26.
  */
@@ -51,18 +47,23 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         implements MessageEngine.MessageCallback {
 
     public static final String TITLE = "title";
+    public static final String CACHE = "cache";
     public static final String COURSE_ID = "courseID";
+    public static final String COURSE_PIC = "picture";
     public static final String TAG = "CourseDetailsActivity";
-    public static final int SHOWHEAD = 0001;
-    public static final int HIDEHEAD = 0002;
+    public static final int HIDE_COURSE_PIC = 0001;
     public static final int SET_LEARN_BTN = 0003;
 
     private String mTitle;
     private String mCourseId;
+    private String mCoursePic;
     private CourseDetailsResult mCourseDetailsResult;
+    private String mCurrentFragment;
+    private Class mCurrentFragmentClass;
 
     private View mBtnLayout;
     private View mLoadView;
+    private ImageView mCoursePicView;
     private FrameLayout mFragmentLayout;
     private Button mVipLearnBtn;
     private Button mLearnBtn;
@@ -129,9 +130,14 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     @Override
     public void invoke(WidgetMessage message) {
         int type = message.type.code;
+        Bundle data = message.data;
         switch (type) {
+            case HIDE_COURSE_PIC:
+                Log.d(null, "hide course pic->");
+                AppUtil.animForHeight(
+                        new EdusohoAnimWrap(mCoursePicView), mCoursePicView.getHeight(), 0, 500);
+                break;
             case SET_LEARN_BTN:
-                Bundle data = message.data;
                 mVipLevelId = data.getInt("vipLevelId", 0);
                 mPrice = data.getDouble("price", 0);
                 String vipLevelName = data.getString("vipLevelName");
@@ -165,7 +171,8 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(SHOWHEAD, source)
+                new MessageType(SET_LEARN_BTN, source),
+                new MessageType(HIDE_COURSE_PIC, source)
         };
         return messageTypes;
     }
@@ -175,17 +182,32 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         Intent data = getIntent();
         if (data != null && data.hasExtra(TITLE)) {
             mTitle = data.getStringExtra(TITLE);
+            mCoursePic = data.getStringExtra(COURSE_PIC);
             mCourseId = data.getStringExtra(COURSE_ID);
         }
 
         setBackMode(BACK, mTitle);
+
+        mCoursePicView = (ImageView) findViewById(R.id.course_details_header);
         mFragmentLayout = (FrameLayout) findViewById(android.R.id.list);
         mBtnLayout = findViewById(R.id.course_details_btn_layouts);
         mVipLearnBtn = (Button) findViewById(R.id.course_details_vip_learnbtn);
         mLearnBtn = (Button) findViewById(R.id.course_details_learnbtn);
 
+        loadCoursePic();
         loadCourseInfo();
         bindBtnClick();
+    }
+
+    public View getCoursePic()
+    {
+        return mCoursePicView;
+    }
+
+    private void loadCoursePic()
+    {
+        AQuery aQuery = new AQuery(mCoursePicView);
+        aQuery.image(mCoursePic, false, true, 0, R.drawable.noram_course);
     }
 
     private void loadCourseInfo()
@@ -198,23 +220,59 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 "courseId", mCourseId
         });
 
+        setProgressBarIndeterminateVisibility(true);
         ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                mLoadView.setVisibility(View.GONE);
-                mCourseDetailsResult = mActivity.parseJsonValue(
-                        object, new TypeToken<CourseDetailsResult>() {
-                });
-                if (mCourseDetailsResult == null) {
-                    longToast("加载课程信息出现错误！请尝试重新打开课程！");
-                    return;
+                if (ajaxStatus.getCode() != Const.CACHE_CODE) {
+                    setProgressBarIndeterminateVisibility(false);
                 }
+                parseRequestData(object);
+            }
 
-                String fragment = mCourseDetailsResult.userIsStudent
-                        ? "CourseLearningFragment" : "CourseDetailsFragment";
-                loadCoureDetailsFragment(fragment);
+            @Override
+            public void update(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
+                updateRequestData(object);
             }
         });
+    }
+
+    private void updateRequestData(String object)
+    {
+        mCourseDetailsResult = mActivity.parseJsonValue(
+                object, new TypeToken<CourseDetailsResult>() {
+        });
+        if (mCourseDetailsResult == null) {
+            longToast("加载课程信息出现错误！请尝试重新打开课程！");
+            return;
+        }
+
+        String fragment = mCourseDetailsResult.userIsStudent
+                ? "CourseLearningFragment" : "CourseDetailsFragment";
+
+        if (fragment.equals(mCurrentFragment)) {
+            app.sendMsgToTarget(BaseFragment.DATA_UPDATE, null, mCurrentFragmentClass);
+            return;
+        }
+        loadCoureDetailsFragment(fragment);
+    }
+
+    private void parseRequestData(String object)
+    {
+        mLoadView.setVisibility(View.GONE);
+        mCourseDetailsResult = mActivity.parseJsonValue(
+                object, new TypeToken<CourseDetailsResult>() {
+        });
+        if (mCourseDetailsResult == null) {
+            longToast("加载课程信息出现错误！请尝试重新打开课程！");
+            return;
+        }
+
+        Member member = mCourseDetailsResult.member;
+        String fragment = member != null
+                ? "CourseLearningFragment" : "CourseDetailsFragment";
+        loadCoureDetailsFragment(fragment);
     }
 
     private void bindBtnClick()
@@ -303,5 +361,8 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         });
         fragmentTransaction.replace(android.R.id.list, fragment);
         fragmentTransaction.commit();
+
+        mCurrentFragment = fragmentName;
+        mCurrentFragmentClass = fragment.getClass();
     }
 }

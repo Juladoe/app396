@@ -19,15 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:layout_gravity="center"
-                android:id="@+id/course_details_header"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                android:src="@drawable/noram_course"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/course_details_pic" />
-
             <include layout="@layout/course_details_info_layout" />
 
             <com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget
@@ -58,7 +49,7 @@
                 android:paddingLeft="19dp"
                 android:paddingRight="19dp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/course_details_about" />
+                android:layout_height="wrap_content" />
 
             <com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget
                 android:layout_below="@id/course_details_about"

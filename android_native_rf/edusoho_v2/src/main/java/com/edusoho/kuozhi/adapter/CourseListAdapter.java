@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.util.AppUtil;
 
-public class CourseListAdapter extends BaseAdapter {
+public class CourseListAdapter extends EdusohoBaseAdapter {
 
     protected LayoutInflater inflater;
     protected int mResouce;
@@ -35,6 +35,7 @@ public class CourseListAdapter extends BaseAdapter {
         mContext = context;
         mResouce = resource;
         inflater = LayoutInflater.from(context);
+        setMode(NORMAL);
     }
 
     /**
@@ -50,8 +51,14 @@ public class CourseListAdapter extends BaseAdapter {
 
     public void addItem(CourseResult courseResult)
     {
+        setMode(UPDATE);
         listAddItem(courseResult.data);
         notifyDataSetChanged();
+    }
+
+    public void setItems(CourseResult courseResult)
+    {
+
     }
 
     @Override
@@ -71,8 +78,6 @@ public class CourseListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int index, View view, ViewGroup vg) {
-        Course course =  mList.get(index);
-        Teacher user = null;
         ViewHolder holder;
         if (view == null) {
             view = inflater.inflate(mResouce, null);
@@ -89,6 +94,53 @@ public class CourseListAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
+        switch (mMode){
+            case UPDATE:
+                updateViewData(holder, index);
+                break;
+            case NORMAL:
+                invaliViewData(holder, index);
+        }
+        return view;
+    }
+
+    public void updateViewData(ViewHolder holder, int index)
+    {
+        Course course =  mList.get(index);
+        Teacher user = null;
+        holder.course_title.setText(course.title);
+        if ("opened".equals(course.showStudentNumType)) {
+            holder.course_studentNum.setText(course.studentNum + " 学员");
+        }
+
+        holder.course_ratingbar.setRating((float) course.rating);
+        if (course.teachers.length > 0) {
+            user = course.teachers[0];
+            holder.course_teacher_nickname.setText("教师: " + user.nickname);
+            holder.aq.id(R.id.course_teacher_face).image(
+                    user.avatar, false, true);
+        }
+
+        holder.course_price.setText(course.price == 0 ? "免费": course.price + "元");
+
+        int width = EdusohoApp.app.screenW;
+        if (TextUtils.isEmpty(course.largePicture)) {
+            holder.aq.id(R.id.course_pic).image(R.drawable.noram_course);
+        } else {
+            if (urlCacheExistsed(mContext, course.largePicture)) {
+                return;
+            }
+
+            holder.aq.id(R.id.course_pic).image(
+                    course.largePicture, false, true, 200, R.drawable.noram_course);
+            holder.aq.id(R.id.course_pic).height(AppUtil.getCourseListCoverHeight(width), false);
+        }
+    }
+
+    public void invaliViewData(ViewHolder holder, int index)
+    {
+        Course course =  mList.get(index);
+        Teacher user = null;
         holder.course_title.setText(course.title);
         if ("opened".equals(course.showStudentNumType)) {
             holder.course_studentNum.setText(course.studentNum + " 学员");
@@ -112,7 +164,6 @@ public class CourseListAdapter extends BaseAdapter {
                     user.avatar, false, true);
         }
         holder.course_price.setText(course.price == 0 ? "免费": course.price + "元");
-        return view;
     }
 
     protected class ViewHolder {

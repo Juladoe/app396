@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +23,6 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CoreEngine;
-import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.*;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
@@ -38,7 +35,6 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -362,19 +358,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 if (loading != null) {
                     loading.dismiss();
                 }
-                if (!app.getNetStatus()) {
-                    longToast("没有网络服务！请检查网络设置。");
-                    return;
-                }
-                int code = status.getCode();
-                if (handlerError(object)) {
-                    return;
-                }
-                if (code != Const.OK) {
-                    longToast("服务器访问异常！");
-                    rcl.error(url, status);
-                    return;
-                }
+                handleRequest(url, object, status, rcl);
                 try {
                     rcl.callback(url,object,status);
                 }catch (Exception e) {
@@ -384,27 +368,50 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
+    private void handleRequest(
+            String url, String object, AjaxStatus status, ResultCallback rcl)
+    {
+        int code = status.getCode();
+        if (code == Const.CACHE_CODE) {
+            rcl.callback(url, object, status);
+            return;
+        }
+
+        if (!app.getNetStatus()) {
+            longToast("没有网络服务！请检查网络设置。");
+            return;
+        }
+
+        if (code != Const.OK) {
+            longToast("服务器访问异常!");
+            rcl.error(url, status);
+            return;
+        }
+
+        if (handlerError(object)) {
+            return;
+        }
+    }
+
     public void ajaxPost(
             RequestUrl url, final ResultCallback rcl)
     {
         app.postUrl(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                if (!app.getNetStatus()) {
-                    longToast("没有网络服务！请检查网络设置。");
-                    return;
-                }
-                int code = status.getCode();
-                if (handlerError(object)) {
-                    return;
-                }
-                if (code != Const.OK) {
-                    longToast("服务器访问异常!");
-                    rcl.error(url, status);
-                    return;
-                }
+                handleRequest(url, object, status, rcl);
                 try {
                     rcl.callback(url,object,status);
+                }catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+
+            @Override
+            public void update(String url, String object, AjaxStatus status) {
+                handleRequest(url, object, status, rcl);
+                try {
+                    rcl.update(url,object,status);
                 }catch (Exception e) {
                     rcl.error(url, status);
                 }

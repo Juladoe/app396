@@ -5,6 +5,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.CourseLessonType;
+import com.edusoho.kuozhi.entity.LearnStatus;
+import com.edusoho.kuozhi.entity.LessonsResult;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.hb.views.PinnedSectionListView;
 
@@ -28,17 +32,16 @@ public class LearnLessonListAdapter extends BaseAdapter
     private int mResouce;
     private Context mContext;
     private ArrayList<LessonItem> mList;
-    private HashMap<Integer, String> mUserLearns;
+    private HashMap<Integer, LearnStatus> mUserLearns;
     public int page = 0;
     public int count = 0;
 
     public LearnLessonListAdapter(
             Context context,
-            ArrayList<LessonItem> lessons,
-            HashMap<Integer, String> userLearns,
+            LessonsResult result,
             int resource) {
-        mList = lessons;
-        mUserLearns = userLearns;
+        mList = result.lessons;
+        mUserLearns = result.learnStatuses;
         mContext = context;
         mResouce = resource;
         inflater = LayoutInflater.from(context);
@@ -105,55 +108,80 @@ public class LearnLessonListAdapter extends BaseAdapter
         LessonItem.ItemType itemType = LessonItem.ItemType.cover(lesson.itemType);
         switch (itemType) {
             case LESSON:
-                holder.mLessonLayout.setVisibility(View.VISIBLE);
-                holder.mTitle.setText(lesson.title);
-
-                CourseLessonType type = CourseLessonType.value(lesson.type);
-                int typeDrawable = 0;
-                switch (type) {
-                    case TESTPAPER:
-                        typeDrawable = R.drawable.lesson_item_ppt;
-                    case PPT:
-                        typeDrawable = R.drawable.lesson_item_ppt;
-                    case VIDEO:
-                        typeDrawable = R.drawable.lesson_item_video;
-                    case AUDIO:
-                        typeDrawable = R.drawable.lesson_item_sound;
-                    case TEXT:
-                        typeDrawable = R.drawable.lesson_item_image;
-                        break;
-                    default:
-                        typeDrawable = R.drawable.lesson_item_image;
-                }
-
-                holder.mLessonType.setCompoundDrawablesWithIntrinsicBounds(
-                        mContext.getResources().getDrawable(typeDrawable), null, null, null);
-                holder.mLessonType.setText(lesson.length);
-                if (lesson.free == LessonItem.FREE) {
-                    setFreeTextStyle(holder.mLessonType);
-                }
-                view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
+                setLessonInfo(view, holder, lesson);
                 break;
             case CHAPTER:
-                holder.mChapter.setVisibility(View.VISIBLE);
-                if ("unit".equals(lesson.type)) {
-                    holder.mChapter.setPadding(20, 0, 0, 0);
-                    holder.mChapter.setText("第" + lesson.number + "节 " + lesson.title);
-                    view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_unit_bg));
-
-                } else {
-                    view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_chapter_bg));
-                    holder.mChapter.setText("第" + lesson.number + "章 " + lesson.title);
-                }
+                setChapterInfo(view, holder, lesson);
                 break;
         }
 
+        setLessonProgress(lesson.id, holder.mLessonProgress);
         return view;
     }
 
-    private void setLessonProgress(ImageView imageView)
+    private void setChapterInfo(
+            View view, ViewHolder holder, LessonItem lesson)
     {
+        holder.mChapter.setVisibility(View.VISIBLE);
+        if ("unit".equals(lesson.type)) {
+            holder.mChapter.setPadding(AQUtility.dip2pixel(mContext, 40), 0, 0, 0);
+            holder.mChapter.setText("第" + lesson.number + "节 " + lesson.title);
+            view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_unit_bg));
+        } else {
+            view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_chapter_bg));
+            holder.mChapter.setText("第" + lesson.number + "章 " + lesson.title);
+        }
+    }
 
+    private void setLessonInfo(
+            View view, ViewHolder holder, LessonItem lesson)
+    {
+        holder.mLessonLayout.setVisibility(View.VISIBLE);
+        holder.mTitle.setText(lesson.title);
+
+        CourseLessonType type = CourseLessonType.value(lesson.type);
+        int typeDrawable = 0;
+        switch (type) {
+            case TESTPAPER:
+                typeDrawable = R.drawable.lesson_item_ppt;
+            case PPT:
+                typeDrawable = R.drawable.lesson_item_ppt;
+            case VIDEO:
+                typeDrawable = R.drawable.lesson_item_video;
+            case AUDIO:
+                typeDrawable = R.drawable.lesson_item_sound;
+            case TEXT:
+                typeDrawable = R.drawable.lesson_item_image;
+                break;
+            default:
+                typeDrawable = R.drawable.lesson_item_image;
+        }
+
+        holder.mLessonType.setCompoundDrawablesWithIntrinsicBounds(
+                mContext.getResources().getDrawable(typeDrawable), null, null, null);
+        holder.mLessonType.setText(lesson.length);
+        if (lesson.free == LessonItem.FREE) {
+            setFreeTextStyle(holder.mLessonType);
+        }
+        view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
+    }
+
+    private void setLessonProgress(int lessonId, ImageView statusImageView)
+    {
+        Log.d(null, "mUserLearns->" + mUserLearns + "  lessonId->"+ lessonId);
+        LearnStatus status = mUserLearns.get(lessonId);
+        if (status == null) {
+            statusImageView.setImageResource(R.drawable.learn_status_normal);
+            return;
+        }
+        switch (status){
+            case finished:
+                statusImageView.setImageResource(R.drawable.learn_status_learned);
+                break;
+            case learning:
+                statusImageView.setImageResource(R.drawable.learn_status_learning);
+                break;
+        }
     }
 
     private void setFreeTextStyle(TextView textView)

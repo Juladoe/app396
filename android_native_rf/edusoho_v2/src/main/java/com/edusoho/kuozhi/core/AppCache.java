@@ -5,7 +5,9 @@ import android.content.Context;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.core.model.Cache;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.util.Const;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 
 import java.util.Arrays;
@@ -20,13 +22,15 @@ public interface AppCache {
 
     public <T> void cacheCallback(String url, Cache cache, AjaxCallback<T> ajaxCallback);
 
-    public boolean hasCache(String key);
+    public boolean hasCache(RequestUrl key);
 
-    public Cache getCache(String key);
+    public Cache getCache(RequestUrl key);
 
-    public void setCache(String key, Object cache);
+    public void setCache(RequestUrl key, Object cache);
 
-    public void delCaceh(String key);
+    public void updateCache(RequestUrl key, Object cache);
+
+    public void delCache(RequestUrl key);
 
     public void clear();
 }

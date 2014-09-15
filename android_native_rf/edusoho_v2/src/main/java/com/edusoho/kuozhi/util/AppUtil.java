@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -26,9 +27,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.NormalCallback;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
@@ -63,6 +68,13 @@ public class AppUtil {
         });
     }
 
+    public static boolean urlCacheExistsed(Context context, String url)
+    {
+        File cacheDir = AQUtility.getCacheDir(context);
+        File cacheFile = AQUtility.getExistedCacheByUrl(cacheDir, url);
+        return cacheFile != null;
+    }
+
     public static void viewTreeObserver(View view, final NormalCallback callback)
     {
         final ViewTreeObserver observer = view.getViewTreeObserver();
@@ -70,18 +82,27 @@ public class AppUtil {
             @Override
             public void onGlobalLayout() {
                 callback.success(null);
-                observer.removeGlobalOnLayoutListener(this);
+                if (observer.isAlive()) {
+                    observer.removeGlobalOnLayoutListener(this);
+                }
             }
         });
+    }
+
+    public static void animForHeight(Object view, int start, int end, int time)
+    {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
+                view, "height", start, end);
+        objectAnimator.setDuration(time);
+        objectAnimator.setInterpolator(new AccelerateInterpolator());
+        objectAnimator.start();
     }
 
     public static String coverUrlToCacheKey(RequestUrl requestUrl)
     {
         StringBuilder builder = new StringBuilder(requestUrl.url);
 
-        HashMap<String, String> map = requestUrl.heads;
-        map.putAll(requestUrl.params);
-
+        HashMap<String, String> map = requestUrl.params;
         for(String key : map.keySet()) {
             builder.append("&").append(key);
             builder.append("&").append(map.get(key));

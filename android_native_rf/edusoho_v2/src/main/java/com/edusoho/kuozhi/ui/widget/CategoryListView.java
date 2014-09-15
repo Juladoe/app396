@@ -105,20 +105,45 @@ public class CategoryListView extends FrameLayout {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mLoadView.setVisibility(View.GONE);
+                parseRequeseData(mActivity, object);
+            }
 
-                ArrayList<Category> categories = mActivity.gson.fromJson(
-                        object, new TypeToken<ArrayList<Category>>() {
-                }.getType());
-
-                if (categories == null || categories.isEmpty()) {
-                    return;
-                }
-
-                FoundCategoryListAdapter adapter = new FoundCategoryListAdapter(
-                        mActivity, categories, R.layout.category_list_item, mCategoryListView);
-                mCategoryListView.setAdapter(adapter);
+            @Override
+            public void update(String url, String object, AjaxStatus ajaxStatus) {
+                super.update(url, object, ajaxStatus);
+                updateRequeseData(mActivity, object);
             }
         });
+    }
+
+    private void parseRequeseData(ActionBarBaseActivity mActivity, String object)
+    {
+        ArrayList<Category> categories = mActivity.gson.fromJson(
+                object, new TypeToken<ArrayList<Category>>() {
+        }.getType());
+
+        if (categories == null || categories.isEmpty()) {
+            return;
+        }
+
+        FoundCategoryListAdapter adapter = new FoundCategoryListAdapter(
+                mActivity, categories, R.layout.category_list_item, mCategoryListView);
+        mCategoryListView.setAdapter(adapter);
+    }
+
+    private void updateRequeseData(ActionBarBaseActivity mActivity, String object)
+    {
+        ArrayList<Category> categories = mActivity.gson.fromJson(
+                object, new TypeToken<ArrayList<Category>>() {
+        }.getType());
+
+        if (categories == null || categories.isEmpty()) {
+            return;
+        }
+
+        FoundCategoryListAdapter adapter = (FoundCategoryListAdapter)
+                mCategoryListView.getAdapter();
+        adapter.setItems(categories);
     }
 
     public static class ListExpandClickListener implements OnClickListener

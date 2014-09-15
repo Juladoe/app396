@@ -8,7 +8,6 @@ public class CourseInfoItem {
 	public CourseCommentItem[] course_comment;
 	public HashMap<String, UserItem> users;
 	public HashMap<String, UserItem> teacherUsers;
-	public Member member;
 	public HashMap<String, String> learnStatuses;
     public boolean favoriteStatus;
     public boolean isStudent;

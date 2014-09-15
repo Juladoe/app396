@@ -49,6 +49,7 @@ public class CourseListScrollListener implements AbsListView.OnScrollListener, A
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(CourseDetailsActivity.COURSE_ID, course.id);
                 startIntent.putExtra(CourseDetailsActivity.TITLE, course.title);
+                startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
             }
         });
     }

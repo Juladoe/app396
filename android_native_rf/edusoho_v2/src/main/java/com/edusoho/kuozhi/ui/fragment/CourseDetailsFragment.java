@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -25,6 +27,7 @@ import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.VipLevel;
+import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
@@ -89,6 +92,17 @@ public class CourseDetailsFragment extends BaseFragment{
     }
 
     @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        int type = message.type.code;
+        switch (type) {
+            case DATA_UPDATE:
+                initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), true);
+                break;
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -101,6 +115,7 @@ public class CourseDetailsFragment extends BaseFragment{
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.d(null, "onAttach");
         mCourseDetailsActivity = (CourseDetailsActivity) activity;
 
         Bundle bundle = getArguments();
@@ -125,7 +140,7 @@ public class CourseDetailsFragment extends BaseFragment{
 
     @Override
     protected void initView(View view) {
-
+        Log.d(null, "initView->");
         mHeadTextView = (TextView) view.findViewById(R.id.course_details_head_label);
         mLessonLayout = (ViewGroup) view.findViewById(R.id.course_details_lesson_layout);
         mScrollView = (ScrollWidget) view.findViewById(R.id.course_details_scorllview);
@@ -144,11 +159,9 @@ public class CourseDetailsFragment extends BaseFragment{
         mViewList.add(mCourseTeacherView);
 
         aQuery = new AQuery(view);
-        initViewData(mCourseDetailsActivity.getCourseDetailsInfo());
+        initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), false);
 
         mScrollView.setHeadView(mHeadView);
-        showHeadViewByAnim();
-
         bindListener();
     }
 
@@ -201,11 +214,11 @@ public class CourseDetailsFragment extends BaseFragment{
         AnimatorSet set = new AnimatorSet();
 
         ObjectAnimator widthAnim = ObjectAnimator.ofFloat(animWrap, "scaleX", 3.0f, 1.0f);
-        widthAnim.setDuration(380);
+        widthAnim.setDuration(400);
         widthAnim.setInterpolator(new AccelerateInterpolator());
 
         ObjectAnimator heightAnim = ObjectAnimator.ofFloat(animWrap, "scaleY", 3.0f, 1.0f);
-        widthAnim.setDuration(360);
+        widthAnim.setDuration(400);
 
         widthAnim.setInterpolator(new AccelerateInterpolator());
         set.playTogether(
@@ -323,7 +336,18 @@ public class CourseDetailsFragment extends BaseFragment{
         return "";
     }
 
-    private void initViewData(CourseDetailsResult result)
+    private void addHeadImageView()
+    {
+        View coursePic = mCourseDetailsActivity.getCoursePic();
+        ViewGroup coursePicParent = (ViewGroup) coursePic.getParent();
+        if (coursePicParent != null) {
+            coursePicParent.removeView(coursePic);
+        }
+        ViewGroup childGroup = (ViewGroup) mScrollView.getChildAt(0);
+        childGroup.addView(coursePic);
+    }
+
+    private void initViewData(CourseDetailsResult result, boolean isUpdate)
     {
         mCourseResult = result;
         Course course = result.course;
@@ -337,8 +361,8 @@ public class CourseDetailsFragment extends BaseFragment{
         }
 
         setCourseStatus();
+        addHeadImageView();
 
-        aQuery.id(mHeadView).image(course.largePicture, false, true, 0, R.drawable.noram_course);
         aQuery.id(R.id.course_details_rating).rating((float)course.rating);
         String price = course.price <= 0 ? "免费" : "￥" + course.price;
         aQuery.id(R.id.course_details_price).text(price);
@@ -350,7 +374,10 @@ public class CourseDetailsFragment extends BaseFragment{
         mCourseAboutView.setText(AppUtil.coverCourseAbout(course.about));
         mCourseTeacherView.initUser(mTeacher.id, mActivity);
         mCourseReviewView.initReview(course.id, mActivity, false);
-        showCourseMoreInfoListener();
+
+        if (!isUpdate) {
+            showCourseMoreInfoListener();
+        }
     }
 
     private String getFragmetName(int id)

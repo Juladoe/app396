@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -149,6 +150,7 @@ public class NetSchoolActivity extends BaseActivity {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 loading.dismiss();
+                Log.d(null, "object->" + object + " url->" + url + "  code->" + status.getCode());
                 int code = status.getCode();
                 if (code != Const.OK) {
                     PopupDialog.createNormal(mContext, "提示信息", "网络异常！请检查网络链接").show();
@@ -188,6 +190,7 @@ public class NetSchoolActivity extends BaseActivity {
                     });
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     PopupDialog.createNormal(mContext, "错误信息", "没有搜索到网校").show();
                 }
             }

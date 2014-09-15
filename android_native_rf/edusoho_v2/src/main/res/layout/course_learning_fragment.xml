@@ -23,6 +23,7 @@
 
     <com.edusoho.kuozhi.ui.widget.LearnStatusWidget
         android:visibility="gone"
+        android:layout_marginTop="7dp"
         android:layout_below="@id/course_learning_notice"
         android:id="@+id/course_learning_status_widget"
         android:layout_width="match_parent"
@@ -55,7 +56,8 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <com.edusoho.kuozhi.ui.widget.CourseDetailsLearnLessonWidget
+    <com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
+        android:layout_marginTop="7dp"
         android:layout_above="@id/course_details_btn_layouts"
         android:id="@+id/course_learning_lessonlist"
         android:layout_below="@id/course_learning_status_widget"

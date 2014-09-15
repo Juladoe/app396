@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import android.app.Activity;
 import android.app.Application;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +31,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.core.CacheAjaxCallback;
 import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
@@ -41,11 +41,11 @@ import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.listener.AjaxResultCallback;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.RequestParamsCallback;
 import com.edusoho.listener.ResultCallback;
@@ -101,29 +101,33 @@ public class EdusohoApp extends Application{
     }
 
     public AjaxCallback postUrl(
-            RequestUrl requestUrl, final ResultCallback callback)
+            final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback)
     {
-        final String cacheKey = AppUtil.coverUrlToCacheKey(requestUrl);
-        Cache cache = mEngine.appCache.getCache(cacheKey);
-
-        AjaxCallback<String> ajaxCallback = new AjaxCallback<String>(){
+        Cache cache = mEngine.appCache.getCache(requestUrl);
+        CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                mEngine.appCache.setCache(cacheKey, object);
-                callback.callback(url, object, status);
+                super.callback(url, object, status);
+                if (this.isCacheRequest()) {
+                    mEngine.appCache.updateCache(requestUrl, object);
+                    ajaxResultCallback.update(url, object, status);
+                    return;
+                }
+                mEngine.appCache.setCache(requestUrl, object);
+                ajaxResultCallback.callback(url, object, status);
             }
         };
 
         ajaxCallback.headers(requestUrl.heads);
         ajaxCallback.method(AQuery.METHOD_POST);
 
-        if (cache == null) {
-            query.ajax(requestUrl.url, requestUrl.params, String.class, ajaxCallback);
-            return ajaxCallback;
+        if (cache != null) {
+            Log.d(null, "get to cache->" + requestUrl.url);
+            mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
+            ajaxCallback.setCacheRequest(true);
         }
 
-        Log.d(null, "get to cache->" + requestUrl.url);
-        mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
+        query.ajax(requestUrl.url, requestUrl.params, String.class, ajaxCallback);
         return ajaxCallback;
     }
 

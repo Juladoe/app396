@@ -97,7 +97,16 @@ public class SqliteUtil extends SQLiteOpenHelper{
 		db.execSQL(sql);
 		db.close();
 	}
-	
+
+    public int update(String table, ContentValues cv, String where, String[] args)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        int result = db.update(table, cv, where, args);
+        Log.d(null, "upate cache->" + result);
+        db.close();
+        return result;
+    }
+
 	public long insert(String table, ContentValues cv)
 	{
 		SQLiteDatabase db = getWritableDatabase();

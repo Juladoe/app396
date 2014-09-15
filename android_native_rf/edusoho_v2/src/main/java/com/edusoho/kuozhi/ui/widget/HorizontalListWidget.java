@@ -13,9 +13,11 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
+import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.HorizontalCourseListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -40,6 +42,7 @@ public class HorizontalListWidget extends HorizontalScrollView {
     private GestureDetector mGestureDetector;
     private FrameLayout mContainer;
     private View mLoadView;
+    private ActionBarBaseActivity mActivity;
 
     public HorizontalListWidget(Context context) {
         super(context);
@@ -92,7 +95,8 @@ public class HorizontalListWidget extends HorizontalScrollView {
         mGridView.setNumColumns(count);
         FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.width = (285 + 2 + 16) * count;
+        int width = (int)(EdusohoApp.screenW * 0.5f);
+        layoutParams.width = (width + 2 + 16) * count;
         mGridView.setLayoutParams(layoutParams);
     }
 
@@ -119,27 +123,55 @@ public class HorizontalListWidget extends HorizontalScrollView {
         return loadView;
     }
 
-    public void initialise(
-            final ActionBarBaseActivity mActivity, RequestUrl requestUrl)
+    private void parseRequestData(String object)
     {
+        mLoadView.setVisibility(View.GONE);
+        CourseResult courseResult = mActivity.gson.fromJson(
+                object, new TypeToken<CourseResult>() {
+        }.getType());
+
+        if (courseResult == null) {
+            return;
+        }
+
+        HorizontalCourseListAdapter adapter = new HorizontalCourseListAdapter(
+                mActivity, courseResult, R.layout.horizontal_course_item);
+
+        setGridViewWidth(adapter.getCount());
+        mGridView.setAdapter(adapter);
+    }
+
+    private void updateRequestData(String object)
+    {
+        CourseResult courseResult = mActivity.gson.fromJson(
+                object, new TypeToken<CourseResult>() {
+        }.getType());
+
+        if (courseResult == null) {
+            return;
+        }
+
+        HorizontalCourseListAdapter adapter = (HorizontalCourseListAdapter)
+                mGridView.getAdapter();
+        adapter.setItems(courseResult);
+    }
+
+    public void initialise(ActionBarBaseActivity activity, RequestUrl requestUrl)
+    {
+        mActivity = activity;
         mActivity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                mLoadView.setVisibility(View.GONE);
-                CourseResult courseResult = mActivity.gson.fromJson(
-                        object, new TypeToken<CourseResult>() {
-                }.getType());
+                Log.d(null, "HorizontalListWidget->callback");
+                parseRequestData(object);
+            }
 
-                if (courseResult == null) {
-                    return;
-                }
-
-                HorizontalCourseListAdapter adapter = new HorizontalCourseListAdapter(
-                        mActivity, courseResult, R.layout.horizontal_course_item);
-
-                setGridViewWidth(adapter.getCount());
-                mGridView.setAdapter(adapter);
+            @Override
+            public void update(String url, String object, AjaxStatus ajaxStatus) {
+                super.update(url, object, ajaxStatus);
+                Log.d(null, "HorizontalListWidget->update");
+                updateRequestData(object);
             }
         });
     }

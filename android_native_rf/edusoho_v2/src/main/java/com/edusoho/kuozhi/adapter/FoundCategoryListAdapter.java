@@ -82,8 +82,15 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
             categoryStack.push(tempList);
         }
 
-        indexStack.clear();;
+        indexStack.clear();
         categoryStack.clear();
+    }
+
+    public void setItems(ArrayList<Category> categories)
+    {
+        mList.clear();
+        coverList(categories);
+        notifyDataSetChanged();
     }
 
     @Override

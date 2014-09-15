@@ -6,27 +6,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Announcement;
-import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
-import com.edusoho.kuozhi.ui.widget.CourseDetailsLearnLessonWidget;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.hb.views.PinnedSectionListView;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-9-3.
@@ -38,7 +31,7 @@ public class CourseLearningFragment extends BaseFragment {
 
     private TextView mCourseNoticeView;
     private LearnStatusWidget mCourseStatusView;
-    private CourseDetailsLearnLessonWidget mCourseLessonList;
+    private CourseDetailsLessonWidget mCourseLessonList;
     private View mBtnLayout;
 
     @Override
@@ -82,7 +75,7 @@ public class CourseLearningFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
         mBtnLayout = view.findViewById(R.id.course_details_btn_layouts);
-        mCourseLessonList = (CourseDetailsLearnLessonWidget) view.findViewById(R.id.course_learning_lessonlist);
+        mCourseLessonList = (CourseDetailsLessonWidget) view.findViewById(R.id.course_learning_lessonlist);
         mCourseStatusView = (LearnStatusWidget) view.findViewById(R.id.course_learning_status_widget);
         mCourseNoticeView = (TextView) view.findViewById(R.id.course_learning_notice);
 
@@ -99,6 +92,9 @@ public class CourseLearningFragment extends BaseFragment {
         mCourseLessonList.initLesson(mCourseId, mActivity);
         mCourseLessonList.onShow();
         showBtnLayout(mBtnLayout);
+
+        app.sendMsgToTarget(
+                CourseDetailsActivity.HIDE_COURSE_PIC, null, CourseDetailsActivity.class);
     }
 
     private void initCourseAnnouncement()

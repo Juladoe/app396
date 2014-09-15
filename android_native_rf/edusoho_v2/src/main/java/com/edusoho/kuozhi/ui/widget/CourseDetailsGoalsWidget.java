@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -34,6 +35,8 @@ public class CourseDetailsGoalsWidget extends CourseDetailsLabelWidget {
         super.initView(attrs);
 
         mContentView= new TextView(mContext);
+        mContentView.setMaxLines(4);
+        mContentView.setEllipsize(TextUtils.TruncateAt.END);
         Resources resources = mContext.getResources();
         mContentView.setLineSpacing(resources.getDimension(R.dimen.course_details_widget_label_padding), 1);
         mContentView.setTextColor(resources.getColor(R.color.system_normal_text));
@@ -46,7 +49,7 @@ public class CourseDetailsGoalsWidget extends CourseDetailsLabelWidget {
         removeContentView();
         WebView webView = new WebView(mContext);
         webView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(false);
