@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -81,8 +82,8 @@ public class CourseLearningFragment extends BaseFragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mTitle = bundle.getString(CourseDetailsActivity.TITLE);
-            mCourseId = bundle.getString(CourseDetailsActivity.COURSE_ID);
+            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mCourseId = bundle.getString(Const.COURSE_ID);
         }
 
         setTitle(mTitle);
@@ -90,6 +91,8 @@ public class CourseLearningFragment extends BaseFragment {
 
         mCourseLessonList.hideTitle();
         mCourseLessonList.initLesson(mCourseId, mActivity, true);
+        mCourseLessonList.setItemClickListener(
+                new LessonItemClickListener(mActivity, mCourseLessonList.getLessonListJson()));
         mCourseLessonList.onShow();
         showBtnLayout(mBtnLayout);
 

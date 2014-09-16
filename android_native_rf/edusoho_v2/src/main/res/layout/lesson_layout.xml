@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/lesson_tools_layout"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/course_details_btn_layout_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <Button
+            android:id="@+id/lesson_resource_btn"
+            android:gravity="center"
+            android:layout_margin="9dp"
+            android:textColor="@color/course_details_btn"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="14dp"
+            android:paddingLeft="14dp"
+            android:text="资料"
+            android:background="@drawable/lesson_resource_btn_sel"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/lesson_learn_btn"
+            android:gravity="center"
+            android:layout_margin="9dp"
+            android:textColor="@color/course_details_btn"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="14dp"
+            android:paddingLeft="14dp"
+            android:text="学过了"
+            android:background="@drawable/lesson_learn_btn_sel"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_above="@id/lesson_tools_layout"
+        android:id="@android:id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+</RelativeLayout>

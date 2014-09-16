@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /**
@@ -49,26 +50,7 @@ public class CourseRefreshListWidget extends PullToRefreshListView {
         return arrayAdapter;
     }
 
-    protected void setErrorLayout()
-    {
-
-    }
-
-    private class EmptyAdapter extends ArrayAdapter<String>
-    {
-        public EmptyAdapter(Context context, int resource, int textViewResourceId, String[] objects)
-        {
-            super(context, resource, textViewResourceId, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
-            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-            layoutParams.height = getHeight();
-            view.setLayoutParams(layoutParams);
-            return view;
-        }
+    protected void setErrorLayout(){
     }
 
     public ListAdapter getAdapter()

@@ -129,7 +129,7 @@ public class FavoriteActivity extends BaseActivity {
                 final CourseResult result = app.gson.fromJson(
                         object, new TypeToken<CourseResult>(){}.getType());
 
-                if (result == null || result.data.length == 0) {
+                if (result == null || result.data.size() == 0) {
                     if (isAppend) {
                         longToast("没有更多收藏课程!");
                         pullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);

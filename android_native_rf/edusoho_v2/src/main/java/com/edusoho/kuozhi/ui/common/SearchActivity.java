@@ -163,7 +163,7 @@ public class SearchActivity extends BaseActivity {
                 final CourseResult result = app.gson.fromJson(
                         object, new TypeToken<CourseResult>() {
                 }.getType());
-                if (result == null || result.data.length == 0) {
+                if (result == null || result.data.size() == 0) {
                     if (isAppend) {
                         longToast("没有更多相关课程了");
                         pullToRefreshListView.setMode(PullToRefreshBase.Mode.DISABLED);

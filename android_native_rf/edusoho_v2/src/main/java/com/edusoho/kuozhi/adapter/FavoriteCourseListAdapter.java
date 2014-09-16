@@ -77,11 +77,9 @@ public class FavoriteCourseListAdapter extends BaseAdapter {
      *
      * @param courseItems
      */
-    private void listAddItem(Course[] courseItems)
+    private void listAddItem(ArrayList<Course> courseItems)
     {
-        for (Course item : courseItems) {
-            mList.add(item);
-        }
+        mList.addAll(courseItems);
     }
 
     public void addItem(CourseResult result)

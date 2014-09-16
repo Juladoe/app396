@@ -46,7 +46,7 @@ public class Const {
     public static final String REGIST_DEVICE = "regist_device";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
-    public static final String COURSELESSON = "courses/{courseId}/items?";
+    public static final String COURSELESSON = "Lesson/getLesson";
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";
     public static final String LOGIN = "User/login";
@@ -116,4 +116,9 @@ public class Const {
 
     public static final String DEFAULT_SCHOOL = "defaultSchool";
     public static final String PUBLISHED = "published";
+
+    public static final String COURSE_ID = "courseId";
+    public static final String LESSON_ID = "lessonId";
+    public static final String ACTIONBAT_TITLE = "title";
+    public static final String LIST_JSON = "list_json";
 }

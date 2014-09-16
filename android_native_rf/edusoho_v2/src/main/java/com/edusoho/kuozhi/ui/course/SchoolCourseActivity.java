@@ -282,7 +282,7 @@ public class SchoolCourseActivity extends BaseActivity {
                         object, new TypeToken<CourseResult>() {
                 }.getType());
 
-                if (result == null || result.data.length == 0) {
+                if (result == null || result.data.size() == 0) {
                     showEmptyLayout("暂无相应课程！");
                     return;
                 }

@@ -1,0 +1,135 @@
+package com.edusoho.kuozhi.ui.widget;
+
+import android.content.Context;
+import android.database.DataSetObserver;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ListAdapter;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.edusoho.kuozhi.R;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+
+import me.maxwin.view.XListView;
+
+/**
+ * Created by howzhi on 14-9-16.
+ */
+public class XCourseListWidget extends FrameLayout {
+
+    private Context mContext;
+    private ListAdapter mAdapter;
+    private PullToRefreshScrollView mEmptyLayout;
+    private XListView mCourseListWidget;
+    private String mEmptyText = "没有搜到相关课程，请换个关键词试试！";
+
+    public XCourseListWidget(Context context) {
+        super(context);
+        mContext = context;
+        initView();
+    }
+
+    public XCourseListWidget(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mContext = context;
+        initView();
+    }
+
+    private void initView()
+    {
+        mCourseListWidget = new XListView(mContext);
+        mCourseListWidget.setPullLoadEnable(false);
+        mCourseListWidget.setPullRefreshEnable(false);
+        addView(mCourseListWidget);
+    }
+
+    public void setAdapter(ListAdapter adapter) {
+        mAdapter = adapter;
+        mAdapter.registerDataSetObserver(new XCourseObserver());
+        mCourseListWidget.setAdapter(mAdapter);
+    }
+
+    public void setOnItemClickListener(PLA_AdapterView.OnItemClickListener itemClickListener)
+    {
+        mCourseListWidget.setOnItemClickListener(itemClickListener);
+    }
+
+    public void setXListViewListener(XListView.IXListViewListener listViewListener)
+    {
+        mCourseListWidget.setXListViewListener(listViewListener);
+    }
+
+    public void setEmptyText(String emptyText)
+    {
+        mEmptyText = emptyText;
+    }
+
+    private PullToRefreshScrollView initEmptyLayout()
+    {
+        PullToRefreshScrollView scrollView = new PullToRefreshScrollView(mContext);
+        scrollView.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        scrollView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+
+        View emptyLayout = LayoutInflater.from(mContext).inflate(
+                R.layout.course_empty_layout, null);
+        emptyLayout.setLayoutParams(new ScrollView.LayoutParams(
+                ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT));
+        scrollView.addView(emptyLayout);
+        TextView textView = (TextView) emptyLayout.findViewById(R.id.list_empty_text);
+        textView.setText(mEmptyText);
+
+        return scrollView;
+    }
+
+    public void setRefreshListener(PullToRefreshBase.OnRefreshListener refreshListener)
+    {
+        if (mEmptyLayout == null) {
+            return;
+        }
+
+        mEmptyLayout.setOnRefreshListener(refreshListener);
+    }
+
+    private void refreshView()
+    {
+        if (mAdapter.isEmpty()) {
+            if (mEmptyLayout == null) {
+                mEmptyLayout = initEmptyLayout();
+                addView(mEmptyLayout);
+            }
+            mEmptyLayout.setVisibility(VISIBLE);
+        } else {
+            if (mEmptyLayout != null) {
+                mEmptyLayout.setVisibility(GONE);
+            }
+            mCourseListWidget.postInvalidate();
+        }
+    }
+
+    public class XCourseObserver extends DataSetObserver
+    {
+        @Override
+        public void onInvalidated() {
+            super.onInvalidated();
+            Log.d(null, "XCourseObserver->onInvalidated");
+            refreshView();
+        }
+
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            Log.d(null, "XCourseObserver->onChanged");
+            refreshView();
+        }
+    }
+}
