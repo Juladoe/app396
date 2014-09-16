@@ -127,7 +127,10 @@
             android:name=".ui.course.CourseDetailsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".ui.course.LessonActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.course.CourseListActivity"
             android:configChanges="keyboardHidden|orientation"

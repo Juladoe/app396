@@ -129,7 +129,7 @@ public class CourseDetailsFragment extends BaseFragment{
                 R.layout.course_details_lesson_content, null);
         mMenuDrawer.setMenuView(mCourseLessonView);
 
-        mCourseLessonView.initLesson(mCourseId, mCourseDetailsActivity);
+        mCourseLessonView.initLesson(mCourseId, mCourseDetailsActivity, false);
         mCourseLessonView.onShow();
     }
 

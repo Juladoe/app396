@@ -255,4 +255,6 @@
     <color name="lesson_item_chapter_bg">#e6e6e6</color>
     <color name="lesson_item_unit_bg">#f2f2f2</color>
     <color name="lesson_item_lesson_bg">#ffffff</color>
+    <color name="course_lesson_item_bg_normal">#ffffff</color>
+    <color name="course_lesson_item_bg_pressed">#e6e6e6</color>
 </resources>

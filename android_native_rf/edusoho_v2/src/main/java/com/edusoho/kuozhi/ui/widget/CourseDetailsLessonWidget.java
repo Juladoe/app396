@@ -39,6 +39,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     private boolean isInitHeight;
     private String mCourseId;
     private AQuery mAQuery;
+    private boolean mIsAddToken;
 
     public CourseDetailsLessonWidget(Context context) {
         super(context);
@@ -60,8 +61,8 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.CourseDetailsLabelWidget);
         isInitHeight = ta.getBoolean(R.styleable.CourseDetailsLabelWidget_isInitHeight, false);
 
-        mContentView = new PinnedSectionListView(mContext, attrs);
-        mContentView.setDividerHeight(0);
+        mContentView = new PinnedSectionListView(mContext, null);
+        //mContentView.setSelector(getResources().getDrawable(R.drawable.normal_list_select));
         mContentView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContentView.setPadding(0, 0, 0, 0);
@@ -97,7 +98,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
 
     private void getLessons()
     {
-        RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
+        RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, mIsAddToken);
         url.setParams(new String[]{
                 "courseId", mCourseId
         });
@@ -107,8 +108,6 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
                 mLoadView.setVisibility(View.GONE);
                 LessonsResult result = mActivity.parseJsonValue(
                         object, new TypeToken<LessonsResult>(){});
-
-                Log.d(null, "lessonItems->" + result);
                 if (result == null) {
                     return;
                 }
@@ -128,9 +127,11 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         mContentView.setAdapter(adapter);
     }
 
-    public void initLesson(String courseId, final ActionBarBaseActivity activity)
+    public void initLesson(
+            String courseId, ActionBarBaseActivity activity, boolean isAddToken)
     {
         mCourseId = courseId;
         mActivity = activity;
+        this.mIsAddToken = isAddToken;
     }
 }
