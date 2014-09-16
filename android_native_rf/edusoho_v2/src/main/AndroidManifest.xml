@@ -141,6 +141,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.edusoho.kuozhi.ui.course.QuestionActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.edusoho.plugin.video.WebVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"></activity>
@@ -173,5 +178,6 @@
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="8" />
+
 
 </manifest>
