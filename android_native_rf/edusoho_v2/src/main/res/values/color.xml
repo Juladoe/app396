@@ -257,4 +257,10 @@
     <color name="lesson_item_lesson_bg">#ffffff</color>
     <color name="course_lesson_item_bg_normal">#ffffff</color>
     <color name="course_lesson_item_bg_pressed">#e6e6e6</color>
+    <color name="lesson_reource_btn_normal">#ccc</color>
+    <color name="lesson_reource_btn_pressed">#77cccccc</color>
+    <color name="lesson_learn_btn_normal">#38bf6c</color>
+    <color name="lesson_learn_btn_pressed">#7738bf6c</color>
+    <color name="lesson_learned_btn_normal">#ffc947</color>
+    <color name="lesson_learned_btn_pressed">#77ffc947</color>
 </resources>

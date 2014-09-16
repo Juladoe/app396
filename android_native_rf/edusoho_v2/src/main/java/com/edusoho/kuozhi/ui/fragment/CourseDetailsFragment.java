@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -120,8 +121,8 @@ public class CourseDetailsFragment extends BaseFragment{
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mTitle = bundle.getString(CourseDetailsActivity.TITLE);
-            mCourseId = bundle.getString(CourseDetailsActivity.COURSE_ID);
+            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mCourseId = bundle.getString(Const.COURSE_ID);
         }
 
         mMenuDrawer = mCourseDetailsActivity.getMenuDrawer();

@@ -38,15 +38,9 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
         setMode(NORMAL);
     }
 
-    /**
-     *
-     * @param courseItems
-     */
-    private void listAddItem(Course[] courseItems)
+    private void listAddItem(ArrayList<Course> courseItems)
     {
-        for (Course item : courseItems) {
-            mList.add(item);
-        }
+        mList.addAll(courseItems);
     }
 
     public void addItem(CourseResult courseResult)
@@ -56,9 +50,7 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void setItems(CourseResult courseResult)
-    {
-
+    public void setItems(CourseResult courseResult){
     }
 
     @Override

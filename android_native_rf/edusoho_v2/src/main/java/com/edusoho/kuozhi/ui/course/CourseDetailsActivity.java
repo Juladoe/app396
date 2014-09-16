@@ -46,9 +46,7 @@ import net.simonvt.menudrawer.Position;
 public class CourseDetailsActivity extends ActionBarBaseActivity
         implements MessageEngine.MessageCallback {
 
-    public static final String TITLE = "title";
     public static final String CACHE = "cache";
-    public static final String COURSE_ID = "courseID";
     public static final String COURSE_PIC = "picture";
     public static final String TAG = "CourseDetailsActivity";
     public static final int HIDE_COURSE_PIC = 0001;
@@ -180,10 +178,10 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private void initView()
     {
         Intent data = getIntent();
-        if (data != null && data.hasExtra(TITLE)) {
-            mTitle = data.getStringExtra(TITLE);
+        if (data != null) {
+            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
             mCoursePic = data.getStringExtra(COURSE_PIC);
-            mCourseId = data.getStringExtra(COURSE_ID);
+            mCourseId = data.getStringExtra(Const.COURSE_ID);
         }
 
         setBackMode(BACK, mTitle);
@@ -243,7 +241,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mCourseDetailsResult = mActivity.parseJsonValue(
                 object, new TypeToken<CourseDetailsResult>() {
         });
-        if (mCourseDetailsResult == null) {
+        if (mCourseDetailsResult == null || mCourseDetailsResult.course == null) {
             longToast("加载课程信息出现错误！请尝试重新打开课程！");
             return;
         }
@@ -264,7 +262,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mCourseDetailsResult = mActivity.parseJsonValue(
                 object, new TypeToken<CourseDetailsResult>() {
         });
-        if (mCourseDetailsResult == null) {
+        if (mCourseDetailsResult == null || mCourseDetailsResult.course == null) {
             longToast("加载课程信息出现错误！请尝试重新打开课程！");
             return;
         }
@@ -355,8 +353,8 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 fragmentName, mActivity, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString(COURSE_ID, mCourseId);
-                bundle.putString(TITLE, mTitle);
+                bundle.putString(Const.COURSE_ID, mCourseId);
+                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
             }
         });
         fragmentTransaction.replace(android.R.id.list, fragment);

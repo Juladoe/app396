@@ -185,6 +185,19 @@ public class CoreEngine {
         }
     }
 
+    public void runNormalPluginWithBundle(
+            String pluginName, Activity serverActivity, Bundle bundle)
+    {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setClassName(serverActivity, pluginModel.packAge);
+            startIntent.putExtras(bundle);
+
+            serverActivity.startActivity(startIntent);
+        }
+    }
+
     public File getPluginFile(String pluginName)
     {
         return new File(mContext.getFilesDir(), pluginName);

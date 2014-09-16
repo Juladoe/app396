@@ -17,11 +17,13 @@
     <plugin name="CourseColumnActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.CourseColumnActivity"></plugin>
     <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.ui.SplashActivity"></plugin>
     <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.DefaultPageActivity"></plugin>
+    <plugin name="ViewPagerActivity" version="1.0" package="com.edusoho.plugin.photo.ViewPagerActivity"></plugin>
 
     <plugin name="CourseListActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseListActivity"></plugin>
     <plugin name="CourseDetailsActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"></plugin>
     <plugin name="CourseDetailsTabActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"></plugin>
     <plugin name="PayCourseActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.PayCourseActivity"></plugin>
+    <plugin name="LessonActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LessonActivity"></plugin>
 
     <!-- service -->
     <plugin name="EdusohoMainService" version="1.0" package="com.edusoho.kuozhi.Service.EdusohoMainService"></plugin>
@@ -41,4 +43,5 @@
     <plugin name="FavoriteCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FavoriteCourseFragment"></plugin>
     <plugin name="LearningCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearningCourseFragment"></plugin>
     <plugin name="LearnedCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragment"></plugin>
+    <plugin name="TextLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment"></plugin>
 </plugins>
