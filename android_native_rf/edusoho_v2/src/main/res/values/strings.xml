@@ -51,15 +51,16 @@
     <string name="font_check_btn"></string>
     <string name="unpublished_text">未发布</string>
     <string name="font_list"></string>
+    <string name="font_me"></string>
+    <string name="font_recommend"></string>
+    <string name="font_found"></string>
+    <string name="font_more"></string>
+    <string name="font_search"></string>
+    <string name="font_favoirte"></string>
+    <string name="font_clear"></string>
+    <string name="font_favorited"></string>
+    <string name="font_expand"></string>
+    <string name="font_right"></string>
+    <string name="hello_world">Hello world!</string>
 
-    <string name="font_me">&#xe620;</string>
-    <string name="font_recommend">&#xe615;</string>
-    <string name="font_found">&#xe61e;</string>
-    <string name="font_more">&#xe616;</string>
-    <string name="font_search">&#xe61d;</string>
-    <string name="font_favoirte">&#xe631;</string>
-    <string name="font_clear">&#xe646;</string>
-    <string name="font_favorited">&#xe60a;</string>
-    <string name="font_expand">&#xe645;</string>
-    <string name="font_right">&#xe6a3;</string>
 </resources>

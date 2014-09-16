@@ -124,6 +124,7 @@ public class MyInfoFragment extends BaseFragment {
             public void onClick(final MyInfoPlugin plugin) {
                 switch (plugin.action) {
                     case QUESTION:
+                        redirectToMyQuestion();
                         break;
                     case COURSE:
                         showMyCourse();
@@ -145,6 +146,16 @@ public class MyInfoFragment extends BaseFragment {
         }
 
         setUserStatus();
+    }
+
+    private void redirectToMyQuestion() {
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+
+            }
+        };
+        app.mEngine.runNormalPlugin("QuestionActivity", mActivity, callback);
     }
 
     private void showMyCourse()

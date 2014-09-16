@@ -22,6 +22,10 @@
     <plugin name="CourseListActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseListActivity"></plugin>
     <plugin name="CourseDetailsActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"></plugin>
     <plugin name="CourseDetailsTabActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"></plugin>
+
+    <!--MyQuestion-->
+    <plugin name="QuestionActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.QuestionActivity"></plugin>
+
     <plugin name="PayCourseActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.PayCourseActivity"></plugin>
     <plugin name="LessonActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LessonActivity"></plugin>
 

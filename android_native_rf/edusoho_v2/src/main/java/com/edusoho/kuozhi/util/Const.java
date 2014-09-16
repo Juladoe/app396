@@ -47,6 +47,8 @@ public class Const {
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
     public static final String COURSELESSON = "Lesson/getLesson";
+    public static final String QUESTION="Course/getCourseTheads";
+
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";
     public static final String LOGIN = "User/login";

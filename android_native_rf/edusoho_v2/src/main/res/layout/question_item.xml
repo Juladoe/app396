@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="120dip"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_margin="6dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_question"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/defaultpic"
+            android:scaleType="fitXY"
+            android:layout_weight="3" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="2">
+
+            <TextView
+                android:id="@+id/tv_question_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginTop="4dp"
+                android:lines="2"
+                android:textColor="@color/question_title"
+                android:text="如何利用滤镜制作柔和光束" />
+
+            <TextView
+                android:id="@+id/tv_question_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/question_lesson"
+                android:layout_below="@+id/tv_question_title"
+                android:text="课时3" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+
+                <TextView
+                    android:id="@+id/tv_teacher_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="教师已回复"
+                    android:textSize="14sp"
+                    android:textColor="@color/teacher_reply"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/question_reply"
+                    android:scaleType="fitXY"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/tv_reply_amount" />
+
+                <TextView
+                    android:id="@+id/tv_reply_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:text="23"
+                    android:textSize="16sp"
+                    android:textColor="@color/question_lesson"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

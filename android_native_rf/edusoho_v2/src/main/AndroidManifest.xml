@@ -144,7 +144,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.edusoho.kuozhi.ui.course.QuestionActivity"
+            android:name=".ui.course.QuestionActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
