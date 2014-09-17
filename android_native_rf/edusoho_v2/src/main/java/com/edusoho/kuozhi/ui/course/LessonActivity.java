@@ -149,7 +149,11 @@ public class LessonActivity extends ActionBarBaseActivity {
         mResourceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                app.mEngine.runNormalPlugin("LessonResourceActivity", mActivity, null);
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, mCourseId);
+                bundle.putInt(Const.LESSON_ID, mLessonId);
+                app.mEngine.runNormalPluginWithBundle(
+                        "LessonResourceActivity", mActivity, bundle);
             }
         });
     }

@@ -86,6 +86,7 @@ public class Const {
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
     public static final String UN_LEARN_COURSE = "Course/unLearnCourse";
+    public static final String LESSON_RESOURCE = "Lesson/getLessonMaterial";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;

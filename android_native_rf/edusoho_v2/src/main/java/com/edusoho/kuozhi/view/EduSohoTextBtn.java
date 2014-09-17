@@ -18,6 +18,7 @@ public class EduSohoTextBtn extends LinearLayout {
     private String text;
     private String icon;
     private int size;
+    private float iconSizeScale;
     private ColorStateList color;
     private TextView mText;
     private EduSohoIconView mIcon;
@@ -39,9 +40,9 @@ public class EduSohoTextBtn extends LinearLayout {
         text = ta.getString(R.styleable.EduSohoTextBtn_text);
         icon = ta.getString(R.styleable.EduSohoTextBtn_image);
         size = ta.getDimensionPixelSize(R.styleable.EduSohoTextBtn_size, 0);
+        iconSizeScale = ta.getFloat(R.styleable.EduSohoTextBtn_iconSizeScale, 1.0f);
         color = ta.getColorStateList(R.styleable.EduSohoTextBtn_color);
 
-        setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LayoutParams(0, 0);
         layoutParams.gravity = Gravity.CENTER;
         setLayoutParams(layoutParams);
@@ -49,7 +50,7 @@ public class EduSohoTextBtn extends LinearLayout {
         mIcon = new EduSohoIconView(mContext);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
-        mIcon.setTextSize(size * 2.4f);
+        mIcon.setTextSize(size * iconSizeScale);
         addView(mIcon);
 
         mText = new TextView(mContext);

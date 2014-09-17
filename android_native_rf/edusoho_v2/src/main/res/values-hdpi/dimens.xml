@@ -17,6 +17,7 @@
     <dimen name="school_search">16dp</dimen>
     <dimen name="qr_sch_btn">100dp</dimen>
     <dimen name="normal_btn">16dp</dimen>
+    <dimen name="small_btn">12sp</dimen>
 
     <dimen name="actionbarSearch">15dp</dimen>
     <dimen name="actionbarTitle">18dp</dimen>
