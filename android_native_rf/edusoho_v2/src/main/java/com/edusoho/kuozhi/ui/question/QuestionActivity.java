@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.course;
+package com.edusoho.kuozhi.ui.question;
 
 import android.os.Bundle;
 import android.util.Log;

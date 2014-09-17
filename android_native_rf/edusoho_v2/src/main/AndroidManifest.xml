@@ -144,7 +144,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.course.QuestionActivity"
+            android:name=".ui.question.QuestionActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
