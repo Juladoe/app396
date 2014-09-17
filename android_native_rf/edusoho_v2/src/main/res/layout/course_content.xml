@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/found_bg">
+    android:background="@color/system_normal_bg">
 
     <com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget
         android:id="@+id/course_liseview"

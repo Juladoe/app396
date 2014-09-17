@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/course_details_lesson"
-    android:background="@color/found_bg"
+    android:background="@color/system_normal_bg"
     app:labelTitle="课程列表"
     android:paddingTop="10dp"
     android:layout_width="match_parent"

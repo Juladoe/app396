@@ -136,6 +136,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.lesson.LessonResourceActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.common.PayCourseActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -143,6 +147,7 @@
             android:name=".ui.course.CourseDetailsTabActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+        
         <activity
             android:name=".ui.question.QuestionActivity"
             android:configChanges="keyboard|orientation"

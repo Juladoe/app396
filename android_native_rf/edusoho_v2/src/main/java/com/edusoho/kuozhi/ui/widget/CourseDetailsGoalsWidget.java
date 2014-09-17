@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -55,7 +54,7 @@ public class CourseDetailsGoalsWidget extends CourseDetailsLabelWidget {
         webSettings.setJavaScriptEnabled(false);
         webSettings.setSupportZoom(false);
         webSettings.setDefaultTextEncodingName("utf-8");
-        webView.setBackgroundColor(getResources().getColor(R.color.found_bg));
+        webView.setBackgroundColor(getResources().getColor(R.color.system_normal_bg));
 
         webView.setWebViewClient(new WebViewClient(){
             @Override

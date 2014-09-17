@@ -7,7 +7,7 @@
     </item>
     <item  android:bottom="1dp">
         <shape>
-            <solid android:color="@color/found_bg" />
+            <solid android:color="@color/system_normal_bg" />
         </shape>
     </item>
 </layer-list>

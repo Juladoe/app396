@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.ui.course;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 
 import com.androidquery.callback.AjaxStatus;
@@ -38,6 +41,7 @@ public class LessonActivity extends ActionBarBaseActivity {
 
     public static final String TAG = "LessonActivity";
     public static final String CONTENT = "content";
+    public static final int SHOW_TOOLS = 0001;
 
     private String mCurrentFragment;
     private Class mCurrentFragmentClass;
@@ -53,9 +57,21 @@ public class LessonActivity extends ActionBarBaseActivity {
     private Button mLearnBtn;
     private View mToolsLayout;
 
+    private Handler msgHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        msgHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case SHOW_TOOLS:
+                        showToolsByAnim();
+                        break;
+                }
+            }
+        };
         initMenuDrawer();
         initView();
     }
@@ -91,8 +107,16 @@ public class LessonActivity extends ActionBarBaseActivity {
         mMenuDrawer.setMenuView(mCourseLessonView);
 
         mCourseLessonView.initLessonFromJson(mActivity, mLessonListJson);
-        mCourseLessonView.setItemClickListener(
-                new LessonItemClickListener(mActivity, mCourseLessonView.getLessonListJson()));
+        mCourseLessonView.setItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                LessonItem lesson = (LessonItem) adapterView.getItemAtPosition(i);
+                hieToolsByAnim();
+                setTitle(lesson.title);
+                loadLesson(lesson.id);
+                mMenuDrawer.closeMenu();
+            }
+        });
     }
 
     private void initView()
@@ -116,7 +140,18 @@ public class LessonActivity extends ActionBarBaseActivity {
             return;
         }
 
-        loadLesson();
+        loadLesson(mLessonId);
+        bindListener();
+    }
+
+    private void bindListener()
+    {
+        mResourceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPlugin("LessonResourceActivity", mActivity, null);
+            }
+        });
     }
 
     @Override
@@ -133,32 +168,39 @@ public class LessonActivity extends ActionBarBaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void loadLesson()
+    private void loadLesson(int lessonId)
     {
         RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
         requestUrl.setParams(new String[] {
                 "courseId", mCourseId + "",
-                "lessonId", mLessonId + ""
+                "lessonId", lessonId + ""
         });
 
+        setProgressBarIndeterminateVisibility(true);
         ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
                 mLesson = parseJsonValue(
                         object, new TypeToken<LessonItem>(){});
                 if (mLesson == null) {
                     return;
                 }
-                showToolsByAnim();
-                CourseLessonType lessonType = CourseLessonType.value(mLesson.type);
-                switch (lessonType) {
-                    case TEXT:
-                        loadLessonFragment("TextLessonFragment");
-                        break;
-                }
 
+                showToolsByAnim();
+                switchLoadLessonContent(mLesson);
             }
         });
+    }
+
+    private void switchLoadLessonContent(LessonItem lessonItem)
+    {
+        CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
+        switch (lessonType) {
+            case TEXT:
+                loadLessonFragment("TextLessonFragment");
+                break;
+        }
     }
 
     private void showToolsByAnim()
@@ -167,6 +209,12 @@ public class LessonActivity extends ActionBarBaseActivity {
         int height = mToolsLayout.getMeasuredHeight();
         AppUtil.animForHeight(
                 new EdusohoAnimWrap(mToolsLayout), 0, height, 480);
+    }
+
+    private void hieToolsByAnim()
+    {
+        AppUtil.animForHeight(
+                new EdusohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 
     private void loadLessonFragment(String fragmentName)
@@ -179,7 +227,9 @@ public class LessonActivity extends ActionBarBaseActivity {
                 bundle.putString(CONTENT, mLesson.content);
             }
         });
-        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.replace(R.id.lesson_content, fragment);
+        fragmentTransaction.setCustomAnimations(
+                FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
 
         mCurrentFragment = fragmentName;

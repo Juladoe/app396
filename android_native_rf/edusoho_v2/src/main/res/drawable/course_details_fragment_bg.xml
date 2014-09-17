@@ -6,6 +6,6 @@
 
     <stroke
         android:width="1px"
-        android:color="@color/found_bg"
+        android:color="@color/system_normal_bg"
         />
 </shape>

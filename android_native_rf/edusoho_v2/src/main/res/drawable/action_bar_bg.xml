@@ -21,7 +21,7 @@
             <size android:height="1dp" />
             <stroke
                 android:dashWidth="4px"
-                android:color="@color/action_bar_bg_stroke" />
+                android:color="@color/action_bar_bg" />
         </shape>
     </item>
 </layer-list>

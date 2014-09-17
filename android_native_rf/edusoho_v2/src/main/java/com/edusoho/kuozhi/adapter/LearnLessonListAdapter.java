@@ -144,12 +144,16 @@ public class LearnLessonListAdapter extends BaseAdapter
         switch (type) {
             case TESTPAPER:
                 typeDrawable = R.drawable.lesson_item_ppt;
+                break;
             case PPT:
                 typeDrawable = R.drawable.lesson_item_ppt;
+                break;
             case VIDEO:
                 typeDrawable = R.drawable.lesson_item_video;
+                break;
             case AUDIO:
                 typeDrawable = R.drawable.lesson_item_sound;
+                break;
             case TEXT:
                 typeDrawable = R.drawable.lesson_item_image;
                 break;

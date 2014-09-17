@@ -42,7 +42,7 @@
 
     <FrameLayout
         android:layout_above="@id/lesson_tools_layout"
-        android:id="@android:id/content"
+        android:id="@+id/lesson_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
 
