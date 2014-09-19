@@ -17,6 +17,7 @@
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
+        android:scrollbars="none"
         android:smoothScrollbar="true" />
 
     <include layout="@layout/loading_layout" />

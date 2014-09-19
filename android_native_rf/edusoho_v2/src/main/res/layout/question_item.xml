@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="120dip"
-    android:background="@android:color/white">
+    android:background="@drawable/question_item_bg">
 
     <LinearLayout
         android:orientation="horizontal"

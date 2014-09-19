@@ -4,7 +4,7 @@ public class Const {
 
     //popular热门 recommended推荐 latest最新
     public static final String[] SORT = {
-        "latest", "popular", "recommended"
+            "latest", "popular", "recommended"
     };
 
     public static final String[] COURSE_INFO_TITLE = {
@@ -47,7 +47,29 @@ public class Const {
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
     public static final String COURSELESSON = "Lesson/getLesson";
-    public static final String QUESTION="Course/getCourseTheads";
+
+    /**
+     * 根据登录UserToken获取问答列表
+     */
+    public static final String QUESTION = "Course/getCourseThreads";
+
+    /**
+     * 获取所有回答
+     * 传递参数：courseId，threadId
+     */
+    public static final String NORMAL_REPLY = "Course/getThreadPost";
+
+    /**
+     * 获取教师回复
+     * 传递参数：courseId，threadId
+     */
+    public static final String TEACHER_REPLY = "Course/getThreadTeacherPost";
+
+    /**
+     * 获取一个问题的详细信息（问题标题，内容，发问者，发问时间等）
+     * 传递参数：courseId，threadId
+     */
+    public static final String QUESITION_INFO = "Course/getThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";

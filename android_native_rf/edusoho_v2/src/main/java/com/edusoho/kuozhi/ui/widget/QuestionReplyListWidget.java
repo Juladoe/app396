@@ -4,22 +4,22 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListAdapter;
 
-import com.edusoho.kuozhi.adapter.QuestionListAdapter;
+import com.edusoho.kuozhi.adapter.QuestionReplyListAdapter;
 
 /**
- * Created by hby on 14-9-16.
- * 问题列表List
+ * Created by hby on 14-9-18.
+ * 单个问题回复列表
  */
-public class QuestionRefreshListWidget extends CourseRefreshListWidget {
+public class QuestionReplyListWidget extends CourseRefreshListWidget {
     private Context mContext;
-    private QuestionListAdapter mAdapter;
+    private QuestionReplyListAdapter mAdapter;
 
-    public QuestionRefreshListWidget(Context context) {
+    public QuestionReplyListWidget(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public QuestionRefreshListWidget(Context context, AttributeSet attrs) {
+    public QuestionReplyListWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
     }
@@ -29,7 +29,7 @@ public class QuestionRefreshListWidget extends CourseRefreshListWidget {
         if (adapter.isEmpty()) {
             adapter = getEmptyLayoutAdapter();
         }
-        mAdapter = (QuestionListAdapter) adapter;
+        mAdapter = (QuestionReplyListAdapter) adapter;
         super.setAdapter(adapter);
     }
 

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,9 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
         this.mResourceId = layoutId;
         mQuestionList = new ArrayList<QuestionDetailModel>();
         listAddItem(questionResult.threads);
-        setMode(NORMAL);
     }
 
     public void addItem(QuestionResult questionResult) {
-        setMode(UPDATE);
         listAddItem(questionResult.threads);
         notifyDataSetChanged();
     }
@@ -40,6 +39,14 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
         for (QuestionDetailModel item : questionDetailModels) {
             mQuestionList.add(item);
         }
+    }
+
+    public void clearAdapter() {
+        mQuestionList.clear();
+    }
+
+    public List<QuestionDetailModel> getQuestionList() {
+        return mQuestionList;
     }
 
     @Override
@@ -70,7 +77,7 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
             holder.tvLesson = (TextView) convertView.findViewById(R.id.tv_question_lesson);
             holder.tvTeacherReply = (TextView) convertView.findViewById(R.id.tv_teacher_reply);
             holder.tvReplyAmount = (TextView) convertView.findViewById(R.id.tv_reply_amount);
-            holder.aQuery = new AQuery(mContext);
+            holder.aQuery = new AQuery(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -79,17 +86,18 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
         QuestionDetailModel question = mQuestionList.get(position);
         holder.tvQuestionTitle.setText(question.title);
         //holder.tvLesson.setText(question.questionLesson);
-        if (true) {
+        if (question.isTeacherPost) {
             holder.tvTeacherReply.setVisibility(View.VISIBLE);
         } else {
             holder.tvTeacherReply.setVisibility(View.INVISIBLE);
         }
 
-//        if (TextUtils.isEmpty(question.largeImageUrl)) {
-//            holder.aQuery.id(R.id.iv_question).image(R.drawable.noram_course);
-//        } else {
-//            holder.aQuery.id(R.id.iv_question).image(question.largeImageUrl, false, true, 200, R.drawable.noram_course);
-//        }
+        if (TextUtils.isEmpty(question.coursePicture)) {
+            holder.aQuery.id(R.id.iv_question).image(R.drawable.noram_course);
+        } else {
+            holder.aQuery.id(R.id.iv_question).image(question.coursePicture, false, true,
+                    0, R.drawable.noram_course, null, AQuery.FADE_IN_NETWORK);
+        }
 
         holder.tvReplyAmount.setText(String.valueOf(question.postNum));
         return convertView;

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:paddingTop="10dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="10dp"
+    android:background="@android:color/white"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_reply_type"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="教师的答案（2条）："
+        android:drawablePadding="5dp"
+        android:textSize="18sp"
+        android:drawableLeft="@drawable/recommend_week_label_icon" />
+
+    <RelativeLayout
+        android:id="@+id/rl_reply_info"
+        android:layout_below="@id/tv_reply_type"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content">
+
+        <com.edusoho.kuozhi.view.plugin.CircularImageView
+            android:layout_marginRight="30dp"
+            android:id="@+id/civ_reply_pic"
+            android:src="@drawable/myinfo_default_face"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/tv_reply_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_toRightOf="@id/civ_reply_pic"
+            android:textColor="@color/teacher_reply"
+            android:text="Jesse" />
+
+        <TextView
+            android:id="@+id/tv_reply_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_reply_name"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/civ_reply_pic"
+            android:text="12-08-08" />
+
+        <ImageView
+            android:id="@+id/iv_reply_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/reply_edit"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_reply_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_reply_info"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:lineSpacingExtra="2dp"
+        android:textColor="@color/question_lesson"
+        android:text="        教师回复了一个答案A教师回复了一个答案A教师回复了一个答案A教师回复了一个答案" />
+
+
+</RelativeLayout>

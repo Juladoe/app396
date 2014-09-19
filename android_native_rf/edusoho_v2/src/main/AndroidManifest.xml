@@ -35,7 +35,7 @@
             android:name="com.edusoho.kuozhi.ui.StartActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/startTheme"></activity>
+            android:theme="@style/startTheme" />
         <activity
             android:name="com.edusoho.kuozhi.ui.SplashActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -66,10 +66,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop" />
         <activity
-            android:windowSoftInputMode="adjustPan"
             android:name="com.edusoho.kuozhi.ui.common.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.edusoho.kuozhi.ui.common.RegistActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -122,41 +122,48 @@
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.LessonActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.CourseListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.lesson.LessonResourceActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.PayCourseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.question.QuestionActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.question.QuestionDetailActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.course.CourseDetailsActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.course.LessonActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.course.CourseListActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.lesson.LessonResourceActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.common.PayCourseActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.course.CourseDetailsTabActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        
-        <activity
-            android:name=".ui.question.QuestionActivity"
+            android:name="com.edusoho.kuozhi.ui.question.QuestionReplyActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
         <activity
             android:name="com.edusoho.plugin.video.WebVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"></activity>
+            android:hardwareAccelerated="true" />
         <activity
             android:name="com.edusoho.plugin.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -169,23 +176,24 @@
         </receiver>
 
         <activity
-            android:launchMode="singleInstance"
+            android:name="com.edusoho.plugin.video.EdusohoVideoManagerActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:name="com.edusoho.plugin.video.EdusohoVideoManagerActivity"></activity>
+            android:launchMode="singleInstance" />
         <activity
-            android:launchMode="singleInstance"
+            android:name="com.edusoho.plugin.video.EduSohoVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name="com.edusoho.plugin.video.EduSohoVideoActivity"></activity>
+            android:launchMode="singleInstance" />
 
-        <service android:name=".Service.EdusohoMainService" />
+        <service android:name="com.edusoho.kuozhi.Service.EdusohoMainService" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
+
     </application>
 
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="8" />
-
 
 </manifest>
