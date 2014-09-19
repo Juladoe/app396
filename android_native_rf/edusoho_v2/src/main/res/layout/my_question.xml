@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/question_background">
 
+    <include layout="@layout/loading_layout" />
+
     <com.edusoho.kuozhi.ui.widget.QuestionRefreshListWidget
         android:id="@+id/question_listview"
         android:layout_width="match_parent"
@@ -20,7 +22,6 @@
         android:scrollbars="none"
         android:smoothScrollbar="true" />
 
-    <include layout="@layout/loading_layout" />
 
     <include layout="@layout/list_empty_info" />
 

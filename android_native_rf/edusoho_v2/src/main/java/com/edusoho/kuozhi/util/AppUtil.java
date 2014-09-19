@@ -394,11 +394,11 @@ public class AppUtil {
             //如果大于24返回天数
             if (l > 24) {
                 l = l / 24;
-                return "发布于" + String.valueOf(l) + "天前";
+                return String.valueOf(l) + "天前";
             }
         } catch (Exception ex) {
             Log.d("AppUtil.getPostDays", ex.toString());
         }
-        return "发布于" + String.valueOf(l) + "小时前";
+        return String.valueOf(l) + "小时前";
     }
 }
