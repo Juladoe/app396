@@ -41,7 +41,7 @@
     <dimen name="notify_icon">30dp</dimen>
     <dimen name="login_icon">25dp</dimen>
     <dimen name="popup_title">20dp</dimen>
-    <dimen name="popup_input">15dp</dimen>
+    <dimen name="popup_input">20dp</dimen>
 
     <!--icon font -->
     <dimen name="font_close">20dp</dimen>
@@ -55,7 +55,7 @@
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
-    <dimen name="nav_layout_btn">6dp</dimen>
+    <dimen name="nav_layout_btn">12dp</dimen>
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">16sp</dimen>
@@ -84,4 +84,5 @@
     <dimen name="auto_course_title">18sp</dimen>
     <dimen name="review_course_commit">22sp</dimen>
     <dimen name="course_learning_notify">18sp</dimen>
+    <dimen name="lesson_material_title">16sp</dimen>
 </resources>

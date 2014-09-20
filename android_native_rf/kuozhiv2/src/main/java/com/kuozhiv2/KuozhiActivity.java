@@ -1,6 +1,7 @@
 package com.kuozhiv2;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.core.MessageEngine;

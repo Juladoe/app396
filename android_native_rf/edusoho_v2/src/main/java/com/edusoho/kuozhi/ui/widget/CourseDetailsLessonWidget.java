@@ -14,6 +14,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LearnLessonListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.entity.LearnStatus;
 import com.edusoho.kuozhi.entity.LessonsResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -21,6 +22,8 @@ import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.hb.views.PinnedSectionListView;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-27.
@@ -30,10 +33,12 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     private ActionBarBaseActivity mActivity;
     protected PinnedSectionListView mContentView;
     private boolean isInitHeight;
-    private String mCourseId;
+    private int mCourseId;
     private AQuery mAQuery;
     private boolean mIsAddToken;
     private String mLessonListJson;
+    private HashMap<Integer, LearnStatus> learnStatuses;
+    private LearnLessonListAdapter mAdapter;
 
     public CourseDetailsLessonWidget(Context context) {
         super(context);
@@ -95,7 +100,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     {
         RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, mIsAddToken);
         url.setParams(new String[]{
-                "courseId", mCourseId
+                "courseId", mCourseId + ""
         });
          mActivity.ajaxPost(url, new ResultCallback(){
             @Override
@@ -115,10 +120,28 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
             return;
         }
 
+        learnStatuses = result.learnStatuses;
         setAdapter(result);
         if (isInitHeight) {
             initListHeight(mContentView);
         }
+    }
+
+    public LearnStatus getLearnStatus(int lessonId)
+    {
+        return learnStatuses.get(lessonId);
+    }
+
+    public void updateLessonStatus(HashMap<Integer, LearnStatus> newStatus)
+    {
+        learnStatuses = newStatus;
+        mAdapter.updateLearnStatusList(learnStatuses);
+    }
+
+    public void updateLessonStatus(int index, LearnStatus status)
+    {
+        learnStatuses.put(index, status);
+        mAdapter.updateLearnStatusList(learnStatuses);
     }
 
     public String getLessonListJson()
@@ -128,9 +151,9 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
 
     protected void setAdapter(LessonsResult result)
     {
-        LearnLessonListAdapter adapter = new LearnLessonListAdapter(
+        mAdapter = new LearnLessonListAdapter(
                 mContext, result, R.layout.course_details_learning_lesson_item);
-        mContentView.setAdapter(adapter);
+        mContentView.setAdapter(mAdapter);
         mContentView.setOnItemClickListener(new LessonItemClickListener(mActivity, mLessonListJson));
     }
 
@@ -149,7 +172,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     }
 
     public void initLesson(
-            String courseId, ActionBarBaseActivity activity, boolean isAddToken)
+            int courseId, ActionBarBaseActivity activity, boolean isAddToken)
     {
         mCourseId = courseId;
         mActivity = activity;

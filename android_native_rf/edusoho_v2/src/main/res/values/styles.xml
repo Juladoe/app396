@@ -89,12 +89,13 @@
     </style>
 
     <style name="EdusohoIndeterminateProgress" parent="@android:style/Widget.ProgressBar">
-        <item name="android:indeterminateDrawable">@drawable/load</item>
+        <item name="android:indeterminateDrawable">@drawable/action_bar_load</item>
         <item name="android:minWidth">24dp</item>
         <item name="android:maxWidth">24dp</item>
         <item name="android:minHeight">24dp</item>
         <item name="android:maxHeight">24dp</item>
-        <item name="android:layout_margin">3dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_margin">5dp</item>
     </style>
 
     <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">

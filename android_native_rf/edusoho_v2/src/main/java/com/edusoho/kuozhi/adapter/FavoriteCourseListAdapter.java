@@ -50,12 +50,12 @@ public class FavoriteCourseListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void refreshItem(String courseId, boolean isFavorite)
+    public void refreshItem(int courseId, boolean isFavorite)
     {
         int size = mList.size();
         for (int i=0; i < size; i++) {
             Course course = mList.get(i);
-            if (course.id.equals(courseId) && ! isFavorite) {
+            if (course.id == courseId && ! isFavorite) {
                 mList.remove(i);
                 notifyDataSetChanged();
                 return;
@@ -67,7 +67,7 @@ public class FavoriteCourseListAdapter extends BaseAdapter {
     {
         int count = targets.length;
         for (int i=0; i < count; i++) {
-            if (src.id.equals(targets[i].id)) {
+            if (src.id == targets[i].id) {
                 return i;
             }
         }

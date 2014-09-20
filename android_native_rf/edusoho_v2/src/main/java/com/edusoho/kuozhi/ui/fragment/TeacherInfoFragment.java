@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,17 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ScrollListAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget;
+import com.edusoho.kuozhi.ui.widget.XCourseListWidget;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.huewu.pla.lib.internal.PLA_AdapterView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +35,9 @@ public class TeacherInfoFragment extends BaseFragment {
     private CourseDetailsTeacherWidget mTeacherView;
     public static final String TEACHER_ID = "teacherId";
 
-    private int mTeacherId;
+    private int[] mTeacherIds;
 
-    private XListView mTeacherCoursesView;
+    private XCourseListWidget mTeacherCoursesView;
 
     @Override
     public String getTitle() {
@@ -46,7 +52,7 @@ public class TeacherInfoFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        mTeacherCoursesView = (XListView) view.findViewById(R.id.course_details_teacher_course);
+        mTeacherCoursesView = (XCourseListWidget) view.findViewById(R.id.course_details_teacher_course);
         mTeacherView = (CourseDetailsTeacherWidget) view.findViewById(R.id.course_details_teacher);
 
         Bundle bundle = getArguments();
@@ -55,21 +61,31 @@ public class TeacherInfoFragment extends BaseFragment {
             return;
         }
 
-        mTeacherId = bundle.getInt(TEACHER_ID, 0);
-        if (mTeacherId == 0) {
+        mTeacherIds = bundle.getIntArray(TEACHER_ID);
+        if (mTeacherIds == null || mTeacherIds.length == 0) {
             mActivity.longToast("无效教师信息！");
             return;
         }
-        mTeacherView.initUser(mTeacherId, mActivity);
-
-        mTeacherCoursesView.setPullLoadEnable(false);
-        mTeacherCoursesView.setPullRefreshEnable(false);
+        mTeacherView.initUser(mTeacherIds[0], mActivity);
         final ScrollListAdapter adapter = new ScrollListAdapter(mContext);
         mTeacherCoursesView.setAdapter(adapter);
+        mTeacherCoursesView.setOnItemClickListener(new PLA_AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(PLA_AdapterView<?> parent, View view, int position, long id) {
+                final Course course = (Course) parent.getItemAtPosition(position);
+                Bundle data = new Bundle();
+                data.putInt(Const.COURSE_ID, course.id);
+                data.putString(Const.ACTIONBAT_TITLE, course.title);
+                data.putString(CourseDetailsActivity.COURSE_PIC, course.largePicture);
+
+                mActivity.app.mEngine.runNormalPluginWithBundle(
+                        CourseDetailsActivity.TAG, mActivity, data);
+            }
+        });
 
         RequestUrl url = app.bindUrl(Const.TEACHER_COURSES, true);
         url.setParams(new String[]{
-                "userId", mTeacherId + ""
+                "userId", mTeacherIds[0] + ""
         });
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
@@ -94,14 +110,15 @@ public class TeacherInfoFragment extends BaseFragment {
 
         ListAdapter adapter = mTeacherCoursesView.getAdapter();
         int count = adapter.getCount();
+        ViewGroup listView = mTeacherCoursesView.getListView();
         for (int i=0; i < count; i = i + 2) {
-            View child = adapter.getView(i, null, mTeacherCoursesView);
+            View child = adapter.getView(i, null, listView);
             child.measure(0, 0);
             totalHeight += child.getMeasuredHeight();
         }
 
         ViewGroup.LayoutParams lp = mTeacherCoursesView.getLayoutParams();
-        lp.height = totalHeight;
+        lp.height = totalHeight + 40;
         mTeacherCoursesView.setLayoutParams(lp);
     }
 }

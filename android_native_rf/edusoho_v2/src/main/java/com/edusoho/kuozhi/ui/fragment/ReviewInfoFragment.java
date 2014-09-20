@@ -8,7 +8,10 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsReviewWidget;
+import com.edusoho.kuozhi.util.Const;
 
 import java.text.DecimalFormat;
 
@@ -20,6 +23,7 @@ public class ReviewInfoFragment extends BaseFragment {
     private CourseDetailsReviewWidget mReviewWidget;
     public static final String COURSE_ID = "course_id";
     public static final String COURSE = "course";
+    public static final int REFRESH_REVIEWS = 0001;
 
     private Course mCourse;
     private TextView mCourseTitleView;
@@ -29,7 +33,27 @@ public class ReviewInfoFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return "教师";
+        return "评论";
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        int type = message.type.code;
+        switch (type) {
+            case REFRESH_REVIEWS:
+                mReviewWidget.reload();
+                break;
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(REFRESH_REVIEWS, source)
+        };
+        return messageTypes;
     }
 
     @Override
@@ -54,11 +78,22 @@ public class ReviewInfoFragment extends BaseFragment {
         }
 
         mCourse = (Course) bundle.getSerializable(COURSE);
-        String courseId = bundle.getString(COURSE_ID);
+        int courseId = bundle.getInt(COURSE_ID, 0);
 
         setFragmentData();
         mReviewWidget.hideTitle();
         mReviewWidget.initReview(courseId, mActivity, true);
+
+        mCommitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecommendCourseFragment recommendCourseFragment = new RecommendCourseFragment();
+                Bundle fragmentData = new Bundle();
+                fragmentData.putInt(Const.COURSE_ID, mCourse.id);
+                recommendCourseFragment.setArguments(fragmentData);
+                recommendCourseFragment.show(getChildFragmentManager(), "dialog");
+            }
+        });
     }
 
     private void setCommitStatus()

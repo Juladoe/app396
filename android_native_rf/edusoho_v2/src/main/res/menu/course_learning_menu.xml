@@ -14,7 +14,7 @@
                 android:icon="@drawable/course_details_menu_shared"
                 android:title="分享"/>
             <item
-                android:id="@+id/course_details_menu_exit"
+                android:id="@+id/course_details_menu_courseinfo"
                 yourapp:showAsAction="ifRoom"
                 android:icon="@drawable/course_details_menu_courseinfo"
                 android:title="课程详情"/>

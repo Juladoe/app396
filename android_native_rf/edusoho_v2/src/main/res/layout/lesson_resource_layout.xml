@@ -41,8 +41,11 @@
         android:layout_height="wrap_content" />
 
     <com.edusoho.kuozhi.ui.widget.ListWidget
+        android:background="@color/white"
         app:pullMode="DISABLED"
         app:emptyStr="暂无资料"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:layout_below="@id/lesson_resource_checkbox_layout"
         android:layout_above="@id/lesson_resource_download_btn"
         android:id="@+id/lesson_resource_list"

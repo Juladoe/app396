@@ -58,6 +58,7 @@ public class CategoryListView extends FrameLayout {
                 LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mCategoryListView.setLayoutParams(layoutParams);
 
+        mCategoryListView.setBackgroundColor(getResources().getColor(R.color.white));
         mCategoryListView.setGroupIndicator(null);
         mCategoryListView.setSelector(R.drawable.normal_list_select);
         mCategoryListView.setDivider(new ColorDrawable(mContext.getResources().getColor(R.color.found_list_divider)));

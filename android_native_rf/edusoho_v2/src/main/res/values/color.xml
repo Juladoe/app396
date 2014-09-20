@@ -176,10 +176,11 @@
     <color name="splash_notice_btn_stroke">#FF6600</color>
     <color name="splash_notice_btn_gtadient">#ffffff</color>
 
-    <color name="video_sk_bg_gradient">#ccc</color>
-    <color name="video_sk_gradient">#ffc947</color>
-    <color name="video_thum_gradient">#3c3645</color>
-    <color name="video_thum_gradient_pressed">#ff067BD4</color>
+    <color name="video_sk_bg_gradient">#808080</color>
+    <color name="video_sk_bg_2_gradient">#4d4d4d</color>
+    <color name="video_sk_gradient">#38bf6c</color>
+    <color name="video_thum_gradient">#38bf6c</color>
+    <color name="video_thum_gradient_pressed">#9938bf6c</color>
 
     <color name="viewpager_index_bg_gradinet">#03b884</color>
     <color name="viewpager_index_bg_sel_gradinet">#ffffff</color>

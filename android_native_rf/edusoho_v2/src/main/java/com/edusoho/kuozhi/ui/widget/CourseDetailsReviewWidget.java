@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -39,10 +40,11 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
 
     private PullToRefreshListView mContentView;
     private AQuery mAQuery;
-    private String mCourseId;
+    private int mCourseId;
     private ActionBarBaseActivity mActivity;
     private ReviewListAdapter mAdapter;
     private boolean isInitHeight;
+    private NormalCallback normalCallback;
 
     public CourseDetailsReviewWidget(Context context) {
         super(context);
@@ -76,11 +78,11 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
     public void setRefresh(boolean isRefresh)
     {
         if (isRefresh) {
-            mContentView.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+            mContentView.setMode(PullToRefreshBase.Mode.BOTH);
             mContentView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
                 @Override
                 public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-
+                    getReviews(0, mCourseId, false);
                 }
 
                 @Override
@@ -92,11 +94,11 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
         }
     }
 
-    public void getReviews(int start, String courseId)
+    public void getReviews(int start, int courseId, final boolean isAppend)
     {
         RequestUrl url = mActivity.app.bindUrl(Const.REVIEWS, true);
         url.setParams(new String[] {
-                "courseId", courseId,
+                "courseId", courseId + "",
                 "start", start + ""
         });
 
@@ -116,10 +118,14 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 if (nextStart < reviewResult.total) {
                     mContentView.setTag(nextStart);
                 } else {
-                    mContentView.setMode(PullToRefreshBase.Mode.DISABLED);
+                    mContentView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
 
-                mAdapter.addItem(reviewResult.data);
+                if (isAppend) {
+                    mAdapter.addItem(reviewResult.data);
+                } else {
+                    mAdapter.setData(reviewResult.data);
+                }
                 if (isInitHeight) {
                     initListHeight(mContentView.getRefreshableView());
                 }
@@ -145,7 +151,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
     }
 
     public void initReview(
-            String courseId, ActionBarBaseActivity actionBarBaseActivity, boolean isRefresh)
+            int courseId, ActionBarBaseActivity actionBarBaseActivity, boolean isRefresh)
     {
         mCourseId = courseId;
         mActivity = actionBarBaseActivity;
@@ -153,10 +159,16 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 mContext, null, R.layout.course_details_review_item);
         mContentView.setAdapter(mAdapter);
         setRefresh(isRefresh);
-        getReviews(0, mCourseId);
+        getReviews(0, mCourseId, false);
     }
 
-    @Override
-    public void onShow() {
+    public void setCompledListener(NormalCallback compledListener)
+    {
+        this.normalCallback = compledListener;
+    }
+
+    public void reload()
+    {
+        mContentView.setRefreshing();
     }
 }

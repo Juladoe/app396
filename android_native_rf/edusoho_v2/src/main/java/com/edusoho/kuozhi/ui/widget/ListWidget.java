@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /**
@@ -24,6 +25,7 @@ public class ListWidget extends FrameLayout {
     protected String mEmptyStr;
     private PullToRefreshListView mResourceListView;
     private int mMode;
+    private PullToRefreshBase.Mode mPullMode;
 
     public static final int BOTH = 0;
     public static final int PULL_FROM_START = 1;
@@ -50,16 +52,31 @@ public class ListWidget extends FrameLayout {
 
     private void initView(AttributeSet attrs)
     {
-        mLoadView = initLoadView();
-        mEmptyView = initEmptyView();
-        mResourceListView = new PullToRefreshListView(mContext);
-
         if (attrs != null) {
             TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.ListWidget);
             mEmptyStr = ta.getString(R.styleable.ListWidget_emptyStr);
             mMode = ta.getInt(R.styleable.ListWidget_pullMode, BOTH);
+            switch (mMode) {
+                case 0:
+                    mPullMode = PullToRefreshBase.Mode.BOTH;
+                    break;
+                case 1:
+                    mPullMode = PullToRefreshBase.Mode.PULL_FROM_START;
+                    break;
+                case 2:
+                    mPullMode = PullToRefreshBase.Mode.PULL_FROM_END;
+                    break;
+                case 3:
+                    mPullMode = PullToRefreshBase.Mode.DISABLED;
+                    break;
+            }
             ta.recycle();
         }
+        mLoadView = initLoadView();
+        mEmptyView = initEmptyView();
+        mResourceListView = new PullToRefreshListView(mContext);
+        mResourceListView.setMode(mPullMode);
+        mResourceListView.getRefreshableView().setDividerHeight(1);
 
         addView(mResourceListView);
         addView(mLoadView);
@@ -87,6 +104,11 @@ public class ListWidget extends FrameLayout {
         mEmptyText.setText(mEmptyStr);
 
         return emptyLayout;
+    }
+
+    public ListAdapter getAdapter()
+    {
+        return mResourceListView.getRefreshableView().getAdapter();
     }
 
     public void setAdapter(ListAdapter adapter)

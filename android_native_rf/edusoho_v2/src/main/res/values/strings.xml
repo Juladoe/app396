@@ -3,7 +3,7 @@
 
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
-    <string name="go">Snap</string>
+    <string name="apk_version">2.0.0</string>
     <string name="action_settings">action_settings</string>
     <string name="recomemnd_course_str">推荐课程</string>
     <string name="school_about">关于网校</string>
@@ -58,8 +58,14 @@
     <string name="font_search"></string>
     <string name="font_favoirte"></string>
     <string name="font_clear"></string>
-    <string name="font_favorited"></string>
+    <string name="font_favorited">&#xe646;</string>
     <string name="font_expand"></string>
     <string name="font_right"></string>
+    <string name="font_ppt">&#xe63b;</string>
+    <string name="font_document">&#xe63f;</string>
+    <string name="font_image">&#xe639;</string>
+    <string name="font_video">&#xe638;</string>
+    <string name="font_audio">&#xe63a;</string>
+    <string name="font_other">&#xe60e;</string>
 
 </resources>

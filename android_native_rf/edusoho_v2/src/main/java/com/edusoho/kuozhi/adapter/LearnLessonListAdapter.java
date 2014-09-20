@@ -67,6 +67,13 @@ public class LearnLessonListAdapter extends BaseAdapter
         return 2;
     }
 
+    public void updateLearnStatusList(
+            HashMap<Integer, LearnStatus> newStatus)
+    {
+        mUserLearns = newStatus;
+        notifyDataSetChanged();
+    }
+
     @Override
     public boolean isEnabled(int position) {
         LessonItem item = getItem(position);
@@ -83,7 +90,6 @@ public class LearnLessonListAdapter extends BaseAdapter
 
     @Override
     public boolean isItemViewTypePinned(int viewType) {
-        System.out.println("itemType->"+viewType);
         return viewType == 1;
     }
 
@@ -172,7 +178,6 @@ public class LearnLessonListAdapter extends BaseAdapter
 
     private void setLessonProgress(int lessonId, ImageView statusImageView)
     {
-        Log.d(null, "mUserLearns->" + mUserLearns + "  lessonId->"+ lessonId);
         LearnStatus status = mUserLearns.get(lessonId);
         if (status == null) {
             statusImageView.setImageResource(R.drawable.learn_status_normal);

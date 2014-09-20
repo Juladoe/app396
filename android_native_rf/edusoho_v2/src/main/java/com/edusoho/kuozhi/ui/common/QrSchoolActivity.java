@@ -46,8 +46,6 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qrsch_layout);
         initView();
-        app.addTask("QrSchoolActivity", this);
-        updateApp();
     }
 
     public static void start(Activity context) {

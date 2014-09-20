@@ -304,7 +304,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void longToast(String title)
     {
-        Toast.makeText(mContext, title, Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, title, Toast.LENGTH_SHORT).show();
     }
 
     public void ajax(String url, ResultCallback rcl, boolean showLoading)

@@ -74,7 +74,7 @@ public class Const {
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";
     public static final String LOGIN = "User/login";
-    public static final String ADDCOMMENT = "courses/{courseId}/review_create";
+    public static final String ADDCOMMENT = "Course/commitCourse";
     public static final String COMMENTLIST = "courses/{courseId}/reviews";
     public static final String ABOUT = "School/getSchoolInfo";
     public static final String COURSE_COLUMN = "course_column";
@@ -109,6 +109,9 @@ public class Const {
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
     public static final String UN_LEARN_COURSE = "Course/unLearnCourse";
     public static final String LESSON_RESOURCE = "Lesson/getLessonMaterial";
+    public static final String LEARN_LESSON = "Lesson/learnLesson";
+    public static final String UNLEARN_LESSON = "Lesson/unLearnLesson";
+    public static final String LEARN_STATUS = "Lesson/getLearnStatus";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;
@@ -144,6 +147,9 @@ public class Const {
 
     public static final String COURSE_ID = "courseId";
     public static final String LESSON_ID = "lessonId";
+    public static final String MEDIA_URL = "mediaUrl";
+    public static final String MEDIA_SOURCE = "mediaSource";
+    public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAT_TITLE = "title";
     public static final String LIST_JSON = "list_json";
 }

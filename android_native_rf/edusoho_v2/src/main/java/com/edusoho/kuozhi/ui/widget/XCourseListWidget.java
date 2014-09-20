@@ -44,9 +44,16 @@ public class XCourseListWidget extends FrameLayout {
         initView();
     }
 
+    public XListView getListView()
+    {
+        return mCourseListWidget;
+    }
+
     private void initView()
     {
         mCourseListWidget = new XListView(mContext);
+        mCourseListWidget.setLayoutParams(new LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mCourseListWidget.setPullLoadEnable(false);
         mCourseListWidget.setPullRefreshEnable(false);
         addView(mCourseListWidget);
@@ -114,6 +121,16 @@ public class XCourseListWidget extends FrameLayout {
             }
             mCourseListWidget.postInvalidate();
         }
+    }
+
+    public int getTotalPading()
+    {
+        return mCourseListWidget.getPaddingBottom() + mCourseListWidget.getPaddingTop();
+    }
+
+    public ListAdapter getAdapter()
+    {
+        return mAdapter;
     }
 
     public class XCourseObserver extends DataSetObserver

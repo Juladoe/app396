@@ -39,12 +39,12 @@ public class LearnCourseListAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
     }
 
-    public void refreshItem(String courseId, boolean isLearn)
+    public void refreshItem(int courseId, boolean isLearn)
     {
         int size = mList.size();
         for (int i=0; i < size; i++) {
             Course course = mList.get(i);
-            if (course.id.equals(courseId) && ! isLearn) {
+            if (course.id == courseId && ! isLearn) {
                 mList.remove(i);
                 notifyDataSetChanged();
                 return;
@@ -70,7 +70,7 @@ public class LearnCourseListAdapter extends BaseAdapter {
     {
         int count = targets.size();
         for (int i=0; i < count; i++) {
-            if (src.id.equals(targets.get(i).id)) {
+            if (src.id == targets.get(i).id) {
                 return i;
             }
         }

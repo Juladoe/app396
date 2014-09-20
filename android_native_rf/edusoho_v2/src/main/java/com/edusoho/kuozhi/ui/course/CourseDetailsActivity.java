@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -53,7 +54,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     public static final int SET_LEARN_BTN = 0003;
 
     private String mTitle;
-    private String mCourseId;
+    private int mCourseId;
     private String mCoursePic;
     private CourseDetailsResult mCourseDetailsResult;
     private String mCurrentFragment;
@@ -133,7 +134,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             case HIDE_COURSE_PIC:
                 Log.d(null, "hide course pic->");
                 AppUtil.animForHeight(
-                        new EdusohoAnimWrap(mCoursePicView), mCoursePicView.getHeight(), 0, 500);
+                        new EdusohoAnimWrap(mCoursePicView), mCoursePicView.getHeight(), 0, 420);
                 break;
             case SET_LEARN_BTN:
                 mVipLevelId = data.getInt("vipLevelId", 0);
@@ -181,7 +182,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         if (data != null) {
             mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
             mCoursePic = data.getStringExtra(COURSE_PIC);
-            mCourseId = data.getStringExtra(Const.COURSE_ID);
+            mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
         }
 
         setBackMode(BACK, mTitle);
@@ -215,7 +216,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
 
         RequestUrl url = app.bindUrl(Const.COURSE, true);
         url.setParams(new String[] {
-                "courseId", mCourseId
+                "courseId", mCourseId + ""
         });
 
         setProgressBarIndeterminateVisibility(true);
@@ -307,7 +308,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         RequestUrl url = app.bindUrl(Const.PAYCOURSE, true);
         url.setParams(new String[] {
                 "payment", "alipay",
-                "courseId", mCourseId
+                "courseId", mCourseId + ""
         });
         ajaxPost(url, new ResultCallback() {
             @Override
@@ -353,7 +354,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 fragmentName, mActivity, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString(Const.COURSE_ID, mCourseId);
+                bundle.putInt(Const.COURSE_ID, mCourseId);
                 bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
             }
         });

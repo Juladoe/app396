@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,14 +52,16 @@ public class EduSohoTextBtn extends LinearLayout {
         mIcon = new EduSohoIconView(mContext);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
-        mIcon.setTextSize(size * iconSizeScale);
+        mIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, size * iconSizeScale);
         addView(mIcon);
 
         mText = new TextView(mContext);
+        mText.setSingleLine();
+        mText.setEllipsize(TextUtils.TruncateAt.MIDDLE);
         mText.setText(text);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(color);
-        mText.setTextSize(size);
+        mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         addView(mText);
     }
 

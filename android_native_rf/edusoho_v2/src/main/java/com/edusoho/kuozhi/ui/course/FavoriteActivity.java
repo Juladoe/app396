@@ -42,7 +42,7 @@ public class FavoriteActivity extends BaseActivity {
             @Override
             public void invoke(MessageModel messageModel) {
                 if (mAdapter != null) {
-                    mAdapter.refreshItem(messageModel.arg, (Boolean)messageModel.obj);
+                    mAdapter.refreshItem(0, (Boolean)messageModel.obj);
                 }
             }
         });

@@ -1,5 +1,16 @@
 package com.edusoho.kuozhi.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -16,20 +27,11 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.listener.NormalCallback;
 import com.nineoldandroids.animation.ObjectAnimator;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import cn.trinea.android.common.util.DigestUtils;
 
@@ -41,6 +43,25 @@ public class AppUtil {
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static int[] getTeacherIds(Teacher[] teachers)
+    {
+        if (teachers == null) {
+            return new int[0];
+        }
+        int[] ids = new int[teachers.length];
+        for (int i=0; i < teachers.length; i++) {
+            ids[i] = teachers[i].id;
+        }
+
+        return ids;
+    }
+
+    public static boolean inArray(String find, String[] array)
+    {
+        int result = Arrays.binarySearch(array, find);
+        return result >= 0;
     }
 
     /**

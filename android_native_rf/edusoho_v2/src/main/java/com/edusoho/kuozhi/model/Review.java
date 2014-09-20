@@ -4,7 +4,7 @@ package com.edusoho.kuozhi.model;
  * Created by howzhi on 14-5-24.
  */
 public class Review {
-    public String id;
+    public int id;
     public Teacher user;
     public String courseId;
     public String title;

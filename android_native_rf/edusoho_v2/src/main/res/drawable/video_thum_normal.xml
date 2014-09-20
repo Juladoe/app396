@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <!-- 是否是圆角 -->
-    <corners android:radius="10dip" />
+<shape
+    android:shape="oval" xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <size
-        android:height="14dp"
-        android:width="14dp" />
+        android:height="12dp"
+        android:width="12dp" />
 
     <!-- shape的颜色，支持渐变 -->
     <gradient

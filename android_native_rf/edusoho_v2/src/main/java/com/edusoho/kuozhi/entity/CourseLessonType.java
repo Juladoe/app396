@@ -14,4 +14,13 @@ public enum CourseLessonType {
 		}
 		return type;
 	}
+
+    public StringBuilder getType()
+    {
+        StringBuilder stringBuilder = new StringBuilder(toString().toLowerCase());
+        char first = Character.toUpperCase(stringBuilder.charAt(0));
+        stringBuilder.deleteCharAt(0);
+        stringBuilder.insert(0, first);
+        return stringBuilder;
+    }
 }

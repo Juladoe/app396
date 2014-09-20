@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.ui.lesson;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -27,9 +29,12 @@ import java.util.ArrayList;
 public class LessonResourceActivity extends ActionBarBaseActivity {
 
     private ListWidget mResourceListView;
+    private CheckBox mSelectAllBtn;
 
     private int mCourseId;
     private int mLessonId;
+
+    private LessonMaterialAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +45,7 @@ public class LessonResourceActivity extends ActionBarBaseActivity {
     private void initView()
     {
         setBackMode(BACK, "课时资料");
+        mSelectAllBtn = (CheckBox) findViewById(R.id.lesson_resource_all);
         mResourceListView = (ListWidget) findViewById(R.id.lesson_resource_list);
 
         Intent data = getIntent();
@@ -52,7 +58,15 @@ public class LessonResourceActivity extends ActionBarBaseActivity {
             longToast("课程信息错误！");
             return;
         }
+
         loadResources();
+
+        mSelectAllBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mAdapter.setCheckAllStatus(b);
+            }
+        });
     }
 
     private void loadResources()
@@ -73,9 +87,9 @@ public class LessonResourceActivity extends ActionBarBaseActivity {
                     return;
                 }
 
-                LessonMaterialAdapter adapter = new LessonMaterialAdapter(
+                mAdapter = new LessonMaterialAdapter(
                         mContext, lessonMaterialBaseResult.data, R.layout.lesson_material_item);
-                mResourceListView.setAdapter(adapter);
+                mResourceListView.setAdapter(mAdapter);
             }
         });
     }

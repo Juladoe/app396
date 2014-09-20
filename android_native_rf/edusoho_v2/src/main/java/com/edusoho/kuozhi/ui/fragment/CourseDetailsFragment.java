@@ -62,7 +62,7 @@ import java.util.Stack;
 public class CourseDetailsFragment extends BaseFragment{
 
     private String mTitle;
-    private String mCourseId;
+    private int mCourseId;
     private Teacher mTeacher;
 
     private AQuery aQuery;
@@ -122,7 +122,7 @@ public class CourseDetailsFragment extends BaseFragment{
         Bundle bundle = getArguments();
         if (bundle != null) {
             mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
-            mCourseId = bundle.getString(Const.COURSE_ID);
+            mCourseId = bundle.getInt(Const.COURSE_ID);
         }
 
         mMenuDrawer = mCourseDetailsActivity.getMenuDrawer();
@@ -199,7 +199,7 @@ public class CourseDetailsFragment extends BaseFragment{
 
                 showProgress(true);
                 mFavoriteBtn.setEnabled(false);
-                String courseId = mCourseResult.course.id;
+                int courseId = mCourseResult.course.id;
                 if (mCourseResult.userFavorited) {
                     unFavoriteCourse(courseId);
                 } else {
@@ -238,11 +238,11 @@ public class CourseDetailsFragment extends BaseFragment{
         view.onShow();
     }
 
-    private void unFavoriteCourse(String courseId)
+    private void unFavoriteCourse(int courseId)
     {
         RequestUrl url = app.bindUrl(Const.UNFAVORITE, true);
         url.setParams(new String[] {
-                "courseId", courseId
+                "courseId", courseId + ""
         });
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
@@ -262,11 +262,11 @@ public class CourseDetailsFragment extends BaseFragment{
     }
 
 
-    private void favoriteCourse(String courseId)
+    private void favoriteCourse(int courseId)
     {
         RequestUrl url = app.bindUrl(Const.FAVORITE, true);
         url.setParams(new String[] {
-                "courseId", courseId
+                "courseId", courseId + ""
         });
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
@@ -374,7 +374,7 @@ public class CourseDetailsFragment extends BaseFragment{
         mCourseAudiencesView.setText(AppUtil.audiencesToStr(course.audiences));
         mCourseAboutView.setText(AppUtil.coverCourseAbout(course.about));
         mCourseTeacherView.initUser(mTeacher.id, mActivity);
-        mCourseReviewView.initReview(course.id, mActivity, false);
+        mCourseReviewView.initReview(course.id, mActivity, true);
 
         if (!isUpdate) {
             showCourseMoreInfoListener();
@@ -402,10 +402,10 @@ public class CourseDetailsFragment extends BaseFragment{
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         Bundle bundle = new Bundle();
-                        bundle.putInt(TeacherInfoFragment.TEACHER_ID, mTeacher.id);
+                        bundle.putIntArray(
+                                TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(mCourseResult.course.teachers));
                         bundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
-                        bundle.putString(ReviewInfoFragment.COURSE_ID, mCourseResult.course.id);
-
+                        bundle.putInt(ReviewInfoFragment.COURSE_ID, mCourseResult.course.id);
                         startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, bundle);
                         startIntent.putExtra(CourseDetailsTabActivity.TITLE, "课程详情");
                         startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);

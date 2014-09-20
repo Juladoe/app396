@@ -8,11 +8,10 @@ import java.io.Serializable;
 public class Course implements Serializable{
     public String title;
     public String studentNum;
-    public String teacher;
     public double rating;
     public String smallPicture;
     public double price;
-    public String id;
+    public int id;
     public String subtitle;
     public String expiryDay;
     public String showStudentNumType;
