@@ -13,7 +13,6 @@
         android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/loading_progress"
-        android:indeterminateDrawable="@anim/sch_loading"
         android:layout_below="@+id/popup_message"
         android:layout_width="322px"
         android:layout_height="18px" />

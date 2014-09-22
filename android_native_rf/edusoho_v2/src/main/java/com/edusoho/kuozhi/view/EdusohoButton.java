@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -24,7 +25,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.util.AppUtil;
 
-public class EdusohoButton extends LinearLayout {
+public class EdusohoButton extends FrameLayout {
 
     private Context mContext;
 
@@ -71,6 +72,7 @@ public class EdusohoButton extends LinearLayout {
     private TextView mFontIconView;
     private TextView mTextView;
     private ProgressBar mProgressBar;
+    private LinearLayout mContainer;
 
     public static final int PROGRESS = 0010;
     public static final int NORMAL = 0012;
@@ -98,10 +100,10 @@ public class EdusohoButton extends LinearLayout {
         if (mIconView == null && mFontIconView == null && mTextView == null) {
             Button tempTextView = new Button(mContext);
             tempTextView.setText("Fancy Button");
-            this.addView(tempTextView);
+            mContainer.addView(tempTextView);
 
         } else {
-            this.removeAllViews();
+            mContainer.removeAllViews();
             setupBackground();
 
             ArrayList<View> views = new ArrayList<View>();
@@ -134,10 +136,11 @@ public class EdusohoButton extends LinearLayout {
 
             }
 
-            views.add(mProgressBar);
             for (View view : views) {
-                this.addView(view);
+                mContainer.addView(view);
             }
+
+            addView(mProgressBar);
         }
     }
 
@@ -176,7 +179,8 @@ public class EdusohoButton extends LinearLayout {
             TextView fontIconView = new TextView(mContext);
             fontIconView.setTextColor(mDefaultTextColor);
 
-            LayoutParams iconTextViewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1f);
+            LinearLayout.LayoutParams iconTextViewParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
             if (mTextView != null) {
                 iconTextViewParams.rightMargin = 10;
@@ -228,7 +232,7 @@ public class EdusohoButton extends LinearLayout {
         iconViewParams.width = AppUtil.dip2px(mContext, 24);
         iconViewParams.height = AppUtil.dip2px(mContext, 24);
         progressBar.setLayoutParams(iconViewParams);
-        progressBar.setVisibility(GONE);
+        progressBar.setVisibility(INVISIBLE);
         return progressBar;
     }
 
@@ -358,19 +362,23 @@ public class EdusohoButton extends LinearLayout {
 
     private void initContainer() {
 
+        mContainer = new LinearLayout(mContext);
         if (mIconPosition == POSITION_TOP || mIconPosition == POSITION_BOTTOM) {
-            this.setOrientation(LinearLayout.VERTICAL);
+            mContainer.setOrientation(LinearLayout.VERTICAL);
         } else {
-            this.setOrientation(LinearLayout.HORIZONTAL);
+            mContainer.setOrientation(LinearLayout.HORIZONTAL);
         }
         LayoutParams containerParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        this.setLayoutParams(containerParams);
-        this.setGravity(Gravity.CENTER_VERTICAL);
-        this.setClickable(true);
-        this.setFocusable(true);
+        containerParams.gravity = Gravity.CENTER;
+        mContainer.setLayoutParams(containerParams);
+        mContainer.setGravity(Gravity.CENTER_VERTICAL);
+        mContainer.setClickable(true);
+        mContainer.setFocusable(true);
         if (mIconResource == null && mFontIcon == null && getPaddingLeft() == 0 && getPaddingRight() == 0 && getPaddingTop() == 0 && getPaddingBottom() == 0) {
-            this.setPadding(20, 20, 20, 20);
+            mContainer.setPadding(20, 20, 20, 20);
         }
+
+        addView(mContainer);
     }
 
     public void setText(String text) {

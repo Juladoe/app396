@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -50,6 +51,7 @@ public class CourseLearningFragment extends BaseFragment {
     private int mCourseId;
 
     private TextView mCourseNoticeView;
+    private Button mCommitBtn;
     private LearnStatusWidget mCourseStatusView;
     private CourseDetailsLessonWidget mCourseLessonList;
     private View mBtnLayout;
@@ -83,30 +85,35 @@ public class CourseLearningFragment extends BaseFragment {
             public void handleMessage(Message msg) {
                 switch (msg.what){
                     case SWITCH_SHOW_NOTICE:
-                        int size = mAnnouncements.size();
-                        if (size == 0) {
-                            mCourseNoticeView.setText("暂无公告");
-                            return;
-                        }
-                        if (noticeShowIndex > (size - 1)) {
-                            noticeShowIndex = 0;
-                        }
-                        Announcement announcement = mAnnouncements.get(noticeShowIndex++);
-                        StringBuilder builder = new StringBuilder(announcement.content);
-                        mCourseNoticeView.setText(builder);
-
-                        builder.append("\n");
-                        int oldLenght = builder.length();
-                        builder.append(announcement.createdTime);
-                        Spannable spannable = new SpannableString(builder);
-                        spannable.setSpan(
-                                new RelativeSizeSpan(0.5f), oldLenght, builder.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                        mCourseNoticeView.setText(spannable);
+                        showNotice();
                         break;
                 }
             }
         };
         setContainerView(R.layout.course_learning_fragment);
+    }
+
+    private void showNotice()
+    {
+        int size = mAnnouncements.size();
+        if (size == 0) {
+            mCourseNoticeView.setText("暂无公告");
+            return;
+        }
+        if (noticeShowIndex > (size - 1)) {
+            noticeShowIndex = 0;
+        }
+        Announcement announcement = mAnnouncements.get(noticeShowIndex++);
+        StringBuilder builder = new StringBuilder(announcement.content);
+        mCourseNoticeView.setText(builder);
+
+        builder.append("\n");
+        int oldLenght = builder.length();
+        builder.append(announcement.createdTime);
+        Spannable spannable = new SpannableString(builder);
+        spannable.setSpan(
+                new RelativeSizeSpan(0.5f), oldLenght, builder.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        mCourseNoticeView.setText(spannable);
     }
 
     @Override
@@ -193,6 +200,8 @@ public class CourseLearningFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
+
+        mCommitBtn = (Button) view.findViewById(R.id.course_details_commit_btn);
         mBtnLayout = view.findViewById(R.id.course_details_btn_layouts);
         mCourseLessonList = (CourseDetailsLessonWidget) view.findViewById(R.id.course_learning_lessonlist);
         mCourseStatusView = (LearnStatusWidget) view.findViewById(R.id.course_learning_status_widget);
@@ -216,6 +225,17 @@ public class CourseLearningFragment extends BaseFragment {
 
         app.sendMsgToTarget(
                 CourseDetailsActivity.HIDE_COURSE_PIC, null, CourseDetailsActivity.class);
+        mCommitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecommendCourseFragment recommendCourseFragment = new RecommendCourseFragment();
+                Bundle fragmentData = new Bundle();
+                fragmentData.putInt(Const.COURSE_ID, mCourseId);
+                recommendCourseFragment.setArguments(fragmentData);
+
+                recommendCourseFragment.show(getChildFragmentManager(), "dialog");
+            }
+        });
     }
 
     private void initCourseAnnouncement()
