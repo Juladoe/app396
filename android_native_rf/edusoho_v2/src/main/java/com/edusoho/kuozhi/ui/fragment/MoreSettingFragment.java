@@ -104,6 +104,8 @@ public class MoreSettingFragment extends BaseFragment {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 showProgress(false);
                 app.removeToken();
+                mLogoutBtn.setVisibility(View.GONE);
+                app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
             }
         });
     }

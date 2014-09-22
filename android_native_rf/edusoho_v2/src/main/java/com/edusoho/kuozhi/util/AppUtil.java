@@ -186,8 +186,13 @@ public class AppUtil {
         return (int) (270 * scale);
     }
 
+    /**
+     * 转换图片长宽比
+     * @param width
+     * @return
+     */
     public static int getCourseListCoverHeight(int width) {
-        float scale = (float) width * 0.5f / 480;
+        float scale = (float) width / 480;
         return (int) (270 * scale);
     }
 

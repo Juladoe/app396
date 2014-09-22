@@ -374,7 +374,7 @@ public class CourseDetailsFragment extends BaseFragment{
         mCourseAudiencesView.setText(AppUtil.audiencesToStr(course.audiences));
         mCourseAboutView.setText(AppUtil.coverCourseAbout(course.about));
         mCourseTeacherView.initUser(mTeacher.id, mActivity);
-        mCourseReviewView.initReview(course.id, mActivity, true);
+        mCourseReviewView.initReview(course.id, mActivity, false);
 
         if (!isUpdate) {
             showCourseMoreInfoListener();
@@ -405,7 +405,7 @@ public class CourseDetailsFragment extends BaseFragment{
                         bundle.putIntArray(
                                 TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(mCourseResult.course.teachers));
                         bundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
-                        bundle.putInt(ReviewInfoFragment.COURSE_ID, mCourseResult.course.id);
+                        bundle.putInt(Const.COURSE_ID, mCourseResult.course.id);
                         startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, bundle);
                         startIntent.putExtra(CourseDetailsTabActivity.TITLE, "课程详情");
                         startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);

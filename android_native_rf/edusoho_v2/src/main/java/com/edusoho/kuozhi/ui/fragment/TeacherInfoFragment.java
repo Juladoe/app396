@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -69,9 +70,9 @@ public class TeacherInfoFragment extends BaseFragment {
         mTeacherView.initUser(mTeacherIds[0], mActivity);
         final ScrollListAdapter adapter = new ScrollListAdapter(mContext);
         mTeacherCoursesView.setAdapter(adapter);
-        mTeacherCoursesView.setOnItemClickListener(new PLA_AdapterView.OnItemClickListener() {
+        mTeacherCoursesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(PLA_AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                 final Course course = (Course) parent.getItemAtPosition(position);
                 Bundle data = new Bundle();
                 data.putInt(Const.COURSE_ID, course.id);

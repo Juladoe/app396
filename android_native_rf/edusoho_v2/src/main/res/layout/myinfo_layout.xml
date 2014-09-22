@@ -17,6 +17,7 @@
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
             android:layout_marginRight="30dp"
+            android:scaleType="fitCenter"
             android:id="@+id/myinfo_logo"
             android:src="@drawable/myinfo_default_face"
             android:layout_width="66dp"

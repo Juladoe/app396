@@ -10,7 +10,7 @@
     <dimen name="sys_normal">18dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
-    <dimen name="course_list_item_title">18sp</dimen>
+    <dimen name="course_list_item_title">14sp</dimen>
     <dimen name="recommend_sch_info_size">12dp</dimen>
     <dimen name="course_info_title">16dp</dimen>
     <dimen name="course_info_normal">14dp</dimen>
@@ -56,7 +56,7 @@
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
-    <dimen name="nav_layout_btn">14dp</dimen>
+    <dimen name="nav_layout_btn">12dp</dimen>
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">14sp</dimen>
@@ -66,7 +66,7 @@
     <dimen name="material_normal_btn">18sp</dimen>
     <dimen name="found_search_text">18sp</dimen>
     <dimen name="found_search_text_icon">22sp</dimen>
-    <dimen name="found_list_item_text">22sp</dimen>
+    <dimen name="found_list_item_text">20sp</dimen>
     <dimen name="found_list_item_label">14sp</dimen>
     <dimen name="myinfo_plugin_list_item_text">18sp</dimen>
     <dimen name="myinfo_name">16sp</dimen>
@@ -78,4 +78,6 @@
     <dimen name="regist_info_label">14sp</dimen>
     <dimen name="course_empty_text">18sp</dimen>
     <dimen name="course_details_pic">190dp</dimen>
+    <dimen name="course_item_pic_width">155dp</dimen>
+    <dimen name="course_item_pic_height">95dp</dimen>
 </resources>

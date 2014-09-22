@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
     private ReviewListAdapter mAdapter;
     private boolean isInitHeight;
     private NormalCallback normalCallback;
+    private int mLimit;
 
     public CourseDetailsReviewWidget(Context context) {
         super(context);
@@ -99,7 +101,8 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
         RequestUrl url = mActivity.app.bindUrl(Const.REVIEWS, true);
         url.setParams(new String[] {
                 "courseId", courseId + "",
-                "start", start + ""
+                "start", start + "",
+                "limit", mLimit + ""
         });
 
         mActivity.ajaxPost(url, new ResultCallback(){
@@ -126,6 +129,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 } else {
                     mAdapter.setData(reviewResult.data);
                 }
+                Log.d(null, "isInitHeight->" + isInitHeight);
                 if (isInitHeight) {
                     initListHeight(mContentView.getRefreshableView());
                 }
@@ -140,7 +144,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
         ListAdapter adapter = listView.getAdapter();
         int count = adapter.getCount();
         for (int i=0; i < count; i++) {
-            View child = adapter.getView(i, null, this);
+            View child = adapter.getView(i, null, listView);
             child.measure(0, 0);
             totalHeight += child.getMeasuredHeight() + listView.getDividerHeight();
         }
@@ -159,6 +163,8 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 mContext, null, R.layout.course_details_review_item);
         mContentView.setAdapter(mAdapter);
         setRefresh(isRefresh);
+        mLimit = isRefresh ? Const.LIMIT : 2;
+
         getReviews(0, mCourseId, false);
     }
 

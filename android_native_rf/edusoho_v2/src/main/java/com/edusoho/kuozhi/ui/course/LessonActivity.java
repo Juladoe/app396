@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.entity.LearnStatus;
 import com.edusoho.kuozhi.entity.LessonsResult;
+import com.edusoho.kuozhi.model.Lesson.LessonStatus;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -134,7 +135,7 @@ public class LessonActivity extends ActionBarBaseActivity{
                 }
 
                 mCourseLessonView.updateLessonStatus(mLessonId, result);
-                setLearnStatus(mLessonId);
+                setLearnStatus(result);
             }
         });
     }
@@ -183,7 +184,35 @@ public class LessonActivity extends ActionBarBaseActivity{
         }
 
         loadLesson(mLessonId);
+        loadLessonStatus();
         bindListener();
+    }
+
+    private void loadLessonStatus()
+    {
+        RequestUrl requestUrl = app.bindUrl(Const.LESSON_STATUS, true);
+        requestUrl.setParams(new String[] {
+                "courseId", mCourseId + "",
+                "lessonId", mLessonId + ""
+        });
+
+        setProgressBarIndeterminateVisibility(true);
+        ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
+                LessonStatus status = parseJsonValue(
+                        object, new TypeToken<LessonStatus>(){});
+
+                if (status == null || status.hasMaterial) {
+                    mResourceBtn.setVisibility(View.GONE);
+                } else {
+                    mResourceBtn.setVisibility(View.VISIBLE);
+                }
+                setLearnStatus(status == null ? LearnStatus.learning : status.learnStatus);
+                showToolsByAnim();
+            }
+        });
     }
 
     private void bindListener()
@@ -239,8 +268,6 @@ public class LessonActivity extends ActionBarBaseActivity{
                     return;
                 }
 
-                setLearnStatus(lessonItem.id);
-                showToolsByAnim();
                 switchLoadLessonContent(lessonItem);
             }
         });
@@ -274,9 +301,8 @@ public class LessonActivity extends ActionBarBaseActivity{
         return null;
     }
 
-    private void setLearnStatus(int lessonId)
+    private void setLearnStatus(LearnStatus learnStatus)
     {
-        LearnStatus learnStatus = mCourseLessonView.getLearnStatus(lessonId);
         Resources resources = getResources();
         switch(learnStatus) {
             case learning:

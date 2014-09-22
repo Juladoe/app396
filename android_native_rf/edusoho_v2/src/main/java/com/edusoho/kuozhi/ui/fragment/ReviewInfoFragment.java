@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 public class ReviewInfoFragment extends BaseFragment {
 
     private CourseDetailsReviewWidget mReviewWidget;
-    public static final String COURSE_ID = "course_id";
     public static final String COURSE = "course";
     public static final int REFRESH_REVIEWS = 0001;
 
@@ -78,7 +77,7 @@ public class ReviewInfoFragment extends BaseFragment {
         }
 
         mCourse = (Course) bundle.getSerializable(COURSE);
-        int courseId = bundle.getInt(COURSE_ID, 0);
+        int courseId = bundle.getInt(Const.COURSE_ID, 0);
 
         setFragmentData();
         mReviewWidget.hideTitle();

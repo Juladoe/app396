@@ -113,6 +113,11 @@ public class Const {
     public static final String UNLEARN_LESSON = "Lesson/unLearnLesson";
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
 
+    /**
+     * 获取课程状态（是否包含资料，学习状态）
+     */
+    public static final String LESSON_STATUS = "Lesson/getLessonStatus";
+
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;
 

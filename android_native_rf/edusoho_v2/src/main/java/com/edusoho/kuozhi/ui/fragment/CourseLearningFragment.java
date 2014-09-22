@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
@@ -167,7 +168,7 @@ public class CourseLearningFragment extends BaseFragment {
             fragmentData.putIntArray(
                     TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(course.teachers));
             fragmentData.putSerializable(CourseInfoFragment.COURSE, course);
-            fragmentData.putInt(ReviewInfoFragment.COURSE_ID, course.id);
+            fragmentData.putInt(Const.COURSE_ID, course.id);
 
             Bundle bundle = new Bundle();
             bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentData);
@@ -228,12 +229,15 @@ public class CourseLearningFragment extends BaseFragment {
         mCommitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RecommendCourseFragment recommendCourseFragment = new RecommendCourseFragment();
-                Bundle fragmentData = new Bundle();
-                fragmentData.putInt(Const.COURSE_ID, mCourseId);
-                recommendCourseFragment.setArguments(fragmentData);
-
-                recommendCourseFragment.show(getChildFragmentManager(), "dialog");
+                startAcitivity("FragmentPageActivity", new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
+                        startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程评论");
+                        startIntent.putExtra(ReviewInfoFragment.COURSE, mCourseDetailsResult.course);
+                    }
+                });
             }
         });
     }

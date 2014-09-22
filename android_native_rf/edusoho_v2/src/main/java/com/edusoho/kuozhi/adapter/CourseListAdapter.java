@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,7 +116,7 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
 
         holder.course_price.setText(course.price == 0 ? "免费": course.price + "元");
 
-        int width = EdusohoApp.app.screenW;
+        int width = (int)(EdusohoApp.app.screenW * 0.5f);
         if (TextUtils.isEmpty(course.largePicture)) {
             holder.aq.id(R.id.course_pic).image(R.drawable.noram_course);
         } else {
@@ -124,8 +125,10 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
             }
 
             holder.aq.id(R.id.course_pic).image(
-                    course.largePicture, false, true, 200, R.drawable.noram_course);
-            holder.aq.id(R.id.course_pic).height(AppUtil.getCourseListCoverHeight(width), false);
+                    course.largePicture, false, true, width, R.drawable.noram_course);
+            holder.aq.id(R.id.course_pic)
+                    .width(width)
+                    .height(AppUtil.getCourseListCoverHeight(width), false);
         }
     }
 
@@ -138,12 +141,16 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
             holder.course_studentNum.setText(course.studentNum + " 学员");
         }
 
-        int width = EdusohoApp.app.screenW;
+        int width = (int)(EdusohoApp.app.screenW * 0.5f);
         if (TextUtils.isEmpty(course.largePicture)) {
             holder.aq.id(R.id.course_pic).image(R.drawable.noram_course);
         } else {
             holder.aq.id(R.id.course_pic).image(
-                    course.largePicture, false, true, 200, R.drawable.noram_course);
+                    course.largePicture, false, true, width, R.drawable.noram_course);
+            Log.d(null, "height->" + AppUtil.getCourseListCoverHeight(width));
+            holder.aq.id(R.id.course_pic)
+                    .width(width, false)
+                    .height(AppUtil.getCourseListCoverHeight(width), false);
         }
 
         holder.aq.id(R.id.course_pic).height(AppUtil.getCourseListCoverHeight(width), false);

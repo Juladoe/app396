@@ -26,6 +26,8 @@
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:textSize="@dimen/auto_course_title"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textColor="@color/system_normal_text"
             android:id="@+id/auto_course_title"
             android:layout_width="wrap_content"

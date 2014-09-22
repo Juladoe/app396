@@ -2,13 +2,17 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
 
@@ -29,7 +34,7 @@ public class XCourseListWidget extends FrameLayout {
     private Context mContext;
     private ListAdapter mAdapter;
     private PullToRefreshScrollView mEmptyLayout;
-    private XListView mCourseListWidget;
+    private PullToRefreshGridView mCourseListWidget;
     private String mEmptyText = "没有搜到相关课程，请换个关键词试试！";
 
     public XCourseListWidget(Context context) {
@@ -44,18 +49,20 @@ public class XCourseListWidget extends FrameLayout {
         initView();
     }
 
-    public XListView getListView()
+    public PullToRefreshGridView getListView()
     {
         return mCourseListWidget;
     }
 
     private void initView()
     {
-        mCourseListWidget = new XListView(mContext);
+        mCourseListWidget = new PullToRefreshGridView(mContext);
+        GridView gridView = mCourseListWidget.getRefreshableView();
+        gridView.setNumColumns(2);
+        gridView.setBackgroundColor(Color.TRANSPARENT);
+        gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
         mCourseListWidget.setLayoutParams(new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mCourseListWidget.setPullLoadEnable(false);
-        mCourseListWidget.setPullRefreshEnable(false);
         addView(mCourseListWidget);
     }
 
@@ -65,14 +72,9 @@ public class XCourseListWidget extends FrameLayout {
         mCourseListWidget.setAdapter(mAdapter);
     }
 
-    public void setOnItemClickListener(PLA_AdapterView.OnItemClickListener itemClickListener)
+    public void setOnItemClickListener(AdapterView.OnItemClickListener itemClickListener)
     {
         mCourseListWidget.setOnItemClickListener(itemClickListener);
-    }
-
-    public void setXListViewListener(XListView.IXListViewListener listViewListener)
-    {
-        mCourseListWidget.setXListViewListener(listViewListener);
     }
 
     public void setEmptyText(String emptyText)
@@ -98,7 +100,7 @@ public class XCourseListWidget extends FrameLayout {
         return scrollView;
     }
 
-    public void setRefreshListener(PullToRefreshBase.OnRefreshListener refreshListener)
+    public void setRefreshListener(PullToRefreshBase.OnRefreshListener2 refreshListener)
     {
         if (mEmptyLayout == null) {
             return;
@@ -121,11 +123,6 @@ public class XCourseListWidget extends FrameLayout {
             }
             mCourseListWidget.postInvalidate();
         }
-    }
-
-    public int getTotalPading()
-    {
-        return mCourseListWidget.getPaddingBottom() + mCourseListWidget.getPaddingTop();
     }
 
     public ListAdapter getAdapter()

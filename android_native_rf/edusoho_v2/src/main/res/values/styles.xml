@@ -74,6 +74,12 @@
         <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>
         <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
         <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
+        <item name="android:windowAnimationStyle">@style/EdusohoActivityAnim</item>
+    </style>
+
+    <style name="EdusohoActivityAnim">
+        <item name="@android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <item name="@android:activityOpenExitAnimation">@anim/activity_open_exit</item>
     </style>
 
     <style name="EdusohoActionBarMenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
@@ -103,6 +109,7 @@
         <item name="android:textSize">@dimen/action_bar_title</item>
         <item name="android:textStyle">normal</item>
     </style>
+
     <style name="CustomTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/titleTextColor</item>
         <item name="android:textSize">@dimen/course_content_head</item>

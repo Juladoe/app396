@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -80,10 +82,10 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
 
     private void bindListener()
     {
-        mCourseListWidget.setOnItemClickListener(new PLA_AdapterView.OnItemClickListener() {
+        mCourseListWidget.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(PLA_AdapterView<?> parent, View view, int position, long id) {
-                final Course course = (Course) parent.getItemAtPosition(position);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Course course = (Course) adapterView.getItemAtPosition(i);
                 mActivity.app.mEngine.runNormalPlugin(
                         CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
                     @Override
@@ -96,20 +98,14 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
             }
         });
 
-        mCourseListWidget.setRefreshListener(new PullToRefreshBase.OnRefreshListener() {
+        mCourseListWidget.setRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>(){
             @Override
-            public void onRefresh(PullToRefreshBase refreshView) {
+            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
                 loadCourseFromNet(0);
             }
-        });
-
-        mCourseListWidget.setXListViewListener(new XListView.IXListViewListener() {
-            @Override
-            public void onRefresh() {
-            }
 
             @Override
-            public void onLoadMore() {
+            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
                 loadCourseFromNet(mStart);
             }
         });

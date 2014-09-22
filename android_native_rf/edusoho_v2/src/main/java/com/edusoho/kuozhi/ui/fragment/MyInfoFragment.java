@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.ui.widget.MyInfoPluginListView;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 
 /**
@@ -30,17 +31,34 @@ import com.edusoho.kuozhi.view.plugin.CircularImageView;
 public class MyInfoFragment extends BaseFragment {
 
     public String mTitle = "我的学习";
+
+    @ViewUtil("myinfo_plugin_list")
     private MyInfoPluginListView mMyInfoPluginListView;
+
+    @ViewUtil("myinfo_learnStatusWidget")
     private LearnStatusWidget mLearnStatusWidget;
+
+    @ViewUtil("myinfo_user_layout")
     private View mUserLayout;
+
+    @ViewUtil("myinfo_logo")
     private CircularImageView mUserLogo;
+
+    @ViewUtil("myinfo_name")
     private TextView mUserName;
+
+    @ViewUtil("myinfo_group")
     private TextView mUserGroup;
+
+    @ViewUtil("myinfo_content")
     private TextView mUserContent;
+
+    @ViewUtil("myinfo_status_layout")
     private FrameLayout mStatusLayout;
 
     public static final int REFRESH = 0010;
     public static final int LOGINT_WITH_TOKEN = 0020;
+    public static final int LOGOUT = 0021;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +85,9 @@ public class MyInfoFragment extends BaseFragment {
                 Log.d(null, "LOGINT_WITH_TOKEN->");
                 setUserStatus();
                 break;
+            case LOGOUT:
+                setUserStatus();
+                break;
         }
     }
 
@@ -75,6 +96,7 @@ public class MyInfoFragment extends BaseFragment {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(REFRESH, source),
+                new MessageType(LOGOUT, source),
                 new MessageType(LOGINT_WITH_TOKEN, source)
         };
         return messageTypes;
@@ -85,6 +107,8 @@ public class MyInfoFragment extends BaseFragment {
         Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
             setStatusLoginLayout();
+            mUserLogo.setImageResource(R.drawable.myinfo_default_face);
+            mUserLayout.setEnabled(true);
             mUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -99,7 +123,6 @@ public class MyInfoFragment extends BaseFragment {
         mUserName.setText(app.loginUser.nickname);
         mUserGroup.setText(UserRole.coverRoleToStr(app.loginUser.roles));
         mUserContent.setText(app.loginUser.title);
-
         AQuery aQuery = new AQuery(mActivity);
         aQuery.id(mUserLogo).image(
                 app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
@@ -108,15 +131,7 @@ public class MyInfoFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-
-        mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
-        mUserLogo = (CircularImageView) view.findViewById(R.id.myinfo_logo);
-        mUserName = (TextView) view.findViewById(R.id.myinfo_name);
-        mUserGroup = (TextView) view.findViewById(R.id.myinfo_group);
-        mUserContent = (TextView) view.findViewById(R.id.myinfo_content);
-        mUserLayout = view.findViewById(R.id.myinfo_user_layout);
-        mMyInfoPluginListView = (MyInfoPluginListView) view.findViewById(R.id.myinfo_plugin_list);
-        mLearnStatusWidget = (LearnStatusWidget) view.findViewById(R.id.myinfo_learnStatusWidget);
+        viewInject(view);
 
         mMyInfoPluginListView.initFromLocal(mActivity);
         mMyInfoPluginListView.setItemOnClick(new MyInfoPluginListView.PluginItemClick() {
