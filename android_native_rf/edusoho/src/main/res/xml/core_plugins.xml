@@ -5,7 +5,7 @@
     <plugin name="CourseInfoActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseInfoActivity"></plugin>
     <plugin name="FavoriteActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.FavoriteActivity"></plugin>
     <plugin name="LearningActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LearningActivity"></plugin>
-    <plugin name="AboutActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.AboutActivity"></plugin>
+    <plugin name="AboutActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NormalActivity"></plugin>
     <plugin name="AlipayActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.AlipayActivity"></plugin>
     <plugin name="LoginActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.LoginActivity"></plugin>
     <plugin name="NetSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NetSchoolActivity"></plugin>

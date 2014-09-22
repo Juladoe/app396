@@ -75,7 +75,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.edusoho.kuozhi.ui.common.AboutActivity"
+            android:name="com.edusoho.kuozhi.ui.common.NormalActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
@@ -93,10 +93,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.course.LearningActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.edusoho.kuozhi.ui.common.AlipayActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -144,6 +140,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity

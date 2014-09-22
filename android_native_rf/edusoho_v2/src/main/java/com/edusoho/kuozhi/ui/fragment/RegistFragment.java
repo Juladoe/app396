@@ -1,27 +1,20 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.ui.common.AboutActivity;
 import com.edusoho.kuozhi.ui.widget.ButtonWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
 import com.edusoho.listener.ResultCallback;
 
-import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -64,11 +57,11 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void onClick(View view) {
                 final String url = app.schoolHost + Const.USERTERMS;
-                app.mEngine.runNormalPlugin("AboutActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("NormalActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(AboutActivity.URL, url);
-                        startIntent.putExtra(AboutActivity.TITLE, "服务条款");
+                        startIntent.putExtra(AboutFragment.URL, url);
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "服务条款");
                     }
                 });
             }

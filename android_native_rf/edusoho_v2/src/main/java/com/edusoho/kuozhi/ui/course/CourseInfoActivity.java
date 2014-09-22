@@ -36,7 +36,6 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.ReviewResult;
 import com.edusoho.kuozhi.model.Teacher;
-import com.edusoho.kuozhi.ui.common.AlipayActivity;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.lesson.CourseLessonActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
@@ -378,7 +377,7 @@ public class CourseInfoActivity extends BaseActivity {
                         app.delMessageListener(VIEW_LESSON);
                     } else {
                         String payurl = result.get("payUrl");
-                        AlipayActivity.startForResult(mActivity, payurl);
+                        //AlipayActivity.startForResult(mActivity, payurl);
                     }
 
                 } else if (Const.RESULT_ERROR.equals(status)) {
@@ -840,11 +839,6 @@ public class CourseInfoActivity extends BaseActivity {
                     }
                 }, false);
                 break;
-            case AlipayActivity.ALIPAY_SUCCESS:
-            case AlipayActivity.ALIPAY_EXIT:
-                content_pager.setCurrentItem(lessons);
-                showPayResultDlg(resultCode);
-                break;
         }
 
     }
@@ -854,7 +848,9 @@ public class CourseInfoActivity extends BaseActivity {
      */
     private void showPayResultDlg(final int resultCode) {
         //支付成功
+        /*
         PopupDialog.createMuilt(
+
                 mContext, "支付完成", "确定支付是否成功?", new PopupDialog.PopupClickListener() {
             @Override
             public void onClick(int button) {
@@ -889,5 +885,6 @@ public class CourseInfoActivity extends BaseActivity {
                 });
             }
         }).show();
+        */
     }
 }

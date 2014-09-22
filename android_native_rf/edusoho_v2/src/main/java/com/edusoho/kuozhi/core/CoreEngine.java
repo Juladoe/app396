@@ -135,7 +135,22 @@ public class CoreEngine {
         }
     }
 
-    public BaseFragment runPluginWithFragment(String pluginName, Activity activity, PluginFragmentCallback callback)
+    public BaseFragment runPluginWithFragmentByBundle(
+            String pluginName, Activity activity, Bundle bundle)
+    {
+        BaseFragment fragment = null;
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            fragment = (BaseFragment) Fragment.instantiate(activity, pluginModel.packAge);
+            fragment.setArguments(bundle);
+
+            return fragment;
+        }
+        return null;
+    }
+
+    public BaseFragment runPluginWithFragment(
+            String pluginName, Activity activity, PluginFragmentCallback callback)
     {
         BaseFragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);

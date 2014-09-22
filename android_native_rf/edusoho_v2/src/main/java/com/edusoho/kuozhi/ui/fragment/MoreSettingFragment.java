@@ -4,25 +4,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.ui.common.AboutActivity;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
 import com.edusoho.listener.ResultCallback;
-
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-25.
  */
 public class MoreSettingFragment extends BaseFragment {
 
+    @ViewUtil("more_setting_logout_btn")
     private View mLogoutBtn;
-    private AQuery mAQuery;
+
+    @ViewUtil("more_setting_set")
+    private View mSettingBtn;
+
+    @ViewUtil("more_setting_about")
+    private View mSettingAbout;
 
     @Override
     public String getTitle() {
@@ -38,23 +42,36 @@ public class MoreSettingFragment extends BaseFragment {
     protected void showSchoolAbout()
     {
         final String url = app.schoolHost + Const.ABOUT;
-        app.mEngine.runNormalPlugin("AboutActivity", mActivity, new PluginRunCallback() {
+        app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(AboutActivity.URL, url);
-                startIntent.putExtra(AboutActivity.TITLE, "关于网校");
+                startIntent.putExtra(AboutFragment.URL, url);
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, "关于网校");
             }
         });
     }
 
     @Override
     protected void initView(View view) {
-        mAQuery = new AQuery(view);
-
-        mAQuery.id(R.id.more_setting_about).clicked(new View.OnClickListener() {
+        viewInject(view);
+        mSettingAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showSchoolAbout();
+            }
+        });
+
+        mSettingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "SettingFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "设置");
+                    }
+                });
             }
         });
 
@@ -85,7 +102,6 @@ public class MoreSettingFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                super.callback(url, object, ajaxStatus);
                 showProgress(false);
                 app.removeToken();
             }

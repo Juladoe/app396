@@ -18,14 +18,17 @@ import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.lang.reflect.Field;
 import java.util.WeakHashMap;
 
 /**
  * Created by howzhi on 14-8-7.
  */
+
 public abstract class BaseFragment extends Fragment implements MessageEngine.MessageCallback {
 
     protected ActionBarBaseActivity mActivity;
@@ -49,6 +52,45 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         mActivity = (ActionBarBaseActivity) activity;
         mContext = mActivity.getBaseContext();
         app = mActivity.app;
+    }
+
+    protected void viewBind(ViewGroup contentView)
+    {
+        try {
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                ViewUtil viewUtil = field.getAnnotation(ViewUtil.class);
+                if (viewUtil != null) {
+                    int id = getResources().getIdentifier(
+                            viewUtil.value(), "id", mContext.getPackageName());
+                    Log.d(null, "viewUtil->id " + id);
+                    field.set(this, contentView.findViewById(id));
+                }
+            }
+
+        } catch (Exception e) {
+            //nothing
+        }
+    }
+
+    protected void viewInject(View contentView)
+    {
+        try {
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                ViewUtil viewUtil = field.getAnnotation(ViewUtil.class);
+                if (viewUtil != null) {
+                    int id = getResources().getIdentifier(
+                            viewUtil.value(), "id", mContext.getPackageName());
+                    Log.d(null, "viewUtil->id " + id);
+                    field.set(this, contentView.findViewById(id));
+                }
+            }
+        } catch (Exception e) {
+            //nothing
+        }
     }
 
     protected void registMsgSrc(){

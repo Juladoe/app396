@@ -64,7 +64,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         mContentView.setDivider(null);
         mContentView.setSelector(getResources().getDrawable(R.drawable.normal_list_select));
         mContentView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mContentView.setPadding(0, 0, 0, 0);
 
         mAQuery = new AQuery(mContentView);

@@ -6,7 +6,7 @@
     <TextView
         android:textSize="@dimen/normal_btn"
         android:text="@string/apk_version"
-        android:background="@color/system_normal_bg"
+        android:background="#99f5f5f5"
         android:id="@+id/start_version_text"
         android:textColor="@color/system_light_text"
         android:layout_margin="30dp"

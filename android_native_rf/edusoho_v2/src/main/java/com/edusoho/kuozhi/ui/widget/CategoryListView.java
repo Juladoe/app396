@@ -55,7 +55,7 @@ public class CategoryListView extends FrameLayout {
     {
         mCategoryListView = new ExpandableListView(mContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         mCategoryListView.setLayoutParams(layoutParams);
 
         mCategoryListView.setBackgroundColor(getResources().getColor(R.color.white));
