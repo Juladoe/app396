@@ -50,7 +50,7 @@
                 android:layout_below="@+id/tv_post_name" />
 
             <com.edusoho.kuozhi.view.EdusohoButton
-                android:id="@+id/lesson_resource_download_btn"
+                android:id="@+id/edu_btn_question_edit"
                 android:textSize="14sp"
                 app:borderColor="#FFFFFF"
                 app:borderWidth="1dp"
@@ -60,8 +60,8 @@
                 app:radius="3dp"
                 app:textStr="编辑"
                 app:textColor="#FFFFFF"
-                android:layout_width="55dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
 
@@ -113,8 +113,8 @@
         <com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget
             android:id="@+id/qrlw_question_reply"
             android:layout_width="match_parent"
-            android:scrollbars="none"
             android:layout_height="match_parent"
+            android:scrollbars="none"
             android:cacheColorHint="#00000000"
             android:divider="#00000000"
             android:dividerHeight="1dp"

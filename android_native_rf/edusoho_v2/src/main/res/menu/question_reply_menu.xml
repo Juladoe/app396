@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/reply_submit"
+        android:title="@string/reply_submit"
+        android:orderInCategory="100"
+        android:icon="@drawable/reply_submiy"
+        android:showAsAction="always" />
+</menu>
