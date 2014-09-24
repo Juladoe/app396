@@ -35,8 +35,7 @@ public class RequestUrl {
         muiltParams.putAll(params);
     }
 
-    public void setMuiltParams(Object[] values)
-    {
+    public void setMuiltParams(Object[] values) {
         if (values == null || values.length == 0) {
             return;
         }
@@ -47,6 +46,7 @@ public class RequestUrl {
 
     public void setParams(HashMap<String, String> p) {
         params = p;
+        muiltParams.putAll(params);
     }
 
     public void setHeads(String[] values) {

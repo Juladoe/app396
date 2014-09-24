@@ -1,16 +1,5 @@
 package com.edusoho.kuozhi.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -30,8 +19,19 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.listener.NormalCallback;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import cn.trinea.android.common.util.DigestUtils;
 
@@ -186,19 +186,17 @@ public class AppUtil {
         return (int) (270 * scale);
     }
 
-<<<<<<< Updated upstream
     /**
      * 转换图片长宽比
      * @param width
      * @return
      */
-=======
+
     public static int getImageWidth(int width) {
         float scale = (float) width * 0.4f / 480;
         return (int) (270 * scale);
     }
 
->>>>>>> Stashed changes
     public static int getCourseListCoverHeight(int width) {
         float scale = (float) width / 480;
         return (int) (270 * scale);

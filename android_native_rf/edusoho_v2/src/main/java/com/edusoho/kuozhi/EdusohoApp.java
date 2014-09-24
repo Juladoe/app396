@@ -1,13 +1,7 @@
 package com.edusoho.kuozhi;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import android.app.Activity;
 import android.app.Application;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,6 +45,11 @@ import com.edusoho.listener.RequestParamsCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application{
 

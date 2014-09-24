@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -309,12 +308,13 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     private void submitReply() {
         //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
         RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
-        url.setMuiltParams(new Object[]{"image1", new File(filename)});
         HashMap<String, String> params = url.getParams();
         params.put("courseId", mCourseId);
         params.put("threadId", mThreadId);
-        params.put("content", Html.toHtml(etContent.getText()));
+        params.put("content", etContent.getText().toString());
         params.put("imageCount", "1");
+        url.setMuiltParams(new Object[]{"image1", new File(filename)});
+        url.setParams(params);
 
         this.ajaxPost(url, new ResultCallback() {
             @Override
