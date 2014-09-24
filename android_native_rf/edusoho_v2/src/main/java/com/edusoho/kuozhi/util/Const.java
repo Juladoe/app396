@@ -19,7 +19,7 @@ public class Const {
      * 考试题目类别
      */
     public static final String[] TESTPAPER_QUESTION_TYPE = {
-            "选择题", "单选题", "填空题", "多选题", "不定项题", "材料题", "问答题"
+            "多选题", "判断题", "问答题", "填空题", "材料题", "单选题", "不定项题"
     };
 
     /**
@@ -27,12 +27,12 @@ public class Const {
      */
     public static final String[] TESTPAPER_QUESTIONS = {
             "ChoiceFragment",
-            "ChoiceFragment",
-            "ChoiceFragment",
-            "ChoiceFragment",
-            "ChoiceFragment",
-            "ChoiceFragment",
-            "ChoiceFragment"
+            "DetermineFragment",
+            "EssayFragment",
+            "FillFragment",
+            "MaterialFragment",
+            "SingleChoiceFragment",
+            "UncertainChoiceFragment"
     };
 
     public static final String[] MY_COURSE_FRAGMENT = {
@@ -50,6 +50,11 @@ public class Const {
     //默认分页数量
     public static final int LIMIT = 10;
 
+    //public message type
+    public static final String TAB_MENU_CLICK = "tab_menu_click";
+    public static final String TAB_MENU_ID = "tab_menu_id";
+    public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
+
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
     public static final boolean memCacheNo = false;
@@ -62,7 +67,6 @@ public class Const {
 
     public static final String DB_NAME = "edusoho";
 
-    public static final String SEARCH = "search";
     public static final String REGIST_DEVICE = "regist_device";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
@@ -111,19 +115,15 @@ public class Const {
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String REFUNDCOURSE = "courses/{courseId}/refund";
-    public static final String CHECKORDER = "courses/{courseId}/can_learn?";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
-    public static final String LESSONITEM = "courses//lessons/?";
-    public static final String LEARNSTATUS = "courses/{courseId}/lessons/{lessonId}/learn_status";
     public static final String DEFAULT_UPDATE_URL = "http://open.edusoho.com/mobile/meta.php";
 
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";
     public static final String RECOMMEND_COURSES = "School/getRecommendCourses";
     public static final String WEEK_COURSES = "School/getWeekRecommendCourses";
-    public static final String CATEGORY = "Category/getCategories";
     public static final String CATEGORYS = "Category/getAllCategories";
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
@@ -147,6 +147,11 @@ public class Const {
      * 获取考试课程详情
      */
     public static final String TESTPAPER_INFO = "Lesson/getTestpaperInfo";
+
+    /**
+     * 获取考试课程详情
+     */
+    public static final String TESTPAPER_FULL_INFO = "Testpaper/doTestpaper";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;

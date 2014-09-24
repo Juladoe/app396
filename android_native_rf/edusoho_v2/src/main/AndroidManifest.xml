@@ -143,6 +143,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.edusoho.kuozhi.ui.lesson.TestpaperActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.edusoho.kuozhi.ui.common.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

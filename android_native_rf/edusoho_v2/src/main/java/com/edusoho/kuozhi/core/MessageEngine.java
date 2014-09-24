@@ -97,13 +97,16 @@ public class MessageEngine {
         }
 
         for (MessageType msgType : msgTypes) {
+            if (msgType.code != MessageType.NONE) {
+                continue;
+            }
             //all regist msgtype source device
             ArrayList<String> msgList = pubMsgMap.get(msgType.toString());
             if (msgList == null) {
                 msgList = new ArrayList<String>();
             }
 
-            Log.d(null, "regist_message-> " + msgType);
+            Log.d(null, "regist_pub message-> " + msgType);
             if (!msgList.contains(targetName)) {
                 msgList.add(targetName);
             }

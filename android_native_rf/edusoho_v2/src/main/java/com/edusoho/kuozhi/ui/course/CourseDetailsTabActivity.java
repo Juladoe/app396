@@ -15,12 +15,17 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
+import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.CourseInfoFragment;
@@ -37,12 +42,13 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
 
     private final Handler handler = new Handler();
     private PagerSlidingTabStrip mTabs;
-    private ViewPager mFragmentPager;
+    protected ViewPager mFragmentPager;
     private MyPagerAdapter fragmentAdapter;
-    private String[] fragmentArrayList;
-    private String[] titles;
-    private String mTitle;
-    private String mFragmentName = null;
+    protected String[] fragmentArrayList;
+    protected String[] titles;
+    protected String mTitle;
+    protected int mMenu;
+    protected String mFragmentName = null;
 
     private Drawable oldBackground = null;
     private int currentColor = R.color.action_bar_bg;
@@ -51,6 +57,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     public static final String LISTS = "lists";
     public static final String TITLES = "titles";
     public static final String FRAGMENT_DATA = "fragment_data";
+    public static final String MENU = "menu";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +66,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
         initView();
     }
 
-    private void initView()
+    protected void initIntentData()
     {
         Intent data = getIntent();
         if (data != null) {
@@ -67,12 +74,18 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
             titles = data.getStringArrayExtra(TITLES);
             fragmentArrayList = data.getStringArrayExtra(LISTS);
             mFragmentName = data.getStringExtra(FRAGMENT);
+            mMenu = data.getIntExtra(MENU, 0);
         }
 
         if (titles == null || fragmentArrayList == null) {
             longToast("无效列表数据！");
             return;
         }
+    }
+
+    protected void initView()
+    {
+        initIntentData();
         setBackMode(BACK, mTitle);
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.course_details_info_tabs);
         mFragmentPager = (ViewPager) findViewById(R.id.course_details_info_pager);
@@ -98,6 +111,23 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
                 return;
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mMenu == 0) {
+            return false;
+        }
+        getMenuInflater().inflate(mMenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.TAB_MENU_ID, item.getItemId());
+        app.sendMessage(Const.TAB_MENU_CLICK, bundle);
+        return true;
     }
 
     private void changeColor(int newColor)
