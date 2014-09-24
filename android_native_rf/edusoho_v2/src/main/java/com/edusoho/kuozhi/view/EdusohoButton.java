@@ -363,6 +363,8 @@ public class EdusohoButton extends FrameLayout {
     private void initContainer() {
 
         mContainer = new LinearLayout(mContext);
+        mContainer.setFocusable(true);
+        mContainer.setFocusableInTouchMode(true);
         if (mIconPosition == POSITION_TOP || mIconPosition == POSITION_BOTTOM) {
             mContainer.setOrientation(LinearLayout.VERTICAL);
         } else {

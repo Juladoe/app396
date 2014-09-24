@@ -172,7 +172,7 @@ public class CourseLearningFragment extends BaseFragment {
 
             Bundle bundle = new Bundle();
             bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentData);
-            bundle.putString(CourseDetailsTabActivity.TITLE, "课程详情");
+            bundle.putString(Const.ACTIONBAT_TITLE, "课程详情");
             bundle.putStringArray(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
             bundle.putStringArray(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
             app.mEngine.runNormalPluginWithBundle(

@@ -56,4 +56,6 @@
     <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
     <plugin name="SettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SettingFragment"></plugin>
     <plugin name="AboutFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AboutFragment"></plugin>
+    <plugin name="TestpaperLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment"></plugin>
+    <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>
 </plugins>

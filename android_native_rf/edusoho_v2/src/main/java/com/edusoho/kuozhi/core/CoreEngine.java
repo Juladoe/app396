@@ -207,7 +207,9 @@ public class CoreEngine {
         if (pluginModel != null) {
             Intent startIntent = new Intent();
             startIntent.setClassName(serverActivity, pluginModel.packAge);
-            startIntent.putExtras(bundle);
+            if (bundle != null) {
+                startIntent.putExtras(bundle);
+            }
 
             serverActivity.startActivity(startIntent);
         }

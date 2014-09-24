@@ -14,7 +14,7 @@
         <ImageView
             android:layout_margin="1dp"
             android:layout_gravity="center"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:src="@drawable/defaultpic"
             android:id="@+id/auto_course_pic"
             android:layout_width="wrap_content"

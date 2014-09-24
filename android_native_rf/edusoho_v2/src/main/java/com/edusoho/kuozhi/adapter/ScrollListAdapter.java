@@ -49,8 +49,10 @@ public class ScrollListAdapter extends BaseAdapter {
 
         int width = (int) (EdusohoApp.screenW * 0.45);
         holder.aQuery.id(R.id.auto_course_pic).image(
-                course.largePicture, false, true, width, R.drawable.noram_course);
-        holder.aQuery.id(R.id.auto_course_pic).height(AppUtil.getCourseListCoverHeight(width));
+                course.largePicture, false, true, 200, R.drawable.noram_course);
+        holder.aQuery.id(R.id.auto_course_pic)
+                .width(width, false)
+                .height(AppUtil.getCourseListCoverHeight(width), false);
 
         holder.title.setText(course.title);
 

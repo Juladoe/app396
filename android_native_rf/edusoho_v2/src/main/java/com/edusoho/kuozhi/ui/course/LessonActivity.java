@@ -27,9 +27,12 @@ import com.edusoho.kuozhi.entity.LessonsResult;
 import com.edusoho.kuozhi.model.Lesson.LessonStatus;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.Testpaper.TestpaperResult;
+import com.edusoho.kuozhi.model.Testpaper.TestpaperStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.CourseLearningFragment;
+import com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -184,7 +187,10 @@ public class LessonActivity extends ActionBarBaseActivity{
         }
 
         loadLesson(mLessonId);
-        loadLessonStatus();
+
+        if (!mLessonType.equals("testpaper")) {
+            loadLessonStatus();
+        }
         bindListener();
     }
 
@@ -204,7 +210,7 @@ public class LessonActivity extends ActionBarBaseActivity{
                 LessonStatus status = parseJsonValue(
                         object, new TypeToken<LessonStatus>(){});
 
-                if (status == null || status.hasMaterial) {
+                if (status == null || !status.hasMaterial) {
                     mResourceBtn.setVisibility(View.GONE);
                 } else {
                     mResourceBtn.setVisibility(View.VISIBLE);
@@ -278,12 +284,27 @@ public class LessonActivity extends ActionBarBaseActivity{
         CourseLessonType courseLessonType = CourseLessonType.value(lessonType);
         LessonItem<String> normalLesson = null;
         switch (courseLessonType) {
+            case PPT:
+                LessonItem<ArrayList<String>> pptLesson = parseJsonValue(
+                        object, new TypeToken<LessonItem<ArrayList<String>>>(){});
+                fragmentData.putString(Const.LESSON_TYPE, "ppt");
+                fragmentData.putStringArrayList(CONTENT, pptLesson.content);
+                return pptLesson;
+            case TESTPAPER:
+                LessonItem<TestpaperStatus> testpaperLesson = parseJsonValue(
+                        object, new TypeToken<LessonItem<TestpaperStatus>>(){});
+                TestpaperStatus status = testpaperLesson.content;
+                fragmentData.putString(Const.LESSON_TYPE, "testpaper");
+                fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
+                fragmentData.putInt(TestpaperLessonFragment.RESULT_ID, status.resultId);
+                fragmentData.putString(Const.STATUS, status.status);
+                return testpaperLesson;
             case VIDEO:
             case AUDIO:
             case TEXT:
                 normalLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<String>>(){});
-                fragmentData.putString(Const.LESSON_TYPE, "text");
+                fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
@@ -291,12 +312,6 @@ public class LessonActivity extends ActionBarBaseActivity{
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                 }
                 return normalLesson;
-            case PPT:
-                LessonItem<ArrayList<String>> pptLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<ArrayList<String>>>(){});
-                fragmentData.putString(Const.LESSON_TYPE, "ppt");
-                fragmentData.putStringArrayList(CONTENT, pptLesson.content);
-                return pptLesson;
         }
         return null;
     }

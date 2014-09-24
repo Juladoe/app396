@@ -85,4 +85,5 @@
     <dimen name="review_course_commit">22sp</dimen>
     <dimen name="course_learning_notify">18sp</dimen>
     <dimen name="lesson_material_title">16sp</dimen>
+    <dimen name="testpaper_title">14dp</dimen>
 </resources>

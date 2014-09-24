@@ -181,7 +181,7 @@ public class MyInfoFragment extends BaseFragment {
                 startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, new Bundle());
                 startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.MY_COURSE_FRAGMENT);
                 startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.MY_COURSE_TITLE);
-                startIntent.putExtra(CourseDetailsTabActivity.TITLE, "我的课程");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的课程");
                 startIntent.putExtra(
                         CourseDetailsTabActivity.FRAGMENT, "");
             }

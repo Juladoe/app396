@@ -407,7 +407,7 @@ public class CourseDetailsFragment extends BaseFragment{
                         bundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
                         bundle.putInt(Const.COURSE_ID, mCourseResult.course.id);
                         startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, bundle);
-                        startIntent.putExtra(CourseDetailsTabActivity.TITLE, "课程详情");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程详情");
                         startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
                         startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
                         startIntent.putExtra(

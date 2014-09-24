@@ -127,7 +127,7 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
             holder.aq.id(R.id.course_pic).image(
                     course.largePicture, false, true, width, R.drawable.noram_course);
             holder.aq.id(R.id.course_pic)
-                    .width(width)
+                    .width(width, false)
                     .height(AppUtil.getCourseListCoverHeight(width), false);
         }
     }

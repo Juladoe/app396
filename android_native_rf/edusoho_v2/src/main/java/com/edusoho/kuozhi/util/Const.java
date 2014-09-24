@@ -15,6 +15,26 @@ public class Const {
             "在学课程", "收藏课程", "已学课程"
     };
 
+    /**
+     * 考试题目类别
+     */
+    public static final String[] TESTPAPER_QUESTION_TYPE = {
+            "选择题", "单选题", "填空题", "多选题", "不定项题", "材料题", "问答题"
+    };
+
+    /**
+     * 考试题目 fragment
+     */
+    public static final String[] TESTPAPER_QUESTIONS = {
+            "ChoiceFragment",
+            "ChoiceFragment",
+            "ChoiceFragment",
+            "ChoiceFragment",
+            "ChoiceFragment",
+            "ChoiceFragment",
+            "ChoiceFragment"
+    };
+
     public static final String[] MY_COURSE_FRAGMENT = {
             "LearningCourseFragment",
             "FavoriteCourseFragment",
@@ -118,6 +138,11 @@ public class Const {
      */
     public static final String LESSON_STATUS = "Lesson/getLessonStatus";
 
+    /**
+     * 获取考试课程详情
+     */
+    public static final String TESTPAPER_INFO = "Lesson/getTestpaperInfo";
+
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;
 
@@ -153,6 +178,8 @@ public class Const {
     public static final String COURSE_ID = "courseId";
     public static final String LESSON_ID = "lessonId";
     public static final String MEDIA_URL = "mediaUrl";
+    public static final String MEDIA_ID = "mediaId";
+    public static final String STATUS = "status";
     public static final String MEDIA_SOURCE = "mediaSource";
     public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAT_TITLE = "title";

@@ -236,6 +236,7 @@
     <color name="system_light_bg">#e6e6e6</color>
     <color name="shallow_found_bg">#f2f2f2</color>
     <color name="system_normal_text">#808080</color>
+    <color name="system_gray_text">#757575</color>
     <color name="system_normal_text_pressed">#77808080</color>
     <color name="system_light_text">#4d4d4d</color>
     <color name="found_search_bg">#ffffff</color>
@@ -268,6 +269,8 @@
     <color name="lesson_reource_btn_pressed">#77cccccc</color>
     <color name="lesson_learn_btn_normal">#45d17b</color>
     <color name="lesson_learn_btn_pressed">#38bf6c</color>
+    <color name="testpaper_enter_btn_normal">#45d17b</color>
+    <color name="testpaper_enter_btn_pressed">#38bf6c</color>
     <color name="lesson_learned_btn_normal">#ffc947</color>
     <color name="lesson_learned_btn_pressed">#FFB40D</color>
 

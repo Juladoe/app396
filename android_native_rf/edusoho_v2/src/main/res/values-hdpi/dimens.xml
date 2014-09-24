@@ -80,4 +80,5 @@
     <dimen name="course_details_pic">190dp</dimen>
     <dimen name="course_item_pic_width">155dp</dimen>
     <dimen name="course_item_pic_height">95dp</dimen>
+    <dimen name="testpaper_title">12dp</dimen>
 </resources>

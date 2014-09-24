@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.CourseInfoFragment;
 import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
 import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
+import com.edusoho.kuozhi.util.Const;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,6 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     public static final String FRAGMENT = "fragment";
     public static final String LISTS = "lists";
     public static final String TITLES = "titles";
-    public static final String TITLE = "title";
     public static final String FRAGMENT_DATA = "fragment_data";
 
     @Override
@@ -63,7 +63,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     {
         Intent data = getIntent();
         if (data != null) {
-            mTitle = data.getStringExtra(TITLE);
+            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
             titles = data.getStringArrayExtra(TITLES);
             fragmentArrayList = data.getStringArrayExtra(LISTS);
             mFragmentName = data.getStringExtra(FRAGMENT);
