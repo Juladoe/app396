@@ -298,6 +298,8 @@ public class LessonActivity extends ActionBarBaseActivity{
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
                 fragmentData.putInt(TestpaperLessonFragment.RESULT_ID, status.resultId);
                 fragmentData.putString(Const.STATUS, status.status);
+                fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
+                fragmentData.putString(Const.ACTIONBAT_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case VIDEO:
             case AUDIO:

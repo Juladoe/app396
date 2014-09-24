@@ -22,6 +22,7 @@
     <plugin name="CourseListActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseListActivity"></plugin>
     <plugin name="CourseDetailsActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"></plugin>
     <plugin name="CourseDetailsTabActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"></plugin>
+    <plugin name="TestpaperActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.TestpaperActivity"></plugin>
 
     <!--MyQuestion-->
     <plugin name="QuestionActivity" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionActivity"></plugin>
@@ -57,5 +58,13 @@
     <plugin name="SettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SettingFragment"></plugin>
     <plugin name="AboutFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AboutFragment"></plugin>
     <plugin name="TestpaperLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment"></plugin>
+
+    <!--试卷fragment -->
     <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>
+    <plugin name="DetermineFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.DetermineFragment"></plugin>
+    <plugin name="EssayFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.EssayFragment"></plugin>
+    <plugin name="FillFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.FillFragment"></plugin>
+    <plugin name="MaterialFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.MaterialFragment"></plugin>
+    <plugin name="SingleChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.SingleChoiceFragment"></plugin>
+    <plugin name="UncertainChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.UncertainChoiceFragment"></plugin>
 </plugins>
