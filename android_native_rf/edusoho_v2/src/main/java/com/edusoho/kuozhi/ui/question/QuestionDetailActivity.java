@@ -156,13 +156,37 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     @Override
     public void onClick(View v) {
+        int requestCode = 0;
         if (v.getId() == R.id.btn_post_reply) {
-            app.mEngine.runNormalPlugin("QuestionReplyActivity", mActivity, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
+            //回复按钮
+            requestCode = QuestionReplyActivity.REPLY;
+        } else if (v.getId() == R.id.edu_btn_question_edit) {
+            requestCode = QuestionReplyActivity.REPLY;
+        }
 
-                }
-            });
+        final int finalRequestCode = requestCode;
+        app.mEngine.runNormalPluginForResult("QuestionReplyActivity", mActivity, requestCode, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(QuestionReplyActivity.REQUESTI_CODE, finalRequestCode);
+                startIntent.putExtra(THREAD_ID, String.valueOf(mThreadId));
+                startIntent.putExtra(COURSE_ID, String.valueOf(mCourseId));
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            String content = data.getStringExtra(QuestionReplyActivity.CONTENT);
+            switch (requestCode) {
+                case QuestionReplyActivity.REPLY:
+                    break;
+                case QuestionReplyActivity.EDIT_QUESTION:
+                    break;
+                case QuestionReplyActivity.EDIT_REPLY:
+                    break;
+            }
         }
     }
 }

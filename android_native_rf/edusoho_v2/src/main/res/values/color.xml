@@ -276,4 +276,6 @@
 
     <color name="lesson_resouce_btn_normal">#45d17b</color>
     <color name="lesson_resouce_btn_pressed">#38bf6c</color>
+
+    <color name="camera_pressed">#00ddff</color>
 </resources>

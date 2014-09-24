@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -114,7 +113,6 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         TextView tvReplyTime = AppUtil.getViewHolder(convertView, R.id.tv_reply_time);
         TextView tvReplyContent = AppUtil.getViewHolder(convertView, R.id.tv_reply_content);
         ImageView ivEdit = AppUtil.getViewHolder(convertView, R.id.iv_reply_edit);
-        RelativeLayout rlReplay = AppUtil.getViewHolder(convertView, R.id.rl_reply_info);
         tvReplyName.setText(entireReply.replyModel.user.nickname);
         if (tvReplyName.getText().equals(mUser.nickname)) {
             ivEdit.setVisibility(View.VISIBLE);
@@ -122,20 +120,16 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
             ivEdit.setVisibility(View.INVISIBLE);
         }
 
-        tvReplyContent.setText(Html.fromHtml(entireReply.replyModel.content));
-        tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
 
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlReplay.getLayoutParams();
+        tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
 
         if (entireReply.replyModel.isElite == 1) {
             if (entireReply.isFirstReply) {
                 tvReplyType.setVisibility(View.VISIBLE);
                 tvReplyType.setText("教师的答案（" + String.valueOf(this.mTeacherReplyList.size()) + "条）：");
                 createDrawables(tvReplyType, R.drawable.recommend_week_label_icon);
-                lp.topMargin = 16;
             } else {
                 tvReplyType.setVisibility(View.GONE);
-                lp.topMargin = 0;
             }
             tvReplyName.setTextColor(mContext.getResources().getColor(R.color.teacher_reply));
         } else {
@@ -145,14 +139,12 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
                 createDrawables(tvReplyType, R.drawable.normal_reply_tag);
             } else {
                 tvReplyType.setVisibility(View.GONE);
-                lp.topMargin = 16;
             }
             tvReplyName.setTextColor(mContext.getResources().getColor(R.color.question_lesson));
         }
 
-        if (tvReplyName.getText().equals(mUser.nickname)) {
-            ivEdit.setVisibility(View.VISIBLE);
-        }
+        tvReplyContent.setText(Html.fromHtml(entireReply.replyModel.content));
+
         return convertView;
     }
 

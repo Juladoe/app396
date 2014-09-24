@@ -158,6 +158,7 @@
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionReplyActivity"
             android:configChanges="keyboard|orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <activity
