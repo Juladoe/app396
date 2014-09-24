@@ -127,7 +127,7 @@ public class EdusohoApp extends Application{
             ajaxCallback.setCacheRequest(true);
         }
 
-        query.ajax(requestUrl.url, requestUrl.params, String.class, ajaxCallback);
+        query.ajax(requestUrl.url, requestUrl.getAllParams(), String.class, ajaxCallback);
         return ajaxCallback;
     }
 

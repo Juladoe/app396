@@ -10,10 +10,12 @@ public class RequestUrl {
     public String url;
     public HashMap<String, String> heads;
     public HashMap<String, String> params;
+    public HashMap<String, Object> muiltParams;
 
     public RequestUrl() {
         heads = new HashMap<String, String>();
         params = new HashMap<String, String>();
+        muiltParams = new HashMap<String, Object>();
     }
 
     public RequestUrl(String url) {
@@ -25,8 +27,21 @@ public class RequestUrl {
         if (values == null || values.length == 0) {
             return;
         }
+
         for (int i = 0; i < values.length; i = i + 2) {
             params.put(values[i], values[i + 1]);
+        }
+
+        muiltParams.putAll(params);
+    }
+
+    public void setMuiltParams(Object[] values)
+    {
+        if (values == null || values.length == 0) {
+            return;
+        }
+        for (int i = 0; i < values.length; i = i + 2) {
+            muiltParams.put(values[i].toString(), values[i + 1]);
         }
     }
 
@@ -45,6 +60,10 @@ public class RequestUrl {
 
     public HashMap<String, String> getParams() {
         return params;
+    }
+
+    public HashMap<String, Object> getAllParams() {
+        return muiltParams;
     }
 
     public HashMap<String, String> getHeads() {
