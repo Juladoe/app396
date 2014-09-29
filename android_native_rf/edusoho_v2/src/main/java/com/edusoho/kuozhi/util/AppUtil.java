@@ -2,8 +2,12 @@ package com.edusoho.kuozhi.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -14,10 +18,14 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.listener.NormalCallback;
+import com.edusoho.listener.ResultCallback;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.ByteArrayInputStream;
@@ -26,14 +34,14 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import cn.trinea.android.common.util.DigestUtils;
+;import cn.trinea.android.common.util.DigestUtils;
 
 public class AppUtil {
 
@@ -45,21 +53,43 @@ public class AppUtil {
         return (int) (dpValue * scale + 0.5f);
     }
 
-    public static int[] getTeacherIds(Teacher[] teachers)
-    {
+    public static void getImage(Context context, String url, final NormalCallback<Bitmap> callback) {
+        AQuery aQuery = new AQuery(context);
+        AQuery ajax = aQuery.ajax(url, byte[].class, new AjaxCallback<byte[]>() {
+            @Override
+            public void callback(String url, byte[] object, AjaxStatus status) {
+                super.callback(url, object, status);
+                Bitmap bitmap = null;
+                BitmapFactory.Options option = new BitmapFactory.Options();
+                option.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(object, 0, object.length, option);
+
+                option.inSampleSize = computeSampleSize(option, -1, 200*200);
+                option.inJustDecodeBounds = false;
+                try {
+                    bitmap = BitmapFactory.decodeByteArray(object, 0, object.length, option);
+                    Log.d(null, "bm->" + bitmap);
+                } catch (Exception e) {
+                    bitmap = null;
+                }
+                callback.success(bitmap);
+            }
+        });
+    }
+
+    public static int[] getTeacherIds(Teacher[] teachers) {
         if (teachers == null) {
             return new int[0];
         }
         int[] ids = new int[teachers.length];
-        for (int i=0; i < teachers.length; i++) {
+        for (int i = 0; i < teachers.length; i++) {
             ids[i] = teachers[i].id;
         }
 
         return ids;
     }
 
-    public static boolean inArray(String find, String[] array)
-    {
+    public static boolean inArray(String find, String[] array) {
         int result = Arrays.binarySearch(array, find);
         return result >= 0;
     }
@@ -188,6 +218,7 @@ public class AppUtil {
 
     /**
      * 转换图片长宽比
+     *
      * @param width
      * @return
      */
@@ -432,5 +463,39 @@ public class AppUtil {
             Log.d("AppUtil.getPostDays", ex.toString());
         }
         return String.valueOf(l) + "小时前";
+    }
+
+    public static int computeSampleSize(
+            BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
+        int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
+        int roundedSize;
+        if (initialSize <= 8) {
+            roundedSize = 1;
+            while (roundedSize < initialSize) {
+                roundedSize <<= 1;
+            }
+        } else {
+            roundedSize = (initialSize + 7) / 8 * 8;
+        }
+        return roundedSize;
+    }
+
+    private static int computeInitialSampleSize(
+            BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
+        double w = options.outWidth;
+        double h = options.outHeight;
+        int lowerBound = (maxNumOfPixels == -1) ? 1 : (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
+        int upperBound = (minSideLength == -1) ? 128 :(int) Math.min(Math.floor(w / minSideLength), Math.floor(h / minSideLength));
+        if (upperBound < lowerBound) {
+            // return the larger one when there is no overlapping zone.
+            return lowerBound;
+        }
+        if ((maxNumOfPixels == -1) && (minSideLength == -1)) {
+            return 1;
+        } else if (minSideLength == -1) {
+            return lowerBound;
+        } else {
+            return upperBound;
+        }
     }
 }
