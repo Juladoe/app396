@@ -185,12 +185,16 @@ public class EdusohoApp extends Application{
         mEngine.getMessageEngine().sendMsgToTaget(msgType, body, target);
     }
 
-    public void exit()
+    public void appFinish()
     {
         for (Activity activity : runTask.values()) {
             activity.finish();
         }
+    }
 
+    public void exit()
+    {
+        app.appFinish();
         query.clear();
         paramsMap.clear();
         runTask.clear();

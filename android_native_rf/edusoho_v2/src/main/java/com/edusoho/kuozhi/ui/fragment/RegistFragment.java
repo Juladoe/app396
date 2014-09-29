@@ -11,6 +11,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.ButtonWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -57,10 +58,11 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void onClick(View view) {
                 final String url = app.schoolHost + Const.USERTERMS;
-                app.mEngine.runNormalPlugin("NormalActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AboutFragment.URL, url);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "服务条款");
                     }
                 });

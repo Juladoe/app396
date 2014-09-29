@@ -99,5 +99,34 @@
             android:layout_below="@id/recommend_announcement_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
+
+        <LinearLayout
+            android:id="@+id/recommend_new_label"
+            android:paddingLeft="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_below="@id/recommend_listview"
+            android:background="@color/recommend_label_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/recommend_announcement_label"
+                android:textSize="@dimen/recommend_announcement_label"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:text="最新"
+                android:drawableLeft="@drawable/recommend_new_label_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp" />
+        </LinearLayout>
+
+        <com.edusoho.kuozhi.ui.widget.CourseListWidget
+            android:id="@+id/new_listview"
+            app:showMoreBtn="true"
+            android:gravity="center"
+            android:layout_below="@id/recommend_new_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
     </RelativeLayout>
 </ScrollView>

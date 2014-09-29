@@ -46,6 +46,7 @@ public class RecommendFragment extends BaseFragment {
     private EdusohoViewPager mSchoolBanner;
     private TextView mSchoolAnnouncement;
     private CourseListWidget mRecommendCourses;
+    private CourseListWidget mNewCourses;
     private HorizontalListWidget mWeekCourse;
     public String mTitle = "推荐";
 
@@ -65,13 +66,43 @@ public class RecommendFragment extends BaseFragment {
     {
         mWeekCourse = (HorizontalListWidget) view.findViewById(R.id.recommend_week_course);
         mRecommendCourses = (CourseListWidget) view.findViewById(R.id.recommend_listview);
+        mNewCourses = (CourseListWidget) view.findViewById(R.id.new_listview);
         mSchoolAnnouncement = (TextView) view.findViewById(R.id.recommend_sch_announcement);
         mSchoolBanner = (EdusohoViewPager) view.findViewById(R.id.school_banner);
 
         initSchoolBanner();
-        initRecommendCourse();
         initSchoolAnnouncement();
         initWeekCourse();
+        initRecommendCourse();
+        initNewCourse();
+    }
+
+    private void initNewCourse()
+    {
+        RequestUrl url = app.bindUrl(Const.LASTEST_COURSES, false);
+        url.setParams(new String[]{
+                "start", "0",
+                "limit", "2"
+        });
+
+        mNewCourses.setFullHeight(true);
+        mNewCourses.initialise(mActivity, url);
+
+        mNewCourses.setShowMoreBtnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(null, "mRecommendCourses click->");
+                app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(CourseListActivity.TITLE, "最新课程");
+                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.RECOMMEND);
+                    }
+                });
+            }
+        });
+
+        mNewCourses.setItemClick(new CourseListScrollListener(mActivity));
     }
 
     private void initWeekCourse()

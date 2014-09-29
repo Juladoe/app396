@@ -19,7 +19,12 @@ public class Member {
     public int seq;
     public String remark;
     public int isVisible;
-    public String role;
+    public Role role;
     public int locked;
     public String createdTime;
+
+    public enum Role
+    {
+        teacher, student, admin;
+    }
 }

@@ -8,5 +8,5 @@ import java.util.HashMap;
 public class SchoolBanner {
     public String url;
     public String action;
-    public HashMap<String, String> params;
+    public String params;
 }

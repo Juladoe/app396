@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.model.Testpaper;
 
+import java.util.ArrayList;
+
 /**
  * Created by howzhi on 14-9-23.
  */
@@ -15,4 +17,5 @@ public class QuestionTypeSeq {
     public double missScore;
 
     public Question question;
+    public ArrayList<QuestionTypeSeq> items;
 }

@@ -51,7 +51,8 @@ public class CourseDetailsGoalsWidget extends CourseDetailsLabelWidget {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(false);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setUseWideViewPort(true);
         webSettings.setSupportZoom(false);
         webSettings.setDefaultTextEncodingName("utf-8");
         webView.setBackgroundColor(getResources().getColor(R.color.system_normal_bg));

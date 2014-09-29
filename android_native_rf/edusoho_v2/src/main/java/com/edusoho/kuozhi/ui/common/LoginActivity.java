@@ -151,7 +151,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     public void showFragment(String tag)
     {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        BaseFragment fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+        BaseFragment fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
         fragmentTransaction.replace(R.id.login_container, fragment);
         List<Fragment> fragmentList =  mFragmentManager.getFragments();
         if (fragmentList != null && ! fragmentList.isEmpty()) {

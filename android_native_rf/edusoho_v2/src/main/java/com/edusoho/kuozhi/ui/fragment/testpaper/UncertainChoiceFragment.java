@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.testpaper.ChoiceViewPagerAdapter;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by howzhi on 14-9-24.
  */
-public class UncertainChoiceFragment extends QuestionTypeBaseFragment{
+public class UncertainChoiceFragment extends SelectQuestionFragment{
 
     private QuestionType type = QuestionType.uncertain_choice;
 
@@ -39,7 +40,15 @@ public class UncertainChoiceFragment extends QuestionTypeBaseFragment{
         if (questionTypeSeqs == null) {
             return;
         }
+
+        mQuestionCount = questionTypeSeqs.size();
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, questionTypeSeqs.size()));
+        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+
+        ChoiceViewPagerAdapter adapter = new ChoiceViewPagerAdapter(
+                mContext, questionTypeSeqs, R.layout.singlechoice_viewpager_item
+        );
+
+        mQuestionPager.setAdapter(adapter);
     }
 }

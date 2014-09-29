@@ -2,8 +2,10 @@ package com.edusoho.kuozhi.ui.fragment.testpaper;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.testpaper.FillListAdapter;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by howzhi on 14-9-24.
  */
-public class FillFragment extends QuestionTypeBaseFragment{
+public class FillFragment extends SelectQuestionFragment{
 
     private QuestionType type = QuestionType.fill;
 
@@ -24,7 +26,7 @@ public class FillFragment extends QuestionTypeBaseFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.choice_fragment_layout);
+        setContainerView(R.layout.determine_fragment_layout);
     }
 
     @Override
@@ -39,7 +41,12 @@ public class FillFragment extends QuestionTypeBaseFragment{
         if (questionTypeSeqs == null) {
             return;
         }
+        mQuestionCount = questionTypeSeqs.size();
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, questionTypeSeqs.size()));
+        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+
+        FillListAdapter adapter = new FillListAdapter(
+                mContext, questionTypeSeqs, R.layout.fill_list_item);
+        mQuestionPager.setAdapter(adapter);
     }
 }

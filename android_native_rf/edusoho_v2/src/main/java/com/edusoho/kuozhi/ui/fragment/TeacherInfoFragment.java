@@ -1,32 +1,24 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.ScrollListAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.adapter.lesson.ScrollListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget;
 import com.edusoho.kuozhi.ui.widget.XCourseListWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.huewu.pla.lib.internal.PLA_AdapterView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import me.maxwin.view.XListView;
 
 /**
  * Created by howzhi on 14-8-31.

@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.entity.LearnStatus;
 import com.edusoho.kuozhi.model.Announcement;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
+import com.edusoho.kuozhi.model.Member;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
@@ -33,6 +34,7 @@ import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -63,6 +65,7 @@ public class CourseLearningFragment extends BaseFragment {
     private Handler workHandler;
     public static final int SWITCH_SHOW_NOTICE = 0001;
     private Timer noticeTimer;
+    private CourseDetailsActivity mCourseDetailsActivity;
 
     @Override
     public String getTitle() {
@@ -72,8 +75,8 @@ public class CourseLearningFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        CourseDetailsActivity detailsActivity = (CourseDetailsActivity) activity;
-        mCourseDetailsResult = detailsActivity.getCourseDetailsInfo();
+        mCourseDetailsActivity = (CourseDetailsActivity) activity;
+        mCourseDetailsResult = mCourseDetailsActivity.getCourseDetailsInfo();
     }
 
     @Override
@@ -104,6 +107,7 @@ public class CourseLearningFragment extends BaseFragment {
         if (noticeShowIndex > (size - 1)) {
             noticeShowIndex = 0;
         }
+
         Announcement announcement = mAnnouncements.get(noticeShowIndex++);
         StringBuilder builder = new StringBuilder(announcement.content);
         mCourseNoticeView.setText(builder);
@@ -156,11 +160,51 @@ public class CourseLearningFragment extends BaseFragment {
         });
     }
 
+    private void unLearnCourse()
+    {
+        ExitCoursePopupDialog.create(mActivity, new ExitCoursePopupDialog.PopupClickListener() {
+            @Override
+            public void onClick(int button, String selStr) {
+                if (button == ExitCoursePopupDialog.CANCEL) {
+                    return;
+                }
+
+                showProgress(true);
+                RequestUrl requestUrl = app.bindUrl(Const.UN_LEARN_COURSE, true);
+                requestUrl.setParams(new String[]{
+                        Const.COURSE_ID, mCourseId + "",
+                        "reason", selStr
+                });
+                mActivity.ajaxPost(requestUrl, new ResultCallback() {
+                    @Override
+                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                        Log.d(null, "exit course->");
+                        showProgress(false);
+                        boolean result = mActivity.parseJsonValue(
+                                object, new TypeToken<Boolean>() {
+                        });
+
+                        if (result) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(CourseDetailsActivity.FRAGMENT, "CourseDetailsFragment");
+                            app.sendMsgToTarget(
+                                    CourseDetailsActivity.CHANGE_FRAGMENT, bundle, CourseDetailsActivity.class);
+                            app.sendMsgToTarget(
+                                    CourseDetailsActivity.SHOW_COURSE_PIC, null, CourseDetailsActivity.class);
+                        } else {
+                            mActivity.longToast("退出学习失败");
+                        }
+                    }
+                });
+            }
+        }).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.course_details_menu_exit) {
-            Log.d(null, "exit course->");
+            unLearnCourse();
             return true;
         } else if (id == R.id.course_details_menu_courseinfo) {
             Course course = mCourseDetailsResult.course;
@@ -182,20 +226,14 @@ public class CourseLearningFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void unLearnCourse()
-    {
-        RequestUrl url = app.bindUrl(Const.UN_LEARN_COURSE, true);
-        mActivity.ajaxPost(url, new ResultCallback(){
-            @Override
-            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                super.callback(url, object, ajaxStatus);
-            }
-        });
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.course_learning_menu, menu);
+        Member member = mCourseDetailsResult.member;
+        if (member != null && member.role == Member.Role.teacher) {
+            inflater.inflate(R.menu.course_learning_menu_2, menu);
+        } else {
+            inflater.inflate(R.menu.course_learning_menu, menu);
+        }
     }
 
     @Override
@@ -234,7 +272,7 @@ public class CourseLearningFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
                         startIntent.putExtra(Const.COURSE_ID, mCourseId);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程评论");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程评价");
                         startIntent.putExtra(ReviewInfoFragment.COURSE, mCourseDetailsResult.course);
                     }
                 });

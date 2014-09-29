@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -10,5 +11,5 @@ public class LearnCourseResult {
     public int start;
     public int total;
     public int limit;
-    public LinkedHashMap<String, LearnCourse> data;
+    public ArrayList<LearnCourse> data;
 }

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.course;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.edusoho.kuozhi.R;
@@ -21,6 +22,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
     public static final String TYPE = "type";
 
     public static final int RECOMMEND= 0001;
+    public static final int LASTEST= 0002;
 
     private String mTitle;
     private int mCategoryId;
@@ -46,7 +48,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
         setBackMode(BACK, mTitle);
 
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        BaseFragment fragment = app.mEngine.runPluginWithFragment(
+        Fragment fragment = app.mEngine.runPluginWithFragment(
                 "CourseFragment", mActivity, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {

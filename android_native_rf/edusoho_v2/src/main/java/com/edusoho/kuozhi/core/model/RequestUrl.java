@@ -31,8 +31,6 @@ public class RequestUrl {
         for (int i = 0; i < values.length; i = i + 2) {
             params.put(values[i], values[i + 1]);
         }
-
-        muiltParams.putAll(params);
     }
 
     public void setMuiltParams(Object[] values) {
@@ -46,7 +44,6 @@ public class RequestUrl {
 
     public void setParams(HashMap<String, String> p) {
         params = p;
-        muiltParams.putAll(params);
     }
 
     public void setHeads(String[] values) {
@@ -63,6 +60,7 @@ public class RequestUrl {
     }
 
     public HashMap<String, Object> getAllParams() {
+        muiltParams.putAll(params);
         return muiltParams;
     }
 

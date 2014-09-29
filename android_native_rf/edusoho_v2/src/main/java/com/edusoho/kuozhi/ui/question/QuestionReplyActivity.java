@@ -221,6 +221,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+
                 filename = data.getDataString();
                 int tmpLen = data.getDataString().split("/").length;
                 String fileName = data.getDataString().split("/")[tmpLen - 1];
@@ -312,9 +313,12 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         params.put("courseId", mCourseId);
         params.put("threadId", mThreadId);
         params.put("content", etContent.getText().toString());
-        params.put("imageCount", "1");
-        url.setMuiltParams(new Object[]{"image1", new File(filename)});
-        url.setParams(params);
+        params.put("imageCount", "0");
+        File file = new File(filename);
+        Log.d(null, "file->" + file.length());
+        url.setMuiltParams(new Object[]{
+                "image1", file
+        });
 
         this.ajaxPost(url, new ResultCallback() {
             @Override

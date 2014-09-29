@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Question {
 
     public int id;
-    public String type;
+    public QuestionType type;
     public String stem;
     public double score;
 
@@ -25,6 +25,6 @@ public class Question {
     public String createdTime;
     public String analysis;
 
-    public ArrayList answer;
-    public HashMap<QuestionType, ArrayList> metas;
+    public ArrayList<String> answer;
+    public ArrayList<String> metas;
 }

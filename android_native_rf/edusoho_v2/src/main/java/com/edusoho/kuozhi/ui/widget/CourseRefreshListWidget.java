@@ -16,6 +16,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
  */
 public class CourseRefreshListWidget extends PullToRefreshListView {
 
+    private ListAdapter mAdapter;
     private Context mContext;
     private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };;
 
@@ -35,6 +36,7 @@ public class CourseRefreshListWidget extends PullToRefreshListView {
             adapter = getEmptyLayoutAdapter();
         }
         super.setAdapter(adapter);
+        mAdapter = adapter;
     }
 
     public void setEmptyText(String[] emptyText)
@@ -55,6 +57,6 @@ public class CourseRefreshListWidget extends PullToRefreshListView {
 
     public ListAdapter getAdapter()
     {
-        return getRefreshableView().getAdapter();
+        return mAdapter;
     }
 }

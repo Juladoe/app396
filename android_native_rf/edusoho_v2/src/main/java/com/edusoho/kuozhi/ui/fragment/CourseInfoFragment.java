@@ -1,14 +1,19 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.androidquery.AQuery;
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget;
 import com.edusoho.kuozhi.util.AppUtil;
+
+import cn.trinea.android.common.util.FileUtils;
+import cn.trinea.android.common.util.ResourceUtils;
 
 /**
  * Created by howzhi on 14-8-31.
@@ -64,11 +69,15 @@ public class CourseInfoFragment extends BaseFragment {
         aQuery.id(R.id.course_details_rating).rating((float)mCourse.rating);
         String price = mCourse.price <= 0 ? "免费" : "￥" + mCourse.price;
         aQuery.id(R.id.course_details_price).text(price);
-        aQuery.id(R.id.course_details_info_expiry).text("有效期:" + mCourse.expiryDay + "天");
+        if (mCourse.expiryDay > 0) {
+            aQuery.id(R.id.course_details_info_expiry).text("有效期:" + mCourse.expiryDay + "天");
+        }
         aQuery.id(R.id.course_details_studentNum).text(mCourse.studentNum + "学员");
 
         mCourseGoalsView.setText(AppUtil.goalsToStr(mCourse.goals));
         mCourseAudiencesView.setText(AppUtil.audiencesToStr(mCourse.audiences));
-        mCourseAboutView.setHtml(mCourse.about);
+
+        String template = ResourceUtils.geFileFromAssets(mContext, "template.html");
+        mCourseAboutView.setHtml(template.replace("%content%", mCourse.about));
     }
 }

@@ -37,6 +37,7 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.COURSE_ID, lesson.courseId);
+                startIntent.putExtra(Const.FREE, lesson.free);
                 startIntent.putExtra(Const.LESSON_ID, lesson.id);
                 startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
                 startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);

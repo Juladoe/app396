@@ -123,10 +123,12 @@
     <color name="learn_status_stroke">#DFDFDF</color>
     <color name="learn_status_gradient">#ffffff</color>
     <color name="learn_status_gradient_pressed">#03b884</color>
+
     <color name="lesson_status_progress_stroke">#ccc</color>
-    <color name="lesson_status_progress_bg_gradient">#ffffff</color>
+    <color name="lesson_status_progress_bg_gradient">#808080</color>
     <color name="lesson_status_progress_sp_gradient">#ffffff</color>
-    <color name="lesson_status_progress_gradient">#0BD399</color>
+    <color name="lesson_status_progress_gradient">#ffc947</color>
+
     <color name="loading_progress_gradient">#03b884</color>
     <color name="loading_progress_bg_gradient">#ddd</color>
     <color name="login_btn_stroke">#ccc</color>
@@ -224,6 +226,7 @@
     <color name="recommend_label_bg">#e6e6e6</color>
     <color name="recommend_announcement_label">#4d4d4d</color>
     <color name="recommend_announcement_label_icon_bg">#ffc947</color>
+    <color name="recommend_new_label_icon_bg">#38bf6c</color>
     <color name="recommend_weed_label_icon_bg">#ffff291c</color>
     <color name="recommend_view_more">#ffc947</color>
     <color name="recommend_view_more_pressed">#55ffc947</color>
@@ -279,4 +282,11 @@
 
     <color name="camera_pressed">#00ddff</color>
     <color name="question_stem">#212121</color>
+
+    <color name="question_btn_bg">#000000</color>
+    <color name="question_btn_bg_checked">#ffc947</color>
+    <color name="question_fill_hit">#757575</color>
+    <color name="question_fill_text">#4d4d4d</color>
+    <color name="color_red">#d9534f</color>
+    <color name="splash_bg">#fbfbf9</color>
 </resources>

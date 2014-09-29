@@ -144,7 +144,7 @@ public class RecommendCourseFragment extends DialogFragment {
 
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setGravity(Gravity.LEFT | Gravity.BOTTOM);
 
         lp.width = EdusohoApp.screenW;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;

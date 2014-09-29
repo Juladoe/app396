@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -42,6 +43,12 @@ public class TestpaperLessonFragment extends BaseFragment {
     @ViewUtil("testpaper_do_btn")
     private View mTestpaperDoBtn;
 
+    @ViewUtil("testpaper_redo_btn")
+    private View mTestpaperReDoBtn;
+
+    @ViewUtil("testpaper_show_btn")
+    private View mTestpaperShowBtn;
+
     private int mTestId;
     private int mLessonId;
     private String mStstus;
@@ -76,10 +83,16 @@ public class TestpaperLessonFragment extends BaseFragment {
         super.initView(view);
         viewInject(view);
 
+        loadTestpaperInfo();
         if ("nodo".equals(mStstus)) {
-            loadTestpaperInfo();
-        } else {
-
+            //nothing
+        } else if ("reviewing".equals(mStstus)) {
+            mTestpaperShowBtn.setVisibility(View.VISIBLE);
+            mTestpaperDoBtn.setVisibility(View.GONE);
+        } else if ("finished".equals(mStstus)) {
+            mTestpaperDoBtn.setVisibility(View.GONE);
+            mTestpaperReDoBtn.setVisibility(View.VISIBLE);
+            mTestpaperShowBtn.setVisibility(View.VISIBLE);
         }
         showToolsByAnim();
 
@@ -91,6 +104,13 @@ public class TestpaperLessonFragment extends BaseFragment {
                 bundle.putInt(Const.MEDIA_ID, mTestId);
                 bundle.putInt(Const.LESSON_ID, mLessonId);
                 startAcitivityWithBundle("TestpaperActivity", bundle);
+            }
+        });
+
+        mTestpaperShowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }

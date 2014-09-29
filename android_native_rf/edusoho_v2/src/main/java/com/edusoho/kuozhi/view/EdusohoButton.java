@@ -87,6 +87,7 @@ public class EdusohoButton extends FrameLayout {
 
     private void init() {
 
+        setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         initContainer();
 
         mTextView = setupTextView();
@@ -363,8 +364,6 @@ public class EdusohoButton extends FrameLayout {
     private void initContainer() {
 
         mContainer = new LinearLayout(mContext);
-        mContainer.setFocusable(true);
-        mContainer.setFocusableInTouchMode(true);
         if (mIconPosition == POSITION_TOP || mIconPosition == POSITION_BOTTOM) {
             mContainer.setOrientation(LinearLayout.VERTICAL);
         } else {
@@ -374,8 +373,6 @@ public class EdusohoButton extends FrameLayout {
         containerParams.gravity = Gravity.CENTER;
         mContainer.setLayoutParams(containerParams);
         mContainer.setGravity(Gravity.CENTER_VERTICAL);
-        mContainer.setClickable(true);
-        mContainer.setFocusable(true);
         if (mIconResource == null && mFontIcon == null && getPaddingLeft() == 0 && getPaddingRight() == 0 && getPaddingTop() == 0 && getPaddingBottom() == 0) {
             mContainer.setPadding(20, 20, 20, 20);
         }

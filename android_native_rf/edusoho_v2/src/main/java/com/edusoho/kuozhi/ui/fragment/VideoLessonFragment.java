@@ -1,207 +1,151 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.plugin.video.CustomMediaController;
 
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
-
-import cn.trinea.android.common.util.ToastUtils;
 
 /**
- * Created by howzhi on 14-9-16.
+ * Created by howzhi on 14-9-26.
  */
-public class VideoLessonFragment extends BaseFragment implements View.OnClickListener {
+public class VideoLessonFragment extends BaseFragment {
 
     private VideoView mVideoView;
-    private MediaPlayer mMediaPlayer;
-    private SeekBar mSeekBar;
-    private ImageView mScreenBtn;
-    private ImageView mPreBtn;
-    private ImageView mNextBtn;
-    private ImageView mPlayBtn;
-    private TextView mPlayTimeView;
-    private TextView mTotalTimeView;
-
-    private Uri mUrl;
-
-    private Handler updateHandler;
-    private static final int UPDATE_PLAY_TIME = 0001;
-    private static final int SET_TOTALTIME = 0002;
-    private Timer updateTimer;
-    private boolean mIsSetTotalTime;
-
-    private static final int DEFAULT_TIME = 3600 * 1000 * 16;
-    private static SimpleDateFormat dateFromat = new SimpleDateFormat("HH:mm:ss");
-
     @Override
     public String getTitle() {
         return "视频课时";
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.video_lesson_fragment_layout);
-        updateTimer = new Timer();
-        updateHandler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                String time = dateFromat.format(new Date(msg.arg1 + DEFAULT_TIME));
-                switch (msg.what) {
-                    case UPDATE_PLAY_TIME:
-                        mPlayTimeView.setText(time);
-                        mSeekBar.setProgress(msg.arg1);
-                        break;
-                    case SET_TOTALTIME:
-                        mIsSetTotalTime = true;
-                        mSeekBar.setMax(msg.arg1);
-                        mTotalTimeView.setText(time);
-                        break;
-                }
-            }
-        };
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Bundle bundle = getArguments();
-        if (bundle != null) {
-            mUrl = Uri.parse(bundle.getString(Const.MEDIA_URL));
-        }
+        mUri = Uri.parse(bundle.getString(Const.MEDIA_URL));
+        Log.d(null, "uri->" + mUri);
+        autoHideTimer = new Timer();
     }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
 
-        mSeekBar = (SeekBar) view.findViewById(R.id.lesson_video_seekbar);
-        mPreBtn = (ImageView) view.findViewById(R.id.lesson_video_prebtn);
-        mNextBtn = (ImageView) view.findViewById(R.id.lesson_video_nextbtn);
-        mPlayBtn = (ImageView) view.findViewById(R.id.lesson_video_playbtn);
-        mScreenBtn = (ImageView) view.findViewById(R.id.lesson_video_screenbtn);
-        mPlayTimeView = (TextView) view.findViewById(R.id.lesson_video_playtime);
-        mTotalTimeView = (TextView) view.findViewById(R.id.lesson_video_totaltime);
+        mVideoView = (VideoView) view.findViewById(R.id.video_view);
+        mLoadView = view.findViewById(R.id.load_layout);
 
-        mVideoView = (VideoView) view.findViewById(R.id.lesson_videoview);
+        mMediaController = (CustomMediaController) view.findViewById(R.id.custom_mediaController);
+        mMediaController.setVideoView(mVideoView);
+        mMediaController.setActivity(mActivity);
+
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                if (mediaPlayer == null) {
-                    return;
-                }
-
-                mMediaPlayer = mediaPlayer;
-                initMediaPlayerListener();
-                if (mediaPlayer.getVideoHeight() == 0 || mediaPlayer.getVideoWidth() == 0) {
-                    ToastUtils.show(mContext, "不好意思～此视频不能在该设备上播放，请联系网站管理员！");
-                    return;
-                }
-            }
-        });
-
-        Log.d(null, "video url->" + mUrl);
-        mVideoView.setVideoURI(mUrl);
-        mVideoView.start();
-
-        mPreBtn.setOnClickListener(this);
-        mNextBtn.setOnClickListener(this);
-        mPlayBtn.setOnClickListener(this);
-        mScreenBtn.setOnClickListener(this);
-    }
-
-    private void initMediaPlayerListener()
-    {
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean isTouch) {
-                if (isTouch) {
-                    mVideoView.seekTo(i);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (mVideoView != null) {
-                    Message msg = updateHandler.obtainMessage(UPDATE_PLAY_TIME);
-                    msg.arg1 = mVideoView.getCurrentPosition();
-                    msg.sendToTarget();
-
-                    if (!mIsSetTotalTime) {
-                        msg = updateHandler.obtainMessage(SET_TOTALTIME);
-                        msg.arg1 = mVideoView.getDuration();
-                        msg.sendToTarget();
+            public void onPrepared(final MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+                mVideoView.requestLayout();
+                mMediaController.ready();
+                mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                    @Override
+                    public void onBufferingUpdate(MediaPlayer mediaPlayer, int progress) {
+                        Log.d(null, "progress->" + progress);
+                        if (progress == 100) {
+                            mLoadView.setVisibility(View.GONE);
+                        } else {
+                            if (mLoadView.getVisibility() == View.GONE) {
+                                mLoadView.setVisibility(View.VISIBLE);
+                            }
+                        }
                     }
-                }
+                });
             }
-        };
-        updateTimer.schedule(timerTask, 0, 1000);
+        });
+
+        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
+                if (Build.VERSION.SDK_INT < 19) {
+                    //EdusohoApp.app.sendMessage(EdusohoVideoManagerActivity.SUPPORTMAP_CHANGE, new MessageModel(null));
+                } else {
+                    PopupDialog.createNormal(
+                            mContext, "视频播放", "不好意思～此视频不能在该设备上播放，请联系网站管理员！").show();
+                }
+                mLoadView.setVisibility(View.GONE);
+                return true;
+            }
+        });
+
+        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mMediaController.stop(mediaPlayer);
+            }
+        });
     }
+
+    private View mLoadView;
+    private Uri mUri;
+    private int mPositionWhenPaused = -1;
+
+    private CustomMediaController mMediaController;
+    private Timer autoHideTimer;
 
     @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.lesson_video_nextbtn) {
-
-        } else if (id == R.id.lesson_video_prebtn){
-
-        } else if (id == R.id.lesson_video_playbtn) {
-            if (mVideoView.isPlaying()) {
-                videoPause();
-            } else {
-                videoPlay();
-            }
+    public void onStart() {
+        // Play Video
+        if (mUri != null) {
+            mVideoView.setVideoURI(mUri);
+            mMediaController.play();
         }
-    }
-
-    private void videoPause()
-    {
-        mVideoView.pause();
-        mPlayBtn.setImageResource(R.drawable.video_play);
-    }
-
-    private void videoPlay()
-    {
-        mVideoView.start();
-        mPlayBtn.setImageResource(R.drawable.video_pause);
+        System.out.println("start->play");
+        super.onStart();
     }
 
     @Override
     public void onPause() {
+        // Stop video when the activity is pause.
+        mPositionWhenPaused = mVideoView.getCurrentPosition();
+        mMediaController.pause();
+
         super.onPause();
-        videoPause();
+    }
+
+    @Override
+    public void onResume() {
+        // Resume video player
+        if (mPositionWhenPaused >= 0) {
+            mVideoView.seekTo(mPositionWhenPaused);
+            mPositionWhenPaused = -1;
+        }
+
+        super.onResume();
     }
 
     @Override
     public void onDestroy() {
+        System.out.println("video player distory");
         super.onDestroy();
-        updateTimer.cancel();
+        if (autoHideTimer != null) {
+            autoHideTimer.cancel();
+        }
+        mMediaController.destory();
+        mVideoView.pause();
+        mVideoView = null;
     }
 }

@@ -73,6 +73,13 @@ public class Const {
     public static final String COURSELESSON = "Lesson/getLesson";
 
     /**
+     * course status
+     */
+    public static final String COURSE_CLOSE = "closed";
+    public static final String COURSE_PUBLISHED = "published";
+    public static final String COURSE_SERIALIZE = "serialize";
+
+    /**
      * 根据登录UserToken获取问答列表
      */
     public static final String QUESTION = "Course/getCourseThreads";
@@ -123,6 +130,7 @@ public class Const {
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";
     public static final String RECOMMEND_COURSES = "School/getRecommendCourses";
+    public static final String LASTEST_COURSES = "School/getLatestCourses";
     public static final String WEEK_COURSES = "School/getWeekRecommendCourses";
     public static final String CATEGORYS = "Category/getAllCategories";
     public static final String USERTERMS = "School/getUserterms";
@@ -137,6 +145,7 @@ public class Const {
     public static final String LEARN_LESSON = "Lesson/learnLesson";
     public static final String UNLEARN_LESSON = "Lesson/unLearnLesson";
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
+    public static final String VIP_LEARN_COURSE = "Course/vipLearn";
 
     /**
      * 获取课程状态（是否包含资料，学习状态）
@@ -152,6 +161,14 @@ public class Const {
      * 获取考试课程详情
      */
     public static final String TESTPAPER_FULL_INFO = "Testpaper/doTestpaper";
+
+    /**
+     * 获取考试课程详情
+     */
+    public static final String COURSE_CODE = "Course/coupon";
+
+    //意见反馈
+    public static final String SUGGESTION = "School/sendSuggestion";
 
     public static final int LEFT = 0001;
     public static final int RIGHT = 0002;
@@ -186,6 +203,7 @@ public class Const {
     public static final String PUBLISHED = "published";
 
     public static final String COURSE_ID = "courseId";
+    public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";
     public static final String MEDIA_URL = "mediaUrl";
     public static final String MEDIA_ID = "mediaId";

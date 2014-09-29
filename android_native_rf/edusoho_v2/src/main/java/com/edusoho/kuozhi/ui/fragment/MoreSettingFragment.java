@@ -28,6 +28,9 @@ public class MoreSettingFragment extends BaseFragment {
     @ViewUtil("more_setting_about")
     private View mSettingAbout;
 
+    @ViewUtil("more_setting_qrsearch")
+    private View mSearchBtn;
+
     @Override
     public String getTitle() {
         return "更多";
@@ -75,7 +78,6 @@ public class MoreSettingFragment extends BaseFragment {
             }
         });
 
-        mLogoutBtn = view.findViewById(R.id.more_setting_logout_btn);
         mLogoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +93,13 @@ public class MoreSettingFragment extends BaseFragment {
                                 }
                             }
                 }).show();
+            }
+        });
+
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startAcitivity("QrSchoolActivity", null);
             }
         });
     }

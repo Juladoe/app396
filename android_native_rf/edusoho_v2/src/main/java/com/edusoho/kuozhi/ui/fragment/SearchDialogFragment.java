@@ -78,7 +78,9 @@ public class SearchDialogFragment extends DialogFragment{
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 0 && mClearBtn.getVisibility() == View.GONE) {
                     mClearBtn.setVisibility(View.VISIBLE);
-                } else {
+                    return;
+                }
+                if (charSequence.length() == 0) {
                     mClearBtn.setVisibility(View.GONE);
                 }
             }

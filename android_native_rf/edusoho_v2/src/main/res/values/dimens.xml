@@ -8,6 +8,7 @@
     <dimen name="course_teacher_nickname">14sp</dimen>
     <dimen name="course_content_head">18dp</dimen>
     <dimen name="sys_normal">18dp</dimen>
+    <dimen name="sys_small_normal">10dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
     <dimen name="course_list_item_title">18sp</dimen>
@@ -87,4 +88,5 @@
 
     <!--问答列表标题字体 -->
     <dimen name="question_item_title_size">18sp</dimen>
+    <dimen name="question_fill">12sp</dimen>
 </resources>

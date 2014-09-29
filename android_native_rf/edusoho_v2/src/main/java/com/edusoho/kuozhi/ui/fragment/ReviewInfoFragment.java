@@ -32,7 +32,7 @@ public class ReviewInfoFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return "评论";
+        return "评价";
     }
 
     @Override

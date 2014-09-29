@@ -362,7 +362,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 if (loading != null) {
                     loading.dismiss();
                 }
-                handleRequest(url, object, status, rcl);
+                if (handleRequest(url, object, status, rcl)){
+                    return;
+                }
                 try {
                     rcl.callback(url,object,status);
                 }catch (Exception e) {
@@ -372,29 +374,32 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
-    private void handleRequest(
+    private boolean handleRequest(
             String url, String object, AjaxStatus status, ResultCallback rcl)
     {
         int code = status.getCode();
         if (code == Const.CACHE_CODE) {
             rcl.callback(url, object, status);
-            return;
+            return true;
         }
 
         if (!app.getNetStatus()) {
             longToast("没有网络服务！请检查网络设置。");
-            return;
+            rcl.error(url, status);
+            return true;
         }
 
         if (code != Const.OK) {
             longToast("服务器访问异常!");
             rcl.error(url, status);
-            return;
+            return true;
         }
 
         if (handlerError(object)) {
-            return;
+            return true;
         }
+
+        return false;
     }
 
     public void ajaxPost(
@@ -403,7 +408,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         app.postUrl(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                handleRequest(url, object, status, rcl);
+                if (handleRequest(url, object, status, rcl)){
+                    return;
+                }
                 try {
                     rcl.callback(url,object,status);
                 }catch (Exception e) {
@@ -463,7 +470,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                                 @Override
                                 public void onClick(int button) {
                                     if (button == PopupDialog.OK) {
-                                        removeSchoolItem();
                                         QrSchoolActivity.start(mActivity);
                                         finish();
                                     }

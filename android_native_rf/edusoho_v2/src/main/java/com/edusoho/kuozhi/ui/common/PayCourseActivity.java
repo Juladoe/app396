@@ -4,11 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.course.CourseCode;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-9-4.
@@ -19,6 +30,8 @@ public class PayCourseActivity extends ActionBarBaseActivity {
     private TextView mTitleView;
     private TextView mCardNumber;
     private TextView mCardEndPrice;
+    private View mCodeCheckBtn;
+    private EditText mCodeView;
 
     private String mTitle;
     private String mCourseId;
@@ -43,9 +56,63 @@ public class PayCourseActivity extends ActionBarBaseActivity {
         mTitleView = (TextView) findViewById(R.id.pay_course_title);
         mPriceView = (TextView) findViewById(R.id.pay_course_price);
         mCardNumber = (TextView) findViewById(R.id.pay_course_card_number);
+        mCodeCheckBtn = findViewById(R.id.pay_course_checkcard_btn);
+        mCodeView = (EditText) findViewById(R.id.pay_course_card_edt);
         mCardEndPrice = (TextView) findViewById(R.id.pay_course_card_end_price);
 
         setViewData();
+
+        mCodeCheckBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String code = mCodeView.getText().toString();
+                if (TextUtils.isEmpty(code)) {
+                    longToast("请输入优惠码！");
+                    return;
+                }
+                checkCode(code);
+            }
+        });
+    }
+
+    private void checkCode(String code)
+    {
+        RequestUrl requestUrl = app.bindUrl(Const.COURSE_CODE, false);
+        requestUrl.setParams(new String[] {
+                Const.COURSE_ID,  mCourseId,
+                "type", "course",
+                "code", code
+        });
+        setProgressBarIndeterminateVisibility(true);
+        ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
+                CourseCode result = parseJsonValue(
+                        object, new TypeToken<CourseCode>(){});
+                if (result != null) {
+                    if (result.useable == CourseCode.Code.yes) {
+                        setColorText(
+                                mCardNumber,
+                                result.decreaseAmount + "元",
+                                getResources().getColor(R.color.pay_course_end_price)
+                        );
+                        double newPrice = mPrice - result.decreaseAmount > 0
+                                ? mPrice - result.decreaseAmount : 0;
+                        setColorText(
+                                mCardEndPrice,
+                                newPrice + "元",
+                                getResources().getColor(R.color.pay_course_end_price)
+                        );
+                        longToast("优惠:" + result.decreaseAmount);
+                    } else {
+                        longToast(result.message);
+                    }
+                } else {
+                    longToast("验证错误！");
+                }
+            }
+        });
     }
 
     private void setViewData()

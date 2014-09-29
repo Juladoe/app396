@@ -54,10 +54,12 @@
     <plugin name="TextLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment"></plugin>
     <plugin name="VideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.VideoLessonFragment"></plugin>
     <plugin name="PptLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.PptLessonFragment"></plugin>
+    <plugin name="WebVideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.WebVideoLessonFragment"></plugin>
     <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
     <plugin name="SettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SettingFragment"></plugin>
     <plugin name="AboutFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AboutFragment"></plugin>
     <plugin name="TestpaperLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment"></plugin>
+    <plugin name="SuggestionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SuggestionFragment"></plugin>
 
     <!--试卷fragment -->
     <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>

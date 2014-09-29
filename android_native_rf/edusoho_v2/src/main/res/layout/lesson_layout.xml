@@ -48,7 +48,7 @@
             app:radius="3dp"
             app:textStr="学过了"
             app:textColor="#FFFFFF"
-            android:layout_width="88dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
 

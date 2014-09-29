@@ -2,8 +2,12 @@ package com.edusoho.kuozhi.ui.fragment.testpaper;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.testpaper.ChoiceViewPagerAdapter;
+import com.edusoho.kuozhi.adapter.testpaper.DetermineListAdapter;
+import com.edusoho.kuozhi.adapter.testpaper.QuestionAdapter;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
@@ -12,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by howzhi on 14-9-24.
  */
-public class DetermineFragment extends QuestionTypeBaseFragment{
+public class DetermineFragment extends SelectQuestionFragment{
 
     private QuestionType type = QuestionType.determine;
 
@@ -24,7 +28,7 @@ public class DetermineFragment extends QuestionTypeBaseFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.choice_fragment_layout);
+        setContainerView(R.layout.determine_fragment_layout);
     }
 
     @Override
@@ -39,7 +43,13 @@ public class DetermineFragment extends QuestionTypeBaseFragment{
         if (questionTypeSeqs == null) {
             return;
         }
+
+        mQuestionCount = questionTypeSeqs.size();
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, questionTypeSeqs.size()));
+        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+
+        QuestionAdapter adapter = new QuestionAdapter(
+                mContext, questionTypeSeqs);
+        mQuestionPager.setAdapter(adapter);
     }
 }

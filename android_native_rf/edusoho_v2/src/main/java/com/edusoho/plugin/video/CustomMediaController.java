@@ -156,7 +156,7 @@ public class CustomMediaController extends RelativeLayout {
 
     public void play()
     {
-        playBtn.setImageResource(R.drawable.vp_pause_shadow);
+        playBtn.setImageResource(R.drawable.video_pause);
         if (mIsStop) {
             mVideoView.seekTo(0);
             mIsStop = false;
@@ -166,7 +166,7 @@ public class CustomMediaController extends RelativeLayout {
 
     public void pause()
     {
-        playBtn.setImageResource(R.drawable.vp_play_shadow);
+        playBtn.setImageResource(R.drawable.video_play);
         mVideoView.pause();
     }
 
@@ -174,7 +174,7 @@ public class CustomMediaController extends RelativeLayout {
     {
         mIsStop = true;
         mediaPlayer.pause();
-        playBtn.setImageResource(R.drawable.vp_play_shadow);
+        playBtn.setImageResource(R.drawable.video_play);
     }
 
     /**

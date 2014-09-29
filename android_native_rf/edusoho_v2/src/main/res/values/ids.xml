@@ -40,4 +40,5 @@
 
     <item type="id" name="button_widget_btn"></item>
     <item type="id" name="button_widget_progress"></item>
+    <item type="id" name="question_stem"></item>
 </resources>

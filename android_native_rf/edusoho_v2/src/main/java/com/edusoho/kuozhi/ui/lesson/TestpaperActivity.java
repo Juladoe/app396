@@ -2,8 +2,7 @@ package com.edusoho.kuozhi.ui.lesson;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.MenuItem;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -12,6 +11,7 @@ import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperFullResult;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
+import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperCardFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -48,14 +48,23 @@ public class TestpaperActivity extends CourseDetailsTabActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.testpaper_menu_card){
+            showTestpaperCard();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showTestpaperCard()
+    {
+        TestpaperCardFragment fragment = new TestpaperCardFragment();
+        fragment.show(getSupportFragmentManager(), "dialog");
+    }
+
+    @Override
     protected void initView() {
         super.initView();
-        mFragmentPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
         loadTestpaper();
     }
 
@@ -85,6 +94,11 @@ public class TestpaperActivity extends CourseDetailsTabActivity {
                 app.sendMessage(Const.TESTPAPER_REFRESH_DATA, null);
             }
         });
+    }
+
+    public HashMap<QuestionType, ArrayList<QuestionTypeSeq>> getAllQuestions()
+    {
+        return mQuestions;
     }
 
     public ArrayList<QuestionTypeSeq> getQuesions(QuestionType type)

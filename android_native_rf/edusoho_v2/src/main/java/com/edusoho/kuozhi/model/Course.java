@@ -13,7 +13,7 @@ public class Course implements Serializable{
     public double price;
     public int id;
     public String subtitle;
-    public String expiryDay;
+    public int expiryDay;
     public String showStudentNumType;
     public String income;
     public String status;

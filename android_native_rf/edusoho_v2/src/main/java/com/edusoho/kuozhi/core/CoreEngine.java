@@ -149,13 +149,13 @@ public class CoreEngine {
         return null;
     }
 
-    public BaseFragment runPluginWithFragment(
+    public Fragment runPluginWithFragment(
             String pluginName, Activity activity, PluginFragmentCallback callback)
     {
-        BaseFragment fragment = null;
+        Fragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
-            fragment = (BaseFragment) Fragment.instantiate(activity, pluginModel.packAge);
+            fragment = Fragment.instantiate(activity, pluginModel.packAge);
             if (callback != null) {
                 Bundle bundle = new Bundle();
                 fragment.setArguments(bundle);

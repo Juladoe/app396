@@ -5,19 +5,47 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/setting_clear_btn"
-        android:textColor="@color/system_light_text"
+    <LinearLayout
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
         android:clickable="true"
-        android:paddingLeft="20dp"
+        android:id="@+id/setting_clear_btn"
         android:layout_marginTop="12dp"
         android:background="@drawable/more_setting_list_select"
-        android:paddingTop="18dp"
-        android:paddingBottom="17dp"
-        android:textSize="@dimen/more_setting_text"
-        android:text="清理缓存"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/system_light_text"
+            android:clickable="true"
+            android:paddingLeft="20dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="17dp"
+            android:textSize="@dimen/more_setting_text"
+            android:text="清理缓存"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/setting_cache_view"
+            android:textColor="@color/system_light_text"
+            android:clickable="true"
+            android:paddingLeft="20dp"
+            android:paddingTop="18dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="17dp"
+            android:textSize="@dimen/more_setting_text"
+            android:text="0.0kb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ProgressBar
+            android:visibility="invisible"
+            android:id="@+id/setting_load_progress"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/load" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_marginTop="12dp"
@@ -25,26 +53,6 @@
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/setting_recommend_btn"
-            android:textColor="@color/system_light_text"
-            android:paddingLeft="20dp"
-            android:clickable="true"
-            android:background="@drawable/more_setting_list_select2"
-            android:paddingTop="18dp"
-            android:paddingBottom="17dp"
-            android:textSize="@dimen/more_setting_text"
-            android:text="去评分"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:background="@drawable/more_setting_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
 
         <TextView
             android:id="@+id/setting_fix_btn"

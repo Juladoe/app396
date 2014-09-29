@@ -59,7 +59,7 @@
     <string name="font_more"></string>
     <string name="font_search"></string>
     <string name="font_favoirte"></string>
-    <string name="font_clear"></string>
+    <string name="font_clear">&#xe63d;</string>
     <string name="font_favorited">&#xe646;</string>
     <string name="font_expand"></string>
     <string name="font_right"></string>

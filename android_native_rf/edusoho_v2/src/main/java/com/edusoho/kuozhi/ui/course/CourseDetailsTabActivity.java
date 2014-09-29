@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui.course;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -17,23 +16,12 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.model.CourseDetailsResult;
-import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.ui.fragment.CourseInfoFragment;
-import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
-import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
 import com.edusoho.kuozhi.util.Const;
-
-import java.util.ArrayList;
 
 /**
  * Created by howzhi on 14-8-31.
@@ -105,6 +93,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
 
     private void setPagetItem(String name)
     {
+        Log.d(null, "setPagetItem fragment->" + name);
         for(int i=0; i < fragmentArrayList.length; i++) {
             if (fragmentArrayList[i].equals(name)) {
                 mFragmentPager.setCurrentItem(i);

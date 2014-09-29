@@ -394,32 +394,40 @@ public class CourseDetailsFragment extends BaseFragment{
 
     private void showCourseMoreInfoListener()
     {
-        View.OnClickListener clickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                app.mEngine.runNormalPlugin(
-                        "CourseDetailsTabActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        Bundle bundle = new Bundle();
-                        bundle.putIntArray(
-                                TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(mCourseResult.course.teachers));
-                        bundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
-                        bundle.putInt(Const.COURSE_ID, mCourseResult.course.id);
-                        startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, bundle);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程详情");
-                        startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
-                        startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
-                        startIntent.putExtra(
-                                CourseDetailsTabActivity.FRAGMENT, getFragmetName(view.getId()));
+        mCourseTeacherView.setShowMoreBtn(getClickListener("TeacherInfoFragment"));
+        mCourseAboutView.setShowMoreBtn(getClickListener("CourseInfoFragment"));
+        mCourseReviewView.setShowMoreBtn(getClickListener("ReviewInfoFragment"));
+    }
 
-                    }
-                });
+    private View.OnClickListener getClickListener(final String name)
+    {
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPluginWithBundle(
+                        "CourseDetailsTabActivity",
+                        mActivity,
+                        getFragmentBundle(name)
+                );
             }
         };
+    }
+    private Bundle getFragmentBundle(String fragmentName)
+    {
+        Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putIntArray(
+                TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(mCourseResult.course.teachers));
+        fragmentBundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
+        fragmentBundle.putInt(Const.COURSE_ID, mCourseResult.course.id);
 
-        mCourseTeacherView.setShowMoreBtn(clickListener);
-        mCourseAboutView.setShowMoreBtn(clickListener);
-        mCourseReviewView.setShowMoreBtn(clickListener);
+        Bundle bundle = new Bundle();
+        bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentBundle);
+        bundle.putString(Const.ACTIONBAT_TITLE, "课程详情");
+        bundle.putStringArray(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
+        bundle.putStringArray(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
+        bundle.putString(
+                CourseDetailsTabActivity.FRAGMENT, fragmentName);
+
+        return bundle;
     }
 }

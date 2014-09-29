@@ -38,7 +38,6 @@ public class CourseFragment extends BaseFragment {
     private int mCategoryId;
     private String mTitle;
     private String mSearchText;
-    private int mStart;
     private int mType;
     private String baseUrl;
 
@@ -62,15 +61,17 @@ public class CourseFragment extends BaseFragment {
     protected void initView(View view) {
         mLoadView = view.findViewById(R.id.load_layout);
         mCourseListView =(CourseRefreshListWidget) view.findViewById(R.id.course_liseview);
+        mCourseListView.setMode(PullToRefreshBase.Mode.BOTH);
         mCourseListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadCourseFromNet(mStart);
+                loadCourseFromNet(0);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-
+                Integer startPage = (Integer) mCourseListView.getTag();
+                loadCourseFromNet(startPage);
             }
         });
 
@@ -107,22 +108,30 @@ public class CourseFragment extends BaseFragment {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);
+                mCourseListView.onRefreshComplete();
                 CourseResult courseResult = mActivity.gson.fromJson(
                         object, new TypeToken<CourseResult>() {
                 }.getType());
 
-                Log.d(null, "courseResult->" + courseResult);
                 if (courseResult == null) {
                     return;
                 }
-                mStart = courseResult.start;
+
                 CourseListAdapter adapter = (CourseListAdapter) mCourseListView.getAdapter();
                 if (adapter != null) {
+                    Log.d(null, "add->" + courseResult);
                     adapter.addItem(courseResult);
                 } else {
                     adapter = new CourseListAdapter(
                             mActivity, courseResult, R.layout.recommend_school_list_item);
                     mCourseListView.setAdapter(adapter);
+                }
+
+                int start = courseResult.start + Const.LIMIT;
+                if (start < courseResult.total) {
+                    mCourseListView.setTag(start);
+                } else {
+                    mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
             }
         });

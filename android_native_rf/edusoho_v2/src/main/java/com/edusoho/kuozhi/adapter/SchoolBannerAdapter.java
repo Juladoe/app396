@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.adapter;
 
 import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,7 +40,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
     @Override
     public View instantiateItem(ViewGroup container, int position) {
         ImageView photoView = new ImageView(container.getContext());
-        photoView.setScaleType(ImageView.ScaleType.FIT_XY);
+        photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         app.query.id(photoView).image(
                 mSchoolBanners.get(position).url, false, true, 0, R.drawable.defaultpic, cacheBitmap, AQuery.FADE_IN);
         container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

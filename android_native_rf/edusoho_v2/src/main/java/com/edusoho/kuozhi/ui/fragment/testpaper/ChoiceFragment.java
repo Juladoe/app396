@@ -1,25 +1,22 @@
 package com.edusoho.kuozhi.ui.fragment.testpaper;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.testpaper.ChoiceViewPagerAdapter;
+import com.edusoho.kuozhi.adapter.testpaper.QuestionAdapter;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
-import com.edusoho.kuozhi.util.annotations.ViewUtil;
 
 import java.util.ArrayList;
 
 /**
  * Created by howzhi on 14-9-24.
  */
-public class ChoiceFragment extends QuestionTypeBaseFragment{
+public class ChoiceFragment extends SelectQuestionFragment{
 
     private QuestionType type = QuestionType.choice;
-
-    @ViewUtil("question_pager")
-    private ViewPager mQuestionPager;
 
     @Override
     public String getTitle() {
@@ -35,7 +32,6 @@ public class ChoiceFragment extends QuestionTypeBaseFragment{
     @Override
     protected void initView(View view) {
         super.initView(view);
-        viewInject(view);
         refreshViewData();
     }
 
@@ -45,7 +41,15 @@ public class ChoiceFragment extends QuestionTypeBaseFragment{
         if (questionTypeSeqs == null) {
             return;
         }
+
+        mQuestionCount = questionTypeSeqs.size();
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, questionTypeSeqs.size()));
+        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+
+        QuestionAdapter adapter = new QuestionAdapter(
+                mContext, questionTypeSeqs
+        );
+
+        mQuestionPager.setAdapter(adapter);
     }
 }

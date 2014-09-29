@@ -1,18 +1,27 @@
 package com.edusoho.kuozhi.ui;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import java.util.List;
 import java.util.Timer;
@@ -38,6 +47,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         initView();
         mExitTimer = new Timer();
         mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+        app.addTask("DefaultPageActivity", this);
     }
 
     private void initView() {
@@ -64,6 +74,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            returnHome();
+            /*
             synchronized (mContext) {
                 if (mIsExit) {
                     mIsExit = false;
@@ -79,9 +91,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
                     }
                 }, 2000);
             }
+            */
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void returnHome()
+    {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        startActivity(intent);
     }
 
     private void selectNavBtn(int id) {
@@ -106,7 +128,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         if (fragment != null) {
             fragmentTransaction.show(fragment);
         } else {
-            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+            fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
 

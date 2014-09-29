@@ -116,7 +116,8 @@ public class SplashActivity extends Activity {
         Bitmap bitmap = getBitmap(imageId);
 
         imageView.setImageBitmap(bitmap);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setBackgroundColor(getResources().getColor(R.color.splash_bg));
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
         relativeLayout.addView(imageView);
 
         mSplashOkBtn = LayoutInflater.from(this).inflate(R.layout.splash_ok_btn_layout, relativeLayout);
@@ -166,7 +167,8 @@ public class SplashActivity extends Activity {
             ImageView imageView = new ImageView(this);
             Bitmap bitmap = getBitmap(imageIds[i]);
             imageView.setImageBitmap(bitmap);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setBackgroundColor(getResources().getColor(R.color.splash_bg));
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
             mViewList.add(imageView);
         }
 

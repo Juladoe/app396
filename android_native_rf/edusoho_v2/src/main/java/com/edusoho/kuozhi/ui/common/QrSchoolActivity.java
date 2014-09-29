@@ -46,6 +46,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qrsch_layout);
         initView();
+        app.addTask("QrSchoolActivity", this);
     }
 
     public static void start(Activity context) {
@@ -142,7 +143,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            app.exit();
+            finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugins>
-    <plugin name="SplashActivity" version="1.0" package="com.kuozhiv2.KuozhiSplashActivity"></plugin>
+    <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.KuozhiSplashActivity"></plugin>
 </plugins>

@@ -44,7 +44,7 @@ public class AboutFragment extends BaseFragment {
         super.initView(view);
 
         about_content = (WebView) view.findViewById(R.id.about_content);
-        about_content.getSettings().setJavaScriptEnabled(false);
+        about_content.getSettings().setJavaScriptEnabled(true);
         about_content.getSettings().setDefaultTextEncodingName("UTF-8");
         about_content.getSettings().setUseWideViewPort(true);
 

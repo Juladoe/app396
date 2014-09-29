@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
@@ -51,11 +52,12 @@ import java.util.HashMap;
 /**
  * Created by howzhi on 14-9-15.
  */
-public class LessonActivity extends ActionBarBaseActivity{
+public class LessonActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback{
 
     public static final String TAG = "LessonActivity";
     public static final String CONTENT = "content";
     public static final int SHOW_TOOLS = 0001;
+    public static final int HIDE_TOOLS = 0002;
 
     private String mCurrentFragment;
     private Class mCurrentFragmentClass;
@@ -84,12 +86,40 @@ public class LessonActivity extends ActionBarBaseActivity{
                     case SHOW_TOOLS:
                         showToolsByAnim();
                         break;
+                    case HIDE_TOOLS:
+                        hieToolsByAnim();
+                        break;
+
                 }
             }
         };
         fragmentData = new Bundle();
         initMenuDrawer();
         initView();
+        app.registMsgSource(this);
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        int type = message.type.code;
+        switch (type) {
+            case SHOW_TOOLS:
+                msgHandler.obtainMessage(SHOW_TOOLS).sendToTarget();
+                break;
+            case HIDE_TOOLS:
+                msgHandler.obtainMessage(HIDE_TOOLS).sendToTarget();
+                break;
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(SHOW_TOOLS, source),
+                new MessageType(HIDE_TOOLS, source)
+        };
+        return messageTypes;
     }
 
     private void initMenuDrawer()
@@ -345,7 +375,6 @@ public class LessonActivity extends ActionBarBaseActivity{
         }
         StringBuilder stringBuilder = lessonType.getType();
         stringBuilder.append("LessonFragment");
-        Log.d(null, "stringBuilder->" + stringBuilder);
         loadLessonFragment(stringBuilder.toString());
     }
 
@@ -365,6 +394,7 @@ public class LessonActivity extends ActionBarBaseActivity{
 
     private void loadLessonFragment(String fragmentName)
     {
+        Log.d(null, "fragmentName->" + fragmentName);
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(
                 fragmentName, mActivity, new PluginFragmentCallback() {

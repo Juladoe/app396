@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -47,10 +48,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private BVideoView mVV = null;
     private Activity mContext = null;
 
-    private ImageButton mPlaybtn = null;
-    private ImageButton mBackbtn = null;
-    private ImageButton mForwardbtn = null;
-    private ImageButton mFullBtn = null;
+    private ImageView mPlaybtn = null;
+    private ImageView mBackbtn = null;
+    private ImageView mForwardbtn = null;
+    private ImageView mFullBtn = null;
 
     private LinearLayout mController = null;
 
@@ -252,7 +253,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         Bundle bundle = getArguments();
         mIsHwDecode = bundle.getBoolean("isHW", false);
         mSoLibDir = bundle.getString("soLibDir");
-        String url = bundle.getString("url");
+        String url = bundle.getString("mediaUrl");
+        Log.d(null, "url->" + url);
         Uri uriPath = Uri.parse(url);
         if (null != uriPath) {
             String scheme = uriPath.getScheme();
@@ -270,11 +272,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 初始化界面
      */
     private void initUI(View view) {
-        mPlaybtn = (ImageButton)view.findViewById(R.id.play_btn);
-        mBackbtn = (ImageButton)view.findViewById(R.id.back_btn);
-        mForwardbtn = (ImageButton)view.findViewById(R.id.forward_btn);
-        mFullBtn = (ImageButton)view.findViewById(R.id.full_btn);
-        mController = (LinearLayout)view.findViewById(R.id.controlbar);
+        mPlaybtn = (ImageView)view.findViewById(R.id.play_btn);
+        mBackbtn = (ImageView)view.findViewById(R.id.back_btn);
+        mForwardbtn = (ImageView)view.findViewById(R.id.forward_btn);
+        mFullBtn = (ImageView)view.findViewById(R.id.full_btn);
 
         mProgress = (SeekBar)view.findViewById(R.id.media_progress);
         mDuration = (TextView)view.findViewById(R.id.time_total);
@@ -442,13 +443,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 // TODO Auto-generated method stub
 
                 if (mVV.isPlaying()) {
-                    mPlaybtn.setImageResource(R.drawable.play_btn_style);
+                    mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
-                    mPlaybtn.setImageResource(R.drawable.pause_btn_style);
+                    mPlaybtn.setImageResource(R.drawable.video_pause);
                     /**
                      * 继续播放
                      */

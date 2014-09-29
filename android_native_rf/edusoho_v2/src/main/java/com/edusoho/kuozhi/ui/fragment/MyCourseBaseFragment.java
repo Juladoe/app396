@@ -9,8 +9,8 @@ import android.widget.GridView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CourseListAdapter;
-import com.edusoho.kuozhi.adapter.ScrollListAdapter;
+import com.edusoho.kuozhi.adapter.lesson.AbstractCourseListAdapter;
+import com.edusoho.kuozhi.adapter.lesson.ScrollListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
@@ -19,13 +19,9 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.widget.XCourseListWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.huewu.pla.lib.internal.PLA_AdapterView;
-
-import me.maxwin.view.XListView;
 
 /**
  * Created by howzhi on 14-8-19.
@@ -33,12 +29,12 @@ import me.maxwin.view.XListView;
 public abstract class MyCourseBaseFragment extends BaseFragment {
 
     public static final String TITLE = "title";
-    private XCourseListWidget mCourseListWidget;
-    private ScrollListAdapter mAdapter;
+    protected XCourseListWidget mCourseListWidget;
+    protected AbstractCourseListAdapter mAdapter;
     private View mLoadView;
 
-    private String mTitle;
-    private int mStart;
+    protected String mTitle;
+    protected int mStart;
 
     protected String mBaseUrl;
 
@@ -63,12 +59,17 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         setContainerView(R.layout.my_course_content_layout);
     }
 
+    protected AbstractCourseListAdapter getListAdapter()
+    {
+        return new ScrollListAdapter(mContext);
+    }
+
     @Override
     protected void initView(View view) {
         mLoadView = view.findViewById(R.id.load_layout);
         mCourseListWidget =(XCourseListWidget) view.findViewById(R.id.my_course_xlistview);
         mCourseListWidget.setEmptyText(getEmptyTitle());
-        mAdapter = new ScrollListAdapter(mContext);
+        mAdapter = getListAdapter();
         mCourseListWidget.setAdapter(mAdapter);
 
         bindListener();
@@ -126,21 +127,26 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);
-                CourseResult courseResult = mActivity.gson.fromJson(
-                        object, new TypeToken<CourseResult>() {
-                }.getType());
-
-                Log.d(null, "courseResult->" + courseResult);
-                if (courseResult == null) {
-                    return;
-                }
-                int start = courseResult.start + Const.LIMIT;
-                if (start < courseResult.total) {
-                    mStart = start;
-                } else {
-                }
-                mAdapter.addItemLast(courseResult.data);
+                parseResponse(object);
             }
         });
+    }
+
+    protected void parseResponse(String object)
+    {
+        CourseResult courseResult = mActivity.gson.fromJson(
+                object, new TypeToken<CourseResult>() {
+        }.getType());
+
+        Log.d(null, "courseResult->" + courseResult);
+        if (courseResult == null) {
+            return;
+        }
+        int start = courseResult.start + Const.LIMIT;
+        if (start < courseResult.total) {
+            mStart = start;
+        } else {
+        }
+        mAdapter.addItemLast(courseResult.data);
     }
 }

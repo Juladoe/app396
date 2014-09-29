@@ -57,7 +57,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.netschool);
-
         initView();
         app.addTask("NetSchoolActivity", this);
     }
@@ -237,7 +236,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
     private void showSchSplash(String schoolName, String[] splashs)
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        finish();
+        app.appFinish();
     }
 
     private void showQrResultDlg(String result) {
