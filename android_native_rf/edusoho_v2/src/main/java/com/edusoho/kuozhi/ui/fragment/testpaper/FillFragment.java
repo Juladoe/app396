@@ -6,6 +6,7 @@ import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.testpaper.FillListAdapter;
+import com.edusoho.kuozhi.adapter.testpaper.QuestionAdapter;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
@@ -45,8 +46,8 @@ public class FillFragment extends SelectQuestionFragment{
         mQuestionType.setText(type.title());
         mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
 
-        FillListAdapter adapter = new FillListAdapter(
-                mContext, questionTypeSeqs, R.layout.fill_list_item);
+        QuestionAdapter adapter = new QuestionAdapter(
+                mContext, questionTypeSeqs);
         mQuestionPager.setAdapter(adapter);
     }
 }

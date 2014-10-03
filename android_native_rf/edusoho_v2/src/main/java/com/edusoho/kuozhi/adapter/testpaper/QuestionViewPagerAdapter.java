@@ -74,9 +74,9 @@ public abstract class QuestionViewPagerAdapter extends PagerAdapter {
         return mList.size();
     }
 
-    protected View switchQuestionWidget(Question question, int index)
+    protected View switchQuestionWidget(QuestionTypeSeq questionSeq, int index)
     {
-        QuestionWidget widget = new QuestionWidget(mContext, question, index);
+        QuestionWidget widget = new QuestionWidget(mContext, questionSeq, index);
         return widget.getView();
     }
 }
