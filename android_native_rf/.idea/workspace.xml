@@ -49,7 +49,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
         <option name="NOTIFY_UNCAUGHT" value="true" />
@@ -85,9 +85,8 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
-    <breakpoint_rules />
-    <ui_properties />
+    <breakpoint_rules converted="true" />
+    <ui_properties converted="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
@@ -2631,7 +2630,7 @@
     <option name="x" value="49" />
     <option name="y" value="22" />
     <option name="width" value="1231" />
-    <option name="height" value="778" />
+    <option name="height" value="708" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -2647,7 +2646,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -2659,6 +2658,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2693,7 +2694,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -2779,19 +2779,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -2817,6 +2804,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2958,6 +2958,9 @@
       <AnalysisUIOptions />
     </option>
   </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="fb841d2e-e969-49c8-90e6-31973caaf044" name="Default" comment="" />
@@ -2987,7 +2990,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="49" y="22" width="1231" height="778" extended-state="6" />
+    <frame x="49" y="22" width="1231" height="708" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -3001,15 +3004,15 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3021148" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29154077" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3006757" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29054055" sideWeight="0.4995795" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.4995795" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25904122" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25904122" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -3024,15 +3027,15 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26435044" sideWeight="0.5004205" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30412805" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32930514" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -3045,13 +3048,16 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2900302" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26435044" sideWeight="0.4995795" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
       <collection />
     </option>
   </component>
@@ -3069,47 +3075,65 @@
   <component name="editorHistoryManager">
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/java/lang/reflect/Method.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="28" selection-start="2051" selection-end="2051" vertical-scroll-proportion="0.6175637" vertical-offset="532" max-vertical-offset="885" />
+        <state vertical-scroll-proportion="0.6175637" vertical-offset="532" max-vertical-offset="885">
+          <caret line="51" column="28" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/index_menu.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="630" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="630">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values-w820dp/dimens.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="434" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="434">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/content/res/Resources.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="48" selection-start="3679" selection-end="3696" vertical-scroll-proportion="0.0" vertical-offset="730" max-vertical-offset="1995" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="730" max-vertical-offset="1995">
+          <caret line="59" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/common/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="13" selection-start="533" selection-end="583" vertical-scroll-proportion="0.13363029" vertical-offset="0" max-vertical-offset="1575" />
+        <state vertical-scroll-proportion="0.13363029" vertical-offset="0" max-vertical-offset="1575">
+          <caret line="18" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/core/listener/PluginRunCallback.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="48" selection-start="200" selection-end="200" vertical-scroll-proportion="0.26726058" vertical-offset="0" max-vertical-offset="449" />
+        <state vertical-scroll-proportion="0.26726058" vertical-offset="0" max-vertical-offset="449">
+          <caret line="8" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/core/model/PluginModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="26" selection-start="185" selection-end="185" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="240" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="240">
+          <caret line="8" column="26" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/xml/plugins.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="70" selection-start="956" selection-end="956" vertical-scroll-proportion="0.37783375" vertical-offset="0" max-vertical-offset="397" />
+        <state vertical-scroll-proportion="0.37783375" vertical-offset="0" max-vertical-offset="397">
+          <caret line="10" column="70" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/org/xmlpull/v1/XmlPullParser.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="8" selection-start="3298" selection-end="3298" vertical-scroll-proportion="0.73551637" vertical-offset="1148" max-vertical-offset="1545" />
+        <state vertical-scroll-proportion="0.73551637" vertical-offset="1148" max-vertical-offset="1545">
+          <caret line="97" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/app_splah_1280_800.png">
@@ -3119,14 +3143,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="51" selection-start="901" selection-end="901" vertical-scroll-proportion="0.40487805" vertical-offset="194" max-vertical-offset="1140">
-          <folding />
+        <state vertical-scroll-proportion="0.40487805" vertical-offset="194" max-vertical-offset="1140">
+          <caret line="24" column="51" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/core/CoreEngine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="37" selection-start="1053" selection-end="1053" vertical-scroll-proportion="0.26448363" vertical-offset="60" max-vertical-offset="2895" />
+        <state vertical-scroll-proportion="0.26448363" vertical-offset="60" max-vertical-offset="2895">
+          <caret line="39" column="37" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ukphoto/res/layout/main.xml">
@@ -3134,68 +3160,82 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="582" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="582">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/app/libs/android-query-full.0.26.8.jar!/com/androidquery/AQuery.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="11" selection-start="380" selection-end="380" vertical-scroll-proportion="0.5033557" vertical-offset="0" max-vertical-offset="298" />
+        <state vertical-scroll-proportion="0.5033557" vertical-offset="0" max-vertical-offset="298">
+          <caret line="11" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/slidingmenu/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="351">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="351">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ukphoto/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="351">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="351">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SwipeBackLayout/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="351" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bdvideoplayer/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="295" selection-end="295" vertical-scroll-proportion="0.34188035" vertical-offset="0" max-vertical-offset="570" />
+        <state vertical-scroll-proportion="0.34188035" vertical-offset="0" max-vertical-offset="570">
+          <caret line="8" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="28" selection-start="1997" selection-end="1997" vertical-scroll-proportion="1.3522012" vertical-offset="0" max-vertical-offset="2295">
+        <state vertical-scroll-proportion="1.3522012" vertical-offset="0" max-vertical-offset="2295">
+          <caret line="43" column="28" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/video/CustomPlayerView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="189" selection-end="189" vertical-scroll-proportion="0.23230088" vertical-offset="0" max-vertical-offset="465" />
+        <state vertical-scroll-proportion="0.23230088" vertical-offset="0" max-vertical-offset="465">
+          <caret line="9" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/video/CustomVideoView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="58" selection-start="1146" selection-end="1146" vertical-scroll-proportion="0.75170845" vertical-offset="45" max-vertical-offset="2850" />
+        <state vertical-scroll-proportion="0.75170845" vertical-offset="45" max-vertical-offset="2850">
+          <caret line="34" column="58" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/plugin/video/EduSohoVideoActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="0" selection-start="857" selection-end="857" vertical-scroll-proportion="0.36504424" vertical-offset="90" max-vertical-offset="2025" />
+        <state vertical-scroll-proportion="0.36504424" vertical-offset="90" max-vertical-offset="2025">
+          <caret line="30" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/lesson/CourseLessonActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="513" column="8" selection-start="18706" selection-end="18981" vertical-scroll-proportion="0.3667426" vertical-offset="6214" max-vertical-offset="10440" />
+        <state vertical-scroll-proportion="0.3667426" vertical-offset="6214" max-vertical-offset="10440">
+          <caret line="513" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/app/Activity.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="333" column="16" selection-start="14914" selection-end="14914" vertical-scroll-proportion="0.33189654" vertical-offset="4826" max-vertical-offset="6675" />
+        <state vertical-scroll-proportion="0.33189654" vertical-offset="4826" max-vertical-offset="6675">
+          <caret line="333" column="16" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/icon.png">
@@ -3205,12 +3245,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/res/values/colors.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="434" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="434">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/videoplayer.iml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1320" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1320">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/res/drawable-hdpi/vp_forward.png">
@@ -3220,22 +3264,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="53" selection-start="849" selection-end="849" vertical-scroll-proportion="1.0714285" vertical-offset="0" max-vertical-offset="585">
-          <folding />
+        <state vertical-scroll-proportion="1.0714285" vertical-offset="0" max-vertical-offset="585">
+          <caret line="31" column="53" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/app.iml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1335" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/videoplayer/build/source/r/release/com/edusoho/plugin/videoplayer/R.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-6.5151515" vertical-offset="2580" max-vertical-offset="41070">
-          <folding>
-            <element signature="e#0#151318#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1335">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -3244,8 +3281,8 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="50" selection-start="5175" selection-end="5175" vertical-scroll-proportion="1.6265357" vertical-offset="1108" max-vertical-offset="2010">
-          <folding />
+        <state vertical-scroll-proportion="1.6265357" vertical-offset="1108" max-vertical-offset="2010">
+          <caret line="118" column="50" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -3254,17 +3291,15 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/AudioThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1890">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1890">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -3273,120 +3308,108 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="0" selection-start="676" selection-end="676" vertical-scroll-proportion="0.5896806" vertical-offset="0" max-vertical-offset="407" />
+        <state vertical-scroll-proportion="0.5896806" vertical-offset="0" max-vertical-offset="407">
+          <caret line="16" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="34" selection-start="730" selection-end="730" vertical-scroll-proportion="0.15853658" vertical-offset="160" max-vertical-offset="570">
+        <state vertical-scroll-proportion="0.15853658" vertical-offset="160" max-vertical-offset="570">
+          <caret line="15" column="34" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/FileManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="402" column="41" selection-start="10289" selection-end="10293" vertical-scroll-proportion="0.0" vertical-offset="6030" max-vertical-offset="10980">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="6030" max-vertical-offset="10980">
+          <caret line="402" column="41" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="29" selection-start="1891" selection-end="1891" vertical-scroll-proportion="0.3478261" vertical-offset="787" max-vertical-offset="1920">
-          <folding />
+        <state vertical-scroll-proportion="0.3478261" vertical-offset="787" max-vertical-offset="1920">
+          <caret line="63" column="29" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/VideoPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="5" selection-start="1108" selection-end="1108" vertical-scroll-proportion="-3.6614172" vertical-offset="1530" max-vertical-offset="7050">
-          <folding />
+        <state vertical-scroll-proportion="-3.6614172" vertical-offset="1530" max-vertical-offset="7050">
+          <caret line="37" column="5" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/GLSurfaceView_SDL.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="962" column="34" selection-start="36968" selection-end="36968" vertical-scroll-proportion="0.0" vertical-offset="13723" max-vertical-offset="16995">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="13723" max-vertical-offset="16995">
+          <caret line="962" column="34" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/ui/StartActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="75" selection-start="1434" selection-end="1434" vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="870">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="870">
+          <caret line="54" column="75" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/edusoho/kuozhi/EdusohoApp.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="272" column="48" selection-start="7938" selection-end="7938" vertical-scroll-proportion="0.0" vertical-offset="3945" max-vertical-offset="4890">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="3945" max-vertical-offset="4890">
+          <caret line="272" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bdvideoplayer/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="46" selection-start="722" selection-end="722" vertical-scroll-proportion="0.48979592" vertical-offset="174" max-vertical-offset="615">
-          <folding />
+        <state vertical-scroll-proportion="0.48979592" vertical-offset="174" max-vertical-offset="615">
+          <caret line="26" column="46" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/settings.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="75" selection-start="75" selection-end="75" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="416">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="416">
+          <caret line="0" column="75" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bdvideoplayer/src/main/java/com/plugin/edusoho/bdvideoplayer/BdVideoPlayerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="27" selection-start="1207" selection-end="1207" vertical-scroll-proportion="0.43269232" vertical-offset="0" max-vertical-offset="5025">
-          <folding />
+        <state vertical-scroll-proportion="0.43269232" vertical-offset="0" max-vertical-offset="5025">
+          <caret line="34" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bdvideoplayer/src/main/java/com/plugin/edusoho/bdvideoplayer/BdPlayerManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="122" column="48" selection-start="3969" selection-end="3969" vertical-scroll-proportion="0.27884614" vertical-offset="1534" max-vertical-offset="2535">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="9" selection-start="387" selection-end="387" vertical-scroll-proportion="0.32754344" vertical-offset="108" max-vertical-offset="555">
-          <folding />
+        <state vertical-scroll-proportion="0.27884614" vertical-offset="1534" max-vertical-offset="2535">
+          <caret line="122" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/Globals.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="402" column="26" selection-start="15899" selection-end="15899" vertical-scroll-proportion="0.35235733" vertical-offset="5813" max-vertical-offset="8475">
-          <folding />
+        <state vertical-scroll-proportion="0.35235733" vertical-offset="5813" max-vertical-offset="8475">
+          <caret line="402" column="26" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/DemoRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="23" selection-start="2895" selection-end="2895" vertical-scroll-proportion="0.35235733" vertical-offset="848" max-vertical-offset="5865">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/edusoho/plugin/videoplayer/Videoplayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="49" selection-start="4961" selection-end="4961" vertical-scroll-proportion="1.9900744" vertical-offset="518" max-vertical-offset="1650">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.35235733" vertical-offset="848" max-vertical-offset="5865">
+          <caret line="69" column="23" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/videoplayer/src/main/java/com/broov/player/NativeVideoPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="66" selection-start="4639" selection-end="4640" vertical-scroll-proportion="-0.18610422" vertical-offset="1890" max-vertical-offset="6000">
-          <folding />
+        <state vertical-scroll-proportion="-0.18610422" vertical-offset="1890" max-vertical-offset="6000">
+          <caret line="152" column="66" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
