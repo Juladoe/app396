@@ -61,7 +61,7 @@ public class EssayFragment extends SelectQuestionFragment{
         }
         mQuestionType.setText(type.title());
         mQuestionCount = questionTypeSeqs.size();
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+        setQuestionNumber(mCurrentIndex);
 
         QuestionAdapter adapter = new QuestionAdapter(
                 mContext, questionTypeSeqs);

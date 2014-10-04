@@ -43,7 +43,7 @@ public class UncertainChoiceFragment extends SelectQuestionFragment{
 
         mQuestionCount = questionTypeSeqs.size();
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+        setQuestionNumber(mCurrentIndex);
 
         ChoiceViewPagerAdapter adapter = new ChoiceViewPagerAdapter(
                 mContext, questionTypeSeqs, R.layout.singlechoice_viewpager_item

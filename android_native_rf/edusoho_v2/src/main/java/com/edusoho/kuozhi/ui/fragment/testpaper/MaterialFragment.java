@@ -1,12 +1,13 @@
 package com.edusoho.kuozhi.ui.fragment.testpaper;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.testpaper.MaterialQuestionAdapter;
 import com.edusoho.kuozhi.adapter.testpaper.QuestionAdapter;
+import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
@@ -43,27 +44,30 @@ public class MaterialFragment extends SelectQuestionFragment{
             return;
         }
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(
-                String.format("%d/%d", mCurrentIndex, getTotalQuesionCount(questionTypeSeqs)));
 
-        QuestionAdapter adapter = new QuestionAdapter(
-                mContext, questionTypeSeqs
+        ArrayList<MaterialQuestionTypeSeq> typeSeqs = coverQuestions(questionTypeSeqs);
+        mQuestionCount = typeSeqs.size();
+        setQuestionNumber(mCurrentIndex);
+
+        MaterialQuestionAdapter adapter = new MaterialQuestionAdapter(
+                mContext, typeSeqs
         );
 
         mQuestionPager.setAdapter(adapter);
     }
 
-    private int getTotalQuesionCount(ArrayList<QuestionTypeSeq> questionTypeSeqs)
+    private ArrayList<MaterialQuestionTypeSeq> coverQuestions(
+            ArrayList<QuestionTypeSeq> questionTypeSeqs)
     {
-        int count = 0;
-
-        for(QuestionTypeSeq questionTypeSeq : questionTypeSeqs) {
-            ArrayList<QuestionTypeSeq> items = questionTypeSeq.items;
-            if (items != null) {
-                count += items.size();
+        ArrayList<MaterialQuestionTypeSeq> list = new ArrayList<MaterialQuestionTypeSeq>();
+        for (QuestionTypeSeq seq : questionTypeSeqs) {
+            for (QuestionTypeSeq itemSeq : seq.items) {
+                MaterialQuestionTypeSeq question = new MaterialQuestionTypeSeq(itemSeq, seq);
+                list.add(question);
             }
         }
 
-        return count;
+        return list;
     }
+
 }

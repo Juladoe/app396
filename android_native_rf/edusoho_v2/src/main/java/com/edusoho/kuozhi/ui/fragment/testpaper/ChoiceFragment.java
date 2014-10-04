@@ -44,7 +44,7 @@ public class ChoiceFragment extends SelectQuestionFragment{
 
         mQuestionCount = questionTypeSeqs.size();
         mQuestionType.setText(type.title());
-        mQuestionNumber.setText(String.format("%d/%d", mCurrentIndex, mQuestionCount));
+        setQuestionNumber(mCurrentIndex);
 
         QuestionAdapter adapter = new QuestionAdapter(
                 mContext, questionTypeSeqs
