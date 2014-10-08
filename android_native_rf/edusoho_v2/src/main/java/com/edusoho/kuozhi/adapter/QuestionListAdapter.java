@@ -37,7 +37,7 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
 
     public void addItem(QuestionResult questionResult) {
         listAddItem(questionResult.threads);
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     private void listAddItem(QuestionDetailModel[] questionDetailModels) {
