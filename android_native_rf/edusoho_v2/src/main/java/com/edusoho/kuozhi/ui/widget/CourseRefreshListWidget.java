@@ -48,7 +48,6 @@ public class CourseRefreshListWidget extends PullToRefreshListView {
     {
         EmptyAdapter arrayAdapter = new EmptyAdapter(
                 mContext, R.layout.course_empty_layout, R.id.list_empty_text, mEmptyText);
-
         return arrayAdapter;
     }
 

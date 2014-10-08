@@ -103,15 +103,6 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (mMenu == 0) {
-            return false;
-        }
-        getMenuInflater().inflate(mMenu, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.TAB_MENU_ID, item.getItemId());

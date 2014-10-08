@@ -14,15 +14,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <GridView
+    <com.edusoho.kuozhi.view.FixHeightGridView
         android:listSelector="@color/transparent"
         android:layout_marginTop="24dp"
         android:id="@+id/testpaper_card_gridview"
         android:columnWidth="32dp"
-        android:stretchMode="none"
+        android:stretchMode="columnWidth"
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
         android:numColumns="auto_fit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></GridView>
+        android:layout_height="wrap_content"/>
 </LinearLayout>

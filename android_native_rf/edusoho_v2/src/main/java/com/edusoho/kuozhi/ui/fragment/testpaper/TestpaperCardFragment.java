@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment.testpaper;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -22,12 +24,14 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.testpaper.TestpaperCardAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
@@ -43,6 +47,7 @@ public class TestpaperCardFragment extends DialogFragment {
 
     private LinearLayout mCardLayout;
     private TestpaperActivity mTestpaperActivity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +70,6 @@ public class TestpaperCardFragment extends DialogFragment {
         return view;
     }
 
-
-
     private void initView(View view)
     {
         LayoutInflater layoutInflater = LayoutInflater.from(mTestpaperActivity);
@@ -74,6 +77,8 @@ public class TestpaperCardFragment extends DialogFragment {
 
         HashMap<QuestionType, ArrayList<QuestionTypeSeq>> questionTypeArrayListHashMap =
                 mTestpaperActivity.getAllQuestions();
+
+        HashMap<QuestionType, ArrayList<Answer>> answerMap = mTestpaperActivity.getAnswer();
         for (QuestionType type : questionTypeArrayListHashMap.keySet()) {
             View cardView = layoutInflater.inflate(R.layout.testpaper_card_layout, null);
 
@@ -84,8 +89,14 @@ public class TestpaperCardFragment extends DialogFragment {
             if (type == QuestionType.material) {
                 questionTypeSeqs = getMaterialItems(questionTypeSeqs);
             }
+
             TestpaperCardAdapter adapter = new TestpaperCardAdapter(
-                    mTestpaperActivity, questionTypeSeqs, R.layout.testpaper_card_gridview_item);
+                    mTestpaperActivity,
+                    questionTypeSeqs,
+                    answerMap.get(type),
+                    R.layout.testpaper_card_gridview_item
+            );
+
             cardGridView.setAdapter(adapter);
             label.setText(type.title());
             mCardLayout.addView(cardView);

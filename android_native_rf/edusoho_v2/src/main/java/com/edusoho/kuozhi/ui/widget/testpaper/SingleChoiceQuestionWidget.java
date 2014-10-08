@@ -2,15 +2,18 @@ package com.edusoho.kuozhi.ui.widget.testpaper;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
+import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,13 @@ public class SingleChoiceQuestionWidget extends ChoiceQuestionWidget {
                 radioGroup.addView(radioButton);
             }
         }
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int index) {
+                sendMsgToTestpaper();
+            }
+        });
     }
 
     private RadioButton initRadioButton(String text, int index)

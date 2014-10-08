@@ -102,6 +102,11 @@ public class Const {
     public static final String REPLY_SUBMIT = "Course/postThread";
 
     /**
+     * 分享url
+     */
+    public static final String SHARD_COURSE_URL = "School/getShradCourseUrl";
+
+    /**
      * 获取一个问题的详细信息（问题标题，内容，发问者，发问时间等）
      * 传递参数：courseId，threadId
      */

@@ -3,7 +3,7 @@
     package="com.edusoho.kuozhi"
     android:versionCode="2"
     android:versionName="2.0.0"
-    android:windowSoftInputMode="adjustPan">
+    android:windowSoftInputMode="adjustResize">
 
     <supports-screens
         android:anyDensity="true"

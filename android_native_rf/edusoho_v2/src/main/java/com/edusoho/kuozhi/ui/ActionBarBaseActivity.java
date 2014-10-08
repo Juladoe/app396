@@ -396,6 +396,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         }
 
         if (handlerError(object)) {
+            rcl.error(url, status);
             return true;
         }
 

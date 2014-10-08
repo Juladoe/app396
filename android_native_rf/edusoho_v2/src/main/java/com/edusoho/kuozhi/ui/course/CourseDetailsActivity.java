@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,13 +14,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -27,7 +28,7 @@ import android.widget.ListView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-import com.androidquery.util.AQUtility;
+
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ShardListAdapter;
@@ -61,9 +62,11 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.trinea.android.common.util.ImageUtils;
 
 /**
  * Created by howzhi on 14-8-26.
@@ -266,7 +269,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
      */
     private void shardCourse() {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        Course course = mCourseDetailsResult.course;
         intent.setType("image/*");
         /*
         File dir = AQUtility.getCacheDir(mContext);
@@ -294,8 +296,11 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //SendMessageToWX.Req.WXSceneTimeline
                 ResolveInfo info = (ResolveInfo) adapterView.getItemAtPosition(i);
-                Log.d(null, "name->" + info.activityInfo.name);
-                shardToMM(mContext, SendMessageToWX.Req.WXSceneSession);
+                int wxType = SendMessageToWX.Req.WXSceneTimeline;
+                if ("com.tencent.mm.ui.tools.ShareImgUI".equals(info.activityInfo.name)) {
+                    wxType = SendMessageToWX.Req.WXSceneSession;
+                }
+                shardToMM(mCourseDetailsResult.course, mContext, wxType);
             }
         });
 
@@ -321,7 +326,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         return newList;
     }
 
-    private void shardToMM(Context context, int type) {
+    private void shardToMM(Course course, Context context, int type) {
         String APP_ID = "wx91c11946311906a3";
         IWXAPI wxApi;
         wxApi = WXAPIFactory.createWXAPI(context, APP_ID, true);
@@ -329,16 +334,18 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         WXTextObject wXTextObject = new WXTextObject();
         wXTextObject.text = "分享课程";
         WXWebpageObject wxobj = new WXWebpageObject();
-        wxobj.webpageUrl = "http://www.edusoho.com";
+        StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
+        stringBuilder
+                .append(Const.SHARD_COURSE_URL)
+                .append("?courseId=")
+                .append(course.id);
+
+        wxobj.webpageUrl = stringBuilder.toString();
         WXMediaMessage wXMediaMessage = new WXMediaMessage();
         wXMediaMessage.mediaObject = wxobj;
-        wXMediaMessage.description = "";
-        wXMediaMessage.title = context.getString(R.string.app_name);
-        BitmapFactory BitmapFactory = null;
-        wXMediaMessage.setThumbImage(BitmapFactory.decodeResource(
-                context.getResources(), R.drawable.icon));
-
-        //WXWebpageObject wxobj = new WXWebpageObject();
+        wXMediaMessage.description = AppUtil.coverCourseAbout(course.about);
+        wXMediaMessage.title = course.title;
+        wXMediaMessage.setThumbImage(app.query.getCachedImage(mCoursePic, 99));
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.scene = type;

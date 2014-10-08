@@ -19,7 +19,8 @@ public enum QuestionType {
     fill("填空题"),
     material("材料题"),
     single_choice("单选题"),
-    uncertain_choice("不定项题");
+    uncertain_choice("不定项题"),
+    empty("");
 
     public String name;
 
@@ -31,5 +32,16 @@ public enum QuestionType {
     public String title()
     {
         return this.name;
+    }
+
+    public static QuestionType value(String typeName)
+    {
+        QuestionType type;
+        try {
+            type =  valueOf(typeName);
+        }catch (Exception e) {
+            type = empty;
+        }
+        return type;
     }
 }

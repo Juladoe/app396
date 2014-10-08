@@ -16,6 +16,11 @@ public class EmptyAdapter extends ArrayAdapter<String>
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
 import java.util.ArrayList;
@@ -19,12 +21,17 @@ public class TestpaperCardAdapter extends BaseAdapter {
     private int mResouce;
     private Context mContext;
     private ArrayList<QuestionTypeSeq> mList;
+    private ArrayList<Answer> mAnswers;
 
     public TestpaperCardAdapter(
-            Context context, ArrayList<QuestionTypeSeq> list, int resource)
+            Context context,
+            ArrayList<QuestionTypeSeq> list,
+            ArrayList<Answer> answers,
+            int resource)
     {
         mList = list;
         mContext = context;
+        mAnswers = answers;
         mResouce = resource;
         inflater = LayoutInflater.from(context);
     }
@@ -51,6 +58,8 @@ public class TestpaperCardAdapter extends BaseAdapter {
         }
 
         TextView mText = (TextView) view;
+        Answer answer = mAnswers.get(i);
+        mText.setEnabled(!answer.isAnswer);
         mText.setText((i + 1) + "");
         return view;
     }

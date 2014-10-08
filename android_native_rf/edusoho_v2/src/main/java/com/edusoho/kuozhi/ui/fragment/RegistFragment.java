@@ -11,10 +11,12 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.ButtonWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 
@@ -73,6 +75,7 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void onClick(View view) {
                 if (registUser()) {
+                    mRegistBtn.setText("注  册");
                     mRegistBtn.setActionMode(false);
                     mActivity.setProgressBarIndeterminateVisibility(true);
                 }
@@ -126,7 +129,23 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                mActivity.longToast(object);
+                mRegistBtn.setActionMode(true);
+                mActivity.setProgressBarIndeterminateVisibility(false);
+                TokenResult tokenResult = mActivity.parseJsonValue(
+                        object, new TypeToken<TokenResult>(){});
+
+                if (tokenResult == null) {
+                    mActivity.longToast("账号注册失败！请重新尝试！!");
+                    return;
+                }
+
+                app.saveToken(tokenResult);
+                mActivity.finish();
+                app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
                 mRegistBtn.setActionMode(true);
                 mActivity.setProgressBarIndeterminateVisibility(false);
             }
