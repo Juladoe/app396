@@ -27,7 +27,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="2dp"
+            android:layout_marginRight="6dp"
             android:layout_weight="2">
 
             <TextView
@@ -44,7 +44,7 @@
                 android:id="@+id/tv_question_lesson"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:textSize="@dimen/question_item_lesson"
                 android:textColor="@color/question_lesson"
                 android:layout_below="@+id/tv_question_title"
                 android:text="课时3" />
@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="教师已回复"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/question_teacher_reply"
                     android:textColor="@color/teacher_reply"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true" />
@@ -67,16 +67,15 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/question_reply"
+                    android:src="@drawable/question_reply40"
                     android:scaleType="fitXY"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/tv_reply_amount" />
 
                 <TextView
                     android:id="@+id/tv_reply_amount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="18dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="2dp"
                     android:text="23"
                     android:textSize="16sp"
                     android:textColor="@color/question_lesson"

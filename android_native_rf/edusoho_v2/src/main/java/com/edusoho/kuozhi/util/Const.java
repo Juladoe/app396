@@ -217,4 +217,27 @@ public class Const {
     public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAT_TITLE = "title";
     public static final String LIST_JSON = "list_json";
+
+    public static final String QUESTION_TITLE = "title";
+    public static final String THREAD_ID = "thread_id";
+    public static final String REPLY_ID = "reply_id";
+    public static final String QUESTION_CONTENT = "question_content";
+    public static final String NORMAL_CONTENT = "content";
+
+    public static final String REQUEST_CODE = "reply_type";
+
+    /**
+     * 普通回复
+     */
+    public static final int REPLY = 0x01;
+    /**
+     * 问题编辑
+     */
+    public static final int EDIT_QUESTION = 0x02;
+    /**
+     * 回复编辑
+     */
+    public static final int EDIT_REPLY = 0x03;
+
+
 }

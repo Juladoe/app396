@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
-import com.edusoho.kuozhi.ui.common.RegistActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.qr.CaptureActivity;
@@ -83,6 +81,7 @@ public class LoginFragment extends BaseFragment {
                 HashMap<String, String> params = url.getParams();
                 params.put("_username", email);
                 params.put("_password", pass);
+                url.setParams(params);
 
                 mActivity.ajaxPostByLoding(url, new ResultCallback() {
                     @Override

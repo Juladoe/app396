@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -25,7 +26,6 @@ import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.listener.NormalCallback;
-import com.edusoho.listener.ResultCallback;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.ByteArrayInputStream;
@@ -34,14 +34,16 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-;import cn.trinea.android.common.util.DigestUtils;
+
+import cn.trinea.android.common.util.DigestUtils;
+
+;
 
 public class AppUtil {
 
@@ -453,16 +455,102 @@ public class AppUtil {
             String tDate = postTime.split("[+]")[0].replace('T', ' ');
             long milliSec = 1000;
             Date date = new Date();
-            l = (date.getTime() - sdf.parse(tDate).getTime()) / (milliSec * 60 * 60);
+            l = (date.getTime() - sdf.parse(tDate).getTime()) / (milliSec);
+
+
             //如果大于24返回天数
-            if (l > 24) {
-                l = l / 24;
+            if (l > 24 * 60 * 60) {
+                l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
+            } else if (l > 60 * 60) {
+                l = l / (60 * 60);
+                return String.valueOf(l) + "小时前";
+            } else if (l > 60) {
+                l = l / (60);
+                return String.valueOf(l) + "分钟前";
+            }
+            if (l < 1) {
+                return "刚刚";
             }
         } catch (Exception ex) {
             Log.d("AppUtil.getPostDays", ex.toString());
         }
-        return String.valueOf(l) + "小时前";
+
+        return String.valueOf(l) + "秒前";
+    }
+
+    /**
+     * 去掉末尾产生的"\n"
+     */
+    public static String removeHtml(String strHtml) {
+        if (strHtml.length() > 0 && strHtml.contains("\n")) {
+            if (strHtml.substring(strHtml.length() - 1, strHtml.length()).equals("\n")) {
+                strHtml = strHtml.substring(0, strHtml.length() - 1);
+                return removeHtml(strHtml);
+            }
+        }
+        return strHtml;
+    }
+
+    /**
+     * 图片缩小
+     *
+     * @param bitmap    图片
+     * @param imageSize 图片大小
+     * @param degree    图片旋转的角度，如果没有旋转，则为0
+     * @param context   context
+     * @return
+     */
+    public static Bitmap scaleImage(Bitmap bitmap, float imageSize, int degree, Context context) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int bounding = Math.round(imageSize * density);
+
+        float xScale = ((float) bounding) / width;
+        float yScale = ((float) bounding) / height;
+        float scale = (xScale <= yScale) ? xScale : yScale;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        matrix.postRotate((float) degree);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+//        width = scaledBitmap.getWidth(); // re-use
+//        height = scaledBitmap.getHeight(); // re-use
+        BitmapDrawable result = new BitmapDrawable(scaledBitmap);
+
+        return scaledBitmap;
+    }
+
+    /**
+     * 获取图片旋转的角度
+     *
+     * @param imagePath
+     * @return
+     */
+    public static int getImageDegree(String imagePath) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(imagePath);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getImageDegree", ex.toString());
+        }
+
+        return degree;
     }
 
     public static int computeSampleSize(

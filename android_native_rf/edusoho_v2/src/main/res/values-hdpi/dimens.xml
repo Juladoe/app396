@@ -87,5 +87,6 @@
     <!--问答列表标题字体 -->
     <dimen name="question_item_title_size">14sp</dimen>
     <dimen name="question_item_lesson">12sp</dimen>
+    <dimen name="question_teacher_reply">12sp</dimen>
 
 </resources>

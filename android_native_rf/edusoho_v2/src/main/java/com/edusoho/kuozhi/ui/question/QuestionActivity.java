@@ -91,8 +91,8 @@ public class QuestionActivity extends ActionBarBaseActivity {
                         adapter.addItem(questionResult);
                     } else {
                         adapter = new QuestionListAdapter(mContext, questionResult, R.layout.question_item);
-                        mQuestionRefreshList.setAdapter(adapter);
                     }
+                    mQuestionRefreshList.setAdapter(adapter);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }
@@ -109,9 +109,9 @@ public class QuestionActivity extends ActionBarBaseActivity {
             app.mEngine.runNormalPlugin("QuestionDetailActivity", mActivity, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(QuestionDetailActivity.QUESTION_TITLE, title);
-                    startIntent.putExtra(QuestionDetailActivity.COURSE_ID, courseId);
-                    startIntent.putExtra(QuestionDetailActivity.THREAD_ID, threadId);
+                    startIntent.putExtra(Const.QUESTION_TITLE, title);
+                    startIntent.putExtra(Const.COURSE_ID, courseId);
+                    startIntent.putExtra(Const.THREAD_ID, threadId);
                 }
             });
         }

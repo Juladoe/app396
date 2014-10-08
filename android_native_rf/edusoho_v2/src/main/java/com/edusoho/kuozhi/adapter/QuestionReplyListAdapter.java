@@ -1,7 +1,13 @@
 package com.edusoho.kuozhi.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,14 +15,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Question.EntireReply;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
+import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.HtmlTextView;
+import com.edusoho.listener.URLImageGetter;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +46,9 @@ import java.util.List;
  * 回复List适配器
  */
 public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
-    private Context mContext;
+    private static final String TAG = "QuestionReplyListAdapter";
+    public Context mContext;
+    private Activity mActivity;
     private List<EntireReply> mEntireReplyList;
     private int mRecourseId;
     private User mUser;
@@ -33,9 +56,12 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
     private List<EntireReply> mTeacherReplyList;
     private List<EntireReply> mNormalReplyList;
 
-    public QuestionReplyListAdapter(Context context, ReplyResult replyResult, int layoutId, User user) {
+    private AQuery mAqueryItem;
+
+    public QuestionReplyListAdapter(Context context, Activity activity, ReplyResult replyResult, int layoutId, User user) {
         mEntireReplyList = new ArrayList<EntireReply>();
         this.mContext = context;
+        this.mActivity = activity;
         this.mRecourseId = layoutId;
         this.mUser = user;
         listAddItem(replyResult.data);
@@ -43,7 +69,7 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
 
     public void addItem(ReplyResult replyResult) {
         listAddItem(replyResult.data);
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     private void listAddItem(ReplyModel[] replyModels) {
@@ -74,6 +100,7 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         }
         mEntireReplyList.addAll(mTeacherReplyList);
         mEntireReplyList.addAll(mNormalReplyList);
+        Log.d(TAG, "----------------");
     }
 
     public void clearAdapter() {
@@ -104,22 +131,37 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         Log.d("getView()", String.valueOf(position));
         if (convertView == null) {
             convertView = LayoutInflater.from(this.mContext).inflate(mRecourseId, null);
+            mAqueryItem = new AQuery(convertView);
         }
 
-        EntireReply entireReply = mEntireReplyList.get(position);
+        final EntireReply entireReply = mEntireReplyList.get(position);
 
         TextView tvReplyType = AppUtil.getViewHolder(convertView, R.id.tv_reply_type);
         TextView tvReplyName = AppUtil.getViewHolder(convertView, R.id.tv_reply_name);
         TextView tvReplyTime = AppUtil.getViewHolder(convertView, R.id.tv_reply_time);
-        TextView tvReplyContent = AppUtil.getViewHolder(convertView, R.id.tv_reply_content);
+        HtmlTextView tvReplyContent = AppUtil.getViewHolder(convertView, R.id.tv_reply_content);
         ImageView ivEdit = AppUtil.getViewHolder(convertView, R.id.iv_reply_edit);
         tvReplyName.setText(entireReply.replyModel.user.nickname);
+
         if (tvReplyName.getText().equals(mUser.nickname)) {
             ivEdit.setVisibility(View.VISIBLE);
+            //ivEdit.setOnClickListener(replyEditClickListener);
+            //编辑回复
+            ivEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent startIntent = new Intent(mContext, QuestionReplyActivity.class);
+                    startIntent.putExtra(Const.REQUEST_CODE, Const.EDIT_REPLY);
+                    startIntent.putExtra(Const.REPLY_ID, String.valueOf(entireReply.replyModel.id));
+                    startIntent.putExtra(Const.THREAD_ID, String.valueOf(entireReply.replyModel.threadId));
+                    startIntent.putExtra(Const.COURSE_ID, String.valueOf(entireReply.replyModel.courseId));
+                    startIntent.putExtra(Const.NORMAL_CONTENT, entireReply.replyModel.content);
+                    mActivity.startActivityForResult(startIntent, Const.EDIT_REPLY);
+                }
+            });
         } else {
             ivEdit.setVisibility(View.INVISIBLE);
         }
-
 
         tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
 
@@ -143,13 +185,211 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
             tvReplyName.setTextColor(mContext.getResources().getColor(R.color.question_lesson));
         }
 
-        tvReplyContent.setText(Html.fromHtml(entireReply.replyModel.content));
+        URLImageGetter urlImageGetter = new URLImageGetter(tvReplyContent, mAqueryItem, mContext);
+        //URLImageParserByAsyncTask p = new URLImageParserByAsyncTask(tvReplyContent, mContext);
+        //aQuery.id(R.id.tv_reply_content).text(AppUtil.removeHtml(Html.fromHtml(entireReply.replyModel.content).toString()));
+        Log.d(TAG, "Html.fromHtml-->" + entireReply.replyModel.content);
+        tvReplyContent.setText(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null));
+        Log.d("tvReplyContent--->", tvReplyContent.getText().toString());
 
         return convertView;
     }
 
+    /**
+     * 教师回复、普通回复标题tag颜色
+     *
+     * @param tv
+     * @param drawableId
+     */
     private void createDrawables(TextView tv, int drawableId) {
         Drawable drawable = mContext.getResources().getDrawable(drawableId);
         tv.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
     }
+
+//    private class URLImageGetter implements Html.ImageGetter {
+//        private View mContainer;
+//        private AQuery mAQuery;
+//
+//        public URLImageGetter(View v, AQuery aQuery) {
+//            this.mContainer = v;
+//            this.mAQuery = aQuery;
+//        }
+//
+//        @Override
+//        public Drawable getDrawable(String source) {
+//            URLDrawable urlDrawable = new URLDrawable();
+//            if (!source.contains("http")) {
+//                source = QuestionDetailActivity.mHost + source;
+//            }
+//            //Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
+//            MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer);
+//            try {
+//                //Log.d(TAG, "aQuery.id(R.id.iv_tmp)-->" + source);
+//                //AQuery mAquery = new AQuery(mActivity);
+//                Log.d(TAG, "myBitmapAjaxCallback.mURL-- >" + myBitmapAjaxCallback.mURL);
+//                this.mAQuery.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
+//            } catch (Exception ex) {
+//                Log.d("imageURL--->", ex.toString());
+//            }
+//            return urlDrawable;
+//        }
+//    }
+//
+//    public class MyBitmapAjaxCallback extends BitmapAjaxCallback {
+//        private URLDrawable mURLDrawable;
+//        private String mURL;
+//        private View mContainer;
+//
+//        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v) {
+//            this.mURLDrawable = d;
+//            this.mURL = sourceUrl;
+//            this.mContainer = v;
+//        }
+//
+//        @Override
+//        protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
+//            Log.d(TAG, "callback-->" + url);
+//            Bitmap bitmap = mAqueryItem.getCachedImage(mURL);
+//
+//            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
+//            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
+//            if (showMaxWidth < bitmap.getWidth()) {
+//                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, mContext);
+//            } else if (showMinWidth >= bitmap.getWidth()) {
+//                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
+//            }
+//            Drawable drawable = new BitmapDrawable(bitmap);
+//            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//            mURLDrawable.drawable = drawable;
+//            this.mContainer.invalidate();
+//            TextView tv = (TextView) this.mContainer;
+//            tv.setText(tv.getText());
+////            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+////            ((LinearLayout) tv.getParent()).setLayoutParams(layoutParams);
+////            tv.getParent().requestLayout();
+//        }
+//    }
+
+    public class URLDrawable extends BitmapDrawable {
+        protected Drawable drawable;
+
+        @Override
+        public void draw(Canvas canvas) {
+            // override the draw to facilitate refresh function later
+            if (drawable != null) {
+                drawable.draw(canvas);
+            }
+        }
+    }
+
+    public class URLImageParserByAsyncTask implements Html.ImageGetter {
+        Context c;
+        View container;
+
+        public URLImageParserByAsyncTask(View t, Context c) {
+            this.c = c;
+            this.container = t;
+        }
+
+        public Drawable getDrawable(String source) {
+            if (!source.contains("http")) {
+                source = QuestionDetailActivity.mHost + source;
+            }
+            URLDrawable urlDrawable = new URLDrawable();
+
+            ImageGetterAsyncTask asyncTask =
+                    new ImageGetterAsyncTask(urlDrawable);
+
+            asyncTask.execute(source);
+
+            return urlDrawable;
+        }
+
+        public class ImageGetterAsyncTask extends AsyncTask<String, Void, Drawable> {
+            URLDrawable urlDrawable;
+
+            public ImageGetterAsyncTask(URLDrawable d) {
+                this.urlDrawable = d;
+            }
+
+            @Override
+            protected Drawable doInBackground(String... params) {
+                String source = params[0];
+                return fetchDrawable(source);
+            }
+
+            @Override
+            protected void onPostExecute(Drawable result) {
+                // set the correct bound according to the result from HTTP call
+                urlDrawable.setBounds(0, 0, 0 + result.getIntrinsicWidth(), 0
+                        + result.getIntrinsicHeight());
+
+                urlDrawable.drawable = result;
+
+                URLImageParserByAsyncTask.this.container.invalidate();
+                TextView tv = (TextView) URLImageParserByAsyncTask.this.container;
+                tv.setText(tv.getText());
+
+//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//                ((LinearLayout) tv.getParent()).setLayoutParams(layoutParams);
+//                tv.getParent().requestLayout();
+            }
+
+            public Drawable fetchDrawable(String urlString) {
+                try {
+                    InputStream is = fetch(urlString);
+                    Drawable drawable = Drawable.createFromStream(is, "src");
+                    drawable.setBounds(0, 0, 0 + drawable.getIntrinsicWidth(), 0
+                            + drawable.getIntrinsicHeight());
+                    return drawable;
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            /**
+             * Http获取图片
+             *
+             * @param urlString
+             * @return
+             * @throws MalformedURLException
+             * @throws IOException
+             */
+            private InputStream fetch(String urlString) throws MalformedURLException, IOException {
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+                HttpGet request = new HttpGet(urlString);
+                HttpResponse response = httpClient.execute(request);
+                return response.getEntity().getContent();
+            }
+        }
+    }
+
+    private Html.ImageGetter imgGetter = new Html.ImageGetter() {
+        @Override
+        public Drawable getDrawable(String source) {
+            if (!source.contains("http")) {
+                source = QuestionDetailActivity.mHost + source;
+            }
+            Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
+            try {
+                mAqueryItem.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, null, AQuery.FADE_IN_NETWORK);
+                Toast.makeText(mContext, "加载完成", 500).show();
+                Bitmap bitmap = mAqueryItem.getCachedImage(source);
+                float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
+                float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
+                if (showMaxWidth < bitmap.getWidth()) {
+                    bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, mContext);
+                } else if (showMinWidth >= bitmap.getWidth()) {
+                    bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
+                }
+                drawable = new BitmapDrawable(bitmap);
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            } catch (Exception ex) {
+                Log.d("imageURL--->", ex.toString());
+            }
+            return drawable;
+        }
+    };
+
 }
