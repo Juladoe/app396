@@ -1,6 +1,11 @@
 package com.edusoho.kuozhi.ui.course;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,15 +18,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.ShardListAdapter;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -42,11 +51,19 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14-8-26.
@@ -95,7 +112,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mMenuDrawer = MenuDrawer.attach(
                 mActivity, MenuDrawer.Type.OVERLAY, Position.RIGHT, MenuDrawer.MENU_DRAG_WINDOW);
         mMenuDrawer.setContentView(R.layout.course_details);
-        mMenuDrawer.setMenuSize((int)(EdusohoApp.screenW * 0.8f));
+        mMenuDrawer.setMenuSize((int) (EdusohoApp.screenW * 0.8f));
         mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
 
         mMenuDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
@@ -144,7 +161,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         switch (type) {
             case SHOW_COURSE_PIC:
                 AppUtil.animForHeight(
-                    new EdusohoAnimWrap(mCoursePicView), 0, mCoursePicHeight, 320);
+                        new EdusohoAnimWrap(mCoursePicView), 0, mCoursePicHeight, 320);
                 break;
             case CHANGE_FRAGMENT:
                 loadCoureDetailsFragment(data.getString(FRAGMENT));
@@ -231,14 +248,14 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         return mCoursePicView;
     }
 
-    public void addCoursePic()
-    {
+    public void addCoursePic() {
         ViewGroup coursePicParent = (ViewGroup) mCoursePicView.getParent();
         if (coursePicParent == null) {
             Log.d(null, "add course pic->");
             mRootContent.addView(mCoursePicView);
         }
     }
+
     private void loadCoursePic() {
         AQuery aQuery = new AQuery(mCoursePicView);
         aQuery.image(mCoursePic, false, true, 0, R.drawable.noram_course);
@@ -251,6 +268,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         Intent intent = new Intent(Intent.ACTION_SEND);
         Course course = mCourseDetailsResult.course;
         intent.setType("image/*");
+        /*
         File dir = AQUtility.getCacheDir(mContext);
         File file = AQUtility.getCacheFile(dir, course.largePicture);
         file.renameTo(new File(dir, "shard.png"));
@@ -259,7 +277,71 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         intent.putExtra(Intent.EXTRA_STREAM, imageUri);
         intent.putExtra(Intent.EXTRA_TEXT, AppUtil.coverCourseAbout(course.about));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(intent, "分享课程"));
+        */
+        PackageManager pManager = getPackageManager();
+        List<ResolveInfo> list = pManager.queryIntentActivities(
+                intent, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+        list = filterShardList(list);
+        if (list.isEmpty()) {
+            longToast("系统没有可分享的应用!");
+            return;
+        }
+        ListView listView = new ListView(mContext);
+        ShardListAdapter adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                shardToMM(mContext, 0);
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog alertDialog = builder
+                .setTitle("分享课程")
+                .setView(listView)
+                .create();
+        alertDialog.show();
+
+        //
+    }
+
+    private List<ResolveInfo> filterShardList(List<ResolveInfo> list) {
+        List<ResolveInfo> newList = new ArrayList<ResolveInfo>();
+        for (ResolveInfo info : list) {
+            String packageName = info.activityInfo.packageName;
+            if ("com.tencent.mm".equals(packageName)) {
+                newList.add(info);
+            }
+        }
+
+        return newList;
+    }
+
+    private void shardToMM(Context context, int type) {
+        String APP_ID = "wx91c11946311906a3";
+        IWXAPI wxApi;
+        wxApi = WXAPIFactory.createWXAPI(context, APP_ID, true);
+        wxApi.registerApp(APP_ID);
+        WXTextObject wXTextObject = new WXTextObject();
+        wXTextObject.text = "分享课程";
+        WXWebpageObject wxobj = new WXWebpageObject();
+        wxobj.webpageUrl = "";
+        WXMediaMessage wXMediaMessage = new WXMediaMessage();
+        wXMediaMessage.mediaObject = wxobj;
+        wXMediaMessage.description = "";
+        wXMediaMessage.title = context.getString(R.string.app_name);
+        BitmapFactory BitmapFactory = null;
+        wXMediaMessage.setThumbImage(BitmapFactory.decodeResource(
+                context.getResources(), R.drawable.icon));
+
+        //WXWebpageObject wxobj = new WXWebpageObject();
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.scene = type;
+        req.transaction = System.currentTimeMillis() + "";
+        req.message = wXMediaMessage;
+        wxApi.sendReq(req);
     }
 
     private void loadCourseInfo() {

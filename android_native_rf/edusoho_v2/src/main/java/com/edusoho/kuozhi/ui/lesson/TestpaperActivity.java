@@ -26,12 +26,14 @@ public class TestpaperActivity extends CourseDetailsTabActivity {
 
     private int mTestId;
     private int mLessonId;
+    private HashMap<QuestionType, Object> answerMap;
 
     private HashMap<QuestionType, ArrayList<QuestionTypeSeq>> mQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        answerMap = new HashMap<QuestionType, Object>();
     }
 
     @Override

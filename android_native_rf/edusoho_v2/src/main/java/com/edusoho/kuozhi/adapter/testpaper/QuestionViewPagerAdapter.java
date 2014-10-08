@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.adapter.testpaper;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,30 +40,29 @@ public abstract class QuestionViewPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    /**
-     * 获取题干
-     * @param question
-     * @param index
-     * @return
-     */
-    protected String getQuestionStem(Question question, int index)
+    protected Spanned getQuestionStem(Question mQuestion, int mIndex)
     {
-        switch (question.type) {
+        String stem = "";
+        switch (mQuestion.type) {
             case choice:
             case uncertain_choice:
             case single_choice:
-                return String.format("%d, (%s) %s %s", index, question.type.title(), question.stem, "( )");
+                stem = String.format("%d, (%s) %s %s", mIndex, mQuestion.type.title(), mQuestion.stem, "( )");
+                break;
             case essay:
-                return index + question.type.title() + question.stem;
+                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
+                break;
             case material:
-                return index + question.type.title() + question.stem;
+                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
+                break;
             case determine:
-                return index + ", " + question.stem;
+                stem = mIndex + ", " + mQuestion.stem;
+                break;
             case fill:
-                return index + question.type.title() + question.stem;
+                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
         }
 
-        return "";
+        return Html.fromHtml(stem);
     }
 
     @Override
