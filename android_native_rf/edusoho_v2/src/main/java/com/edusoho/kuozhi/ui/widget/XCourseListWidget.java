@@ -85,7 +85,7 @@ public class XCourseListWidget extends FrameLayout {
     private PullToRefreshScrollView initEmptyLayout()
     {
         PullToRefreshScrollView scrollView = new PullToRefreshScrollView(mContext);
-        scrollView.setBackgroundColor(Color.GREEN);
+        scrollView.getRefreshableView().setFillViewport(true);
         scrollView.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         scrollView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
