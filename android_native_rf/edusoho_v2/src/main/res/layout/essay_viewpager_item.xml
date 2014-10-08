@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.ui.widget.testpaper.EssayQuestionWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:paddingTop="28dp"
+    android:paddingBottom="28dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@id/question_stem"
+        android:textColor="@color/question_stem"
+        android:textSize="@dimen/question_stem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:id="@+id/essay_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:padding="5dp"
+        android:background="@drawable/card_bg"
+        android:hint="你的回答..."
+        android:lines="8"
+        android:maxLines="10"
+        android:layout_below="@id/question_stem" />
+
+    <LinearLayout
+        android:layout_below="@id/essay_content"
+        android:id="@+id/essay_tools_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_bold"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_italic"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_underline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_under_line"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_color"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_order_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_order_list"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_unorder_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_unorder_list"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/widget_photo"
+            android:background="@drawable/icon_camera"
+            android:clickable="true"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_action_move_gray"
+            android:background="@drawable/icon_photo"
+            android:clickable="true"
+            android:layout_weight="1" />
+    </LinearLayout>
+</com.edusoho.kuozhi.ui.widget.testpaper.EssayQuestionWidget>

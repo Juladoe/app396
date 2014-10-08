@@ -292,7 +292,10 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                shardToMM(mContext, 0);
+                //SendMessageToWX.Req.WXSceneTimeline
+                ResolveInfo info = (ResolveInfo) adapterView.getItemAtPosition(i);
+                Log.d(null, "name->" + info.activityInfo.name);
+                shardToMM(mContext, SendMessageToWX.Req.WXSceneSession);
             }
         });
 
@@ -326,7 +329,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         WXTextObject wXTextObject = new WXTextObject();
         wXTextObject.text = "分享课程";
         WXWebpageObject wxobj = new WXWebpageObject();
-        wxobj.webpageUrl = "";
+        wxobj.webpageUrl = "http://www.edusoho.com";
         WXMediaMessage wXMediaMessage = new WXMediaMessage();
         wXMediaMessage.mediaObject = wxobj;
         wXMediaMessage.description = "";
