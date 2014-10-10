@@ -54,6 +54,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
             public void setArguments(Bundle bundle) {
                 bundle.putInt(CATEGORY_ID, mCategoryId);
                 bundle.putString(SEARCH_TEXT, mSearchText);
+                bundle.putInt(TYPE, mType);
                 bundle.putString(CourseFragment.TITLE, mTitle);
             }
         });

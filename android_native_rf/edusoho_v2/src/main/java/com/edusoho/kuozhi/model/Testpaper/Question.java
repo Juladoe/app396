@@ -27,4 +27,5 @@ public class Question {
 
     public ArrayList<String> answer;
     public ArrayList<String> metas;
+    public TestResult testResult;
 }

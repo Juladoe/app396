@@ -1,7 +1,10 @@
 package com.edusoho.kuozhi.ui.lesson;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,13 +16,16 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MaterialType;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Question.Answer;
+import com.edusoho.kuozhi.model.Testpaper.PaperResult;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.Testpaper;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperFullResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperCardFragment;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by howzhi on 14-8-31.
@@ -39,14 +47,41 @@ public class TestpaperActivity extends CourseDetailsTabActivity
     private int mTestId;
     private int mLessonId;
     private MenuItem timeMenuItem;
+    private Timer mTimer;
+    private int mLimitedTime;
+    private boolean mIsRun;
+    private Testpaper mTestpaper;
+    private PaperResult mTestpaperResult;
     private HashMap<QuestionType, ArrayList<Answer>> answerMap;
 
     private HashMap<QuestionType, ArrayList<QuestionTypeSeq>> mQuestions;
+
+    private static TestpaperActivity testpaperActivity;
+
+    private static final int UPDATE_TIME     = 0001;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case UPDATE_TIME:
+                    timeMenuItem.setTitle(getLimitedTime(mLimitedTime));
+                    break;
+            }
+        }
+    };
+
+    public ArrayList<Answer> getAnswerByQT(QuestionType questionType)
+    {
+        return answerMap.get(questionType);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app.registMsgSource(this);
+        testpaperActivity = this;
         answerMap = new HashMap<QuestionType, ArrayList<Answer>>();
     }
 
@@ -56,8 +91,8 @@ public class TestpaperActivity extends CourseDetailsTabActivity
         mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
         mTestId = data.getIntExtra(Const.MEDIA_ID, 0);
         mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
-        titles = Const.TESTPAPER_QUESTION_TYPE;
-        fragmentArrayList = Const.TESTPAPER_QUESTIONS;
+        titles = data.getStringArrayExtra(TITLES);
+        fragmentArrayList = data.getStringArrayExtra(LISTS);
         mMenu = R.menu.testpaper_menu;
 
         data.putExtra(FRAGMENT_DATA, new Bundle());
@@ -65,8 +100,19 @@ public class TestpaperActivity extends CourseDetailsTabActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.testpaper_menu_card){
+        int id = item.getItemId();
+        if (id == R.id.testpaper_menu_card){
+            if (mQuestions == null) {
+                return true;
+            }
             showTestpaperCard();
+            return true;
+        } else if (id == R.id.testpaper_menu_time) {
+            if (mIsRun) {
+                stopTask();
+            } else {
+                startTask();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -152,12 +198,16 @@ public class TestpaperActivity extends CourseDetailsTabActivity
                 }
 
                 mQuestions = result.items;
+                mTestpaper = result.testpaper;
+                mTestpaperResult = result.testpaperResult;
 
                 for (QuestionType qt : mQuestions.keySet()) {
                     ArrayList<QuestionTypeSeq> seqs = mQuestions.get(qt);
                     ArrayList<Answer> answerList = new ArrayList<Answer>();
-
                     for (QuestionTypeSeq seq : seqs) {
+                        if (seq == null) {
+                            continue;
+                        }
                         if (seq.questionType == QuestionType.material) {
                             for (QuestionTypeSeq itemSeq : seq.items) {
                                 answerList.add(new Answer());
@@ -169,14 +219,54 @@ public class TestpaperActivity extends CourseDetailsTabActivity
                     answerMap.put(qt, answerList);
                 }
 
-                SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
-                timeMenuItem.setTitle(format.format(new Date(result.testpaper.limitedTime * 60 * 1000)));
+                mLimitedTime = result.testpaper.limitedTime * 60;
+                startTask();
                 app.sendMessage(Const.TESTPAPER_REFRESH_DATA, null);
             }
         });
     }
 
-    private void getLimitedTime(int limitedTime)
+    private void startTask()
+    {
+        mTimer = new Timer();
+        mTimer.schedule(getTask(), 0, 1000);
+    }
+
+    private void stopTask()
+    {
+        PopupDialog dialog = PopupDialog.createNormal(
+                mActivity, "暂停考试", "考试暂停中！");
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                startTask();
+            }
+        });
+        dialog.show();
+        mIsRun = false;
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
+
+    private TimerTask getTask()
+    {
+        return new TimerTask(){
+            @Override
+            public void run() {
+                mIsRun = true;
+                if (mLimitedTime == 0) {
+                    mTimer.cancel();
+                    return;
+                }
+                mLimitedTime --;
+                mHandler.obtainMessage(UPDATE_TIME).sendToTarget();
+            }
+        };
+    }
+
+    private String getLimitedTime(int limitedTime)
     {
         int hh = limitedTime / 3600;
         int mm = limitedTime % 3600 / 60;
@@ -188,6 +278,8 @@ public class TestpaperActivity extends CourseDetailsTabActivity
         } else {
             strTemp = String.format("%02d:%02d", mm, ss);
         }
+
+        return strTemp;
     }
 
     public HashMap<QuestionType, ArrayList<Answer>> getAnswer()
@@ -200,11 +292,59 @@ public class TestpaperActivity extends CourseDetailsTabActivity
         return mQuestions;
     }
 
+    public HashMap<QuestionType, ArrayList<QuestionTypeSeq>> getTestpaperQuestions()
+    {
+        HashMap<QuestionType, ArrayList<QuestionTypeSeq>> testpaperQuestions
+                = new HashMap<QuestionType, ArrayList<QuestionTypeSeq>>();
+
+        for (QuestionType qt : mQuestions.keySet()) {
+            if (qt == QuestionType.material) {
+                ArrayList<QuestionTypeSeq> questionTypeSeqs = mQuestions.get(qt);
+                ArrayList<QuestionTypeSeq> materialItems = new ArrayList<QuestionTypeSeq>();
+                for (QuestionTypeSeq seq : questionTypeSeqs) {
+                    materialItems.addAll(seq.items);
+                }
+                testpaperQuestions.put(qt, materialItems);
+            }
+            testpaperQuestions.put(qt, mQuestions.get(qt));
+        }
+
+        return testpaperQuestions;
+    }
+
     public ArrayList<QuestionTypeSeq> getQuesions(QuestionType type)
     {
         if (mQuestions == null) {
             return null;
         }
         return mQuestions.get(type);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopTask();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopTask();
+        testpaperActivity = null;
+    }
+
+    public int getUsedTime()
+    {
+        return mTestpaper.limitedTime - mLimitedTime;
+    }
+
+    public PaperResult getTestpaperResult()
+    {
+        return mTestpaperResult;
+    }
+
+    public static TestpaperActivity getInstance()
+    {
+        return testpaperActivity;
     }
 }

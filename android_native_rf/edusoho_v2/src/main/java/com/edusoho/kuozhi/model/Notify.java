@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.model;
 
+import java.util.HashMap;
+
 /**
  * Created by howzhi on 14-5-25.
  */
@@ -8,19 +10,9 @@ public class Notify {
     public int userId;
     public String createdTime;
     public int isRead;
-    public Content content;
+    public HashMap<String, Object> content;
     public String message;
-
-    public class Content{
-        public int threadId;
-        public int threadUserId;
-        public String threadUserNickname;
-        public String threadTitle;
-        public String threadType;
-        public int courseId;
-        public String courseTitle;
-        public String message;
-    }
+    public String type;
 
     public enum NotifyEnum {
         QUESTION, EMPTY;
@@ -29,7 +21,7 @@ public class Notify {
         {
             NotifyEnum item = EMPTY;
             try {
-                item = valueOf(name.toUpperCase());
+                item = valueOf(name);
             } catch (Exception e) {
                 return EMPTY;
             }

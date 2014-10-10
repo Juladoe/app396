@@ -29,69 +29,26 @@
         android:layout_below="@id/question_stem" />
 
     <LinearLayout
+        android:gravity="right"
         android:layout_below="@id/essay_content"
         android:id="@+id/essay_tools_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/iv_bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_bold"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/iv_italic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_italic"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/iv_underline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_under_line"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/iv_font_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_color"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/iv_order_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_order_list"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/iv_unorder_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_unorder_list"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/iv_camera"
+            android:id="@+id/essay_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/widget_photo"
             android:background="@drawable/icon_camera"
-            android:clickable="true"
-            android:layout_weight="1" />
+            android:clickable="true" />
 
         <ImageView
-            android:id="@+id/iv_photo"
+            android:id="@+id/essay_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_action_move_gray"
             android:background="@drawable/icon_photo"
-            android:clickable="true"
-            android:layout_weight="1" />
+            android:clickable="true"/>
     </LinearLayout>
 </com.edusoho.kuozhi.ui.widget.testpaper.EssayQuestionWidget>

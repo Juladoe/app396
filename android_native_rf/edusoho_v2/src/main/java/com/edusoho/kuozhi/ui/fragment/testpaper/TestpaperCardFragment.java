@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.edusoho.kuozhi.adapter.testpaper.TestpaperCardAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Review;
+import com.edusoho.kuozhi.model.Testpaper.PaperResult;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -46,6 +48,7 @@ import java.util.HashMap;
 public class TestpaperCardFragment extends DialogFragment {
 
     private LinearLayout mCardLayout;
+    private EdusohoButton mSubmitBtn;
     private TestpaperActivity mTestpaperActivity;
 
     @Override
@@ -73,6 +76,7 @@ public class TestpaperCardFragment extends DialogFragment {
     private void initView(View view)
     {
         LayoutInflater layoutInflater = LayoutInflater.from(mTestpaperActivity);
+        mSubmitBtn = (EdusohoButton) view.findViewById(R.id.testpaper_card_submit);
         mCardLayout = (LinearLayout) view.findViewById(R.id.testpaper_card_layout);
 
         HashMap<QuestionType, ArrayList<QuestionTypeSeq>> questionTypeArrayListHashMap =
@@ -101,6 +105,47 @@ public class TestpaperCardFragment extends DialogFragment {
             label.setText(type.title());
             mCardLayout.addView(cardView);
         }
+
+        mSubmitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PaperResult paperResult = mTestpaperActivity.getTestpaperResult();
+                RequestUrl requestUrl = mTestpaperActivity.app.bindUrl(
+                        Const.FINISH_TESTPAPER, true);
+                HashMap<String, String> params = requestUrl.params;
+                params.put("usedTime", mTestpaperActivity.getUsedTime() + "");
+                params.put("id", paperResult.id + "");
+
+                HashMap<QuestionType, ArrayList<QuestionTypeSeq>> questionMap = mTestpaperActivity.getTestpaperQuestions();
+                HashMap<QuestionType, ArrayList<Answer>> answerMap = mTestpaperActivity.getAnswer();
+
+                for (QuestionType qt : questionMap.keySet()) {
+                    ArrayList<QuestionTypeSeq> questionTypeSeqs = questionMap.get(qt);
+                    ArrayList<Answer> answers = answerMap.get(qt);
+                    int length = questionTypeSeqs.size();
+                    for (int i=0; i < length; i++) {
+                        QuestionTypeSeq questionTypeSeq = questionTypeSeqs.get(i);
+                        Answer answer = answers.get(i);
+                        if (!answer.isAnswer) {
+                            continue;
+                        }
+                        for (Object object : answer.data) {
+                            params.put(
+                                    String.format("data[%d][]", questionTypeSeq.questionId),
+                                    object.toString());
+                        }
+                    }
+                }
+
+                Log.d(null, "result->" + params);
+                mTestpaperActivity.ajaxPost(requestUrl, new ResultCallback(){
+                    @Override
+                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                        Log.d(null, "result->" + object);
+                    }
+                });
+            }
+        });
     }
 
     private ArrayList<QuestionTypeSeq> getMaterialItems(

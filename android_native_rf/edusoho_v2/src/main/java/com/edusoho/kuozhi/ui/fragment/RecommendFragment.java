@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
+import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolAnnouncement;
 import com.edusoho.kuozhi.model.SchoolBanner;
 import com.edusoho.kuozhi.ui.course.CourseListActivity;
@@ -91,12 +92,12 @@ public class RecommendFragment extends BaseFragment {
         mNewCourses.setShowMoreBtnClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(null, "mRecommendCourses click->");
+                Log.d(null, "mNewCourses click->");
                 app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.LASTEST);
                         startIntent.putExtra(CourseListActivity.TITLE, "最新课程");
-                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.RECOMMEND);
                     }
                 });
             }
@@ -130,9 +131,12 @@ public class RecommendFragment extends BaseFragment {
                 }.getType());
 
                 if (schoolBanners == null || schoolBanners.isEmpty()) {
-                    return;
+                    schoolBanners = new ArrayList<SchoolBanner>();
+                    schoolBanners.add(SchoolBanner.def());
                 }
-                SchoolBannerAdapter adapter = new SchoolBannerAdapter(app, schoolBanners);
+
+                SchoolBannerAdapter adapter = new SchoolBannerAdapter(
+                        mActivity, schoolBanners);
                 mSchoolBanner.setAdapter(adapter);
                 mSchoolBanner.setCurrentItem(0);
             }
@@ -180,6 +184,7 @@ public class RecommendFragment extends BaseFragment {
                 }.getType());
 
                 if (schoolAnnouncement == null) {
+                    mSchoolAnnouncement.setText("暂无网校公告");
                     return;
                 }
                 mSchoolAnnouncement.setText(schoolAnnouncement.info);

@@ -84,6 +84,12 @@ public class Const {
      */
     public static final String QUESTION = "Course/getCourseThreads";
 
+    public static final String TESTPAPER_RESULT = "Testpaper/getTestpaperResult";
+    public static final String FINISH_TESTPAPER = "Testpaper/finishTestpaper";
+    public static final String NOTIFICATION = "User/getUserNotification";
+    public static final String LASTER_LEARN_COURSE = "User/getUserLastlearning";
+    public static final String LASTER_LEARN_LESSON = "Course/getLearnStatus";
+
     /**
      * 获取所有回答
      * 传递参数：courseId，threadId

@@ -21,8 +21,10 @@ import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.ui.widget.MyInfoPluginListView;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 
 /**
@@ -126,7 +128,10 @@ public class MyInfoFragment extends BaseFragment {
         AQuery aQuery = new AQuery(mActivity);
         aQuery.id(mUserLogo).image(
                 app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
-        //mLearnStatusWidget.initialise(mActivity, "", null);
+
+        if (app.loginUser != null) {
+            mLearnStatusWidget.initialise(mActivity);
+        }
     }
 
     @Override
@@ -193,6 +198,9 @@ public class MyInfoFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (app.loginUser != null) {
+            mLearnStatusWidget.initialise(mActivity);
+        }
     }
 
     @Override

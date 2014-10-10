@@ -41,7 +41,6 @@ import java.util.TimerTask;
 public class WebVideoLessonFragment extends BaseFragment {
 
     private boolean isFullScreen;
-    private Context mContext;
     private boolean isAutoScreen;
     private NormalCallback mNormalCallback;
     private WebVideoWebChromClient mWebVideoWebChromClient;
@@ -67,12 +66,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.webvideo_fragment);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        fullScreen();
     }
 
     @Override
@@ -349,5 +343,11 @@ public class WebVideoLessonFragment extends BaseFragment {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        webViewStop();
     }
 }

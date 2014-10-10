@@ -42,18 +42,15 @@ public class CourseListScrollListener implements AbsListView.OnScrollListener, A
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int index,
                             long arg3) {
-        Object object = parent.getItemAtPosition(index);
-        if (object instanceof Course) {
-            final Course course = (Course) object;
-            EdusohoApp.app.mEngine.runNormalPluginForResult(
-                    "CourseInfoActivity", mActivity, Const.COURSEINFO_REQUEST, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra("courseId", course.id);
-                    startIntent.putExtra("largePicture", course.largePicture);
-                    startIntent.putExtra("courseTitle", course.title);
-                }
-            });
-        }
+        final Course course = (Course) parent.getItemAtPosition(index);
+        mActivity.app.mEngine.runNormalPlugin(
+                CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(Const.COURSE_ID, course.id);
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, course.title);
+                startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
+            }
+        });
     }
 }

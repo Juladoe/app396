@@ -74,8 +74,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            returnHome();
-            /*
+            //returnHome();
             synchronized (mContext) {
                 if (mIsExit) {
                     mIsExit = false;
@@ -91,7 +90,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
                     }
                 }, 2000);
             }
-            */
             return true;
         }
         return super.onKeyDown(keyCode, event);

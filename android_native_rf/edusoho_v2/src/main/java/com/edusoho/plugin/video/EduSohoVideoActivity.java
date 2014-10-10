@@ -55,7 +55,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
 
         mMediaController = (CustomMediaController) findViewById(R.id.custom_mediaController);
         mMediaController.setVideoView(mVideoView);
-        mMediaController.setActivity(mContext);
+        mMediaController.setActivity(null);
 
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override

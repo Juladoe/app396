@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
@@ -24,7 +25,6 @@ public class QuestionAdapter extends QuestionViewPagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         QuestionTypeSeq questionTypeSeq = mList.get(position);
-
         View view = switchQuestionWidget(questionTypeSeq, position + 1);
         container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return view;

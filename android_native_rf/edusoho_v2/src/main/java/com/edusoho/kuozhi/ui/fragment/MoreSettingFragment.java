@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 
 /**
@@ -30,6 +31,9 @@ public class MoreSettingFragment extends BaseFragment {
 
     @ViewUtil("more_setting_qrsearch")
     private View mSearchBtn;
+
+    @ViewUtil("more_setting_message")
+    private View mMessageBtn;
 
     @Override
     public String getTitle() {
@@ -81,18 +85,18 @@ public class MoreSettingFragment extends BaseFragment {
         mLogoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EdusohoMaterialDialog.createMuilt(
+                PopupDialog.createMuilt(
                         mActivity,
                         "退出提示",
                         "是否退出登录?",
-                        new EdusohoMaterialDialog.PopupClickListener() {
+                        new PopupDialog.PopupClickListener() {
                             @Override
                             public void onClick(int button) {
-                                if (button == EdusohoMaterialDialog.OK) {
+                                if (button == PopupDialog.OK) {
                                     logout();
                                 }
                             }
-                }).show();
+                        }).show();
             }
         });
 
@@ -100,6 +104,19 @@ public class MoreSettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 startAcitivity("QrSchoolActivity", null);
+            }
+        });
+
+        mMessageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MessageFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
+                    }
+                });
             }
         });
     }

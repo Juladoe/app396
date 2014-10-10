@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.model.Testpaper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by howzhi on 14-9-23.
  */
@@ -18,4 +21,11 @@ public class Testpaper {
     public String createdTime;
     public String updatedTime;
 
+    public Metas metas;
+
+    public static class Metas
+    {
+        public HashMap<QuestionType, String> missScore;
+        public ArrayList<QuestionType> question_type_seq;
+    }
 }

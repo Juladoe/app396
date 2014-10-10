@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -11,11 +13,17 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.TestpaperInfoAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
+import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.Testpaper;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperItem;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperResult;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
+import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
@@ -51,8 +59,11 @@ public class TestpaperLessonFragment extends BaseFragment {
 
     private int mTestId;
     private int mLessonId;
+    private int mResultId;
     private String mStstus;
     private String mTitle;
+
+    private Testpaper mTestpaper;
 
     @Override
     public String getTitle() {
@@ -73,6 +84,7 @@ public class TestpaperLessonFragment extends BaseFragment {
         if (bundle != null) {
             mTestId = bundle.getInt(Const.MEDIA_ID);
             mLessonId = bundle.getInt(Const.LESSON_ID);
+            mResultId = bundle.getInt(RESULT_ID);
             mStstus = bundle.getString(Const.STATUS);
             mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
         }
@@ -103,6 +115,8 @@ public class TestpaperLessonFragment extends BaseFragment {
                 bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
                 bundle.putInt(Const.MEDIA_ID, mTestId);
                 bundle.putInt(Const.LESSON_ID, mLessonId);
+                bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
+                bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
                 startAcitivityWithBundle("TestpaperActivity", bundle);
             }
         });
@@ -110,9 +124,61 @@ public class TestpaperLessonFragment extends BaseFragment {
         mTestpaperShowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, mTitle + " 考试结果");
+                        startIntent.putExtra(TestpaperResultFragment.RESULT_ID, mResultId);
+                        startIntent.putExtra(Const.STATUS, mStstus);
+                    }
+                });
             }
         });
+    }
+
+    private String[] getTestpaperQSeq()
+    {
+        ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
+        String[] TESTPAPER_QUESTION_TYPE = new String[questionTypeSeqs.size()];
+        for (int i=0; i < TESTPAPER_QUESTION_TYPE.length; i++) {
+            TESTPAPER_QUESTION_TYPE[i] = questionTypeSeqs.get(i).title();
+        }
+
+        return TESTPAPER_QUESTION_TYPE;
+    }
+
+    private String[] getTestpaperFragments()
+    {
+        ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
+        String[] TESTPAPER_QUESTIONS = new String[questionTypeSeqs.size()];
+        for (int i=0; i < TESTPAPER_QUESTIONS.length; i++) {
+            switch (questionTypeSeqs.get(i)) {
+                case choice:
+                    TESTPAPER_QUESTIONS[i] = "ChoiceFragment";
+                    break;
+                case single_choice:
+                    TESTPAPER_QUESTIONS[i] = "SingleChoiceFragment";
+                    break;
+                case essay:
+                    TESTPAPER_QUESTIONS[i] = "EssayFragment";
+                    break;
+                case uncertain_choice:
+                    TESTPAPER_QUESTIONS[i] = "UncertainChoiceFragment";
+                    break;
+                case fill:
+                    TESTPAPER_QUESTIONS[i] = "FillFragment";
+                    break;
+                case determine:
+                    TESTPAPER_QUESTIONS[i] = "DetermineFragment";
+                    break;
+                case material:
+                    TESTPAPER_QUESTIONS[i] = "MaterialFragment";
+                    break;
+            }
+        }
+
+        return TESTPAPER_QUESTIONS;
     }
 
     @Override
@@ -147,6 +213,7 @@ public class TestpaperLessonFragment extends BaseFragment {
                     return;
                 }
 
+                mTestpaper = testpaperResult.testpaper;
                 initTestPaperItem(testpaperResult);
             }
         });
@@ -166,12 +233,12 @@ public class TestpaperLessonFragment extends BaseFragment {
         contents.add(new TestpaperItem(
                 "试卷简介", new String[]{
                 getTestpaperInstruction(testpaperResult.items, testpaper.score),
-                String.format("考试时间:%d分钟", testpaper.limitedTime)
+                String.format("考试时间:%d分钟", testpaper.limitedTime == 0 ? "无限" : testpaper.limitedTime)
         }, true
         ));
         contents.add(new TestpaperItem(
                 "考试提醒", new String[]{
-                String.format("您即将进行时长为%s的考试，请做好相关准备。",
+                String.format("您即将进行时长为%s分钟的考试，请做好相关准备。",
                         testpaper.limitedTime == 0 ? "无限" : testpaper.limitedTime + ""),
                 "做好相关准备后，点击“进入考试“即可开始考试"
         }, true

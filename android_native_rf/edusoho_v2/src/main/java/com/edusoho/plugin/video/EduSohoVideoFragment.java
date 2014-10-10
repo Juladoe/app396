@@ -42,7 +42,7 @@ public class EduSohoVideoFragment extends Fragment implements MediaPlayer.OnErro
 
         mMediaController = (CustomMediaController) view.findViewById(R.id.custom_mediaController);
         mMediaController.setVideoView(mVideoView);
-        mMediaController.setActivity(mContext);
+        mMediaController.setActivity(null);
 
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override

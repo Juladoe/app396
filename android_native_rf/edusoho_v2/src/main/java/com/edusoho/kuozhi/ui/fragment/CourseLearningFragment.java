@@ -262,6 +262,12 @@ public class CourseLearningFragment extends BaseFragment {
         mCourseLessonList.onShow();
         showBtnLayout(mBtnLayout);
 
+        mCourseStatusView.initialiseByCourse(
+                mActivity,
+                mCourseDetailsResult.course,
+                mCourseId,
+                mCourseLessonList.getLessonListJson()
+        );
         app.sendMsgToTarget(
                 CourseDetailsActivity.HIDE_COURSE_PIC, null, CourseDetailsActivity.class);
         mCommitBtn.setOnClickListener(new View.OnClickListener() {

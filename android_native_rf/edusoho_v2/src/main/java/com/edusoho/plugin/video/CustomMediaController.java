@@ -15,7 +15,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.course.LessonActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,7 +32,7 @@ import java.util.TimerTask;
 public class CustomMediaController extends RelativeLayout {
 
     private Context mContext;
-    private Activity mActivity;
+    private ActionBarBaseActivity mActivity;
     private ImageView playBtn;
     private ImageView customRotationBtn;
     private ImageView prevBtn;
@@ -69,7 +72,7 @@ public class CustomMediaController extends RelativeLayout {
         initView();
     }
 
-    public void setActivity(Activity activity)
+    public void setActivity(ActionBarBaseActivity activity)
     {
         mActivity = activity;
     }
@@ -174,7 +177,7 @@ public class CustomMediaController extends RelativeLayout {
     {
         mIsStop = true;
         mediaPlayer.pause();
-        playBtn.setImageResource(R.drawable.video_play);
+        playBtn.setImageResource(R.drawable.video_pause);
     }
 
     /**
@@ -209,8 +212,12 @@ public class CustomMediaController extends RelativeLayout {
                 int screenOrientation = mActivity.getRequestedOrientation();
                 if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    EdusohoApp.app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
+                    mActivity.showActionBar();
                 } else {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    EdusohoApp.app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
+                    mActivity.hideActionBar();
                 }
             }
         }
