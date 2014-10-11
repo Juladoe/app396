@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.School;
@@ -17,6 +18,7 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.LoginFragment;
 import com.edusoho.kuozhi.ui.fragment.RegistFragment;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +35,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     public static final String FRAGMENT_TYPE = "fragment_type";
     private int mFramgmentType = LOGIN_TYPE;
     private Handler workHandler;
+    private static boolean isRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +46,15 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     public static void start(Activity context)
     {
-        Intent intent = new Intent();
-        intent.setClass(context, LoginActivity.class);
-        context.startActivity(intent);
+        synchronized (context) {
+            if (isRun) {
+                return;
+            }
+            isRun = true;
+            Intent intent = new Intent();
+            intent.setClass(context, LoginActivity.class);
+            context.startActivity(intent);
+        }
     }
 
     public static void startForResult(Activity context)
@@ -160,5 +169,11 @@ public class LoginActivity extends ActionBarBaseActivity {
 
         fragmentTransaction.commit();
         setTitle(fragment.getTitle());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isRun = false;
     }
 }

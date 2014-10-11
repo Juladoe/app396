@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.listener.NormalCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +53,23 @@ public class MessageEngine {
         MessageType messageType = new MessageType(msgType, targetName);
 
         MessageCallback messageCallback = sourceMap.get(targetName);
+        if (messageCallback == null) {
+            return;
+        }
         messageCallback.invoke(new WidgetMessage(messageType, body));
+    }
+
+    public void sendMsgToTagetForCallback(
+            int msgType, Bundle body, Class target, NormalCallback callback)
+    {
+        String targetName = target.getSimpleName();
+        MessageType messageType = new MessageType(msgType, targetName);
+
+        MessageCallback messageCallback = sourceMap.get(targetName);
+        if (messageCallback == null) {
+            return;
+        }
+        messageCallback.invoke(new WidgetMessage(messageType, body, callback));
     }
 
     public void sendMsg(String msgType, Bundle body)

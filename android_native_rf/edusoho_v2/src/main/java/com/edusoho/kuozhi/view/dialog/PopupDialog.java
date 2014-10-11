@@ -58,6 +58,20 @@ public class PopupDialog extends Dialog{
 
     }
 
+    public void setOkListener(PopupClickListener clickListener)
+    {
+        mClickListener = clickListener;
+        mPopupOkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mClickListener != null) {
+                    mClickListener.onClick(OK);
+                }
+                dismiss();
+            }
+        });
+    }
+
     public void setTitle(String title)
     {
         popTitle.setText(title);

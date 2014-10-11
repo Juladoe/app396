@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -32,6 +33,14 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int index,
                             long arg3) {
         final LessonItem lesson = (LessonItem) parent.getItemAtPosition(index);
+
+        if (lesson.free != LessonItem.FREE && mActivity.app.loginUser == null) {
+            if (mActivity.app.loginUser == null) {
+                mActivity.longToast("请登录后学习！");
+                LoginActivity.start(mActivity);
+                return;
+            }
+        }
         mActivity.getCoreEngine().runNormalPlugin(
                 LessonActivity.TAG, mActivity, new PluginRunCallback() {
             @Override

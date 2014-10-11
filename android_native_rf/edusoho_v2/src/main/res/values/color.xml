@@ -289,4 +289,6 @@
     <color name="question_fill_text">#4d4d4d</color>
     <color name="color_red">#d9534f</color>
     <color name="splash_bg">#fbfbf9</color>
+    <color name="audio_fragment_bg">#4d4d4d</color>
+    <color name="testpaper_result_item_total">#ff4747</color>
 </resources>

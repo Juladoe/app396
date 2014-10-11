@@ -185,6 +185,12 @@ public class EdusohoApp extends Application{
         mEngine.getMessageEngine().sendMsgToTaget(msgType, body, target);
     }
 
+    public void sendMsgToTargetForCallback(
+            int msgType, Bundle body, Class target, NormalCallback callback)
+    {
+        mEngine.getMessageEngine().sendMsgToTagetForCallback(msgType, body, target, callback);
+    }
+
     public void appFinish()
     {
         for (Activity activity : runTask.values()) {

@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -594,5 +596,16 @@ public class AppUtil {
         } else {
             return upperBound;
         }
+    }
+
+    public static int getNumberLength(int number)
+    {
+        int length = 1;
+        while (number >= 10) {
+            length ++;
+            number = number / 10;
+        }
+
+        return length;
     }
 }

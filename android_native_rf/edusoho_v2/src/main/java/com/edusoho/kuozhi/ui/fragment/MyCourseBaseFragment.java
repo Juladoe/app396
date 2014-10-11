@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.widget.XCourseListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -62,6 +64,15 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
     protected AbstractCourseListAdapter getListAdapter()
     {
         return new ScrollListAdapter(mContext);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (app.loginUser == null) {
+            LoginActivity.start(activity);
+            return;
+        }
     }
 
     @Override

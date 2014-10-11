@@ -89,6 +89,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
 
         changeColor(currentColor);
         setPagetItem(mFragmentName);
+        mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
     }
 
     private void setPagetItem(String name)

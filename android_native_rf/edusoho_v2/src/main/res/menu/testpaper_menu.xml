@@ -5,6 +5,7 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="100" />
     <item
+        android:icon="@drawable/testpaper_menu_card"
         android:id="@+id/testpaper_menu_card"
         app:showAsAction="ifRoom"
         android:title="@string/testpaper_menu_card"

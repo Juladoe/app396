@@ -17,7 +17,6 @@
 
         <TextView
             android:textColor="@color/system_light_text"
-            android:clickable="true"
             android:paddingLeft="20dp"
             android:paddingTop="18dp"
             android:paddingBottom="17dp"
@@ -29,7 +28,6 @@
         <TextView
             android:id="@+id/setting_cache_view"
             android:textColor="@color/system_light_text"
-            android:clickable="true"
             android:paddingLeft="20dp"
             android:paddingTop="18dp"
             android:paddingRight="20dp"

@@ -67,6 +67,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private String mLessonListJson;
     private Bundle fragmentData;
+    private int mIsFree;
 
     protected MenuDrawer mMenuDrawer;
     private CourseDetailsLessonWidget mCourseLessonView;
@@ -75,6 +76,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private View mToolsLayout;
 
     private Handler msgHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,6 +201,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         Intent data = getIntent();
         if (data != null) {
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+            mIsFree = data.getIntExtra(Const.FREE, 0);
             mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
             mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
             mLessonType = data.getStringExtra(Const.LESSON_TYPE);
@@ -218,7 +221,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         loadLesson(mLessonId);
 
-        if (!mLessonType.equals("testpaper")) {
+        if (!mLessonType.equals("testpaper") && mIsFree != LessonItem.FREE) {
             loadLessonStatus();
         }
         bindListener();
@@ -282,7 +285,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.lesson_menu, menu);
+        if (mIsFree != LessonItem.FREE) {
+            getMenuInflater().inflate(R.menu.lesson_menu, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

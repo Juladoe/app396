@@ -54,6 +54,7 @@ public class MaterialFragment extends SelectQuestionFragment{
         );
 
         mQuestionPager.setAdapter(adapter);
+        mQuestionPager.setOffscreenPageLimit(mQuestionCount);
     }
 
     private ArrayList<MaterialQuestionTypeSeq> coverQuestions(

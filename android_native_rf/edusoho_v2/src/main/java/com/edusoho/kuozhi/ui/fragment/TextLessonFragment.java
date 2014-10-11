@@ -91,10 +91,11 @@ public class TextLessonFragment extends BaseFragment {
                 }
             }
         });
+
         mLessonWebview.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("imageIndexNUrls")) {
+                if (url.startsWith("imageindexnurls")) {
                     return true;
                 }
                 view.loadUrl(url);

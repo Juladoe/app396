@@ -9,6 +9,7 @@
     <dimen name="course_content_head">18dp</dimen>
     <dimen name="sys_normal">18dp</dimen>
     <dimen name="sys_small_normal">10dp</dimen>
+    <dimen name="sys_mid_normal">15dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
     <dimen name="course_list_item_title">18sp</dimen>
@@ -58,7 +59,7 @@
     <dimen name="qr_layout_label_text">14sp</dimen>
     <dimen name="nav_layout_btn">12dp</dimen>
     <dimen name="material_title">20dp</dimen>
-    <dimen name="material_content">14sp</dimen>
+    <dimen name="material_content">16sp</dimen>
     <dimen name="material_btn">16sp</dimen>
     <dimen name="recommend_announcement">18sp</dimen>
     <dimen name="recommend_announcement_label">22sp</dimen>

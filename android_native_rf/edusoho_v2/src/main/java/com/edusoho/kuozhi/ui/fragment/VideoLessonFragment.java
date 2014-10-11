@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
@@ -16,6 +18,7 @@ import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.plugin.video.CustomMediaController;
 
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by howzhi on 14-9-26.
@@ -23,15 +26,31 @@ import java.util.Timer;
 public class VideoLessonFragment extends BaseFragment {
 
     private VideoView mVideoView;
+    private Timer hideLoadTimer;
+
+    public static final int HIDE_LOADING = 0001;
+
     @Override
     public String getTitle() {
         return "视频课时";
     }
 
+    private Handler workHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HIDE_LOADING:
+                    mLoadView.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideLoadTimer = new Timer();
         setContainerView(R.layout.video_lesson_fragment_layout);
     }
 
@@ -61,19 +80,15 @@ public class VideoLessonFragment extends BaseFragment {
                 mediaPlayer.start();
                 mVideoView.requestLayout();
                 mMediaController.ready();
-                mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                hideLoadTimer.schedule(new TimerTask() {
                     @Override
-                    public void onBufferingUpdate(MediaPlayer mediaPlayer, int progress) {
-                        Log.d(null, "progress->" + progress);
-                        if (progress == 100) {
-                            mLoadView.setVisibility(View.GONE);
-                        } else {
-                            if (mLoadView.getVisibility() == View.GONE) {
-                                mLoadView.setVisibility(View.VISIBLE);
-                            }
+                    public void run() {
+                        if (mediaPlayer.isPlaying()) {
+                            hideLoadTimer.cancel();
+                            workHandler.obtainMessage(HIDE_LOADING).sendToTarget();
                         }
                     }
-                });
+                }, 0, 100);
             }
         });
 
@@ -147,5 +162,6 @@ public class VideoLessonFragment extends BaseFragment {
         mMediaController.destory();
         mVideoView.pause();
         mVideoView = null;
+        hideLoadTimer = null;
     }
 }

@@ -101,7 +101,7 @@ public class ViewPagerActivity extends ActionBarBaseActivity{
 
         @Override
         public void onPageSelected(int position) {
-            mTitle.delete(0, mTitle.length());
+            mTitle = new StringBuffer();
             mTitle.append("图片预览 ")
                     .append(position + 1)
                     .append("/")

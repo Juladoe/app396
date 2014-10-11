@@ -8,6 +8,7 @@ import java.util.HashMap;
  */
 public class TestpaperFullResult {
 
+    public PaperResult testpaperResult;
     public Testpaper testpaper;
     public HashMap<QuestionType, ArrayList<QuestionTypeSeq>> items;
 }

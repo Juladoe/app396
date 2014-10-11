@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,11 @@ public class CourseListWidget extends LinearLayout {
 
         mEdusohoListView = new EdusohoListView(mContext);
         addView(mEdusohoListView);
+
+        if (isShowMoreBtn) {
+            mShowMoreBtn = createShowMoreBtn();
+            addView(mShowMoreBtn);
+        }
     }
 
     private View initLoadView()
@@ -73,7 +79,7 @@ public class CourseListWidget extends LinearLayout {
     {
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);
         view.setLayoutParams(new ViewGroup.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         return view;
     }
 
@@ -136,11 +142,6 @@ public class CourseListWidget extends LinearLayout {
         mEdusohoListView.setAdapter(adapter);
         if (isFullHeight) {
             mEdusohoListView.initListHeight();
-        }
-
-        if (isShowMoreBtn) {
-            mShowMoreBtn = createShowMoreBtn();
-            addView(mShowMoreBtn);
         }
     }
 }

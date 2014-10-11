@@ -66,8 +66,6 @@ import net.simonvt.menudrawer.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.trinea.android.common.util.ImageUtils;
-
 /**
  * Created by howzhi on 14-8-26.
  */
@@ -270,16 +268,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private void shardCourse() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
-        /*
-        File dir = AQUtility.getCacheDir(mContext);
-        File file = AQUtility.getCacheFile(dir, course.largePicture);
-        file.renameTo(new File(dir, "shard.png"));
-        Uri imageUri = Uri.fromFile(file);
-        intent.putExtra(Intent.EXTRA_SUBJECT, mTitle);
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        intent.putExtra(Intent.EXTRA_TEXT, AppUtil.coverCourseAbout(course.about));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        */
+
         PackageManager pManager = getPackageManager();
         List<ResolveInfo> list = pManager.queryIntentActivities(
                 intent, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);

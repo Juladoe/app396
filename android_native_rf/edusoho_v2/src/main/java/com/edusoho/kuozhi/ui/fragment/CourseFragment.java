@@ -90,6 +90,8 @@ public class CourseFragment extends BaseFragment {
             baseUrl = Const.SEARCH_COURSE;
         } else if (mType == CourseListActivity.RECOMMEND) {
             baseUrl = Const.RECOMMEND_COURSES;
+        } else if (mType == CourseListActivity.LASTEST) {
+            baseUrl = Const.LASTEST_COURSES;
         }
 
         loadCourseFromNet(0);
