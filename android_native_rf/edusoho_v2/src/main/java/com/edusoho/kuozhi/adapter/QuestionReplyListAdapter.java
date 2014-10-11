@@ -152,7 +152,7 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
                 public void onClick(View v) {
                     Intent startIntent = new Intent(mContext, QuestionReplyActivity.class);
                     startIntent.putExtra(Const.REQUEST_CODE, Const.EDIT_REPLY);
-                    startIntent.putExtra(Const.REPLY_ID, String.valueOf(entireReply.replyModel.id));
+                    startIntent.putExtra(Const.POST_ID, String.valueOf(entireReply.replyModel.id));
                     startIntent.putExtra(Const.THREAD_ID, String.valueOf(entireReply.replyModel.threadId));
                     startIntent.putExtra(Const.COURSE_ID, String.valueOf(entireReply.replyModel.courseId));
                     startIntent.putExtra(Const.NORMAL_CONTENT, entireReply.replyModel.content);
@@ -186,10 +186,9 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         }
 
         URLImageGetter urlImageGetter = new URLImageGetter(tvReplyContent, mAqueryItem, mContext);
-        //URLImageParserByAsyncTask p = new URLImageParserByAsyncTask(tvReplyContent, mContext);
-        //aQuery.id(R.id.tv_reply_content).text(AppUtil.removeHtml(Html.fromHtml(entireReply.replyModel.content).toString()));
         Log.d(TAG, "Html.fromHtml-->" + entireReply.replyModel.content);
-        tvReplyContent.setText(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null));
+        //Html.fromHtml方法不知道为什么会会产生'\n\n'，所以去掉
+        tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null)));
         Log.d("tvReplyContent--->", tvReplyContent.getText().toString());
 
         return convertView;

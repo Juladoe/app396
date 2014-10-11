@@ -38,6 +38,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.SubmitResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -51,7 +52,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -88,9 +88,9 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     private ImageView ivBoldStyle;
     private ImageView ivItalicStyle;
     private ImageView ivUnderLineStyle;
-    private ImageView ivFontColorStyle;
-    private ImageView ivOrderListStyle;
-    private ImageView ivUnorderListStyle;
+    // private ImageView ivFontColorStyle;
+    // private ImageView ivOrderListStyle;
+    // private ImageView ivUnorderListStyle;
     private ImageView ivCamera;
     private ImageView ivPhoto;
     private String mCourseId;
@@ -98,7 +98,8 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     /**
      * id
      */
-    private String mReplyId;
+    private String mPostId;
+    private String mTitle;
     private String mOriginalContent;
 
     /**
@@ -117,7 +118,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     private StyleSpan mStyleItalic = new StyleSpan(Typeface.ITALIC);
     private UnderlineSpan mStyleUnderline = new UnderlineSpan();
 
-    private List<String> mImageList;
+    //private List<String> mImageList;
 
     private int mTypeCode;
     private AQuery mAQuery;
@@ -126,9 +127,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     private File mCameraImageFile;
 
     private ProgressDialog mProgressDialog;
-
-    private String filename;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,15 +152,17 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         mCourseId = getIntent().getStringExtra(Const.COURSE_ID);
         mThreadId = getIntent().getStringExtra(Const.THREAD_ID);
         mTypeCode = getIntent().getIntExtra(Const.REQUEST_CODE, 0);
+
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = getIntent().getStringExtra(Const.QUESTION_CONTENT);
-            etContent.setText(Html.fromHtml(mOriginalContent));
-        } else if (mTypeCode == Const.EDIT_REPLY) {
-            mReplyId = getIntent().getStringExtra(Const.REPLY_ID);
-            mOriginalContent = getIntent().getStringExtra(Const.NORMAL_CONTENT);
+            mTitle = getIntent().getStringExtra(Const.QUESTION_TITLE);
             etContent.setText(Html.fromHtml(mOriginalContent, imgGetter, null));
+        } else if (mTypeCode == Const.EDIT_REPLY) {
+            mPostId = getIntent().getStringExtra(Const.POST_ID);
+            mOriginalContent = getIntent().getStringExtra(Const.NORMAL_CONTENT);
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
         } else if (mTypeCode == Const.REPLY) {
-            mReplyId = "";
+            mPostId = "";
         }
 
         etContent.setOnClickListener(this);
@@ -179,6 +179,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         if (v.getId() == R.id.et_content) {
             mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart() - 1, etContent.getSelectionEnd(),
                     CharacterStyle.class);
+
             setRichTextImage();
             Log.d(TAG, etContent.getSelectionStart() + "_" + etContent.getSelectionEnd());
         }
@@ -249,10 +250,10 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         switch (requestCode) {
             case IMAGE_RESULT:
                 if (null != data) {
-                    Uri uri = data.getData();
                     //根据需要，也可以加上Option这个参数
                     InputStream inputStream = null;
                     try {
+                        Uri uri = data.getData();
                         inputStream = getContentResolver().openInputStream(uri);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -382,53 +383,97 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (etContent.getText().toString() == null || etContent.getText().toString().equals("")) {
+            Toast.makeText(this, "内容不能为空", Toast.LENGTH_LONG).show();
+            return true;
+        }
         if (item.getItemId() == R.id.reply_submit) {
-            Intent intent = new Intent();
             switch (mTypeCode) {
-                case Const.REPLY:
+                case Const.REPLY: {
                     //新增回复api
                     //Toast.makeText(this, "新增回复api", 500).show();
-                    submitReply();
-
-                case Const.EDIT_QUESTION:
-                    //编辑问题api(未提供接口)
-                    //Toast.makeText(this, "编辑问题api", 500).show();
+                    RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
+                    HashMap<String, String> params = url.getParams();
+                    params.put("courseId", mCourseId);
+                    params.put("threadId", mThreadId);
+                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
+                    params.put("content", setContent(content));
+                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
+                    url.setMuiltParams(mObjects);
+                    url.setParams(params);
+                    submitReply(url);
                     break;
-                case Const.EDIT_REPLY:
+                }
+                case Const.EDIT_QUESTION: {
+                    RequestUrl url = app.bindUrl(Const.EDIT_QUESTION_INFO, true);
+                    HashMap<String, String> params = url.getParams();
+                    params.put("courseId", mCourseId);
+                    params.put("threadId", mThreadId);
+                    params.put("title", mTitle);
+                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
+                    params.put("content", setContent(content));
+                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
+                    url.setMuiltParams(mObjects);
+                    url.setParams(params);
+                    editQuestionSubmit(url);
+                    break;
+                }
+                case Const.EDIT_REPLY: {
                     //编辑回复api
-                    //Toast.makeText(this, "编辑回复api", 500).show();
-                    submitReply();
+                    //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
+                    RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
+                    HashMap<String, String> params = url.getParams();
+                    params.put("courseId", mCourseId);
+                    params.put("threadId", mThreadId);
+                    params.put("postId", mPostId);
+                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
+                    params.put("content", setContent(content));
+                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
+                    url.setMuiltParams(mObjects);
+                    url.setParams(params);
+                    submitReply(url);
                     break;
+                }
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 编辑问题提交
+     *
+     * @param url
+     */
+    private void editQuestionSubmit(RequestUrl url) {
+        mProgressDialog.show();
+        this.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                try {
+                    QuestionDetailModel modelResult = mActivity.gson.fromJson(object, new TypeToken<QuestionDetailModel>() {
+                    }.getType());
+                    mProgressDialog.cancel();
+                    if (modelResult == null) {
+                        return;
+                    } else {
+                        Toast.makeText(mContext, "提交成功", 500).show();
+                        mActivity.setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, modelResult));
+                        mActivity.finish();
+                    }
+                } catch (Exception ex) {
+                    mProgressDialog.cancel();
+                    Log.e(TAG, ex.toString());
+                }
+            }
+        });
     }
 
 
     /**
      * 回复提交
      */
-    private void submitReply() {
-        //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
-        RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
-        HashMap<String, String> params = url.getParams();
-        params.put("courseId", mCourseId);
-        params.put("threadId", mThreadId);
+    private void submitReply(RequestUrl url) {
 
-//        params.put("content", etContent.getText().toString());
-//        params.put("imageCount", "0");
-//        File file = new File(filename);
-//        Log.d(null, "file->" + file.length());
-//        url.setMuiltParams(new Object[]{
-//                "image1", file
-//        });
-
-
-        final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-        params.put("content", setContent(content));
-        params.put("imageCount", String.valueOf(mImageHashMap.size()));
-        url.setMuiltParams(mObjects);
-        url.setParams(params);
         mProgressDialog.show();
 
         this.ajaxPost(url, new ResultCallback() {
@@ -443,7 +488,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                     } else {
                         Toast.makeText(mContext, "提交成功", 500).show();
 //                        Intent intent = new Intent();
-//                        intent.putExtra(Const.REPLY_ID, mReplyId);
+//                        intent.putExtra(Const.POST_ID, mPostId);
 //                        intent.putExtra(Const.THREAD_ID, mThreadId);
 //                        intent.putExtra(Const.COURSE_ID, mCourseId);
 //                        intent.putExtra(Const.NORMAL_CONTENT, content);
@@ -452,6 +497,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                         mActivity.finish();
                     }
                 } catch (Exception ex) {
+                    mProgressDialog.cancel();
                     Log.e(TAG, ex.toString());
                 }
             }
@@ -553,7 +599,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         mProgressDialog = new ProgressDialog(QuestionReplyActivity.this);
         mProgressDialog.setMessage("提交中...");
         mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setCancelable(false);
+        mProgressDialog.setCancelable(true);
     }
 
 

@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -66,7 +67,7 @@ public class AppUtil {
                 option.inJustDecodeBounds = true;
                 BitmapFactory.decodeByteArray(object, 0, object.length, option);
 
-                option.inSampleSize = computeSampleSize(option, -1, 200*200);
+                option.inSampleSize = computeSampleSize(option, -1, 200 * 200);
                 option.inJustDecodeBounds = false;
                 try {
                     bitmap = BitmapFactory.decodeByteArray(object, 0, object.length, option);
@@ -549,8 +550,16 @@ public class AppUtil {
         } catch (Exception ex) {
             Log.d("AppUtil.getImageDegree", ex.toString());
         }
-
         return degree;
+    }
+
+    /**
+     * 去掉由于Html.fromHtml产生的'\n'
+     * @param spanned
+     * @return
+     */
+    public static CharSequence setHtmlContent(Spanned spanned) {
+        return spanned.subSequence(0, spanned.length() - 2);
     }
 
     public static int computeSampleSize(
@@ -569,11 +578,11 @@ public class AppUtil {
     }
 
     private static int computeInitialSampleSize(
-            BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
+            BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
         double w = options.outWidth;
         double h = options.outHeight;
         int lowerBound = (maxNumOfPixels == -1) ? 1 : (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
-        int upperBound = (minSideLength == -1) ? 128 :(int) Math.min(Math.floor(w / minSideLength), Math.floor(h / minSideLength));
+        int upperBound = (minSideLength == -1) ? 128 : (int) Math.min(Math.floor(w / minSideLength), Math.floor(h / minSideLength));
         if (upperBound < lowerBound) {
             // return the larger one when there is no overlapping zone.
             return lowerBound;

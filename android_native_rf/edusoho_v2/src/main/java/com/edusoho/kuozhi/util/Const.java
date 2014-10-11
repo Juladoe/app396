@@ -102,6 +102,11 @@ public class Const {
     public static final String REPLY_SUBMIT = "Course/postThread";
 
     /**
+     * 编辑回复提交
+     */
+    public static final String REPLY_EDIT_SUBMIT = "Course/updatePost";
+
+    /**
      * 分享url
      */
     public static final String SHARD_COURSE_URL = "School/getShradCourseUrl";
@@ -110,7 +115,9 @@ public class Const {
      * 获取一个问题的详细信息（问题标题，内容，发问者，发问时间等）
      * 传递参数：courseId，threadId
      */
-    public static final String QUESITION_INFO = "Course/getThread";
+    public static final String QUESTION_INFO = "Course/getThread";
+
+    public static final String EDIT_QUESTION_INFO = "Course/updateThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";
@@ -219,8 +226,9 @@ public class Const {
     public static final String LIST_JSON = "list_json";
 
     public static final String QUESTION_TITLE = "title";
+    public static final String QUESTION_EDIT_RESULT = "question_edit_result";
     public static final String THREAD_ID = "thread_id";
-    public static final String REPLY_ID = "reply_id";
+    public static final String POST_ID = "post_id";
     public static final String QUESTION_CONTENT = "question_content";
     public static final String NORMAL_CONTENT = "content";
 

@@ -146,7 +146,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
      * 获取问题信息
      */
     private void getQuestionPostUser() {
-        RequestUrl url = app.bindUrl(Const.QUESITION_INFO, true);
+        RequestUrl url = app.bindUrl(Const.QUESTION_INFO, true);
         url.setParams(mParams);
         app.postUrl(url, new ResultCallback() {
             @Override
@@ -161,7 +161,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 mAQuery.id(R.id.post_title).text(qdModel.title);
                 TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
                 URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext);
-                tvContent.setText(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null));
+                tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
 
                 //mAQuery.id(R.id.htv_post_content).text(Html.fromHtml(AppUtil.removeHtml(qdModel.content)));
                 //mAQuery.id(R.id.htv_post_content).text(Html.fromHtml(qdModel.content));
@@ -190,6 +190,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 startIntent.putExtra(Const.THREAD_ID, String.valueOf(mThreadId));
                 startIntent.putExtra(Const.COURSE_ID, String.valueOf(mCourseId));
                 if (finalRequestCode == Const.EDIT_QUESTION) {
+                    startIntent.putExtra(Const.QUESTION_TITLE, mAQuery.id(R.id.post_title).getText().toString());
                     startIntent.putExtra(Const.QUESTION_CONTENT, Html.toHtml((Spanned) mAQuery.id(R.id.htv_post_content).getText()).toString());
                 }
             }
@@ -205,6 +206,13 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 break;
             case Const.EDIT_QUESTION:
                 //Toast.makeText(this, "问题编辑", 500).show();
+                //getQuestionPostUser();
+                if (data != null) {
+                    QuestionDetailModel qdModel = (QuestionDetailModel) data.getSerializableExtra(Const.QUESTION_EDIT_RESULT);
+                    TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
+                    URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext);
+                    tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
+                }
                 break;
             case Const.EDIT_REPLY:
                 //Toast.makeText(this, "回复编辑", 500).show();
