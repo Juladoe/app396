@@ -107,6 +107,12 @@ public abstract class AbstractCourseListAdapter<T> extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setItem(List<T> datas)
+    {
+        mInfos.clear();
+        addItemLast(datas);
+    }
+
     public void addItemTop(List<T> datas) {
         for (T course : datas) {
             mInfos.addFirst(course);

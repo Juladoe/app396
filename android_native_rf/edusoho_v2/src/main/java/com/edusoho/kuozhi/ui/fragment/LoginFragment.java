@@ -92,6 +92,7 @@ public class LoginFragment extends BaseFragment {
                         if (result != null) {
                             app.saveToken(result);
                             mActivity.finish();
+                            app.sendMessage(Const.LOGING_SUCCESS, null);
                             app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
                         } else {
                             mActivity.longToast("用户名或密码错误！");

@@ -3,7 +3,7 @@
 
     <!-- 按下状态 -->
     <item android:drawable="@drawable/check_a_pressed" android:state_checked="true"/>
-
+    <item android:drawable="@drawable/check_a_false" android:state_selected="true"/>
     <!-- 普通无焦点状态 -->
     <item android:drawable="@drawable/check_a"/>
 

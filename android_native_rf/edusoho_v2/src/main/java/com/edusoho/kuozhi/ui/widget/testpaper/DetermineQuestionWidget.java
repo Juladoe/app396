@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
@@ -38,6 +41,7 @@ public class DetermineQuestionWidget extends BaseQuestionWidget {
 
     @Override
     protected void invalidateData() {
+        super.invalidateData();
         stemView = (TextView) this.findViewById(R.id.question_stem);
         radioGroup = (RadioGroup) findViewById(R.id.question_result_radio);
 
@@ -66,6 +70,33 @@ public class DetermineQuestionWidget extends BaseQuestionWidget {
                         TestpaperActivity.CHANGE_ANSWER, bundle, TestpaperActivity.class);
             }
         });
+
+        if (mQuestion.testResult != null) {
+            enable(radioGroup, false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.quetion_choice_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                    initQuestionResult();
+                }
+            });
+            mAnalysisVS.inflate();
+        }
+    }
+
+    private void initQuestionResult()
+    {
+        int count = radioGroup.getChildCount();
+        for (int i=0; i < count; i++) {
+            View child = radioGroup.getChildAt(i);
+            for (String answer : mQuestion.answer) {
+                if (answer.equals(String.valueOf(i))) {
+                    child.setSelected(true);
+                    break;
+                }
+            }
+        }
     }
 
     @Override

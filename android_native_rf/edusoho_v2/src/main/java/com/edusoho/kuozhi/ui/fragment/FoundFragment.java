@@ -101,8 +101,8 @@ public class FoundFragment extends BaseFragment {
         });
 
         RequestUrl url = app.bindUrl(Const.CATEGORYS, false);
-
         mCategoryListView.initialise(mActivity, url);
+
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {

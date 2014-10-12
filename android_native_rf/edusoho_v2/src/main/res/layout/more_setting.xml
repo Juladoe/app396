@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.EduUpdateView
             android:id="@+id/more_setting_set"
             android:textColor="@color/system_light_text"
             android:paddingLeft="20dp"

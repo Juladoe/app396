@@ -41,7 +41,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
         Intent data = getIntent();
         if (data != null) {
             mSearchText = data.getStringExtra(SEARCH_TEXT);
-            mType = data.getIntExtra(TYPE, RECOMMEND);
+            mType = data.getIntExtra(TYPE, 0);
             mTitle = data.hasExtra(TITLE) ? data.getStringExtra(TITLE) : "课程列表";
             mCategoryId = data.getIntExtra(CATEGORY_ID, 0);
         }

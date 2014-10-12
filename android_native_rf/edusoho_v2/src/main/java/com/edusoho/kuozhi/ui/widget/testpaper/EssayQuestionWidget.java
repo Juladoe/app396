@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -18,6 +19,8 @@ import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -28,16 +31,20 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.fragment.testpaper.EssayFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.NormalCallback;
 
 import java.util.ArrayList;
@@ -53,6 +60,8 @@ public class EssayQuestionWidget extends BaseQuestionWidget
     private EditText contentEdt;
     private ImageView mPhotoBtn;
     private ImageView mCameraBtn;
+    private View mToolsLayout;
+
     private static final int IMAGE_SIZE = 500;
 
     public static final int GET_PHOTO = 0001;
@@ -77,13 +86,6 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         switch (type) {
             case GET_PHOTO:
             case GET_CAMERA:
-                Bundle bundle = message.data;
-                String filePath = bundle.getString("file");
-                Log.d(null, "file------>" + filePath);
-                BitmapFactory.Options option = new BitmapFactory.Options();
-                option.inSampleSize = 2;
-                Bitmap bitmap = BitmapFactory.decodeFile(filePath, option);
-                insertImage(contentEdt, filePath, bitmap);
         }
     }
 
@@ -127,6 +129,9 @@ public class EssayQuestionWidget extends BaseQuestionWidget
 
     @Override
     protected void invalidateData() {
+        super.invalidateData();
+
+        mToolsLayout = this.findViewById(R.id.essay_tools_layout);
         stemView = (TextView) this.findViewById(R.id.question_stem);
         contentEdt = (EditText) this.findViewById(R.id.essay_content);
         mPhotoBtn = (ImageView) this.findViewById(R.id.essay_photo);
@@ -138,16 +143,13 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         mPhotoBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
+                testpaperActivity.setType(TestpaperActivity.PHOTO_CAMEAR);
                 EdusohoApp.app.sendMsgToTargetForCallback(
                         EssayFragment.PHOTO, null, EssayFragment.class, new NormalCallback() {
                     @Override
                     public void success(Object obj) {
-                        String filePath = obj.toString();
-                        Log.d(null, "file------>" + filePath);
-                        BitmapFactory.Options option = new BitmapFactory.Options();
-                        option.inSampleSize = 2;
-                        Bitmap bitmap = BitmapFactory.decodeFile(filePath, option);
-                        insertImage(contentEdt, filePath, bitmap);
+                        addImageToEdit((Bundle) obj);
                     }
                 });
             }
@@ -156,20 +158,63 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         mCameraBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
+                testpaperActivity.setType(TestpaperActivity.PHOTO_CAMEAR);
                 EdusohoApp.app.sendMsgToTargetForCallback(
                         EssayFragment.CAMERA, null, EssayFragment.class, new NormalCallback() {
                     @Override
                     public void success(Object obj) {
-                        String filePath = obj.toString();
-                        Log.d(null, "file------>" + filePath);
-                        BitmapFactory.Options option = new BitmapFactory.Options();
-                        option.inSampleSize = 2;
-                        Bitmap bitmap = BitmapFactory.decodeFile(filePath, option);
-                        insertImage(contentEdt, filePath, bitmap);
+                        addImageToEdit((Bundle) obj);
                     }
                 });
             }
         });
+
+        if (mQuestion.testResult != null) {
+            contentEdt.setVisibility(GONE);
+            mToolsLayout.setVisibility(GONE);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.quetion_choice_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                }
+            });
+            mAnalysisVS.inflate();
+        }
+    }
+
+    @Override
+    protected void initResultAnalysis(View view)
+    {
+        TextView myAnswerText = (TextView) view.findViewById(R.id.question_my_anwer);
+        TextView myRightText = (TextView) view.findViewById(R.id.question_right_anwer);
+        TextView AnalysisText = (TextView) view.findViewById(R.id.question_analysis);
+
+        TestResult testResult = mQuestion.testResult;
+        String myAnswer = null;
+        if ("noAnswer".equals(testResult.status)) {
+            myAnswer = "未答题";
+        } else {
+            myAnswer = listToStr(testResult.answer);
+        }
+
+        myAnswerText.setText(Html.fromHtml("你的答案:<p></p>" + myAnswer));
+        myRightText.setText(Html.fromHtml("正确答案:<p></p>" + listToStr(mQuestion.answer)));
+
+        AnalysisText.setText(Html.fromHtml(mQuestion.analysis));
+        initFavoriteBtn(view);
+    }
+
+    private void addImageToEdit(Bundle bundle) {
+        String filePath = bundle.getString("file");
+        String imageTag = bundle.getString("image");
+        BitmapFactory.Options option = new BitmapFactory.Options();
+        option.inSampleSize = 2;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, option);
+        insertImage(contentEdt, filePath, bitmap, imageTag);
+
+        Log.d(null, "edit->" + contentEdt.getText().toString());
     }
 
     @Override
@@ -188,11 +233,11 @@ public class EssayQuestionWidget extends BaseQuestionWidget
      * @param imageName
      * @param image
      */
-    private void insertImage(EditText editText, String imageName, Bitmap image) {
+    private void insertImage(EditText editText, String imageName, Bitmap image, String imageTag) {
         Editable eb = editText.getEditableText();
         //获得光标所在位置
         int qqPosition = editText.getSelectionStart();
-        SpannableString ss = new SpannableString(String.valueOf(mImageCount++));
+        SpannableString ss = new SpannableString(imageTag);
         if (image.getWidth() > 500) {
             image = scaleImage(image);
         }

@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 
@@ -27,7 +29,7 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
     protected Context mContext;
     protected View mLoadView;
-    protected boolean isLoad;
+    protected boolean isLearn;
     protected boolean isShowTitle;
 
     private TextView mTitleView;

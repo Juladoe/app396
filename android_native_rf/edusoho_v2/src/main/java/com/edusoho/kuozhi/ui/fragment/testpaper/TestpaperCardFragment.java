@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.fragment.testpaper;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.testpaper.TestpaperCardAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Review;
@@ -31,11 +33,13 @@ import com.edusoho.kuozhi.model.Testpaper.PaperResult;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoButton;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -109,6 +113,10 @@ public class TestpaperCardFragment extends DialogFragment {
         mSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final LoadDialog loadDialog = LoadDialog.create(mTestpaperActivity);
+                loadDialog.setMessage("提交试卷");
+                loadDialog.show();
+
                 PaperResult paperResult = mTestpaperActivity.getTestpaperResult();
                 RequestUrl requestUrl = mTestpaperActivity.app.bindUrl(
                         Const.FINISH_TESTPAPER, true);
@@ -141,7 +149,21 @@ public class TestpaperCardFragment extends DialogFragment {
                 mTestpaperActivity.ajaxPost(requestUrl, new ResultCallback(){
                     @Override
                     public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                        Log.d(null, "result->" + object);
+                        loadDialog.dismiss();
+                        boolean result = mTestpaperActivity.parseJsonValue(
+                                object, new TypeToken<Boolean>(){});
+                        if (result) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
+                            bundle.putString(Const.ACTIONBAT_TITLE, " 考试结果");
+
+                            PaperResult paperResult =mTestpaperActivity.getTestpaperResult();
+                            bundle.putInt(TestpaperResultFragment.RESULT_ID, paperResult.id);
+
+                            mTestpaperActivity.app.mEngine.runNormalPluginWithBundle(
+                                    "FragmentPageActivity", mTestpaperActivity, bundle);
+                            mTestpaperActivity.finish();
+                        }
                     }
                 });
             }

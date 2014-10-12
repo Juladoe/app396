@@ -35,6 +35,11 @@ public class LoadDialog extends Dialog{
 		return new LoadDialog(context, R.style.loadDlgTheme);
 	}
 
+    public void setMessage(String message)
+    {
+        loading_txt.setText(message);
+    }
+
     public void showAutoHide(String message)
     {
         loading_txt.setText(message);

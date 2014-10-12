@@ -200,6 +200,8 @@ public class MyInfoFragment extends BaseFragment {
         super.onResume();
         if (app.loginUser != null) {
             mLearnStatusWidget.initialise(mActivity);
+        } else {
+            mLearnStatusWidget.setVisibility(View.GONE);
         }
     }
 

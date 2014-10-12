@@ -22,9 +22,12 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
 {
     private ActionBarBaseActivity mActivity;
     private String mLessonListJson;
+    private boolean mIsLearn;
 
-    public LessonItemClickListener(ActionBarBaseActivity activity, String listJson)
+    public LessonItemClickListener(
+            ActionBarBaseActivity activity, String listJson, boolean isLearn)
     {
+        mIsLearn = isLearn;
         mActivity = activity;
         this.mLessonListJson = listJson;
     }
@@ -34,13 +37,19 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
                             long arg3) {
         final LessonItem lesson = (LessonItem) parent.getItemAtPosition(index);
 
-        if (lesson.free != LessonItem.FREE && mActivity.app.loginUser == null) {
+        if (lesson.free != LessonItem.FREE ) {
             if (mActivity.app.loginUser == null) {
                 mActivity.longToast("请登录后学习！");
                 LoginActivity.start(mActivity);
                 return;
             }
+
+            if (!mIsLearn) {
+                mActivity.longToast("请加入学习！");
+                return;
+            }
         }
+
         mActivity.getCoreEngine().runNormalPlugin(
                 LessonActivity.TAG, mActivity, new PluginRunCallback() {
             @Override
@@ -51,6 +60,7 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
                 startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
                 startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
                 startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
+                startIntent.putExtra(Const.IS_LEARN, mIsLearn);
             }
         });
     }

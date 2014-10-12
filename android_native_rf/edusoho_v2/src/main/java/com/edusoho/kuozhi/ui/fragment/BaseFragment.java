@@ -118,6 +118,16 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     public void onDestroy() {
         app.unRegistMsgSource(this);
         super.onDestroy();
+
+        MessageType[] messageTypes = getMsgTypes();
+        if (messageTypes == null) {
+            return;
+        }
+        for (MessageType messageType : messageTypes) {
+            if (messageType.code == MessageType.NONE) {
+                app.unRegistPubMsg(messageType, this);
+            }
+        }
     }
 
     protected void showProgress(boolean isShow)

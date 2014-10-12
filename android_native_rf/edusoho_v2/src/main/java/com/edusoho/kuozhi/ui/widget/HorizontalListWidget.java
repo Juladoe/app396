@@ -43,6 +43,7 @@ public class HorizontalListWidget extends HorizontalScrollView {
     private FrameLayout mContainer;
     private View mLoadView;
     private ActionBarBaseActivity mActivity;
+    private View mLabel;
 
     public HorizontalListWidget(Context context) {
         super(context);
@@ -130,7 +131,11 @@ public class HorizontalListWidget extends HorizontalScrollView {
                 object, new TypeToken<CourseResult>() {
         }.getType());
 
-        if (courseResult == null) {
+        if (courseResult == null || courseResult.data.isEmpty()) {
+            setVisibility(GONE);
+            if (mLabel != null) {
+                mLabel.setVisibility(GONE);
+            }
             return;
         }
 
@@ -154,6 +159,11 @@ public class HorizontalListWidget extends HorizontalScrollView {
         HorizontalCourseListAdapter adapter = (HorizontalCourseListAdapter)
                 mGridView.getAdapter();
         adapter.setItems(courseResult);
+    }
+
+    public void setLabel(View label)
+    {
+        mLabel = label;
     }
 
     public void initialise(ActionBarBaseActivity activity, RequestUrl requestUrl)

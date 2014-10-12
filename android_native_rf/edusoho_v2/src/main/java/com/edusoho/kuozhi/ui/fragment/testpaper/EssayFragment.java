@@ -16,16 +16,20 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.testpaper.EssayViewPagerAdapter;
 import com.edusoho.kuozhi.adapter.testpaper.QuestionAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
@@ -33,7 +37,10 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.widget.testpaper.EssayQuestionWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.NormalCallback;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,7 +56,6 @@ public class EssayFragment extends SelectQuestionFragment{
     private QuestionType type = QuestionType.essay;
     public static final int PHOTO = 0001;
     public static final int CAMERA = 0002;
-    private EditText mContentView;
 
     /**
      * 从手机图库中选择图片返回结果表示
@@ -83,6 +89,40 @@ public class EssayFragment extends SelectQuestionFragment{
             case CAMERA:
                 camera();
         }
+    }
+
+    private void uploadImage(String path, final NormalCallback<String> callback)
+    {
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.setMessage("上传中...");
+        loadDialog.show();
+
+        RequestUrl requestUrl = app.bindUrl(Const.UPLOAD_IMAGE, true);
+        requestUrl.setMuiltParams(new Object[] {
+                "file", new File(path)
+        });
+
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                loadDialog.dismiss();
+                String result = mActivity.parseJsonValue(
+                        object, new TypeToken<String>(){});
+
+                Log.d(null, "upload result->" + result);
+                if (result == null || TextUtils.isEmpty(result)) {
+                    mActivity.longToast("上传失败!");
+                }
+                callback.success(String.format("<img src='%s'/>", result));
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                mActivity.longToast("上传失败!");
+                loadDialog.dismiss();
+            }
+        });
+
     }
 
     private void camera()
@@ -135,7 +175,7 @@ public class EssayFragment extends SelectQuestionFragment{
         if (questionTypeSeqs == null) {
             return;
         }
-        Log.d(null, "es->refreshViewData");
+
         mQuestionType.setText(type.title());
         mQuestionCount = questionTypeSeqs.size();
         setQuestionNumber(mCurrentIndex);
@@ -150,22 +190,34 @@ public class EssayFragment extends SelectQuestionFragment{
         switch (requestCode) {
             case IMAGE_RESULT:
                 if (null != data) {
-                    String filePath = convertUriToPath(data.getDataString());
-                    Bundle bundle = new Bundle();
+                    final String filePath = convertUriToPath(data.getDataString());
+                    final Bundle bundle = new Bundle();
                     bundle.putString("file", filePath);
-                    if (mEssayQWCallback != null) {
-                        mEssayQWCallback.success(filePath);
-                    }
-                    Log.d(null, "file->" + filePath);
+                    uploadImage(filePath, new NormalCallback<String>() {
+                        @Override
+                        public void success(String obj) {
+                            if (mEssayQWCallback != null) {
+                                bundle.putString("image", obj);
+                                mEssayQWCallback.success(bundle);
+                            }
+                        }
+                    });
                 }
                 break;
             case CAMERA_RESULT:
                 if (resultCode == Activity.RESULT_OK) {
-                    if (mCameraImageFile != null & mCameraImageFile.exists()) {Bundle bundle = new Bundle();
+                    if (mCameraImageFile != null & mCameraImageFile.exists()) {
+                        final Bundle bundle = new Bundle();
                         bundle.putString("file", mCameraImageFile.getPath());
-                        if (mEssayQWCallback != null) {
-                            mEssayQWCallback.success(mCameraImageFile.getPath());
-                        }
+                        uploadImage(mCameraImageFile.getPath(), new NormalCallback<String>() {
+                            @Override
+                            public void success(String obj) {
+                                if (mEssayQWCallback != null) {
+                                    bundle.putString("image", obj);
+                                    mEssayQWCallback.success(bundle);
+                                }
+                            }
+                        });
                     }
                 }
                 break;

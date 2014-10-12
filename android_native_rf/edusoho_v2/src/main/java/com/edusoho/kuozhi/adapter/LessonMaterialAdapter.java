@@ -33,7 +33,7 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
     protected int mResouce;
     protected Context mContext;
     protected ArrayList<LessonMaterial> mList;
-    private ArrayList<Boolean> checkList;
+    private ArrayList<MaterialCKStatus> checkList;
     private OnCheckChangeListener checkChangeListener;
 
     public LessonMaterialAdapter(
@@ -47,12 +47,12 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
         setMode(NORMAL);
     }
 
-    private ArrayList<Boolean> initCheckList()
+    private ArrayList<MaterialCKStatus> initCheckList()
     {
-        ArrayList<Boolean> list = new ArrayList<Boolean>();
+        ArrayList<MaterialCKStatus> list = new ArrayList<MaterialCKStatus>();
         int count = mList.size();
         for (int i=0; i < count; i++) {
-            list.add(false);
+            list.add(MaterialCKStatus.UNCHECKED);
         }
 
         return list;
@@ -89,7 +89,12 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
     {
         int count = checkList.size();
         for (int i=0; i < count; i++) {
-            checkList.add(i, isChecked);
+            MaterialCKStatus oldStatus = checkList.get(i);
+            if (oldStatus == MaterialCKStatus.ENABLE) {
+                continue;
+            }
+            checkList.remove(i);
+            checkList.add(i, isChecked ? MaterialCKStatus.CHECKED : MaterialCKStatus.UNCHECKED);
         }
         notifyDataSetChanged();
     }
@@ -125,7 +130,9 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
 
         MaterialType materialType = MaterialType.value(material.fileMime);
         holder.materialView.setIcon(getMimeIcon(materialType));
-        holder.materialCK.setChecked(checkList.get(index));
+        MaterialCKStatus status = checkList.get(index);
+        holder.materialCK.setChecked(status == MaterialCKStatus.CHECKED);
+        holder.materialCK.setEnabled(!(status == MaterialCKStatus.ENABLE));
     }
 
     private int getMimeIcon(MaterialType materialType)
@@ -155,6 +162,31 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
         return icon;
     }
 
+    public void initDownloadStatus(ArrayList<Boolean> downloadStatus)
+    {
+        int count = checkList.size();
+        for (int i=0; i < count; i++) {
+            boolean status = downloadStatus.get(i);
+            MaterialCKStatus oldStatus = checkList.get(i);
+            checkList.remove(i);
+            checkList.add(i, status ? MaterialCKStatus.ENABLE : oldStatus);
+        }
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<LessonMaterial> getCheckedList()
+    {
+        ArrayList<LessonMaterial> list = new ArrayList<LessonMaterial>();
+        int count = checkList.size();
+        for (int i=0; i < count; i++) {
+            if (checkList.get(i) == MaterialCKStatus.CHECKED) {
+                list.add(mList.get(i));
+            }
+        }
+
+        return list;
+    }
+
     protected class ViewHolder {
         public CheckBox materialCK;
         public EduSohoTextBtn materialView;
@@ -166,7 +198,12 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             int index = (Integer) compoundButton.getTag();
             checkList.remove(index);
-            checkList.add(index, b);
+            checkList.add(index, b ? MaterialCKStatus.CHECKED : MaterialCKStatus.UNCHECKED);
         }
+    }
+
+    public enum MaterialCKStatus
+    {
+        CHECKED, UNCHECKED, ENABLE;
     }
 }

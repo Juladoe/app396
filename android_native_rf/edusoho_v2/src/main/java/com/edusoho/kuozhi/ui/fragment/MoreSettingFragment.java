@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -11,9 +13,12 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
+import com.edusoho.kuozhi.view.EduUpdateView;
 import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
+
+import java.util.Set;
 
 /**
  * Created by howzhi on 14-8-25.
@@ -24,7 +29,7 @@ public class MoreSettingFragment extends BaseFragment {
     private View mLogoutBtn;
 
     @ViewUtil("more_setting_set")
-    private View mSettingBtn;
+    private EduUpdateView mSettingBtn;
 
     @ViewUtil("more_setting_about")
     private View mSettingAbout;
@@ -59,9 +64,13 @@ public class MoreSettingFragment extends BaseFragment {
         });
     }
 
-    @Override
-    protected void initView(View view) {
-        viewInject(view);
+    private void registNotify()
+    {
+        mSettingBtn.addNotifyType("app_update");
+    }
+
+    private void bindListener()
+    {
         mSettingAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,6 +130,32 @@ public class MoreSettingFragment extends BaseFragment {
         });
     }
 
+    @Override
+    protected void initView(View view) {
+        viewInject(view);
+        registNotify();
+
+        bindListener();
+    }
+
+    private void checkNotify()
+    {
+        Set<String> notifys = app.getNotifys();
+        if (notifys.isEmpty()) {
+            mSettingBtn.setUpdate(false);
+            return;
+        }
+        for (String type : notifys) {
+            if (mSettingBtn == null) {
+                continue;
+            }
+            if (mSettingBtn.hasNotify(type)) {
+                mSettingBtn.setUpdate(true);
+                continue;
+            }
+        }
+    }
+
     private void logout()
     {
         showProgress(true);
@@ -139,6 +174,8 @@ public class MoreSettingFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(null, "MoreSettingFragment->onResume");
+        checkNotify();
         if (app.loginUser != null) {
             mLogoutBtn.setVisibility(View.VISIBLE);
         }

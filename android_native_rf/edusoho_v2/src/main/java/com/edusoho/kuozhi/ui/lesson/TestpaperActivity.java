@@ -39,10 +39,11 @@ import java.util.TimerTask;
 /**
  * Created by howzhi on 14-8-31.
  */
-public class TestpaperActivity extends CourseDetailsTabActivity
+public class TestpaperActivity extends TestpaperBaseActivity
         implements MessageEngine.MessageCallback {
 
     public static final int CHANGE_ANSWER = 0001;
+    public static final int PHOTO_CAMEAR = 0002;
 
     private int mTestId;
     private int mLessonId;
@@ -50,11 +51,7 @@ public class TestpaperActivity extends CourseDetailsTabActivity
     private Timer mTimer;
     private int mLimitedTime;
     private boolean mIsRun;
-    private Testpaper mTestpaper;
-    private PaperResult mTestpaperResult;
-    private HashMap<QuestionType, ArrayList<Answer>> answerMap;
-
-    private HashMap<QuestionType, ArrayList<QuestionTypeSeq>> mQuestions;
+    private int mStopType;
 
     private static TestpaperActivity testpaperActivity;
 
@@ -172,6 +169,7 @@ public class TestpaperActivity extends CourseDetailsTabActivity
     @Override
     protected void initView() {
         super.initView();
+        setNormalActionBack(mTitle);
         loadTestpaper();
     }
 
@@ -228,8 +226,14 @@ public class TestpaperActivity extends CourseDetailsTabActivity
 
     private void startTask()
     {
+        mStopType = 0;
         mTimer = new Timer();
         mTimer.schedule(getTask(), 0, 1000);
+    }
+
+    public void setType(int type)
+    {
+        mStopType = type;
     }
 
     private void stopTask()
@@ -243,6 +247,7 @@ public class TestpaperActivity extends CourseDetailsTabActivity
             }
         });
         dialog.show();
+
         mIsRun = false;
         if (mTimer != null) {
             mTimer.cancel();
@@ -312,24 +317,23 @@ public class TestpaperActivity extends CourseDetailsTabActivity
         return testpaperQuestions;
     }
 
-    public ArrayList<QuestionTypeSeq> getQuesions(QuestionType type)
-    {
-        if (mQuestions == null) {
-            return null;
-        }
-        return mQuestions.get(type);
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
+        if (mStopType == PHOTO_CAMEAR) {
+            return;
+        }
         stopTask();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopTask();
+        mIsRun = false;
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
         testpaperActivity = null;
     }
 

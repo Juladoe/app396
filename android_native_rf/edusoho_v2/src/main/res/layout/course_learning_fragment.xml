@@ -64,6 +64,6 @@
         android:layout_below="@id/course_learning_status_widget"
         app:labelTitle="课程列表"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

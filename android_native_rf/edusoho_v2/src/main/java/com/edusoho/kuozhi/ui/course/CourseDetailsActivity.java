@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -46,6 +44,7 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.ui.fragment.MyCourseBaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
@@ -80,6 +79,9 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     public static final int SHOW_COURSE_PIC = 0002;
     public static final int SET_LEARN_BTN = 0003;
     public static final int CHANGE_FRAGMENT = 0004;
+
+    public static final int PAY_COURSE_SUCCESS = 0005;
+    public static final int PAY_COURSE_REQUEST = 0006;
 
     private String mTitle;
     private int mCourseId;
@@ -181,7 +183,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 if (mPrice <= 0) {
                     mLearnBtn.setText("加入学习");
                 }
-                if (mVipLevelId != 0) {
+                if (mVipLevelId != 0 && !TextUtils.isEmpty(vipLevelName)) {
                     mVipLearnBtn.setText(vipLevelName + "免费学");
                 } else {
                     mVipLearnBtn.setVisibility(View.GONE);
@@ -411,23 +413,22 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mLearnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (app.loginUser == null) {
+                    LoginActivity.start(mActivity);
+                    return;
+                }
                 if (mPrice > 0) {
-                    app.mEngine.runNormalPlugin(
-                            "PayCourseActivity",
-                            mActivity,
-                            new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    startIntent.putExtra("price", mPrice);
-                                    startIntent.putExtra("title", mTitle);
-                                    startIntent.putExtra("courseId", mCourseId);
-                                }
-                            });
+                    app.mEngine.runNormalPluginForResult(
+                            "PayCourseActivity", mActivity, PAY_COURSE_REQUEST, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra("price", mPrice);
+                            startIntent.putExtra("title", mTitle);
+                            startIntent.putExtra("payurl", mTitle);
+                            startIntent.putExtra("courseId", mCourseId);
+                        }
+                    });
                 } else {
-                    if (app.loginUser == null) {
-                        LoginActivity.start(mActivity);
-                        return;
-                    }
                     learnCourse();
                 }
             }
@@ -533,5 +534,19 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
 
         mCurrentFragment = fragmentName;
         mCurrentFragmentClass = fragment.getClass();
+    }
+
+    @Override
+    protected void onDestroy() {
+        app.sendMessage(MyCourseBaseFragment.RELOAD, null);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PAY_COURSE_REQUEST && resultCode == PAY_COURSE_SUCCESS) {
+            loadCoureDetailsFragment("CourseLearningFragment");
+        }
     }
 }

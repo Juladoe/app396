@@ -5,7 +5,7 @@
     <item android:color="@color/question_btn_bg_checked" android:state_pressed="true"/>
 
     <item android:color="@color/question_btn_bg_checked" android:state_checked="true"/>
-
+    <item android:color="@color/question_btn_bg_selected" android:state_selected="true"/>
     <!-- 普通无焦点状态 -->
     <item android:color="@color/question_btn_bg" />
 

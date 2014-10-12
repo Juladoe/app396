@@ -367,7 +367,9 @@ public class CourseDetailsFragment extends BaseFragment{
         aQuery.id(R.id.course_details_rating).rating((float)course.rating);
         String price = course.price <= 0 ? "免费" : "￥" + course.price;
         aQuery.id(R.id.course_details_price).text(price);
-        aQuery.id(R.id.course_details_info_expiry).text("有效期:" + course.expiryDay + "天");
+        if (course.expiryDay > 0) {
+            aQuery.id(R.id.course_details_info_expiry).text("有效期:" + course.expiryDay + "天");
+        }
         aQuery.id(R.id.course_details_studentNum).text(course.studentNum + "学员");
 
         mCourseGoalsView.setText(AppUtil.goalsToStr(course.goals));

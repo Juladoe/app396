@@ -101,6 +101,16 @@ public class MessageEngine {
         sourceMap.remove(targetName);
     }
 
+    public void unRegistPubMessage(MessageType type, MessageCallback source)
+    {
+        if (source == null) {
+            return;
+        }
+        ArrayList<String> list = pubMsgMap.get(type.toString());
+        String targetName = source.getClass().getSimpleName();
+        list.remove(targetName);
+    }
+
     public void registMessageSource(MessageCallback source)
     {
         if (source == null) {

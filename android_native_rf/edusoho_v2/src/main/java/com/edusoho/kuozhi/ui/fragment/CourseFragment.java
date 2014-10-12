@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -86,7 +87,7 @@ public class CourseFragment extends BaseFragment {
         }
 
         baseUrl = Const.COURSES;
-        if (mSearchText != null) {
+        if (mSearchText != null && !TextUtils.isEmpty(mSearchText)) {
             baseUrl = Const.SEARCH_COURSE;
         } else if (mType == CourseListActivity.RECOMMEND) {
             baseUrl = Const.RECOMMEND_COURSES;
@@ -99,6 +100,7 @@ public class CourseFragment extends BaseFragment {
 
     private void loadCourseFromNet(int start)
     {
+        Log.d(null, "baseUrl->" + baseUrl);
         RequestUrl url = app.bindUrl(baseUrl, true);
         HashMap<String, String> params = url.getParams();
         params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");

@@ -20,10 +20,15 @@ import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 
 import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.view.EdusohoButton;
+import com.edusoho.listener.StatusCallback;
+
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,6 +44,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private String mCurrentTag;
     private int mSelectBtn;
 
+    private EduSohoTextBtn moreBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +55,43 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mExitTimer = new Timer();
         mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         app.addTask("DefaultPageActivity", this);
+
+        AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>(){
+            @Override
+            public void success(AppUpdateInfo obj) {
+                Log.d(null, "new verson");
+                moreBtn.setUpdateIcon();
+                app.addNotify("app_update", null);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkNotify();
+    }
+
+    private void checkNotify()
+    {
+        Set<String> notifys = app.getNotifys();
+        moreBtn.clearUpdateIcon();
+        for (String type : notifys) {
+            if (moreBtn.hasNotify(type)) {
+                moreBtn.setUpdateIcon();
+                continue;
+            }
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        Log.d(null, "on LowMemory-> main");
+        super.onLowMemory();
     }
 
     private void initView() {
+        moreBtn = (EduSohoTextBtn) findViewById(R.id.nav_more_btn);
         mNavBtnClickListener = new NavBtnClickListener();
         bindNavOnClick();
         if ("".equals(app.token)) {
@@ -166,12 +207,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         int count = mNavBtnLayout.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mNavBtnLayout.getChildAt(i);
-            if (child instanceof EduSohoTextBtn) {
-                if (child.getId() == id) {
-                    enableBtn((ViewGroup)child, false);
-                } else {
-                    enableBtn((ViewGroup) child, true);
-                }
+            if (child.getId() == id) {
+                child.setEnabled(false);
+            } else {
+                child.setEnabled(true);
             }
         }
     }

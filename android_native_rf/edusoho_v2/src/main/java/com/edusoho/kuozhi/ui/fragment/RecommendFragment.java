@@ -51,6 +51,8 @@ public class RecommendFragment extends BaseFragment {
     private HorizontalListWidget mWeekCourse;
     public String mTitle = "推荐";
 
+    private View mWeekCourseLabel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +72,8 @@ public class RecommendFragment extends BaseFragment {
         mNewCourses = (CourseListWidget) view.findViewById(R.id.new_listview);
         mSchoolAnnouncement = (TextView) view.findViewById(R.id.recommend_sch_announcement);
         mSchoolBanner = (EdusohoViewPager) view.findViewById(R.id.school_banner);
+
+        mWeekCourseLabel = view.findViewById(R.id.recommend_week_label);
 
         initSchoolBanner();
         initSchoolAnnouncement();
@@ -114,6 +118,7 @@ public class RecommendFragment extends BaseFragment {
                 "limit", "3"
         });
 
+        mWeekCourse.setLabel(mWeekCourseLabel);
         mWeekCourse.initialise(mActivity, url);
         mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
     }

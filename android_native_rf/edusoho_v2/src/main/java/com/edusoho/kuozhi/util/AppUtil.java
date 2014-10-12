@@ -1,18 +1,20 @@
 package com.edusoho.kuozhi.util;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
@@ -21,14 +23,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
+import android.webkit.MimeTypeMap;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.Teacher;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
+import com.edusoho.listener.ResultCallback;
+import com.edusoho.listener.StatusCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.ByteArrayInputStream;
@@ -607,5 +617,69 @@ public class AppUtil {
         }
 
         return length;
+    }
+
+    public static SpannableString getColorTextAfter(String text, String newStr, int color)
+    {
+        StringBuffer stringBuffer = new StringBuffer(text);
+        int start = stringBuffer.length();
+        stringBuffer.append(newStr);
+        SpannableString spannableString = new SpannableString(stringBuffer);
+        spannableString.setSpan(
+                new ForegroundColorSpan(color), start, stringBuffer.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        return spannableString;
+    }
+
+    public static SpannableString getColorTextBefore(String text, String newStr, int color)
+    {
+        StringBuffer stringBuffer = new StringBuffer(text);
+        int start = stringBuffer.length();
+        stringBuffer.append(newStr);
+        SpannableString spannableString = new SpannableString(stringBuffer);
+        spannableString.setSpan(
+                new ForegroundColorSpan(color), 0, start, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        return spannableString;
+    }
+
+    public static Intent getViewFileIntent(File file)
+    {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        intent.setAction(Intent.ACTION_VIEW);
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        String type = mimeTypeMap.getMimeTypeFromExtension(
+                MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath()));
+
+        intent.setDataAndType(Uri.fromFile(file), type);
+
+        return intent;
+    }
+
+    public static void checkUpateApp(
+            ActionBarBaseActivity activity, final StatusCallback<AppUpdateInfo> callback)
+    {
+        final EdusohoApp app = activity.app;
+        RequestUrl requestUrl = app.bindUrl(Const.APP_UPDATE, false);
+        activity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
+                        object, new TypeToken<AppUpdateInfo>(){}.getType());
+
+                if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
+                    return;
+                }
+
+                String newVersion = appUpdateInfo.androidVersion;
+                Log.d(null, "old version->" + app.getApkVersion());
+                int result = AppUtil.compareVersion(app.getApkVersion(), newVersion);
+                if (result == Const.LOW_VERSIO) {
+                    callback.success(appUpdateInfo);
+                } else {
+                    callback.error(appUpdateInfo);
+                }
+            }
+        });
     }
 }

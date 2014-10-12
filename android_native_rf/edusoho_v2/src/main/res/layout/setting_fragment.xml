@@ -72,10 +72,9 @@
             android:layout_width="match_parent"
             android:layout_height="1dp" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.EduUpdateView
             android:drawablePadding="10dp"
             android:id="@+id/setting_check_version"
-            android:drawableRight="@drawable/setting_new"
             android:textColor="@color/system_light_text"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"

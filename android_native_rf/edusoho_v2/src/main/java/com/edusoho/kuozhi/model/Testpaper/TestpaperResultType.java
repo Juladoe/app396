@@ -11,4 +11,6 @@ public class TestpaperResultType {
     public HashMap<QuestionType, ArrayList<QuestionTypeSeq>> items;
     public HashMap<QuestionType, Accuracy> accuracy;
     public PaperResult paperResult;
+    public Testpaper testpaper;
+    public ArrayList<Integer> favorites;
 }

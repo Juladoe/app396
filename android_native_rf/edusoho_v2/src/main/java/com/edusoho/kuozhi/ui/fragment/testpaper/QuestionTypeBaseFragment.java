@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
+import com.edusoho.kuozhi.ui.lesson.TestpaperBaseActivity;
 import com.edusoho.kuozhi.util.Const;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public abstract class QuestionTypeBaseFragment extends BaseFragment {
 
     protected TextView mQuestionType;
     protected TextView mQuestionNumber;
-    protected TestpaperActivity mTestpaperActivity;
+    protected TestpaperBaseActivity mTestpaperActivity;
 
     protected int mCurrentIndex;
 
@@ -34,7 +35,7 @@ public abstract class QuestionTypeBaseFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mTestpaperActivity = (TestpaperActivity) activity;
+        mTestpaperActivity = (TestpaperBaseActivity) activity;
     }
 
     @Override

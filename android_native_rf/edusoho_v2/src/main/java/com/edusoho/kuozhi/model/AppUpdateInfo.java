@@ -6,4 +6,6 @@ package com.edusoho.kuozhi.model;
 public class AppUpdateInfo {
     public String androidVersion;
     public String updateUrl;
+    public String updateInfo;
+    public int code;
 }

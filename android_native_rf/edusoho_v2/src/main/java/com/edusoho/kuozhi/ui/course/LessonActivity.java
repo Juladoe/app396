@@ -68,6 +68,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mLessonListJson;
     private Bundle fragmentData;
     private int mIsFree;
+    private boolean mIsLearn;
 
     protected MenuDrawer mMenuDrawer;
     private CourseDetailsLessonWidget mCourseLessonView;
@@ -202,6 +203,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (data != null) {
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
             mIsFree = data.getIntExtra(Const.FREE, 0);
+            mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
             mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
             mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
             mLessonType = data.getStringExtra(Const.LESSON_TYPE);
@@ -221,7 +223,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         loadLesson(mLessonId);
 
-        if (!mLessonType.equals("testpaper") && mIsFree != LessonItem.FREE) {
+        if (!mLessonType.equals("testpaper") && mIsLearn) {
+            Log.d(null, "load status->");
             loadLessonStatus();
         }
         bindListener();
@@ -248,8 +251,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 } else {
                     mResourceBtn.setVisibility(View.VISIBLE);
                 }
-                setLearnStatus(status == null ? LearnStatus.learning : status.learnStatus);
+                Log.d(null, "status->" + status);
                 showToolsByAnim();
+                setLearnStatus(status == null ? LearnStatus.learning : status.learnStatus);
             }
         });
     }
@@ -270,6 +274,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mLearnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mLearnBtn.getTag() == null) {
+                    return;
+                }
                 changeLessonStatus((Boolean) mLearnBtn.getTag());
             }
         });
@@ -285,7 +292,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mIsFree != LessonItem.FREE) {
+        if (mIsLearn) {
             getMenuInflater().inflate(R.menu.lesson_menu, menu);
         }
         return super.onCreateOptionsMenu(menu);
@@ -387,6 +394,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     {
         mToolsLayout.measure(0, 0);
         int height = mToolsLayout.getMeasuredHeight();
+        Log.d(null, "height->" + height);
         AppUtil.animForHeight(
                 new EdusohoAnimWrap(mToolsLayout), 0, height, 480);
     }

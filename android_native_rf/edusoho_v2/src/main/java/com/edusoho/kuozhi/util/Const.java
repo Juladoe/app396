@@ -54,6 +54,7 @@ public class Const {
     public static final String TAB_MENU_CLICK = "tab_menu_click";
     public static final String TAB_MENU_ID = "tab_menu_id";
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
+    public static final String LOGING_SUCCESS = "login_success";
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
@@ -68,9 +69,12 @@ public class Const {
     public static final String DB_NAME = "edusoho";
 
     public static final String REGIST_DEVICE = "regist_device";
+    public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
     public static final String COURSELESSON = "Lesson/getLesson";
+    public static final String DOWNLOAD_MATERIAL = "%sLesson/downMaterial?courseId=%d&materialId=%d&token=%s";
+    public static final String UPLOAD_IMAGE = "Testpaper/uploadQuestionImage";
 
     /**
      * course status
@@ -230,6 +234,7 @@ public class Const {
     public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAT_TITLE = "title";
     public static final String LIST_JSON = "list_json";
+    public static final String IS_LEARN = "is_learn";
 
     public static final String QUESTION_TITLE = "title";
     public static final String QUESTION_EDIT_RESULT = "question_edit_result";
@@ -252,6 +257,5 @@ public class Const {
      * 回复编辑
      */
     public static final int EDIT_REPLY = 0x03;
-
 
 }

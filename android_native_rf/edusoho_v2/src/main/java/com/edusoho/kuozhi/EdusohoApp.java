@@ -24,6 +24,7 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
+import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CacheAjaxCallback;
 import com.edusoho.kuozhi.core.CoreEngine;
@@ -33,6 +34,7 @@ import com.edusoho.kuozhi.core.model.Cache;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.util.Const;
@@ -49,6 +51,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application{
@@ -71,7 +74,8 @@ public class EdusohoApp extends Application{
     public static int screenW;
     public static int screenH;
 
-    private HashMap<String, Object> paramsMap;
+    private HashMap<String, Bundle> notifyMap;
+
     public static EdusohoApp app;
     public static boolean debug = true;
     public static final String PLUGIN_CONFIG = "plugin_config";
@@ -140,16 +144,6 @@ public class EdusohoApp extends Application{
         });
     }
 
-    public void setParame(String key, Object obj)
-    {
-        paramsMap.put(key, obj);
-    }
-
-    public Object getParame(String key)
-    {
-        return paramsMap.get(key);
-    }
-
     public void addMessageListener(String msgId, CoreEngineMsgCallback callback)
     {
         mEngine.receiveMsg(msgId, callback);
@@ -163,6 +157,11 @@ public class EdusohoApp extends Application{
     public void unRegistMsgSource(MessageEngine.MessageCallback messageCallback)
     {
         mEngine.unRegistMessageSource(messageCallback);
+    }
+
+    public void unRegistPubMsg(MessageType messageType, MessageEngine.MessageCallback messageCallback)
+    {
+        mEngine.unRegistPubMessage(messageType, messageCallback);
     }
 
     public ConcurrentHashMap<String, MessageEngine.MessageCallback> getSourceMap()
@@ -202,7 +201,7 @@ public class EdusohoApp extends Application{
     {
         app.appFinish();
         query.clear();
-        paramsMap.clear();
+        notifyMap.clear();
         runTask.clear();
         System.exit(0);
     }
@@ -215,7 +214,8 @@ public class EdusohoApp extends Application{
         apiVersion = "2.0.0";
         query = new AQuery(this);
         host = getString(R.string.app_host);
-        paramsMap = new HashMap<String, Object>();
+
+        notifyMap = new HashMap<String, Bundle>();
         initWorkSpace();
         loadConfig();
 
@@ -337,7 +337,7 @@ public class EdusohoApp extends Application{
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
         } catch (Exception e) {
-            version = "0.0.0";
+            version = getResources().getString(R.string.apk_version);
         }
         return version;
     }
@@ -597,12 +597,11 @@ public class EdusohoApp extends Application{
 
         final LoadDialog loadDialog = LoadDialog.create(this);
         if (isShowLoading) {
+            loadDialog.setMessage("正在检查版本更新");
             loadDialog.show();
         }
 
-        query.ajax(
-                url,
-                String.class,
+        query.ajax(url,String.class,
                 new AjaxCallback<String>(){
                     @Override
                     public void callback(String url, String object, AjaxStatus status) {
@@ -618,5 +617,25 @@ public class EdusohoApp extends Application{
                         callback.success(appUpdateInfo);
                     }
         });
+    }
+
+    public void addNotify(String type, Bundle bundle)
+    {
+        notifyMap.put(type, bundle);
+    }
+
+    public Bundle getNotify(String type)
+    {
+        return notifyMap.get(type);
+    }
+
+    public Set<String> getNotifys()
+    {
+        return notifyMap.keySet();
+    }
+
+    public void removeNotify(String type)
+    {
+        notifyMap.remove(type);
     }
 }

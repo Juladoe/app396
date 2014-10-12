@@ -24,4 +24,11 @@
         android:layout_height="wrap_content">
 
     </LinearLayout>
+    <ViewStub
+        android:layout="@layout/question_analysis"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/question_fill_layout"
+        android:id="@+id/quetion_choice_analysis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </com.edusoho.kuozhi.ui.widget.testpaper.FillQuestionWidget>

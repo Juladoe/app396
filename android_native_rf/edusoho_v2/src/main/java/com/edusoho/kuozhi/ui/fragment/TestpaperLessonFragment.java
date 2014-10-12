@@ -118,6 +118,7 @@ public class TestpaperLessonFragment extends BaseFragment {
                 bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
                 bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
                 startAcitivityWithBundle("TestpaperActivity", bundle);
+                mActivity.finish();
             }
         });
 
@@ -133,6 +134,7 @@ public class TestpaperLessonFragment extends BaseFragment {
                         startIntent.putExtra(Const.STATUS, mStstus);
                     }
                 });
+                mActivity.finish();
             }
         });
     }
@@ -214,6 +216,7 @@ public class TestpaperLessonFragment extends BaseFragment {
                 }
 
                 mTestpaper = testpaperResult.testpaper;
+                Log.d(null, "mTestpaper->" + mTestpaper);
                 initTestPaperItem(testpaperResult);
             }
         });
@@ -233,7 +236,7 @@ public class TestpaperLessonFragment extends BaseFragment {
         contents.add(new TestpaperItem(
                 "试卷简介", new String[]{
                 getTestpaperInstruction(testpaperResult.items, testpaper.score),
-                String.format("考试时间:%d分钟", testpaper.limitedTime == 0 ? "无限" : testpaper.limitedTime)
+                String.format("考试时间:%s分钟", testpaper.limitedTime == 0 ? "无限" : testpaper.limitedTime + "")
         }, true
         ));
         contents.add(new TestpaperItem(

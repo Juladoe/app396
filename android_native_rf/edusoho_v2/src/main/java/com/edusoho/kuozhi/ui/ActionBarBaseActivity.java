@@ -62,6 +62,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+        Log.d(null, "start->");
         mActivity = this;
         mContext = this;
         app = (EdusohoApp) getApplication();
@@ -71,6 +72,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mService = app.getService();
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
+        setProgressBarIndeterminateVisibility(false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     public EdusohoMainService getService()
@@ -136,6 +143,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public void setTitle(String title)
     {
         mTitleTextView.setText(title == null ? "" : title);
+    }
+
+    public void setNormalActionBack(String title)
+    {
+        mActionBar.setDisplayShowCustomEnabled(false);
+        mActionBar.setTitle(title);
     }
 
     public void setBackMode(String backTitle, String title)

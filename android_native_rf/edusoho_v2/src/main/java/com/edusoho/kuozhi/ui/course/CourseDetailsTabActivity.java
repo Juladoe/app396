@@ -103,14 +103,6 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Const.TAB_MENU_ID, item.getItemId());
-        app.sendMessage(Const.TAB_MENU_CLICK, bundle);
-        return true;
-    }
-
     private void changeColor(int newColor)
     {
         mTabs.setIndicatorColor(newColor);

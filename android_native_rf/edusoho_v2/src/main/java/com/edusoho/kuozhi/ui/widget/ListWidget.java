@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -80,6 +81,11 @@ public class ListWidget extends FrameLayout {
 
         addView(mResourceListView);
         addView(mLoadView);
+    }
+
+    public void setOnItemClick(AdapterView.OnItemClickListener itemClick)
+    {
+        mResourceListView.setOnItemClickListener(itemClick);
     }
 
     private View initLoadView()

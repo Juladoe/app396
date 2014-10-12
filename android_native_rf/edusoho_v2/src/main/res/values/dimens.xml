@@ -60,7 +60,7 @@
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">14sp</dimen>
-    <dimen name="recommend_announcement">18sp</dimen>
+    <dimen name="recommend_announcement">10sp</dimen>
     <dimen name="recommend_announcement_label">22sp</dimen>
     <dimen name="recommend_view_more">18sp</dimen>
     <dimen name="material_normal_btn">18sp</dimen>

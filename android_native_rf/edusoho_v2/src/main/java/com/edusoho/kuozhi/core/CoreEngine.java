@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.core.model.PluginModel;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -273,6 +274,11 @@ public class CoreEngine {
     public void unRegistMessageSource(MessageEngine.MessageCallback source)
     {
         messageEngine.unRegistMessageSource(source);
+    }
+
+    public void unRegistPubMessage(MessageType messageType, MessageEngine.MessageCallback source)
+    {
+        messageEngine.unRegistPubMessage(messageType, source);
     }
 
     private void init()

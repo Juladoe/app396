@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.util.Const;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
 /**
  * Created by howzhi on 14-9-16.
@@ -36,7 +37,7 @@ public class LearningCourseFragment extends MyCourseBaseFragment {
     }
 
     @Override
-    protected void parseResponse(String object) {
+    protected void parseResponse(String object, boolean isAppend) {
         LearnCourseResult courseResult = mActivity.gson.fromJson(
                 object, new TypeToken<LearnCourseResult>() {
         }.getType());
@@ -45,11 +46,17 @@ public class LearningCourseFragment extends MyCourseBaseFragment {
         if (courseResult == null) {
             return;
         }
+
+        if (isAppend) {
+            mAdapter.addItemLast(courseResult.data);
+        } else {
+            mAdapter.setItem(courseResult.data);
+        }
         int start = courseResult.start + Const.LIMIT;
         if (start < courseResult.total) {
-            mStart = start;
+            mCourseListWidget.setTag(start);
         } else {
+            mCourseListWidget.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         }
-        mAdapter.addItemLast(courseResult.data);
     }
 }

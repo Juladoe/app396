@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.edusoho.kuozhi"
-    android:versionCode="2"
-    android:versionName="2.0.0"
+    android:versionCode="@string/apk_code"
+    android:versionName="@string/apk_version"
     android:windowSoftInputMode="adjustResize">
 
     <supports-screens
@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -75,11 +76,6 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.edusoho.kuozhi.ui.common.NormalActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.edusoho.kuozhi.ui.course.FavoriteActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -121,8 +117,7 @@
         <activity
             android:name="com.edusoho.kuozhi.ui.course.LessonActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.course.CourseListActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -141,6 +136,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.lesson.TestpaperActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -187,6 +186,7 @@
             android:launchMode="singleInstance" />
 
         <service android:name="com.edusoho.kuozhi.Service.EdusohoMainService" />
+        <service android:name="com.edusoho.kuozhi.Service.DownLoadService" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

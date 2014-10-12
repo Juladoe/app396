@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -109,7 +110,7 @@ public class CourseLearningFragment extends BaseFragment {
         }
 
         Announcement announcement = mAnnouncements.get(noticeShowIndex++);
-        StringBuilder builder = new StringBuilder(announcement.content);
+        StringBuilder builder = new StringBuilder(AppUtil.coverCourseAbout(announcement.content));
         mCourseNoticeView.setText(builder);
 
         builder.append("\n");
@@ -256,9 +257,8 @@ public class CourseLearningFragment extends BaseFragment {
         initCourseAnnouncement();
 
         mCourseLessonList.hideTitle();
+        mCourseLessonList.setIsLearn(true);
         mCourseLessonList.initLesson(mCourseId, mActivity, true);
-        mCourseLessonList.setItemClickListener(
-                new LessonItemClickListener(mActivity, mCourseLessonList.getLessonListJson()));
         mCourseLessonList.onShow();
         showBtnLayout(mBtnLayout);
 

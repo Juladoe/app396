@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.model;
 
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-10-10.

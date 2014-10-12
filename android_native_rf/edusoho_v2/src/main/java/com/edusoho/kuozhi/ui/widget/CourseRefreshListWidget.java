@@ -18,7 +18,7 @@ public class CourseRefreshListWidget extends PullToRefreshListView {
 
     private ListAdapter mAdapter;
     private Context mContext;
-    private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };;
+    private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
 
     public CourseRefreshListWidget(Context context) {
         super(context);

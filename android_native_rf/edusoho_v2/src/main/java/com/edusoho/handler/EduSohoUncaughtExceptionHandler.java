@@ -1,6 +1,7 @@
 package com.edusoho.handler;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -26,7 +27,9 @@ public class EduSohoUncaughtExceptionHandler implements Thread.UncaughtException
         if (!handleException(throwable) && mDefaultHandler != null) {
             mDefaultHandler.uncaughtException(thread, throwable);
         } else {
-
+            throwable.printStackTrace();
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
         }
     }
 

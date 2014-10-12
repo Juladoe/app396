@@ -104,10 +104,10 @@ public class XCourseListWidget extends FrameLayout {
     public void setRefreshListener(PullToRefreshBase.OnRefreshListener2 refreshListener)
     {
         if (mEmptyLayout == null) {
-            return;
+            mCourseListWidget.setOnRefreshListener(refreshListener);
+        } else {
+            mEmptyLayout.setOnRefreshListener(refreshListener);
         }
-
-        mEmptyLayout.setOnRefreshListener(refreshListener);
     }
 
     private void refreshView()
@@ -124,6 +124,11 @@ public class XCourseListWidget extends FrameLayout {
             }
             mCourseListWidget.postInvalidate();
         }
+    }
+
+    public void reload()
+    {
+        mCourseListWidget.setRefreshing();
     }
 
     public ListAdapter getAdapter()
@@ -146,5 +151,15 @@ public class XCourseListWidget extends FrameLayout {
             Log.d(null, "XCourseObserver->onChanged");
             refreshView();
         }
+    }
+
+    public void onRefreshComplete()
+    {
+        mCourseListWidget.onRefreshComplete();
+    }
+
+    public void setMode(PullToRefreshBase.Mode mode)
+    {
+        mCourseListWidget.setMode(mode);
     }
 }

@@ -3,21 +3,26 @@ package com.edusoho.kuozhi.ui.widget.testpaper;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
-import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
+import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.view.EduSohoTextBtn;
 
 import java.util.ArrayList;
 
@@ -55,6 +60,7 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
         } else {
             bundle.putString("QuestionType", mQuestionSeq.question.type.name());
         }
+
         int count = radioGroup.getChildCount();
         ArrayList<String> data = new ArrayList<String>();
         for (int i=0; i < count; i++) {
@@ -71,11 +77,11 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
 
     @Override
     protected void invalidateData() {
+        super.invalidateData();
         radioGroup = (RadioGroup) this.findViewById(R.id.quetion_choice_group);
         stemView = (TextView) this.findViewById(R.id.question_stem);
 
         stemView.setText(getQuestionStem());
-        Question mQuestion = mQuestionSeq.question;
         ArrayList<String> metas = mQuestion.metas;
         if (metas != null) {
             int size = metas.size();
@@ -83,6 +89,33 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
                 CheckBox checkBox = initCheckBox(metas.get(i), i + 1);
                 checkBox.setOnCheckedChangeListener(checkedChangeListener);
                 radioGroup.addView(checkBox);
+            }
+        }
+
+        if (mQuestion.testResult != null) {
+            enable(radioGroup, false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.quetion_choice_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                    initQuestionResult();
+                }
+            });
+            mAnalysisVS.inflate();
+        }
+    }
+
+    private void initQuestionResult()
+    {
+        int count = radioGroup.getChildCount();
+        for (int i=0; i < count; i++) {
+            View child = radioGroup.getChildAt(i);
+            for (String answer : mQuestion.answer) {
+                if (answer.equals(String.valueOf(i))) {
+                    child.setSelected(true);
+                    break;
+                }
             }
         }
     }

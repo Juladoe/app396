@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.fragment.message;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +13,9 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.MessageListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.BaseResult;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Notify;
+import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
@@ -48,6 +51,22 @@ public class MessageFragment extends BaseFragment {
         if (app.loginUser == null) {
             LoginActivity.start(activity);
         }
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (Const.LOGING_SUCCESS.equals(messageType.type)) {
+            mMessageList.setRefreshing();
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(Const.LOGING_SUCCESS)
+        };
+        return messageTypes;
     }
 
     @Override

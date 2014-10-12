@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
@@ -40,9 +41,23 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
 
     protected String mBaseUrl;
 
+    public static final String RELOAD = "reload";
+
     @Override
     public void invoke(WidgetMessage message) {
-        super.invoke(message);
+        MessageType messageType = message.type;
+        if (RELOAD.equals(messageType.type) || Const.LOGING_SUCCESS.equals(message.type)) {
+            mCourseListWidget.reload();
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(RELOAD),
+                new MessageType(Const.LOGING_SUCCESS),
+        };
+        return messageTypes;
     }
 
     @Override
@@ -80,6 +95,7 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         mLoadView = view.findViewById(R.id.load_layout);
         mCourseListWidget =(XCourseListWidget) view.findViewById(R.id.my_course_xlistview);
         mCourseListWidget.setEmptyText(getEmptyTitle());
+        mCourseListWidget.getListView().setMode(PullToRefreshBase.Mode.BOTH);
         mAdapter = getListAdapter();
         mCourseListWidget.setAdapter(mAdapter);
 
@@ -89,7 +105,7 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
             mTitle = bundle.getString(TITLE);
         }
 
-        loadCourseFromNet(0);
+        loadCourseFromNet(0, false);
     }
 
     private void bindListener()
@@ -113,17 +129,17 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         mCourseListWidget.setRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>(){
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                loadCourseFromNet(0);
+                loadCourseFromNet(0, false);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-                loadCourseFromNet(mStart);
+                loadCourseFromNet(mStart, true);
             }
         });
     }
 
-    private void loadCourseFromNet(int start)
+    private void loadCourseFromNet(int start, final boolean isAppend)
     {
         if (mBaseUrl == null) {
             return;
@@ -137,13 +153,20 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mCourseListWidget.onRefreshComplete();
                 mLoadView.setVisibility(View.GONE);
-                parseResponse(object);
+                parseResponse(object, isAppend);
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                mCourseListWidget.onRefreshComplete();
+                mLoadView.setVisibility(View.GONE);
             }
         });
     }
 
-    protected void parseResponse(String object)
+    protected void parseResponse(String object, boolean isAppend)
     {
         CourseResult courseResult = mActivity.gson.fromJson(
                 object, new TypeToken<CourseResult>() {
@@ -153,11 +176,17 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         if (courseResult == null) {
             return;
         }
+
+        if (isAppend) {
+            mAdapter.addItemLast(courseResult.data);
+        } else {
+            mAdapter.setItem(courseResult.data);
+        }
         int start = courseResult.start + Const.LIMIT;
         if (start < courseResult.total) {
-            mStart = start;
+            mCourseListWidget.setTag(start);
         } else {
+            mCourseListWidget.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         }
-        mAdapter.addItemLast(courseResult.data);
     }
 }

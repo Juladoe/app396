@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,7 +26,10 @@ import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
+import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.view.EduSohoTextBtn;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -80,6 +88,7 @@ public class FillQuestionWidget extends BaseQuestionWidget {
 
     @Override
     protected void invalidateData() {
+        super.invalidateData();
         fillLayout = (LinearLayout) this.findViewById(R.id.question_fill_layout);
         stemView = (TextView) this.findViewById(R.id.question_stem);
 
@@ -104,6 +113,64 @@ public class FillQuestionWidget extends BaseQuestionWidget {
             fillLayout.addView(
                     editText, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+
+        if (mQuestion.testResult != null) {
+            enable(fillLayout, false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.quetion_choice_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                }
+            });
+            mAnalysisVS.inflate();
+        }
+    }
+
+    @Override
+    protected void initResultAnalysis(View view)
+    {
+        TextView myAnswerText = (TextView) view.findViewById(R.id.question_my_anwer);
+        TextView myRightText = (TextView) view.findViewById(R.id.question_right_anwer);
+        TextView AnalysisText = (TextView) view.findViewById(R.id.question_analysis);
+
+        TestResult testResult = mQuestion.testResult;
+        String myAnswer = null;
+        if ("noAnswer".equals(testResult.status)) {
+            myAnswer = "未答题";
+        } else {
+            myAnswer = listToStr(testResult.answer);
+        }
+
+        myAnswerText.setText("你的答案:\n" + myAnswer);
+
+        int rightColor = mContext.getResources().getColor(R.color.testpaper_result_right);
+        SpannableString rightText = AppUtil.getColorTextAfter(
+                "正确答案:\n", listToStr(mQuestion.answer), rightColor);
+        myRightText.setText(rightText);
+
+        AnalysisText.setText(Html.fromHtml(mQuestion.analysis));
+        initFavoriteBtn(view);
+    }
+
+    @Override
+    protected String listToStr(ArrayList<String> arrayList)
+    {
+        int index = 1;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String answer : arrayList) {
+            if (TextUtils.isEmpty(answer)) {
+                continue;
+            }
+            stringBuilder.append(String.format("答案(%d):", index++));
+            stringBuilder.append(answer);
+            stringBuilder.append("\n");
+        }
+        int length = stringBuilder.length();
+        if (length > 0) {
+            stringBuilder.delete(length - 1, length);
+        }
+        return stringBuilder.toString();
     }
 
     private StringBuffer parseStem(String stem)

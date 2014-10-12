@@ -26,7 +26,11 @@ public class QuestionAdapter extends QuestionViewPagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         QuestionTypeSeq questionTypeSeq = mList.get(position);
         View view = switchQuestionWidget(questionTypeSeq, position + 1);
-        container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        return view;
+        ScrollView scrollView = new ScrollView(mContext);
+        scrollView.setFillViewport(true);
+        scrollView.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        container.addView(scrollView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        return scrollView;
     }
 }

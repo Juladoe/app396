@@ -23,9 +23,11 @@ import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.Testpaper;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperResultType;
+import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -40,8 +42,10 @@ public class TestpaperResultFragment extends BaseFragment {
     private ListView mListView;
     private TextView mTotalView;
     private TextView mReviewView;
+    private EdusohoButton mResultParseBtn;
 
     private int mTestpaperResultId;
+    private Testpaper mTestpaper;
     private String mStatus;
     public static final String RESULT_ID = "testpaperResultId";
 
@@ -70,6 +74,7 @@ public class TestpaperResultFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        mResultParseBtn = (EdusohoButton) view.findViewById(R.id.testpaper_result_show);
         mListView = (ListView) view.findViewById(R.id.testpaper_result_listview);
         mTotalView = (TextView) view.findViewById(R.id.testpaper_result_total);
         mReviewView = (TextView) view.findViewById(R.id.testpaper_result_review);
@@ -90,13 +95,15 @@ public class TestpaperResultFragment extends BaseFragment {
                     return;
                 }
 
+                mTestpaper = testpaperResultType.testpaper;
                 HashMap<QuestionType, Accuracy> accuracy = testpaperResultType.accuracy;
 
                 TestpaperResultListAdapter adapter = new TestpaperResultListAdapter(
                         mContext, getAccuracys(accuracy), getQuestionTypes(accuracy), R.layout.testpaper_result_item
                 );
+
                 mListView.setAdapter(adapter);
-                PaperResult paperResult = testpaperResultType.paperResult;
+                final PaperResult paperResult = testpaperResultType.paperResult;
                 if ("reviewing".equals(paperResult.status)) {
                     setTotalText(mTotalView, "待批阅");
                     mReviewView.setText(R.string.testpaper_reviewing);
@@ -105,8 +112,22 @@ public class TestpaperResultFragment extends BaseFragment {
                     mReviewView.setText(
                             TextUtils.isEmpty(paperResult.teacherSay) ? "没有评语" : paperResult.teacherSay);
                 }
+
+                mResultParseBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                        bundle.putInt(TestpaperResultFragment.RESULT_ID, mTestpaperResultId);
+                        bundle.putInt(Const.LESSON_ID, 0);
+                        bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
+                        bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
+                        startAcitivityWithBundle("TestpaperParseActivity", bundle);
+                    }
+                });
             }
         });
+
     }
 
     private void setTotalText(TextView rightText, String text)
@@ -147,6 +168,50 @@ public class TestpaperResultFragment extends BaseFragment {
         }
 
         return list;
+    }
+
+    private String[] getTestpaperQSeq()
+    {
+        ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
+        String[] TESTPAPER_QUESTION_TYPE = new String[questionTypeSeqs.size()];
+        for (int i=0; i < TESTPAPER_QUESTION_TYPE.length; i++) {
+            TESTPAPER_QUESTION_TYPE[i] = questionTypeSeqs.get(i).title();
+        }
+
+        return TESTPAPER_QUESTION_TYPE;
+    }
+
+    private String[] getTestpaperFragments()
+    {
+        ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
+        String[] TESTPAPER_QUESTIONS = new String[questionTypeSeqs.size()];
+        for (int i=0; i < TESTPAPER_QUESTIONS.length; i++) {
+            switch (questionTypeSeqs.get(i)) {
+                case choice:
+                    TESTPAPER_QUESTIONS[i] = "ChoiceFragment";
+                    break;
+                case single_choice:
+                    TESTPAPER_QUESTIONS[i] = "SingleChoiceFragment";
+                    break;
+                case essay:
+                    TESTPAPER_QUESTIONS[i] = "EssayFragment";
+                    break;
+                case uncertain_choice:
+                    TESTPAPER_QUESTIONS[i] = "UncertainChoiceFragment";
+                    break;
+                case fill:
+                    TESTPAPER_QUESTIONS[i] = "FillFragment";
+                    break;
+                case determine:
+                    TESTPAPER_QUESTIONS[i] = "DetermineFragment";
+                    break;
+                case material:
+                    TESTPAPER_QUESTIONS[i] = "MaterialFragment";
+                    break;
+            }
+        }
+
+        return TESTPAPER_QUESTIONS;
     }
 
 }
