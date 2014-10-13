@@ -8,6 +8,7 @@
     android:gravity="center_vertical"
     android:layout_height="wrap_content">
 
+    <!--
     <CheckBox
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
@@ -15,6 +16,16 @@
         android:id="@+id/lesson_material_ck"
         android:textColor="@color/system_light_text"
         android:button="@drawable/lesson_resource_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+        -->
+    <ImageView
+        android:src="@drawable/download_success"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:id="@+id/lesson_material_down"
+        android:textColor="@color/system_light_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

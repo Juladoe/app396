@@ -14,15 +14,24 @@ import android.view.ViewStub;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
+import com.edusoho.listener.AjaxResultCallback;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -82,19 +91,17 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
             case choice:
             case uncertain_choice:
             case single_choice:
-                stem = String.format("%d, (%s) %s %s", mIndex, mQuestion.type.title(), mQuestion.stem, "( )");
-                break;
             case essay:
-                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
-                break;
             case material:
-                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
-                break;
             case determine:
-                stem = mIndex + ", " + mQuestion.stem;
-                break;
             case fill:
-                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
+                stem = String.format(
+                        "%d, (%s) %s (%.2f分)",
+                        mIndex,
+                        mQuestion.type.title(),
+                        mQuestion.stem,
+                        mQuestion.score
+                );
         }
 
         return Html.fromHtml(stem);
@@ -174,7 +181,7 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
             return;
         }
 
-        EduSohoTextBtn favoriteBtn = (EduSohoTextBtn) view.findViewById(R.id.question_favorite);
+        final EduSohoTextBtn favoriteBtn = (EduSohoTextBtn) view.findViewById(R.id.question_favorite);
         ArrayList<Integer> favorites = testpaperParseActivity.getFavorites();
         if (favorites.contains(mQuestion.id)) {
             favoriteBtn.setTag(true);
@@ -185,7 +192,62 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
         favoriteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isFavorite;
+                Object tag = favoriteBtn.getTag();
+                if (tag == null) {
+                    isFavorite = false;
+                } else {
+                    isFavorite = (Boolean) tag;
+                }
 
+                favoriteQuestion(mQuestion.id, mQuestionSeq.testId, !isFavorite, favoriteBtn);
+            }
+        });
+    }
+
+    private void favoriteQuestion(
+            int questionId, int targetId, final boolean isFavorite, final EduSohoTextBtn btn)
+    {
+        final TestpaperParseActivity testpaperParseActivity = TestpaperParseActivity.getInstance();
+        if (testpaperParseActivity == null) {
+            return;
+        }
+
+        EdusohoApp app = testpaperParseActivity.app;
+        RequestUrl requestUrl = app.bindUrl(Const.FAVORITE_QUESTION, true);
+        requestUrl.setParams(new String[] {
+                "targetType", "testpaper",
+                "targetId", targetId + "",
+                "id", questionId + "",
+                "action", isFavorite ? "favorite" : "unFavorite"
+        });
+
+        btn.setEnabled(false);
+        testpaperParseActivity.setProgressBarIndeterminateVisibility(true);
+        testpaperParseActivity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                btn.setEnabled(true);
+                testpaperParseActivity.setProgressBarIndeterminateVisibility(false);
+                Boolean result = testpaperParseActivity.parseJsonValue(
+                        object, new TypeToken<Boolean>(){});
+                if (result == null) {
+                    return;
+                }
+                Toast.makeText(
+                        mContext,
+                        isFavorite ? "收藏成功!" : "取消收藏成功!",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                btn.setTag(isFavorite);
+                if (isFavorite){
+                    btn.setIcon(R.string.font_favorited);
+                    btn.setTextColor(getResources().getColor(R.color.course_favorited));
+                } else {
+                    btn.setIcon(R.string.font_favoirte);
+                    btn.setTextColor(getResources().getColor(R.color.system_normal_text));
+                }
             }
         });
     }

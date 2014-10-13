@@ -36,7 +36,10 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int index,
                             long arg3) {
         final LessonItem lesson = (LessonItem) parent.getItemAtPosition(index);
-
+        if (!"published".equals(lesson.status)) {
+            mActivity.longToast("课时尚未发布！请稍后浏览！");
+            return;
+        }
         if (lesson.free != LessonItem.FREE ) {
             if (mActivity.app.loginUser == null) {
                 mActivity.longToast("请登录后学习！");

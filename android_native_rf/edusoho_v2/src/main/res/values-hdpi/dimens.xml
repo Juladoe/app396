@@ -89,4 +89,7 @@
     <dimen name="question_item_lesson">12sp</dimen>
     <dimen name="question_teacher_reply">12sp</dimen>
 
+    <!-- testpaper-->
+    <dimen name="my_testpaper_btn">6sp</dimen>
+
 </resources>

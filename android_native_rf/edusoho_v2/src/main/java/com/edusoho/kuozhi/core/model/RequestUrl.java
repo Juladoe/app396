@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.core.model;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 
 /**
  * Created by howzhi on 14-9-11.
@@ -11,6 +12,8 @@ public class RequestUrl {
     public HashMap<String, String> heads;
     public HashMap<String, String> params;
     public HashMap<String, Object> muiltParams;
+
+    public IdentityHashMap<String, Object> muiltKeysMap;
 
     public RequestUrl() {
         heads = new HashMap<String, String>();
@@ -66,5 +69,16 @@ public class RequestUrl {
 
     public HashMap<String, String> getHeads() {
         return heads;
+    }
+
+    public IdentityHashMap<String, Object> initKeysMap()
+    {
+        muiltKeysMap = new IdentityHashMap<String, Object>();
+        return muiltKeysMap;
+    }
+
+    public IdentityHashMap<String, Object> getKeysMap()
+    {
+        return muiltKeysMap;
     }
 }

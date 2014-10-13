@@ -98,10 +98,10 @@ public class AudioLessonFragment extends BaseFragment {
             public void onClick(View view) {
                 if (audioMediaPlayer.isPlaying()) {
                     audioMediaPlayer.pause();
-                    mPlayBtn.setImageResource(R.drawable.audio_play);
+                    mPlayBtn.setImageResource(R.drawable.audio_pause);
                 } else {
                     audioMediaPlayer.start();
-                    mPlayBtn.setImageResource(R.drawable.audio_pause);
+                    mPlayBtn.setImageResource(R.drawable.audio_play);
                 }
             }
         });

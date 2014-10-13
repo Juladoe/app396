@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.MyInfoPlugin;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
@@ -88,6 +89,7 @@ public class MyInfoFragment extends BaseFragment {
                 setUserStatus();
                 break;
             case LOGOUT:
+                mLearnStatusWidget.setVisibility(View.GONE);
                 setUserStatus();
                 break;
         }
@@ -142,6 +144,10 @@ public class MyInfoFragment extends BaseFragment {
         mMyInfoPluginListView.setItemOnClick(new MyInfoPluginListView.PluginItemClick() {
             @Override
             public void onClick(final MyInfoPlugin plugin) {
+                if (app.loginUser == null) {
+                    LoginActivity.start(mActivity);
+                    return;
+                }
                 switch (plugin.action) {
                     case QUESTION:
                         redirectToMyQuestion();
@@ -150,6 +156,7 @@ public class MyInfoFragment extends BaseFragment {
                         showMyCourse();
                         break;
                     case TEST:
+                        showMyTestpaper();
                         break;
                     case DISCUSS:
                         break;
@@ -166,6 +173,18 @@ public class MyInfoFragment extends BaseFragment {
         }
 
         setUserStatus();
+    }
+
+    private void showMyTestpaper()
+    {
+        app.mEngine.runNormalPlugin(
+                "FragmentPageActivity", mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestpaperFragment");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
+            }
+        });
     }
 
     private void redirectToMyQuestion() {

@@ -1,30 +1,20 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EduSohoAutoView;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -32,7 +22,7 @@ import com.google.gson.reflect.TypeToken;
 /**
  * Created by howzhi on 14-9-19.
  */
-public class RecommendCourseFragment extends DialogFragment {
+public class RecommendCourseFragment extends BaseFragment {
 
     private RatingBar courseRatingBar;
     private EditText courseInput;
@@ -41,10 +31,16 @@ public class RecommendCourseFragment extends DialogFragment {
     private int mCourseId;
 
     @Override
+    public String getTitle() {
+        return "评价";
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (ActionBarBaseActivity) getActivity();
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.PopDialogTheme);
+        setContainerView(R.layout.recomend_course_fragment);
+        //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.PopDialogTheme);
     }
 
     @Override
@@ -54,14 +50,6 @@ public class RecommendCourseFragment extends DialogFragment {
         if (bundle != null) {
             mCourseId = bundle.getInt(Const.COURSE_ID);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recomend_course_fragment, container, false);
-        initView(view);
-        bindViewListener();
-        return view;
     }
 
     private void bindViewListener()
@@ -90,7 +78,7 @@ public class RecommendCourseFragment extends DialogFragment {
                             return;
                         }
                         mActivity.longToast("评论成功!");
-                        dismiss();
+                        mActivity.finish();
                         mActivity.app.sendMsgToTarget(
                                 ReviewInfoFragment.REFRESH_REVIEWS, null, ReviewInfoFragment.class);
                     }
@@ -99,11 +87,14 @@ public class RecommendCourseFragment extends DialogFragment {
         });
     }
 
-    private void initView(View view)
-    {
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+
         mCommitBtn = (EdusohoButton) view.findViewById(R.id.recommend_course_commitbtn);
         courseInput = (EditText) view.findViewById(R.id.recommend_course_input);
         courseRatingBar = (RatingBar) view.findViewById(R.id.recommend_course_rating);
+        bindViewListener();
     }
 
     @Override
@@ -136,21 +127,5 @@ public class RecommendCourseFragment extends DialogFragment {
             view.setOnClickListener(quickClickListener);
             //quickCommitBtn.addItem(view);
         }
-    }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog =  super.onCreateDialog(savedInstanceState);
-
-        Window dialogWindow = dialog.getWindow();
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        dialogWindow.setGravity(Gravity.LEFT | Gravity.BOTTOM);
-
-        lp.width = EdusohoApp.screenW;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        dialogWindow.setAttributes(lp);
-        dialog.setCanceledOnTouchOutside(true);
-        return dialog;
     }
 }

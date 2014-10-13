@@ -42,11 +42,15 @@ import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by howzhi on 14-9-24.
@@ -91,15 +95,25 @@ public class EssayFragment extends SelectQuestionFragment{
         }
     }
 
-    private void uploadImage(String path, final NormalCallback<String> callback)
+    private void uploadImage(int type, String path, final NormalCallback<String> callback)
     {
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.setMessage("上传中...");
         loadDialog.show();
 
+        File imageFile = null;
+        if (type == PHOTO) {
+            imageFile = new File(path);
+            if (imageFile.exists()) {
+                Log.d(null, "compress imageFile->" + imageFile);
+                imageFile = compressImage(imageFile);
+            }
+        } else {
+            imageFile = compressImage(new File(path));
+        }
         RequestUrl requestUrl = app.bindUrl(Const.UPLOAD_IMAGE, true);
         requestUrl.setMuiltParams(new Object[] {
-                "file", new File(path)
+                "file", imageFile
         });
 
         mActivity.ajaxPost(requestUrl, new ResultCallback() {
@@ -190,10 +204,11 @@ public class EssayFragment extends SelectQuestionFragment{
         switch (requestCode) {
             case IMAGE_RESULT:
                 if (null != data) {
-                    final String filePath = convertUriToPath(data.getDataString());
+                    final String filePath = convertUriToPath(data.getData());
                     final Bundle bundle = new Bundle();
+                    Log.d(null, "inser->" + filePath);
                     bundle.putString("file", filePath);
-                    uploadImage(filePath, new NormalCallback<String>() {
+                    uploadImage(PHOTO, filePath, new NormalCallback<String>() {
                         @Override
                         public void success(String obj) {
                             if (mEssayQWCallback != null) {
@@ -209,7 +224,7 @@ public class EssayFragment extends SelectQuestionFragment{
                     if (mCameraImageFile != null & mCameraImageFile.exists()) {
                         final Bundle bundle = new Bundle();
                         bundle.putString("file", mCameraImageFile.getPath());
-                        uploadImage(mCameraImageFile.getPath(), new NormalCallback<String>() {
+                        uploadImage(CAMERA, mCameraImageFile.getPath(), new NormalCallback<String>() {
                             @Override
                             public void success(String obj) {
                                 if (mEssayQWCallback != null) {
@@ -224,14 +239,37 @@ public class EssayFragment extends SelectQuestionFragment{
         }
     }
 
-    /**
-     * 获取图片的物理地址
-     *
-     * @param contentUri uri
-     * @return
-     */
-    private String convertUriToPath(String contentUri) {
-        Uri uri = Uri.parse(contentUri);
+    private File compressImage(File file)
+    {
+        Bitmap bitmap = null;
+        BitmapFactory.Options option = new BitmapFactory.Options();
+        option.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+        option.inSampleSize = AppUtil.computeSampleSize(option, -1, EdusohoApp.screenW * EdusohoApp.screenH);
+        option.inJustDecodeBounds = false;
+
+        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+        File cacheDir = AQUtility.getCacheDir(mContext);
+        File targetFile = new File(cacheDir, file.getName());
+
+        try{
+            if (targetFile == null || !targetFile.exists()) {
+                targetFile.createNewFile();
+            }
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(targetFile));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bos);
+            bos.flush();
+            bos.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            targetFile = file;
+        }
+
+        Log.d(null, "compress file->" + targetFile);
+        return targetFile;
+    }
+
+    private String convertUriToPath(Uri uri) {
         ContentResolver cr = mContext.getContentResolver();
         Cursor cursor = cr.query(uri, null, null, null, null);
         cursor.moveToFirst();

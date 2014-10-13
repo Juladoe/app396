@@ -1,23 +1,13 @@
 package com.edusoho.kuozhi.ui.lesson;
 
-import android.app.DownloadManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ListView;
-import android.widget.RemoteViews;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
@@ -31,15 +21,12 @@ import com.edusoho.kuozhi.model.LessonMaterial;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.DefaultPageActivity;
+
 import com.edusoho.kuozhi.ui.widget.ListWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,8 +38,6 @@ public class LessonResourceActivity extends ActionBarBaseActivity
         implements MessageEngine.MessageCallback{
 
     private ListWidget mResourceListView;
-    private CheckBox mSelectAllBtn;
-    private EdusohoButton mDownloadBtn;
     private ArrayList<LessonMaterial> mLessonMaterials;
 
     private int mCourseId;
@@ -106,8 +91,6 @@ public class LessonResourceActivity extends ActionBarBaseActivity
     private void initView() {
         setBackMode(BACK, "课时资料");
 
-        mDownloadBtn = (EdusohoButton) findViewById(R.id.lesson_resource_download_btn);
-        mSelectAllBtn = (CheckBox) findViewById(R.id.lesson_resource_all);
         mResourceListView = (ListWidget) findViewById(R.id.lesson_resource_list);
 
         Intent data = getIntent();
@@ -123,25 +106,16 @@ public class LessonResourceActivity extends ActionBarBaseActivity
 
         loadResources();
 
-        mSelectAllBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mAdapter.setCheckAllStatus(b);
-            }
-        });
-
-        mDownloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                downLoadRes(mAdapter.getCheckedList());
-            }
-        });
-
         mResourceListView.setOnItemClick(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(null, "view file->" + view);
                 LessonMaterial lessonMaterial = (LessonMaterial) adapterView.getItemAtPosition(i);
+                ArrayList<LessonMaterialAdapter.MaterialCKStatus> checkList = mAdapter.getCheckList();
+                LessonMaterialAdapter.MaterialCKStatus status = checkList.get(i - 1);
+                if (status == LessonMaterialAdapter.MaterialCKStatus.UN_DOWNLOAD) {
+                    downLoadRes(lessonMaterial);
+                    return;
+                }
                 File file = new File(cacheDir, lessonMaterial.title);
                 Intent intent = AppUtil.getViewFileIntent(file);
                 Log.d(null, "view file->" + intent);
@@ -154,8 +128,7 @@ public class LessonResourceActivity extends ActionBarBaseActivity
         });
     }
 
-    private void downLoadRes(ArrayList<LessonMaterial> list) {
-        LessonMaterial lessonMaterial = list.get(0);
+    private void downLoadRes(LessonMaterial lessonMaterial) {
         String url = String.format(
                 Const.DOWNLOAD_MATERIAL,
                 app.schoolHost,
@@ -163,6 +136,7 @@ public class LessonResourceActivity extends ActionBarBaseActivity
                 lessonMaterial.id,
                 app.token
         );
+        lessonMaterial.fileUri = url;
         DownLoadService.startDown(mContext, lessonMaterial, url);
     }
 

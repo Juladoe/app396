@@ -149,7 +149,7 @@ public class LearnLessonListAdapter extends BaseAdapter
         int typeDrawable = 0;
         switch (type) {
             case TESTPAPER:
-                typeDrawable = R.drawable.lesson_item_ppt;
+                typeDrawable = R.drawable.lesson_item_testpaper;
                 break;
             case PPT:
                 typeDrawable = R.drawable.lesson_item_ppt;
@@ -171,7 +171,9 @@ public class LearnLessonListAdapter extends BaseAdapter
                 mContext.getResources().getDrawable(typeDrawable), null, null, null);
         holder.mLessonType.setText(lesson.length);
         if (lesson.free == LessonItem.FREE) {
-            setFreeTextStyle(holder.mLessonType);
+            setFreeTextStyle(holder.mLessonType, "(免费)");
+        } else if (!"published".equals(lesson.status)) {
+            setFreeTextStyle(holder.mLessonType, "(未发布)");
         }
         view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
     }
@@ -193,11 +195,11 @@ public class LearnLessonListAdapter extends BaseAdapter
         }
     }
 
-    private void setFreeTextStyle(TextView textView)
+    private void setFreeTextStyle(TextView textView, String text)
     {
         StringBuilder str = new StringBuilder(textView.getText());
         int start = str.length();
-        Spannable spannable = new SpannableString(str.append("(免费)"));
+        Spannable spannable = new SpannableString(str.append(text));
         spannable.setSpan(
                 new AbsoluteSizeSpan(mContext.getResources().getDimensionPixelSize(R.dimen.course_details_lesson_item_title)),
                 start, str.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

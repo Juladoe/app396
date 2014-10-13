@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -28,6 +29,10 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
@@ -35,6 +40,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.PaperResult;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
@@ -42,12 +48,19 @@ import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.fragment.testpaper.EssayFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
+import com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.NormalCallback;
 
+import org.w3c.dom.Text;
+
+import java.io.File;
 import java.util.ArrayList;
+
+import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.ImageUtils;
 
 
 /**
@@ -199,11 +212,74 @@ public class EssayQuestionWidget extends BaseQuestionWidget
             myAnswer = listToStr(testResult.answer);
         }
 
-        myAnswerText.setText(Html.fromHtml("你的答案:<p></p>" + myAnswer));
-        myRightText.setText(Html.fromHtml("正确答案:<p></p>" + listToStr(mQuestion.answer)));
+        String html = "你的答案:<p></p>" + myAnswer;
+        myAnswerText.setText(Html.fromHtml(
+                html, new NetImageGetter(myAnswerText, html), null));
 
-        AnalysisText.setText(Html.fromHtml(mQuestion.analysis));
+        html = "参考答案:<p></p>" + listToStr(mQuestion.answer);
+        myRightText.setText(Html.fromHtml(
+                html, new NetImageGetter(myRightText, html), null));
+
+        AnalysisText.setText(Html.fromHtml(
+                mQuestion.analysis, new NetImageGetter(AnalysisText, mQuestion.analysis), null));
+
         initFavoriteBtn(view);
+
+        TestpaperParseActivity testpaperParseActivity = TestpaperParseActivity.getInstance();
+        if (testpaperParseActivity == null) {
+            return;
+        }
+
+        TextView readLabel = (TextView) view.findViewById(R.id.question_read_label);
+        PaperResult paperResult = testpaperParseActivity.getPaperResult();
+        if ("finished".equals(paperResult.status)) {
+            readLabel.setVisibility(GONE);
+        } else {
+            readLabel.setVisibility(VISIBLE);
+        }
+    }
+
+    private class NetImageGetter implements Html.ImageGetter
+    {
+        private TextView mTextView;
+        private String html;
+
+        public NetImageGetter(TextView textView, String html)
+        {
+            this.html = html;
+            mTextView = textView;
+        }
+
+        @Override
+        public Drawable getDrawable(String s) {
+            Drawable drawable = null;
+            AQuery aQuery = new AQuery(mContext);
+            File cacheDir = AQUtility.getCacheDir(mContext);
+            String fileName = DigestUtils.md5(s);
+
+            File file = new File(cacheDir, fileName);
+            Log.d(null, "update file->" + file);
+            if (file != null && file.exists()) {
+                Bitmap bitmap = AppUtil.getBitmapFromFile(file);
+                drawable = new BitmapDrawable(bitmap);
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                return drawable;
+            }
+
+            try {
+                file.createNewFile();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            aQuery.download(s, file, new AjaxCallback<File>() {
+                @Override
+                public void callback(String url, File object, AjaxStatus status) {
+                    super.callback(url, object, status);
+                    mTextView.setText(Html.fromHtml(html, new NetImageGetter(mTextView, html), null));
+                }
+            });
+            return drawable;
+        }
     }
 
     private void addImageToEdit(Bundle bundle) {

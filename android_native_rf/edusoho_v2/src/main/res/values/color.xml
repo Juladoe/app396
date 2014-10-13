@@ -296,4 +296,12 @@
     <color name="testpaper_result_analysis">#ffc947</color>
     <color name="notify_title">#ffffff</color>
     <color name="update_color">#ff4747</color>
+
+    <!-- -->
+    <color name="my_testpaper_do_btn_bg">#45d17b</color>
+    <color name="my_testpaper_btn_bg">#f2f2f2</color>
+    <color name="my_testpaper_btn_bg_pressed">#99f2f2f2</color>
+    <color name="my_testpaper_do_btn_bg_pressed">#9945d17b</color>
+    <color name="my_testpaper_btn_blue">#38bf6c</color>
+    <color name="my_testpaper_btn_white">#ffffff</color>
 </resources>

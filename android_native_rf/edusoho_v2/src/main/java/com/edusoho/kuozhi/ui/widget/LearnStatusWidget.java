@@ -131,7 +131,8 @@ public class LearnStatusWidget extends FrameLayout {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 LasterLearnStatus<LessonItem<String>> lasterLearnStatus = mActivity.parseJsonValue(
                         object, new TypeToken<LasterLearnStatus<LessonItem<String>>>(){});
-                if (lasterLearnStatus == null) {
+                if (lasterLearnStatus == null || lasterLearnStatus.data == null) {
+                    setVisibility(GONE);
                     return;
                 }
 
@@ -183,6 +184,7 @@ public class LearnStatusWidget extends FrameLayout {
         aQuery.id(R.id.learn_status_widget_coursepic).image(
                 course.largePicture, false, true, 0, R.drawable.noram_course
         );
+
         mLasterCourse.setText("上次您学习到课时:" + lesson.title);
         mLasterProgressNumber.setText("课程学习进度:" + progress.percent);
 

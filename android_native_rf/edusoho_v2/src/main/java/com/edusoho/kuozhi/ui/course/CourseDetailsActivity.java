@@ -220,7 +220,8 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 new MessageType(SET_LEARN_BTN, source),
                 new MessageType(HIDE_COURSE_PIC, source),
                 new MessageType(CHANGE_FRAGMENT, source),
-                new MessageType(SHOW_COURSE_PIC, source)
+                new MessageType(SHOW_COURSE_PIC, source),
+                new MessageType(Const.LOGING_SUCCESS),
         };
         return messageTypes;
     }
@@ -414,7 +415,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             @Override
             public void onClick(View view) {
                 if (app.loginUser == null) {
-                    LoginActivity.start(mActivity);
+                    LoginActivity.startForResult(mActivity);
                     return;
                 }
                 if (mPrice > 0) {
@@ -546,6 +547,11 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PAY_COURSE_REQUEST && resultCode == PAY_COURSE_SUCCESS) {
+            loadCoureDetailsFragment("CourseLearningFragment");
+            return;
+        }
+
+        if (requestCode == LoginActivity.LOGIN && resultCode == LoginActivity.OK) {
             loadCoureDetailsFragment("CourseLearningFragment");
         }
     }

@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
@@ -416,6 +417,33 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return false;
     }
 
+    public void ajaxPostMuiltKeys(RequestUrl url, final ResultCallback rcl)
+    {
+        app.postByMuiltKeys(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                if (handleRequest(url, object, status, rcl)) {
+                    return;
+                }
+                try {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+
+            @Override
+            public void update(String url, String object, AjaxStatus status) {
+                handleRequest(url, object, status, rcl);
+                try {
+                    rcl.update(url, object, status);
+                } catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+        });
+    }
+    
     public void ajaxPost(
             RequestUrl url, final ResultCallback rcl)
     {
@@ -476,7 +504,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             if (result != null) {
                 com.edusoho.kuozhi.model.Error error = result.error;
                 if (Const.CLIENT_CLOSE.equals(error.name)) {
-                    PopupDialog.createMuilt(
+                    PopupDialog popupDialog = PopupDialog.createMuilt(
                             mContext,
                             "系统提示",
                             error.message,
@@ -488,7 +516,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                                         finish();
                                     }
                                 }
-                            }).show();
+                            });
+                    popupDialog.setOkText("选择新网校");
+                    popupDialog.show();
                     return true;
                 }
                 longToast(result.error.message);

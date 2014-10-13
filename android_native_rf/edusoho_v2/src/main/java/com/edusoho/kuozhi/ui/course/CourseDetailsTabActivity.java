@@ -75,6 +75,11 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     {
         initIntentData();
         setBackMode(BACK, mTitle);
+        initFragmentPaper();
+    }
+
+    protected void initFragmentPaper()
+    {
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.course_details_info_tabs);
         mFragmentPager = (ViewPager) findViewById(R.id.course_details_info_pager);
         fragmentAdapter = new MyPagerAdapter(

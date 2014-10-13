@@ -91,6 +91,7 @@ public class LoginFragment extends BaseFragment {
                         }.getType());
                         if (result != null) {
                             app.saveToken(result);
+                            mActivity.setResult(LoginActivity.OK);
                             mActivity.finish();
                             app.sendMessage(Const.LOGING_SUCCESS, null);
                             app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);

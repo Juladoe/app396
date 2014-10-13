@@ -72,6 +72,7 @@ public class Const {
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
+    public static final String MY_TESTPAPER = "Testpaper/myTestpaper";
     public static final String COURSELESSON = "Lesson/getLesson";
     public static final String DOWNLOAD_MATERIAL = "%sLesson/downMaterial?courseId=%d&materialId=%d&token=%s";
     public static final String UPLOAD_IMAGE = "Testpaper/uploadQuestionImage";
@@ -89,6 +90,7 @@ public class Const {
     public static final String QUESTION = "Course/getCourseThreads";
 
     public static final String TESTPAPER_RESULT = "Testpaper/getTestpaperResult";
+    public static final String FAVORITE_QUESTION = "Testpaper/favoriteQuestion";
     public static final String FINISH_TESTPAPER = "Testpaper/finishTestpaper";
     public static final String NOTIFICATION = "User/getUserNotification";
     public static final String LASTER_LEARN_COURSE = "User/getUserLastlearning";
@@ -183,6 +185,8 @@ public class Const {
      * 获取考试课程详情
      */
     public static final String TESTPAPER_FULL_INFO = "Testpaper/doTestpaper";
+    public static final String RE_DO_TESTPAPER_FULL_INFO = "Testpaper/reDoTestpaper";
+    public static final String SHOW_TESTPAPER = "Testpaper/showTestpaper";
 
     /**
      * 获取考试课程详情
@@ -225,6 +229,7 @@ public class Const {
     public static final String PUBLISHED = "published";
 
     public static final String COURSE_ID = "courseId";
+    public static final String TESTPAPER_DO_TYPE = "do_type";
     public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";
     public static final String MEDIA_URL = "mediaUrl";
@@ -235,6 +240,7 @@ public class Const {
     public static final String ACTIONBAT_TITLE = "title";
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
+    public static final String mTestpaperResultId = "testpaperResultId";
 
     public static final String QUESTION_TITLE = "title";
     public static final String QUESTION_EDIT_RESULT = "question_edit_result";

@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsReviewWidget;
 import com.edusoho.kuozhi.util.Const;
 
@@ -86,11 +87,11 @@ public class ReviewInfoFragment extends BaseFragment {
         mCommitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RecommendCourseFragment recommendCourseFragment = new RecommendCourseFragment();
-                Bundle fragmentData = new Bundle();
-                fragmentData.putInt(Const.COURSE_ID, mCourse.id);
-                recommendCourseFragment.setArguments(fragmentData);
-                recommendCourseFragment.show(getChildFragmentManager(), "dialog");
+                Bundle bundle = new Bundle();
+                bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
+                bundle.putString(Const.ACTIONBAT_TITLE, "评价课程");
+                bundle.putInt(Const.COURSE_ID, mCourse.id);
+                startAcitivityWithBundle("FragmentPageActivity", bundle);
             }
         });
     }

@@ -11,11 +11,11 @@
         <com.baidu.cyberplayer.core.BVideoView
             android:id="@+id/video_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
     </FrameLayout>
 
     <RelativeLayout
+        android:id="@+id/video_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -94,7 +94,7 @@
             android:layout_above="@id/lesson_video_time_layout"
             android:progress="2"
             android:layout_height="12dp"
-            android:maxHeight="2dp"
+            android:maxHeight="6dp"
             android:id="@+id/media_progress"
             android:thumb="@drawable/video_thum_sel"
             android:layout_width="match_parent" />

@@ -77,7 +77,7 @@
         android:paddingRight="0dip"
         android:layout_marginBottom="-8dp"
         android:layout_above="@id/lesson_video_time_layout"
-        android:progress="12"
+        android:progress="2"
         android:layout_height="12dp"
         android:maxHeight="6dp"
         android:id="@+id/custom_seekbar"

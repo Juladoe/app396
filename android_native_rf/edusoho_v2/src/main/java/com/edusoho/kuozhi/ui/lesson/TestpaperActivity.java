@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,25 +15,20 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.MaterialType;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Testpaper.PaperResult;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
-import com.edusoho.kuozhi.model.Testpaper.Testpaper;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperFullResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperCardFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,17 +42,27 @@ public class TestpaperActivity extends TestpaperBaseActivity
     public static final int CHANGE_ANSWER = 0001;
     public static final int PHOTO_CAMEAR = 0002;
 
+    public static final int REDO = 0003;
+    public static final int DO = 0004;
+    public static final int SHOW_TEST = 0005;
+
     private int mTestId;
+    private int mTestpaperResultId;
     private int mLessonId;
     private MenuItem timeMenuItem;
     private Timer mTimer;
     private int mLimitedTime;
     private boolean mIsRun;
+    private boolean mIsTimeOver;
     private int mStopType;
+    private int mDoType;
+
+    private boolean isLoadTitleByNet;
 
     private static TestpaperActivity testpaperActivity;
 
     private static final int UPDATE_TIME     = 0001;
+    private static final int SHOW_SUBMIT_DLG     = 0002;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -64,6 +71,9 @@ public class TestpaperActivity extends TestpaperBaseActivity
             switch (msg.what) {
                 case UPDATE_TIME:
                     timeMenuItem.setTitle(getLimitedTime(mLimitedTime));
+                    break;
+                case SHOW_SUBMIT_DLG:
+                    showTestpaperCard(true);
                     break;
             }
         }
@@ -87,7 +97,9 @@ public class TestpaperActivity extends TestpaperBaseActivity
         Intent data = getIntent();
         mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
         mTestId = data.getIntExtra(Const.MEDIA_ID, 0);
+        mTestpaperResultId = data.getIntExtra(Const.mTestpaperResultId, 0);
         mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
+        mDoType = data.getIntExtra(Const.TESTPAPER_DO_TYPE, DO);
         titles = data.getStringArrayExtra(TITLES);
         fragmentArrayList = data.getStringArrayExtra(LISTS);
         mMenu = R.menu.testpaper_menu;
@@ -102,7 +114,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
             if (mQuestions == null) {
                 return true;
             }
-            showTestpaperCard();
+            showTestpaperCard(false);
             return true;
         } else if (id == R.id.testpaper_menu_time) {
             if (mIsRun) {
@@ -160,15 +172,28 @@ public class TestpaperActivity extends TestpaperBaseActivity
         answer.isAnswer = data == null || data.isEmpty() ? false : true;
     }
 
-    private void showTestpaperCard()
+    private void showTestpaperCard(boolean isTimeOver)
     {
         TestpaperCardFragment fragment = new TestpaperCardFragment();
+        if (isTimeOver) {
+            fragment.setNotCancel();
+        }
         fragment.show(getSupportFragmentManager(), "dialog");
     }
 
     @Override
     protected void initView() {
-        super.initView();
+        Intent data = getIntent();
+        if (data != null) {
+            isLoadTitleByNet = data.getBooleanExtra("isLoadTitleByNet", false);
+        }
+        if (!isLoadTitleByNet) {
+            super.initView();
+        }
+        if (isLoadTitleByNet) {
+            setBackMode(BACK, mTitle);
+            initIntentData();
+        }
         setNormalActionBack(mTitle);
         loadTestpaper();
     }
@@ -176,8 +201,19 @@ public class TestpaperActivity extends TestpaperBaseActivity
     private void loadTestpaper()
     {
         setProgressBarIndeterminateVisibility(true);
-        RequestUrl requestUrl = app.bindUrl(Const.TESTPAPER_FULL_INFO, true);
+        String baseUrl = "";
+        if (mDoType == DO) {
+            baseUrl = Const.TESTPAPER_FULL_INFO;
+        } else if (mDoType == REDO) {
+            baseUrl = Const.RE_DO_TESTPAPER_FULL_INFO;
+        } else if (mDoType == SHOW_TEST) {
+            baseUrl = Const.SHOW_TESTPAPER;
+        }
+
+        Log.d(null, "baseurl->" + baseUrl);
+        RequestUrl requestUrl = app.bindUrl(baseUrl, true);
         requestUrl.setParams(new String[] {
+                "id", mTestpaperResultId + "",
                 "testId", mTestId + "",
                 "targetType", "lesson",
                 "targetId", mLessonId + ""
@@ -216,9 +252,15 @@ public class TestpaperActivity extends TestpaperBaseActivity
                     }
                     answerMap.put(qt, answerList);
                 }
-
+                if (isLoadTitleByNet) {
+                    titles = getTestpaperQSeq();
+                    fragmentArrayList = getTestpaperFragments();
+                    initFragmentPaper();
+                }
                 mLimitedTime = result.testpaper.limitedTime * 60;
-                startTask();
+                if (mLimitedTime > 0) {
+                    startTask();
+                }
                 app.sendMessage(Const.TESTPAPER_REFRESH_DATA, null);
             }
         });
@@ -263,6 +305,8 @@ public class TestpaperActivity extends TestpaperBaseActivity
                 mIsRun = true;
                 if (mLimitedTime == 0) {
                     mTimer.cancel();
+                    mIsTimeOver = true;
+                    mHandler.obtainMessage(SHOW_SUBMIT_DLG).sendToTarget();
                     return;
                 }
                 mLimitedTime --;
@@ -270,6 +314,8 @@ public class TestpaperActivity extends TestpaperBaseActivity
             }
         };
     }
+
+
 
     private String getLimitedTime(int limitedTime)
     {
@@ -310,6 +356,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
                     materialItems.addAll(seq.items);
                 }
                 testpaperQuestions.put(qt, materialItems);
+                continue;
             }
             testpaperQuestions.put(qt, mQuestions.get(qt));
         }
@@ -323,7 +370,9 @@ public class TestpaperActivity extends TestpaperBaseActivity
         if (mStopType == PHOTO_CAMEAR) {
             return;
         }
-        stopTask();
+        if (!mIsTimeOver) {
+            stopTask();
+        }
     }
 
     @Override
@@ -339,7 +388,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
 
     public int getUsedTime()
     {
-        return mTestpaper.limitedTime - mLimitedTime;
+        return mTestpaper.limitedTime * 60 - mLimitedTime;
     }
 
     public PaperResult getTestpaperResult()
@@ -350,5 +399,49 @@ public class TestpaperActivity extends TestpaperBaseActivity
     public static TestpaperActivity getInstance()
     {
         return testpaperActivity;
+    }
+
+    private String[] getTestpaperQSeq()
+    {
+        ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
+        String[] TESTPAPER_QUESTION_TYPE = new String[questionTypeSeqs.size()];
+        for (int i=0; i < TESTPAPER_QUESTION_TYPE.length; i++) {
+            TESTPAPER_QUESTION_TYPE[i] = questionTypeSeqs.get(i).title();
+        }
+
+        return TESTPAPER_QUESTION_TYPE;
+    }
+
+    private String[] getTestpaperFragments()
+    {
+        ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
+        String[] TESTPAPER_QUESTIONS = new String[questionTypeSeqs.size()];
+        for (int i=0; i < TESTPAPER_QUESTIONS.length; i++) {
+            switch (questionTypeSeqs.get(i)) {
+                case choice:
+                    TESTPAPER_QUESTIONS[i] = "ChoiceFragment";
+                    break;
+                case single_choice:
+                    TESTPAPER_QUESTIONS[i] = "SingleChoiceFragment";
+                    break;
+                case essay:
+                    TESTPAPER_QUESTIONS[i] = "EssayFragment";
+                    break;
+                case uncertain_choice:
+                    TESTPAPER_QUESTIONS[i] = "UncertainChoiceFragment";
+                    break;
+                case fill:
+                    TESTPAPER_QUESTIONS[i] = "FillFragment";
+                    break;
+                case determine:
+                    TESTPAPER_QUESTIONS[i] = "DetermineFragment";
+                    break;
+                case material:
+                    TESTPAPER_QUESTIONS[i] = "MaterialFragment";
+                    break;
+            }
+        }
+
+        return TESTPAPER_QUESTIONS;
     }
 }

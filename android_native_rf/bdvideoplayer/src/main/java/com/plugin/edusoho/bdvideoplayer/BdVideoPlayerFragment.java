@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -53,7 +54,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private ImageView mForwardbtn = null;
     private ImageView mFullBtn = null;
 
-    private LinearLayout mController = null;
+    private RelativeLayout mController = null;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
@@ -299,7 +300,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mViewHolder.addView(mVV);
         mControllerHolder.addView(mVVCtl);
          */
-
+        mController = (RelativeLayout) view.findViewById(R.id.video_controller);
         /**
          * 注册listener
          */
@@ -443,13 +444,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 // TODO Auto-generated method stub
 
                 if (mVV.isPlaying()) {
-                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    mPlaybtn.setImageResource(R.drawable.video_pause);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
-                    mPlaybtn.setImageResource(R.drawable.video_pause);
+                    mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 继续播放
                      */

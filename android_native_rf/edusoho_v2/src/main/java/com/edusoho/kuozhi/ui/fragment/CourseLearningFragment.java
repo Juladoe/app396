@@ -137,6 +137,12 @@ public class CourseLearningFragment extends BaseFragment {
         switch (type) {
             case UPDATE_LEARN_STATUS:
                 loadLearnStatus();
+                mCourseStatusView.initialiseByCourse(
+                        mActivity,
+                        mCourseDetailsResult.course,
+                        mCourseId,
+                        mCourseLessonList.getLessonListJson()
+                );
                 break;
         }
     }

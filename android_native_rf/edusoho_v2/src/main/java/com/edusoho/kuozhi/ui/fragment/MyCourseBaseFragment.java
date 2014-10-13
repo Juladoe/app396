@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,6 +44,23 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
     protected String mBaseUrl;
 
     public static final String RELOAD = "reload";
+
+    public static final int PULL_DOWN = 0001;
+    public static final int PULL_UP = 0002;
+
+    protected Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case PULL_DOWN:
+                    loadCourseFromNet(0, false);
+                    break;
+                case PULL_UP:
+                    break;
+            }
+        }
+    };
 
     @Override
     public void invoke(WidgetMessage message) {
@@ -129,7 +148,7 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         mCourseListWidget.setRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>(){
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                loadCourseFromNet(0, false);
+                mHandler.obtainMessage(PULL_DOWN).sendToTarget();
             }
 
             @Override

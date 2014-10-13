@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
@@ -58,7 +59,10 @@ public class VideoLessonFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Bundle bundle = getArguments();
-        mUri = Uri.parse(bundle.getString(Const.MEDIA_URL));
+        String url = bundle.getString(Const.MEDIA_URL);
+        if (url != null && !TextUtils.isEmpty(url)) {
+            mUri = Uri.parse(url);
+        }
         Log.d(null, "uri->" + mUri);
         autoHideTimer = new Timer();
     }
@@ -99,7 +103,7 @@ public class VideoLessonFragment extends BaseFragment {
                     //EdusohoApp.app.sendMessage(EdusohoVideoManagerActivity.SUPPORTMAP_CHANGE, new MessageModel(null));
                 } else {
                     PopupDialog.createNormal(
-                            mContext, "视频播放", "不好意思～此视频不能在该设备上播放，请联系网站管理员！").show();
+                            mActivity, "视频播放", "不好意思～此视频不能在该设备上播放，请联系网站管理员！").show();
                 }
                 mLoadView.setVisibility(View.GONE);
                 return true;

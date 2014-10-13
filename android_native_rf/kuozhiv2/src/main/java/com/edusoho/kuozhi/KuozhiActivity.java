@@ -84,7 +84,6 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
                         if (!checkMobileVersion(site.apiVersionRange)) {
                             return;
                         }
-                        ;
 
                         app.setCurrentSchool(site);
                         startApp();

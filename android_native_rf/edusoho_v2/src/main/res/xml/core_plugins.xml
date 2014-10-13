@@ -53,7 +53,8 @@
     <plugin name="LearningCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearningCourseFragment"></plugin>
     <plugin name="LearnedCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragment"></plugin>
     <plugin name="TextLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment"></plugin>
-    <plugin name="VideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.VideoLessonFragment"></plugin>
+    <plugin name="VideoLessonFragment" version="1.0" package="com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment"></plugin>
+
     <plugin name="AudioLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AudioLessonFragment"></plugin>
     <plugin name="PptLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.PptLessonFragment"></plugin>
     <plugin name="WebVideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.WebVideoLessonFragment"></plugin>
@@ -65,6 +66,8 @@
     <plugin name="MessageFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.message.MessageFragment"></plugin>
     <plugin name="TestpaperResultFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment"></plugin>
     <plugin name="AlipayFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AlipayFragment"></plugin>
+    <plugin name="MyTestpaperFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MyTestpaperFragment"></plugin>
+    <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
 
     <!--试卷fragment -->
     <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>

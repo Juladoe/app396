@@ -67,6 +67,7 @@ public class TestpaperResultFragment extends BaseFragment {
         if (bundle != null) {
             mTestpaperResultId = bundle.getInt(RESULT_ID, 0);
             mStatus = bundle.getString(Const.STATUS);
+            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
         }
     }
 
@@ -110,7 +111,7 @@ public class TestpaperResultFragment extends BaseFragment {
                 } else if ("finished".equals(paperResult.status)) {
                     setTotalText(mTotalView, paperResult.score + "");
                     mReviewView.setText(
-                            TextUtils.isEmpty(paperResult.teacherSay) ? "没有评语" : paperResult.teacherSay);
+                            TextUtils.isEmpty(paperResult.teacherSay) ? "没有评语" : "评语:" + paperResult.teacherSay);
                 }
 
                 mResultParseBtn.setOnClickListener(new View.OnClickListener() {

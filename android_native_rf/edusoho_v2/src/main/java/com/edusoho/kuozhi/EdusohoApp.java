@@ -103,6 +103,24 @@ public class EdusohoApp extends Application{
         return EdusohoMainService.getService();
     }
 
+    public void postByMuiltKeys(
+            final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback
+    )
+    {
+        AjaxCallback<String> ajaxCallback = new AjaxCallback<String>() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                super.callback(url, object, status);
+                ajaxResultCallback.callback(url, object, status);
+            }
+        };
+
+        ajaxCallback.headers(requestUrl.heads);
+        ajaxCallback.method(AQuery.METHOD_POST);
+
+        query.ajax(requestUrl.url, requestUrl.getKeysMap(), String.class, ajaxCallback);
+    }
+
     public AjaxCallback postUrl(
             final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback)
     {
@@ -449,7 +467,7 @@ public class EdusohoApp extends Application{
             return;
         }
 
-        query.ajax(url, String.class, new AjaxCallback<String>(){
+        query.ajax(url, String.class, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 super.callback(url, object, status);

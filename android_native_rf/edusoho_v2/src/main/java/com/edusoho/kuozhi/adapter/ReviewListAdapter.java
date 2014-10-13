@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +85,7 @@ public class ReviewListAdapter extends BaseAdapter {
 		holder.course_comment_user_message.setText(item.content);
 		holder.course_comment_user_nickname.setText(user.nickname);
 		holder.course_comment_rating.setRating((float) item.rating);
-		holder.aq.id(R.id.course_comment_user_avatar).image(
+		holder.aq.id(R.id.review_user_face).image(
                 user.avatar, false, true, 0, R.drawable.course_teacher_avatar);
 
 		return view;

@@ -46,7 +46,6 @@ public class CourseListAdapter extends EdusohoBaseAdapter {
 
     public void addItem(CourseResult courseResult)
     {
-        setMode(UPDATE);
         listAddItem(courseResult.data);
         notifyDataSetChanged();
     }

@@ -308,14 +308,13 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 	@Override
 	public final boolean onTouchEvent(MotionEvent event) {
-
 		if (!isPullToRefreshEnabled()) {
 			return false;
 		}
 
 		// If we're refreshing, and the flag is set. Eat the event
 		if (!mScrollingWhileRefreshingEnabled && isRefreshing()) {
-			return true;
+			return false;
 		}
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN && event.getEdgeFlags() != 0) {

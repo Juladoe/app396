@@ -66,13 +66,13 @@ public class CourseFragment extends BaseFragment {
         mCourseListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadCourseFromNet(0);
+                loadCourseFromNet(0, false);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Integer startPage = (Integer) mCourseListView.getTag();
-                loadCourseFromNet(startPage);
+                loadCourseFromNet(startPage, true);
             }
         });
 
@@ -95,10 +95,10 @@ public class CourseFragment extends BaseFragment {
             baseUrl = Const.LASTEST_COURSES;
         }
 
-        loadCourseFromNet(0);
+        loadCourseFromNet(0, false);
     }
 
-    private void loadCourseFromNet(int start)
+    private void loadCourseFromNet(int start, final boolean isAppend)
     {
         Log.d(null, "baseUrl->" + baseUrl);
         RequestUrl url = app.bindUrl(baseUrl, true);
@@ -122,7 +122,7 @@ public class CourseFragment extends BaseFragment {
                 }
 
                 CourseListAdapter adapter = (CourseListAdapter) mCourseListView.getAdapter();
-                if (adapter != null) {
+                if (adapter != null && isAppend) {
                     Log.d(null, "add->" + courseResult);
                     adapter.addItem(courseResult);
                 } else {

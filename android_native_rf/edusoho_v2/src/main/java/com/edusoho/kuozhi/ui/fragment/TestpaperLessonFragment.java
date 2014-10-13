@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
+import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
@@ -108,17 +109,16 @@ public class TestpaperLessonFragment extends BaseFragment {
         }
         showToolsByAnim();
 
+        mTestpaperReDoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doTestpaper(TestpaperActivity.REDO);
+            }
+        });
         mTestpaperDoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
-                bundle.putInt(Const.MEDIA_ID, mTestId);
-                bundle.putInt(Const.LESSON_ID, mLessonId);
-                bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
-                bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
-                startAcitivityWithBundle("TestpaperActivity", bundle);
-                mActivity.finish();
+                doTestpaper(TestpaperActivity.DO);
             }
         });
 
@@ -137,6 +137,19 @@ public class TestpaperLessonFragment extends BaseFragment {
                 mActivity.finish();
             }
         });
+    }
+
+    private void doTestpaper(int type)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+        bundle.putInt(Const.MEDIA_ID, mTestId);
+        bundle.putInt(Const.LESSON_ID, mLessonId);
+        bundle.putInt(Const.TESTPAPER_DO_TYPE, type);
+        bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
+        bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
+        startAcitivityWithBundle("TestpaperActivity", bundle);
+        mActivity.finish();
     }
 
     private String[] getTestpaperQSeq()
@@ -236,13 +249,13 @@ public class TestpaperLessonFragment extends BaseFragment {
         contents.add(new TestpaperItem(
                 "试卷简介", new String[]{
                 getTestpaperInstruction(testpaperResult.items, testpaper.score),
-                String.format("考试时间:%s分钟", testpaper.limitedTime == 0 ? "无限" : testpaper.limitedTime + "")
+                String.format("考试时间:%s", testpaper.limitedTime == 0 ? "无限制" : testpaper.limitedTime + "分钟")
         }, true
         ));
         contents.add(new TestpaperItem(
                 "考试提醒", new String[]{
-                String.format("您即将进行时长为%s分钟的考试，请做好相关准备。",
-                        testpaper.limitedTime == 0 ? "无限" : testpaper.limitedTime + ""),
+                String.format("您即将进行时长为%s的考试，请做好相关准备。",
+                        testpaper.limitedTime == 0 ? "无限制" : testpaper.limitedTime + "分钟"),
                 "做好相关准备后，点击“进入考试“即可开始考试"
         }, true
         ));

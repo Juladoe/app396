@@ -61,7 +61,6 @@ public class PptLessonFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Bundle bundle = getArguments();
         if (bundle != null) {
             ppts = bundle.getStringArrayList(LessonActivity.CONTENT);
@@ -71,6 +70,7 @@ public class PptLessonFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         mScreenView = view.findViewById(R.id.ppt_page_screen);
         mStartPageView = (TextView) view.findViewById(R.id.ppt_page_start);
         mTotalPageView = (TextView) view.findViewById(R.id.ppt_page_total);
@@ -85,14 +85,12 @@ public class PptLessonFragment extends BaseFragment {
         mScreenView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isScreen) {
-                    app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
-                    mActivity.showActionBar();
+                int orientation = mActivity.getRequestedOrientation();
+                if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 } else {
-                    app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
-                    mActivity.hideActionBar();
+                    mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
-                isScreen = ! isScreen;
             }
         });
 

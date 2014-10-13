@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -68,9 +70,10 @@ public class AppUtil {
         return (int) (dpValue * scale + 0.5f);
     }
 
-    public static void getImage(Context context, String url, final NormalCallback<Bitmap> callback) {
+    public static void getImage(
+            Context context, String url, final NormalCallback<Bitmap> callback) {
         AQuery aQuery = new AQuery(context);
-        AQuery ajax = aQuery.ajax(url, byte[].class, new AjaxCallback<byte[]>() {
+        AjaxCallback<byte[]> ajaxCallback = new AjaxCallback<byte[]>(){
             @Override
             public void callback(String url, byte[] object, AjaxStatus status) {
                 super.callback(url, object, status);
@@ -89,7 +92,28 @@ public class AppUtil {
                 }
                 callback.success(bitmap);
             }
-        });
+        };
+
+        aQuery.ajax(url, byte[].class, 60 * 60, ajaxCallback);
+    }
+
+    public static Bitmap getBitmapFromFile(File file)
+    {
+        Bitmap bitmap = null;
+        BitmapFactory.Options option = new BitmapFactory.Options();
+        option.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+        int width =(int) (EdusohoApp.screenW * 0.5f);
+        option.inSampleSize = computeSampleSize(option, -1, width * width);
+        option.inJustDecodeBounds = false;
+        try {
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+            Log.d(null, "bm->" + bitmap);
+        } catch (Exception e) {
+            bitmap = null;
+        }
+
+        return bitmap;
     }
 
     public static int[] getTeacherIds(Teacher[] teachers) {

@@ -1,6 +1,5 @@
 package com.edusoho.plugin.video;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -177,7 +176,7 @@ public class CustomMediaController extends RelativeLayout {
     {
         mIsStop = true;
         mediaPlayer.pause();
-        playBtn.setImageResource(R.drawable.video_pause);
+        playBtn.setImageResource(R.drawable.video_play);
     }
 
     /**

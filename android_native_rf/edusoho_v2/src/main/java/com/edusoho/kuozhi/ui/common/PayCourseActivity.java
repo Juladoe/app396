@@ -171,16 +171,20 @@ public class PayCourseActivity extends ActionBarBaseActivity
                     if (result.useable == CourseCode.Code.yes) {
                         setColorText(
                                 mCardNumber,
+                                "优惠:",
                                 result.decreaseAmount + "元",
                                 getResources().getColor(R.color.pay_course_end_price)
                         );
                         double newPrice = mPrice - result.decreaseAmount > 0
                                 ? mPrice - result.decreaseAmount : 0;
+                        mPrice = newPrice;
                         setColorText(
                                 mCardEndPrice,
+                                "优惠后价格:",
                                 newPrice + "元",
                                 getResources().getColor(R.color.pay_course_end_price)
                         );
+                        mCodeCheckBtn.setEnabled(false);
                         longToast("优惠:" + result.decreaseAmount);
                     } else {
                         longToast(result.message);
@@ -194,15 +198,15 @@ public class PayCourseActivity extends ActionBarBaseActivity
 
     private void setViewData()
     {
-        setColorText(mPriceView, mPrice + "元", getResources().getColor(R.color.pay_course_old_price));
-        setColorText(mCardEndPrice, mPrice + "元", getResources().getColor(R.color.pay_course_end_price));
-        setColorText(mCardNumber, "0.00元", getResources().getColor(R.color.pay_course_end_price));
+        setColorText(mPriceView, "价格:", mPrice + "元", getResources().getColor(R.color.pay_course_old_price));
+        setColorText(mCardEndPrice, "优惠后价格:", mPrice + "元", getResources().getColor(R.color.pay_course_end_price));
+        setColorText(mCardNumber, "优惠:", "0.00元", getResources().getColor(R.color.pay_course_end_price));
         mTitleView.setText("课程名称：  " + mTitle);
     }
 
-    private void setColorText(TextView view, String text, int color)
+    private void setColorText(TextView view, String base, String text, int color)
     {
-        StringBuilder oldText = new StringBuilder(view.getText());
+        StringBuilder oldText = new StringBuilder(base);
         int start = oldText.length();
         oldText.append(text);
         Spannable spannable = new SpannableString(oldText);

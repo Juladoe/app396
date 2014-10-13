@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.course;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -258,6 +259,18 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         });
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            msgHandler.obtainMessage(SHOW_TOOLS).sendToTarget();
+            showActionBar();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            msgHandler.obtainMessage(HIDE_TOOLS).sendToTarget();
+            hideActionBar();
+        }
+    }
+
     private void bindListener()
     {
         mResourceBtn.setOnClickListener(new View.OnClickListener() {
@@ -274,10 +287,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mLearnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isLearn;
                 if (mLearnBtn.getTag() == null) {
-                    return;
+                    isLearn = true;
+                } else {
+                    isLearn = (Boolean) mLearnBtn.getTag();
                 }
-                changeLessonStatus((Boolean) mLearnBtn.getTag());
+                changeLessonStatus(isLearn);
             }
         });
     }
