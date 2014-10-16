@@ -248,7 +248,7 @@ public class TestpaperLessonFragment extends BaseFragment {
         ));
         contents.add(new TestpaperItem(
                 "试卷简介", new String[]{
-                getTestpaperInstruction(testpaperResult.items, testpaper.score),
+                getTestpaperInstruction(testpaperResult, testpaper.score),
                 String.format("考试时间:%s", testpaper.limitedTime == 0 ? "无限制" : testpaper.limitedTime + "分钟")
         }, true
         ));
@@ -266,15 +266,17 @@ public class TestpaperLessonFragment extends BaseFragment {
         mListView.setAdapter(adapter);
     }
 
-    private String getTestpaperInstruction(
-            HashMap<QuestionType, Integer> items, double score)
+    private String getTestpaperInstruction(TestpaperResult testpaperResult, double score)
     {
+        HashMap<QuestionType, Integer> items = testpaperResult.items;
+        Testpaper testpaper = testpaperResult.testpaper;
         if (items.isEmpty()) {
             return "";
         }
         StringBuffer stringBuffer = new StringBuffer("考试题目：");
         String format = "";
-        for (QuestionType type : items.keySet()) {
+        ArrayList<QuestionType>  types = testpaper.metas.question_type_seq;
+        for (QuestionType type : types) {
             switch (type) {
                 case choice:
                     format = "多选题%d道";

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.CheckBox;
@@ -125,9 +126,9 @@ public class SingleChoiceQuestionWidget extends BaseQuestionWidget {
 
     private RadioButton initRadioButton(String text, int index)
     {
-        RadioButton radioButton = new RadioButton(mContext);
+        RadioButton radioButton = (RadioButton) LayoutInflater.from(mContext).inflate(
+                R.layout.question_radiobox, null);
         radioButton.setText(text);
-        radioButton.setPadding(20, 20, 20, 20);
         Resources resources = mContext.getResources();
         radioButton.setTextColor(resources.getColorStateList(R.color.question_choice_btn_color));
         int id = resources.getIdentifier(

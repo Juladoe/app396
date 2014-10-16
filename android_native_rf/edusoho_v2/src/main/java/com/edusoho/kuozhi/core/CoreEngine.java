@@ -136,13 +136,13 @@ public class CoreEngine {
         }
     }
 
-    public BaseFragment runPluginWithFragmentByBundle(
+    public Fragment runPluginWithFragmentByBundle(
             String pluginName, Activity activity, Bundle bundle)
     {
-        BaseFragment fragment = null;
+        Fragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
-            fragment = (BaseFragment) Fragment.instantiate(activity, pluginModel.packAge);
+            fragment = Fragment.instantiate(activity, pluginModel.packAge);
             fragment.setArguments(bundle);
 
             return fragment;

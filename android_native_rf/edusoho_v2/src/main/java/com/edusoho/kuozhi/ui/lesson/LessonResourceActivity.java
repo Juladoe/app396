@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.lesson;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -113,6 +114,11 @@ public class LessonResourceActivity extends ActionBarBaseActivity
                 ArrayList<LessonMaterialAdapter.MaterialCKStatus> checkList = mAdapter.getCheckList();
                 LessonMaterialAdapter.MaterialCKStatus status = checkList.get(i - 1);
                 if (status == LessonMaterialAdapter.MaterialCKStatus.UN_DOWNLOAD) {
+                    boolean sdCardExist = Environment.getExternalStorageState()
+                            .equals(android.os.Environment.MEDIA_MOUNTED);
+                    if (!sdCardExist) {
+                        longToast("设备没有内存卡！下载资料保存可能会失败");
+                    }
                     downLoadRes(lessonMaterial);
                     return;
                 }

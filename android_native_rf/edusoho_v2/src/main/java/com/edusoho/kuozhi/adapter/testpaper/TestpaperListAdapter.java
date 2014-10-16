@@ -50,9 +50,6 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
 
     public TestpaperListAdapter(ActionBarBaseActivity activity, MyTestpaperData data,
                                 int resource) {
-        myTestpaperResults = data.myTestpaperResults;
-        myTestpapers = data.myTestpapers;
-        courses = data.courses;
         mActivity = activity;
         mResouce = resource;
         inflater = LayoutInflater.from(mActivity);
@@ -60,10 +57,16 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
         redoClick = new RedoClick();
         doClick = new DoClick();
         showClick = new ShowClick();
+
+        myTestpaperResults = new ArrayList<MyTestpaperResult>();
+        myTestpapers = new HashMap<Integer, Testpaper>();
+        courses = new HashMap<Integer, Course>();
+        listAddItem(data);
     }
 
     private void listAddItem(MyTestpaperData data)
     {
+        Log.d(null, "listAddItem->");
         myTestpaperResults.addAll(data.myTestpaperResults);
         myTestpapers.putAll(data.myTestpapers);
         courses.putAll(data.courses);
@@ -104,6 +107,7 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
             holder.mRedoBtn = (EdusohoButton) view.findViewById(R.id.testpaper_redo);
             holder.mShowBtn = (EdusohoButton) view.findViewById(R.id.testpaper_result);
             holder.mDoBtn = (EdusohoButton) view.findViewById(R.id.testpaper_do);
+            holder.mStatusView = (TextView) view.findViewById(R.id.testpaper_status);
             holder.mTestpaperStartTime = (TextView) view.findViewById(R.id.testpaper_starttime);
 
             holder.aq = new AQuery(view);
@@ -190,12 +194,15 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
     private int getCourseId(String target)
     {
         int id = 0;
+        if (target == null) {
+            return 0;
+        }
         String[] array = target.split("-");
         if (array != null && array.length > 0) {
             try {
                 id = Integer.parseInt(array[1]);
             }catch (Exception e) {
-                //
+                e.printStackTrace();
             }
         }
 
@@ -220,11 +227,21 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
     public void invaliViewData(ViewHolder holder, int index)
     {
         MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
-        Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
-        Course course = courses.get(getCourseId(testpaper.target));
+
+        holder.mRedoBtn.setVisibility(View.GONE);
+        holder.mShowBtn.setVisibility(View.GONE);
+        holder.mDoBtn.setVisibility(View.GONE);
+        holder.mStatusView.setVisibility(View.GONE);
 
         holder.mTestpaperName.setText(testpaperResult.paperName);
         holder.mTestpaperStartTime.setText(testpaperResult.beginTime);
+
+        Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
+        if (testpaper == null) {
+            holder.mCourseTitle.setText("该试卷已经删除");
+            return;
+        }
+        Course course = courses.get(getCourseId(testpaper.target));
         holder.mCourseTitle.setText(course.title);
         int width = (int)(EdusohoApp.app.screenW * 0.4f);
         if (TextUtils.isEmpty(course.largePicture)) {
@@ -239,15 +256,20 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
 
         String status = testpaperResult.status;
 
-        holder.mRedoBtn.setVisibility(View.GONE);
-        holder.mShowBtn.setVisibility(View.GONE);
-        holder.mDoBtn.setVisibility(View.GONE);
-
         if ("reviewing".equals(status)) {
+            holder.mStatusView.setText("正在批阅");
+            holder.mStatusView.setBackgroundDrawable(
+                    mActivity.getResources().getDrawable(R.drawable.red_card_bg));
             holder.mShowBtn.setVisibility(View.VISIBLE);
         } else if ("doing".equals(status)) {
+            holder.mStatusView.setText("未交卷");
+            holder.mStatusView.setBackgroundDrawable(
+                    mActivity.getResources().getDrawable(R.drawable.red_card_bg));
             holder.mDoBtn.setVisibility(View.VISIBLE);
         } else if ("finished".equals(status)) {
+            holder.mStatusView.setText(String.format("得分:%.1f", testpaperResult.score));
+            holder.mStatusView.setBackgroundDrawable(
+                    mActivity.getResources().getDrawable(R.drawable.blue_card_bg));
             holder.mRedoBtn.setVisibility(View.VISIBLE);
             holder.mShowBtn.setVisibility(View.VISIBLE);
         }
@@ -256,6 +278,7 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
     protected class ViewHolder {
         public AQuery aq;
         public TextView mCourseTitle;
+        public TextView mStatusView;
         public TextView mTestpaperName;
         public TextView mTestpaperStartTime;
         public EdusohoButton mRedoBtn;

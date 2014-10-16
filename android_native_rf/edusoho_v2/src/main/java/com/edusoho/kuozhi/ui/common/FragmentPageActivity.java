@@ -32,7 +32,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
         }
 
         if (mTitle == null) {
-            mTitle = BACK;
+            mTitle = "标题";
         }
 
         setBackMode(BACK, mTitle);

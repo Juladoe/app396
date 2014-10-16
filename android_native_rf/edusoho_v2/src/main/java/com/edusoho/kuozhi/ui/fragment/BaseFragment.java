@@ -45,6 +45,9 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (app == null) {
+            app = EdusohoApp.app;
+        }
         registMsgSrc();
     }
 
@@ -54,6 +57,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         mActivity = (ActionBarBaseActivity) activity;
         mContext = mActivity.getBaseContext();
         app = mActivity.app;
+    }
+
+    protected void changeTitle(String title)
+    {
+        mActivity.setBackMode(ActionBarBaseActivity.BACK, title);
     }
 
     protected void startAcitivityWithBundle(String activityName, Bundle bundle)
@@ -160,6 +168,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        saveViewState(savedInstanceState);
         if (mContainerView == null) {
             mContainerView = inflater.inflate(mViewId, null);
             initView(mContainerView);
@@ -171,6 +180,9 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         }
         return mContainerView;
     }
+
+    protected void saveViewState(Bundle savedInstanceState){
+    };
 
     protected void initView(View view){
     }

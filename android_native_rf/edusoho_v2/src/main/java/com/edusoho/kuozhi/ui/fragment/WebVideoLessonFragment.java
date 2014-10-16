@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -23,7 +24,11 @@ import android.widget.Toast;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.Service.DownLoadService;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.LessonItem;
+import com.edusoho.kuozhi.model.LessonMaterial;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -119,8 +124,25 @@ public class WebVideoLessonFragment extends BaseFragment {
         if (Build.VERSION.SDK_INT < 16) {
             webSettings.setUserAgentString(USER_AGENT);
             if (!checkInstallFlash()) {
-                PopupDialog.createNormal(
-                        mActivity, "播放提示", "").show();
+                PopupDialog.createMuilt(
+                        mActivity,
+                        "播放提示",
+                        "系统尚未安装播放器组件，是否下载安装？",
+                        new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.OK) {
+                                    app.startUpdateWebView(String.format(
+                                            "%s%s?version=%d",
+                                            app.schoolHost,
+                                            Const.FLASH_APK,
+                                            Build.VERSION.SDK_INT)
+                                    );
+
+                                    mActivity.finish();
+                                }
+                            }
+                        }).show();
                 return;
             }
         }
@@ -256,7 +278,7 @@ public class WebVideoLessonFragment extends BaseFragment {
         }
 
         @Override
-        public void onPageFinished(WebView view, String url) {
+        public void onPageFinished(WebView view, final String url) {
             Log.d(null, "WebVideoActivity onPageFinished->" + url);
             if (url.endsWith("javascript:;")) {
                 if (mNormalCallback != null) {
@@ -266,12 +288,26 @@ public class WebVideoLessonFragment extends BaseFragment {
             }
 
             if (url.matches(".+\\.mp4\\?.+")) {
-                EduSohoVideoActivity.start(mContext, url);
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.MEDIA_URL, url);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, mWebView.getTitle());
+                    }
+                });
                 webViewStop();
                 return;
             }
             if (Build.VERSION.SDK_INT >= 16 && url.matches(".+\\.flv\\??.*")) {
-                EduSohoVideoActivity.start(mContext, url);
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.MEDIA_URL, url);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, mWebView.getTitle());
+                    }
+                });
                 mWebView.loadUrl(mUri);
                 return;
             }

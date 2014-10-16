@@ -185,7 +185,7 @@ public class LearnStatusWidget extends FrameLayout {
                 course.largePicture, false, true, 0, R.drawable.noram_course
         );
 
-        mLasterCourse.setText("上次您学习到课时:" + lesson.title);
+        mLasterCourse.setText("最近您学习到课时:" + lesson.title);
         mLasterProgressNumber.setText("课程学习进度:" + progress.percent);
 
         mLasterProgress.setMax(progress.total);

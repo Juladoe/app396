@@ -26,7 +26,7 @@
             android:hint="输入网校域名 例如(www.name.com)"
             android:textColorHint="@color/qr_school_url_input_text"
             android:textColor="@color/qr_school_url_input_text"
-            android:background="@drawable/qr_school_url_input"
+            android:background="@drawable/login_edt_bg_sel"
             android:clickable="true"
             android:textSize="@dimen/normal_btn" />
 

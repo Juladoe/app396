@@ -27,10 +27,13 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "WelcomeViewController.h"
 
 #import <Cordova/CDVPlugin.h>
 
 @implementation AppDelegate
+
+NSString* IS_SHOW_SPLASH = @"isShowSplash";;
 
 @synthesize window, viewController;
 
@@ -71,22 +74,26 @@
         self.window = [[[UIWindow alloc] initWithFrame:screenBounds] autorelease];
 #endif
     self.window.autoresizesSubviews = YES;
-
-#if __has_feature(objc_arc)
-        self.viewController = [[MainViewController alloc] init];
-#else
-        self.viewController = [[[MainViewController alloc] init] autorelease];
-#endif
-//    self.viewController.useSplashScreen = YES;
-
-    // Set your app's start page by setting the <content src='foo.html' /> tag in config.xml.
-    // If necessary, uncomment the line below to override it.
     
-    if (IOS7_OR_LATER) {
-        self.viewController.startPage = @"ios-7.html";
-    }
-    else {
-        self.viewController.startPage = @"ios.html";
+    //show splash config
+    NSUserDefaults* defaultConfig = [NSUserDefaults standardUserDefaults];
+    BOOL isShowSplash = [defaultConfig boolForKey:IS_SHOW_SPLASH];
+    if (!isShowSplash) {
+        [defaultConfig setBool:true forKey:IS_SHOW_SPLASH];
+        [defaultConfig synchronize];
+        NSArray* paths = [[NSArray alloc] initWithObjects:@"SplashImage_1", @"SplashImage_2", nil];
+        WelcomeViewController *welcomeView = [[WelcomeViewController alloc] initWithLocalImages:paths];
+        [[[UIApplication sharedApplication] delegate].window.rootViewController presentViewController:welcomeView
+                                                                                             animated:YES
+                                                                                           completion:nil];
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"finishWelcome" object:nil queue:nil usingBlock:^(NSNotification *note) {
+            [self startMainView];
+            self.window.rootViewController = self.viewController;
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishWelcome" object:nil];
+        }];
+        self.viewController = welcomeView;
+    } else {
+        [self startMainView];
     }
 
     // NOTE: To customize the view's frame size (which defaults to full screen), override
@@ -96,6 +103,22 @@
     [self.window makeKeyAndVisible];
 
     return YES;
+}
+
+- (void) startMainView
+{
+    #if __has_feature(objc_arc)
+        self.viewController = [[MainViewController alloc] init];
+    #else
+        self.viewController = [[[MainViewController alloc] init] autorelease];
+    #endif
+    
+    if (IOS7_OR_LATER) {
+        self.viewController.startPage = @"ios-7.html";
+    }
+    else {
+        self.viewController.startPage = @"ios.html";
+    }
 }
 
 // this happens while we are running ( in the background, or from within our own app )

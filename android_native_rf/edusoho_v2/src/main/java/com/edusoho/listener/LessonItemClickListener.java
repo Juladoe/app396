@@ -6,6 +6,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -36,6 +37,11 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int index,
                             long arg3) {
         final LessonItem lesson = (LessonItem) parent.getItemAtPosition(index);
+        CourseLessonType courseLessonType = CourseLessonType.value(lesson.type);
+        if (courseLessonType == CourseLessonType.EMPTY) {
+            mActivity.longToast("客户端暂不支持此课时类型！");
+            return;
+        }
         if (!"published".equals(lesson.status)) {
             mActivity.longToast("课时尚未发布！请稍后浏览！");
             return;

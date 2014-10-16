@@ -31,11 +31,10 @@
         <RatingBar
             android:layout_alignParentRight="true"
             android:layout_weight="0"
-            android:layout_alignBottom="@id/review_user_nickname"
             android:id="@+id/review_user_rating"
             style="@style/courseRatingBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/rating_height"
             android:isIndicator="true" />
 
         <TextView

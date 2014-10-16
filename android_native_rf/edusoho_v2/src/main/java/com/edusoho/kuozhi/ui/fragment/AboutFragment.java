@@ -2,11 +2,14 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.util.Const;
 
 import java.net.URL;
 
@@ -18,6 +21,7 @@ public class AboutFragment extends BaseFragment {
     public static final String URL = "url";
     private WebView about_content;
     private String mUrl;
+    private String mTitle;
 
     @Override
     public String getTitle() {
@@ -36,6 +40,7 @@ public class AboutFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mUrl = bundle.getString(URL);
+            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
         }
     }
 
@@ -55,6 +60,15 @@ public class AboutFragment extends BaseFragment {
                 if (newProgress == 100) {
                     showProgress(false);
                 }
+            }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                if (TextUtils.isEmpty(mTitle)) {
+                    changeTitle(title);
+                }
+                Log.d(null, "title->" + title);
             }
         });
         loadContent();

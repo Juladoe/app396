@@ -66,4 +66,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:clickable="true"
+        android:id="@+id/course_details_error_layout"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:background="#55e1e2e6"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:textSize="@dimen/sys_mid_normal"
+            android:textColor="#a94442"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:background="@drawable/card_bg"
+            android:text="您购买的课程已到期，无法学习课时、提问等。如有疑问，请联系老师"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 </RelativeLayout>

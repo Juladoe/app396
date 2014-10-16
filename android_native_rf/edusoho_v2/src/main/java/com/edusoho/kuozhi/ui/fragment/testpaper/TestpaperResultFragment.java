@@ -98,9 +98,9 @@ public class TestpaperResultFragment extends BaseFragment {
 
                 mTestpaper = testpaperResultType.testpaper;
                 HashMap<QuestionType, Accuracy> accuracy = testpaperResultType.accuracy;
-
+                ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
                 TestpaperResultListAdapter adapter = new TestpaperResultListAdapter(
-                        mContext, getAccuracys(accuracy), getQuestionTypes(accuracy), R.layout.testpaper_result_item
+                        mContext, accuracy, questionTypeSeqs, R.layout.testpaper_result_item
                 );
 
                 mListView.setAdapter(adapter);

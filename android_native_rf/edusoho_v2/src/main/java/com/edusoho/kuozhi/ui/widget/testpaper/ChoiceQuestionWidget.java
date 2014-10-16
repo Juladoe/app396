@@ -7,6 +7,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.CheckBox;
@@ -126,9 +127,9 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
 
     private CheckBox initCheckBox(String text, int index)
     {
-        CheckBox checkBox = new CheckBox(mContext);
+        CheckBox checkBox = (CheckBox) LayoutInflater.from(mContext).inflate(
+                R.layout.question_checkbox, null);
         checkBox.setText(text);
-        checkBox.setPadding(20, 20, 20, 20);
         Resources resources = mContext.getResources();
         checkBox.setTextColor(resources.getColorStateList(R.color.question_choice_btn_color));
         int id = resources.getIdentifier(

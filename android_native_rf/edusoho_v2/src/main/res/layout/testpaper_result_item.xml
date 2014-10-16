@@ -6,8 +6,8 @@
 
     <TextView
         android:layout_alignParentLeft="true"
-        android:paddingBottom="18dp"
-        android:paddingTop="18dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         android:gravity="center"
         android:textColor="@color/system_light_text"
         android:id="@+id/testpaper_result_type"
@@ -15,8 +15,8 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:paddingBottom="18dp"
-        android:paddingTop="18dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:textColor="@color/system_light_text"
@@ -26,10 +26,10 @@
 
     <TextView
         android:layout_alignParentRight="true"
-        android:paddingBottom="18dp"
-        android:paddingTop="18dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         android:gravity="center"
-        android:textColor="@color/testpaper_result_item_total"
+        android:textColor="@color/system_light_text"
         android:id="@+id/testpaper_result_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

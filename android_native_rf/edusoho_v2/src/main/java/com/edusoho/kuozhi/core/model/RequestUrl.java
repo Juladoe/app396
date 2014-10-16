@@ -19,6 +19,12 @@ public class RequestUrl {
         heads = new HashMap<String, String>();
         params = new HashMap<String, String>();
         muiltParams = new HashMap<String, Object>();
+        initHeads();
+    }
+
+    private void initHeads()
+    {
+        heads.put("User-Agent", "Android");
     }
 
     public RequestUrl(String url) {

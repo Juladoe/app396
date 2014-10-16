@@ -94,7 +94,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         moreBtn = (EduSohoTextBtn) findViewById(R.id.nav_more_btn);
         mNavBtnClickListener = new NavBtnClickListener();
         bindNavOnClick();
-        if ("".equals(app.token)) {
+        if (app.token == null || "".equals(app.token)) {
             mSelectBtn = R.id.nav_recommend_btn;
         } else {
             mSelectBtn = R.id.nav_me_btn;
@@ -119,7 +119,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             synchronized (mContext) {
                 if (mIsExit) {
                     mIsExit = false;
-                    finish();
                     app.exit();
                 }
                 longToast("再按一次退出应用");

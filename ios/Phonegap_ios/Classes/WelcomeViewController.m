@@ -25,6 +25,28 @@
     return self;
 }
 
+-(instancetype)initWithLocalImages:(NSArray *)paths
+{
+    self = [super init];
+    if (self) {
+        NSMutableArray *panels = [NSMutableArray array];
+        for (int i = 0; i < [paths count]; i ++) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            imageView.image = [UIImage imageNamed:[paths objectAtIndex:i]];
+            
+            MYIntroductionPanel *panel = [[MYIntroductionPanel alloc] initWithFrame:self.view.bounds];
+            [panel addSubview:imageView];
+            [panels addObject:panel];
+        }
+        MYBlurIntroductionView *welcomeView = [[MYBlurIntroductionView alloc] initWithFrame:self.view.bounds];
+        welcomeView.delegate = self;
+        [welcomeView buildIntroductionWithPanels:panels];
+        [self.view addSubview:welcomeView];
+    }
+    
+    return self;
+}
+
 - (instancetype)initWithImageUrls:(NSArray *)urls
 {
     self = [super init];

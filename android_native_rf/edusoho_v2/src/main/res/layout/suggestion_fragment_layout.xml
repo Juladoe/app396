@@ -78,7 +78,7 @@
 
                 <RadioButton
                     android:id="@+id/suggestion_bug_ck"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="20dp"
                     android:textSize="@dimen/sys_normal"
                     android:button="@drawable/lesson_resource_checkbox"
                     android:textColor="@color/system_light_text"
@@ -89,7 +89,7 @@
                 <RadioButton
                     android:checked="true"
                     android:id="@+id/suggestion_fix_ck"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="20dp"
                     android:textSize="@dimen/sys_normal"
                     android:button="@drawable/lesson_resource_checkbox"
                     android:layout_marginTop="18dp"

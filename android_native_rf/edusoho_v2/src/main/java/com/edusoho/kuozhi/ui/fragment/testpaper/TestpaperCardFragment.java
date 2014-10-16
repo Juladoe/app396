@@ -222,12 +222,22 @@ public class TestpaperCardFragment extends DialogFragment {
         setCancelable(false);
     }
 
+    private PopupDialog popupDialog;
+
     private void showSubmitDialog()
     {
-        PopupDialog popupDialog = PopupDialog.createNormal(
-                getActivity(), "考试结束", "考试时间结束，请交卷");
-        popupDialog.setOkText("查看答题卡");
-        popupDialog.show();
+        if (popupDialog == null) {
+            popupDialog = PopupDialog.createNormal(
+                    getActivity(), "考试结束", "考试时间结束，请交卷");
+            popupDialog.setOkText("查看答题卡");
+            popupDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    popupDialog = null;
+                }
+            });
+            popupDialog.show();
+        }
     }
 
 }

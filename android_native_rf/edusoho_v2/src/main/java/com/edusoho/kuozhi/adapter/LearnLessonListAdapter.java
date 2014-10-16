@@ -32,6 +32,7 @@ public class LearnLessonListAdapter extends BaseAdapter
     private int mResouce;
     private Context mContext;
     private ArrayList<LessonItem> mList;
+    private int mCurrentLessonId;
     private HashMap<Integer, LearnStatus> mUserLearns;
     public int page = 0;
     public int count = 0;
@@ -45,6 +46,11 @@ public class LearnLessonListAdapter extends BaseAdapter
         mContext = context;
         mResouce = resource;
         inflater = LayoutInflater.from(context);
+    }
+
+    public void setCurrentLessonId(int lessonId)
+    {
+        mCurrentLessonId = lessonId;
     }
 
     @Override
@@ -121,6 +127,9 @@ public class LearnLessonListAdapter extends BaseAdapter
                 break;
         }
 
+        if (lesson.id == mCurrentLessonId) {
+            view.setEnabled(false);
+        }
         setLessonProgress(lesson.id, holder.mLessonProgress);
         return view;
     }
@@ -170,10 +179,11 @@ public class LearnLessonListAdapter extends BaseAdapter
         holder.mLessonType.setCompoundDrawablesWithIntrinsicBounds(
                 mContext.getResources().getDrawable(typeDrawable), null, null, null);
         holder.mLessonType.setText(lesson.length);
-        if (lesson.free == LessonItem.FREE) {
-            setFreeTextStyle(holder.mLessonType, "(免费)");
-        } else if (!"published".equals(lesson.status)) {
+
+        if (!"published".equals(lesson.status)) {
             setFreeTextStyle(holder.mLessonType, "(未发布)");
+        } else if (lesson.free == LessonItem.FREE) {
+            setFreeTextStyle(holder.mLessonType, "(免费)");
         }
         view.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
     }

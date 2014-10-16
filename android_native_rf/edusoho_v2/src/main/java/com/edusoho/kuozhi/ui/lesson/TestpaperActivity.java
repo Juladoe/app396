@@ -89,6 +89,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
         super.onCreate(savedInstanceState);
         app.registMsgSource(this);
         testpaperActivity = this;
+        mIsRun = true;
         answerMap = new HashMap<QuestionType, ArrayList<Answer>>();
     }
 
@@ -191,10 +192,9 @@ public class TestpaperActivity extends TestpaperBaseActivity
             super.initView();
         }
         if (isLoadTitleByNet) {
-            setBackMode(BACK, mTitle);
             initIntentData();
+            setBackMode(BACK, mTitle);
         }
-        setNormalActionBack(mTitle);
         loadTestpaper();
     }
 
@@ -278,18 +278,31 @@ public class TestpaperActivity extends TestpaperBaseActivity
         mStopType = type;
     }
 
+    private PopupDialog mLoadDlg;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mStopType == PHOTO_CAMEAR) {
+            startTask();
+            return;
+        }
+        if (!mIsRun && mLoadDlg == null){
+            mLoadDlg = PopupDialog.createNormal(
+                    mActivity, "暂停考试", "考试暂停中！");
+            mLoadDlg.setOnDismissListener(new DialogInterface.OnDismissListener(){
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    startTask();
+                    mLoadDlg = null;
+                }
+            });
+            mLoadDlg.show();
+        }
+    }
+
     private void stopTask()
     {
-        PopupDialog dialog = PopupDialog.createNormal(
-                mActivity, "暂停考试", "考试暂停中！");
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                startTask();
-            }
-        });
-        dialog.show();
-
         mIsRun = false;
         if (mTimer != null) {
             mTimer.cancel();
@@ -314,8 +327,6 @@ public class TestpaperActivity extends TestpaperBaseActivity
             }
         };
     }
-
-
 
     private String getLimitedTime(int limitedTime)
     {
@@ -367,9 +378,6 @@ public class TestpaperActivity extends TestpaperBaseActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (mStopType == PHOTO_CAMEAR) {
-            return;
-        }
         if (!mIsTimeOver) {
             stopTask();
         }

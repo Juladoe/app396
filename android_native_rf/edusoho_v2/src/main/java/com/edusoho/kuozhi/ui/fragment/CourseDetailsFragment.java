@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.VipLevel;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -41,17 +43,12 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.edusoho.listener.LessonItemClickListener;
-import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -101,6 +98,15 @@ public class CourseDetailsFragment extends BaseFragment{
                 initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), true);
                 break;
         }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(DATA_UPDATE, source)
+        };
+        return messageTypes;
     }
 
     @Override
@@ -160,8 +166,9 @@ public class CourseDetailsFragment extends BaseFragment{
         mViewList.add(mCourseTeacherView);
 
         aQuery = new AQuery(view);
-        initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), false);
 
+        initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), false);
+        addHeadImageView();
         mScrollView.setHeadView(mHeadView);
         bindListener();
     }
@@ -362,7 +369,6 @@ public class CourseDetailsFragment extends BaseFragment{
         }
 
         setCourseStatus();
-        addHeadImageView();
 
         aQuery.id(R.id.course_details_rating).rating((float)course.rating);
         String price = course.price <= 0 ? "免费" : "￥" + course.price;
@@ -372,9 +378,27 @@ public class CourseDetailsFragment extends BaseFragment{
         }
         aQuery.id(R.id.course_details_studentNum).text(course.studentNum + "学员");
 
-        mCourseGoalsView.setText(AppUtil.goalsToStr(course.goals));
-        mCourseAudiencesView.setText(AppUtil.audiencesToStr(course.audiences));
-        mCourseAboutView.setText(AppUtil.coverCourseAbout(course.about));
+        String goals = AppUtil.goalsToStr(course.goals);
+        if (TextUtils.isEmpty(goals)) {
+            mViewList.remove(mCourseGoalsView);
+            mCourseGoalsView.setVisibility(View.GONE);
+        }
+        mCourseGoalsView.setText(goals);
+
+        String audiences = AppUtil.audiencesToStr(course.audiences);
+        if (TextUtils.isEmpty(audiences)) {
+            mViewList.remove(mCourseAudiencesView);
+            mCourseAudiencesView.setVisibility(View.GONE);
+        }
+        mCourseAudiencesView.setText(audiences);
+
+        String about = AppUtil.coverCourseAbout(course.about);
+        if (TextUtils.isEmpty(about)) {
+            mViewList.remove(mCourseAboutView);
+            mCourseAboutView.setVisibility(View.GONE);
+        }
+
+        mCourseAboutView.setText(about);
         mCourseTeacherView.initUser(mTeacher.id, mActivity);
         mCourseReviewView.initReview(course.id, mActivity, false);
 
@@ -417,6 +441,7 @@ public class CourseDetailsFragment extends BaseFragment{
     private Bundle getFragmentBundle(String fragmentName)
     {
         Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putBoolean(Const.IS_STUDENT, false);
         fragmentBundle.putIntArray(
                 TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(mCourseResult.course.teachers));
         fragmentBundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);

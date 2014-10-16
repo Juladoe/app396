@@ -48,17 +48,18 @@
     <style name="courseRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/course_ratingbar</item>
         <item name="android:width">27px</item>
-        <item name="android:height">27px</item>
+        <item name="android:height">@dimen/rating_height</item>
         <item name="android:minHeight">27px</item>
-        <item name="android:maxHeight">27dp</item>
+        <item name="android:maxHeight">64px</item>
         <item name="android:minWidth">27px</item>
-        <item name="android:maxWidth">27dp</item>
+        <item name="android:maxWidth">64px</item>
     </style>
 
     <style name="courseLargeRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/course_big_ratingbar</item>
-        <item name="android:minHeight">32dip</item>
-        <item name="android:maxHeight">48dip</item>
+        <item name="android:height">@dimen/big_rating_height</item>
+        <item name="android:minHeight">32px</item>
+        <item name="android:maxHeight">128px</item>
     </style>
 
     <style name="lessonLearnRatingBar" parent="@android:style/Widget.RatingBar">
@@ -72,8 +73,8 @@
         <item name="titleTextStyle">@style/CustomTitleTextStyle</item>
         <item name="android:actionBarStyle">@style/EdusohoActionBarStyle</item>
         <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>
-        <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
-        <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
+        <item name="homeAsUpIndicator">@drawable/actionbar_icon</item>
+        <item name="android:homeAsUpIndicator">@drawable/actionbar_icon</item>
         <item name="android:windowAnimationStyle">@style/EdusohoActivityAnim</item>
     </style>
 

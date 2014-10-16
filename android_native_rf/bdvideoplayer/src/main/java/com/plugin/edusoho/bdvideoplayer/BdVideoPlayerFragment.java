@@ -1,9 +1,10 @@
 package com.plugin.edusoho.bdvideoplayer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.*;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
@@ -61,6 +61,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private TextView mCurrPostion = null;
 
     private boolean mIsHwDecode = false;
+    private boolean mIsPlayEnd;
 
     private EventHandler mEventHandler;
     private HandlerThread mHandlerThread;
@@ -68,8 +69,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     private final Object SYNC_Playing = new Object();
 
-    private final int EVENT_PLAY = 0;
+    private final int EVENT_START = 0;
+    private final int EVENT_PLAY = 3;
+    private final int EVENT_PAUSE = 4;
+    private final int EVENT_FINISH = 5;
+
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
+    private final int UI_EVENT_ERROR = 5;
+    private final int UI_EVENT_PAUSE = 3;
+    private final int UI_EVENT_PLAY = 4;
     private static final int HIDE = 2;
 
     private PowerManager.WakeLock mWakeLock = null;
@@ -79,7 +87,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 播放状态
      */
     private  enum PLAYER_STATUS {
-        PLAYER_IDLE, PLAYER_PREPARING, PLAYER_PREPARED,
+        PLAYER_IDLE, PLAYER_PREPARING, PLAYER_PREPARED,PLAYER_PAUSE;
     }
 
     private PLAYER_STATUS mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
@@ -99,15 +107,31 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 case UI_EVENT_UPDATE_CURRPOSITION:
                     int currPosition = mVV.getCurrentPosition();
                     int duration = mVV.getDuration();
+
                     updateTextViewWithTimeFormat(mCurrPostion, currPosition);
                     updateTextViewWithTimeFormat(mDuration, duration);
                     mProgress.setMax(duration);
                     mProgress.setProgress(currPosition);
 
+                    if (currPosition == duration && !mIsPlayEnd) {
+                        mIsPlayEnd = true;
+                        mEventHandler.sendEmptyMessage(EVENT_FINISH);
+                    }
+
                     mUIHandler.sendEmptyMessageDelayed(UI_EVENT_UPDATE_CURRPOSITION, 200);
+                    break;
+                case UI_EVENT_ERROR:
+                    showErrorDialog();
                     break;
                 case HIDE:
                     hideController();
+                    break;
+                case UI_EVENT_PAUSE:
+                    Log.d(TAG, "UI_EVENT_PAUSE");
+                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    break;
+                case UI_EVENT_PLAY:
+                    mPlaybtn.setImageResource(R.drawable.video_pause);
                     break;
                 default:
                     break;
@@ -123,7 +147,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case EVENT_PLAY:
+                case EVENT_START:
                     /**
                      * 如果已经播放了，等待上一次播放结束
                      */
@@ -165,6 +189,19 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
                     mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
                     break;
+                case EVENT_PAUSE:
+                    mVV.pause();
+                    break;
+                case EVENT_PLAY:
+                    mVV.resume();
+                    break;
+                case EVENT_FINISH:
+                    mVV.seekTo(0);
+                    mVV.pause();
+                    mPlayerStatus = PLAYER_STATUS.PLAYER_PAUSE;
+                    mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
+                    Log.d(null, "bdplayer finish->");
+                    break;
                 default:
                     break;
             }
@@ -205,7 +242,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             // TODO Auto-generated method stub
             Log.v(TAG, "pre btn clicked");
             /**
-             * 如果已经开发播放，先停止播放
+             * 如果已经播放，先停止播放
              */
             if(mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE){
                 mVV.stopPlayback();
@@ -214,9 +251,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             /**
              * 发起一次新的播放任务
             */
-            if(mEventHandler.hasMessages(EVENT_PLAY))
-                mEventHandler.removeMessages(EVENT_PLAY);
-            mEventHandler.sendEmptyMessage(EVENT_PLAY);
+            if(mEventHandler.hasMessages(EVENT_START))
+                mEventHandler.removeMessages(EVENT_START);
+            mEventHandler.sendEmptyMessage(EVENT_START);
         }
     };
 
@@ -343,7 +380,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
          */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
             mLastPos = mVV.getCurrentPosition();
-            mVV.stopPlayback();
+            mVV.pause();
+            Log.v(TAG, "mVV onPause");
+            mEventHandler.sendEmptyMessage(EVENT_PAUSE);
         }
     }
 
@@ -359,7 +398,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         /**
          * 发起一次播放任务,当然您不一定要在这发起
          */
-        mEventHandler.sendEmptyMessage(EVENT_PLAY);
+        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
+            mEventHandler.sendEmptyMessage(EVENT_PLAY);
+        } else {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+        }
     }
 
     @Override
@@ -376,6 +419,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
          */
         mHandlerThread.quit();
         Log.v(TAG, "onDestroy");
+        if (mWakeLock != null) {
+            try {
+                mWakeLock.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -419,7 +469,24 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+        mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
         return true;
+    }
+
+    private void showErrorDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog alertDialog = builder.setTitle("播放提示")
+                .setMessage("该课时视频不能播放")
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        getActivity().finish();
+                    }
+                })
+                .create();
+        alertDialog.show();
     }
 
     /**
@@ -444,13 +511,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 // TODO Auto-generated method stub
 
                 if (mVV.isPlaying()) {
-                    mPlaybtn.setImageResource(R.drawable.video_pause);
+                    mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
-                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    mIsPlayEnd = false;
+                    mPlaybtn.setImageResource(R.drawable.video_pause);
                     /**
                      * 继续播放
                      */
@@ -534,8 +602,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
-        mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
-        mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+        mPlayerStatus = PLAYER_STATUS.PLAYER_PAUSE;
     }
 
     /**
@@ -546,6 +613,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         // TODO Auto-generated method stub
         Log.v(TAG, "onPrepared");
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
+        mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
     }
 }

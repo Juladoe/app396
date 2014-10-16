@@ -38,6 +38,7 @@ public class EdusohoMainService extends Service {
     private Queue<AjaxCallback> mAjaxQueue;
 
     public static final int LOGIN_WITH_TOKEN = 0001;
+    public static final int EXIT_USER = 0002;
 
     @Override
     public void onCreate() {
@@ -52,6 +53,9 @@ public class EdusohoMainService extends Service {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
+                    case EXIT_USER:
+                        mLoginUser = null;
+                        break;
                     case LOGIN_WITH_TOKEN:
                         loginWithToken();
                         break;

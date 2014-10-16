@@ -91,4 +91,10 @@
     <dimen name="question_stem">15dp</dimen>
     <dimen name="testpaper_card_label">16dp</dimen>
     <dimen name="small_btn">10sp</dimen>
+
+    <dimen name="learn_status_title">10sp</dimen>
+
+    <dimen name="learn_status_icon">50dp</dimen>
+    <dimen name="rating_height">42px</dimen>
+    <dimen name="big_rating_height">64px</dimen>
 </resources>

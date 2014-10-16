@@ -120,7 +120,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(SHOW_TOOLS, source),
                 new MessageType(HIDE_TOOLS, source)
         };
         return messageTypes;
@@ -194,6 +193,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonType = lesson.type;
                 setTitle(lesson.title);
                 loadLesson(mLessonId);
+                if (!mLessonType.equals("testpaper") && mIsLearn) {
+                    Log.d(null, "load status->");
+                    loadLessonStatus();
+                }
             }
         });
     }
@@ -253,6 +256,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     mResourceBtn.setVisibility(View.VISIBLE);
                 }
                 Log.d(null, "status->" + status);
+                mToolsLayout.setVisibility(View.VISIBLE);
                 showToolsByAnim();
                 setLearnStatus(status == null ? LearnStatus.learning : status.learnStatus);
             }
@@ -382,11 +386,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         switch(learnStatus) {
             case learning:
                 mLearnBtn.setTag(true);
+                mLearnBtn.setIconResource(resources.getString(R.string.font_btn_learning));
                 mLearnBtn.setFocusBackgroundColor(resources.getColor(R.color.lesson_learn_btn_pressed));
                 mLearnBtn.setBackgroundColor(resources.getColor(R.color.lesson_learn_btn_normal));
                 break;
             case finished:
                 mLearnBtn.setTag(false);
+                mLearnBtn.setIconResource(resources.getString(R.string.font_btn_finish));
                 mLearnBtn.setFocusBackgroundColor(resources.getColor(R.color.lesson_learned_btn_pressed));
                 mLearnBtn.setBackgroundColor(resources.getColor(R.color.lesson_learned_btn_normal));
                 break;

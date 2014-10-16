@@ -105,6 +105,7 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
     {
         Intent intent = new Intent(context, EduSohoVideoActivity.class);
         intent.putExtra("url", url);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

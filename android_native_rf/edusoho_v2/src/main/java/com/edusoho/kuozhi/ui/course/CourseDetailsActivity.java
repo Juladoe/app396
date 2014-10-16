@@ -39,11 +39,13 @@ import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.Member;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
+import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.model.Vip;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.ui.fragment.CourseDetailsFragment;
 import com.edusoho.kuozhi.ui.fragment.MyCourseBaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -79,6 +81,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     public static final int SHOW_COURSE_PIC = 0002;
     public static final int SET_LEARN_BTN = 0003;
     public static final int CHANGE_FRAGMENT = 0004;
+    public static final int RELOAD_DATA = 0007;
 
     public static final int PAY_COURSE_SUCCESS = 0005;
     public static final int PAY_COURSE_REQUEST = 0006;
@@ -162,6 +165,9 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         int type = message.type.code;
         Bundle data = message.data;
         switch (type) {
+            case RELOAD_DATA:
+                reloadCoruseInfo();
+                break;
             case SHOW_COURSE_PIC:
                 AppUtil.animForHeight(
                         new EdusohoAnimWrap(mCoursePicView), 0, mCoursePicHeight, 320);
@@ -221,6 +227,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 new MessageType(HIDE_COURSE_PIC, source),
                 new MessageType(CHANGE_FRAGMENT, source),
                 new MessageType(SHOW_COURSE_PIC, source),
+                new MessageType(RELOAD_DATA, source),
                 new MessageType(Const.LOGING_SUCCESS),
         };
         return messageTypes;
@@ -283,6 +290,12 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         ListView listView = new ListView(mContext);
         ShardListAdapter adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
         listView.setAdapter(adapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final AlertDialog alertDialog = builder
+                .setTitle("分享课程")
+                .setView(listView)
+                .create();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -292,18 +305,15 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 if ("com.tencent.mm.ui.tools.ShareImgUI".equals(info.activityInfo.name)) {
                     wxType = SendMessageToWX.Req.WXSceneSession;
                 }
-                shardToMM(mCourseDetailsResult.course, mContext, wxType);
+                if (shardToMM(mCourseDetailsResult.course, mContext, wxType)) {
+                    if (wxType == SendMessageToWX.Req.WXSceneSession) {
+                        //longToast("分享成功!");
+                    }
+                    alertDialog.dismiss();
+                }
             }
         });
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        AlertDialog alertDialog = builder
-                .setTitle("分享课程")
-                .setView(listView)
-                .create();
         alertDialog.show();
-
-        //
     }
 
     private List<ResolveInfo> filterShardList(List<ResolveInfo> list) {
@@ -318,8 +328,8 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         return newList;
     }
 
-    private void shardToMM(Course course, Context context, int type) {
-        String APP_ID = "wx91c11946311906a3";
+    private boolean shardToMM(Course course, Context context, int type) {
+        String APP_ID = getResources().getString(R.string.app_id);
         IWXAPI wxApi;
         wxApi = WXAPIFactory.createWXAPI(context, APP_ID, true);
         wxApi.registerApp(APP_ID);
@@ -343,7 +353,40 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         req.scene = type;
         req.transaction = System.currentTimeMillis() + "";
         req.message = wXMediaMessage;
-        wxApi.sendReq(req);
+        return wxApi.sendReq(req);
+    }
+
+    private void reloadCoruseInfo()
+    {
+        RequestUrl url = app.bindUrl(Const.COURSE, true);
+        url.setParams(new String[]{
+                "courseId", mCourseId + ""
+        });
+
+        setProgressBarIndeterminateVisibility(true);
+        ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                if (ajaxStatus.getCode() != Const.CACHE_CODE) {
+                    setProgressBarIndeterminateVisibility(false);
+                }
+
+                mCourseDetailsResult = mActivity.parseJsonValue(
+                        object, new TypeToken<CourseDetailsResult>() {
+                });
+
+                if (mCourseDetailsResult == null) {
+                    return;
+                }
+
+                app.sendMsgToTarget(CourseDetailsFragment.DATA_UPDATE, null, CourseDetailsFragment.class);
+            }
+
+            @Override
+            public void update(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
+            }
+        });
     }
 
     private void loadCourseInfo() {
@@ -450,6 +493,8 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                         return;
                     }
                     learnCourseByVip();
+                } else {
+                    LoginActivity.start(mActivity);
                 }
             }
         });

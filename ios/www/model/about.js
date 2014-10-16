@@ -13,10 +13,12 @@ define(function(require, exports){
 	
 	exports.init_about_data = function()
 	{
+        setTitle("关于网校");
 		simpleJsonP(
 			schoolHost + "/about" + '?callback=?',
 			function(data){
-				$("#about").html(data.about);
+				var html = data.about.replace(/href=[^=]+\s/g, "href='javascript:void()';'");
+				$("#about").html(html);
 			},
 			false,
 			function()
