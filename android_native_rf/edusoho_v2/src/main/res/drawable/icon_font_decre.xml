@@ -2,5 +2,4 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/icon_font_pressed" android:state_pressed="true" />
-
 </selector>

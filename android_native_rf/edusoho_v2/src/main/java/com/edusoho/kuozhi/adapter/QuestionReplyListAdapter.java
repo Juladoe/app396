@@ -188,7 +188,9 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         URLImageGetter urlImageGetter = new URLImageGetter(tvReplyContent, mAqueryItem, mContext);
         Log.d(TAG, "Html.fromHtml-->" + entireReply.replyModel.content);
         //Html.fromHtml方法不知道为什么会会产生'\n\n'，所以去掉
-        tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null)));
+        //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
+        tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content),
+                urlImageGetter, null)));
         Log.d("tvReplyContent--->", tvReplyContent.getText().toString());
 
         return convertView;

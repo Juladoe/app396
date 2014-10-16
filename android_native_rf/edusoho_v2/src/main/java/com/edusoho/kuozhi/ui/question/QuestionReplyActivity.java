@@ -20,12 +20,13 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,7 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
+import com.edusoho.plugin.RichTextFontColor.ColorPickerDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -81,6 +83,10 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
 
     private int mCameraIndex = 1;
 
+    private int mCurFontSize = 0;
+    private int mMaxFontSize = 70;
+    private int mMinFontSize = 20;
+
     private Object[] mObjects;
 
     private EditText etContent;
@@ -88,11 +94,14 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     private ImageView ivBoldStyle;
     private ImageView ivItalicStyle;
     private ImageView ivUnderLineStyle;
-    // private ImageView ivFontColorStyle;
-    // private ImageView ivOrderListStyle;
+    private ImageView ivFontColor;
+    private ImageView ivFontSizeIncre;
+    private ImageView ivFontSizeDecre;
     // private ImageView ivUnorderListStyle;
     private ImageView ivCamera;
     private ImageView ivPhoto;
+
+
     private String mCourseId;
     private String mThreadId;
     /**
@@ -127,6 +136,9 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
     private File mCameraImageFile;
 
     private ProgressDialog mProgressDialog;
+    private ColorPickerDialog mColorPickerDialog;
+
+    private int mDialogResult = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,12 +152,16 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
 
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
+
         mHost = this.app.host;
         mAQuery = new AQuery(this);
         etContent = (EditText) findViewById(R.id.et_content);
         ivBoldStyle = (ImageView) findViewById(R.id.iv_bold);
         ivItalicStyle = (ImageView) findViewById(R.id.iv_italic);
         ivUnderLineStyle = (ImageView) findViewById(R.id.iv_underline);
+        ivFontColor = (ImageView) findViewById(R.id.iv_font_color);
+        ivFontSizeIncre = (ImageView) findViewById(R.id.iv_font_increase);
+        ivFontSizeDecre = (ImageView) findViewById(R.id.iv_font_decrease);
         ivPhoto = (ImageView) findViewById(R.id.iv_photo);
         ivCamera = (ImageView) findViewById(R.id.iv_camera);
 
@@ -165,12 +181,22 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
             mPostId = "";
         }
 
+        if (mColorPickerDialog == null) {
+            mColorPickerDialog = new ColorPickerDialog(mContext, R.color.backPressedColor);
+            mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
+        }
+
         etContent.setOnClickListener(this);
         ivBoldStyle.setOnClickListener(richTextListener);
         ivItalicStyle.setOnClickListener(richTextListener);
         ivUnderLineStyle.setOnClickListener(richTextListener);
+        //ivFontColor.setOnClickListener(richTextListener);
+        ivFontSizeIncre.setOnClickListener(richTextListener);
+        ivFontSizeDecre.setOnClickListener(richTextListener);
         ivPhoto.setOnClickListener(richTextListener);
         ivCamera.setOnClickListener(richTextListener);
+
+        mCurFontSize = (int) etContent.getTextSize();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -193,6 +219,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
             mSelectTextEnd = etContent.getSelectionEnd();
 
             if (v.getId() == R.id.iv_bold) {
+                //粗体设置
                 if (ivBoldStyle.getDrawable().getConstantState().equals(getResources().getDrawable(R.drawable.icon_font_bold).getConstantState())) {
                     ivBoldStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_bold_on_click));
                     etContent.getText().setSpan(mStyleBold, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -201,6 +228,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                     etContent.getText().removeSpan(mStyleBold);
                 }
             } else if (v.getId() == R.id.iv_italic) {
+                //斜体设置
                 if (ivItalicStyle.getDrawable().getConstantState().equals(getResources().getDrawable(R.drawable.icon_font_italic).getConstantState())) {
                     ivItalicStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_italic_on_click));
                     etContent.getText().setSpan(mStyleItalic, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -209,6 +237,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                     etContent.getText().removeSpan(mStyleItalic);
                 }
             } else if (v.getId() == R.id.iv_underline) {
+                //下划线设置
                 if (ivUnderLineStyle.getDrawable().getConstantState().equals(getResources().getDrawable(R.drawable.icon_font_under_line).getConstantState())) {
                     ivUnderLineStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_under_line_on_click));
                     etContent.getText().setSpan(mStyleUnderline, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -216,12 +245,40 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                     ivUnderLineStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_under_line));
                     etContent.getText().removeSpan(mStyleUnderline);
                 }
+            } else if (v.getId() == R.id.iv_font_increase) {
+                //字体增大
+                if (mCurFontSize < mMaxFontSize) {
+                    ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
+                    ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
+                    mCurFontSize = mCurFontSize + 5;
+                    Log.d("字体大小--------->", String.valueOf(mCurFontSize));
+                    AbsoluteSizeSpan ass = new AbsoluteSizeSpan(mCurFontSize);
+                    etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                } else {
+                    ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase_unclick));
+                }
+            } else if (v.getId() == R.id.iv_font_color) {
+                mColorPickerDialog.show();
+            } else if (v.getId() == R.id.iv_font_decrease) {
+                //字体减小
+                if (mCurFontSize > mMinFontSize) {
+                    ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
+                    ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
+                    mCurFontSize = mCurFontSize - 5;
+                    AbsoluteSizeSpan ass = new AbsoluteSizeSpan(mCurFontSize);
+                    Log.d("字体大小--------->", String.valueOf(mCurFontSize));
+                    etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                } else {
+                    ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease_unclick));
+                }
             } else if (v.getId() == R.id.iv_photo) {
+                //相册图片
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent, IMAGE_RESULT);
             } else if (v.getId() == R.id.iv_camera) {
+                //拍照
                 String state = Environment.getExternalStorageState();
                 if (state.equals(Environment.MEDIA_MOUNTED)) {
                     String saveDir = Environment.getExternalStorageDirectory().getPath() + "/temp_image";
@@ -241,6 +298,14 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                     startActivityForResult(intent, CAMERA_RESULT);
                 }
             }
+        }
+    };
+
+    private ColorPickerDialog.OnColorChangedListener mOnColorChangedListener = new ColorPickerDialog.OnColorChangedListener() {
+        @Override
+        public void onColorChanged(int color) {
+            ForegroundColorSpan fcs = new ForegroundColorSpan(color);
+            etContent.getText().setSpan(fcs, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         }
     };
 
@@ -323,31 +388,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         }
     }
 
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_CODE) {
-//            if (null != data) {
-//                Uri uri = data.getData();
-//                //根据需要，也可以加上Option这个参数
-//                InputStream inputStream = null;
-//                try {
-//                    inputStream = getContentResolver().openInputStream(uri);
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                filename = data.getDataString();
-//                int tmpLen = data.getDataString().split("/").length;
-//                String fileName = data.getDataString().split("/")[tmpLen - 1];
-//
-//                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//                insertImage(fileName, bitmap);
-//            }
-//        }
-//    }
-
     /**
      * 光标处插入图片
      *
@@ -376,7 +416,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.question_reply_menu, menu);
         return true;
     }
@@ -468,14 +507,11 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         });
     }
 
-
     /**
      * 回复提交
      */
     private void submitReply(RequestUrl url) {
-
         mProgressDialog.show();
-
         this.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
@@ -487,12 +523,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                         return;
                     } else {
                         Toast.makeText(mContext, "提交成功", 500).show();
-//                        Intent intent = new Intent();
-//                        intent.putExtra(Const.POST_ID, mPostId);
-//                        intent.putExtra(Const.THREAD_ID, mThreadId);
-//                        intent.putExtra(Const.COURSE_ID, mCourseId);
-//                        intent.putExtra(Const.NORMAL_CONTENT, content);
-//                        mActivity.setResult(Const.OK, intent);
                         mActivity.setResult(Const.OK);
                         mActivity.finish();
                     }
@@ -509,17 +539,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (etContent.hasFocus()) {
-            mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
-                    CharacterStyle.class);
-            //setRichTextImage();
-            Log.d(TAG, etContent.getSelectionStart() + "_" + etContent.getSelectionEnd());
-        }
-        return super.onKeyUp(keyCode, event);
     }
 
     /**
@@ -595,19 +614,14 @@ public class QuestionReplyActivity extends ActionBarBaseActivity implements View
         }
     };
 
+    /**
+     * 初始化对话框
+     */
     private void initProgressDialog() {
         mProgressDialog = new ProgressDialog(QuestionReplyActivity.this);
         mProgressDialog.setMessage("提交中...");
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.setCancelable(true);
-    }
-
-
-    /**
-     * 在编辑状态下，如果有图片把图片放入到mImageHashMap
-     */
-    private void setImageListByEditPost() {
-
     }
 
 }

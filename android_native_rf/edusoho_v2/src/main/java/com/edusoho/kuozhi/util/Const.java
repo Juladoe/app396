@@ -103,7 +103,7 @@ public class Const {
     public static final String NORMAL_REPLY = "Course/getThreadPost";
 
     /**
-     * 获取教师回复
+     * 获取教师回复（暂时不用，isElite标示能判断教师回复）
      * 传递参数：courseId，threadId
      */
     public static final String TEACHER_REPLY = "Course/getThreadTeacherPost";
