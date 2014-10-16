@@ -58,7 +58,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-        Log.d(null, "start->");
         mActivity = this;
         mContext = this;
         app = (EdusohoApp) getApplication();
