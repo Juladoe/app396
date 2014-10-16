@@ -74,6 +74,7 @@ public class CategoryListView extends FrameLayout {
         mCategoryListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+                Log.d(null, "mCategoryListView click->child  groupPosition->" + groupPosition);
                 ExpandableListAdapter adapter = expandableListView.getExpandableListAdapter();
                 Category category = (Category) adapter.getChild(groupPosition, childPosition);
                 itemClick.click(category);
@@ -84,7 +85,9 @@ public class CategoryListView extends FrameLayout {
         mCategoryListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
-                Category category = (Category) expandableListView.getItemAtPosition(groupPosition);
+                Log.d(null, "mCategoryListView click-> group->" + groupPosition);
+                ExpandableListAdapter adapter = expandableListView.getExpandableListAdapter();
+                Category category = (Category)adapter.getGroup(groupPosition);
                 itemClick.click(category);
                 return true;
             }

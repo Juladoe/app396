@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.MessageModel;
+import com.edusoho.kuozhi.view.PointLayout;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.OutlineContainer;
 
@@ -18,6 +19,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,13 +35,17 @@ public class SplashActivity extends Activity {
     private JazzyViewPager mJazzy;
     protected View mSplashOkBtn;
     protected ArrayList<View> mViewList;
+    private PointLayout mPointLayout;
     protected JazzyViewPager.TransitionEffect mSplashMode;
     public final static String INIT_APP = "init_app";
+    private int mPadding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+        mPadding = (int)(EdusohoApp.screenW * 0.3f);
+        Log.d(null, "padding->" + mPadding);
         loadConfig();
         setupJazziness(mSplashMode);
     }
@@ -62,6 +68,7 @@ public class SplashActivity extends Activity {
 
     private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
         mJazzy = (JazzyViewPager) findViewById(R.id.jazzy_pager);
+        mPointLayout = (PointLayout) findViewById(R.id.pointlayout);
         mJazzy.setTransitionEffect(effect);
         mViewList = initSplashList();
         if (mViewList == null || mViewList.isEmpty()) {
@@ -75,6 +82,8 @@ public class SplashActivity extends Activity {
         mJazzy.setAdapter(new SplashAdapter(mViewList));
         mJazzy.setPageMargin(30);
 
+        mPointLayout.setViewPaper(mJazzy);
+        mPointLayout.addPointImages(mViewList.size() - 1);
         mJazzy.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -88,6 +97,7 @@ public class SplashActivity extends Activity {
 
             @Override
             public void onPageSelected(int position) {
+                mPointLayout.refresh();
                 int size = mViewList.size();
                 if (position == (size - 1)) {
                     finish();
@@ -112,12 +122,14 @@ public class SplashActivity extends Activity {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         imageView.setLayoutParams(layoutParams);
+        imageView.setPadding(mPadding, mPadding, mPadding, mPadding);
 
         Bitmap bitmap = getBitmap(imageId);
 
         imageView.setImageBitmap(bitmap);
         imageView.setBackgroundColor(getResources().getColor(R.color.splash_bg));
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
         relativeLayout.addView(imageView);
 
         mSplashOkBtn = LayoutInflater.from(this).inflate(R.layout.splash_ok_btn_layout, relativeLayout);
@@ -168,7 +180,9 @@ public class SplashActivity extends Activity {
             Bitmap bitmap = getBitmap(imageIds[i]);
             imageView.setImageBitmap(bitmap);
             imageView.setBackgroundColor(getResources().getColor(R.color.splash_bg));
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setPadding(mPadding, mPadding, mPadding, mPadding);
+
             mViewList.add(imageView);
         }
 

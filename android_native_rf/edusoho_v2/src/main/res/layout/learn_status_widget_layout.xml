@@ -12,8 +12,8 @@
         android:src="@drawable/noram_course"
         android:layout_weight="0"
         android:id="@+id/learn_status_widget_coursepic"
-        android:layout_width="49dp"
-        android:layout_height="49dp" />
+        android:layout_width="@dimen/learn_status_icon"
+        android:layout_height="@dimen/learn_status_icon" />
 
     <RelativeLayout
         android:layout_marginLeft="10dp"
@@ -24,14 +24,14 @@
 
         <TextView
             android:maxLines="2"
-            android:textSize="@dimen/small_btn"
+            android:textSize="@dimen/learn_status_title"
             android:id="@+id/learn_status_widget_lastLearnCourse"
             android:text="上次您学习到课时"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:textSize="@dimen/small_btn"
+            android:textSize="@dimen/learn_status_title"
             android:layout_marginTop="5dp"
             android:layout_below="@id/learn_status_widget_lastLearnCourse"
             android:id="@+id/learn_status_widget_learnProgressNum"

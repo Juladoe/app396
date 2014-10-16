@@ -71,5 +71,9 @@
     <string name="font_audio">&#xe63a;</string>
     <string name="font_other">&#xe60e;</string>
 
+    <string name="font_btn_learning">&#xe671;</string>
+    <string name="font_btn_finish">&#xe672;</string>
+    <string name="app_id">wx91c11946311906a3</string>
+
     <string name="testpaper_reviewing">请耐心等待老师批阅，老师批阅后可查看全部考试结果</string>
 </resources>

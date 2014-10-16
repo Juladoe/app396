@@ -89,4 +89,5 @@
     <!--问答列表标题字体 -->
     <dimen name="question_item_title_size">18sp</dimen>
     <dimen name="question_fill">12sp</dimen>
+    <dimen name="big_rating_height">42px</dimen>
 </resources>

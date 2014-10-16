@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.model;
 
+import java.io.Serializable;
+
 /**
  * Created by howzhi on 14-8-29.
  */
-public class Vip {
+public class Vip implements Serializable{
     public int id;
     public int userId;
     public int levelId;

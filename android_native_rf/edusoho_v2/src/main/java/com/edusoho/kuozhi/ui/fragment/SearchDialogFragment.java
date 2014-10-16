@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -56,20 +57,9 @@ public class SearchDialogFragment extends DialogFragment{
         return view;
     }
 
+
     private void bindViewListener()
     {
-        mSearchEdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                Log.d(null, "onFocusChange->" + b);
-                if (b) {
-                    Activity activity = getActivity();
-                    InputMethodManager im = ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE));
-                    im.showSoftInput(mSearchEdt, InputMethodManager.RESULT_SHOWN);
-                }
-            }
-        });
-
         mSearchEdt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -138,7 +128,7 @@ public class SearchDialogFragment extends DialogFragment{
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog =  super.onCreateDialog(savedInstanceState);
+        final Dialog dialog =  super.onCreateDialog(savedInstanceState);
 
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
@@ -151,6 +141,21 @@ public class SearchDialogFragment extends DialogFragment{
 
         dialogWindow.setAttributes(lp);
         dialog.setCanceledOnTouchOutside(true);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Activity activity = getActivity();
+                InputMethodManager im = ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE));
+                im.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        });
         return dialog;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(null, "search ->stop");
     }
 }

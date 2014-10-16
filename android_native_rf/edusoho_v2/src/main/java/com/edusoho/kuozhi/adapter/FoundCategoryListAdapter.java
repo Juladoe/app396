@@ -188,7 +188,11 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         } else {
             holder.mExpandView.setVisibility(View.GONE);
         }
-        holder.mTitle.setText(category.name);
+        if (category.id == 0) {
+            holder.mTitle.setText("全部");
+        } else {
+            holder.mTitle.setText(category.name);
+        }
         //moveView(holder.mTitle, (category.depth - 1) * 30, category.id);
         return currentView;
     }

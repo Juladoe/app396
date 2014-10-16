@@ -43,7 +43,6 @@ public class FillQuestionWidget extends BaseQuestionWidget {
 
     protected LinearLayout fillLayout;
     protected TextView stemView;
-    private ArrayList<EditText> edtList;
 
     public FillQuestionWidget(Context context) {
         super(context);
@@ -93,8 +92,10 @@ public class FillQuestionWidget extends BaseQuestionWidget {
         stemView = (TextView) this.findViewById(R.id.question_stem);
 
         Question mQuestion = mQuestionSeq.question;
+        String stem = String.format("%d, %s", mIndex, parseStem(mQuestion.stem));
         stemView.setText(
-                String.format("%d, %s", mIndex + 1, parseStem(mQuestion.stem)));
+                Html.fromHtml(stem)
+                );
         ArrayList<String> answers = mQuestion.answer;
         Resources resources = mContext.getResources();
         fillLayout.removeAllViews();
@@ -149,7 +150,8 @@ public class FillQuestionWidget extends BaseQuestionWidget {
                 "正确答案:\n", listToStr(mQuestion.answer), rightColor);
         myRightText.setText(rightText);
 
-        AnalysisText.setText(Html.fromHtml(mQuestion.analysis));
+        AnalysisText.setText(
+                TextUtils.isEmpty(mQuestion.analysis) ? "暂无解析" : Html.fromHtml(mQuestion.analysis));
         initFavoriteBtn(view);
     }
 

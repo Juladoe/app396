@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-10-9.
@@ -25,12 +26,12 @@ public class TestpaperResultListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private int mResouce;
     private Context mContext;
-    private ArrayList<Accuracy> mList;
+    private HashMap<QuestionType, Accuracy> mList;
     private ArrayList<QuestionType> mTypeList;
 
     public TestpaperResultListAdapter(
             Context context,
-            ArrayList<Accuracy> list,
+            HashMap<QuestionType, Accuracy> list,
             ArrayList<QuestionType> typeList,
             int resource
     )
@@ -49,20 +50,22 @@ public class TestpaperResultListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mList.size();
+        return mTypeList.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return mList.get(i);
+        return mTypeList.get(i);
     }
 
     @Override
     public View getView(int index, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         View currentView;
-        Accuracy accuracy = mList.get(index);
+
         QuestionType questionType = mTypeList.get(index);
+        Accuracy accuracy = mList.get(questionType);
+
         if (view == null) {
             currentView = inflater.inflate(mResouce, null);
             holder = new ViewHolder();
@@ -76,8 +79,8 @@ public class TestpaperResultListAdapter extends BaseAdapter {
         }
 
         holder.mType.setText(questionType.title());
-        setRightText(holder.mRight, accuracy);
-        holder.mTotal.setText(accuracy.totalScore + "");
+        setRightText(holder.mRight, accuracy.right, accuracy.all);
+        setRightText(holder.mTotal, accuracy.score, accuracy.totalScore);
         return currentView;
     }
 
@@ -86,19 +89,19 @@ public class TestpaperResultListAdapter extends BaseAdapter {
         return false;
     }
 
-    private void setRightText(TextView rightText, Accuracy accuracy)
+    private void setRightText(TextView rightText, Object startObj, Object endObj)
     {
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(accuracy.all);
-        stringBuffer.append("/");
+        stringBuffer.append(startObj);
         int start = stringBuffer.length();
-        stringBuffer.append(accuracy.right);
+        stringBuffer.append("/");
+        stringBuffer.append(endObj);
         SpannableString spannableString = new SpannableString(stringBuffer);
         int color = mContext.getResources().getColor(R.color.action_bar_bg);
         spannableString.setSpan(
                 new ForegroundColorSpan(color),
+                0,
                 start,
-                start + AppUtil.getNumberLength(accuracy.right),
                 Spanned.SPAN_EXCLUSIVE_INCLUSIVE
         );
         rightText.setText(spannableString);

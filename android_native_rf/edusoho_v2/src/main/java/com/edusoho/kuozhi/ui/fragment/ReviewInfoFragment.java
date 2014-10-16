@@ -30,6 +30,7 @@ public class ReviewInfoFragment extends BaseFragment {
     private RatingBar mCourseRatingBar;
     private TextView mCourseStudentView;
     private Button mCommitBtn;
+    private boolean mIsStudent;
 
     @Override
     public String getTitle() {
@@ -79,6 +80,7 @@ public class ReviewInfoFragment extends BaseFragment {
 
         mCourse = (Course) bundle.getSerializable(COURSE);
         int courseId = bundle.getInt(Const.COURSE_ID, 0);
+        mIsStudent = bundle.getBoolean(Const.IS_STUDENT);
 
         setFragmentData();
         mReviewWidget.hideTitle();
@@ -98,7 +100,7 @@ public class ReviewInfoFragment extends BaseFragment {
 
     private void setCommitStatus()
     {
-        if (app.loginUser == null) {
+        if (app.loginUser == null || !mIsStudent) {
             mCommitBtn.setVisibility(View.GONE);
         } else {
             mCommitBtn.setVisibility(View.VISIBLE);
@@ -119,6 +121,6 @@ public class ReviewInfoFragment extends BaseFragment {
             rating = format.format(mCourse.rating);
         }
         mCourseStudentView.setText(String.format(
-                "%s分 (%s人)", rating, mCourse.studentNum));
+                "%s分 (%s人)", rating, mCourse.ratingNum));
     }
 }

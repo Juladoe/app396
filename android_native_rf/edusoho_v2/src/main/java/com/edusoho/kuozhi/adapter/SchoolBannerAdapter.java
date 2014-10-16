@@ -66,7 +66,6 @@ public class SchoolBannerAdapter extends PagerAdapter {
                     Bundle bundle = new Bundle();
                     bundle.putString(AboutFragment.URL, banner.params);
                     bundle.putString(FragmentPageActivity.FRAGMENT, "AboutFragment");
-                    bundle.putString(Const.ACTIONBAT_TITLE, "关于网校");
                     mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
                 }
             }

@@ -5,14 +5,18 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -34,6 +38,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.LockSupport;
 
 import cn.trinea.android.common.util.FileUtils;
 
@@ -57,16 +62,22 @@ public class DownLoadService extends Service {
     private DownloadManager downloadManager;
     private NotificationManager notificationManager;
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case UPDATE:
                     break;
             }
         }
     };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(null, "download_service destory");
+    }
 
     @Override
     public void onCreate() {
@@ -75,8 +86,16 @@ public class DownLoadService extends Service {
         aQuery = new AQuery(mContext);
         notificationManager = (NotificationManager)
                 this.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
-        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         notificationHashMap = new HashMap<Long, Notification>();
+
+    }
+
+    public static Intent getIntent(Context context)
+    {
+        Intent intent = new Intent();
+        intent.setClass(context, DownLoadService.class);
+        return intent;
     }
 
     @Override
@@ -84,20 +103,13 @@ public class DownLoadService extends Service {
         return null;
     }
 
-    public static void startDown(Context context, LessonMaterial lessonMaterial, String url)
-    {
+    public static void startDown(Context context, LessonMaterial lessonMaterial, String url) {
         Intent intent = new Intent();
         intent.putExtra("title", lessonMaterial.title);
         intent.putExtra("size", lessonMaterial.fileSize);
         intent.putExtra("url", url);
         intent.setClass(context, DownLoadService.class);
         context.startService(intent);
-    }
-
-    public static void startDown(
-            Context context, ArrayList<LessonMaterial> lessonMaterials)
-    {
-
     }
 
     @Override
@@ -112,8 +124,7 @@ public class DownLoadService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void startTimer()
-    {
+    private void startTimer() {
         if (mTimer != null) {
             return;
         }
@@ -134,10 +145,14 @@ public class DownLoadService extends Service {
         }, 0, 100);
     }
 
+    private File checkFileExists(String name) {
+        File cacheDir = AQUtility.getCacheDir(mContext);
+        File file = new File(cacheDir, name);
+        return file;
+    }
 
-    private void downLoadFile()
-    {
-        Log.d(null, "file->"+ mFileUrl);
+    private void downLoadFile() {
+        Log.d(null, "file->" + mFileUrl);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mFileUrl));
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setAllowedOverRoaming(false);
@@ -147,23 +162,27 @@ public class DownLoadService extends Service {
 
         //在通知栏中显示
         request.setShowRunningNotification(false);
-        request.setVisibleInDownloadsUi(true);
-        request.setDestinationInExternalPublicDir("edusoho", mNotifiTitle);
+        request.setVisibleInDownloadsUi(false);
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(android.os.Environment.MEDIA_MOUNTED);
+        if (sdCardExist) {
+            request.setDestinationInExternalPublicDir("edusoho", mNotifiTitle);
+        }
 
         long id = downloadManager.enqueue(request);
         createNotification(id);
         startTimer();
+
     }
 
-    private void createNotification(long id)
-    {
+    private void createNotification(long id) {
         notificationManager = (NotificationManager)
                 this.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
 
         // 定义Notification的各种属性
         Notification notification = new Notification(R.drawable.notification_download_icon,
                 "正在下载 " + mNotifiTitle, System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notification.defaults = Notification.DEFAULT_LIGHTS;
 
         Intent notificationIntent = new Intent();
@@ -178,12 +197,39 @@ public class DownLoadService extends Service {
         notification.contentView = remoteViews;
 
         // 把Notification传递给NotificationManager
-        notificationManager.notify((int)id, notification);
+        notificationManager.notify((int) id, notification);
         notificationHashMap.put(id, notification);
     }
 
-    private void finishNotification(long id, String filename)
-    {
+    private void showComplteNotification(File file) {
+        notificationManager = (NotificationManager)
+                this.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+
+        // 定义Notification的各种属性
+        Notification notification = new Notification(R.drawable.notification_download_icon,
+                "下载完成 " + mNotifiTitle, System.currentTimeMillis());
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notification.tickerText = "下载完成";
+
+        Intent notificationIntent = AppUtil.getViewFileIntent(file);
+        PendingIntent contentItent = PendingIntent.getActivity(
+                this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        notification.contentIntent = contentItent;
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.download_notification_layout);
+
+        remoteViews.setTextViewText(R.id.notify_title, mNotifiTitle);
+        remoteViews.setViewVisibility(R.id.notify_progress, View.GONE);
+        remoteViews.setViewVisibility(R.id.notify_finish, View.VISIBLE);
+        remoteViews.setTextViewText(R.id.notify_finish, "下载完成");
+        remoteViews.setTextViewText(R.id.notify_percent, "100%");
+        notification.contentView = remoteViews;
+
+        // 把Notification传递给NotificationManager
+        notificationManager.notify(0, notification);
+    }
+
+    private void finishNotification(long id, String filename) {
         Notification notification = notificationHashMap.get(id);
         if (notification == null) {
             return;
@@ -204,12 +250,11 @@ public class DownLoadService extends Service {
         remoteViews.setTextViewText(R.id.notify_finish, "下载完成");
         remoteViews.setTextViewText(R.id.notify_percent, "100%");
         notification.contentView = remoteViews;
-        notificationManager.notify((int)id, notification);
+        notificationManager.notify((int) id, notification);
         EdusohoApp.app.sendMsgToTarget(LessonResourceActivity.INIT_STATUS, null, LessonResourceActivity.class);
     }
 
-    private void updateNotification(long id, int total, int download)
-    {
+    private void updateNotification(long id, int total, int download) {
         Notification notification = notificationHashMap.get(id);
         if (notification == null) {
             return;
@@ -222,16 +267,16 @@ public class DownLoadService extends Service {
         float percent = (download / (float) total);
         remoteViews.setTextViewText(R.id.notify_percent, (int) (percent * 100) + "%");
         notification.contentView = remoteViews;
-        notificationManager.notify((int)id, notification);
+        notificationManager.notify((int) id, notification);
     }
 
     private void queryDownloadStatus(long id) {
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
         Cursor c = downloadManager.query(query);
-        if(c.moveToFirst()) {
+        if (c.moveToFirst()) {
             int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-            switch(status) {
+            switch (status) {
                 case DownloadManager.STATUS_PAUSED:
                     Log.v("down", "STATUS_PAUSED");
                 case DownloadManager.STATUS_PENDING:
@@ -246,18 +291,21 @@ public class DownLoadService extends Service {
                     break;
                 case DownloadManager.STATUS_SUCCESSFUL:
                     //完成
-                    downloadManager.remove(id);
-                    String filename = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                    Log.v("down", "下载完成->" + filename);
-                    moveToCache(new File(filename));
-                    finishNotification(id, filename);
+                    String localUrl = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                    String fileName = getFilePathFromUri(Uri.parse(localUrl));
+                    //String filename = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                    Log.v("down", "下载完成->" + fileName);
+                    moveToCache(new File(fileName));
+                    finishNotification(id, fileName);
                     notificationHashMap.remove(id);
+                    downloadManager.remove(id);
                     break;
                 case DownloadManager.STATUS_FAILED:
                     //清除已下载的内容，重新下载
+                    //String reason = c.getString(c.getColumnIndex(DownloadManager.COLUMN_REASON));
                     Log.v("down", "STATUS_FAILED");
                     downloadManager.remove(id);
-                    notificationManager.cancel((int)id);
+                    notificationManager.cancel((int) id);
                     notificationHashMap.remove(id);
                     break;
             }
@@ -266,9 +314,7 @@ public class DownLoadService extends Service {
         }
     }
 
-
-    private void moveToCache(File file)
-    {
+    private void moveToCache(File file) {
         File cacheDir = AQUtility.getCacheDir(mContext);
         File targetFile = new File(cacheDir, file.getName());
         try {
@@ -276,8 +322,29 @@ public class DownLoadService extends Service {
             file.delete();
 
             Log.v("move", "移动完成->" + targetFile);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getFilePathFromUri(Uri uri) {
+        String filePath = null;
+        if ("content".equals(uri.getScheme())) {
+            String[] filePathColumn = {MediaStore.MediaColumns.DATA};
+            ContentResolver contentResolver = mContext.getContentResolver();
+
+            Cursor cursor = contentResolver.query(uri, filePathColumn, null,
+                    null, null);
+
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            filePath = cursor.getString(columnIndex);
+            cursor.close();
+        } else if ("file".equals(uri.getScheme())) {
+            filePath = new File(uri.getPath()).getAbsolutePath();
+        }
+        Log.d(null, "filePath=" + filePath);
+        return filePath;
     }
 }

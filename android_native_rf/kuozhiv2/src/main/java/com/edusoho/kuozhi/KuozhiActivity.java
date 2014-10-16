@@ -3,6 +3,7 @@ package com.edusoho.kuozhi;
 import android.os.Bundle;
 
 import com.androidquery.callback.AjaxStatus;
+import com.crashlytics.android.Crashlytics;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
@@ -12,6 +13,7 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 
 import com.edusoho.kuozhi.ui.SplashActivity;
+import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
@@ -25,6 +27,7 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
         setContentView(R.layout.kuozhi_start);
         app.registMsgSource(this);
         startSplash();
+        Crashlytics.start(this);
     }
 
     @Override
@@ -48,6 +51,10 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void initApp() {
+        if (!app.getNetStatus()) {
+            longToast("没有网络服务！请检查网络设置。");
+            return;
+        }
         if (app.host == null || "".equals(app.host)) {
             startApp();
             return;
@@ -62,8 +69,8 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
                 }.getType());
                 if (info == null
                         || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
-                    PopupDialog.createNormal(
-                            mActivity, "提示信息", "网校客户端已关闭或网校服务器出现异常，请联系管理员！").show();
+
+                    showSchoolErrorDlg();
                     return;
                 }
 
@@ -76,8 +83,7 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
                         }.getType());
 
                         if (schoolResult == null) {
-                            PopupDialog.createNormal(
-                                    mActivity, "提示信息", "网校客户端已关闭或网校服务器出现异常，请联系管理员！").show();
+                            showSchoolErrorDlg();
                             return;
                         }
                         School site = schoolResult.site;
@@ -94,10 +100,28 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
                 super.error(url, ajaxStatus);
-                PopupDialog.createNormal(
-                        mActivity, "提示信息", "网校服务器出现异常，请联系管理员!").show();
+                showSchoolErrorDlg();
             }
         });
+    }
+
+    private void showSchoolErrorDlg()
+    {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                mContext,
+                "提示信息",
+                "网校客户端已关闭或网校服务器出现异常。\n请联系管理员！或选择新网校",
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            QrSchoolActivity.start(mActivity);
+                            finish();
+                        }
+                    }
+                });
+        popupDialog.setOkText("选择新网校");
+        popupDialog.show();
     }
 
     private void startApp() {

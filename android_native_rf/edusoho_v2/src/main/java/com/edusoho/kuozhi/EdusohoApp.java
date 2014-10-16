@@ -25,6 +25,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
+import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CacheAjaxCallback;
 import com.edusoho.kuozhi.core.CoreEngine;
@@ -88,6 +89,7 @@ public class EdusohoApp extends Application{
         super.onCreate();
         Log.d(null, "create application");
         mWorkHandler = new android.os.Handler();
+        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -217,10 +219,9 @@ public class EdusohoApp extends Application{
 
     public void exit()
     {
-        app.appFinish();
-        query.clear();
         notifyMap.clear();
         runTask.clear();
+        stopService(DownLoadService.getIntent(this));
         System.exit(0);
     }
 
@@ -385,8 +386,18 @@ public class EdusohoApp extends Application{
             item.host = map.get("host");
             item.logo = map.get("logo");
             host = item.host;
+            item.url = checkSchoolUrl(item.url);
             setCurrentSchool(item);
         }
+    }
+
+    private String checkSchoolUrl(String url)
+    {
+        if (url.endsWith("mapi_v1")) {
+            String newUrl = url.substring(0, url.length() - 1);
+            return newUrl + "2";
+        }
+        return url;
     }
 
     private void loadConfig()
@@ -429,6 +440,13 @@ public class EdusohoApp extends Application{
 
         token = null;
         loginUser = null;
+
+        EdusohoMainService mService = getService();
+        if (mService == null) {
+            return;
+        }
+        mService.sendMessage(EdusohoMainService.EXIT_USER, null);
+        Log.d(null, "remove->token user->" + loginUser);
     }
 
 

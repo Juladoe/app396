@@ -162,6 +162,7 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
             case AUDIO:
                 icon = R.string.font_audio;
                 break;
+            case EMPTY:
             case OTHER:
                 icon = R.string.font_other;
                 break;

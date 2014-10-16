@@ -92,4 +92,8 @@
     <!-- testpaper-->
     <dimen name="my_testpaper_btn">6sp</dimen>
 
+    <dimen name="learn_status_title">12sp</dimen>
+    <dimen name="question_checkbox_padding_left">40dp</dimen>
+    <dimen name="rating_height">32px</dimen>
+    <dimen name="big_rating_height">42px</dimen>
 </resources>

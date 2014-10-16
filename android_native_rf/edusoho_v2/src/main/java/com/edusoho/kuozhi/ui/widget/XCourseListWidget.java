@@ -58,6 +58,7 @@ public class XCourseListWidget extends FrameLayout {
     {
         mCourseListWidget = new PullToRefreshGridView(mContext);
         GridView gridView = mCourseListWidget.getRefreshableView();
+        gridView.setSmoothScrollbarEnabled(false);
         gridView.setNumColumns(2);
         gridView.setBackgroundColor(Color.TRANSPARENT);
         gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);

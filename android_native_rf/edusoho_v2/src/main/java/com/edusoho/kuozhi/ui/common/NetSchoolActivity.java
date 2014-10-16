@@ -202,6 +202,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
                             showSchSplash(site.name, site.splashs);
                             app.setCurrentSchool(site);
+                            app.removeToken();
                         }
                     });
 

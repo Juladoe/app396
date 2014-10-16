@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -36,7 +35,6 @@ import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
-import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -55,6 +53,7 @@ public class CourseLearningFragment extends BaseFragment {
     private int mCourseId;
 
     private TextView mCourseNoticeView;
+    private View mErrorLayout;
     private Button mCommitBtn;
     private LearnStatusWidget mCourseStatusView;
     private CourseDetailsLessonWidget mCourseLessonList;
@@ -76,8 +75,21 @@ public class CourseLearningFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCourseDetailsActivity = (CourseDetailsActivity) activity;
-        mCourseDetailsResult = mCourseDetailsActivity.getCourseDetailsInfo();
+        initCourseDetailsResult();
+    }
+
+    private void initCourseDetailsResult()
+    {
+        if (mCourseDetailsResult == null) {
+            mCourseDetailsActivity = (CourseDetailsActivity) getActivity();
+            mCourseDetailsResult = mCourseDetailsActivity.getCourseDetailsInfo();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("courseDetailsResult", mCourseDetailsResult);
     }
 
     @Override
@@ -102,7 +114,7 @@ public class CourseLearningFragment extends BaseFragment {
     {
         int size = mAnnouncements.size();
         if (size == 0) {
-            mCourseNoticeView.setText("暂无公告");
+            mCourseNoticeView.setVisibility(View.GONE);
             return;
         }
         if (noticeShowIndex > (size - 1)) {
@@ -195,6 +207,8 @@ public class CourseLearningFragment extends BaseFragment {
                             Bundle bundle = new Bundle();
                             bundle.putString(CourseDetailsActivity.FRAGMENT, "CourseDetailsFragment");
                             app.sendMsgToTarget(
+                                    CourseDetailsActivity.RELOAD_DATA, null, CourseDetailsActivity.class);
+                            app.sendMsgToTarget(
                                     CourseDetailsActivity.CHANGE_FRAGMENT, bundle, CourseDetailsActivity.class);
                             app.sendMsgToTarget(
                                     CourseDetailsActivity.SHOW_COURSE_PIC, null, CourseDetailsActivity.class);
@@ -219,7 +233,9 @@ public class CourseLearningFragment extends BaseFragment {
             fragmentData.putIntArray(
                     TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(course.teachers));
             fragmentData.putSerializable(CourseInfoFragment.COURSE, course);
+            fragmentData.putSerializable(CourseInfoFragment.MEMBER, mCourseDetailsResult.member);
             fragmentData.putInt(Const.COURSE_ID, course.id);
+            fragmentData.putBoolean(Const.IS_STUDENT, true);
 
             Bundle bundle = new Bundle();
             bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentData);
@@ -243,16 +259,39 @@ public class CourseLearningFragment extends BaseFragment {
         }
     }
 
+    private void checkMemberExprie()
+    {
+        Member member = mCourseDetailsResult.member;
+        if (member != null) {
+            long deadline = member.deadline;
+            if (deadline == -1) {
+                mErrorLayout.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    protected void saveViewState(Bundle savedInstanceState) {
+        super.saveViewState(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        mCourseDetailsResult = (CourseDetailsResult) savedInstanceState.getSerializable(
+                "courseDetailsResult");
+    }
+
     @Override
     protected void initView(View view) {
         super.initView(view);
 
+        mErrorLayout = view.findViewById(R.id.course_details_error_layout);
         mCommitBtn = (Button) view.findViewById(R.id.course_details_commit_btn);
         mBtnLayout = view.findViewById(R.id.course_details_btn_layouts);
         mCourseLessonList = (CourseDetailsLessonWidget) view.findViewById(R.id.course_learning_lessonlist);
         mCourseStatusView = (LearnStatusWidget) view.findViewById(R.id.course_learning_status_widget);
         mCourseNoticeView = (TextView) view.findViewById(R.id.course_learning_notice);
 
+        checkMemberExprie();
         Bundle bundle = getArguments();
         if (bundle != null) {
             mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
@@ -284,6 +323,7 @@ public class CourseLearningFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
                         startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                        startIntent.putExtra(Const.IS_STUDENT, true);
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程评价");
                         startIntent.putExtra(ReviewInfoFragment.COURSE, mCourseDetailsResult.course);
                     }

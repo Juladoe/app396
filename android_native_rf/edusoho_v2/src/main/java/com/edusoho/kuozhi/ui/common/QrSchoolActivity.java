@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -155,7 +156,8 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 String result = bundle.getString("result");
-                showQrResultDlg(result);
+                Log.d(null, "qr->" + result + "&version=2");
+                showQrResultDlg(result + "&version=2");
             }
         }
     }
@@ -189,8 +191,9 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     };
 
                     showSchSplash(site.name, site.splashs);
-
-                    if (schoolResult.token != null && ! "".equals(schoolResult.token)) {
+                    if (schoolResult.token == null || "".equals(schoolResult.token)) {
+                        app.removeToken();
+                    } else {
                         app.saveToken(schoolResult);
                     }
                     app.setCurrentSchool(site);
@@ -206,7 +209,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     private void showSchSplash(String schoolName, String[] splashs)
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        finish();
+        app.appFinish();
     }
 
     public boolean checkMobileVersion(HashMap<String, String> versionRange)

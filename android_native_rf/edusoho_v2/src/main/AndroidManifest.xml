@@ -144,7 +144,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.common.FragmentPageActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionActivity"
@@ -184,7 +184,11 @@
             android:name="com.edusoho.plugin.video.EduSohoVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance" />
-
+        <!-- 微信回调接口 -->
+        <activity
+            android:name="com.edusoho.kuozhi.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <service android:name="com.edusoho.kuozhi.Service.EdusohoMainService" />
         <service android:name="com.edusoho.kuozhi.Service.DownLoadService" />
 

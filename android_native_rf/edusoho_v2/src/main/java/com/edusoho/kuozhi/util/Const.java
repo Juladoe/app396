@@ -68,10 +68,11 @@ public class Const {
 
     public static final String DB_NAME = "edusoho";
 
-    public static final String REGIST_DEVICE = "regist_device";
+    public static final String REGIST_DEVICE = "School/registDevice";
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
+    public static final String FLASH_APK = "School/getFlashApk";
     public static final String MY_TESTPAPER = "Testpaper/myTestpaper";
     public static final String COURSELESSON = "Lesson/getLesson";
     public static final String DOWNLOAD_MATERIAL = "%sLesson/downMaterial?courseId=%d&materialId=%d&token=%s";
@@ -238,6 +239,7 @@ public class Const {
     public static final String MEDIA_SOURCE = "mediaSource";
     public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAT_TITLE = "title";
+    public static final String IS_STUDENT = "is_student";
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
     public static final String mTestpaperResultId = "testpaperResultId";

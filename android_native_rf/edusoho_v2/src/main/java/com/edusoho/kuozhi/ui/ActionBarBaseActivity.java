@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -19,15 +17,12 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CoreEngine;
-import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.*;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
@@ -47,7 +42,7 @@ import java.util.HashMap;
  */
 public class ActionBarBaseActivity extends ActionBarActivity {
 
-    protected static final String BACK = "返回";
+    public static final String BACK = "返回";
     protected ActionBarBaseActivity mActivity;
     protected Context mContext;
     public EdusohoApp app;
@@ -162,22 +157,27 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         layoutParams.gravity = Gravity.CENTER;
 
         mActionBar.setCustomView(mTitleTextView, layoutParams);
-        mActionBar.setDisplayUseLogoEnabled(false);
 
-        if (backTitle == null) {
-            mActionBar.setDisplayHomeAsUpEnabled(false);
-            mActionBar.setDisplayShowTitleEnabled(false);
-        } else {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setTitle(backTitle);
+        mActionBar.setDisplayUseLogoEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        mActionBar.setDisplayShowCustomEnabled(true);
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
+
+        if (backTitle != null) {
+            Log.d(null, "backtitle->" + backTitle);
+            mActionBar.setHomeButtonEnabled(true);
+            mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+            );
+            mActionBar.setIcon(R.drawable.action_bar_back);
+            mActionBar.setDisplayShowHomeEnabled(true);
         }
 
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayShowCustomEnabled(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(null, "menu item->" + item.getItemId());
         if (item.getItemId() == android.R.id.home) {
             finish();
         }

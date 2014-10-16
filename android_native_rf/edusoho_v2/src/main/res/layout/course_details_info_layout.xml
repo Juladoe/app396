@@ -81,7 +81,7 @@
             android:id="@+id/course_details_rating"
             style="@style/courseRatingBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:isIndicator="true"
             android:rating="0" />
 

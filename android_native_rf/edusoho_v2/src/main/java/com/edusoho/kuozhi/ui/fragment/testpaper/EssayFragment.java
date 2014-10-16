@@ -125,14 +125,14 @@ public class EssayFragment extends SelectQuestionFragment{
 
                 Log.d(null, "upload result->" + result);
                 if (result == null || TextUtils.isEmpty(result)) {
-                    mActivity.longToast("上传失败!");
+                    mActivity.longToast("上传失败!服务器暂不支持过大图片");
                 }
                 callback.success(String.format("<img src='%s'/>", result));
             }
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
-                mActivity.longToast("上传失败!");
+                mActivity.longToast("上传失败!服务器暂不支持过大图片");
                 loadDialog.dismiss();
             }
         });
@@ -270,10 +270,7 @@ public class EssayFragment extends SelectQuestionFragment{
     }
 
     private String convertUriToPath(Uri uri) {
-        ContentResolver cr = mContext.getContentResolver();
-        Cursor cursor = cr.query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        return cursor.getString(1);
+        return AppUtil.getPath(mContext, uri);
     }
 
 }

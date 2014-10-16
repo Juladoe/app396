@@ -103,7 +103,6 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
                         mQuestion.score
                 );
         }
-
         return Html.fromHtml(stem);
     }
 
@@ -272,7 +271,8 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
         myAnswerText.setText("你的答案:" + myAnswer);
         myRightText.setText(rightText);
 
-        AnalysisText.setText(Html.fromHtml(mQuestion.analysis));
+        AnalysisText.setText(
+                TextUtils.isEmpty(mQuestion.analysis) ? "暂无解析" : Html.fromHtml(mQuestion.analysis));
         initFavoriteBtn(view);
     }
 }
