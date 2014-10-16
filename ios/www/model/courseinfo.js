@@ -313,7 +313,8 @@ exports.load_data = function()
 				$.ui.goBack();
 				return;
 			}
-			setTitle(data.course.title);
+
+			$("#info_header").find("#pageTitle").text(data.course.title);
 			var list = new Array();
 			list[0] = data;
 			list_str = zy_tmpl(
@@ -445,7 +446,7 @@ exports.buyDialog = function()
 	var courseId = $("#course_courseId").val();
 	if (! appstore_model.checkIsLogin()) {
 		setHistoryAction(window.load_courseinfo_page, courseId);
-		$.ui.loadContent('login',false,false,'slide');
+        load_login_page();
 		return;
 	}
 	var payment = $("#course_payment").val();

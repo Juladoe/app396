@@ -6,10 +6,11 @@
 //
 //
 
+#import <Cordova/CDVViewController.h>
 #import <UIKit/UIKit.h>
 
-@interface WelcomeViewController : UIViewController
+@interface WelcomeViewController : CDVViewController
 
 - (instancetype)initWithImageUrls:(NSArray *)urls;
-
+- (instancetype)initWithLocalImages:(NSArray *) paths;
 @end
