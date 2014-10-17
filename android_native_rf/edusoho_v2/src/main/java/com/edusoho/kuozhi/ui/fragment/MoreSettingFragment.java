@@ -113,7 +113,7 @@ public class MoreSettingFragment extends BaseFragment {
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startAcitivity("QrSchoolActivity", null);
+                app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
             }
         });
 

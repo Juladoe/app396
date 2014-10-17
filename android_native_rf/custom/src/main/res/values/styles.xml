@@ -1,10 +1,8 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
-    <style name="customStartTheme" parent="edusohoTheme">
+    <style name="appStartTheme" parent="EdusohoAppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@drawable/custom_app_splash</item>
         <item name="android:textColor">@color/system_text</item>
     </style>

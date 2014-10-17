@@ -154,7 +154,10 @@
             android:name="com.edusoho.kuozhi.ui.question.QuestionDetailActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.QrLoginActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionReplyActivity"
             android:configChanges="keyboard|orientation"

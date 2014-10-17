@@ -1,64 +1,66 @@
-package com.custom;
+package com.edusoho.kuozhi.ui.common;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.School;
-import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
-import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
-import com.edusoho.plugin.photo.SchoolSplashActivity;
+import com.edusoho.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
-;
-
 /**
- * Created by howzhi on 14-7-7.
+ * Created by howzhi on 14-10-17.
  */
-public class CustomSchoolActivity extends SchoolCourseActivity {
+public class QrLoginActivity extends ActionBarBaseActivity {
+
+    public final static int REQUEST_QR = 0001;
+    public final static int RESULT_QR = 0002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startSplash();
+        View view = new View(mContext);
+        setContentView(view);
+        setBackMode(BACK, "扫描登录用户");
+
+        startQrSearch();
     }
 
-    @Override
-    public void setActionBar() {
-        setMenu(R.layout.custom_course_layout_menu, new MenuListener() {
-            @Override
-            public void bind(View menuView) {
-                View sch_search_btn = menuView.findViewById(R.id.sch_search_btn);
-                sch_search_btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        app.mEngine.runNormalPlugin("SearchActivity", mActivity, null);
-                    }
-                });
-            }
-        });
+    private void startQrSearch()
+    {
+        Intent qrIntent = new Intent();
+        qrIntent.putExtra(Const.ACTIONBAT_TITLE, "扫描登录用户");
+        qrIntent.setClass(mContext, CaptureActivity.class);
+        startActivityForResult(qrIntent, REQUEST_QR);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == QrSchoolActivity.REQUEST_QR && resultCode == QrSchoolActivity.RESULT_QR) {
+        if (requestCode == REQUEST_QR && resultCode == RESULT_QR) {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 String result = bundle.getString("result");
-                showQrResultDlg(result);
+                Log.d(null, "qr->" + result + "&version=2");
+                showQrResultDlg(result + "&version=2");
             }
+        } else {
+            exit();
         }
     }
 
     private void showQrResultDlg(final String result)
     {
         if (!result.startsWith(app.host)) {
-            longToast("请登录" + getString(R.string.app_name) + "－网校！");
+            longToast("请登录" + app.defaultSchool.name + "－网校！");
+            exit();
             return;
         }
 
@@ -71,41 +73,39 @@ public class CustomSchoolActivity extends SchoolCourseActivity {
                 int code = status.getCode();
                 if (code != Const.OK) {
                     longToast("二维码信息错误!");
+                    exit();
                     return;
                 }
                 try {
                     final TokenResult schoolResult = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
                     }.getType());
+
                     if (schoolResult == null) {
                         longToast("二维码信息错误!");
+                        exit();
                         return;
                     }
-
-                    School site = schoolResult.site;
-                    if (!checkMobileVersion(site.apiVersionRange)) {
-                        return;
-                    };
-
-                    showSchSplash(site.name, site.splashs);
 
                     if (schoolResult.token == null || "".equals(schoolResult.token)) {
-                        app.removeToken();
+                        longToast("二维码登录信息已过期或失效!");
                     } else {
                         app.saveToken(schoolResult);
+                        app.sendMessage(Const.LOGING_SUCCESS, null);
+                        app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
                     }
-                    app.setCurrentSchool(site);
 
                 }catch (Exception e) {
                     longToast("二维码信息错误!");
                 }
+                exit();
             }
         });
+
     }
 
-    private void showSchSplash(String schoolName, String[] splashs)
+    private void exit()
     {
-        SchoolSplashActivity.start(mContext, schoolName, splashs);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         finish();
     }

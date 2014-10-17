@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">一起慕课</string>
-    <string name="app_host">http://www.17mooc.cn</string>
-    <string name="school_about">关于一起慕课</string>
+    <string name="app_name">E电商</string>
+    <string name="app_host">http://school.edianshang.com</string>
+    <string name="school_about">关于E电商</string>
 </resources>

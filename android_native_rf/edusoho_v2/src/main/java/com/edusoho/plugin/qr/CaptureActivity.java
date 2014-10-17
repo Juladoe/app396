@@ -2,8 +2,8 @@ package com.edusoho.plugin.qr;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.common.NetSchoolActivity;
+import com.edusoho.kuozhi.util.Const;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
@@ -21,15 +21,13 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -37,9 +35,8 @@ import java.util.Map;
 
 public final class CaptureActivity extends ActionBarBaseActivity implements
 		SurfaceHolder.Callback {
-	private Button btn_back;
-	private Button btn_torch;
-	private boolean isTorchOn = false;
+
+    private String mTitle;
 	private CameraManager cameraManager;
 	private CaptureActivityHandler handler;
 	private Result savedResultToShow;
@@ -81,7 +78,15 @@ public final class CaptureActivity extends ActionBarBaseActivity implements
 
     private void initView()
     {
-        setBackMode(BACK, "扫描二维码");
+        Intent intent = getIntent();
+        if (intent != null) {
+            mTitle = intent.getStringExtra(Const.ACTIONBAT_TITLE);
+        }
+
+        if (mTitle == null || TextUtils.isEmpty(mTitle)) {
+            mTitle = "扫描二维码";
+        }
+        setBackMode(BACK, mTitle);
     }
 
 	@SuppressWarnings("deprecation")
