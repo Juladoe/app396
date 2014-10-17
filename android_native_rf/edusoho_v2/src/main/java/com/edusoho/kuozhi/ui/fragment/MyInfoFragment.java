@@ -108,7 +108,7 @@ public class MyInfoFragment extends BaseFragment {
 
     public void setUserStatus()
     {
-        Log.d(null, "setUserStatus-> user" + app.loginUser);
+        Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
             setStatusLoginLayout();
             mUserLogo.setImageResource(R.drawable.myinfo_default_face);
