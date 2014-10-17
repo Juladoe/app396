@@ -29,11 +29,13 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
     protected Context mContext;
     protected View mLoadView;
+    protected View mMoreBtn;
     protected boolean isLearn;
     protected boolean isShowTitle;
 
     private TextView mTitleView;
     private View mContentView;
+    private View mEmptyLayout;
     protected ViewGroup mContainer;
 
     public CourseDetailsLabelWidget(Context context) {
@@ -45,6 +47,25 @@ public class CourseDetailsLabelWidget extends LinearLayout {
         super(context, attrs);
         mContext = context;
         initView(attrs);
+    }
+
+    protected View initEmptyLayout()
+    {
+        TextView textView = new TextView(mContext);
+        Resources resources = getResources();
+        textView.setTextColor(resources.getColor(R.color.system_normal_text));
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.sys_normal));
+        return textView;
+    }
+
+    protected void showEmptyLayout()
+    {
+        removeContentView();
+        if (mEmptyLayout == null) {
+            mEmptyLayout = initEmptyLayout();
+        }
+        mLoadView.setVisibility(View.GONE);
+        mContainer.addView(mEmptyLayout);
     }
 
     public void onShow(){
@@ -108,15 +129,15 @@ public class CourseDetailsLabelWidget extends LinearLayout {
 
     public void setShowMoreBtn(OnClickListener clickListener)
     {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);
+        mMoreBtn = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
-        view.setLayoutParams(layoutParams);
+        mMoreBtn.setLayoutParams(layoutParams);
 
-        view.setOnClickListener(clickListener);
+        mMoreBtn.setOnClickListener(clickListener);
 
-        addView(view);
+        addView(mMoreBtn);
     }
 
     protected void setContentView(int layoutId)

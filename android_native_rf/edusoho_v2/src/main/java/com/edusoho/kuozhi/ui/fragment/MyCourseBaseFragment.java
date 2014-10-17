@@ -154,6 +154,9 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
                 Integer startPage = (Integer) mCourseListWidget.getTag();
+                if (startPage == null) {
+                    return;
+                }
                 loadCourseFromNet(startPage, true);
             }
         });

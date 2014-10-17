@@ -1,11 +1,13 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -113,7 +116,8 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 ReviewResult reviewResult = mActivity.parseJsonValue(
                         object, new TypeToken<ReviewResult>(){});
 
-                if (reviewResult == null) {
+                if (reviewResult == null || reviewResult.total == 0) {
+                    showEmptyLayout();
                     return;
                 }
 
@@ -135,6 +139,13 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 }
             }
         });
+    }
+
+    @Override
+    protected View initEmptyLayout() {
+        TextView textView = (TextView) super.initEmptyLayout();
+        textView.setText(R.string.course_no_review);
+        return textView;
     }
 
     private void initListHeight(ListView listView)

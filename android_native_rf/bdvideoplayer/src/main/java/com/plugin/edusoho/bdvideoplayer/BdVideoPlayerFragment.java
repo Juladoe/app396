@@ -43,7 +43,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private String AK = "6ZB2kShzunG7baVCPLWe7Ebc";
     private String SK = "wt18pcUSSryXdl09jFvGvsuNHhGCZTvF";
 
-
     private String mVideoSource = null;
 
     private BVideoView mVV = null;
@@ -62,6 +61,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     private boolean mIsHwDecode = false;
     private boolean mIsPlayEnd;
+    private int mDecodeMode;
 
     private EventHandler mEventHandler;
     private HandlerThread mHandlerThread;
@@ -291,6 +291,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         Bundle bundle = getArguments();
         mIsHwDecode = bundle.getBoolean("isHW", false);
         mSoLibDir = bundle.getString("soLibDir");
+        mDecodeMode = bundle.getInt("decode", BVideoView.DECODE_SW);
         String url = bundle.getString("mediaUrl");
         Log.d(null, "url->" + url);
         Uri uriPath = Uri.parse(url);
@@ -367,7 +368,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         /**
          * 设置解码模式
         */
-        mVV.setDecodeMode(BVideoView.DECODE_SW);
+
+        mVV.setDecodeMode(mDecodeMode);
     }
 
     @Override
@@ -467,9 +469,16 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
-        mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
-        mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
-        mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
+        if (mDecodeMode == BVideoView.DECODE_SW) {
+            mDecodeMode = BVideoView.DECODE_HW;
+            mVV.setDecodeMode(mDecodeMode);
+            mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+            mEventHandler.sendEmptyMessage(EVENT_START);
+        } else {
+            mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+            mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+            mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
+        }
         return true;
     }
 
@@ -616,5 +625,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
     }
+
 }
 

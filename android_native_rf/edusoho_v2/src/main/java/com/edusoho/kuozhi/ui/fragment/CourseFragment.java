@@ -72,6 +72,9 @@ public class CourseFragment extends BaseFragment {
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Integer startPage = (Integer) mCourseListView.getTag();
+                if (startPage == null) {
+                    return;
+                }
                 loadCourseFromNet(startPage, true);
             }
         });

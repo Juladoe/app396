@@ -3,6 +3,7 @@
     android:focusable="true"
     android:background="@color/system_normal_bg"
     android:focusableInTouchMode="true"
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,7 +16,7 @@
         android:layout_height="match_parent">
 
         <com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget
-            android:layout_below="@id/course_details_about"
+            android:layout_weight="0"
             android:id="@+id/course_details_teacher"
             app:labelTitle="教师简介"
             android:paddingTop="9dp"
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content" />
 
         <com.edusoho.kuozhi.ui.widget.XCourseListWidget
+            android:layout_weight="1"
             android:background="@color/system_normal_bg"
             android:layout_marginTop="9dp"
             android:layout_marginLeft="19dp"

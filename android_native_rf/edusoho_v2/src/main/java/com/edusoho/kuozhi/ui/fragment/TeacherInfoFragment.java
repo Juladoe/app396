@@ -29,6 +29,7 @@ public class TeacherInfoFragment extends BaseFragment {
     public static final String TEACHER_ID = "teacherId";
 
     private int[] mTeacherIds;
+    private int mTecherId;
 
     private XCourseListWidget mTeacherCoursesView;
 
@@ -56,12 +57,15 @@ public class TeacherInfoFragment extends BaseFragment {
 
         mTeacherIds = bundle.getIntArray(TEACHER_ID);
         if (mTeacherIds == null || mTeacherIds.length == 0) {
-            mActivity.longToast("无效教师信息！");
-            return;
+            mTecherId = CourseDetailsTeacherWidget.NONE_ID;
+        } else {
+            mTecherId = mTeacherIds[0];
         }
-        mTeacherView.initUser(mTeacherIds[0], mActivity);
+
+        mTeacherView.initUser(mTecherId, mActivity);
         final ScrollListAdapter adapter = new ScrollListAdapter(mContext);
         mTeacherCoursesView.setAdapter(adapter);
+        mTeacherCoursesView.setEmptyText("没有相关课程");
         mTeacherCoursesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
@@ -78,7 +82,7 @@ public class TeacherInfoFragment extends BaseFragment {
 
         RequestUrl url = app.bindUrl(Const.TEACHER_COURSES, true);
         url.setParams(new String[]{
-                "userId", mTeacherIds[0] + ""
+                "userId", mTecherId + ""
         });
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override

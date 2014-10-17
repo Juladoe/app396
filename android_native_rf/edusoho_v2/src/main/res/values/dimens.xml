@@ -11,7 +11,7 @@
     <dimen name="sys_small_normal">10dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
-    <dimen name="course_list_item_title">18sp</dimen>
+    <dimen name="course_list_item_title">14sp</dimen>
     <dimen name="recommend_sch_info_size">12dp</dimen>
     <dimen name="course_info_title">16dp</dimen>
     <dimen name="course_info_normal">14dp</dimen>
@@ -53,6 +53,7 @@
 
     <!--2.0 -->
     <dimen name="splash_ok_btn">24dp</dimen>
+    <dimen name="normal_padding">6dp</dimen>
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
