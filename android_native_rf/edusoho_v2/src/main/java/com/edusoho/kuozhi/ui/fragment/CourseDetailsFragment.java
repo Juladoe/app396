@@ -399,7 +399,10 @@ public class CourseDetailsFragment extends BaseFragment{
         }
 
         mCourseAboutView.setText(about);
-        mCourseTeacherView.initUser(mTeacher.id, mActivity);
+        mCourseTeacherView.initUser(
+                mTeacher == null ? -1 : mTeacher.id,
+                mActivity);
+
         mCourseReviewView.initReview(course.id, mActivity, false);
 
         if (!isUpdate) {

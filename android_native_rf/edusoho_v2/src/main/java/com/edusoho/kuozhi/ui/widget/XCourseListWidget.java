@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.view.FixHeightScrollView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
@@ -33,7 +35,7 @@ public class XCourseListWidget extends FrameLayout {
 
     private Context mContext;
     private ListAdapter mAdapter;
-    private PullToRefreshScrollView mEmptyLayout;
+    private View mEmptyLayout;
     private PullToRefreshGridView mCourseListWidget;
     private String mEmptyText = "没有搜到相关课程，请换个关键词试试！";
 
@@ -83,31 +85,20 @@ public class XCourseListWidget extends FrameLayout {
         mEmptyText = emptyText;
     }
 
-    private PullToRefreshScrollView initEmptyLayout()
+    private View initEmptyLayout()
     {
-        PullToRefreshScrollView scrollView = new PullToRefreshScrollView(mContext);
-        scrollView.getRefreshableView().setFillViewport(true);
-        scrollView.setLayoutParams(new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        scrollView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-
         View emptyLayout = LayoutInflater.from(mContext).inflate(
                 R.layout.course_empty_layout, null);
-        emptyLayout.setLayoutParams(new ScrollView.LayoutParams(
-                ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT));
-        scrollView.addView(emptyLayout);
         TextView textView = (TextView) emptyLayout.findViewById(R.id.list_empty_text);
         textView.setText(mEmptyText);
 
-        return scrollView;
+        return emptyLayout;
     }
 
     public void setRefreshListener(PullToRefreshBase.OnRefreshListener2 refreshListener)
     {
         if (mEmptyLayout == null) {
             mCourseListWidget.setOnRefreshListener(refreshListener);
-        } else {
-            mEmptyLayout.setOnRefreshListener(refreshListener);
         }
     }
 
@@ -116,7 +107,7 @@ public class XCourseListWidget extends FrameLayout {
         if (mAdapter.isEmpty()) {
             if (mEmptyLayout == null) {
                 mEmptyLayout = initEmptyLayout();
-                addView(mEmptyLayout);
+                addView(mEmptyLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
             mEmptyLayout.setVisibility(VISIBLE);
         } else {

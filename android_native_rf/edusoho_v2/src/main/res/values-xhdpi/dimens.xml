@@ -12,7 +12,7 @@
     <dimen name="sys_mid_normal">15dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
-    <dimen name="course_list_item_title">18sp</dimen>
+    <dimen name="course_list_item_title">16sp</dimen>
     <dimen name="recommend_sch_info_size">12dp</dimen>
     <dimen name="course_info_title">16dp</dimen>
     <dimen name="course_info_normal">14dp</dimen>
