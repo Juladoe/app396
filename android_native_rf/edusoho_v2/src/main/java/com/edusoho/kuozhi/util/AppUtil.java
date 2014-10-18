@@ -38,6 +38,7 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.Teacher;
@@ -691,6 +692,11 @@ public class AppUtil {
     {
         final EdusohoApp app = activity.app;
         RequestUrl requestUrl = app.bindUrl(Const.APP_UPDATE, false);
+        String code = activity.getResources().getString(R.string.app_code);
+        requestUrl.setParams(new String[] {
+                "code" , code
+        });
+        Log.d(null, "code->" + code);
         activity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {

@@ -79,4 +79,6 @@
     <string name="testpaper_reviewing">请耐心等待老师批阅，老师批阅后可查看全部考试结果</string>
     <string name="course_no_teacher">该课程尚未设置教师</string>
     <string name="course_no_review">该课程尚无评价</string>
+
+    <string name="app_code">main</string>
 </resources>

@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
@@ -152,8 +153,12 @@ public class DownLoadService extends Service {
     }
 
     private void downLoadFile() {
-        Log.d(null, "file->" + mFileUrl);
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mFileUrl));
+        Uri uri = Uri.parse(mFileUrl);
+        if (uri == null) {
+            Toast.makeText(this, "资源下载地址不存在！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setAllowedOverRoaming(false);
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();

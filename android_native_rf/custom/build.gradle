@@ -11,7 +11,7 @@ android {
 
     productFlavors {
         edianshang {
-            packageName "com.edusoho.edianshang"
+            packageName "com.edusoho_edianshang.kuozhi"
         }
     }
 
