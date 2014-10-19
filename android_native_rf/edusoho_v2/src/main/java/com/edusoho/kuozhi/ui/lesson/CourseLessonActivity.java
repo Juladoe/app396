@@ -43,7 +43,6 @@ import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.ViewPagerActivity;
 
-import com.edusoho.plugin.video.EduSohoVideoFragment;
 import com.edusoho.plugin.video.EdusohoVideoManagerActivity;
 import com.edusoho.plugin.video.VideoPlayerCallback;
 import com.edusoho.plugin.video.WebVideoActivity;

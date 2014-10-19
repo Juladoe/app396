@@ -1,39 +1,25 @@
 package com.edusoho.kuozhi.ui.common;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseMenuItemAdapter;
-import com.edusoho.kuozhi.core.model.MessageModel;
-import com.edusoho.kuozhi.model.AboutResult;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseMenu;
 import com.edusoho.kuozhi.model.CourseMenuResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Stack;
 
 public class CourseColumnActivity extends BaseActivity {
 

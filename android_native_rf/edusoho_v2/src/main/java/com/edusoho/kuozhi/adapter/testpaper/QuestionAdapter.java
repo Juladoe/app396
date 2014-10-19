@@ -1,12 +1,10 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
-import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
 import java.util.ArrayList;

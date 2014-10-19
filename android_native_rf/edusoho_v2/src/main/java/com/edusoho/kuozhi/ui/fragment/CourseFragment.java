@@ -1,22 +1,17 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseListActivity;
 import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
 import com.edusoho.kuozhi.util.Const;

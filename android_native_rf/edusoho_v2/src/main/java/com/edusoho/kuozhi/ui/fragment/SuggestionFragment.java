@@ -3,24 +3,15 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
-import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.annotations.ViewUtil;
-import com.edusoho.kuozhi.view.EdusohoButton;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
-
-import java.io.File;
 
 /**
  * Created by howzhi on 14-9-21.

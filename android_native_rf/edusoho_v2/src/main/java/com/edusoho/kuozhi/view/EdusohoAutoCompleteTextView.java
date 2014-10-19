@@ -1,10 +1,7 @@
 package com.edusoho.kuozhi.view;
 
 import android.content.Context;
-import android.view.KeyEvent;
 import android.widget.AutoCompleteTextView;
-
-import com.edusoho.kuozhi.R;
 
 /**
  * Created by howzhi on 14-8-14.

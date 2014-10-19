@@ -15,7 +15,6 @@ import android.view.ViewGroup.LayoutParams;
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
 
 public class ViewPagerActivity extends ActionBarBaseActivity{
 

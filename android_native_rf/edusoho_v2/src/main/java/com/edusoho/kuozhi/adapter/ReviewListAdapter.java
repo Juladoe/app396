@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.Teacher;

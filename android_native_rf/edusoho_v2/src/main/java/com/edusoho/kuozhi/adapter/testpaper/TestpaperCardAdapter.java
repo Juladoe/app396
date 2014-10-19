@@ -1,15 +1,12 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 

@@ -1,31 +1,24 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EdusohoBaseAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
-import com.edusoho.kuozhi.model.BaseResult;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
-import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperData;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperResult;
 import com.edusoho.kuozhi.model.Testpaper.Testpaper;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.AppUtil;

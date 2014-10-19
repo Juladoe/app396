@@ -8,7 +8,6 @@ import android.view.View;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.entity.TokenResult;
-import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
 import com.edusoho.kuozhi.util.Const;

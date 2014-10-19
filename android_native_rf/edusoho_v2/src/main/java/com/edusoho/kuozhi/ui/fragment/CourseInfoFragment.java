@@ -2,12 +2,10 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Member;
@@ -15,7 +13,6 @@ import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsGoalsWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 
-import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ResourceUtils;
 
 /**

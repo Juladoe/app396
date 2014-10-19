@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.model;
 
-import com.edusoho.kuozhi.entity.CourseCommentItem;
-
 import java.util.ArrayList;
 
 /**

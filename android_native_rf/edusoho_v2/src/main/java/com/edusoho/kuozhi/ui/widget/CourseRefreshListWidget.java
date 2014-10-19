@@ -2,9 +2,6 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 
 import com.edusoho.kuozhi.R;

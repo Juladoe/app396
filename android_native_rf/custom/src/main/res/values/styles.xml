@@ -1,5 +1,5 @@
 <resources>
-    <style name="appStartTheme" parent="EdusohoAppTheme">
+    <style name="CustomStartTheme" parent="EdusohoAppTheme">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="windowActionBar">false</item>

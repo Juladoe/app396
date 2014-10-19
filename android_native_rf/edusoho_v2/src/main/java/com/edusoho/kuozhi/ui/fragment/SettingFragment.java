@@ -1,34 +1,24 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EduUpdateView;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.NormalCallback;
-import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.StatusCallback;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.Set;
-
-import cn.trinea.android.common.util.StringUtils;
 
 /**
  * Created by howzhi on 14-9-21.

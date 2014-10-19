@@ -1,11 +1,8 @@
 package com.edusoho.kuozhi.ui.widget.testpaper;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,19 +11,14 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -36,12 +28,9 @@ import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
-import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.model.Question.Answer;
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.PaperResult;
-import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.TestResult;
@@ -50,17 +39,12 @@ import com.edusoho.kuozhi.ui.fragment.testpaper.EssayFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
-import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.NormalCallback;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import cn.trinea.android.common.util.DigestUtils;
-import cn.trinea.android.common.util.ImageUtils;
 
 
 /**

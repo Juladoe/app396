@@ -7,55 +7,35 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.adapter.CourseMenuItemAdapter;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.MessageModel;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseMenu;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.ui.common.CourseColumnActivity;
-import com.edusoho.kuozhi.ui.common.SearchActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.edusoho.kuozhi.view.OverScrollView;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.CourseListScrollListener;
-import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.edusoho.kuozhi.adapter.CoursePagerAdapter;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
-import com.edusoho.kuozhi.view.EdusohoListView;
 
 import com.edusoho.kuozhi.R;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 
 /**

@@ -9,7 +9,6 @@ import com.edusoho.kuozhi.util.Const;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 /**
  * Created by howzhi on 14-7-23.

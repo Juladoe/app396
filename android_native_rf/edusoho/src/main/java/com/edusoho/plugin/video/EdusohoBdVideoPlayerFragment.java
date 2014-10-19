@@ -1,7 +1,6 @@
 package com.edusoho.plugin.video;
 
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.NormalCallback;
 import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 
 /**

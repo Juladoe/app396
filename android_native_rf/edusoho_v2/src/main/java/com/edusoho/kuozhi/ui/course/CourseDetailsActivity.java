@@ -39,7 +39,6 @@ import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.Member;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
-import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.model.Vip;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;

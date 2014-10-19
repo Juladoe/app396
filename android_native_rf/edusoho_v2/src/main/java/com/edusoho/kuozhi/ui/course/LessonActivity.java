@@ -14,21 +14,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.entity.LearnStatus;
-import com.edusoho.kuozhi.entity.LessonsResult;
 import com.edusoho.kuozhi.model.Lesson.LessonStatus;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.model.Testpaper.TestpaperResult;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -39,16 +35,13 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.kuozhi.view.EdusohoButton;
-import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -364,6 +357,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(Const.ACTIONBAT_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case VIDEO:
+
             case AUDIO:
             case TEXT:
                 normalLesson = parseJsonValue(
@@ -380,6 +374,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return null;
     }
 
+    private void checkPlayerVersion()
+    {
+
+    }
     private void setLearnStatus(LearnStatus learnStatus)
     {
         Resources resources = getResources();

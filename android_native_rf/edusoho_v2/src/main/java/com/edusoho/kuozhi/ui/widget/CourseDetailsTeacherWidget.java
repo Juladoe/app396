@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -18,8 +16,6 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-27.

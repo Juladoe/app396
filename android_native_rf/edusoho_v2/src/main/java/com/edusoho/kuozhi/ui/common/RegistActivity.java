@@ -1,18 +1,10 @@
 package com.edusoho.kuozhi.ui.common;
 
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.ResultCallback;
-import com.google.gson.reflect.TypeToken;
 
 public class RegistActivity extends BaseActivity {
 

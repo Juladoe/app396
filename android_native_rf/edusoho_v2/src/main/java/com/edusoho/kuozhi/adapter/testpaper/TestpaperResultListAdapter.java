@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Testpaper.Accuracy;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
-import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

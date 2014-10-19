@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.entity;
 
-import java.util.HashMap;
-
 public class CommentResult {
 
     public int start;

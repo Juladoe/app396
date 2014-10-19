@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment.message;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;

@@ -11,8 +11,6 @@ import android.webkit.WebView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.util.Const;
 
-import java.net.URL;
-
 /**
  * Created by howzhi on 14-9-21.
  */

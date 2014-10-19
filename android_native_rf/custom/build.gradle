@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
 apply plugin: 'android'
 
 android {
@@ -7,27 +16,6 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 19
-    }
-
-    productFlavors {
-        edianshang {
-            packageName "com.edusoho_edianshang.kuozhi"
-        }
-    }
-
-    signingConfigs {
-        release {
-            storeFile file("wangwei.keystore")
-            storePassword "howzhi123"
-            keyAlias "wangwei.keystore"
-            keyPassword "howzhi123"
-        }
-    }
-
-    sourceSets {
-        edianshang {
-            res.srcDirs = ['src/custom/res']
-        }
     }
 }
 

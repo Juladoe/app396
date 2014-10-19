@@ -2,25 +2,18 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.adapter.testpaper.TestpaperListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.BaseResult;
-import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperData;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.course.CourseListActivity;
 import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;

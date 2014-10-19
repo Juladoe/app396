@@ -1,23 +1,11 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 
-import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CategoryListAdapter;
-import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Category;
@@ -27,12 +15,7 @@ import com.edusoho.kuozhi.ui.course.CourseListActivity;
 import com.edusoho.kuozhi.ui.widget.CategoryListView;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.edusoho.listener.ResultCallback;
-import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-14.

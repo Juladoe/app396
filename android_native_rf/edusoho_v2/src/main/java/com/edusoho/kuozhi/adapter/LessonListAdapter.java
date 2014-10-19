@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LessonItem;
-import com.edusoho.kuozhi.util.Const;
 import com.hb.views.PinnedSectionListView;
 
 import java.util.ArrayList;

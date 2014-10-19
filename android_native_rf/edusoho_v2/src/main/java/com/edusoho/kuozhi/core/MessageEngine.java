@@ -8,8 +8,6 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.listener.NormalCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 

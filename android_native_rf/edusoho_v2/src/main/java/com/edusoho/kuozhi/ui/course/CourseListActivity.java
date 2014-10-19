@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.CourseFragment;
 
 /**

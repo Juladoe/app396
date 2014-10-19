@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,11 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
@@ -24,7 +18,6 @@ import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
-import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.StatusCallback;
 
 import java.util.List;

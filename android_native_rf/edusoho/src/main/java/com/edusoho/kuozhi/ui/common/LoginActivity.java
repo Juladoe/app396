@@ -16,19 +16,13 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.TokenResult;
-import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.HashMap;
 
 public class LoginActivity extends BaseActivity {
     public static final int EXIT = 1002;

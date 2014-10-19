@@ -1,14 +1,9 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
