@@ -47,6 +47,10 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
         return null;
     }
 
+    public void clear()
+    {
+        mList.clear();
+    }
+
     public abstract void addItems(ArrayList<T> list);
-    public abstract void setItems(ArrayList<T> list);
 }

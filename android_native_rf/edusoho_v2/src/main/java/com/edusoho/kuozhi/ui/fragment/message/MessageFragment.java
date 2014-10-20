@@ -17,7 +17,7 @@ import com.edusoho.kuozhi.model.Notify;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
+import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
  */
 public class MessageFragment extends BaseFragment {
 
-    private CourseRefreshListWidget mMessageList;
+    private RefreshListWidget mMessageList;
     private View mLoadLayout;
 
     @Override
@@ -73,7 +73,7 @@ public class MessageFragment extends BaseFragment {
         super.initView(view);
 
         mLoadLayout = view.findViewById(R.id.load_layout);
-        mMessageList = (CourseRefreshListWidget) view.findViewById(R.id.message_list);
+        mMessageList = (RefreshListWidget) view.findViewById(R.id.message_list);
         mMessageList.setMode(PullToRefreshBase.Mode.BOTH);
         mMessageList.getRefreshableView().setDividerHeight(20);
         mMessageList.setEmptyText(new String[] { "暂无通知" });

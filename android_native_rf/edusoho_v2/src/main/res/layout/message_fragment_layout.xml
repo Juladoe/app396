@@ -6,7 +6,7 @@
 
     <include layout="@layout/loading_layout" />
 
-    <com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
         android:id="@+id/message_list"
         android:divider="@color/system_normal_bg"
         android:layout_width="match_parent"

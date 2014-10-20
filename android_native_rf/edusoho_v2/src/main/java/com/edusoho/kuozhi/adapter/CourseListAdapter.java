@@ -24,13 +24,6 @@ public class CourseListAdapter<T> extends ListBaseAdapter<T> {
     }
 
     @Override
-    public void setItems(ArrayList<T> list) {
-        mList.clear();
-        mList.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    @Override
     public void addItems(ArrayList<T> list) {
         mList.addAll(list);
         notifyDataSetChanged();

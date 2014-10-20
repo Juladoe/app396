@@ -120,7 +120,7 @@ public class CourseListWidget extends LinearLayout {
             return;
         }
         CourseListAdapter adapter = (CourseListAdapter) mEdusohoListView.getAdapter();
-        adapter.setItems(courseResult.data);
+        adapter.addItems(courseResult.data);
     }
 
     private void parseRequestData(ActionBarBaseActivity mActivity, String object)
@@ -135,7 +135,7 @@ public class CourseListWidget extends LinearLayout {
         }
         CourseListAdapter adapter = new CourseListAdapter(
                 mActivity, R.layout.recommend_school_list_item);
-        adapter.setItems(courseResult.data);
+        adapter.addItems(courseResult.data);
         mEdusohoListView.setAdapter(adapter);
         if (isFullHeight) {
             mEdusohoListView.initListHeight();

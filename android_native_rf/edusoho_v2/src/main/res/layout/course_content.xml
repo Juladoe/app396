@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/system_normal_bg">
 
-    <com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
         android:id="@+id/course_liseview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

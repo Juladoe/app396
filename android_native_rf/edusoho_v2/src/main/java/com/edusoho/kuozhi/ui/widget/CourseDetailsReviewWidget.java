@@ -31,7 +31,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
  */
 public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
 
-    private PullToRefreshListView mContentView;
+    private RefreshListWidget mContentView;
     private AQuery mAQuery;
     private int mCourseId;
     private ActionBarBaseActivity mActivity;
@@ -55,12 +55,11 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
         isInitHeight = ta.getBoolean(R.styleable.CourseDetailsLabelWidget_isInitHeight, false);
 
         mContainer.setPadding(0, -2, 0, 0);
-        mContentView = new PullToRefreshListView(mContext);
+        mContentView = new RefreshListWidget(mContext);
         mContentView.setFocusable(false);
         mContentView.setFocusableInTouchMode(false);
         mContentView.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        mContentView.setMode(PullToRefreshBase.Mode.DISABLED);
         mContentView.getRefreshableView().setDividerHeight(1);
         mContentView.getRefreshableView().setSelector(new ColorDrawable(0));
 
@@ -73,22 +72,21 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
     {
         if (isRefresh) {
             mContentView.setMode(PullToRefreshBase.Mode.BOTH);
-            mContentView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            mContentView.setUpdateListener(new RefreshListWidget.UpdateListener() {
                 @Override
-                public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                    getReviews(0, mCourseId, false);
+                public void update(PullToRefreshBase<ListView> refreshView) {
+                    getReviews(mContentView.getStart(), mCourseId);
                 }
 
                 @Override
-                public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-
+                public void refresh(PullToRefreshBase<ListView> refreshView) {
+                    getReviews(0, mCourseId);
                 }
             });
-            return;
         }
     }
 
-    public void getReviews(int start, int courseId, final boolean isAppend)
+    public void getReviews(int start, int courseId)
     {
         RequestUrl url = mActivity.app.bindUrl(Const.REVIEWS, true);
         url.setParams(new String[] {
@@ -96,7 +94,7 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                 "start", start + "",
                 "limit", mLimit + ""
         });
-
+        Log.d(null, "review start->" + start);
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
@@ -110,19 +108,8 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
                     return;
                 }
 
-                int nextStart = reviewResult.start + Const.LIMIT;
-                if (nextStart < reviewResult.total) {
-                    mContentView.setTag(nextStart);
-                } else {
-                    mContentView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-                }
-
-                if (isAppend) {
-                    mAdapter.addItem(reviewResult.data);
-                } else {
-                    mAdapter.setData(reviewResult.data);
-                }
-                Log.d(null, "isInitHeight->" + isInitHeight);
+                mContentView.pushData(reviewResult.data);
+                mContentView.setStart(reviewResult.start, reviewResult.total);
                 if (isInitHeight) {
                     initListHeight(mContentView.getRefreshableView());
                 }
@@ -160,12 +147,12 @@ public class CourseDetailsReviewWidget extends CourseDetailsLabelWidget {
         mCourseId = courseId;
         mActivity = actionBarBaseActivity;
         mAdapter = new ReviewListAdapter(
-                mContext, null, R.layout.course_details_review_item);
+                mContext, R.layout.course_details_review_item);
         mContentView.setAdapter(mAdapter);
         setRefresh(isRefresh);
         mLimit = isRefresh ? Const.LIMIT : 2;
 
-        getReviews(0, mCourseId, false);
+        getReviews(0, mCourseId);
     }
 
     public void setCompledListener(NormalCallback compledListener)

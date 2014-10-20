@@ -12,7 +12,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.BaseResult;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperData;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
+import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class MyTestpaperFragment extends BaseFragment {
 
     public static final String TITLE = "title";
-    private CourseRefreshListWidget mCourseListView;
+    private RefreshListWidget mCourseListView;
     private View mLoadView;
 
 
@@ -51,7 +51,7 @@ public class MyTestpaperFragment extends BaseFragment {
         view.setPadding(20, 0, 20, 0);
         view.setBackgroundColor(Color.WHITE);
         mLoadView = view.findViewById(R.id.load_layout);
-        mCourseListView =(CourseRefreshListWidget) view.findViewById(R.id.course_liseview);
+        mCourseListView =(RefreshListWidget) view.findViewById(R.id.course_liseview);
         mCourseListView.setMode(PullToRefreshBase.Mode.BOTH);
         mCourseListView.setEmptyText(new String[] { "暂无考试" });
         mCourseListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
