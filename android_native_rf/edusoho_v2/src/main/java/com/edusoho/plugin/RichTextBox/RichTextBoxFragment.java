@@ -459,17 +459,20 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivItalicStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_italic));
         ivUnderLineStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_under_line));
 
-        for (CharacterStyle style : mCurrentStyle) {
-            if (style instanceof UnderlineSpan) {
-                //下划线
-                ivUnderLineStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_under_line_on_click));
-            } else if (style instanceof StyleSpan) {
-                if (((StyleSpan) style).getStyle() == Typeface.BOLD) {
-                    //粗体
-                    ivBoldStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_bold_on_click));
-                } else if (((StyleSpan) style).getStyle() == Typeface.ITALIC) {
-                    //倾斜
-                    ivItalicStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_italic_on_click));
+        //多选文字，不自动变style
+        if ((etContent.getSelectionEnd() - etContent.getSelectionStart()) == 0) {
+            for (CharacterStyle style : mCurrentStyle) {
+                if (style instanceof UnderlineSpan) {
+                    //下划线
+                    ivUnderLineStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_under_line_on_click));
+                } else if (style instanceof StyleSpan) {
+                    if (((StyleSpan) style).getStyle() == Typeface.BOLD) {
+                        //粗体
+                        ivBoldStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_bold_on_click));
+                    } else if (((StyleSpan) style).getStyle() == Typeface.ITALIC) {
+                        //倾斜
+                        ivItalicStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_italic_on_click));
+                    }
                 }
             }
         }
