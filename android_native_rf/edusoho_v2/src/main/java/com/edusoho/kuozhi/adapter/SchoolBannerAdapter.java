@@ -1,27 +1,20 @@
 package com.edusoho.kuozhi.adapter;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.SchoolBanner;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.AboutFragment;
-import com.edusoho.kuozhi.util.Const;
 
 import java.util.ArrayList;
-
-import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by howzhi on 14-8-10.

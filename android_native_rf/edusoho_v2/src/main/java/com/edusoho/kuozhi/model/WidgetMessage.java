@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.model;
 import android.os.Bundle;
 
 import com.edusoho.listener.NormalCallback;
-import com.edusoho.listener.ResultCallback;
 
 /**
  * Created by howzhi on 14-8-20.

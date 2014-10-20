@@ -146,27 +146,27 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
     private View mRichTextBoxView;
 
-    private String mApi;
+    private byte[] mItemArgs = new byte[7];
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         mRichTextBoxView = inflater.inflate(R.layout.richtextbox_layout, container, false);
         initViews();
         initProgressDialog();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mItemArgs = bundle.getByteArray(Const.RICH_ITEM_AGRS);
+            setItemVisible();
+        }
         return mRichTextBoxView;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(false);
     }
-
-    public void setApiAddress(String address) {
-        this.mApi = address;
-    }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -177,7 +177,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     private void initViews() {
-
         mAQuery = new AQuery(mRichTextBoxView);
         etContent = (EditText) mRichTextBoxView.findViewById(R.id.et_content);
         ivBoldStyle = (ImageView) mRichTextBoxView.findViewById(R.id.iv_bold);
@@ -214,7 +213,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivBoldStyle.setOnClickListener(richTextListener);
         ivItalicStyle.setOnClickListener(richTextListener);
         ivUnderLineStyle.setOnClickListener(richTextListener);
-        //ivFontColor.setOnClickListener(richTextListener);
+        ivFontColor.setOnClickListener(richTextListener);
         ivFontSizeIncre.setOnClickListener(richTextListener);
         ivFontSizeDecre.setOnClickListener(richTextListener);
         ivPhoto.setOnClickListener(richTextListener);
@@ -269,9 +268,12 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                     ivUnderLineStyle.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_under_line));
                     etContent.getText().removeSpan(mStyleUnderline);
                 }
+            } else if (v.getId() == R.id.iv_font_color) {
+                mColorPickerDialog.show();
             } else if (v.getId() == R.id.iv_font_increase) {
                 //字体增大
                 if (mCurFontSize < mMaxFontSize) {
+                    etContent.getText().removeSpan(getFontSizeStyle());
                     ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
                     ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
                     mCurFontSize = mCurFontSize + 5;
@@ -281,11 +283,10 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 } else {
                     ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase_unclick));
                 }
-            } else if (v.getId() == R.id.iv_font_color) {
-                mColorPickerDialog.show();
             } else if (v.getId() == R.id.iv_font_decrease) {
                 //字体减小
                 if (mCurFontSize > mMinFontSize) {
+                    etContent.getText().removeSpan(getFontSizeStyle());
                     ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
                     ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
                     mCurFontSize = mCurFontSize - 5;
@@ -316,6 +317,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                             Toast.makeText(mContext, "照片创建失败!", Toast.LENGTH_LONG).show();
                             return;
                         }
+
                     }
                     Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraImageFile));
@@ -655,6 +657,33 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
     public Object[] getObjects() {
         return mObjects;
+    }
+
+    /**
+     * 控制显示富文本编辑框字体设置，参数：View.VISIBLE,View.GONE
+     */
+    private void setItemVisible() {
+        if (mItemArgs.length > 1) {
+            ivBoldStyle.setVisibility(mItemArgs[0]);
+            ivItalicStyle.setVisibility(mItemArgs[1]);
+            ivUnderLineStyle.setVisibility(mItemArgs[2]);
+            ivFontColor.setVisibility(mItemArgs[3]);
+            ivFontSizeIncre.setVisibility(mItemArgs[4]);
+            ivFontSizeDecre.setVisibility(mItemArgs[4]);
+            ivCamera.setVisibility(mItemArgs[5]);
+            ivPhoto.setVisibility(mItemArgs[6]);
+        }
+    }
+
+    private AbsoluteSizeSpan getFontSizeStyle() {
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart() - 1, etContent.getSelectionEnd(),
+                CharacterStyle.class);
+        for (int i = 0; i < mCurrentStyle.length; i++) {
+            if (mCurrentStyle[i] instanceof AbsoluteSizeSpan) {
+                return (AbsoluteSizeSpan) mCurrentStyle[i];
+            }
+        }
+        return null;
     }
 
 }

@@ -14,10 +14,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.EdusohoApp;
@@ -29,7 +27,6 @@ import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.AppUtil;
-import com.edusoho.kuozhi.view.EduSohoTextBtn;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

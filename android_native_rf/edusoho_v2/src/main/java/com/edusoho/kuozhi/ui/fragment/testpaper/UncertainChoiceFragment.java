@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.testpaper.ChoiceViewPagerAdapter;
 import com.edusoho.kuozhi.adapter.testpaper.QuestionAdapter;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;

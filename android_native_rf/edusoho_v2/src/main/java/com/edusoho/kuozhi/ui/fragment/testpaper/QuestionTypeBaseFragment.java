@@ -10,7 +10,6 @@ import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.ui.lesson.TestpaperBaseActivity;
 import com.edusoho.kuozhi.util.Const;
 

@@ -12,7 +12,6 @@ import android.widget.ScrollView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 /**

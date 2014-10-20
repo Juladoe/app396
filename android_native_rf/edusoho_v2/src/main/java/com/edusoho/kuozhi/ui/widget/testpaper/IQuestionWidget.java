@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.ui.widget.testpaper;
 
-import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 
 /**

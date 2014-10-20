@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;

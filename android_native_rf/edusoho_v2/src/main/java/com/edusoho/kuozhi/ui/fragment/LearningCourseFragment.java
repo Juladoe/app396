@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.edusoho.kuozhi.adapter.lesson.AbstractCourseListAdapter;
 import com.edusoho.kuozhi.adapter.lesson.LearningListAdapter;
-import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.util.Const;
 import com.google.gson.reflect.TypeToken;

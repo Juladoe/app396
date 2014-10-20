@@ -23,51 +23,46 @@
         android:id="@+id/ll_font_style"
         android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"
+        android:gravity="right"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_bold"
-            android:layout_weight="1" />
+            android:src="@drawable/icon_font_bold" />
 
         <ImageView
             android:id="@+id/iv_italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_italic"
-            android:layout_weight="1" />
+            android:src="@drawable/icon_font_italic" />
 
         <ImageView
             android:id="@+id/iv_underline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_under_line"
-            android:layout_weight="1" />
+            android:src="@drawable/icon_font_under_line" />
 
         <ImageView
             android:id="@+id/iv_font_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_font_color"
-            android:layout_weight="1" />
+            android:src="@drawable/icon_font_color" />
 
         <ImageView
             android:id="@+id/iv_font_increase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/icon_font_incre"
-            android:src="@drawable/icon_font_size_increase"
-            android:layout_weight="1" />
+            android:src="@drawable/icon_font_size_increase" />
 
         <ImageView
             android:id="@+id/iv_font_decrease"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/icon_font_decre"
-            android:src="@drawable/icon_font_size_decrease"
-            android:layout_weight="1" />
+            android:src="@drawable/icon_font_size_decrease" />
 
         <ImageView
             android:id="@+id/iv_camera"
@@ -75,8 +70,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/widget_photo"
             android:background="@drawable/icon_camera"
-            android:clickable="true"
-            android:layout_weight="1" />
+            android:clickable="true" />
 
         <ImageView
             android:id="@+id/iv_photo"
@@ -84,8 +78,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/icon_action_move_gray"
             android:background="@drawable/icon_photo"
-            android:clickable="true"
-            android:layout_weight="1" />
+            android:clickable="true" />
     </LinearLayout>
 
 </RelativeLayout>

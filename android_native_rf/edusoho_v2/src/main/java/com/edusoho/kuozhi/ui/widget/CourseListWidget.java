@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.view.EdusohoListView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-10.

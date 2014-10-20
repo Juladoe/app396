@@ -1,36 +1,26 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
-import android.widget.ListAdapter;
-import android.widget.RelativeLayout;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.HorizontalCourseListAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
-import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-10.

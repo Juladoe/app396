@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;

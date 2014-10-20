@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.view.PointLayout;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.OutlineContainer;

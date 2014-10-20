@@ -5,11 +5,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -18,10 +16,10 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
@@ -33,12 +31,9 @@ import com.edusoho.kuozhi.util.AppUtil;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.LockSupport;
 
 import cn.trinea.android.common.util.FileUtils;
 
@@ -152,8 +147,12 @@ public class DownLoadService extends Service {
     }
 
     private void downLoadFile() {
-        Log.d(null, "file->" + mFileUrl);
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mFileUrl));
+        Uri uri = Uri.parse(mFileUrl);
+        if (uri == null) {
+            Toast.makeText(this, "资源下载地址不存在！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setAllowedOverRoaming(false);
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();

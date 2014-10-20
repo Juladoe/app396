@@ -88,7 +88,14 @@
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="2dp"
                 android:textColor="@color/question_lesson"
+                android:visibility="gone"
                 android:text="教师回复了一个答案A教师回复了一个答案A教师回复了一个答案A教师回复了一个答案" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_reply_content" />
 
             <ImageView
                 android:layout_width="wrap_content"

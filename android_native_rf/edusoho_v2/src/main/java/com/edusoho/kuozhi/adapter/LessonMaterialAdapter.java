@@ -1,27 +1,16 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.media.Image;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
-import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.LessonMaterial;
 import com.edusoho.kuozhi.model.MaterialType;
-import com.edusoho.kuozhi.model.Teacher;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 
 import java.util.ArrayList;

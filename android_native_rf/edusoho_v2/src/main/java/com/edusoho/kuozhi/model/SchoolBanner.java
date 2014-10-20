@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.model;
 
 
-import com.edusoho.kuozhi.R;
-
 /**
  * Created by howzhi on 14-8-7.
  */

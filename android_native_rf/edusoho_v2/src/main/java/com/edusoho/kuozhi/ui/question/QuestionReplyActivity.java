@@ -9,6 +9,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.androidquery.callback.AjaxStatus;
@@ -43,6 +44,10 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         richFragment = new RichTextBoxFragment();
+        byte[] itemArgs = new byte[]{View.VISIBLE, View.VISIBLE, View.VISIBLE, View.GONE, View.VISIBLE, View.VISIBLE, View.VISIBLE};
+        Bundle bundle = new Bundle();
+        bundle.putByteArray(Const.RICH_ITEM_AGRS, itemArgs);
+        richFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.linear, richFragment);
         fragmentTransaction.commit();
     }

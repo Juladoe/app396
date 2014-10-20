@@ -1,22 +1,16 @@
 package com.edusoho.kuozhi.ui.common;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.course.FavoriteActivity;
-import com.edusoho.kuozhi.ui.course.LearningActivity;
-import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;

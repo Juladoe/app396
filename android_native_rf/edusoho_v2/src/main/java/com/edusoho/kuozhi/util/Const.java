@@ -250,6 +250,7 @@ public class Const {
     public static final String POST_ID = "post_id";
     public static final String QUESTION_CONTENT = "question_content";
     public static final String NORMAL_CONTENT = "content";
+    public static final String RICH_ITEM_AGRS = "rich_item_args";
 
     public static final String REQUEST_CODE = "reply_type";
 

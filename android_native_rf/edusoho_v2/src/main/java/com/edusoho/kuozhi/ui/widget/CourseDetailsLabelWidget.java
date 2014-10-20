@@ -3,8 +3,6 @@ package com.edusoho.kuozhi.ui.widget;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,15 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.EmptyAdapter;
-import com.edusoho.listener.NormalCallback;
-import com.edusoho.listener.ResultCallback;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by howzhi on 14-8-27.

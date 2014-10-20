@@ -1,18 +1,9 @@
 package com.edusoho.kuozhi.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.widget.TextView;
-
-import com.edusoho.kuozhi.R;
-
-import cn.trinea.android.common.util.ImageUtils;
 
 /**
  * Created by howzhi on 14-5-12.

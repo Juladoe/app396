@@ -1,7 +1,6 @@
 package com.howzhi;
 
 import android.view.View;
-import android.widget.ImageView;
 
 import com.edusoho.kuozhi.ui.SplashActivity;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;

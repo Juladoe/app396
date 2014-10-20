@@ -9,6 +9,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -27,11 +28,13 @@ public class URLImageGetter implements Html.ImageGetter {
     private View mContainer;
     private AQuery mAQuery;
     private Context mContext;
+    private ProgressBar mReplyImageLoading;
 
-    public URLImageGetter(View v, AQuery aQuery, Context context) {
+    public URLImageGetter(View v, AQuery aQuery, Context context, ProgressBar progressBar) {
         this.mContainer = v;
         this.mAQuery = aQuery;
         this.mContext = context;
+        this.mReplyImageLoading = progressBar;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class URLImageGetter implements Html.ImageGetter {
             source = QuestionDetailActivity.mHost + source;
         }
         //Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
-        MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer);
+        MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer, this.mReplyImageLoading);
         try {
             //Log.d(TAG, "aQuery.id(R.id.iv_tmp)-->" + source);
             //AQuery mAquery = new AQuery(mActivity);
@@ -57,17 +60,22 @@ public class URLImageGetter implements Html.ImageGetter {
         private URLDrawable mURLDrawable;
         private String mURL;
         private View mContainer;
+        private ProgressBar mReplyImageLoading;
 
-        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v) {
+        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v, ProgressBar progressBar) {
             this.mURLDrawable = d;
             this.mURL = sourceUrl;
             this.mContainer = v;
+            this.mReplyImageLoading = progressBar;
         }
 
         @Override
         protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
             Log.d(TAG, "callback-->" + url);
             Bitmap bitmap = URLImageGetter.this.mAQuery.getCachedImage(mURL);
+
+            this.mReplyImageLoading.setVisibility(View.GONE);
+            this.mContainer.setVisibility(View.VISIBLE);
 
             float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
             float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;

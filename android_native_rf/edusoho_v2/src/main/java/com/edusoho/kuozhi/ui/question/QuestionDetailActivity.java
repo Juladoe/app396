@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -55,8 +56,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     public static String mHost = "";
 
-    //private Button btnQuestionEdit;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,18 +64,12 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         mActivity = this;
         initView();
         mHost = this.app.host;
+
     }
 
     private void initView() {
         mAQuery = new AQuery(this);
 
-//        btnQuestionEdit = (Button) findViewById(R.id.edu_btn_question_edit);
-//        btnQuestionEdit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(QuestionDetailActivity.this, "123", 500).show();
-//            }
-//        });
         mThreadId = getIntent().getIntExtra(Const.THREAD_ID, 0);
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
 
@@ -160,7 +153,12 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 mAQuery.id(R.id.tv_post_date).text(AppUtil.getPostDays(qdModel.createdTime));
                 mAQuery.id(R.id.post_title).text(qdModel.title);
                 TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
-                URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext);
+                ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
+                if (!qdModel.content.contains("img src")) {
+                    contentLoading.setVisibility(View.GONE);
+                    tvContent.setVisibility(View.VISIBLE);
+                }
+                URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext, contentLoading);
                 tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
 
                 //mAQuery.id(R.id.htv_post_content).text(Html.fromHtml(AppUtil.removeHtml(qdModel.content)));
@@ -210,7 +208,12 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 if (data != null) {
                     QuestionDetailModel qdModel = (QuestionDetailModel) data.getSerializableExtra(Const.QUESTION_EDIT_RESULT);
                     TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
-                    URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext);
+                    ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
+                    if (!qdModel.content.contains("img src")) {
+                        contentLoading.setVisibility(View.GONE);
+                        tvContent.setVisibility(View.VISIBLE);
+                    }
+                    URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext, contentLoading);
                     tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
                 }
                 break;

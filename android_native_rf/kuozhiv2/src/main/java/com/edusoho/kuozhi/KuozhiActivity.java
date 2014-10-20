@@ -11,7 +11,6 @@ import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-
 import com.edusoho.kuozhi.ui.SplashActivity;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.util.Const;

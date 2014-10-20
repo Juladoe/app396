@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.LearnLessonListAdapter;
 import com.edusoho.kuozhi.adapter.lesson.LessonEmptyAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;

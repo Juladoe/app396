@@ -1,29 +1,16 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.CourseResult;
-import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolAnnouncement;
 import com.edusoho.kuozhi.model.SchoolBanner;
 import com.edusoho.kuozhi.ui.course.CourseListActivity;
@@ -36,7 +23,6 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**

@@ -25,7 +25,6 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.core.model.PluginModel;
 import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -37,7 +36,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 

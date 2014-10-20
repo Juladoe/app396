@@ -5,8 +5,6 @@ import android.content.Context;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -19,7 +17,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.model.*;
 import com.edusoho.kuozhi.model.Error;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;

@@ -1,19 +1,13 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.widget.testpaper.QuestionWidget;

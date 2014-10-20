@@ -119,7 +119,7 @@ public class BdPlayerManager {
         public void success(String dirPath);
     }
 
-    private interface CheckPlayerVersionCallback
+    public interface CheckPlayerVersionCallback
     {
         public void success();
         public void fail();

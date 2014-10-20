@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,6 +142,7 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         TextView tvReplyTime = AppUtil.getViewHolder(convertView, R.id.tv_reply_time);
         HtmlTextView tvReplyContent = AppUtil.getViewHolder(convertView, R.id.tv_reply_content);
         ImageView ivEdit = AppUtil.getViewHolder(convertView, R.id.iv_reply_edit);
+        ProgressBar pbReplyContent = AppUtil.getViewHolder(convertView, R.id.pb_reply_content);
         tvReplyName.setText(entireReply.replyModel.user.nickname);
 
         if (tvReplyName.getText().equals(mUser.nickname)) {
@@ -185,12 +187,16 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
             tvReplyName.setTextColor(mContext.getResources().getColor(R.color.question_lesson));
         }
 
-        URLImageGetter urlImageGetter = new URLImageGetter(tvReplyContent, mAqueryItem, mContext);
+        if (!entireReply.replyModel.content.contains("img src")) {
+            pbReplyContent.setVisibility(View.GONE);
+            tvReplyContent.setVisibility(View.VISIBLE);
+        }
+
+        URLImageGetter urlImageGetter = new URLImageGetter(tvReplyContent, mAqueryItem, mContext, pbReplyContent);
         Log.d(TAG, "Html.fromHtml-->" + entireReply.replyModel.content);
-        //Html.fromHtml方法不知道为什么会会产生'\n\n'，所以去掉
+        //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
         //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
-        tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content),
-                urlImageGetter, null)));
+        tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null)));
         Log.d("tvReplyContent--->", tvReplyContent.getText().toString());
 
         return convertView;

@@ -1,11 +1,8 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;

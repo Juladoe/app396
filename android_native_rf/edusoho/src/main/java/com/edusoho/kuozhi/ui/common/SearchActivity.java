@@ -14,17 +14,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoListView;
-import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.listener.CourseListScrollListener;
-import com.edusoho.listener.MoveListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;

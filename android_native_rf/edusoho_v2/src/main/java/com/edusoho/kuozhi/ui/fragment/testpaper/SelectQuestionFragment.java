@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.ui.fragment.testpaper;
 
-import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.Spanned;

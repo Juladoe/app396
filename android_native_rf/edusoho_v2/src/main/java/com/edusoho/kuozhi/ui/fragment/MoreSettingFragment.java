@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -15,7 +14,6 @@ import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EduUpdateView;
-import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 
@@ -113,7 +111,7 @@ public class MoreSettingFragment extends BaseFragment {
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startAcitivity("QrSchoolActivity", null);
+                app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
             }
         });
 

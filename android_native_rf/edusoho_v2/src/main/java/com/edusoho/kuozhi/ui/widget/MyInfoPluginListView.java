@@ -21,7 +21,6 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-14.

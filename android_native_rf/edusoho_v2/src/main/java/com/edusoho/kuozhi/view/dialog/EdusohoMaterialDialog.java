@@ -2,25 +2,13 @@ package com.edusoho.kuozhi.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.text.Html;
-import android.text.Spannable;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewStub;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.model.Category;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-7.

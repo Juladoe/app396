@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.util;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -38,11 +36,11 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.StatusCallback;
@@ -79,7 +77,7 @@ public class AppUtil {
     public static void getImage(
             Context context, String url, final NormalCallback<Bitmap> callback) {
         AQuery aQuery = new AQuery(context);
-        AjaxCallback<byte[]> ajaxCallback = new AjaxCallback<byte[]>(){
+        AjaxCallback<byte[]> ajaxCallback = new AjaxCallback<byte[]>() {
             @Override
             public void callback(String url, byte[] object, AjaxStatus status) {
                 super.callback(url, object, status);
@@ -103,13 +101,12 @@ public class AppUtil {
         aQuery.ajax(url, byte[].class, 60 * 60, ajaxCallback);
     }
 
-    public static Bitmap getBitmapFromFile(File file)
-    {
+    public static Bitmap getBitmapFromFile(File file) {
         Bitmap bitmap = null;
         BitmapFactory.Options option = new BitmapFactory.Options();
         option.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(file.getAbsolutePath(), option);
-        int width =(int) (EdusohoApp.screenW * 0.5f);
+        int width = (int) (EdusohoApp.screenW * 0.5f);
         option.inSampleSize = computeSampleSize(option, -1, width * width);
         option.inJustDecodeBounds = false;
         try {
@@ -597,11 +594,15 @@ public class AppUtil {
 
     /**
      * 去掉由于Html.fromHtml产生的'\n'
+     *
      * @param spanned
      * @return
      */
     public static CharSequence setHtmlContent(Spanned spanned) {
-        return spanned.subSequence(0, spanned.length() - 2);
+        if (spanned.length() > 2 && spanned.subSequence(spanned.length() - 2, spanned.length()).toString().equals("\n\n")) {
+            return spanned.subSequence(0, spanned.length() - 2);
+        }
+        return spanned;
     }
 
     public static int computeSampleSize(
@@ -638,19 +639,17 @@ public class AppUtil {
         }
     }
 
-    public static int getNumberLength(int number)
-    {
+    public static int getNumberLength(int number) {
         int length = 1;
         while (number >= 10) {
-            length ++;
+            length++;
             number = number / 10;
         }
 
         return length;
     }
 
-    public static SpannableString getColorTextAfter(String text, String newStr, int color)
-    {
+    public static SpannableString getColorTextAfter(String text, String newStr, int color) {
         StringBuffer stringBuffer = new StringBuffer(text);
         int start = stringBuffer.length();
         stringBuffer.append(newStr);
@@ -660,8 +659,7 @@ public class AppUtil {
         return spannableString;
     }
 
-    public static SpannableString getColorTextBefore(String text, String newStr, int color)
-    {
+    public static SpannableString getColorTextBefore(String text, String newStr, int color) {
         StringBuffer stringBuffer = new StringBuffer(text);
         int start = stringBuffer.length();
         stringBuffer.append(newStr);
@@ -671,8 +669,7 @@ public class AppUtil {
         return spannableString;
     }
 
-    public static Intent getViewFileIntent(File file)
-    {
+    public static Intent getViewFileIntent(File file) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -687,15 +684,20 @@ public class AppUtil {
     }
 
     public static void checkUpateApp(
-            ActionBarBaseActivity activity, final StatusCallback<AppUpdateInfo> callback)
-    {
+            ActionBarBaseActivity activity, final StatusCallback<AppUpdateInfo> callback) {
         final EdusohoApp app = activity.app;
         RequestUrl requestUrl = app.bindUrl(Const.APP_UPDATE, false);
+        String code = activity.getResources().getString(R.string.app_code);
+        requestUrl.setParams(new String[]{
+                "code", code
+        });
+        Log.d(null, "code->" + code);
         activity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
-                        object, new TypeToken<AppUpdateInfo>(){}.getType());
+                        object, new TypeToken<AppUpdateInfo>() {
+                }.getType());
 
                 if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
                     return;
@@ -761,7 +763,7 @@ public class AppUtil {
                 }
 
                 final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
+                final String[] selectionArgs = new String[]{
                         split[1]
                 };
 
@@ -789,9 +791,9 @@ public class AppUtil {
      * Get the value of the data column for this Uri. This is useful for
      * MediaStore Uris, and other file-based ContentProviders.
      *
-     * @param context The context.
-     * @param uri The Uri to query.
-     * @param selection (Optional) Filter used in the query.
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */

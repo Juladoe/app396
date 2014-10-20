@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.TokenResult;
 import com.edusoho.kuozhi.model.School;
@@ -18,7 +17,6 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.LoginFragment;
 import com.edusoho.kuozhi.ui.fragment.RegistFragment;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;

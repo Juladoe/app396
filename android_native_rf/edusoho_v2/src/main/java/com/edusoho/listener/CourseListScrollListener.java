@@ -1,20 +1,15 @@
 package com.edusoho.listener;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
-import com.edusoho.kuozhi.ui.course.CourseInfoActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoListView;
 
 /**
  *

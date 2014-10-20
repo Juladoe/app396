@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui.common;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
@@ -24,20 +23,17 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecommendSchoolAdapter;
 import com.edusoho.kuozhi.entity.RecommendSchoolItem;
-import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoListView;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.view.dialog.PopupLoaingDialog;
-import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.SchoolListClickListener;
 import com.edusoho.plugin.photo.SchoolSplashActivity;

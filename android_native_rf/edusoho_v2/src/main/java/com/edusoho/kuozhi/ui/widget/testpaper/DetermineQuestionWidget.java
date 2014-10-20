@@ -1,13 +1,10 @@
 package com.edusoho.kuozhi.ui.widget.testpaper;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,7 +12,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
-import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;

@@ -1,7 +1,6 @@
 
 package com.edusoho.plugin.photo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 
 import java.util.ArrayList;
 

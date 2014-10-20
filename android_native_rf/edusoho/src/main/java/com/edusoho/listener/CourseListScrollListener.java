@@ -9,10 +9,7 @@ import android.widget.AdapterView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.ui.BaseActivity;
-import com.edusoho.kuozhi.ui.course.CourseInfoActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoListView;
 
 /**
  *

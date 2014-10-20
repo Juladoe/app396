@@ -3,11 +3,8 @@ package com.edusoho.kuozhi.ui.widget;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +12,11 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListAdapter;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.view.FixHeightScrollView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
-import com.huewu.pla.lib.internal.PLA_AdapterView;
-
-import me.maxwin.view.XListView;
 
 /**
  * Created by howzhi on 14-9-16.

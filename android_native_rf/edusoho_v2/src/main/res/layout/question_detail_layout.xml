@@ -38,7 +38,8 @@
             android:orientation="vertical"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:layout_toRightOf="@+id/civ_post_pic">
+            android:layout_toRightOf="@+id/civ_post_pic"
+            android:id="@+id/relativeLayout">
 
             <TextView
                 android:id="@+id/tv_post_name"
@@ -51,37 +52,40 @@
                 android:id="@+id/tv_post_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:layout_marginTop="8dp"
                 android:layout_below="@+id/tv_post_name" />
 
-            <!--<com.edusoho.kuozhi.view.EdusohoButton-->
+            <com.edusoho.kuozhi.view.EdusohoButton
+                android:id="@+id/edu_btn_question_edit"
+                android:textSize="@dimen/question_edit_button_font"
+                app:borderColor="#FFFFFF"
+                app:borderWidth="0dp"
+                app:defaultColor="@color/lesson_resouce_btn_normal"
+                app:focusColor="@color/lesson_resouce_btn_pressed"
+                app:iconPosition="right"
+                app:radius="3dp"
+                app:textStr="编辑"
+                app:textColor="#FFFFFF"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+            <!--<Button-->
             <!--android:id="@+id/edu_btn_question_edit"-->
             <!--android:textSize="14sp"-->
-            <!--app:borderColor="#FFFFFF"-->
-            <!--app:borderWidth="0dp"-->
-            <!--app:defaultColor="@color/lesson_resouce_btn_normal"-->
-            <!--app:focusColor="@color/lesson_resouce_btn_pressed"-->
-            <!--app:iconPosition="right"-->
-            <!--app:radius="3dp"-->
-            <!--app:textStr="编辑"-->
-
-            <!--app:textColor="#FFFFFF"-->
-            <!--android:clickable="true"-->
+            <!--android:text="编辑"-->
+            <!--android:textColor="#FFFFFF"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_alignParentRight="true"-->
             <!--android:layout_centerVertical="true" />-->
-
-            <Button
-                android:id="@+id/edu_btn_question_edit"
-                android:textSize="14sp"
-                android:text="编辑"
-                android:textColor="#FFFFFF"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
 
         </RelativeLayout>
 
@@ -101,7 +105,16 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
             android:layout_marginTop="15dp"
+            android:visibility="gone"
             android:textColor="@color/question_lesson" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pb_content"
+            android:layout_below="@+id/post_title" />
+
     </RelativeLayout>
 
     <LinearLayout

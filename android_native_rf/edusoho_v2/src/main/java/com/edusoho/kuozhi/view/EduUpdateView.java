@@ -5,22 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.edusoho.kuozhi.R;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import cn.trinea.android.common.util.ImageUtils;
 
 /**
  * Created by howzhi on 14-9-5.

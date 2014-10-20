@@ -3,18 +3,14 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.MessageEngine;
-import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -22,10 +18,8 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.lang.reflect.Field;
-import java.util.WeakHashMap;
 
 /**
  * Created by howzhi on 14-8-7.

@@ -12,10 +12,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 
 public class StartActivity extends BaseActivity {
 

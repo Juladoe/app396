@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import com.edusoho.kuozhi.model.LearnCourse;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class LearnCourseListAdapter extends BaseAdapter {

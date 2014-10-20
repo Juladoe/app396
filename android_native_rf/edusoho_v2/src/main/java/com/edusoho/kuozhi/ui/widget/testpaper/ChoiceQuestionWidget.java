@@ -3,10 +3,7 @@ package com.edusoho.kuozhi.ui.widget.testpaper;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
@@ -20,10 +17,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.QuestionType;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
-import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
-import com.edusoho.kuozhi.util.AppUtil;
-import com.edusoho.kuozhi.view.EduSohoTextBtn;
 
 import java.util.ArrayList;
 

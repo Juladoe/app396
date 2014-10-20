@@ -2,8 +2,6 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,12 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.plugin.video.CustomMediaController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

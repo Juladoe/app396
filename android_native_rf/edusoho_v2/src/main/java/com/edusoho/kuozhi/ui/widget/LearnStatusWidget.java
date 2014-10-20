@@ -2,29 +2,20 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CategoryListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Category;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.LasterLearnStatus;
-import com.edusoho.kuozhi.model.LearnCourse;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
@@ -32,9 +23,6 @@ import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-14.

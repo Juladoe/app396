@@ -3,7 +3,6 @@ package com.howzhi;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RatingBar;
 import com.edusoho.kuozhi.model.Review;
 

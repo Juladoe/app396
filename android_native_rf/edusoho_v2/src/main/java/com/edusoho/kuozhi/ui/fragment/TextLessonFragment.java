@@ -1,11 +1,9 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -14,9 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
-import com.edusoho.plugin.photo.ViewPagerActivity;
 
 /**
  * Created by howzhi on 14-9-15.

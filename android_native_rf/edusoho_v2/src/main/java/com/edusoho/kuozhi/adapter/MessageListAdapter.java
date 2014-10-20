@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.Notify;
 
 
