@@ -283,6 +283,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(null, "bd fragment create");
         mContext = getActivity();
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);

@@ -58,19 +58,19 @@ public class CourseFragment extends BaseFragment {
         mLoadView = view.findViewById(R.id.load_layout);
         mCourseListView =(CourseRefreshListWidget) view.findViewById(R.id.course_liseview);
         mCourseListView.setMode(PullToRefreshBase.Mode.BOTH);
-        mCourseListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        mCourseListView.setUpdateListener(new CourseRefreshListWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadCourseFromNet(0, false);
-            }
-
-            @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void update(PullToRefreshBase<ListView> refreshView) {
                 Integer startPage = (Integer) mCourseListView.getTag();
                 if (startPage == null) {
                     return;
                 }
                 loadCourseFromNet(startPage, true);
+            }
+
+            @Override
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadCourseFromNet(0, false);
             }
         });
 
@@ -121,11 +121,12 @@ public class CourseFragment extends BaseFragment {
 
                 CourseListAdapter adapter = (CourseListAdapter) mCourseListView.getAdapter();
                 if (adapter != null && isAppend) {
-                    Log.d(null, "add->" + courseResult);
-                    adapter.addItem(courseResult);
+                    Log.d(null, "add->" + courseResult.data);
+                    adapter.addItems(courseResult.data);
                 } else {
                     adapter = new CourseListAdapter(
-                            mActivity, courseResult, R.layout.recommend_school_list_item);
+                            mContext, R.layout.recommend_school_list_item);
+                    adapter.setItems(courseResult.data);
                     mCourseListView.setAdapter(adapter);
                 }
 

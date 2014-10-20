@@ -24,7 +24,6 @@ public class KuozhiActivity extends BaseActivity {
         mActivity = this;
         Crashlytics.start(this);
         initApp();
-        //test
     }
 
     @Override

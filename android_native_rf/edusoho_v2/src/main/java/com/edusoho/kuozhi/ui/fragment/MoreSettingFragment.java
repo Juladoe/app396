@@ -58,7 +58,7 @@ public class MoreSettingFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(AboutFragment.URL, url);
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, "关于网校");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, getResources().getString(R.string.school_about));
             }
         });
     }

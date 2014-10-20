@@ -77,7 +77,7 @@
             android:paddingTop="18dp"
             android:paddingBottom="17dp"
             android:textSize="@dimen/more_setting_text"
-            android:text="关于网校"
+            android:text="@string/school_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

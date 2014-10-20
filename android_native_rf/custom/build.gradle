@@ -17,6 +17,13 @@ android {
         minSdkVersion 9
         targetSdkVersion 19
     }
+
+    productFlavors {
+        edianshang {
+            packageName "com.edusoho_edianshang.kuozhi"
+        }
+    }
+
 }
 
 dependencies {
