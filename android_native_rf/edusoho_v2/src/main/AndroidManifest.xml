@@ -54,10 +54,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.course.SchoolCourseActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.course.CourseInfoActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
@@ -90,11 +86,6 @@
         <activity
             android:name=".ui.common.QrSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.common.SearchActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.plugin.qr.CaptureActivity"

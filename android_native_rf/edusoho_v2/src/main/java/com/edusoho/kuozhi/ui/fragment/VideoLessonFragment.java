@@ -1,18 +1,23 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.plugin.video.CustomMediaController;
@@ -27,6 +32,8 @@ public class VideoLessonFragment extends BaseFragment {
 
     private VideoView mVideoView;
     private Timer hideLoadTimer;
+    private MediaPlayer mMediaPlayer;
+    private boolean isPlayed;
 
     public static final int HIDE_LOADING = 0001;
 
@@ -81,12 +88,14 @@ public class VideoLessonFragment extends BaseFragment {
             @Override
             public void onPrepared(final MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
+                mMediaPlayer = mediaPlayer;
                 mVideoView.requestLayout();
                 mMediaController.ready();
                 hideLoadTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         if (mediaPlayer.isPlaying()) {
+                            isPlayed = true;
                             hideLoadTimer.cancel();
                             workHandler.obtainMessage(HIDE_LOADING).sendToTarget();
                         }
@@ -98,13 +107,25 @@ public class VideoLessonFragment extends BaseFragment {
         mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
-                if (Build.VERSION.SDK_INT < 19) {
-                    //EdusohoApp.app.sendMessage(EdusohoVideoManagerActivity.SUPPORTMAP_CHANGE, new MessageModel(null));
-                } else {
-                    PopupDialog.createNormal(
-                            mActivity, "视频播放", "不好意思～此视频不能在该设备上播放，请联系网站管理员！").show();
-                }
+                Log.d(null, "play error-> " + i + "  -> " + i2);
                 mLoadView.setVisibility(View.GONE);
+                Log.d(null, "isPlayed> " + isPlayed);
+                if (isPlayed) {
+                    showErrorDialog();
+                    return true;
+                }
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                Fragment fragment = app.mEngine.runPluginWithFragment(
+                        "BDVideoLessonFragment", mActivity, new PluginFragmentCallback() {
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putString(Const.MEDIA_URL, mUri.toString());
+                    }
+                });
+                fragmentTransaction.replace(R.id.lesson_content, fragment);
+                fragmentTransaction.setCustomAnimations(
+                        FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                fragmentTransaction.commit();
                 return true;
             }
         });
@@ -115,6 +136,18 @@ public class VideoLessonFragment extends BaseFragment {
                 mMediaController.stop(mediaPlayer);
             }
         });
+    }
+
+    private void showErrorDialog()
+    {
+        PopupDialog popupDialog = PopupDialog.createNormal(mActivity, "播放提示", "该课时视频不能播放");
+        popupDialog.setOkListener(new PopupDialog.PopupClickListener() {
+            @Override
+            public void onClick(int button) {
+                getActivity().finish();
+            }
+        });
+        popupDialog.show();
     }
 
     private View mLoadView;
@@ -140,7 +173,7 @@ public class VideoLessonFragment extends BaseFragment {
         // Stop video when the activity is pause.
         mPositionWhenPaused = mVideoView.getCurrentPosition();
         mMediaController.pause();
-
+        mVideoView.pause();
         super.onPause();
     }
 
@@ -163,7 +196,9 @@ public class VideoLessonFragment extends BaseFragment {
             autoHideTimer.cancel();
         }
         mMediaController.destory();
-        mVideoView.pause();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+        }
         mVideoView = null;
         hideLoadTimer = null;
     }

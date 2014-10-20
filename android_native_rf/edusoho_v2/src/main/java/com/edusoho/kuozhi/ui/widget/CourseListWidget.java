@@ -23,7 +23,6 @@ import com.google.gson.reflect.TypeToken;
 
 public class CourseListWidget extends LinearLayout {
 
-    private int showNum;
     private boolean isShowMoreBtn;
     private boolean isFullHeight;
     private Context mContext;
@@ -121,7 +120,7 @@ public class CourseListWidget extends LinearLayout {
             return;
         }
         CourseListAdapter adapter = (CourseListAdapter) mEdusohoListView.getAdapter();
-        adapter.setItems(courseResult);
+        adapter.addItems(courseResult.data);
     }
 
     private void parseRequestData(ActionBarBaseActivity mActivity, String object)
@@ -135,7 +134,8 @@ public class CourseListWidget extends LinearLayout {
             return;
         }
         CourseListAdapter adapter = new CourseListAdapter(
-                mActivity, courseResult, R.layout.recommend_school_list_item);
+                mActivity, R.layout.recommend_school_list_item);
+        adapter.addItems(courseResult.data);
         mEdusohoListView.setAdapter(adapter);
         if (isFullHeight) {
             mEdusohoListView.initListHeight();

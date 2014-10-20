@@ -24,7 +24,6 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -211,27 +210,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 }
             }
         });
-    }
-
-    private void enterSchool(final School site)
-    {
-        StringBuilder message = new StringBuilder("正在进入...");
-        message.append(site.name);
-
-        PopupLoaingDialog.create(
-                mContext,
-                "搜索结果",
-                message.toString(),
-                new PopupLoaingDialog.PopupCallback() {
-                    @Override
-                    public void success() {
-                        app.setCurrentSchool(site);
-                        Intent courseIntent = new Intent(mContext,
-                                SchoolCourseActivity.class);
-                        startActivity(courseIntent);
-                        finish();
-                    }
-                }).show();
     }
 
     private void showSchSplash(String schoolName, String[] splashs)

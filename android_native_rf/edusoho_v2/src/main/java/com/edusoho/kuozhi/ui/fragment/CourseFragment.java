@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -13,7 +12,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.course.CourseListActivity;
-import com.edusoho.kuozhi.ui.widget.CourseRefreshListWidget;
+import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
@@ -27,8 +26,8 @@ import java.util.HashMap;
  */
 public class CourseFragment extends BaseFragment {
 
-    public static final String TITLE = "title";
-    private CourseRefreshListWidget mCourseListView;
+    public static final String TITLE = "标题";
+    private RefreshListWidget mCourseListView;
     private View mLoadView;
 
     private int mCategoryId;
@@ -56,21 +55,18 @@ public class CourseFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         mLoadView = view.findViewById(R.id.load_layout);
-        mCourseListView =(CourseRefreshListWidget) view.findViewById(R.id.course_liseview);
-        mCourseListView.setMode(PullToRefreshBase.Mode.BOTH);
-        mCourseListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        mCourseListView =(RefreshListWidget) view.findViewById(R.id.course_liseview);
+        mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mCourseListView.setAdapter(new CourseListAdapter(mContext, R.layout.recommend_school_list_item));
+        mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadCourseFromNet(0, false);
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                loadCourseFromNet(mCourseListView.getStart());
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                Integer startPage = (Integer) mCourseListView.getTag();
-                if (startPage == null) {
-                    return;
-                }
-                loadCourseFromNet(startPage, true);
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadCourseFromNet(0);
             }
         });
 
@@ -93,12 +89,11 @@ public class CourseFragment extends BaseFragment {
             baseUrl = Const.LASTEST_COURSES;
         }
 
-        loadCourseFromNet(0, false);
+        loadCourseFromNet(0);
     }
 
-    private void loadCourseFromNet(int start, final boolean isAppend)
+    private void loadCourseFromNet(int start)
     {
-        Log.d(null, "baseUrl->" + baseUrl);
         RequestUrl url = app.bindUrl(baseUrl, true);
         HashMap<String, String> params = url.getParams();
         params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");
@@ -119,22 +114,8 @@ public class CourseFragment extends BaseFragment {
                     return;
                 }
 
-                CourseListAdapter adapter = (CourseListAdapter) mCourseListView.getAdapter();
-                if (adapter != null && isAppend) {
-                    Log.d(null, "add->" + courseResult);
-                    adapter.addItem(courseResult);
-                } else {
-                    adapter = new CourseListAdapter(
-                            mActivity, courseResult, R.layout.recommend_school_list_item);
-                    mCourseListView.setAdapter(adapter);
-                }
-
-                int start = courseResult.start + Const.LIMIT;
-                if (start < courseResult.total) {
-                    mCourseListView.setTag(start);
-                } else {
-                    mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-                }
+                mCourseListView.pushData(courseResult.data);
+                mCourseListView.setStart(courseResult.start, courseResult.total);
             }
         });
     }

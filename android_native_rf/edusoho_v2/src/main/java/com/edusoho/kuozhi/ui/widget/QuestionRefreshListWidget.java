@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.adapter.QuestionListAdapter;
  * Created by hby on 14-9-16.
  * 问题列表List
  */
-public class QuestionRefreshListWidget extends CourseRefreshListWidget {
+public class QuestionRefreshListWidget extends RefreshListWidget {
     private Context mContext;
     private QuestionListAdapter mAdapter;
 

@@ -1,10 +1,8 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -17,32 +15,16 @@ import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
 
-public class ReviewListAdapter extends BaseAdapter {
+public class ReviewListAdapter extends ListBaseAdapter<Review> {
 
-    public Review loginUserComment;
-    public int mLoginUserReviewIndex = -1;
-	private LayoutInflater inflater;
-	private int mResouce;
-	private Context mContext;
-	private ArrayList<Review> mList;
-
-	public ReviewListAdapter(Context context, ArrayList<Review> list, int resource) {
-		mList = list == null ? new ArrayList<Review>() : list;
-		mContext = context;
-		mResouce = resource;
-		inflater = LayoutInflater.from(context);
+	public ReviewListAdapter(Context context,  int resource) {
+		super(context, resource);
 	}
 
-    public void addItem(ArrayList<Review> list)
-    {
+    @Override
+    public void addItems(ArrayList<Review> list) {
         mList.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void setData(ArrayList<Review> list)
-    {
-        mList.clear();
-        addItem(list);
     }
 
 	@Override
