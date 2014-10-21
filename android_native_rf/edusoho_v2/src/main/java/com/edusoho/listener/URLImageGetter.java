@@ -49,7 +49,7 @@ public class URLImageGetter implements Html.ImageGetter {
             //Log.d(TAG, "aQuery.id(R.id.iv_tmp)-->" + source);
             //AQuery mAquery = new AQuery(mActivity);
             Log.d(TAG, "myBitmapAjaxCallback.mURL-- >" + myBitmapAjaxCallback.mURL);
-            this.mAQuery.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
+            this.mAQuery.id(R.id.iv_tmp).image(source, false, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
         } catch (Exception ex) {
             Log.d("imageURL--->", ex.toString());
         }
@@ -72,6 +72,7 @@ public class URLImageGetter implements Html.ImageGetter {
         @Override
         protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
             Log.d(TAG, "callback-->" + url);
+
             Bitmap bitmap = URLImageGetter.this.mAQuery.getCachedImage(mURL);
 
             this.mReplyImageLoading.setVisibility(View.GONE);

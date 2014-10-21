@@ -46,24 +46,19 @@ import java.util.List;
  * Created by hby on 14-9-18.
  * 回复List适配器
  */
-public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
+public class QuestionReplyListAdapter extends ListBaseAdapter {
     private static final String TAG = "QuestionReplyListAdapter";
-    public Context mContext;
     private Activity mActivity;
     private List<EntireReply> mEntireReplyList;
-    private int mRecourseId;
     private User mUser;
 
     private List<EntireReply> mTeacherReplyList;
     private List<EntireReply> mNormalReplyList;
 
-    private AQuery mAqueryItem;
-
     public QuestionReplyListAdapter(Context context, Activity activity, ReplyResult replyResult, int layoutId, User user) {
+        super(context, layoutId);
         mEntireReplyList = new ArrayList<EntireReply>();
-        this.mContext = context;
         this.mActivity = activity;
-        this.mRecourseId = layoutId;
         this.mUser = user;
         listAddItem(replyResult.data);
     }
@@ -101,7 +96,6 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         }
         mEntireReplyList.addAll(mTeacherReplyList);
         mEntireReplyList.addAll(mNormalReplyList);
-        Log.d(TAG, "----------------");
     }
 
     public void clearAdapter() {
@@ -130,26 +124,29 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d("getView()", String.valueOf(position));
+        ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.mContext).inflate(mRecourseId, null);
-            mAqueryItem = new AQuery(convertView);
+            convertView = LayoutInflater.from(this.mContext).inflate(mRecourse, null);
+            holder = new ViewHolder();
+            holder.tvReplyType = (TextView) convertView.findViewById(R.id.tv_reply_type);
+            holder.tvReplyName = (TextView) convertView.findViewById(R.id.tv_reply_name);
+            holder.tvReplyTime = (TextView) convertView.findViewById(R.id.tv_reply_time);
+            holder.tvReplyContent = (HtmlTextView) convertView.findViewById(R.id.tv_reply_content);
+            holder.ivEdit = (ImageView) convertView.findViewById(R.id.iv_reply_edit);
+            holder.pbReplyContent = (ProgressBar) convertView.findViewById(R.id.pb_reply_content);
+            holder.mAqueryItem = new AQuery(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
         final EntireReply entireReply = mEntireReplyList.get(position);
 
-        TextView tvReplyType = AppUtil.getViewHolder(convertView, R.id.tv_reply_type);
-        TextView tvReplyName = AppUtil.getViewHolder(convertView, R.id.tv_reply_name);
-        TextView tvReplyTime = AppUtil.getViewHolder(convertView, R.id.tv_reply_time);
-        HtmlTextView tvReplyContent = AppUtil.getViewHolder(convertView, R.id.tv_reply_content);
-        ImageView ivEdit = AppUtil.getViewHolder(convertView, R.id.iv_reply_edit);
-        ProgressBar pbReplyContent = AppUtil.getViewHolder(convertView, R.id.pb_reply_content);
-        tvReplyName.setText(entireReply.replyModel.user.nickname);
-
-        if (tvReplyName.getText().equals(mUser.nickname)) {
-            ivEdit.setVisibility(View.VISIBLE);
+        if (holder.tvReplyName.getText().equals(mUser.nickname)) {
+            holder.ivEdit.setVisibility(View.VISIBLE);
             //ivEdit.setOnClickListener(replyEditClickListener);
             //编辑回复
-            ivEdit.setOnClickListener(new View.OnClickListener() {
+            holder.ivEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent startIntent = new Intent(mContext, QuestionReplyActivity.class);
@@ -162,44 +159,65 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
                 }
             });
         } else {
-            ivEdit.setVisibility(View.INVISIBLE);
+            holder.ivEdit.setVisibility(View.INVISIBLE);
         }
 
-        tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
+        holder.tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
 
         if (entireReply.replyModel.isElite == 1) {
             if (entireReply.isFirstReply) {
-                tvReplyType.setVisibility(View.VISIBLE);
-                tvReplyType.setText("教师的答案（" + String.valueOf(this.mTeacherReplyList.size()) + "条）：");
-                createDrawables(tvReplyType, R.drawable.recommend_week_label_icon);
+                holder.tvReplyType.setVisibility(View.VISIBLE);
+                holder.tvReplyType.setText("教师的答案（" + String.valueOf(this.mTeacherReplyList.size()) + "条）：");
+                createDrawables(holder.tvReplyType, R.drawable.recommend_week_label_icon);
             } else {
-                tvReplyType.setVisibility(View.GONE);
+                holder.tvReplyType.setVisibility(View.GONE);
             }
-            tvReplyName.setTextColor(mContext.getResources().getColor(R.color.teacher_reply));
+            holder.tvReplyName.setTextColor(mContext.getResources().getColor(R.color.teacher_reply));
         } else {
             if (entireReply.isFirstReply) {
-                tvReplyType.setVisibility(View.VISIBLE);
-                tvReplyType.setText("所有的回复（" + String.valueOf(this.mNormalReplyList.size()) + "条）：");
-                createDrawables(tvReplyType, R.drawable.normal_reply_tag);
+                holder.tvReplyType.setVisibility(View.VISIBLE);
+                holder.tvReplyType.setText("所有的回复（" + String.valueOf(this.mNormalReplyList.size()) + "条）：");
+                createDrawables(holder.tvReplyType, R.drawable.normal_reply_tag);
             } else {
-                tvReplyType.setVisibility(View.GONE);
+                holder.tvReplyType.setVisibility(View.GONE);
             }
-            tvReplyName.setTextColor(mContext.getResources().getColor(R.color.question_lesson));
+            holder.tvReplyName.setTextColor(mContext.getResources().getColor(R.color.question_lesson));
         }
 
         if (!entireReply.replyModel.content.contains("img src")) {
-            pbReplyContent.setVisibility(View.GONE);
-            tvReplyContent.setVisibility(View.VISIBLE);
+            holder.pbReplyContent.setVisibility(View.GONE);
+            holder.tvReplyContent.setVisibility(View.VISIBLE);
         }
 
-        URLImageGetter urlImageGetter = new URLImageGetter(tvReplyContent, mAqueryItem, mContext, pbReplyContent);
+        long startMili = System.currentTimeMillis();
+
+        URLImageGetter urlImageGetter = new URLImageGetter(holder.tvReplyContent, holder.mAqueryItem, mContext, holder.pbReplyContent);
         Log.d(TAG, "Html.fromHtml-->" + entireReply.replyModel.content);
         //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
         //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
-        tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null)));
-        Log.d("tvReplyContent--->", tvReplyContent.getText().toString());
+        holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content), urlImageGetter, null)));
+        Log.d("tvReplyContent--->", holder.tvReplyContent.getText().toString());
+
+        long endMili = System.currentTimeMillis();
+
+        Log.d("tvReplyContent--->总耗时为：", (endMili - startMili) + "毫秒");
 
         return convertView;
+    }
+
+    private static class ViewHolder {
+        public AQuery mAqueryItem;
+        public TextView tvReplyType;
+        public TextView tvReplyName;
+        public TextView tvReplyTime;
+        public HtmlTextView tvReplyContent;
+        public ImageView ivEdit;
+        public ProgressBar pbReplyContent;
+    }
+
+    @Override
+    public void addItems(ArrayList list) {
+
     }
 
     /**
@@ -212,71 +230,6 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         Drawable drawable = mContext.getResources().getDrawable(drawableId);
         tv.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
     }
-
-//    private class URLImageGetter implements Html.ImageGetter {
-//        private View mContainer;
-//        private AQuery mAQuery;
-//
-//        public URLImageGetter(View v, AQuery aQuery) {
-//            this.mContainer = v;
-//            this.mAQuery = aQuery;
-//        }
-//
-//        @Override
-//        public Drawable getDrawable(String source) {
-//            URLDrawable urlDrawable = new URLDrawable();
-//            if (!source.contains("http")) {
-//                source = QuestionDetailActivity.mHost + source;
-//            }
-//            //Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
-//            MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer);
-//            try {
-//                //Log.d(TAG, "aQuery.id(R.id.iv_tmp)-->" + source);
-//                //AQuery mAquery = new AQuery(mActivity);
-//                Log.d(TAG, "myBitmapAjaxCallback.mURL-- >" + myBitmapAjaxCallback.mURL);
-//                this.mAQuery.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
-//            } catch (Exception ex) {
-//                Log.d("imageURL--->", ex.toString());
-//            }
-//            return urlDrawable;
-//        }
-//    }
-//
-//    public class MyBitmapAjaxCallback extends BitmapAjaxCallback {
-//        private URLDrawable mURLDrawable;
-//        private String mURL;
-//        private View mContainer;
-//
-//        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v) {
-//            this.mURLDrawable = d;
-//            this.mURL = sourceUrl;
-//            this.mContainer = v;
-//        }
-//
-//        @Override
-//        protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-//            Log.d(TAG, "callback-->" + url);
-//            Bitmap bitmap = mAqueryItem.getCachedImage(mURL);
-//
-//            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-//            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-//            if (showMaxWidth < bitmap.getWidth()) {
-//                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, mContext);
-//            } else if (showMinWidth >= bitmap.getWidth()) {
-//                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
-//            }
-//            Drawable drawable = new BitmapDrawable(bitmap);
-//            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//            mURLDrawable.drawable = drawable;
-//            this.mContainer.invalidate();
-//            TextView tv = (TextView) this.mContainer;
-//            tv.setText(tv.getText());
-////            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-////            ((LinearLayout) tv.getParent()).setLayoutParams(layoutParams);
-////            tv.getParent().requestLayout();
-//        }
-//    }
 
     public class URLDrawable extends BitmapDrawable {
         protected Drawable drawable;
@@ -337,10 +290,6 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
                 URLImageParserByAsyncTask.this.container.invalidate();
                 TextView tv = (TextView) URLImageParserByAsyncTask.this.container;
                 tv.setText(tv.getText());
-
-//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//                ((LinearLayout) tv.getParent()).setLayoutParams(layoutParams);
-//                tv.getParent().requestLayout();
             }
 
             public Drawable fetchDrawable(String urlString) {
@@ -372,7 +321,13 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
         }
     }
 
-    private Html.ImageGetter imgGetter = new Html.ImageGetter() {
+    public class MyImageGetter implements Html.ImageGetter {
+        private AQuery mAquery;
+
+        public MyImageGetter(AQuery aQuery) {
+            this.mAquery = aQuery;
+        }
+
         @Override
         public Drawable getDrawable(String source) {
             if (!source.contains("http")) {
@@ -380,9 +335,9 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
             }
             Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
             try {
-                mAqueryItem.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, null, AQuery.FADE_IN_NETWORK);
+                mAquery.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, null, AQuery.FADE_IN_NETWORK);
                 Toast.makeText(mContext, "加载完成", 500).show();
-                Bitmap bitmap = mAqueryItem.getCachedImage(source);
+                Bitmap bitmap = mAquery.getCachedImage(source);
                 float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
                 float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
                 if (showMaxWidth < bitmap.getWidth()) {
@@ -397,6 +352,6 @@ public class QuestionReplyListAdapter extends EdusohoBaseAdapter {
             }
             return drawable;
         }
-    };
+    }
 
 }

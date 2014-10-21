@@ -46,7 +46,7 @@ public class ReviewListAdapter extends ListBaseAdapter<Review> {
 	public View getView(int index, View view, ViewGroup vg) {
 		ViewHolder holder;
 		if (view == null) {
-			view = inflater.inflate(mResouce, null);
+			view = inflater.inflate(mRecourse, null);
 			holder = new ViewHolder();
 			holder.course_comment_rating = (RatingBar) view.findViewById(R.id.review_user_rating);
 			holder.course_comment_user_time = (TextView) view.findViewById(R.id.review_user_time);

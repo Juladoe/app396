@@ -50,6 +50,8 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -562,6 +564,61 @@ public class AppUtil {
         BitmapDrawable result = new BitmapDrawable(scaledBitmap);
 
         return scaledBitmap;
+    }
+
+    /**
+     * 图片压缩到500K(质量压缩)
+     *
+     * @param image
+     * @return
+     */
+    public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream baos, int size) {
+        image.compress(Bitmap.CompressFormat.JPEG, size, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+//        int options = 100;
+//        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+//            options -= 10;//每次都减少10
+//            baos.reset();//重置baos即清空baos
+//            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+//
+//        }
+        //ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        //Bitmap bitmap = BitmapFactory.decodeStream(isBm);//把ByteArrayInputStream数据生成图片
+        Bitmap bitmap = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
+        return bitmap;
+    }
+
+    /**
+     * 创建临时图片文件
+     * @param context
+     * @param os
+     * @return
+     */
+    public static File createFile(Context context, ByteArrayOutputStream os) {
+        File f = null;
+        try {
+            f = new File(context.getCacheDir(), "tmpImage1.jpg");
+            f.createNewFile();
+            byte[] bytes = os.toByteArray();
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(bytes);
+        } catch (IOException ioe) {
+            Log.d("AppUtil.createFile-->", ioe.toString());
+        }
+        return f;
+    }
+
+    /**
+     * 获取图片大小
+     *
+     * @param bitmap
+     * @return 返回字节
+     */
+    public static int getImageSize(Bitmap bitmap) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        } else {
+            return bitmap.getByteCount();
+        }
     }
 
     /**

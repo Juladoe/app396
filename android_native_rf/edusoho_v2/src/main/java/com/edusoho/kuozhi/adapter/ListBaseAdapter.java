@@ -14,13 +14,13 @@ import java.util.ArrayList;
 public abstract class ListBaseAdapter<T> extends BaseAdapter {
 
     protected LayoutInflater inflater;
-    protected int mResouce;
+    protected int mRecourse;
     protected Context mContext;
     protected ArrayList<T> mList;
 
     public ListBaseAdapter(Context context, int resource)
     {
-        mResouce = resource;
+        mRecourse = resource;
         mContext = context;
         mList = new ArrayList<T>();
         inflater = LayoutInflater.from(mContext);

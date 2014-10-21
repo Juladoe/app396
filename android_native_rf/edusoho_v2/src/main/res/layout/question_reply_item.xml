@@ -89,7 +89,7 @@
                 android:lineSpacingExtra="2dp"
                 android:textColor="@color/question_lesson"
                 android:visibility="gone"
-                android:text="教师回复了一个答案A教师回复了一个答案A教师回复了一个答案A教师回复了一个答案" />
+                android:text="" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleSmall"

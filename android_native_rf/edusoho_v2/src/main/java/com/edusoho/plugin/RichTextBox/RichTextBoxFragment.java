@@ -52,6 +52,7 @@ import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextFontColor.ColorPickerDialog;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -71,7 +72,9 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private EdusohoApp app;
 
     private static final String TAG = "RichTextBoxFragment";
-    private static final int IMAGE_SIZE = 500;
+    private static final int IMAGE_WIDTH = 500;
+    private static final int IMAGE_SIZE = 1024 * 500;
+
 
     private ImageView ivBoldStyle;
     private ImageView ivItalicStyle;
@@ -435,8 +438,14 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         String key = IMAGE_NAME + String.valueOf(mImageCount);
         //String key = String.valueOf(mImageCount++);
         SpannableString ss = new SpannableString(key);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (image.getWidth() > 500) {
-            image = AppUtil.scaleImage(image, IMAGE_SIZE, AppUtil.getImageDegree(filePath), mContext);
+            image = AppUtil.scaleImage(image, IMAGE_WIDTH, AppUtil.getImageDegree(filePath), mContext);
+        }
+        if (AppUtil.getImageSize(image) > IMAGE_SIZE) {
+            image = AppUtil.compressImage(image, baos, 50);
+        } else {
+            image = AppUtil.compressImage(image, baos, 100);
         }
 
         //定义插入图片
@@ -444,7 +453,8 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         drawable.setBounds(2, 0, drawable.getIntrinsicWidth() + 2, drawable.getIntrinsicHeight() + 2);
         ss.setSpan(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         eb.insert(qqPosition, ss);
-        mImageHashMap.put(String.valueOf(mImageCount), new File(filePath));
+
+        mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(mContext, baos));
         mImageCount++;
     }
 

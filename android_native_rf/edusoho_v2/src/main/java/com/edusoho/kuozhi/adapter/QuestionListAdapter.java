@@ -21,15 +21,16 @@ import java.util.List;
 /**
  * Created by hby on 14-9-15.
  */
-public class QuestionListAdapter extends EdusohoBaseAdapter {
-    private Context mContext;
+public class QuestionListAdapter extends ListBaseAdapter {
+//    private Context mContext;
     private List<QuestionDetailModel> mQuestionList;
-    private int mResourceId;
+//    private int mResourceId;
     private int mScreenW;
 
     public QuestionListAdapter(Context context, QuestionResult questionResult, int layoutId) {
-        this.mContext = context;
-        this.mResourceId = layoutId;
+        super(context, layoutId);
+//        this.mContext = context;
+//        this.mResourceId = layoutId;
         mQuestionList = new ArrayList<QuestionDetailModel>();
         mScreenW = EdusohoApp.app.screenW;
         listAddItem(questionResult.threads);
@@ -77,7 +78,7 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
         Log.d("QuestionListAdapter.getView()", String.valueOf(position));
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(mResourceId, null);
+            convertView = LayoutInflater.from(mContext).inflate(mRecourse, null);
             holder = new ViewHolder();
             holder.tvQuestionTitle = (TextView) convertView.findViewById(R.id.tv_question_title);
             holder.tvLesson = (TextView) convertView.findViewById(R.id.tv_question_lesson);
@@ -110,6 +111,12 @@ public class QuestionListAdapter extends EdusohoBaseAdapter {
         holder.tvReplyAmount.setText(String.valueOf(question.postNum));
         return convertView;
     }
+
+    @Override
+    public void addItems(ArrayList list) {
+
+    }
+
 
     private class ViewHolder {
         public AQuery aQuery;
