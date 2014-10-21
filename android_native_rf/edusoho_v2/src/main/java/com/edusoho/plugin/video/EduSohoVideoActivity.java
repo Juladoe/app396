@@ -61,11 +61,9 @@ public class EduSohoVideoActivity extends Activity implements MediaPlayer.OnErro
                 mVideoView.videoHeight = mediaPlayer.getVideoHeight();
                 mediaPlayer.start();
                 mVideoView.requestLayout();
-                mMediaController.ready();
-                mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                mMediaController.ready(new CustomMediaController.MediaControllerListener() {
                     @Override
-                    public void onBufferingUpdate(MediaPlayer mediaPlayer, int progress) {
-                        Log.d(null, "progress->" + progress);
+                    public void startPlay() {
                         if (mLoadView.getVisibility() == View.VISIBLE) {
                             mLoadView.setVisibility(View.GONE);
                         }

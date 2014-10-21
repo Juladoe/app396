@@ -50,17 +50,11 @@ public class EduSohoVideoFragment extends Fragment implements MediaPlayer.OnErro
                 mVideoView.videoHeight = mediaPlayer.getVideoHeight();
                 mediaPlayer.start();
                 mVideoView.requestLayout();
-                mMediaController.ready();
-                mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                mMediaController.ready(new CustomMediaController.MediaControllerListener() {
                     @Override
-                    public void onBufferingUpdate(MediaPlayer mediaPlayer, int progress) {
-                        Log.d(null, "progress->" + progress);
-                        if (progress == 100) {
-                            mLoadView.setVisibility(View.GONE);
-                        } else {
-                            if (mLoadView.getVisibility() == View.GONE) {
-                                mLoadView.setVisibility(View.VISIBLE);
-                            }
+                    public void startPlay() {
+                        if (mLoadView.getVisibility() == View.GONE) {
+                            mLoadView.setVisibility(View.VISIBLE);
                         }
                     }
                 });

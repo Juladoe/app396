@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -76,7 +77,7 @@ public class CustomMediaController extends RelativeLayout {
         mActivity = activity;
     }
 
-    public void ready()
+    public void ready(final MediaControllerListener listener)
     {
         updateTimer.schedule(new TimerTask() {
             @Override
@@ -87,9 +88,14 @@ public class CustomMediaController extends RelativeLayout {
                     msg.sendToTarget();
 
                     if (!mIsSetTotalTime) {
-                        msg = updateHandler.obtainMessage(SET_TOTALTIME);
-                        msg.arg1 = mVideoView.getDuration();
-                        msg.sendToTarget();
+                        int total = mVideoView.getDuration();
+                        if (total > 0) {
+                            mIsSetTotalTime = true;
+                            listener.startPlay();
+                            msg = updateHandler.obtainMessage(SET_TOTALTIME);
+                            msg.arg1 = mVideoView.getDuration();
+                            msg.sendToTarget();
+                        }
                     }
                 }
             }
@@ -272,5 +278,10 @@ public class CustomMediaController extends RelativeLayout {
             autoHideTimer.cancel();
             autoHideTimer = null;
         }
+    }
+
+    public interface MediaControllerListener
+    {
+        public void startPlay();
     }
 }

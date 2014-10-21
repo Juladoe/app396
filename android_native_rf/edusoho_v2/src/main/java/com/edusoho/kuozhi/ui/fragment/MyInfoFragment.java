@@ -30,6 +30,8 @@ import com.edusoho.kuozhi.view.plugin.CircularImageView;
  */
 public class MyInfoFragment extends BaseFragment {
 
+    public static final String TAG = "MyInfoFragment";
+
     public String mTitle = "我的学习";
 
     @ViewUtil("myinfo_plugin_list")
@@ -214,6 +216,7 @@ public class MyInfoFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         if (app.loginUser != null) {
             mLearnStatusWidget.initialise(mActivity);
         } else {

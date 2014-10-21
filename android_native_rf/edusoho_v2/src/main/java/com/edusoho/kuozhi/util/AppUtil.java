@@ -53,6 +53,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
@@ -132,7 +133,15 @@ public class AppUtil {
     }
 
     public static boolean inArray(String find, String[] array) {
-        int result = Arrays.binarySearch(array, find);
+        int result = Arrays.binarySearch(array, find, new Comparator<String>() {
+            @Override
+            public int compare(String find, String str) {
+                if (str.equals(find)) {
+                    return 0;
+                }
+                return -1;
+            }
+        });
         return result >= 0;
     }
 

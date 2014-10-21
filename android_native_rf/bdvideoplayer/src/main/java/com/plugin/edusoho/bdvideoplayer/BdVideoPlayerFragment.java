@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
 import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
@@ -294,7 +292,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mSoLibDir = bundle.getString("soLibDir");
         mDecodeMode = bundle.getInt("decode", BVideoView.DECODE_SW);
         String url = bundle.getString("mediaUrl");
-        Log.d(null, "url->" + url);
+        Log.d(TAG, "url->" + url);
         Uri uriPath = Uri.parse(url);
         if (null != uriPath) {
             String scheme = uriPath.getScheme();
@@ -466,11 +464,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public boolean onError(int what, int extra) {
         // TODO Auto-generated method stub
-        Log.v(TAG, "onError");
+        Log.v(TAG, "onError what:" + what + " extra:" + extra);
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
         if (mDecodeMode == BVideoView.DECODE_SW) {
+            Log.d(TAG, "DECODE_HW->");
             mDecodeMode = BVideoView.DECODE_HW;
             mVV.setDecodeMode(mDecodeMode);
             mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;

@@ -357,7 +357,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(Const.ACTIONBAT_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case VIDEO:
-
             case AUDIO:
             case TEXT:
                 normalLesson = parseJsonValue(
@@ -368,16 +367,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                         || courseLessonType == CourseLessonType.AUDIO) {
                     fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
+                    fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
+                    fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
                 }
                 return normalLesson;
         }
         return null;
     }
 
-    private void checkPlayerVersion()
-    {
-
-    }
     private void setLearnStatus(LearnStatus learnStatus)
     {
         Resources resources = getResources();
