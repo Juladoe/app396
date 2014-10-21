@@ -81,6 +81,9 @@ public class QuestionActivity extends ActionBarBaseActivity {
                     if (questionResult == null) {
                         return;
                     }
+                    if (questionResult.threads.length > 0) {
+
+                    }
                     mStart = questionResult.total + questionResult.start;
                     QuestionListAdapter adapter = (QuestionListAdapter) mQuestionRefreshList.getAdapter();
                     if (adapter != null) {
