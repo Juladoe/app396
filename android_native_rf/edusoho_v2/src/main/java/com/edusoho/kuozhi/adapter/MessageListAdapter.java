@@ -16,36 +16,19 @@ import java.util.ArrayList;
 /**
  * Created by howzhi on 14-9-16.
  */
-public class MessageListAdapter extends BaseAdapter
+public class MessageListAdapter extends ListBaseAdapter<Notify>
 {
-    private LayoutInflater inflater;
-    private int mResouce;
-    private Context mContext;
-    private ArrayList<Notify> mList;
 
     public MessageListAdapter(
-            Context context, ArrayList<Notify> list, int resource)
+            Context context,  int resource)
     {
-        mList = list;
-        mContext = context;
-        mResouce = resource;
-        inflater = LayoutInflater.from(context);
+        super(context, resource);
     }
 
-    private void listAddItem(ArrayList<Notify> notifies)
-    {
-        mList.addAll(notifies);
-    }
-
-    public void addItem(ArrayList<Notify> notifies)
-    {
-        listAddItem(notifies);
+    @Override
+    public void addItems(ArrayList<Notify> list) {
+        mList.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void setItems(ArrayList<Notify> notifies){
-        mList.clear();
-        addItem(notifies);
     }
 
     @Override

@@ -1,11 +1,8 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,14 +13,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.video.CustomMediaController;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by howzhi on 14-9-26.
@@ -34,6 +35,9 @@ public class VideoLessonFragment extends BaseFragment {
     private Timer hideLoadTimer;
     private MediaPlayer mMediaPlayer;
     private boolean isPlayed;
+
+    private int mCourseId;
+    private int mLessonId;
 
     public static final int HIDE_LOADING = 0001;
 
@@ -66,6 +70,8 @@ public class VideoLessonFragment extends BaseFragment {
         super.onAttach(activity);
         Bundle bundle = getArguments();
         String url = bundle.getString(Const.MEDIA_URL);
+        mCourseId = bundle.getInt(Const.COURSE_ID);
+        mLessonId = bundle.getInt(Const.LESSON_ID);
         if (url != null && !TextUtils.isEmpty(url)) {
             mUri = Uri.parse(url);
         }
@@ -90,42 +96,28 @@ public class VideoLessonFragment extends BaseFragment {
                 mediaPlayer.start();
                 mMediaPlayer = mediaPlayer;
                 mVideoView.requestLayout();
-                mMediaController.ready();
-                hideLoadTimer.schedule(new TimerTask() {
+                mMediaController.ready(new CustomMediaController.MediaControllerListener() {
                     @Override
-                    public void run() {
-                        if (mediaPlayer.isPlaying()) {
-                            isPlayed = true;
-                            hideLoadTimer.cancel();
-                            workHandler.obtainMessage(HIDE_LOADING).sendToTarget();
-                        }
+                    public void startPlay() {
+                        isPlayed = true;
+                        hideLoadTimer.cancel();
+                        workHandler.obtainMessage(HIDE_LOADING).sendToTarget();
                     }
-                }, 0, 100);
+                });
             }
         });
 
         mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
-            public boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
-                Log.d(null, "play error-> " + i + "  -> " + i2);
+            public boolean onError(MediaPlayer mediaPlayer, int what, int i2) {
+                Log.d(null, "play error-> " + what + "  -> " + i2);
                 mLoadView.setVisibility(View.GONE);
                 Log.d(null, "isPlayed> " + isPlayed);
                 if (isPlayed) {
                     showErrorDialog();
                     return true;
                 }
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                Fragment fragment = app.mEngine.runPluginWithFragment(
-                        "BDVideoLessonFragment", mActivity, new PluginFragmentCallback() {
-                    @Override
-                    public void setArguments(Bundle bundle) {
-                        bundle.putString(Const.MEDIA_URL, mUri.toString());
-                    }
-                });
-                fragmentTransaction.replace(R.id.lesson_content, fragment);
-                fragmentTransaction.setCustomAnimations(
-                        FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-                fragmentTransaction.commit();
+                reloadLessonMediaUrl();
                 return true;
             }
         });
@@ -134,6 +126,46 @@ public class VideoLessonFragment extends BaseFragment {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 mMediaController.stop(mediaPlayer);
+            }
+        });
+    }
+
+    private void changeBDPlayFragment(final String url)
+    {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        Fragment fragment = app.mEngine.runPluginWithFragment(
+                "BDVideoLessonFragment", mActivity, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString(Const.MEDIA_URL, url);
+            }
+        });
+        fragmentTransaction.replace(R.id.lesson_content, fragment);
+        fragmentTransaction.setCustomAnimations(
+                FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+        fragmentTransaction.commit();
+    }
+
+    private void reloadLessonMediaUrl()
+    {
+        RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
+        requestUrl.setParams(new String[] {
+                "courseId", mCourseId + "",
+                "lessonId", mLessonId + ""
+        });
+
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                LessonItem lessonItem = mActivity.parseJsonValue(
+                        object, new TypeToken<LessonItem<String>>() {
+                });
+                if (lessonItem == null) {
+                    showErrorDialog();
+                    return;
+                }
+
+                changeBDPlayFragment(lessonItem.mediaUri);
             }
         });
     }

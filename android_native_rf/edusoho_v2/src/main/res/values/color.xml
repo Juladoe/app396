@@ -195,6 +195,7 @@
 
     <!-- 2.0 -->
     <color name="splash_ok_btn">#ffffff</color>
+    <color name="splash_ok_bg">#22808080</color>
     <color name="qr_logo_text">#808080</color>
     <color name="action_bar_bg_stroke">#298c4f</color>
     <color name="action_bar_bg_stroke_alpha">#00298c4f</color>

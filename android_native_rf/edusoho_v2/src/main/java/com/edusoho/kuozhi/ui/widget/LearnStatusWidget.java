@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,7 +21,9 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -83,6 +86,7 @@ public class LearnStatusWidget extends FrameLayout {
     {
         mActivity = activity;
         RequestUrl requestUrl = mActivity.app.bindUrl(Const.LASTER_LEARN_COURSE, true);
+        Log.d(null, "LearnStatusWidget->initialise");
         mActivity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
@@ -93,7 +97,12 @@ public class LearnStatusWidget extends FrameLayout {
                 }
 
                 mLoadView.setVisibility(View.GONE);
-                setVisibility(View.VISIBLE);
+                if (getVisibility() == GONE) {
+                    setVisibility(View.VISIBLE);
+                    mContainer.measure(0, 0);
+                    int height = mContainer.getMeasuredHeight();
+                    AppUtil.animForHeight(new EdusohoAnimWrap(mContainer), 0, height, 420);
+                }
 
                 final Course course = lasterLearnStatus.data;
                 LasterLearnStatus.Progress progress = lasterLearnStatus.progress;
@@ -125,7 +134,7 @@ public class LearnStatusWidget extends FrameLayout {
                 }
 
                 mLoadView.setVisibility(View.GONE);
-                setVisibility(View.VISIBLE);
+                //setVisibility(View.VISIBLE);
 
                 LasterLearnStatus.Progress progress = lasterLearnStatus.progress;
                 initWidgetView(course, lasterLearnStatus.data, progress, lessonJson);

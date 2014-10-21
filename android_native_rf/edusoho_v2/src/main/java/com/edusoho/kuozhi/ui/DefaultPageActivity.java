@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.StatusCallback;
+import com.plugin.edusoho.bdvideoplayer.BdPlayerManager;
 
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
                 Log.d(null, "new verson");
                 moreBtn.setUpdateIcon();
                 app.addNotify("app_update", null);
+            }
+        });
+
+        BdPlayerManager bdPlayerManager = new BdPlayerManager(mContext);
+        bdPlayerManager.checkPlayerVersion(new BdPlayerManager.CheckPlayerVersionCallback() {
+            @Override
+            public void success() {
+
+            }
+
+            @Override
+            public void fail() {
+
             }
         });
     }

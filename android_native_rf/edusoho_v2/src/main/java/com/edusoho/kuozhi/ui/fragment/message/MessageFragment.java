@@ -76,20 +76,20 @@ public class MessageFragment extends BaseFragment {
         mMessageList = (RefreshListWidget) view.findViewById(R.id.message_list);
         mMessageList.setMode(PullToRefreshBase.Mode.BOTH);
         mMessageList.getRefreshableView().setDividerHeight(20);
+        mMessageList.setAdapter(new MessageListAdapter(mContext, R.layout.message_list_item));
         mMessageList.setEmptyText(new String[] { "暂无通知" });
 
-        mMessageList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        mMessageList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                Log.d(null, "message->refresh");
-                loadMessage(0, false);
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                Log.d(null, "message->onPullUpToRefresh");
+                loadMessage(mMessageList.getStart(), true);
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                Log.d(null, "message->onPullUpToRefresh");
-                Integer startPage = (Integer) mMessageList.getTag();
-                loadMessage(startPage, true);
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                Log.d(null, "message->refresh");
+                loadMessage(0, false);
             }
         });
 
@@ -122,21 +122,8 @@ public class MessageFragment extends BaseFragment {
                     return;
                 }
 
-                MessageListAdapter adapter = (MessageListAdapter) mMessageList.getAdapter();
-                if (adapter != null && isAppend) {
-                    adapter.addItem(notifyBaseResult.data);
-                } else {
-                    adapter = new MessageListAdapter(
-                            mContext, notifyBaseResult.data, R.layout.message_list_item);
-                    mMessageList.setAdapter(adapter);
-                }
-
-                int start = notifyBaseResult.start + Const.LIMIT;
-                if (start < notifyBaseResult.total) {
-                    mMessageList.setTag(start);
-                } else {
-                    mMessageList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-                }
+                mMessageList.pushData(notifyBaseResult.data);
+                mMessageList.setStart(notifyBaseResult.start, notifyBaseResult.total);
             }
         });
     }
