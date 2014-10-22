@@ -2,14 +2,11 @@ package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.model.Notify;
-
 
 import java.util.ArrayList;
 
@@ -49,7 +46,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
     @Override
     public View getView(int index, View view, ViewGroup vg) {
         if (view == null) {
-            view = inflater.inflate(mResouce, null);
+            view = inflater.inflate(mResource, null);
         }
 
         TextView textView = (TextView) view;

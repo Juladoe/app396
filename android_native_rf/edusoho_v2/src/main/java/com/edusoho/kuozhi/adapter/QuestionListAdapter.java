@@ -78,7 +78,7 @@ public class QuestionListAdapter extends ListBaseAdapter {
         Log.d("QuestionListAdapter.getView()", String.valueOf(position));
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(mRecourse, null);
+            convertView = LayoutInflater.from(mContext).inflate(mResource, null);
             holder = new ViewHolder();
             holder.tvQuestionTitle = (TextView) convertView.findViewById(R.id.tv_question_title);
             holder.tvLesson = (TextView) convertView.findViewById(R.id.tv_question_lesson);

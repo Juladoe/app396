@@ -33,7 +33,7 @@ public class CourseListAdapter<T> extends ListBaseAdapter<T> {
     public View getView(int index, View view, ViewGroup vg) {
         ViewHolder holder;
         if (view == null) {
-            view = inflater.inflate(mRecourse, null);
+            view = inflater.inflate(mResource, null);
             holder = new ViewHolder();
             holder.course_title = (TextView) view.findViewById(R.id.course_title);
             holder.course_studentNum = (TextView) view.findViewById(R.id.course_studentNum);

@@ -126,7 +126,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         Log.d("getView()", String.valueOf(position));
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.mContext).inflate(mRecourse, null);
+            convertView = LayoutInflater.from(this.mContext).inflate(mResource, null);
             holder = new ViewHolder();
             holder.tvReplyType = (TextView) convertView.findViewById(R.id.tv_reply_type);
             holder.tvReplyName = (TextView) convertView.findViewById(R.id.tv_reply_name);
