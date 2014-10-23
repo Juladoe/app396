@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.widget.QuestionRefreshListWidget;
+import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -48,17 +49,19 @@ public class QuestionActivity extends ActionBarBaseActivity {
         mActivity = this;
         mLoadView = (View) findViewById(R.id.load_layout);
         mQuestionRefreshList = (QuestionRefreshListWidget) findViewById(R.id.question_listview);
-        mQuestionRefreshList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        mQuestionRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mQuestionRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadQuestionDataFromSeek(0, true);
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                loadQuestionDataFromSeek(mStart, false);
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadQuestionDataFromSeek(mStart, false);
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadQuestionDataFromSeek(0, true);
             }
         });
+
         mQuestionRefreshList.setEmptyText(new String[]{"暂无提问的记录"});
         mQuestionRefreshList.setOnItemClickListener(new QuestionListScrollListener());
         loadQuestionDataFromSeek(0, false);
@@ -81,10 +84,7 @@ public class QuestionActivity extends ActionBarBaseActivity {
                     if (questionResult == null) {
                         return;
                     }
-                    if (questionResult.threads.length > 0) {
-
-                    }
-                    mStart = questionResult.total + questionResult.start;
+                    mStart = questionResult.limit + questionResult.start;
                     QuestionListAdapter adapter = (QuestionListAdapter) mQuestionRefreshList.getAdapter();
                     if (adapter != null) {
                         //刷新
@@ -96,6 +96,7 @@ public class QuestionActivity extends ActionBarBaseActivity {
                         adapter = new QuestionListAdapter(mContext, questionResult, R.layout.question_item);
                     }
                     mQuestionRefreshList.setAdapter(adapter);
+                    mQuestionRefreshList.setStart(questionResult.start, questionResult.total);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }

@@ -41,7 +41,7 @@ public class EmptyAdapter<T> extends ListBaseAdapter<T>
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView  = inflater.inflate(mResouce, null);
+            convertView  = inflater.inflate(mResource, null);
         }
 
         TextView textView = (TextView) convertView.findViewById(R.id.list_empty_text);

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ListAdapter;
 
 import com.edusoho.kuozhi.adapter.QuestionListAdapter;
@@ -13,6 +14,7 @@ import com.edusoho.kuozhi.adapter.QuestionListAdapter;
 public class QuestionRefreshListWidget extends RefreshListWidget {
     private Context mContext;
     private QuestionListAdapter mAdapter;
+    private static final String TAG = "QuestionRefreshListWidget";
 
     public QuestionRefreshListWidget(Context context) {
         super(context);
@@ -26,12 +28,16 @@ public class QuestionRefreshListWidget extends RefreshListWidget {
 
     @Override
     public void setAdapter(ListAdapter adapter) {
-        if (adapter.isEmpty()) {
-            adapter = getEmptyLayoutAdapter();
-        } else {
-            mAdapter = (QuestionListAdapter) adapter;
+        try {
+            if (adapter.isEmpty()) {
+                adapter = getEmptyLayoutAdapter();
+            } else {
+                mAdapter = (QuestionListAdapter) adapter;
+            }
+            super.setAdapter(adapter);
+        } catch (Exception ex) {
+            Log.d(TAG, ex.toString());
         }
-        super.setAdapter(adapter);
     }
 
     @Override

@@ -20,7 +20,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget;
+import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -47,7 +47,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     private int mTeacherReplySum;
 
     private ActionBarBaseActivity mActivity;
-    private QuestionReplyListWidget mQuestionRelyList;
+    private RefreshListWidget mQuestionRelyList;
 
 
     private AQuery mAQuery;
@@ -60,10 +60,10 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_detail_layout);
-        setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
-        mActivity = this;
         initView();
+        setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
         mHost = this.app.host;
+        mActivity = this;
 
     }
 
@@ -78,17 +78,17 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         mParams.put("courseId", String.valueOf(mCourseId));
         mParams.put("threadId", String.valueOf(mThreadId));
 
-        mQuestionRelyList = (QuestionReplyListWidget) findViewById(R.id.qrlw_question_reply);
-
-        mQuestionRelyList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        mQuestionRelyList = (RefreshListWidget) findViewById(R.id.qrlw_question_reply);
+        mQuestionRelyList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mQuestionRelyList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadReplyDataFromSeek(0, true);
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                loadReplyDataFromSeek(mStart, false);
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadReplyDataFromSeek(mStart, false);
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadReplyDataFromSeek(0, true);
             }
         });
 
@@ -107,7 +107,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         mParams.put("start", String.valueOf(start));
         mParams.put("limit", String.valueOf(Const.LIMIT));
         url.setParams(mParams);
-        app.postUrl(url, new ResultCallback() {
+        this.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
@@ -117,7 +117,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                     if (replyResult == null) {
                         return;
                     }
-                    mStart = replyResult.total + replyResult.start;
+                    mStart = replyResult.limit + replyResult.start;
                     QuestionReplyListAdapter adapter = (QuestionReplyListAdapter) mQuestionRelyList.getAdapter();
                     if (adapter != null) {
                         if (isRefresh) {
@@ -128,6 +128,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                         adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item, app.loginUser);
                     }
                     mQuestionRelyList.setAdapter(adapter);
+                    mQuestionRelyList.setStart(replyResult.start, replyResult.total);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }
@@ -200,7 +201,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         //String content = data.getStringExtra(Const.NORMAL_CONTENT);
         switch (requestCode) {
             case Const.REPLY:
-                loadReplyDataFromSeek(0, true);
+                mQuestionRelyList.setRefreshing();
+                //loadReplyDataFromSeek(0, true);
                 break;
             case Const.EDIT_QUESTION:
                 //Toast.makeText(this, "问题编辑", 500).show();
@@ -219,7 +221,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 break;
             case Const.EDIT_REPLY:
                 //Toast.makeText(this, "回复编辑", 500).show();
-                loadReplyDataFromSeek(0, true);
+                mQuestionRelyList.setRefreshing();
+                //loadReplyDataFromSeek(0, true);
                 break;
         }
     }
