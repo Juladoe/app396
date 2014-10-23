@@ -46,9 +46,6 @@ public class URLImageGetter implements Html.ImageGetter {
         //Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
         MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer, this.mReplyImageLoading);
         try {
-            //Log.d(TAG, "aQuery.id(R.id.iv_tmp)-->" + source);
-            //AQuery mAquery = new AQuery(mActivity);
-            Log.d(TAG, "myBitmapAjaxCallback.mURL-- >" + myBitmapAjaxCallback.mURL);
             this.mAQuery.id(R.id.iv_tmp).image(source, false, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
         } catch (Exception ex) {
             Log.d("imageURL--->", ex.toString());
@@ -71,7 +68,6 @@ public class URLImageGetter implements Html.ImageGetter {
 
         @Override
         protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-            Log.d(TAG, "callback-->" + url);
 
             Bitmap bitmap = URLImageGetter.this.mAQuery.getCachedImage(mURL);
 
@@ -89,9 +85,10 @@ public class URLImageGetter implements Html.ImageGetter {
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
             mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
             mURLDrawable.drawable = drawable;
-            this.mContainer.invalidate();
+            this.mContainer.postInvalidate();
             TextView tv = (TextView) this.mContainer;
             tv.setText(tv.getText());
+
 //            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 //            ((LinearLayout) tv.getParent()).setLayoutParams(layoutParams);
 //            tv.getParent().requestLayout();

@@ -38,7 +38,6 @@ public class QuestionListAdapter extends ListBaseAdapter {
 
     public void addItem(QuestionResult questionResult) {
         listAddItem(questionResult.threads);
-        //notifyDataSetChanged();
     }
 
     private void listAddItem(QuestionDetailModel[] questionDetailModels) {
@@ -57,6 +56,7 @@ public class QuestionListAdapter extends ListBaseAdapter {
 
     @Override
     public int getCount() {
+        Log.d("QuestionListAdapter.getCount()-->", mQuestionList.size() + "");
         return mQuestionList.size();
     }
 
@@ -91,6 +91,7 @@ public class QuestionListAdapter extends ListBaseAdapter {
         }
 
         QuestionDetailModel question = mQuestionList.get(position);
+
         holder.tvQuestionTitle.setText(question.title);
         //holder.tvLesson.setText(question.questionLesson);
         if (question.isTeacherPost) {
@@ -118,7 +119,7 @@ public class QuestionListAdapter extends ListBaseAdapter {
     }
 
 
-    private class ViewHolder {
+    private static class ViewHolder {
         public AQuery aQuery;
         public TextView tvQuestionTitle;
         public TextView tvLesson;

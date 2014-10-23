@@ -11,7 +11,6 @@
         android:id="@+id/rl_post_info"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="11dp"
@@ -121,7 +120,7 @@
         android:layout_below="@+id/rl_post_info"
         android:layout_above="@+id/btn_post_reply"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
@@ -130,10 +129,10 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:text="教师的答案（2条）：" />-->
 
-        <com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget
+        <com.edusoho.kuozhi.ui.widget.RefreshListWidget
             android:id="@+id/qrlw_question_reply"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:scrollbars="none"
             android:cacheColorHint="#00000000"
             android:divider="#00000000"
@@ -142,6 +141,8 @@
             android:fastScrollEnabled="false"
             android:footerDividersEnabled="false"
             android:headerDividersEnabled="false"
+            android:animationCache="false"
+            android:scrollingCache="false"
             android:smoothScrollbar="true" />
 
         <!--<include layout="@layout/loading_layout" />-->
