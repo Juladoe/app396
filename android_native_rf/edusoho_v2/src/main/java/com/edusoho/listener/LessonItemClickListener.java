@@ -39,6 +39,12 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
             mActivity.longToast("客户端暂不支持此课时类型！");
             return;
         }
+
+        if (Const.NETEASE_OPEN_COURSE.equals(lesson.mediaSource)) {
+            mActivity.longToast("客户端暂不支持网易云视频");
+            return;
+        }
+
         if (!"published".equals(lesson.status)) {
             mActivity.longToast("课时尚未发布！请稍后浏览！");
             return;

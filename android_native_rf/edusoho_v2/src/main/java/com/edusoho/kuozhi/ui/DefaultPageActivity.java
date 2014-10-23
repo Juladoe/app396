@@ -15,13 +15,16 @@ import com.edusoho.kuozhi.R;
 
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
+import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.StatusCallback;
 import com.plugin.edusoho.bdvideoplayer.BdPlayerManager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,6 +74,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
             }
         });
+        logSchoolInfoToServer();
+    }
+
+    private void logSchoolInfoToServer()
+    {
+        Map<String, String> params = app.getPlatformInfo();
+        School school = app.defaultSchool;
+        params.put("siteHost", school.name);
+        params.put("siteName", school.host);
+        Log.d(null, "MOBILE_SCHOOL_LOGIN");
+        app.logToServer(Const.MOBILE_SCHOOL_LOGIN, params, null);
     }
 
     @Override

@@ -89,7 +89,7 @@ public class EdusohoApp extends Application{
         super.onCreate();
         Log.d(null, "create application");
         mWorkHandler = new android.os.Handler();
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -259,11 +259,12 @@ public class EdusohoApp extends Application{
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        params.put("imei", telephonyManager.getDeviceId());
+        params.put("deviceSn", telephonyManager.getDeviceId());
         params.put("platform", "Android " + Build.MODEL);
         params.put("version", Build.VERSION.SDK);
         params.put("screenresolution", displayMetrics.widthPixels + "x" + displayMetrics.heightPixels);
         params.put("kernel", Build.VERSION.RELEASE);
+        params.put("edusohoVersion", apiVersion);
 
         return params;
     }
@@ -284,7 +285,7 @@ public class EdusohoApp extends Application{
         }
         Map<String, String> params = getPlatformInfo();
 
-        logToServer("http://open.edusoho.com/mobile/mobile_install_stat.php", params, null);
+        logToServer(Const.MOBILE_REGIST, params, null);
         logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {

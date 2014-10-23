@@ -39,8 +39,6 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
     private View mLoadView;
 
     protected String mTitle;
-    protected int mStart;
-
     protected String mBaseUrl;
 
     public static final String RELOAD = "reload";
@@ -208,6 +206,7 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
         int start = courseResult.start + Const.LIMIT;
         if (start < courseResult.total) {
             mCourseListWidget.setTag(start);
+            mCourseListWidget.setMode(PullToRefreshBase.Mode.BOTH);
         } else {
             mCourseListWidget.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         }
