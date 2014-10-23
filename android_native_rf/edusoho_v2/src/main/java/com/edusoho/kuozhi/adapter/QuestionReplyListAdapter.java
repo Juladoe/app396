@@ -63,6 +63,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
 
     /**
      * 下拉刷新，因为带有“教师回复”，“全部回复”等标题，所以需要清空mEntireReplyList
+     *
      * @param replyResult
      */
     public void addItem(ReplyResult replyResult) {
@@ -104,6 +105,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     }
 
     public void clearAdapter() {
+        mSumReplyModel.clear();
         mEntireReplyList.clear();
     }
 

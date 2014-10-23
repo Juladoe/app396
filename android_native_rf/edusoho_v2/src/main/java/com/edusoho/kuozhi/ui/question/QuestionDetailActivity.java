@@ -121,10 +121,12 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                     QuestionReplyListAdapter adapter = (QuestionReplyListAdapter) mQuestionRelyList.getAdapter();
                     if (adapter != null) {
                         if (isRefresh) {
+                            //下拉刷新清空
                             adapter.clearAdapter();
                         }
                         adapter.addItem(replyResult);
                     } else {
+                        //第一次打开
                         adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item, app.loginUser);
                     }
                     mQuestionRelyList.setAdapter(adapter);
