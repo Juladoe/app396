@@ -68,6 +68,9 @@ public class Const {
 
     public static final String DB_NAME = "edusoho";
 
+    public static final String MOBILE_SCHOOL_LOGIN = "http://open.edusoho.com/mobstat/logined";
+    public static final String MOBILE_REGIST = "http://open.edusoho.com/mobstat/installed";
+
     public static final String REGIST_DEVICE = "School/registDevice";
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
@@ -82,6 +85,7 @@ public class Const {
      * course status
      */
     public static final String COURSE_CLOSE = "closed";
+    public static final String NETEASE_OPEN_COURSE = "NeteaseOpenCourse";
     public static final String COURSE_PUBLISHED = "published";
     public static final String COURSE_SERIALIZE = "serialize";
 

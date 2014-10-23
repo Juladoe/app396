@@ -71,6 +71,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private final int EVENT_PLAY = 3;
     private final int EVENT_PAUSE = 4;
     private final int EVENT_FINISH = 5;
+    private final int EVENT_REPLAY = 6;
 
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
     private final int UI_EVENT_ERROR = 5;
@@ -111,10 +112,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     mProgress.setMax(duration);
                     mProgress.setProgress(currPosition);
 
-                    if (currPosition == duration && !mIsPlayEnd) {
+                    /*
+                    if (currPosition == duration && mIsPlayEnd) {
                         mIsPlayEnd = true;
                         mEventHandler.sendEmptyMessage(EVENT_FINISH);
                     }
+                    */
 
                     mUIHandler.sendEmptyMessageDelayed(UI_EVENT_UPDATE_CURRPOSITION, 200);
                     break;
@@ -146,6 +149,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case EVENT_START:
+                    Log.d(TAG, "EVENT_START");
                     /**
                      * 如果已经播放了，等待上一次播放结束
                      */
@@ -190,15 +194,18 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 case EVENT_PAUSE:
                     mVV.pause();
                     break;
-                case EVENT_PLAY:
-                    mVV.resume();
+                case EVENT_REPLAY:
+                    Log.d(TAG, "EVENT_REPLAY");
+                    mVV.start();
+                    mVV.seekTo(mLastPos);
+                    mLastPos = 0;
                     break;
                 case EVENT_FINISH:
                     mVV.seekTo(0);
                     mVV.pause();
                     mPlayerStatus = PLAYER_STATUS.PLAYER_PAUSE;
                     mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
-                    Log.d(null, "bdplayer finish->");
+                    Log.d(TAG, "EVENT_FINISH");
                     break;
                 default:
                     break;
@@ -383,7 +390,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             mLastPos = mVV.getCurrentPosition();
             mVV.pause();
             Log.v(TAG, "mVV onPause");
-            mEventHandler.sendEmptyMessage(EVENT_PAUSE);
+            mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
         }
     }
 
@@ -399,8 +406,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         /**
          * 发起一次播放任务,当然您不一定要在这发起
          */
-        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
-            mEventHandler.sendEmptyMessage(EVENT_PLAY);
+        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
+                || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
+            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
         } else {
             mEventHandler.sendEmptyMessage(EVENT_START);
         }
@@ -468,18 +476,19 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
-        if (mDecodeMode == BVideoView.DECODE_SW) {
-            Log.d(TAG, "DECODE_HW->");
-            mDecodeMode = BVideoView.DECODE_HW;
-            mVV.setDecodeMode(mDecodeMode);
-            mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
-            mEventHandler.sendEmptyMessage(EVENT_START);
-        } else {
-            mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
-            mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
-            mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
-        }
+
+        mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
+        mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
         return true;
+    }
+
+    private void changeDecodeMode()
+    {
+        mDecodeMode = BVideoView.DECODE_HW;
+        mVV.setDecodeMode(mDecodeMode);
+        mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mEventHandler.sendEmptyMessage(EVENT_START);
     }
 
     private void showErrorDialog()
@@ -520,6 +529,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 // TODO Auto-generated method stub
 
                 if (mVV.isPlaying()) {
+                    mIsPlayEnd = true;
                     mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
@@ -620,7 +630,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public void onPrepared() {
         // TODO Auto-generated method stub
-        Log.v(TAG, "onPrepared");
+        Log.v(TAG, "onPrepared" + mPlayerStatus);
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);

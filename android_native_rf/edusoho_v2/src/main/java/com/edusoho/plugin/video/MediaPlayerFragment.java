@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.fragment;
+package com.edusoho.plugin.video;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -18,10 +18,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.LessonItem;
+import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
-import com.edusoho.plugin.video.CustomMediaController;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.Timer;
@@ -29,7 +29,7 @@ import java.util.Timer;
 /**
  * Created by howzhi on 14-9-26.
  */
-public class VideoLessonFragment extends BaseFragment {
+public class MediaPlayerFragment extends BaseFragment {
 
     private VideoView mVideoView;
     private Timer hideLoadTimer;
@@ -116,7 +116,7 @@ public class VideoLessonFragment extends BaseFragment {
                 if (isPlayed) {
                     switch (what) {
                         case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                            Log.d(null,  "error->MEDIA_ERROR_SERVER_DIED");
+                            Log.d(null, "error->MEDIA_ERROR_SERVER_DIED");
                             mediaPlayer.reset();
                             return true;
                     }

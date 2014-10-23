@@ -402,6 +402,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             loadLessonFragment("WebVideoLessonFragment");
             return;
         }
+
+        if (Const.NETEASE_OPEN_COURSE.equals(lessonItem.mediaSource)) {
+            mActivity.longToast("客户端暂不支持网易云视频");
+            return;
+        }
         StringBuilder stringBuilder = lessonType.getType();
         stringBuilder.append("LessonFragment");
         loadLessonFragment(stringBuilder.toString());

@@ -44,6 +44,7 @@ public class CustomMediaController extends RelativeLayout {
     private boolean mIsShowController;
     private boolean mIsSetTotalTime;
     private boolean mIsStop;
+    private int mLastPos;
 
     private Timer updateTimer;
     private Timer autoHideTimer;
@@ -123,6 +124,7 @@ public class CustomMediaController extends RelativeLayout {
                 String time = dateFromat.format(new Date(msg.arg1 + DEFAULT_TIME));
                 switch (msg.what) {
                     case UPDATE_PLAY_TIME:
+                        mLastPos = msg.arg1;
                         currentTime.setText(time);
                         playSeekBar.setProgress(msg.arg1);
                         break;
@@ -140,6 +142,11 @@ public class CustomMediaController extends RelativeLayout {
         bindClickListener();
         updateTimer = new Timer();
         autoHideTimer = new Timer();
+    }
+
+    public int getLastPos()
+    {
+        return mLastPos;
     }
 
     private void hide()
@@ -162,11 +169,11 @@ public class CustomMediaController extends RelativeLayout {
         }, 3000);
     }
 
-    public void play()
+    public void play(int pos)
     {
         playBtn.setImageResource(R.drawable.video_pause);
         if (mIsStop) {
-            mVideoView.seekTo(0);
+            mVideoView.seekTo(pos);
             mIsStop = false;
         }
         mVideoView.start();
@@ -198,7 +205,7 @@ public class CustomMediaController extends RelativeLayout {
                 if (mVideoView.isPlaying()) {
                     pause();
                 } else {
-                    play();
+                    play(0);
                 }
             } else if (id == R.id.custom_next) {
                 current = mVideoView.getCurrentPosition();
