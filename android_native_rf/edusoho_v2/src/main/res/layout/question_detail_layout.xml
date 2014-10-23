@@ -129,7 +129,7 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:text="教师的答案（2条）：" />-->
 
-        <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        <com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget
             android:id="@+id/qrlw_question_reply"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"

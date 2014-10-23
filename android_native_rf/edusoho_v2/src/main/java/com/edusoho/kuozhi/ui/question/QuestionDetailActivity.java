@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -47,7 +48,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     private int mTeacherReplySum;
 
     private ActionBarBaseActivity mActivity;
-    private RefreshListWidget mQuestionRelyList;
+    private QuestionReplyListWidget mQuestionRelyList;
 
 
     private AQuery mAQuery;
@@ -78,7 +79,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         mParams.put("courseId", String.valueOf(mCourseId));
         mParams.put("threadId", String.valueOf(mThreadId));
 
-        mQuestionRelyList = (RefreshListWidget) findViewById(R.id.qrlw_question_reply);
+        mQuestionRelyList = (QuestionReplyListWidget) findViewById(R.id.qrlw_question_reply);
         mQuestionRelyList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mQuestionRelyList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
