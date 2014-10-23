@@ -204,6 +204,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         //String content = data.getStringExtra(Const.NORMAL_CONTENT);
         switch (requestCode) {
             case Const.REPLY:
+                mQuestionRelyList.clearAdapterCache();
                 mQuestionRelyList.setRefreshing();
                 //loadReplyDataFromSeek(0, true);
                 break;
@@ -224,6 +225,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 break;
             case Const.EDIT_REPLY:
                 //Toast.makeText(this, "回复编辑", 500).show();
+                mQuestionRelyList.clearAdapterCache();
                 mQuestionRelyList.setRefreshing();
                 //loadReplyDataFromSeek(0, true);
                 break;

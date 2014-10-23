@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.ListViewCache;
 import com.edusoho.kuozhi.view.HtmlTextView;
 import com.edusoho.listener.URLImageGetter;
 
@@ -48,17 +48,24 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     private List<EntireReply> mNormalReplyList;
     private List<ReplyModel> mSumReplyModel;
 
+    private ListViewCache mListViewCache;
+
     public QuestionReplyListAdapter(Context context, Activity activity, ReplyResult replyResult, int layoutId, User user) {
         super(context, layoutId);
         mEntireReplyList = new ArrayList<EntireReply>();
         this.mActivity = activity;
         this.mUser = user;
         mSumReplyModel = new ArrayList<ReplyModel>();
+        mListViewCache = new ListViewCache();
         for (ReplyModel replyModel : replyResult.data) {
             mSumReplyModel.add(replyModel);
         }
         listAddItem(mSumReplyModel);
 
+    }
+
+    public void setCacheClear() {
+        mListViewCache.clear();
     }
 
     /**
@@ -134,7 +141,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         ViewHolder holder;
         View v = null;
         final EntireReply entireReply = mEntireReplyList.get(position);
-        if (ListViewCache.getOneCacheView(entireReply.replyModel.id) == null) {
+        if (mListViewCache.getOneCacheView(entireReply.replyModel.id) == null) {
             v = LayoutInflater.from(this.mContext).inflate(mResource, null);
             holder = new ViewHolder();
             holder.tvReplyType = (TextView) v.findViewById(R.id.tv_reply_type);
@@ -199,9 +206,9 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
             holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content),
                     urlImageGetter, null)));
-            ListViewCache.addCache(entireReply.replyModel.id, v);
+            mListViewCache.addCache(entireReply.replyModel.id, v);
         } else {
-            v = ListViewCache.getOneCacheView(entireReply.replyModel.id);
+            v = mListViewCache.getOneCacheView(entireReply.replyModel.id);
             //holder = (ViewHolder) ListViewCache.getOneCacheView(entireReply.replyModel.id).getTag();
         }
 
@@ -216,6 +223,28 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public HtmlTextView tvReplyContent;
         public ImageView ivEdit;
         public ProgressBar pbReplyContent;
+    }
+
+    public class ListViewCache {
+        private SparseArray<View> mCacheList = new SparseArray<View>();
+
+        public void addCache(int key, View view) {
+            if (mCacheList.get(key) == null) {
+                Log.d("pos", key + "");
+                mCacheList.put(key, view);
+            }
+        }
+
+        public View getOneCacheView(int key) {
+            if (mCacheList.get(key) != null) {
+                return mCacheList.get(key);
+            }
+            return null;
+        }
+
+        public void clear() {
+            mCacheList.clear();
+        }
     }
 
 

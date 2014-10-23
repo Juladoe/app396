@@ -45,4 +45,8 @@ public class QuestionReplyListWidget extends RefreshListWidget {
     public ListAdapter getAdapter() {
         return mAdapter;
     }
+
+    public void clearAdapterCache() {
+        mAdapter.setCacheClear();
+    }
 }
