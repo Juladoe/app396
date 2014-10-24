@@ -59,58 +59,60 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (richFragment.getContent().toString() == null || richFragment.getContent().toString().equals("")) {
-            Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
-            return true;
-        }
         if (item.getItemId() == R.id.reply_submit) {
-            switch (richFragment.getTypeCode()) {
-                case Const.REPLY: {
-                    //新增回复api
-                    //Toast.makeText(this, "新增回复api", 500).show();
-                    RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", richFragment.getCourseId());
-                    params.put("threadId", richFragment.getThreadId());
-                    final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
-                    params.put("content", richFragment.setContent(content));
-                    params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
-                    url.setMuiltParams(richFragment.getObjects());
-                    url.setParams(params);
-                    submitReply(url);
-                    break;
-                }
-                case Const.EDIT_QUESTION: {
-                    RequestUrl url = app.bindUrl(Const.EDIT_QUESTION_INFO, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", richFragment.getCourseId());
-                    params.put("threadId", richFragment.getThreadId());
-                    params.put("title", richFragment.getTitle());
-                    final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
-                    params.put("content", richFragment.setContent(content));
-                    params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
-                    url.setMuiltParams(richFragment.getObjects());
-                    url.setParams(params);
-                    editQuestionSubmit(url);
-                    break;
-                }
-                case Const.EDIT_REPLY: {
-                    //编辑回复api
-                    //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
-                    RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", richFragment.getCourseId());
-                    params.put("threadId", richFragment.getThreadId());
-                    params.put("postId", richFragment.getPostId());
-                    final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
-                    params.put("content", richFragment.setContent(content));
-                    params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
-                    url.setMuiltParams(richFragment.getObjects());
-                    url.setParams(params);
-                    submitReply(url);
-                    break;
+            if (richFragment.getContent().toString() == null || richFragment.getContent().toString().equals("")) {
+                Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
+                return true;
+            } else {
+                switch (richFragment.getTypeCode()) {
+                    case Const.REPLY: {
+                        //新增回复api
+                        //Toast.makeText(this, "新增回复api", 500).show();
+                        RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
+                        HashMap<String, String> params = url.getParams();
+                        params.put("courseId", richFragment.getCourseId());
+                        params.put("threadId", richFragment.getThreadId());
+                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                        params.put("content", richFragment.setContent(content));
+                        params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
+                        url.setMuiltParams(richFragment.getObjects());
+                        url.setParams(params);
+                        submitReply(url);
+                        break;
+                    }
+                    case Const.EDIT_QUESTION: {
+                        RequestUrl url = app.bindUrl(Const.EDIT_QUESTION_INFO, true);
+                        HashMap<String, String> params = url.getParams();
+                        params.put("courseId", richFragment.getCourseId());
+                        params.put("threadId", richFragment.getThreadId());
+                        params.put("title", richFragment.getTitle());
+                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                        params.put("content", richFragment.setContent(content));
+                        params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
+                        url.setMuiltParams(richFragment.getObjects());
+                        url.setParams(params);
+                        editQuestionSubmit(url);
+                        break;
+                    }
+                    case Const.EDIT_REPLY: {
+                        //编辑回复api
+                        //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
+                        RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
+                        HashMap<String, String> params = url.getParams();
+                        params.put("courseId", richFragment.getCourseId());
+                        params.put("threadId", richFragment.getThreadId());
+                        params.put("postId", richFragment.getPostId());
+                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                        params.put("content", richFragment.setContent(content));
+                        params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
+                        url.setMuiltParams(richFragment.getObjects());
+                        url.setParams(params);
+                        submitReply(url);
+                        break;
+                    }
                 }
             }
         }
