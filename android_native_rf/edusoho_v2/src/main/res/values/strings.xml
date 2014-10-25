@@ -3,8 +3,8 @@
 
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
-    <string name="apk_version">2.0.0</string>
-    <string name="apk_code">2</string>
+    <string name="apk_version">2.0.1</string>
+    <string name="apk_code">3</string>
     <string name="action_settings">action_settings</string>
     <string name="recomemnd_course_str">推荐课程</string>
     <string name="school_about">关于网校</string>

@@ -9,6 +9,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
@@ -19,9 +21,10 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.StatusCallback;
-import com.plugin.edusoho.bdvideoplayer.BdPlayerManager;
 
 import java.util.List;
 import java.util.Map;
@@ -56,25 +59,36 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>(){
             @Override
             public void success(AppUpdateInfo obj) {
-                Log.d(null, "new verson");
+                Log.d(null, "new verson" + obj.androidVersion);
+                if (obj.show) {
+                    showUpdateDlg(obj);
+                }
                 moreBtn.setUpdateIcon();
                 app.addNotify("app_update", null);
             }
         });
 
-        BdPlayerManager bdPlayerManager = new BdPlayerManager(mContext);
-        bdPlayerManager.checkPlayerVersion(new BdPlayerManager.CheckPlayerVersionCallback() {
+        logSchoolInfoToServer();
+    }
+
+    private void showUpdateDlg(final AppUpdateInfo result)
+    {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                mActivity,
+                "版本更新",
+                "更新内容\n" + result.updateInfo, new PopupDialog.PopupClickListener() {
             @Override
-            public void success() {
-
-            }
-
-            @Override
-            public void fail() {
-
+            public void onClick(int button) {
+                if (button == PopupDialog.OK) {
+                    app.startUpdateWebView(result.updateUrl);
+                } else {
+                    app.removeNotify("app_update");
+                }
             }
         });
-        logSchoolInfoToServer();
+
+        popupDialog.setOkText("更新");
+        popupDialog.show();
     }
 
     private void logSchoolInfoToServer()
@@ -84,7 +98,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         params.put("siteHost", school.name);
         params.put("siteName", school.host);
         Log.d(null, "MOBILE_SCHOOL_LOGIN");
-        app.logToServer(Const.MOBILE_SCHOOL_LOGIN, params, null);
+        app.logToServer(Const.MOBILE_SCHOOL_LOGIN, params, new AjaxCallback<String>(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                super.callback(url, object, status);
+                Log.d(null, "MOBILE_SCHOOL_LOGIN->" + object);
+            }
+        });
     }
 
     @Override

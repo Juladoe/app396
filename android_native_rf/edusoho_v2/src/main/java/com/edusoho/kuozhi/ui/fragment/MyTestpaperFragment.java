@@ -53,24 +53,26 @@ public class MyTestpaperFragment extends BaseFragment {
         mLoadView = view.findViewById(R.id.load_layout);
         mCourseListView =(RefreshListWidget) view.findViewById(R.id.course_liseview);
         mCourseListView.setMode(PullToRefreshBase.Mode.BOTH);
+        mCourseListView.setAdapter(new TestpaperListAdapter(
+                mActivity, R.layout.my_testpaper_item));
         mCourseListView.setEmptyText(new String[] { "暂无考试" });
-        mCourseListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+
+        mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadCourseFromNet(0, false);
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                loadCourseFromNet(mCourseListView.getStart());
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                Integer startPage = (Integer) mCourseListView.getTag();
-                loadCourseFromNet(startPage, true);
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadCourseFromNet(0);
             }
         });
 
-        loadCourseFromNet(0, false);
+        loadCourseFromNet(0);
     }
 
-    private void loadCourseFromNet(int start, final boolean isApppend)
+    private void loadCourseFromNet(int start)
     {
         RequestUrl url = app.bindUrl(Const.MY_TESTPAPER, true);
         HashMap<String, String> params = url.getParams();
@@ -90,21 +92,8 @@ public class MyTestpaperFragment extends BaseFragment {
                     return;
                 }
 
-                TestpaperListAdapter adapter = (TestpaperListAdapter) mCourseListView.getAdapter();
-                if (adapter != null && isApppend) {
-                    adapter.addItem(result.data);
-                } else {
-                    adapter = new TestpaperListAdapter(
-                            mActivity, result.data, R.layout.my_testpaper_item);
-                    mCourseListView.setAdapter(adapter);
-                }
-
-                int start = result.start + Const.LIMIT;
-                if (start < result.total) {
-                    mCourseListView.setTag(start);
-                } else {
-                    mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-                }
+                mCourseListView.pushItem(result.data, result.data.myTestpaperResults.isEmpty());
+                mCourseListView.setStart(result.start, result.total);
             }
         });
     }

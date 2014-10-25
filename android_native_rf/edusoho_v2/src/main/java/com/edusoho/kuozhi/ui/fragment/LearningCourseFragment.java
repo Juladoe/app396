@@ -54,6 +54,7 @@ public class LearningCourseFragment extends MyCourseBaseFragment {
         int start = courseResult.start + Const.LIMIT;
         if (start < courseResult.total) {
             mCourseListWidget.setTag(start);
+            mCourseListWidget.setMode(PullToRefreshBase.Mode.BOTH);
         } else {
             mCourseListWidget.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         }

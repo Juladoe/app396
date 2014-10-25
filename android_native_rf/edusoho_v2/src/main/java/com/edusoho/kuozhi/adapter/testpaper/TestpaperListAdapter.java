@@ -12,6 +12,7 @@ import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EdusohoBaseAdapter;
+import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperData;
@@ -28,10 +29,8 @@ import com.edusoho.kuozhi.view.EdusohoButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TestpaperListAdapter extends EdusohoBaseAdapter {
+public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
-    protected LayoutInflater inflater;
-    protected int mResouce;
     protected ActionBarBaseActivity mActivity;
     public ArrayList<MyTestpaperResult> myTestpaperResults;
     public HashMap<Integer, Testpaper> myTestpapers;
@@ -41,11 +40,9 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
     private DoClick doClick;
     private ShowClick showClick;
 
-    public TestpaperListAdapter(ActionBarBaseActivity activity, MyTestpaperData data,
-                                int resource) {
+    public TestpaperListAdapter(ActionBarBaseActivity activity, int resource) {
+        super(activity, resource);
         mActivity = activity;
-        mResouce = resource;
-        inflater = LayoutInflater.from(mActivity);
 
         redoClick = new RedoClick();
         doClick = new DoClick();
@@ -54,7 +51,18 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
         myTestpaperResults = new ArrayList<MyTestpaperResult>();
         myTestpapers = new HashMap<Integer, Testpaper>();
         courses = new HashMap<Integer, Course>();
-        listAddItem(data);
+    }
+
+
+    @Override
+    public void addItems(ArrayList<MyTestpaperData> list) {
+    }
+
+    @Override
+    public void clear() {
+        myTestpaperResults.clear();
+        myTestpapers.clear();
+        courses.clear();
     }
 
     private void listAddItem(MyTestpaperData data)
@@ -65,13 +73,11 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
         courses.putAll(data.courses);
     }
 
+    @Override
     public void addItem(MyTestpaperData data)
     {
         listAddItem(data);
         notifyDataSetChanged();
-    }
-
-    public void setItems(CourseResult courseResult){
     }
 
     @Override
@@ -93,7 +99,7 @@ public class TestpaperListAdapter extends EdusohoBaseAdapter {
     public View getView(int index, View view, ViewGroup vg) {
         ViewHolder holder;
         if (view == null) {
-            view = inflater.inflate(mResouce, null);
+            view = inflater.inflate(mResource, null);
             holder = new ViewHolder();
             holder.mCourseTitle = (TextView) view.findViewById(R.id.testpaper_course_title);
             holder.mTestpaperName = (TextView) view.findViewById(R.id.testpaper_name);

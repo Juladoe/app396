@@ -142,6 +142,7 @@ public class EdusohoApp extends Application{
         };
 
         ajaxCallback.headers(requestUrl.heads);
+        ajaxCallback.timeout(1000 * 10);
         ajaxCallback.method(AQuery.METHOD_POST);
 
         if (cache != null) {
@@ -230,7 +231,7 @@ public class EdusohoApp extends Application{
         Log.i(null, "init");
         app = this;
         gson = new Gson();
-        apiVersion = "2.0.0";
+        apiVersion = "2.0.1";
         query = new AQuery(this);
         host = getString(R.string.app_host);
 
@@ -275,36 +276,63 @@ public class EdusohoApp extends Application{
         if (ajaxCallback == null) {
             ajaxCallback = new AjaxCallback<String>();
         }
+        ajaxCallback.method(AQuery.METHOD_POST);
         app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
     public void registDevice()
     {
-        if (app.config.isRegistDevice) {
+        Log.d(null, "registDevice->");
+        AppConfig config = app.config;
+        Log.d(null, "isPublicRegistDevice->" + config.isPublicRegistDevice);
+        Log.d(null, "isRegistDevice->" + config.isRegistDevice);
+        if (config.isPublicRegistDevice && config.isRegistDevice) {
             return;
         }
+
         Map<String, String> params = getPlatformInfo();
 
-        logToServer(Const.MOBILE_REGIST, params, null);
-        logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                super.callback(url, object, status);
-                Log.d(null, "regist device->" + object);
-                try {
-                    Boolean result = app.gson.fromJson(
-                            object, new TypeToken<Boolean>() {
-                    }.getType());
+        if (!config.isPublicRegistDevice) {
+            logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>(){
+                @Override
+                public void callback(String url, String object, AjaxStatus status) {
+                    super.callback(url, object, status);
+                    Log.d(null, "regist device to public->" + object);
+                    try {
+                        Boolean result = app.gson.fromJson(
+                                object, new TypeToken<Boolean>() {
+                        }.getType());
 
-                    if (true == result) {
-                        app.config.isRegistDevice = true;
-                        app.saveConfig();
+                        if (true == result) {
+                            app.config.isPublicRegistDevice = true;
+                            app.saveConfig();
+                        }
+                    } catch (Exception e) {
                     }
-                } catch (Exception e) {
-                    //none
                 }
-            }
-        });
+            });
+        }
+
+        if (!config.isRegistDevice) {
+            logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
+                @Override
+                public void callback(String url, String object, AjaxStatus status) {
+                    super.callback(url, object, status);
+                    Log.d(null, "regist device to school->" + object);
+                    try {
+                        Boolean result = app.gson.fromJson(
+                                object, new TypeToken<Boolean>() {
+                        }.getType());
+
+                        if (true == result) {
+                            app.config.isRegistDevice = true;
+                            app.saveConfig();
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            });
+        }
     }
 
     public boolean getNetStatus()
@@ -407,6 +435,7 @@ public class EdusohoApp extends Application{
         config = new AppConfig();
         config.showSplash = sp.getBoolean("showSplash", true);
         config.isRegistDevice = sp.getBoolean("registDevice", false);
+        config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
         if (config.startWithSchool) {
             loadDefaultSchool();
@@ -473,6 +502,7 @@ public class EdusohoApp extends Application{
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("showSplash", config.showSplash);
         edit.putBoolean("registDevice", config.isRegistDevice);
+        edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
         edit.commit();
     }

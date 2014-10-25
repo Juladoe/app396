@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -236,7 +238,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
 
         @Override
         public Drawable getDrawable(String s) {
-            Drawable drawable = null;
+            Drawable drawable = getResources().getDrawable(R.drawable.load);
             AQuery aQuery = new AQuery(mContext);
             File cacheDir = AQUtility.getCacheDir(mContext);
             String fileName = DigestUtils.md5(s);

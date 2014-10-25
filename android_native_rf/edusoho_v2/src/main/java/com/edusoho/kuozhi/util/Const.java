@@ -238,6 +238,7 @@ public class Const {
     public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";
     public static final String MEDIA_URL = "mediaUrl";
+    public static final String HEAD_URL = "headUrl";
     public static final String MEDIA_ID = "mediaId";
     public static final String STATUS = "status";
     public static final String MEDIA_SOURCE = "mediaSource";

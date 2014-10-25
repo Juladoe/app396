@@ -99,9 +99,6 @@ public class LearnStatusWidget extends FrameLayout {
                 mLoadView.setVisibility(View.GONE);
                 if (getVisibility() == GONE) {
                     setVisibility(View.VISIBLE);
-                    mContainer.measure(0, 0);
-                    int height = mContainer.getMeasuredHeight();
-                    AppUtil.animForHeight(new EdusohoAnimWrap(mContainer), 0, height, 420);
                 }
 
                 final Course course = lasterLearnStatus.data;

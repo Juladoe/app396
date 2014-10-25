@@ -24,6 +24,11 @@ android {
         }
     }
 
+    sourceSets {
+        edianshang {
+            res.srcDirs = ['src/edianshang/res']
+        }
+    }
 }
 
 dependencies {

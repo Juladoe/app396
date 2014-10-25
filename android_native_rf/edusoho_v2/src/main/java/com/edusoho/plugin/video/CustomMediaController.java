@@ -46,6 +46,8 @@ public class CustomMediaController extends RelativeLayout {
     private boolean mIsStop;
     private int mLastPos;
 
+    private int mHideCount;
+
     private Timer updateTimer;
     private Timer autoHideTimer;
 
@@ -70,16 +72,31 @@ public class CustomMediaController extends RelativeLayout {
     public void setVideoView(VideoView view)
     {
         mVideoView = view;
-        initView();
     }
 
     public void setActivity(ActionBarBaseActivity activity)
     {
         mActivity = activity;
+        initView();
     }
 
     public void ready(final MediaControllerListener listener)
     {
+        updateTimer = new Timer();
+        autoHideTimer = new Timer();
+
+        autoHideTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mIsShowController) {
+                    if (mHideCount <= 0) {
+                        updateHandler.obtainMessage(HIDE).sendToTarget();
+                    }
+                    mHideCount = mHideCount - 1000;
+                }
+            }
+        }, 0, 1000);
+
         updateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -140,8 +157,6 @@ public class CustomMediaController extends RelativeLayout {
         };
 
         bindClickListener();
-        updateTimer = new Timer();
-        autoHideTimer = new Timer();
     }
 
     public int getLastPos()
@@ -151,32 +166,33 @@ public class CustomMediaController extends RelativeLayout {
 
     private void hide()
     {
+        mHideCount = 0;
         mIsShowController = false;
         setVisibility(View.INVISIBLE);
     }
 
     private void show()
     {
+        mHideCount = 3000;
         mIsShowController = true;
         setVisibility(View.VISIBLE);
-        autoHideTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (mIsShowController) {
-                    updateHandler.obtainMessage(HIDE).sendToTarget();
-                }
-            }
-        }, 3000);
     }
 
     public void play(int pos)
     {
+        Log.d(null, "pos->" + pos);
         playBtn.setImageResource(R.drawable.video_pause);
+
+        mVideoView.start();
+        if (pos > 0) {
+            mVideoView.seekTo(pos);
+            return;
+        }
+
         if (mIsStop) {
             mVideoView.seekTo(pos);
             mIsStop = false;
         }
-        mVideoView.start();
     }
 
     public void pause()
@@ -188,7 +204,7 @@ public class CustomMediaController extends RelativeLayout {
     public void stop(MediaPlayer mediaPlayer)
     {
         mIsStop = true;
-        mediaPlayer.pause();
+        mVideoView.pause();
         playBtn.setImageResource(R.drawable.video_play);
     }
 
@@ -258,7 +274,18 @@ public class CustomMediaController extends RelativeLayout {
         nextBtn.setOnClickListener(clickListener);
         customRotationBtn.setOnClickListener(clickListener);
 
-        mVideoView.setOnTouchListener(new View.OnTouchListener() {
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mHideCount = 3000;
+                return true;
+            }
+        });
+    }
+
+    public void setHideListener(View view)
+    {
+        view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
