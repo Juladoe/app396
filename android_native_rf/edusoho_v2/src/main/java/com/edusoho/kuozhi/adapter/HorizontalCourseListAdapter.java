@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
@@ -119,6 +120,9 @@ public class HorizontalCourseListAdapter extends EdusohoBaseAdapter {
             holder.aq.id(R.id.course_pic).image(
                     course.largePicture, false, true, 200, R.drawable.noram_course, null, AQuery.FADE_IN_NETWORK);
         }
+
+        int width = (int)(EdusohoApp.screenW * 0.5f);
+        holder.aq.id(R.id.course_pic).width(width + 2 + 16, false);
     }
 
     protected class ViewHolder {

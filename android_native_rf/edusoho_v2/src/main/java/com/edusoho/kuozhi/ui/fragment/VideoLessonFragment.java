@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -87,8 +88,9 @@ public class VideoLessonFragment extends BaseFragment {
         mLoadView = view.findViewById(R.id.load_layout);
 
         mMediaController = (CustomMediaController) view.findViewById(R.id.custom_mediaController);
-        mMediaController.setVideoView(mVideoView);
         mMediaController.setActivity(mActivity);
+        mMediaController.setVideoView(mVideoView);
+        mMediaController.setHideListener(mVideoView);
 
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -118,10 +120,8 @@ public class VideoLessonFragment extends BaseFragment {
                         case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
                             Log.d(null,  "error->MEDIA_ERROR_SERVER_DIED");
                             mediaPlayer.reset();
-                            return true;
+                            break;
                     }
-                    showErrorDialog();
-                    return true;
                 }
                 reloadLessonMediaUrl();
                 return true;
@@ -136,14 +136,15 @@ public class VideoLessonFragment extends BaseFragment {
         });
     }
 
-    private void changeBDPlayFragment(final String url)
+    private void changeBDPlayFragment(final LessonItem lessonItem)
     {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(
                 "BDVideoLessonFragment", mActivity, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString(Const.MEDIA_URL, url);
+                bundle.putString(Const.MEDIA_URL, lessonItem.mediaUri);
+                bundle.putString(Const.HEAD_URL, lessonItem.headUrl);
             }
         });
         fragmentTransaction.replace(R.id.lesson_content, fragment);
@@ -173,7 +174,7 @@ public class VideoLessonFragment extends BaseFragment {
                     return;
                 }
 
-                changeBDPlayFragment(lessonItem.mediaUri);
+                changeBDPlayFragment(lessonItem);
             }
         });
     }

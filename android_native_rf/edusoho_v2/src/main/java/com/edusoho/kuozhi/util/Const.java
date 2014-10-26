@@ -72,6 +72,7 @@ public class Const {
     public static final String MOBILE_REGIST = "http://open.edusoho.com/mobstat/installed";
 
     public static final String REGIST_DEVICE = "School/registDevice";
+    public static final String DOWNLOAD_URL = "School/getDownloadUrl";
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
@@ -238,6 +239,7 @@ public class Const {
     public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";
     public static final String MEDIA_URL = "mediaUrl";
+    public static final String HEAD_URL = "headUrl";
     public static final String MEDIA_ID = "mediaId";
     public static final String STATUS = "status";
     public static final String MEDIA_SOURCE = "mediaSource";

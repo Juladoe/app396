@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -21,6 +22,8 @@ import com.edusoho.kuozhi.view.EdusohoViewPager;
 import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import java.util.ArrayList;
 
@@ -35,6 +38,8 @@ public class RecommendFragment extends BaseFragment {
     private CourseListWidget mRecommendCourses;
     private CourseListWidget mNewCourses;
     private HorizontalListWidget mWeekCourse;
+
+    private PullToRefreshScrollView mRootView;
     public String mTitle = "推荐";
 
     private View mWeekCourseLabel;
@@ -53,6 +58,7 @@ public class RecommendFragment extends BaseFragment {
     @Override
     protected void initView(View view)
     {
+        mRootView = (PullToRefreshScrollView) view;
         mWeekCourse = (HorizontalListWidget) view.findViewById(R.id.recommend_week_course);
         mRecommendCourses = (CourseListWidget) view.findViewById(R.id.recommend_listview);
         mNewCourses = (CourseListWidget) view.findViewById(R.id.new_listview);
@@ -61,6 +67,24 @@ public class RecommendFragment extends BaseFragment {
 
         mWeekCourseLabel = view.findViewById(R.id.recommend_week_label);
 
+        mRootView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mRootView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ScrollView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+                initFragment();
+                mRootView.onRefreshComplete();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+
+            }
+        });
+        initFragment();
+    }
+
+    private void initFragment()
+    {
         initSchoolBanner();
         initSchoolAnnouncement();
         initWeekCourse();

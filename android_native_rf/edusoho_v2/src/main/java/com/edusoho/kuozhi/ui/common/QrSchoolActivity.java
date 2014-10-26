@@ -123,7 +123,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                 return;
                             }
                             School site = schoolResult.site;
-                            if (!checkMobileVersion(site.apiVersionRange)) {
+                            if (!checkMobileVersion(site, site.apiVersionRange)) {
                                 return;
                             };
 
@@ -184,7 +184,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }
 
                     School site = schoolResult.site;
-                    if (!checkMobileVersion(site.apiVersionRange)) {
+                    if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
                     };
 
@@ -210,7 +210,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         app.appFinish();
     }
 
-    public boolean checkMobileVersion(HashMap<String, String> versionRange)
+    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange)
     {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
@@ -220,18 +220,19 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             PopupDialog dlg = PopupDialog.createMuilt(
                     mContext,
                     "网校提示",
-                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+                    "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。",
                     new PopupDialog.PopupClickListener() {
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                app.updateApp(Const.DEFAULT_UPDATE_URL, true, new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
-                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
-                                    }
-                                });
+                                String code = getResources().getString(R.string.app_code);
+                                String updateUrl = String.format(
+                                        "%s/%s?code=%s",
+                                        site.url,
+                                        Const.DOWNLOAD_URL,
+                                        code
+                                );
+                                app.startUpdateWebView(updateUrl);
                             }
                         }
                     });
@@ -246,7 +247,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             PopupDialog.createNormal(
                     mContext,
                     "网校提示",
-                    "服务器维护中，请稍后再试。"
+                    "网校服务器版本过低，无法继续登录！请重新尝试。"
             ).show();
             return false;
         }

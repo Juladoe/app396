@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.course;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -139,6 +140,16 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             public void onDrawerSlide(float openRatio, int offsetPixels) {
             }
         });
+    }
+
+    public int getCourseId()
+    {
+        return mCourseId;
+    }
+
+    public int getLessonId()
+    {
+        return mLessonId;
     }
 
     private void changeLessonStatus(boolean isLearn)
@@ -365,7 +376,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
+                    //String proxyUrl = "http://localhost:5820/" + normalLesson.mediaUri;
                     fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
+                    fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
@@ -407,6 +420,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             mActivity.longToast("客户端暂不支持网易云视频");
             return;
         }
+
         StringBuilder stringBuilder = lessonType.getType();
         stringBuilder.append("LessonFragment");
         loadLessonFragment(stringBuilder.toString());

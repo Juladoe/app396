@@ -724,6 +724,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	 * @param doScroll - Whether the UI should scroll for this event.
 	 */
 	protected void onRefreshing(final boolean doScroll) {
+        Log.d(null, "onRefreshing mode->" + mMode);
 		if (mMode.showHeaderLoadingLayout()) {
 			mHeaderLayout.refreshing();
 		}
@@ -733,7 +734,6 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 		if (doScroll) {
 			if (mShowViewWhileRefreshing) {
-
 				// Call Refresh Listener when the Scroll has finished
 				OnSmoothScrollFinishedListener listener = new OnSmoothScrollFinishedListener() {
 					@Override

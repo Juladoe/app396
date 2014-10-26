@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.handler.ClientVersionHandler;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
@@ -32,6 +33,7 @@ import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
+import com.edusoho.listener.StatusCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -222,45 +224,65 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return title;
     }
 
-    public boolean checkMobileVersion(HashMap<String, String> versionRange)
+    public boolean checkMobileVersion(
+            HashMap<String, String> versionRange, ClientVersionHandler handler)
     {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 
         System.out.println("version->" + app.apiVersion);
         int result = AppUtil.compareVersion(app.apiVersion, min);
+        if (handler != null) {
+            return handler.execute(min, max, app.apiVersion);
+        }
+
         if (result == Const.LOW_VERSIO) {
-            PopupDialog dlg = PopupDialog.createMuilt(
+            PopupDialog popupDialog = PopupDialog.createMuilt(
                     mContext,
                     "网校提示",
-                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+                    "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。\n或选择其他网校",
                     new PopupDialog.PopupClickListener() {
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                app.updateApp(Const.DEFAULT_UPDATE_URL, true, new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
-                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
-                                    }
-                                });
+                                String code = getResources().getString(R.string.app_code);
+                                String updateUrl = String.format(
+                                        "%s%s?code=%s",
+                                        app.schoolHost,
+                                        Const.DOWNLOAD_URL,
+                                        code
+                                );
+                                app.startUpdateWebView(updateUrl);
+                            } else {
+                                QrSchoolActivity.start(mActivity);
+                                finish();
                             }
                         }
                     });
-
-            dlg.setOkText("立即下载");
-            dlg.show();
+            popupDialog.setCancelText("选择新网校");
+            popupDialog.setOkText("立即下载");
+            popupDialog.show();
             return false;
         }
 
         result = AppUtil.compareVersion(app.apiVersion, max);
         if (result == Const.HEIGHT_VERSIO) {
-            PopupDialog.createNormal(
+            PopupDialog popupDialog = PopupDialog.createMuilt(
                     mContext,
                     "网校提示",
-                    "服务器维护中，请稍后再试。"
-            ).show();
+                    "网校服务器版本过低，无法继续登录！请重新尝试。\n或选择其他网校",
+                    new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            if (button == PopupDialog.OK) {
+                                QrSchoolActivity.start(mActivity);
+                                finish();
+                            }
+                        }
+                    });
+
+            popupDialog.setOkText("选择新网校");
+            popupDialog.show();
             return false;
         }
 

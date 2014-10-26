@@ -85,6 +85,17 @@ public class RefreshListWidget extends PullToRefreshListView{
         }
     }
 
+    public void pushItem(Object item, boolean isEmpty)
+    {
+        mAdapter.addItem(item);
+        if (mMode == REFRESH) {
+            if (item == null || isEmpty) {
+                mAdapter = getEmptyLayoutAdapter();
+                setAdapter(mAdapter);
+            }
+        }
+    }
+
     public int getStart()
     {
         return mStart;

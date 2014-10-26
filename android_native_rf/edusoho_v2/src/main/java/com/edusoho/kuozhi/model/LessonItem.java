@@ -24,6 +24,7 @@ public class LessonItem<T> {
     public String mediaSource;
     public String mediaName;
     public String mediaUri;
+    public String headUrl;
     public String length;
     public int materialNum;
     public int quizNum;

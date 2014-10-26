@@ -8,4 +8,5 @@ public class AppUpdateInfo {
     public String updateUrl;
     public String updateInfo;
     public int code;
+    public boolean show;
 }

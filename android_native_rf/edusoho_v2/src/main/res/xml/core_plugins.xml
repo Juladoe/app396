@@ -53,8 +53,9 @@
     <plugin name="LearningCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearningCourseFragment"></plugin>
     <plugin name="LearnedCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragment"></plugin>
     <plugin name="TextLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment"></plugin>
-    <plugin name="VideoLessonFragment" version="1.0" package="com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment"></plugin>
-    <plugin name="BDVideoLessonFragment" version="1.0" package="com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment"></plugin>
+    <plugin name="VideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.VideoLessonFragment"></plugin>
+    <plugin name="BDVideoLessonFragment" version="1.0" package="com.edusoho.plugin.video.CustomVideoFragment"></plugin>
+    <plugin name="EduVideoViewFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.video.EduVideoViewFragment"></plugin>
 
     <plugin name="AudioLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AudioLessonFragment"></plugin>
     <plugin name="PptLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.PptLessonFragment"></plugin>
