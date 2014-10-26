@@ -223,8 +223,8 @@ public class EdusohoApp extends Application {
 
         notifyMap = new HashMap<String, Bundle>();
 
-        initImageLoaderConfig();
         initWorkSpace();
+        initImageLoaderConfig();
         loadConfig();
 
         mEngine = CoreEngine.create(this);
