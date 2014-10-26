@@ -71,6 +71,7 @@ public class EdusohoApp extends Application{
     public String token;
 
     public static HashMap<String, Activity> runTask;
+    private static final String TAG = "EdusohoApp";
 
     public static int screenW;
     public static int screenH;
@@ -87,7 +88,7 @@ public class EdusohoApp extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(null, "create application");
+        Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
         EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
@@ -146,7 +147,7 @@ public class EdusohoApp extends Application{
         ajaxCallback.method(AQuery.METHOD_POST);
 
         if (cache != null) {
-            Log.d(null, "get to cache->" + requestUrl.url);
+            Log.d(TAG, "get to cache->" + requestUrl.url);
             mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
             ajaxCallback.setCacheRequest(true);
         }
@@ -228,10 +229,10 @@ public class EdusohoApp extends Application{
 
     private void init()
     {
-        Log.i(null, "init");
+        Log.i(TAG, "init");
         app = this;
         gson = new Gson();
-        apiVersion = "2.0.1";
+        apiVersion = getString(R.string.api_version);
         query = new AQuery(this);
         host = getString(R.string.app_host);
 
@@ -284,8 +285,6 @@ public class EdusohoApp extends Application{
     {
         Log.d(null, "registDevice->");
         AppConfig config = app.config;
-        Log.d(null, "isPublicRegistDevice->" + config.isPublicRegistDevice);
-        Log.d(null, "isRegistDevice->" + config.isRegistDevice);
         if (config.isPublicRegistDevice && config.isRegistDevice) {
             return;
         }
@@ -533,11 +532,14 @@ public class EdusohoApp extends Application{
             if (! workSpace.exists()) {
                 workSpace.mkdir();
             }
-            AQUtility.setCacheDir(new File(workSpace, "cache"));
+            File cache = new File(workSpace, "cache");
+            if (!cache.exists()) {
+                AQUtility.setCacheDir(new File(workSpace, "cache"));
+            }
         } else {
             Toast.makeText(this, "设备没有内存卡,数据将保存在手机内存中！", Toast.LENGTH_LONG).show();
         }
-        loadCustomBtnStyle();
+
         runTask = new HashMap<String, Activity>();
     }
 

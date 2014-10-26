@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -169,7 +171,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 loading.dismiss();
                 int code = status.getCode();
                 if (code != Const.OK) {
-                    PopupDialog.createNormal(mContext, "提示信息", "网络异常！请检查网络链接").show();
+                    PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }
 
@@ -195,7 +197,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                                 return;
                             }
                             School site = schoolResult.site;
-                            if (!checkMobileVersion(site.apiVersionRange, null)) {
+                            if (!checkMobileVersion(site, site.apiVersionRange)) {
                                 return;
                             };
 
@@ -210,6 +212,51 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 }
             }
         });
+    }
+
+    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange)
+    {
+        String min = versionRange.get("min");
+        String max = versionRange.get("max");
+
+        int result = AppUtil.compareVersion(app.apiVersion, min);
+        if (result == Const.LOW_VERSIO) {
+            PopupDialog dlg = PopupDialog.createMuilt(
+                    mContext,
+                    "网校提示",
+                    "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。",
+                    new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            if (button == PopupDialog.OK) {
+                                String code = getResources().getString(R.string.app_code);
+                                String updateUrl = String.format(
+                                        "%s/%s?code=%s",
+                                        site.url,
+                                        Const.DOWNLOAD_URL,
+                                        code
+                                );
+                                app.startUpdateWebView(updateUrl);
+                            }
+                        }
+                    });
+
+            dlg.setOkText("立即下载");
+            dlg.show();
+            return false;
+        }
+
+        result = AppUtil.compareVersion(app.apiVersion, max);
+        if (result == Const.HEIGHT_VERSIO) {
+            PopupDialog.createNormal(
+                    mContext,
+                    "网校提示",
+                    "网校服务器版本过低，无法继续登录！请重新尝试。"
+            ).show();
+            return false;
+        }
+
+        return true;
     }
 
     private void showSchSplash(String schoolName, String[] splashs)
