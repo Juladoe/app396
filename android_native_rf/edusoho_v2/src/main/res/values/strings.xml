@@ -80,5 +80,5 @@
     <string name="course_no_teacher">该课程尚未设置教师</string>
     <string name="course_no_review">该课程尚无评价</string>
 
-    <string name="app_code">main</string>
+    <string name="app_code">EduSoho</string>
 </resources>

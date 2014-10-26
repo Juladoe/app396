@@ -72,6 +72,7 @@ public class Const {
     public static final String MOBILE_REGIST = "http://open.edusoho.com/mobstat/installed";
 
     public static final String REGIST_DEVICE = "School/registDevice";
+    public static final String DOWNLOAD_URL = "School/getDownloadUrl";
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";

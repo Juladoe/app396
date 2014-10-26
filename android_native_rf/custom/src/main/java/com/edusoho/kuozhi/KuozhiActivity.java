@@ -83,7 +83,8 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
                             return;
                         }
                         School site = schoolResult.site;
-                        if (!checkMobileVersion(site.apiVersionRange)) {
+                        CustomClientVersionHandler handler = new CustomClientVersionHandler(mActivity);
+                        if (!checkMobileVersion(site.apiVersionRange, handler)) {
                             return;
                         }
 
