@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -51,6 +52,7 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextFontColor.ColorPickerDialog;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -106,7 +108,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
     private int mCameraIndex = 1;
 
-    private int mCurFontSize = 0;
+    //private int mCurFontSize = 0;
     private int mMaxFontSize = 70;
     private int mMinFontSize = 20;
 
@@ -150,6 +152,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private View mRichTextBoxView;
 
     private byte[] mItemArgs = new byte[7];
+    private int mCompressImageName = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -222,14 +225,14 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivPhoto.setOnClickListener(richTextListener);
         ivCamera.setOnClickListener(richTextListener);
 
-        mCurFontSize = (int) etContent.getTextSize();
+        //mCurFontSize = (int) etContent.getTextSize();
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.et_content) {
-            mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart() - 1, etContent.getSelectionEnd(),
+            mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
                     CharacterStyle.class);
 
             setRichTextImage();
@@ -275,29 +278,41 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 mColorPickerDialog.show();
             } else if (v.getId() == R.id.iv_font_increase) {
                 //字体增大
-                if (mCurFontSize < mMaxFontSize) {
-                    etContent.getText().removeSpan(getFontSizeStyle());
-                    ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
-                    ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
-                    mCurFontSize = mCurFontSize + 5;
-                    Log.d("字体大小--------->", String.valueOf(mCurFontSize));
-                    AbsoluteSizeSpan ass = new AbsoluteSizeSpan(mCurFontSize);
-                    etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-                } else {
-                    ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase_unclick));
+                int curFontSize = getSelectTextSize();
+                if (curFontSize == 0) {
+                    curFontSize = (int) etContent.getTextSize();
+                }
+                if (mSelectTextEnd - mSelectTextStart > 0) {
+                    if (curFontSize < mMaxFontSize) {
+                        etContent.getText().removeSpan(getFontSizeStyle());
+                        ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
+                        ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
+                        curFontSize = curFontSize + 5;
+                        Log.d("字体大小--------->", String.valueOf(curFontSize));
+                        AbsoluteSizeSpan ass = new AbsoluteSizeSpan(curFontSize);
+                        etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                    } else {
+                        ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase_unclick));
+                    }
                 }
             } else if (v.getId() == R.id.iv_font_decrease) {
                 //字体减小
-                if (mCurFontSize > mMinFontSize) {
-                    etContent.getText().removeSpan(getFontSizeStyle());
-                    ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
-                    ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
-                    mCurFontSize = mCurFontSize - 5;
-                    AbsoluteSizeSpan ass = new AbsoluteSizeSpan(mCurFontSize);
-                    Log.d("字体大小--------->", String.valueOf(mCurFontSize));
-                    etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-                } else {
-                    ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease_unclick));
+                int curFontSize = getSelectTextSize();
+                if (curFontSize == 0) {
+                    curFontSize = (int) etContent.getTextSize();
+                }
+                if (mSelectTextEnd - mSelectTextStart > 0) {
+                    if (curFontSize > mMinFontSize) {
+                        etContent.getText().removeSpan(getFontSizeStyle());
+                        ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
+                        ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
+                        curFontSize = curFontSize - 5;
+                        AbsoluteSizeSpan ass = new AbsoluteSizeSpan(curFontSize);
+                        Log.d("字体大小--------->", String.valueOf(curFontSize));
+                        etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                    } else {
+                        ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease_unclick));
+                    }
                 }
             } else if (v.getId() == R.id.iv_photo) {
                 //相册图片
@@ -329,6 +344,17 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             }
         }
     };
+
+    private int getSelectTextSize() {
+        CharacterStyle[] styles = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
+                CharacterStyle.class);
+        for (CharacterStyle style : styles) {
+            if (style instanceof AbsoluteSizeSpan) {
+                return ((AbsoluteSizeSpan) style).getSize();
+            }
+        }
+        return 0;
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -454,7 +480,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ss.setSpan(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         eb.insert(qqPosition, ss);
 
-        mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(mContext, baos));
+        mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
         mImageCount++;
     }
 
@@ -495,6 +521,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      *
      * @param url
      */
+
     private void editQuestionSubmit(RequestUrl url) {
         mProgressDialog.show();
         mActivity.ajaxPost(url, new ResultCallback() {
@@ -620,7 +647,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             }
             Drawable drawable = null;
             try {
-                Bitmap bitmap = mAQuery.getCachedImage(source);
+                Bitmap bitmap = BitmapFactory.decodeFile(ImageLoader.getInstance().getDiskCache().get(source).getPath());
                 float showWidth = EdusohoApp.app.screenW * 0.8f;
                 if (showWidth < bitmap.getHeight()) {
                     bitmap = AppUtil.scaleImage(bitmap, showWidth, 0, mContext);

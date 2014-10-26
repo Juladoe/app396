@@ -124,6 +124,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                         if (isRefresh) {
                             //下拉刷新清空
                             adapter.clearAdapter();
+                            adapter.setCacheClear();
                         }
                         adapter.addItem(replyResult);
                     } else {
