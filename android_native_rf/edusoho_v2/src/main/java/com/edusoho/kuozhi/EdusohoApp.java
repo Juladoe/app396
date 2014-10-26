@@ -270,25 +270,19 @@ public class EdusohoApp extends Application {
         app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
-<<<<<<< HEAD
     public void registDevice() {
-        if (app.config.isRegistDevice) {
-=======
-    public void registDevice()
-    {
         Log.d(null, "registDevice->");
         AppConfig config = app.config;
         Log.d(null, "isPublicRegistDevice->" + config.isPublicRegistDevice);
         Log.d(null, "isRegistDevice->" + config.isRegistDevice);
         if (config.isPublicRegistDevice && config.isRegistDevice) {
->>>>>>> 323cd74f17579486c2b5e1d48e915eac3f053606
             return;
         }
 
         Map<String, String> params = getPlatformInfo();
 
         if (!config.isPublicRegistDevice) {
-            logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>(){
+            logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>() {
                 @Override
                 public void callback(String url, String object, AjaxStatus status) {
                     super.callback(url, object, status);

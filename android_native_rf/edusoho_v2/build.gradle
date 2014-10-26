@@ -29,11 +29,7 @@ dependencies {
     compile project(':PinterestLikeAdapterView')
     compile files('libs/nineoldandroids-2.4.0.jar')
     compile files('libs/libammsdk.jar')
-<<<<<<< HEAD
-
-=======
     compile files('libs/httpcore-4.3.2.jar')
     compile files('libs/httpcore-4.3.3.jar')
     compile files('libs/universal-image-loader-1.9.3.jar')
->>>>>>> 323cd74f17579486c2b5e1d48e915eac3f053606
 }
