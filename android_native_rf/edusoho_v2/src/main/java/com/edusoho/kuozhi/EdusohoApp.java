@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -48,6 +49,9 @@ import com.edusoho.listener.RequestParamsCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -55,7 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EdusohoApp extends Application{
+public class EdusohoApp extends Application {
 
     public AppConfig config;
     public AQuery query;
@@ -90,26 +94,23 @@ public class EdusohoApp extends Application{
         super.onCreate();
         Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
-        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
-    public static void log(String msg)
-    {
+    public static void log(String msg) {
         if (EdusohoApp.debug) {
             System.out.println(msg);
         }
     }
 
-    public EdusohoMainService getService()
-    {
+    public EdusohoMainService getService() {
         return EdusohoMainService.getService();
     }
 
     public void postByMuiltKeys(
             final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback
-    )
-    {
+    ) {
         AjaxCallback<String> ajaxCallback = new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
@@ -125,8 +126,7 @@ public class EdusohoApp extends Application{
     }
 
     public AjaxCallback postUrl(
-            final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback)
-    {
+            final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
         Cache cache = mEngine.appCache.getCache(requestUrl);
         CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
             @Override
@@ -156,9 +156,8 @@ public class EdusohoApp extends Application{
         return ajaxCallback;
     }
 
-    public <T> void queryUrl(String url, Class<T> tClass, final AjaxCallback<T> ajaxCallback)
-    {
-        query.ajax(url, tClass, new AjaxCallback<T>(){
+    public <T> void queryUrl(String url, Class<T> tClass, final AjaxCallback<T> ajaxCallback) {
+        query.ajax(url, tClass, new AjaxCallback<T>() {
             @Override
             public void callback(String url, T object, AjaxStatus status) {
                 ajaxCallback.callback(url, object, status);
@@ -166,70 +165,58 @@ public class EdusohoApp extends Application{
         });
     }
 
-    public void addMessageListener(String msgId, CoreEngineMsgCallback callback)
-    {
+    public void addMessageListener(String msgId, CoreEngineMsgCallback callback) {
         mEngine.receiveMsg(msgId, callback);
     }
 
-    public void registMsgSource(MessageEngine.MessageCallback messageCallback)
-    {
+    public void registMsgSource(MessageEngine.MessageCallback messageCallback) {
         mEngine.registMsgSrc(messageCallback);
     }
 
-    public void unRegistMsgSource(MessageEngine.MessageCallback messageCallback)
-    {
+    public void unRegistMsgSource(MessageEngine.MessageCallback messageCallback) {
         mEngine.unRegistMessageSource(messageCallback);
     }
 
-    public void unRegistPubMsg(MessageType messageType, MessageEngine.MessageCallback messageCallback)
-    {
+    public void unRegistPubMsg(MessageType messageType, MessageEngine.MessageCallback messageCallback) {
         mEngine.unRegistPubMessage(messageType, messageCallback);
     }
 
-    public ConcurrentHashMap<String, MessageEngine.MessageCallback> getSourceMap()
-    {
+    public ConcurrentHashMap<String, MessageEngine.MessageCallback> getSourceMap() {
         return mEngine.getMessageEngine().getSourceMap();
     }
 
-    public void delMessageListener(String msgId)
-    {
+    public void delMessageListener(String msgId) {
         mEngine.removeMsg(msgId);
     }
 
-    public void sendMessage(String msgId, Bundle bundle)
-    {
+    public void sendMessage(String msgId, Bundle bundle) {
         mEngine.getMessageEngine().sendMsg(msgId, bundle);
     }
 
-    public void sendMsgToTarget(int msgType, Bundle body, Class target)
-    {
+    public void sendMsgToTarget(int msgType, Bundle body, Class target) {
         mEngine.getMessageEngine().sendMsgToTaget(msgType, body, target);
     }
 
     public void sendMsgToTargetForCallback(
-            int msgType, Bundle body, Class target, NormalCallback callback)
-    {
+            int msgType, Bundle body, Class target, NormalCallback callback) {
         mEngine.getMessageEngine().sendMsgToTagetForCallback(msgType, body, target, callback);
     }
 
-    public void appFinish()
-    {
+    public void appFinish() {
         for (Activity activity : runTask.values()) {
             activity.finish();
         }
     }
 
-    public void exit()
-    {
+    public void exit() {
         notifyMap.clear();
         runTask.clear();
         stopService(DownLoadService.getIntent(this));
         System.exit(0);
     }
 
-    private void init()
-    {
-        Log.i(TAG, "init");
+    private void init() {
+        Log.i(null, "init");
         app = this;
         gson = new Gson();
         apiVersion = getString(R.string.api_version);
@@ -237,25 +224,31 @@ public class EdusohoApp extends Application{
         host = getString(R.string.app_host);
 
         notifyMap = new HashMap<String, Bundle>();
+
         initWorkSpace();
+        initImageLoaderConfig();
         loadConfig();
 
         mEngine = CoreEngine.create(this);
         installPlugin();
-
-        registDevice();
         startMainService();
     }
 
-    public void startMainService()
-    {
+    private void initImageLoaderConfig() {
+        ImageLoaderConfiguration mConfig = new ImageLoaderConfiguration
+                .Builder(this).
+                diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
+                .build();
+        ImageLoader.getInstance().init(mConfig);
+    }
+
+    public void startMainService() {
         app.mEngine.runService(EdusohoMainService.TAG, this, null);
     }
 
-    public Map<String, String> getPlatformInfo()
-    {
+    public Map<String, String> getPlatformInfo() {
         Map<String, String> params = new HashMap<String, String>();
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -272,8 +265,7 @@ public class EdusohoApp extends Application{
     }
 
     public void logToServer(
-            String url, Map<String, String> params, AjaxCallback<String> ajaxCallback)
-    {
+            String url, Map<String, String> params, AjaxCallback<String> ajaxCallback) {
         if (ajaxCallback == null) {
             ajaxCallback = new AjaxCallback<String>();
         }
@@ -281,8 +273,7 @@ public class EdusohoApp extends Application{
         app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
-    public void registDevice()
-    {
+    public void registDevice() {
         Log.d(null, "registDevice->");
         AppConfig config = app.config;
         if (config.isPublicRegistDevice && config.isRegistDevice) {
@@ -292,7 +283,7 @@ public class EdusohoApp extends Application{
         Map<String, String> params = getPlatformInfo();
 
         if (!config.isPublicRegistDevice) {
-            logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>(){
+            logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>() {
                 @Override
                 public void callback(String url, String object, AjaxStatus status) {
                     super.callback(url, object, status);
@@ -334,22 +325,19 @@ public class EdusohoApp extends Application{
         }
     }
 
-    public boolean getNetStatus()
-    {
+    public boolean getNetStatus() {
         ConnectivityManager connManager = (ConnectivityManager)
                 getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isAvailable();
     }
 
-    public String getPluginFile(String pluginName)
-    {
+    public String getPluginFile(String pluginName) {
         File file = mEngine.getPluginFile(pluginName);
         return file.getAbsolutePath();
     }
 
-    public void installApk(String file)
-    {
+    public void installApk(String file) {
         if (file == null || "".equals(file)) {
             return;
         }
@@ -362,8 +350,7 @@ public class EdusohoApp extends Application{
         this.startActivity(intent);
     }
 
-    private void installPlugin()
-    {
+    private void installPlugin() {
         final SharedPreferences sp = getSharedPreferences(PLUGIN_CONFIG, MODE_APPEND);
         if (sp.contains(INSTALL_PLUGIN)) {
             return;
@@ -377,8 +364,7 @@ public class EdusohoApp extends Application{
         });
     }
 
-    public String getApkVersion()
-    {
+    public String getApkVersion() {
         String version = "0.0.0";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -389,8 +375,7 @@ public class EdusohoApp extends Application{
         return version;
     }
 
-    public void setCurrentSchool(School school)
-    {
+    public void setCurrentSchool(School school) {
         app.defaultSchool = school;
         app.schoolHost = school.url + "/";
 
@@ -403,8 +388,7 @@ public class EdusohoApp extends Application{
         edit.commit();
     }
 
-    private void loadDefaultSchool()
-    {
+    private void loadDefaultSchool() {
         SharedPreferences sp = getSharedPreferences("defaultSchool", MODE_PRIVATE);
         Map<String, String> map = (Map<String, String>) sp.getAll();
         if (!map.isEmpty()) {
@@ -419,8 +403,7 @@ public class EdusohoApp extends Application{
         }
     }
 
-    private String checkSchoolUrl(String url)
-    {
+    private String checkSchoolUrl(String url) {
         if (url.endsWith("mapi_v1")) {
             String newUrl = url.substring(0, url.length() - 1);
             return newUrl + "2";
@@ -428,8 +411,7 @@ public class EdusohoApp extends Application{
         return url;
     }
 
-    private void loadConfig()
-    {
+    private void loadConfig() {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         config = new AppConfig();
         config.showSplash = sp.getBoolean("showSplash", true);
@@ -443,16 +425,14 @@ public class EdusohoApp extends Application{
         loadToken();
     }
 
-    private void loadToken()
-    {
+    private void loadToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         token = sp.getString("token", "");
     }
 
-    public void saveToken(TokenResult result)
-    {
+    public void saveToken(TokenResult result) {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
-        SharedPreferences.Editor edit =  sp.edit();
+        SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", result.token);
         edit.commit();
 
@@ -460,10 +440,9 @@ public class EdusohoApp extends Application{
         loginUser = "".equals(token) ? null : result.user;
     }
 
-    public void removeToken()
-    {
+    public void removeToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
-        SharedPreferences.Editor edit =  sp.edit();
+        SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", "");
         edit.commit();
 
@@ -479,24 +458,20 @@ public class EdusohoApp extends Application{
     }
 
 
-    public boolean taskIsRun(String name)
-    {
+    public boolean taskIsRun(String name) {
         Activity activity = runTask.get(name);
         return activity != null;
     }
 
-    public void removeTask(String name)
-    {
+    public void removeTask(String name) {
         runTask.remove(name);
     }
 
-    public void addTask(String name, Activity activity)
-    {
+    public void addTask(String name, Activity activity) {
         runTask.put(name, activity);
     }
 
-    public void saveConfig()
-    {
+    public void saveConfig() {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("showSplash", config.showSplash);
@@ -506,8 +481,7 @@ public class EdusohoApp extends Application{
         edit.commit();
     }
 
-    public void query(String url, final ResultCallback callback, Activity mActivity)
-    {
+    public void query(String url, final ResultCallback callback, Activity mActivity) {
         if (!getNetStatus()) {
             PopupDialog.createNormal(
                     mActivity, "提示信息", "无网络,请检查网络和手机设置!").show();
@@ -524,12 +498,11 @@ public class EdusohoApp extends Application{
         });
     }
 
-    private void initWorkSpace()
-    {
+    private void initWorkSpace() {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             File sdcard = Environment.getExternalStorageDirectory();
             File workSpace = new File(sdcard, "edusoho");
-            if (! workSpace.exists()) {
+            if (!workSpace.exists()) {
                 workSpace.mkdir();
             }
             File cache = new File(workSpace, "cache");
@@ -543,15 +516,13 @@ public class EdusohoApp extends Application{
         runTask = new HashMap<String, Activity>();
     }
 
-    public void setDisplay(Activity activity)
-    {
+    public void setDisplay(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         screenH = display.getHeight();
         screenW = display.getWidth();
     }
 
-    public String bindToken2Url(String url, boolean addToken)
-    {
+    public String bindToken2Url(String url, boolean addToken) {
         StringBuffer sb = new StringBuffer(app.schoolHost);
         sb.append(url);
         if (addToken) {
@@ -560,19 +531,17 @@ public class EdusohoApp extends Application{
         return sb.toString();
     }
 
-    public HashMap<String, String> initParams(String[] arges)
-    {
+    public HashMap<String, String> initParams(String[] arges) {
         HashMap<String, String> params = new HashMap<String, String>();
-        for (int i=0; i < arges.length; i = i + 2) {
-            params.put(arges[i], arges[i+1]);
+        for (int i = 0; i < arges.length; i = i + 2) {
+            params.put(arges[i], arges[i + 1]);
         }
 
         return params;
     }
 
     public HashMap<String, String> createParams(
-            boolean addToken, RequestParamsCallback callback)
-    {
+            boolean addToken, RequestParamsCallback callback) {
         HashMap<String, String> params = new HashMap<String, String>();
         if (callback != null) {
             callback.addParams(params);
@@ -584,8 +553,7 @@ public class EdusohoApp extends Application{
         return params;
     }
 
-    public RequestUrl bindUrl(String url, boolean addToken)
-    {
+    public RequestUrl bindUrl(String url, boolean addToken) {
         StringBuffer sb = new StringBuffer(app.schoolHost);
         sb.append(url);
         RequestUrl requestUrl = new RequestUrl(sb.toString());
@@ -603,8 +571,7 @@ public class EdusohoApp extends Application{
         BitmapAjaxCallback.clearCache();
     }
 
-    public void checkToken()
-    {
+    public void checkToken() {
         synchronized (this) {
             if (loginUser != null) {
                 return;
@@ -614,7 +581,8 @@ public class EdusohoApp extends Application{
                 @Override
                 public void callback(String url, String object, AjaxStatus status) {
                     TokenResult result = app.gson.fromJson(
-                            object, new TypeToken<TokenResult>(){}.getType());
+                            object, new TypeToken<TokenResult>() {
+                    }.getType());
                     if (result != null) {
                         saveToken(result);
                     }
@@ -629,8 +597,7 @@ public class EdusohoApp extends Application{
     public static int popLeftBtnSel;
     public static int popRightBtnSel;
 
-    private void loadCustomBtnStyle()
-    {
+    private void loadCustomBtnStyle() {
         int version = Build.VERSION.SDK_INT;
         if ((version >= 8) && (version <= 10)) {
             popRightBtnSel = R.drawable.popup_right_10_btn;
@@ -645,8 +612,7 @@ public class EdusohoApp extends Application{
         }
     }
 
-    public void startUpdateWebView(String url)
-    {
+    public void startUpdateWebView(String url) {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -657,8 +623,7 @@ public class EdusohoApp extends Application{
 
     private boolean mIsNotifyUpdate;
 
-    public void updateApp(String url, boolean isShowLoading, final NormalCallback callback)
-    {
+    public void updateApp(String url, boolean isShowLoading, final NormalCallback callback) {
         if (mIsNotifyUpdate) {
             return;
         }
@@ -670,14 +635,15 @@ public class EdusohoApp extends Application{
             loadDialog.show();
         }
 
-        query.ajax(url,String.class,
-                new AjaxCallback<String>(){
+        query.ajax(url, String.class,
+                new AjaxCallback<String>() {
                     @Override
                     public void callback(String url, String object, AjaxStatus status) {
                         loadDialog.dismiss();
                         super.callback(url, object, status);
                         final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
-                                object, new TypeToken<AppUpdateInfo>(){}.getType());
+                                object, new TypeToken<AppUpdateInfo>() {
+                        }.getType());
 
                         if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
                             return;
@@ -685,26 +651,22 @@ public class EdusohoApp extends Application{
 
                         callback.success(appUpdateInfo);
                     }
-        });
+                });
     }
 
-    public void addNotify(String type, Bundle bundle)
-    {
+    public void addNotify(String type, Bundle bundle) {
         notifyMap.put(type, bundle);
     }
 
-    public Bundle getNotify(String type)
-    {
+    public Bundle getNotify(String type) {
         return notifyMap.get(type);
     }
 
-    public Set<String> getNotifys()
-    {
+    public Set<String> getNotifys() {
         return notifyMap.keySet();
     }
 
-    public void removeNotify(String type)
-    {
+    public void removeNotify(String type) {
         notifyMap.remove(type);
     }
 }

@@ -16,9 +16,12 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 /**
  * Created by Hby on 14-9-29.
@@ -29,28 +32,82 @@ public class URLImageGetter implements Html.ImageGetter {
     private AQuery mAQuery;
     private Context mContext;
     private ProgressBar mReplyImageLoading;
+    private DisplayImageOptions mOptions;
 
     public URLImageGetter(View v, AQuery aQuery, Context context, ProgressBar progressBar) {
         this.mContainer = v;
         this.mAQuery = aQuery;
         this.mContext = context;
         this.mReplyImageLoading = progressBar;
+        mOptions = new DisplayImageOptions.Builder().delayBeforeLoading(100).cacheOnDisk(true).build();
     }
 
     @Override
     public Drawable getDrawable(String source) {
-        URLDrawable urlDrawable = new URLDrawable();
+        final URLDrawable urlDrawable = new URLDrawable();
         if (!source.contains("http")) {
             source = QuestionDetailActivity.mHost + source;
         }
-        //Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
-        MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer, this.mReplyImageLoading);
+
+        //MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer, this.mReplyImageLoading);
         try {
-            this.mAQuery.id(R.id.iv_tmp).image(source, false, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
+            MyImageLoadingListener myImageLoadingListener = new MyImageLoadingListener(urlDrawable, this.mContainer, this.mReplyImageLoading);
+            ImageLoader.getInstance().loadImage(source, mOptions, myImageLoadingListener);
+            //this.mAQuery.id(R.id.iv_tmp).image(source, false, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
         } catch (Exception ex) {
             Log.d("imageURL--->", ex.toString());
         }
         return urlDrawable;
+    }
+
+    public class MyImageLoadingListener implements ImageLoadingListener {
+        private URLDrawable mURLDrawable;
+        private View mContainer;
+        private ProgressBar mReplyImageLoading;
+
+        public MyImageLoadingListener(URLDrawable d, View v, ProgressBar progressBar) {
+            this.mURLDrawable = d;
+            this.mContainer = v;
+            this.mReplyImageLoading = progressBar;
+        }
+
+        @Override
+        public void onLoadingStarted(String imageUri, View view) {
+
+        }
+
+        @Override
+        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+        }
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            Bitmap bitmap = loadedImage;
+
+            this.mReplyImageLoading.setVisibility(View.GONE);
+            this.mContainer.setVisibility(View.VISIBLE);
+
+            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
+            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
+            if (showMaxWidth < bitmap.getWidth()) {
+                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, URLImageGetter.this.mContext);
+            } else if (showMinWidth >= bitmap.getWidth()) {
+                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
+            }
+            Drawable drawable = new BitmapDrawable(bitmap);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            mURLDrawable.drawable = drawable;
+            this.mContainer.postInvalidate();
+            TextView tv = (TextView) this.mContainer;
+            tv.setText(tv.getText());
+        }
+
+        @Override
+        public void onLoadingCancelled(String imageUri, View view) {
+
+        }
     }
 
     public class MyBitmapAjaxCallback extends BitmapAjaxCallback {

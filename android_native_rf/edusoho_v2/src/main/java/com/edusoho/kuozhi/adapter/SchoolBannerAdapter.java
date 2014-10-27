@@ -38,6 +38,21 @@ public class SchoolBannerAdapter extends PagerAdapter {
         return mSchoolBanners.size();
     }
 
+    public void setItems(ArrayList<SchoolBanner> schoolBanners)
+    {
+        this.mSchoolBanners.clear();
+        this.mSchoolBanners = schoolBanners;
+        notifyDataSetChanged();
+    }
+
+    public void wrapContent()
+    {
+        SchoolBanner top = mSchoolBanners.get(0);
+        SchoolBanner last = mSchoolBanners.get(mSchoolBanners.size() - 1);
+        mSchoolBanners.add(mSchoolBanners.size(), top);
+        mSchoolBanners.add(0, last);
+    }
+
     @Override
     public View instantiateItem(ViewGroup container, int position) {
         final SchoolBanner banner = mSchoolBanners.get(position);

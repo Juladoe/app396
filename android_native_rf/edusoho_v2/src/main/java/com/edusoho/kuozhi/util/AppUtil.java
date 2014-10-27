@@ -598,14 +598,15 @@ public class AppUtil {
 
     /**
      * 创建临时图片文件
-     * @param context
+     *
+     * @param path
      * @param os
      * @return
      */
-    public static File createFile(Context context, ByteArrayOutputStream os) {
+    public static File createFile(String path, ByteArrayOutputStream os, int imageName) {
         File f = null;
         try {
-            f = new File(context.getCacheDir(), "tmpImage1.jpg");
+            f = new File(path, "tmpImage" + imageName + ".jpg");
             f.createNewFile();
             byte[] bytes = os.toByteArray();
             FileOutputStream fos = new FileOutputStream(f);

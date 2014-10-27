@@ -76,24 +76,29 @@ public class RefreshListWidget extends PullToRefreshListView{
 
     public void pushData(ArrayList data)
     {
-        mAdapter.addItems(data);
         if (mMode == REFRESH) {
             if (data == null || data.isEmpty()) {
                 mAdapter = getEmptyLayoutAdapter();
                 setAdapter(mAdapter);
+                return;
             }
+            mAdapter.clear();
         }
+
+        mAdapter.addItems(data);
     }
 
     public void pushItem(Object item, boolean isEmpty)
     {
-        mAdapter.addItem(item);
         if (mMode == REFRESH) {
             if (item == null || isEmpty) {
                 mAdapter = getEmptyLayoutAdapter();
                 setAdapter(mAdapter);
+                return;
             }
+            mAdapter.clear();
         }
+        mAdapter.addItem(item);
     }
 
     public int getStart()
@@ -120,7 +125,6 @@ public class RefreshListWidget extends PullToRefreshListView{
         setOnRefreshListener(new OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                mAdapter.clear();
                 mMode = REFRESH;
                 Log.d(TAG, "refresh->");
                 mUpdateListener.refresh(refreshView);

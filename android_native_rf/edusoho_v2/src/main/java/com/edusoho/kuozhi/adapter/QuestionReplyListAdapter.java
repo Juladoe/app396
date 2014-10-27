@@ -141,6 +141,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         ViewHolder holder;
         View v = null;
         final EntireReply entireReply = mEntireReplyList.get(position);
+        //View tmpView = mListViewCache.getOneCacheView(entireReply.replyModel.id);
+//        if (tmpView == null || (tmpView != null && ((ViewHolder) tmpView.getTag()).tvReplyContent.toString().equals(entireReply.replyModel.content))) {
         if (mListViewCache.getOneCacheView(entireReply.replyModel.id) == null) {
             v = LayoutInflater.from(this.mContext).inflate(mResource, null);
             holder = new ViewHolder();
@@ -152,6 +154,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             holder.pbReplyContent = (ProgressBar) v.findViewById(R.id.pb_reply_content);
             holder.mAqueryItem = new AQuery(v);
             v.setTag(holder);
+
+            holder.tvReplyName.setText(entireReply.replyModel.user.nickname);
 
             if (holder.tvReplyName.getText().equals(mUser.nickname)) {
                 holder.ivEdit.setVisibility(View.VISIBLE);
@@ -172,7 +176,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             } else {
                 holder.ivEdit.setVisibility(View.INVISIBLE);
             }
-
 
             holder.tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
 

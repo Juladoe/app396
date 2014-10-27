@@ -71,7 +71,7 @@ public class RecommendFragment extends BaseFragment {
         mRootView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ScrollView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
-                initFragment();
+                initFragment(true);
                 mRootView.onRefreshComplete();
             }
 
@@ -80,12 +80,12 @@ public class RecommendFragment extends BaseFragment {
 
             }
         });
-        initFragment();
+        initFragment(false);
     }
 
-    private void initFragment()
+    private void initFragment(boolean isUpdate)
     {
-        initSchoolBanner();
+        initSchoolBanner(isUpdate);
         initSchoolAnnouncement();
         initWeekCourse();
         initRecommendCourse();
@@ -133,7 +133,7 @@ public class RecommendFragment extends BaseFragment {
         mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
     }
 
-    private void initSchoolBanner()
+    private void initSchoolBanner(final boolean isUpdate)
     {
         RequestUrl url = app.bindUrl(Const.SCHOOL_BANNER, false);
 
@@ -150,10 +150,15 @@ public class RecommendFragment extends BaseFragment {
                     schoolBanners.add(SchoolBanner.def());
                 }
 
-                SchoolBannerAdapter adapter = new SchoolBannerAdapter(
-                        mActivity, schoolBanners);
-                mSchoolBanner.setAdapter(adapter);
-                mSchoolBanner.setCurrentItem(0);
+                SchoolBannerAdapter adapter;
+                if (isUpdate) {
+                    mSchoolBanner.update(schoolBanners);
+                } else {
+                    adapter = new SchoolBannerAdapter(
+                            mActivity, schoolBanners);
+                    mSchoolBanner.setAdapter(adapter);
+                    mSchoolBanner.setCurrentItem(1);
+                }
             }
         });
     }

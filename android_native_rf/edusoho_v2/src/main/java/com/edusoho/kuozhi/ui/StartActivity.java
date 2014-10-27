@@ -25,7 +25,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         setContentView(R.layout.start);
         app.registMsgSource(this);
         startSplash();
+        app.registDevice();
     }
+
 
     @Override
     protected void onDestroy() {
