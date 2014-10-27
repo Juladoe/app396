@@ -8,13 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -29,14 +25,12 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 public class URLImageGetter implements Html.ImageGetter {
     private static final String TAG = "URLImageGetter";
     private View mContainer;
-    private AQuery mAQuery;
     private Context mContext;
     private ProgressBar mReplyImageLoading;
     private DisplayImageOptions mOptions;
 
-    public URLImageGetter(View v, AQuery aQuery, Context context, ProgressBar progressBar) {
+    public URLImageGetter(View v, Context context, ProgressBar progressBar) {
         this.mContainer = v;
-        this.mAQuery = aQuery;
         this.mContext = context;
         this.mReplyImageLoading = progressBar;
         mOptions = new DisplayImageOptions.Builder().delayBeforeLoading(100).cacheOnDisk(true).build();
@@ -110,48 +104,6 @@ public class URLImageGetter implements Html.ImageGetter {
         }
     }
 
-    public class MyBitmapAjaxCallback extends BitmapAjaxCallback {
-        private URLDrawable mURLDrawable;
-        private String mURL;
-        private View mContainer;
-        private ProgressBar mReplyImageLoading;
-
-        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v, ProgressBar progressBar) {
-            this.mURLDrawable = d;
-            this.mURL = sourceUrl;
-            this.mContainer = v;
-            this.mReplyImageLoading = progressBar;
-        }
-
-        @Override
-        protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-
-            Bitmap bitmap = URLImageGetter.this.mAQuery.getCachedImage(mURL);
-
-            this.mReplyImageLoading.setVisibility(View.GONE);
-            this.mContainer.setVisibility(View.VISIBLE);
-
-            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-            if (showMaxWidth < bitmap.getWidth()) {
-                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, URLImageGetter.this.mContext);
-            } else if (showMinWidth >= bitmap.getWidth()) {
-                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
-            }
-            Drawable drawable = new BitmapDrawable(bitmap);
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            mURLDrawable.drawable = drawable;
-            this.mContainer.postInvalidate();
-            TextView tv = (TextView) this.mContainer;
-            tv.setText(tv.getText());
-
-//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//            ((LinearLayout) tv.getParent()).setLayoutParams(layoutParams);
-//            tv.getParent().requestLayout();
-        }
-    }
-
     public class URLDrawable extends BitmapDrawable {
         protected Drawable drawable;
 
@@ -163,4 +115,44 @@ public class URLImageGetter implements Html.ImageGetter {
             }
         }
     }
+
+//    public class MyBitmapAjaxCallback extends BitmapAjaxCallback {
+//        private URLDrawable mURLDrawable;
+//        private String mURL;
+//        private View mContainer;
+//        private ProgressBar mReplyImageLoading;
+//
+//        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v, ProgressBar progressBar) {
+//            this.mURLDrawable = d;
+//            this.mURL = sourceUrl;
+//            this.mContainer = v;
+//            this.mReplyImageLoading = progressBar;
+//        }
+//
+//        @Override
+//        protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
+//
+//            Bitmap bitmap = URLImageGetter.this.mAQuery.getCachedImage(mURL);
+//
+//            this.mReplyImageLoading.setVisibility(View.GONE);
+//            this.mContainer.setVisibility(View.VISIBLE);
+//
+//            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
+//            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
+//            if (showMaxWidth < bitmap.getWidth()) {
+//                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, URLImageGetter.this.mContext);
+//            } else if (showMinWidth >= bitmap.getWidth()) {
+//                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
+//            }
+//            Drawable drawable = new BitmapDrawable(bitmap);
+//            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//            mURLDrawable.drawable = drawable;
+//            this.mContainer.postInvalidate();
+//            TextView tv = (TextView) this.mContainer;
+//            tv.setText(tv.getText());
+//        }
+//    }
+
+
 }
