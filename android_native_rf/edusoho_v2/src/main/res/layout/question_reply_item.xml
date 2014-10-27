@@ -32,7 +32,6 @@
         <com.edusoho.kuozhi.view.plugin.CircularImageView
 
             android:id="@+id/civ_reply_pic"
-            android:src="@drawable/myinfo_default_face"
 
             android:layout_marginRight="16dp"
             android:layout_width="48dp"

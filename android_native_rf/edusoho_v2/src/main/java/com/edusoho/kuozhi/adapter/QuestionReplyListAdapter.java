@@ -33,6 +33,9 @@ import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.kuozhi.view.HtmlTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.URLImageGetter;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +171,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             //第一个为问题内容，需特殊处理
             if (mListViewCache.getOneCacheView(0) == null) {
                 v = LayoutInflater.from(mContext).inflate(mQuestionDetailLayoutId, null);
-                QuestionContentViewHolder qcvHolder = new QuestionContentViewHolder();
+                final QuestionContentViewHolder qcvHolder = new QuestionContentViewHolder();
+                qcvHolder.icon = (CircularImageView) v.findViewById(R.id.civ_post_pic);
                 qcvHolder.tvPostName = (TextView) v.findViewById(R.id.tv_post_name);
                 qcvHolder.tvPostDate = (TextView) v.findViewById(R.id.tv_post_date);
                 qcvHolder.btnEdit = (EdusohoButton) v.findViewById(R.id.edu_btn_question_edit);
@@ -176,6 +180,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
                 qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
 
+                //ImageLoader.getInstance().loadImage(mUser.mediumAvatar, new MyImageLoadingListener(qcvHolder.icon));
+                ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, new MyImageLoadingListener());
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
@@ -195,6 +201,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         } else if (mListViewCache.getOneCacheView(entireReply.replyModel.id) == null) {
             v = LayoutInflater.from(this.mContext).inflate(mResource, null);
             holder = new ViewHolder();
+            holder.icon = (CircularImageView) v.findViewById(R.id.civ_reply_pic);
             holder.tvReplyType = (TextView) v.findViewById(R.id.tv_reply_type);
             holder.tvReplyName = (TextView) v.findViewById(R.id.tv_reply_name);
             holder.tvReplyTime = (TextView) v.findViewById(R.id.tv_reply_time);
@@ -226,6 +233,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 holder.ivEdit.setVisibility(View.INVISIBLE);
             }
 
+            ImageLoader.getInstance().displayImage(entireReply.replyModel.user.mediumAvatar, holder.icon, new MyImageLoadingListener());
             holder.tvReplyTime.setText(AppUtil.getPostDays(entireReply.replyModel.createdTime));
 
             if (entireReply.replyModel.isElite == 1) {
@@ -268,6 +276,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     }
 
     private static class ViewHolder {
+        public CircularImageView icon;
         public TextView tvReplyType;
         public TextView tvReplyName;
         public TextView tvReplyTime;
@@ -355,6 +364,29 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 Log.d("imageURL--->", ex.toString());
             }
             return drawable;
+        }
+    }
+
+    public class MyImageLoadingListener implements ImageLoadingListener {
+
+        @Override
+        public void onLoadingStarted(String imageUri, View view) {
+
+        }
+
+        @Override
+        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+        }
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            //this.mImageView.setImageBitmap(loadedImage);
+        }
+
+        @Override
+        public void onLoadingCancelled(String imageUri, View view) {
+
         }
     }
 
