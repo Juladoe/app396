@@ -38,6 +38,7 @@ public class QuestionListAdapter extends ListBaseAdapter {
 
     public void addItem(QuestionResult questionResult) {
         listAddItem(questionResult.threads);
+        notifyDataSetChanged();
     }
 
     private void listAddItem(QuestionDetailModel[] questionDetailModels) {

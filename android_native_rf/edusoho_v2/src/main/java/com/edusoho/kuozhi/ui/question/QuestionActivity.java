@@ -94,8 +94,8 @@ public class QuestionActivity extends ActionBarBaseActivity {
                         adapter.addItem(questionResult);
                     } else {
                         adapter = new QuestionListAdapter(mContext, questionResult, R.layout.question_item);
+                        mQuestionRefreshList.setAdapter(adapter);
                     }
-                    mQuestionRefreshList.setAdapter(adapter);
                     mQuestionRefreshList.setStart(questionResult.start, questionResult.total);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
