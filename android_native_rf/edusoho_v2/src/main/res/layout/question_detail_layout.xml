@@ -19,10 +19,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <!--<TextView-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="教师的答案（2条）：" />-->
+        <include layout="@layout/loading_layout" />
 
         <com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget
             android:id="@+id/qrlw_question_reply"
@@ -39,8 +36,6 @@
             android:animationCache="false"
             android:scrollingCache="false"
             android:smoothScrollbar="true" />
-
-        <!--<include layout="@layout/loading_layout" />-->
 
     </LinearLayout>
 

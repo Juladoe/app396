@@ -325,6 +325,10 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 String state = Environment.getExternalStorageState();
                 if (state.equals(Environment.MEDIA_MOUNTED)) {
                     String saveDir = Environment.getExternalStorageDirectory().getPath() + "/temp_image";
+                    File dirFile = new File(saveDir);
+                    if (!dirFile.exists()) {
+                        dirFile.mkdirs();
+                    }
                     mCameraImageFile = new File(saveDir, "caremaImage" + mCameraIndex + ".jpg");
                     mCameraIndex++;
                     if (!mCameraImageFile.exists()) {
@@ -332,10 +336,10 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                             mCameraImageFile.createNewFile();
                         } catch (IOException e) {
                             e.printStackTrace();
+                            mCameraIndex--;
                             Toast.makeText(mContext, "照片创建失败!", Toast.LENGTH_LONG).show();
                             return;
                         }
-
                     }
                     Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraImageFile));

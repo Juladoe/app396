@@ -41,7 +41,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     private ActionBarBaseActivity mActivity;
     private QuestionReplyListWidget mQuestionRelyList;
-
+    private View mLoadView;
 
     private AQuery mAQuery;
 
@@ -64,7 +64,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     private void initView() {
         mAQuery = new AQuery(this);
-
+        mLoadView = (View) findViewById(R.id.load_layout);
         mThreadId = getIntent().getIntExtra(Const.THREAD_ID, 0);
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
 
@@ -107,7 +107,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
-                    mQuestionRelyList.onRefreshComplete();
+
                     ReplyResult replyResult = mActivity.gson.fromJson(object, new TypeToken<ReplyResult>() {
                     }.getType());
                     if (replyResult == null) {
@@ -143,6 +143,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         app.postUrl(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mQuestionRelyList.onRefreshComplete();
+                mLoadView.setVisibility(View.GONE);
                 mQuestionDetailModel = mActivity.gson.fromJson(object, new TypeToken<QuestionDetailModel>() {
                 }.getType());
                 adapter.setQuestionInfo(mQuestionDetailModel, R.layout.question_content_item);
