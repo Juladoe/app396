@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/rl_post_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="11dp"
+        android:paddingBottom="11dp"
+        android:background="@android:color/white">
+
+        <com.edusoho.kuozhi.view.plugin.CircularImageView
+            android:layout_marginRight="30dp"
+            android:id="@+id/civ_post_pic"
+            android:src="@drawable/myinfo_default_face"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:layout_alignParentLeft="true" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_toRightOf="@+id/civ_post_pic"
+            android:id="@+id/relativeLayout">
+
+            <TextView
+                android:id="@+id/tv_post_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/teacher_reply" />
+
+            <TextView
+                android:id="@+id/tv_post_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/tv_post_name" />
+
+            <com.edusoho.kuozhi.view.EdusohoButton
+                android:id="@+id/edu_btn_question_edit"
+                android:textSize="@dimen/question_edit_button_font"
+                app:borderColor="#FFFFFF"
+                app:borderWidth="0dp"
+                app:defaultColor="@color/lesson_resouce_btn_normal"
+                app:focusColor="@color/lesson_resouce_btn_pressed"
+                app:iconPosition="right"
+                app:radius="3dp"
+                app:textStr="编辑"
+                app:textColor="#FFFFFF"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+            <!--<Button-->
+            <!--android:id="@+id/edu_btn_question_edit"-->
+            <!--android:textSize="14sp"-->
+            <!--android:text="编辑"-->
+            <!--android:textColor="#FFFFFF"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true" />-->
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/civ_post_pic"
+            android:textColor="@color/question_title"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginTop="13dp"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/htv_post_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/post_title"
+            android:layout_marginTop="15dp"
+            android:visibility="gone"
+            android:textColor="@color/question_lesson" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pb_content"
+            android:layout_below="@+id/post_title" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/rl_post_info"
+        android:background="@null"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:orientation="horizontal"></LinearLayout>
+
+</RelativeLayout>

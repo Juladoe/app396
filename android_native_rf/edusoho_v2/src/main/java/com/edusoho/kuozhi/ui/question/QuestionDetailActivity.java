@@ -2,14 +2,10 @@ package com.edusoho.kuozhi.ui.question;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -22,10 +18,8 @@ import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.widget.QuestionReplyListWidget;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
-import com.edusoho.listener.URLImageGetter;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
@@ -45,8 +39,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     private int mThreadId;
     private int mCourseId;
 
-    private int mTeacherReplySum;
-
     private ActionBarBaseActivity mActivity;
     private QuestionReplyListWidget mQuestionRelyList;
 
@@ -56,6 +48,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     private HashMap<String, String> mParams;
 
     public static String mHost = "";
+
+    private QuestionDetailModel mQuestionDetailModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +74,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         mParams.put("threadId", String.valueOf(mThreadId));
 
         mQuestionRelyList = (QuestionReplyListWidget) findViewById(R.id.qrlw_question_reply);
+
         mQuestionRelyList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mQuestionRelyList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
@@ -94,7 +89,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         });
 
         mQuestionRelyList.setEmptyText(new String[]{"暂无回复"});
-        getQuestionPostUser();
+        //getQuestionPostUser();
         loadReplyDataFromSeek(0, false);
     }
 
@@ -131,8 +126,9 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                         //第一次打开
                         adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item, app.loginUser);
                     }
-                    mQuestionRelyList.setAdapter(adapter);
-                    mQuestionRelyList.setStart(replyResult.start, replyResult.total);
+                    getQuestionPostUser(adapter, replyResult);
+//                    mQuestionRelyList.setAdapter(adapter);
+//                    mQuestionRelyList.setStart(replyResult.start, replyResult.total);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }
@@ -141,35 +137,41 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     }
 
     /**
-     * 获取问题信息
+     * 获取问题信息，绑定ListView
      */
-    private void getQuestionPostUser() {
+    private void getQuestionPostUser(final QuestionReplyListAdapter adapter, final ReplyResult replyResult) {
         RequestUrl url = app.bindUrl(Const.QUESTION_INFO, true);
         url.setParams(mParams);
         app.postUrl(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                QuestionDetailModel qdModel = mActivity.gson.fromJson(object, new TypeToken<QuestionDetailModel>() {
+                mQuestionDetailModel = mActivity.gson.fromJson(object, new TypeToken<QuestionDetailModel>() {
                 }.getType());
-                if (qdModel == null) {
+                adapter.setQuestionInfo(mQuestionDetailModel, R.layout.question_content_item);
+                mQuestionRelyList.setAdapter(adapter);
+                if (mQuestionRelyList.getAdapter() != null) {
+                    ((QuestionReplyListAdapter) mQuestionRelyList.getAdapter()).setViewOnClickListener(QuestionDetailActivity.this);
+                }
+                mQuestionRelyList.setStart(replyResult.start, replyResult.total + 1);
+                if (mQuestionDetailModel == null) {
                     return;
                 }
-                mAQuery.id(R.id.tv_post_name).text(qdModel.user.nickname);
-                mAQuery.id(R.id.tv_post_date).text(AppUtil.getPostDays(qdModel.createdTime));
-                mAQuery.id(R.id.post_title).text(qdModel.title);
-                TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
-                ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
-                if (!qdModel.content.contains("img src")) {
-                    contentLoading.setVisibility(View.GONE);
-                    tvContent.setVisibility(View.VISIBLE);
-                }
-                URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext, contentLoading);
-                tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
 
-                //mAQuery.id(R.id.htv_post_content).text(Html.fromHtml(AppUtil.removeHtml(qdModel.content)));
-                //mAQuery.id(R.id.htv_post_content).text(Html.fromHtml(qdModel.content));
+//                mAQuery.id(R.id.tv_post_name).text(qdModel.user.nickname);
+//                mAQuery.id(R.id.tv_post_date).text(AppUtil.getPostDays(qdModel.createdTime));
+//                mAQuery.id(R.id.post_title).text(qdModel.title);
+//                TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
+//                ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
+//                if (!qdModel.content.contains("img src")) {
+//                    contentLoading.setVisibility(View.GONE);
+//                    tvContent.setVisibility(View.VISIBLE);
+//                }
+//                URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mContext, contentLoading);
+//                tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
+
+
                 mAQuery.id(R.id.btn_post_reply).clicked(QuestionDetailActivity.this);
-                mAQuery.id(R.id.edu_btn_question_edit).clicked(QuestionDetailActivity.this);
+                //mAQuery.id(R.id.edu_btn_question_edit).clicked(QuestionDetailActivity.this);
             }
         });
     }
@@ -193,8 +195,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 startIntent.putExtra(Const.THREAD_ID, String.valueOf(mThreadId));
                 startIntent.putExtra(Const.COURSE_ID, String.valueOf(mCourseId));
                 if (finalRequestCode == Const.EDIT_QUESTION) {
-                    startIntent.putExtra(Const.QUESTION_TITLE, mAQuery.id(R.id.post_title).getText().toString());
-                    startIntent.putExtra(Const.QUESTION_CONTENT, Html.toHtml((Spanned) mAQuery.id(R.id.htv_post_content).getText()).toString());
+                    startIntent.putExtra(Const.QUESTION_TITLE, mQuestionDetailModel.title);
+                    startIntent.putExtra(Const.QUESTION_CONTENT, mQuestionDetailModel.content);
                 }
             }
         });
@@ -210,19 +212,21 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 //loadReplyDataFromSeek(0, true);
                 break;
             case Const.EDIT_QUESTION:
+                mQuestionRelyList.clearAdapterCache();
+                mQuestionRelyList.setRefreshing();
                 //Toast.makeText(this, "问题编辑", 500).show();
                 //getQuestionPostUser();
-                if (data != null) {
-                    QuestionDetailModel qdModel = (QuestionDetailModel) data.getSerializableExtra(Const.QUESTION_EDIT_RESULT);
-                    TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
-                    ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
-                    if (!qdModel.content.contains("img src")) {
-                        contentLoading.setVisibility(View.GONE);
-                        tvContent.setVisibility(View.VISIBLE);
-                    }
-                    URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mAQuery, mContext, contentLoading);
-                    tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
-                }
+//                if (data != null) {
+//                    QuestionDetailModel qdModel = (QuestionDetailModel) data.getSerializableExtra(Const.QUESTION_EDIT_RESULT);
+//                    TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
+//                    ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
+//                    if (!qdModel.content.contains("img src")) {
+//                        contentLoading.setVisibility(View.GONE);
+//                        tvContent.setVisibility(View.VISIBLE);
+//                    }
+//                    URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mContext, contentLoading);
+//                    tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
+//                }
                 break;
             case Const.EDIT_REPLY:
                 //Toast.makeText(this, "回复编辑", 500).show();
