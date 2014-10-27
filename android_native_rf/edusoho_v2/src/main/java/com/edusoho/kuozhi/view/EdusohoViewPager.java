@@ -1,25 +1,39 @@
 package com.edusoho.kuozhi.view;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
+import com.edusoho.kuozhi.model.SchoolBanner;
 import com.edusoho.plugin.photo.HackyViewPager;
+
+import java.util.ArrayList;
 
 /**
  * Created by howzhi on 14-8-8.
  */
 public class EdusohoViewPager extends RelativeLayout {
 
-    private PointLayout mPointLayout;
+    private static final String TAG = "EdusohoViewPager";
+    private CarouselPointLayout mPointLayout;
     private Context mContext;
     private HackyViewPager mHackyViewPager;
-    private int current;
+    private SchoolBannerAdapter mAdapter;
+
+    private int mLastIndex;
+    private int mTopIndex;
+    private int mCurrent;
+
+    private Handler workHandler = new Handler();
 
     public EdusohoViewPager(Context context) {
         super(context);
@@ -32,10 +46,22 @@ public class EdusohoViewPager extends RelativeLayout {
         initView(attrs);
     }
 
+    public void update(ArrayList<SchoolBanner> schoolBanners)
+    {
+        mAdapter.setItems(schoolBanners);
+        mPointLayout.updatePointImages(schoolBanners.size());
+    }
+
+    public SchoolBannerAdapter getAdapter()
+    {
+        return mAdapter;
+    }
+
     private void initView(AttributeSet attrs)
     {
         mHackyViewPager = new HackyViewPager(mContext);
-        mPointLayout = new PointLayout(mContext);
+        mPointLayout = new CarouselPointLayout(mContext);
+        mPointLayout.setViewPaper(mHackyViewPager);
 
         addView(mHackyViewPager);
         addView(mPointLayout);
@@ -48,8 +74,17 @@ public class EdusohoViewPager extends RelativeLayout {
 
     public void setAdapter(PagerAdapter adapter)
     {
+        mAdapter = (SchoolBannerAdapter) adapter;
+        mAdapter.wrapContent();
+
+        int count = adapter.getCount();
+        mTopIndex = 1;
+        mLastIndex = count - 2;
+
         mHackyViewPager.setAdapter(adapter);
-        mPointLayout.addPointImages(adapter.getCount());
+        mHackyViewPager.setOffscreenPageLimit(count);
+
+        mPointLayout.addPointImages(count);
         mHackyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -57,39 +92,66 @@ public class EdusohoViewPager extends RelativeLayout {
 
             @Override
             public void onPageSelected(int position) {
+                Log.d(TAG, "position-->" + position);
+                if (position == 0) {
+                    moveToIndex(mLastIndex);
+                } else if (position == mAdapter.getCount() - 1) {
+                    moveToIndex(mTopIndex);
+                }
+
                 mPointLayout.refresh();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+
             }
         });
     }
 
-    public void setCurrentItem(int index)
+    private void moveToIndex(final int index)
     {
-        current = index;
-        mHackyViewPager.setCurrentItem(index);
+        workHandler.postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                setCurrentItem(index);
+            }
+        }, SystemClock.uptimeMillis() + 500);
     }
 
-    class PointLayout extends LinearLayout
+    public void setCurrentItem(int index)
     {
-        private int mPointNormalSrc = R.drawable.viewpager_point_normal;
-        private int mPointSellSrc = R.drawable.viewpager_point_sel;
+        mCurrent = index;
+        mHackyViewPager.setCurrentItem(index, false);
+    }
 
-        private int mCount;
-        private int mPadding = 5;
-
-        public PointLayout(Context context) {
+    class CarouselPointLayout extends PointLayout
+    {
+        public CarouselPointLayout(Context context) {
             super(context);
             setPadding(mPadding, mPadding, mPadding, mPadding);
         }
 
+        public void clear()
+        {
+            removeAllViews();
+        }
+
+        public void updatePointImages(int count)
+        {
+            clear();
+            addPointImages(count);
+        }
+
+        @Override
         public void addPointImages(int count)
         {
             mCount = count;
             for (int i=0; i < count; i++) {
                 ImageView imageView = new ImageView(mContext);
+                if (i == 0 || i == count - 1) {
+                    imageView.setVisibility(INVISIBLE);
+                }
                 addView(imageView);
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imageView.getLayoutParams();
                 layoutParams.bottomMargin = mPadding;
@@ -100,17 +162,6 @@ public class EdusohoViewPager extends RelativeLayout {
             }
             refresh();
         }
-
-        public void refresh()
-        {
-            for (int i=0; i < mCount; i++) {
-                ImageView imageView = (ImageView) getChildAt(i);
-                if (i == mHackyViewPager.getCurrentItem()) {
-                    imageView.setImageResource(mPointSellSrc);
-                    continue;
-                }
-                imageView.setImageResource(mPointNormalSrc);
-            }
-        }
     }
+
 }

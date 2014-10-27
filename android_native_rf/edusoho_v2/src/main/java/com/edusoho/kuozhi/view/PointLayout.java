@@ -13,14 +13,14 @@ import com.edusoho.kuozhi.R;
  */
 public class PointLayout extends LinearLayout{
 
-    private int mPointNormalSrc = R.drawable.viewpager_point_normal;
-    private int mPointSellSrc = R.drawable.viewpager_point_sel;
+    protected int mPointNormalSrc = R.drawable.viewpager_point_normal;
+    protected int mPointSellSrc = R.drawable.viewpager_point_sel;
 
-    private int mCount;
-    private int mPadding = 5;
+    protected int mCount;
+    protected int mPadding = 5;
 
-    private Context mContext;
-    private ViewPager mViewPager;
+    protected Context mContext;
+    protected ViewPager mViewPager;
 
     public PointLayout(Context context) {
         super(context);

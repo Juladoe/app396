@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/note_background">
+
+    <ImageView
+        android:id="@+id/note_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="10dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/note_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/note_image"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:textSize="@dimen/note_title_size"
+        android:singleLine="true"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/note_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/note_title"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="5dp"
+        android:textSize="@dimen/note_count_size"
+        android:singleLine="true"/>
+
+</RelativeLayout>
+

@@ -92,4 +92,6 @@
     <dimen name="question_fill">12sp</dimen>
     <dimen name="big_rating_height">42px</dimen>
     <dimen name="question_edit_button_font">8sp</dimen>
+
+
 </resources>

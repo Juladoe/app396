@@ -36,6 +36,22 @@
     <color name="reply_button_normal">#ffc947</color>
     <color name="reply_button_pressed">#fdb933</color>
 
+    <!--note-->
+    <color name="list_title_textcolor">#212121</color>
+    <color name="line">#e6e6e6</color>
+    <color name="list_course">#ffc947</color>
+    <color name="list_course_title">#4d4d4d</color>
+    <color name="list_course_content">#757575</color>
+    <color name="note_content_title">#ffc947</color>
+    <color name="note_content">#4d4d4d</color>
+    <color name="note_background">#ffffff</color>
+    <color name="note_main_background">#f5f5f5</color>
+    <color name="list_title_background">#f5f5f5</color>
+    <color name="list_background">#ffffff</color>
+    <color name="note_content_background">#ffffff</color>
+    <color name="content_title_background">#f5f5f5</color>
+    <color name="content_background">#f5f5f5</color>
+
     <!-- custom player -->
     <color name="custom_play_time">#ffffff</color>
 

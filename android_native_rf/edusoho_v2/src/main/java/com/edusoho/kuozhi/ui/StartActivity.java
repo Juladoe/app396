@@ -1,57 +1,164 @@
 package com.edusoho.kuozhi.ui;
 
-import com.edusoho.kuozhi.EdusohoApp;
+import com.androidquery.callback.AjaxStatus;
+import com.edusoho.handler.ClientVersionHandler;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.MessageEngine;
+import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.School;
+import com.edusoho.kuozhi.model.SchoolResult;
+import com.edusoho.kuozhi.model.SystemInfo;
+import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 
-public class StartActivity extends Activity {
-
-    private Handler mWorkHandler;
-    private EdusohoApp app;
-    private Activity mActivity;
+public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
-        mActivity = this;
-        app = (EdusohoApp) getApplication();
-        init();
+        app.registMsgSource(this);
+        startSplash();
+        app.registDevice();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        app.unRegistMsgSource(this);
+        super.onDestroy();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(MessageType.NONE, SplashActivity.INIT_APP)
+        };
+
+        return messageTypes;
     }
 
-    private void init() {
-        mWorkHandler = new Handler();
+    @Override
+    public void invoke(WidgetMessage message) {
+        initApp();
+    }
 
-        mWorkHandler.postAtTime(new Runnable() {
+    protected void initApp() {
+        if (!app.getNetStatus()) {
+            longToast("没有网络服务！请检查网络设置。");
+            return;
+        }
+        if (app.host == null || "".equals(app.host)) {
+            startApp();
+            return;
+        }
+
+        checkSchoolApiVersion(app.host);
+    }
+
+    protected ClientVersionHandler getClientVersionHandler()
+    {
+        return null;
+    }
+
+    /**
+     * 检查网校版本
+     * @param info
+     */
+    protected void checkSchoolVersion(SystemInfo info)
+    {
+        ajaxNormalGet(info.mobileApiUrl + Const.VERIFYSCHOOL, new ResultCallback() {
             @Override
-            public void run() {
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                SchoolResult schoolResult = app.gson.fromJson(
+                        object, new TypeToken<SchoolResult>() {
+                }.getType());
+
+                if (schoolResult == null) {
+                    showSchoolErrorDlg();
+                    return;
+                }
+                School site = schoolResult.site;
+                if (!checkMobileVersion(site.apiVersionRange, getClientVersionHandler())) {
+                    return;
+                }
+
+                app.setCurrentSchool(site);
                 startApp();
             }
-        }, SystemClock.uptimeMillis() + 1200);
+        });
     }
 
-
-    private void startApp()
+    /**
+     * 检测网校api版本
+     */
+    protected void checkSchoolApiVersion(String host)
     {
-        EdusohoApp app = (EdusohoApp) getApplication();
+        ajaxNormalGet(app.host + Const.VERIFYVERSION, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                SystemInfo info = app.gson.fromJson(
+                        object, new TypeToken<SystemInfo>() {
+                }.getType());
+                if (info == null
+                        || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
+
+                    showSchoolErrorDlg();
+                    return;
+                }
+
+                checkSchoolVersion(info);
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                super.error(url, ajaxStatus);
+                showSchoolErrorDlg();
+            }
+        });
+    }
+
+    /**
+     * 处理网校异常dlg
+     */
+    protected void showSchoolErrorDlg()
+    {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                mContext,
+                "提示信息",
+                "网校客户端已关闭或网校服务器出现异常。\n请联系管理员！或选择新网校",
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            QrSchoolActivity.start(mActivity);
+                            finish();
+                        }
+                    }
+                });
+        popupDialog.setOkText("选择新网校");
+        popupDialog.show();
+    }
+
+    protected void startApp() {
         if (app.config.startWithSchool && app.defaultSchool != null) {
-            app.mEngine.runNormalPlugin("SchoolCourseActivity", this, null);
-            overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
             return;
         }
 
         app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
+
 }

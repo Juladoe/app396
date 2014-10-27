@@ -156,6 +156,18 @@ public class HorizontalListWidget extends HorizontalScrollView {
         mLabel = label;
     }
 
+    public void update(RequestUrl requestUrl)
+    {
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                Log.d(null, "HorizontalListWidget->update");
+                updateRequestData(object);
+            }
+        });
+    }
+
     public void initialise(ActionBarBaseActivity activity, RequestUrl requestUrl)
     {
         mActivity = activity;

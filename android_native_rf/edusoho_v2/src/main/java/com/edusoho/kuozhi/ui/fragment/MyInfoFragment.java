@@ -160,6 +160,7 @@ public class MyInfoFragment extends BaseFragment {
                     case DISCUSS:
                         break;
                     case NOTE:
+                        showMyNote();
                         break;
                 }
             }
@@ -184,6 +185,17 @@ public class MyInfoFragment extends BaseFragment {
                 startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
             }
         });
+    }
+
+    public void showMyNote()
+    {
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+
+            }
+        };
+        app.mEngine.runNormalPlugin("NoteActivity",mActivity,callback);
     }
 
     private void redirectToMyQuestion() {
