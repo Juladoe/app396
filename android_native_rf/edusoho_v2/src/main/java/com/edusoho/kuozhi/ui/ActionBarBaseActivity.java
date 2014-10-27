@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.handler.ClientVersionHandler;
+import com.edusoho.kuozhi.AppConfig;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
@@ -38,12 +39,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by howzhi on 14-8-6.
  */
 public class ActionBarBaseActivity extends ActionBarActivity {
 
+    private static final String TAG = "ActionBarBaseActivity";
     public static final String BACK = "返回";
     protected ActionBarBaseActivity mActivity;
     protected Context mContext;
@@ -62,6 +65,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         mActivity = this;
         mContext = this;
+        initActivity();
+    }
+
+    private void initActivity()
+    {
         app = (EdusohoApp) getApplication();
         app.setDisplay(this);
         gson = app.gson;
@@ -183,17 +191,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void startSplash() {
-        if (app.config.showSplash) {
-            app.mEngine.runNormalPlugin("SplashActivity", this, null);
-            app.config.showSplash = false;
-            app.saveConfig();
-            return;
-        }
-
-        app.sendMessage(SplashActivity.INIT_APP, null);
     }
 
     public String wrapUrl(String url, String... params)

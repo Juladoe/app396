@@ -49,6 +49,7 @@ import com.edusoho.kuozhi.ui.fragment.MyCourseBaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -596,7 +597,30 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         }
 
         if (requestCode == LoginActivity.LOGIN && resultCode == LoginActivity.OK) {
-            loadCoureDetailsFragment("CourseLearningFragment");
+            checkUserMember();
         }
+    }
+
+    private void checkUserMember()
+    {
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.setMessage("正在获取课程信息...");
+        loadDialog.show();
+
+        RequestUrl requestUrl = app.bindUrl(Const.COURSE_MEMBER, true);
+        requestUrl.setParams(new String[] {
+                Const.COURSE_ID, String.valueOf(mCourseId)
+        });
+
+        ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                loadDialog.dismiss();
+                Member member = mActivity.parseJsonValue(object, new TypeToken<Member>(){});
+                String fragment = member != null
+                        ? "CourseLearningFragment" : "CourseDetailsFragment";
+                loadCoureDetailsFragment(fragment);
+            }
+       });
     }
 }

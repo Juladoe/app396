@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi;
 
 import android.os.Bundle;
+
 import com.crashlytics.android.Crashlytics;
 import com.edusoho.kuozhi.ui.StartActivity;
 

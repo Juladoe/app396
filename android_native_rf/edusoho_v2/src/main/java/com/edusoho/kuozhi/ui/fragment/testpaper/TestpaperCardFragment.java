@@ -168,6 +168,7 @@ public class TestpaperCardFragment extends DialogFragment {
     {
         ArrayList<QuestionTypeSeq> list = new ArrayList<QuestionTypeSeq>();
         for (QuestionTypeSeq questionTypeSeq : questionTypeSeqs) {
+
             list.addAll(questionTypeSeq.items);
         }
         return list;

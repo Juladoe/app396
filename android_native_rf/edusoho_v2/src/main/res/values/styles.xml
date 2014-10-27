@@ -30,7 +30,6 @@
     </style>
 
     <style name="startTheme" parent="EdusohoAppTheme">
-        <item name="android:windowBackground">@drawable/app_splah_1280_800</item>
         <item name="android:textColor">@color/system_text</item>
     </style>
 
