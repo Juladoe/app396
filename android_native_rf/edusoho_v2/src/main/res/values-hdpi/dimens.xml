@@ -97,4 +97,9 @@
     <dimen name="question_checkbox_padding_left">40dp</dimen>
     <dimen name="rating_height">32px</dimen>
     <dimen name="big_rating_height">42px</dimen>
+
+    <!--note-->
+    <dimen name="note_main_paddingtop">5dp</dimen>
+    <dimen name="note_main_paddingleft">3dp</dimen>
+    <dimen name="note_main_paddingright">3dp</dimen>
 </resources>

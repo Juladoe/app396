@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="36px"
+        android:paddingLeft="30px">
+
+        <TextView
+            android:id="@+id/course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/course_size"
+            android:textColor="@color/list_course" />
+
+        <TextView
+            android:id="@+id/course_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textSize="@dimen/course_title_size"
+            android:textColor="@color/list_course_title" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/course_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="@dimen/course_content_size"
+        android:textColor="@color/list_course_content"
+        android:layout_below="@id/linear"
+        android:layout_marginTop="26px"
+        android:paddingBottom="36px"
+        android:paddingLeft="30px"
+        android:paddingRight="30px"/>
+
+</RelativeLayout>

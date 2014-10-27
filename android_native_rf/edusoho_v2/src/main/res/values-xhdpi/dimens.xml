@@ -97,4 +97,17 @@
     <dimen name="learn_status_icon">50dp</dimen>
     <dimen name="rating_height">42px</dimen>
     <dimen name="big_rating_height">64px</dimen>
+
+    <!--note-->
+    <dimen name="note_title_size">15sp</dimen>
+    <dimen name="note_count_size">12sp</dimen>
+    <dimen name="content_title_size">20sp</dimen>
+    <dimen name="content_size">15sp</dimen>
+    <dimen name="course_size">20sp</dimen>
+    <dimen name="course_title_size">20sp</dimen>
+    <dimen name="course_content_size">14sp</dimen>
+    <dimen name="list_title_size">20sp</dimen>
+    <dimen name="note_main_paddingtop">10dp</dimen>
+    <dimen name="note_main_paddingleft">5dp</dimen>
+    <dimen name="note_main_paddingright">5dp</dimen>
 </resources>

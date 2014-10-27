@@ -34,6 +34,12 @@
     <plugin name="LessonActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LessonActivity"></plugin>
     <plugin name="LessonResourceActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.LessonResourceActivity"></plugin>
 
+    <!--note-->
+    <plugin name="NoteActivity" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteActivity"></plugin>
+    <plugin name="NoteList" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteList"></plugin>
+    <plugin name="NoteContent" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContent"></plugin>
+    <plugin name="Test" version="1.0" package="com.edusoho.kuozhi.ui.note.Test"></plugin>
+
     <!-- service -->
     <plugin name="EdusohoMainService" version="1.0" package="com.edusoho.kuozhi.Service.EdusohoMainService"></plugin>
     <!-- fragment -->

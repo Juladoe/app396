@@ -199,6 +199,9 @@ public class Const {
      */
     public static final String COURSE_CODE = "Course/coupon";
 
+    //笔记列表
+    public static final String NOTE_LIST_DATA = "Course/getNoteList";
+
     //意见反馈
     public static final String SUGGESTION = "School/sendSuggestion";
 
