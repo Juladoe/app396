@@ -127,8 +127,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                         adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item, app.loginUser);
                     }
                     getQuestionPostUser(adapter, replyResult);
-//                    mQuestionRelyList.setAdapter(adapter);
-//                    mQuestionRelyList.setStart(replyResult.start, replyResult.total);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }

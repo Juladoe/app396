@@ -110,7 +110,7 @@
 
     <LinearLayout
         android:layout_below="@+id/rl_post_info"
-        android:background="@null"
+        android:background="@color/question_background"
         android:layout_width="fill_parent"
         android:layout_height="10dp"
         android:orientation="horizontal"></LinearLayout>

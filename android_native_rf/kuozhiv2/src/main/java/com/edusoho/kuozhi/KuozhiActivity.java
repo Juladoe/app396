@@ -3,6 +3,7 @@ package com.edusoho.kuozhi;
 import android.os.Bundle;
 
 import com.androidquery.callback.AjaxStatus;
+import com.crashlytics.android.Crashlytics;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
@@ -25,7 +26,7 @@ public class KuozhiActivity extends ActionBarBaseActivity implements MessageEngi
         setContentView(R.layout.kuozhi_start);
         app.registMsgSource(this);
         startSplash();
-        //Crashlytics.start(this);
+        Crashlytics.start(this);
     }
 
     @Override
