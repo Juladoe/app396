@@ -19,7 +19,6 @@
         <com.edusoho.kuozhi.view.plugin.CircularImageView
             android:layout_marginRight="30dp"
             android:id="@+id/civ_post_pic"
-            android:src="@drawable/myinfo_default_face"
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:layout_alignParentLeft="true" />
