@@ -77,7 +77,7 @@ public class NoteListAdapter extends EdusohoBaseAdapter {
 
         courseNum = (TextView) noteList.findViewById(R.id.course);
         courseTitle = (TextView) noteList.findViewById(R.id.course_title);
-        courseContent = (TextView) noteList.findViewById(R.id.course_content);
+        courseContent = (TextView) noteList.findViewById(R.id.note_course_content);
 
         courseNum.setText(data.get(i).courseNum);
         courseTitle.setText(data.get(i).courseTitle);

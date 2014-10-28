@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/course_content"
+        android:id="@+id/note_course_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"

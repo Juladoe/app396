@@ -201,14 +201,15 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            etContent.setText(Html.fromHtml(mOriginalContent, imgGetter, null));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
+        } else {
+            mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
         }
+        etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
 
         if (mColorPickerDialog == null) {
             mColorPickerDialog = new ColorPickerDialog(mContext, R.color.backPressedColor);
@@ -360,68 +361,68 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         return 0;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.question_reply_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (etContent.getText().toString() == null || etContent.getText().toString().equals("")) {
-            Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        if (item.getItemId() == R.id.reply_submit) {
-            switch (mTypeCode) {
-                case Const.REPLY: {
-                    //新增回复api
-                    //Toast.makeText(this, "新增回复api", 500).show();
-                    RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", mCourseId);
-                    params.put("threadId", mThreadId);
-                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-                    params.put("content", setContent(content));
-                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
-                    url.setMuiltParams(mObjects);
-                    url.setParams(params);
-                    submitReply(url);
-                    break;
-                }
-                case Const.EDIT_QUESTION: {
-                    RequestUrl url = app.bindUrl(Const.EDIT_QUESTION_INFO, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", mCourseId);
-                    params.put("threadId", mThreadId);
-                    params.put("title", mTitle);
-                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-                    params.put("content", setContent(content));
-                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
-                    url.setMuiltParams(mObjects);
-                    url.setParams(params);
-                    editQuestionSubmit(url);
-                    break;
-                }
-                case Const.EDIT_REPLY: {
-                    //编辑回复api
-                    //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
-                    RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", mCourseId);
-                    params.put("threadId", mThreadId);
-                    params.put("postId", mPostId);
-                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-                    params.put("content", setContent(content));
-                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
-                    url.setMuiltParams(mObjects);
-                    url.setParams(params);
-                    submitReply(url);
-                    break;
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.question_reply_menu, menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (etContent.getText().toString() == null || etContent.getText().toString().equals("")) {
+//            Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.reply_submit) {
+//            switch (mTypeCode) {
+//                case Const.REPLY: {
+//                    //新增回复api
+//                    //Toast.makeText(this, "新增回复api", 500).show();
+//                    RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
+//                    HashMap<String, String> params = url.getParams();
+//                    params.put("courseId", mCourseId);
+//                    params.put("threadId", mThreadId);
+//                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
+//                    params.put("content", setContent(content));
+//                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
+//                    url.setMuiltParams(mObjects);
+//                    url.setParams(params);
+//                    submitReply(url);
+//                    break;
+//                }
+//                case Const.EDIT_QUESTION: {
+//                    RequestUrl url = app.bindUrl(Const.EDIT_QUESTION_INFO, true);
+//                    HashMap<String, String> params = url.getParams();
+//                    params.put("courseId", mCourseId);
+//                    params.put("threadId", mThreadId);
+//                    params.put("title", mTitle);
+//                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
+//                    params.put("content", setContent(content));
+//                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
+//                    url.setMuiltParams(mObjects);
+//                    url.setParams(params);
+//                    editQuestionSubmit(url);
+//                    break;
+//                }
+//                case Const.EDIT_REPLY: {
+//                    //编辑回复api
+//                    //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
+//                    RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
+//                    HashMap<String, String> params = url.getParams();
+//                    params.put("courseId", mCourseId);
+//                    params.put("threadId", mThreadId);
+//                    params.put("postId", mPostId);
+//                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
+//                    params.put("content", setContent(content));
+//                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
+//                    url.setMuiltParams(mObjects);
+//                    url.setParams(params);
+//                    submitReply(url);
+//                    break;
+//                }
+//            }
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

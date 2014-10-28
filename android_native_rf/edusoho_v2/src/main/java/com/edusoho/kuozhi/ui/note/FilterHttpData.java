@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.ui.note;
 
 import android.util.Log;
 
+import com.edusoho.kuozhi.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class FilterHttpData {
     private List<String> coursename;
     private List<Integer> courseId;
     private List<Integer> total;
+    private List<ArrayList<Integer>> lessonId;
     private List<ArrayList<String>> content;
     private List<ArrayList<String>> coursetitle;
     private List<ArrayList<String>> course;
@@ -52,12 +55,14 @@ public class FilterHttpData {
         content = new ArrayList<ArrayList<String>>();
         coursetitle = new ArrayList<ArrayList<String>>();
         course = new ArrayList<ArrayList<String>>();
+        lessonId = new ArrayList<ArrayList<Integer>>();
         for(int i=0;i<courseId.size();i++)
         {
             int k = 0;
             ArrayList<String> contenttemp = new ArrayList<String>();
             ArrayList<String> coursetitletemp = new ArrayList<String>();
             ArrayList<String> coursetemp = new ArrayList<String>();
+            ArrayList<Integer> lessontemp = new ArrayList<Integer>();
             for(int j=0;j<requestdatas.size();j++)
             {
                 if(requestdatas.get(j).courseId == courseId.get(i))
@@ -66,12 +71,14 @@ public class FilterHttpData {
                     contenttemp.add(requestdatas.get(j).content);
                     coursetitletemp.add(requestdatas.get(j).lessonName);
                     coursetemp.add(requestdatas.get(j).number);
+                    lessontemp.add(requestdatas.get(j).lessonId);
                 }
             }
             total.add(k);
             content.add(contenttemp);
             coursetitle.add(coursetitletemp);
             course.add(coursetemp);
+            lessonId.add(lessontemp);
         }
     }
 
@@ -90,6 +97,7 @@ public class FilterHttpData {
         ArrayList<String> contentstr;
         ArrayList<String> coursetitlestr;
         ArrayList<String> coursestr;
+        ArrayList<Integer> lessonid;
         for(int i=0;i<courseId.size();i++)
         {
             if(courseId.get(i) == id)
@@ -97,8 +105,10 @@ public class FilterHttpData {
                 contentstr = content.get(i);
                 coursetitlestr = coursetitle.get(i);
                 coursestr = course.get(i);
+                lessonid = lessonId.get(i);
+                System.out.println("lessonid"+lessonid.toString());
                 Log.i(null,contentstr.size()+"");
-                return new NoteListData(coursestr,coursetitlestr,contentstr);
+                return new NoteListData(coursestr,coursetitlestr,contentstr,lessonid);
             }
         }
         return null;
