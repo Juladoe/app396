@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.ui;
 
+import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.handler.ClientVersionHandler;
+import com.edusoho.kuozhi.AppConfig;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.model.MessageType;
@@ -14,20 +16,35 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
 import android.os.Bundle;
+import android.util.Log;
 
-public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
+import java.util.Map;
+
+public class StartActivity extends ActionBarBaseActivity
+        implements MessageEngine.MessageCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
+
+        app.initApp();
         app.registMsgSource(this);
         startSplash();
-        app.registDevice();
+        registDevice();
     }
 
+    public void startSplash() {
+        if (app.config.showSplash) {
+            app.mEngine.runNormalPlugin("SplashActivity", this, null);
+            app.config.showSplash = false;
+            app.saveConfig();
+            return;
+        }
+
+        app.sendMessage(SplashActivity.INIT_APP, null);
+    }
 
     @Override
     protected void onDestroy() {
@@ -160,5 +177,58 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
+
+    private void registDevice() {
+        Log.d(null, "registDevice->");
+        AppConfig config = app.config;
+        if (config.isPublicRegistDevice && config.isRegistDevice) {
+            return;
+        }
+
+        Map<String, String> params = app.getPlatformInfo();
+
+        if (!config.isPublicRegistDevice) {
+            app.logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>() {
+                @Override
+                public void callback(String url, String object, AjaxStatus status) {
+                    super.callback(url, object, status);
+                    Log.d(null, "regist device to public");
+                    try {
+                        Boolean result = app.gson.fromJson(
+                                object, new TypeToken<Boolean>() {
+                        }.getType());
+
+                        if (true == result) {
+                            app.config.isPublicRegistDevice = true;
+                            app.saveConfig();
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            });
+        }
+
+        if (!config.isRegistDevice) {
+            app.logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
+                @Override
+                public void callback(String url, String object, AjaxStatus status) {
+                    super.callback(url, object, status);
+                    Log.d(null, "regist device to school");
+                    try {
+                        Boolean result = app.gson.fromJson(
+                                object, new TypeToken<Boolean>() {
+                        }.getType());
+
+                        if (true == result) {
+                            app.config.isRegistDevice = true;
+                            app.saveConfig();
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            });
+        }
+    }
+
 
 }

@@ -66,9 +66,6 @@ public class LoginActivity extends ActionBarBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case RegistActivity.RESULT:
-                finish();
-                break;
             case QrSchoolActivity.REQUEST_QR:
                 if (resultCode == QrSchoolActivity.RESULT_QR && data != null) {
                     Bundle bundle = data.getExtras();

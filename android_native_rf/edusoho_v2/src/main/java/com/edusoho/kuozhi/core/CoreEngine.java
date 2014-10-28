@@ -121,7 +121,6 @@ public class CoreEngine {
     public void runService(
             String serviceName, Context serverActivity, PluginRunCallback callback)
     {
-        Log.d(null, "name->" + serviceName + mPluginModelHashMap);
         PluginModel pluginModel = mPluginModelHashMap.get(serviceName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -350,9 +349,7 @@ public class CoreEngine {
     private void initPluginFromXml()
     {
         XmlResourceParser parser = mContext.getResources().getXml(R.xml.core_plugins);
-        System.out.println("paset->" + parser);
         mPluginModelHashMap = parsePluginXml(parser);
-        System.out.println("mPluginModelHashMap->" + mPluginModelHashMap);
     }
 
     public String[] getAssetPlugins(String dirName) throws IOException

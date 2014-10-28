@@ -94,7 +94,7 @@ public class EdusohoApp extends Application {
         super.onCreate();
         Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -224,7 +224,10 @@ public class EdusohoApp extends Application {
         host = getString(R.string.app_host);
 
         notifyMap = new HashMap<String, Bundle>();
+    }
 
+    public void initApp()
+    {
         initWorkSpace();
         initImageLoaderConfig();
         loadConfig();
@@ -273,58 +276,6 @@ public class EdusohoApp extends Application {
         app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
-    public void registDevice() {
-        Log.d(null, "registDevice->");
-        AppConfig config = app.config;
-        if (config.isPublicRegistDevice && config.isRegistDevice) {
-            return;
-        }
-
-        Map<String, String> params = getPlatformInfo();
-
-        if (!config.isPublicRegistDevice) {
-            logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>() {
-                @Override
-                public void callback(String url, String object, AjaxStatus status) {
-                    super.callback(url, object, status);
-                    Log.d(null, "regist device to public->" + object);
-                    try {
-                        Boolean result = app.gson.fromJson(
-                                object, new TypeToken<Boolean>() {
-                        }.getType());
-
-                        if (true == result) {
-                            app.config.isPublicRegistDevice = true;
-                            app.saveConfig();
-                        }
-                    } catch (Exception e) {
-                    }
-                }
-            });
-        }
-
-        if (!config.isRegistDevice) {
-            logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
-                @Override
-                public void callback(String url, String object, AjaxStatus status) {
-                    super.callback(url, object, status);
-                    Log.d(null, "regist device to school->" + object);
-                    try {
-                        Boolean result = app.gson.fromJson(
-                                object, new TypeToken<Boolean>() {
-                        }.getType());
-
-                        if (true == result) {
-                            app.config.isRegistDevice = true;
-                            app.saveConfig();
-                        }
-                    } catch (Exception e) {
-                    }
-                }
-            });
-        }
-    }
-
     public boolean getNetStatus() {
         ConnectivityManager connManager = (ConnectivityManager)
                 getSystemService(CONNECTIVITY_SERVICE);
@@ -358,6 +309,7 @@ public class EdusohoApp extends Application {
         mWorkHandler.post(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "installPlugin");
                 mEngine.installApkPlugin();
                 sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
             }

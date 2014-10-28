@@ -76,6 +76,7 @@ public class Const {
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
+    public static final String COURSE_MEMBER = "Course/getCourseMember";
     public static final String FLASH_APK = "School/getFlashApk";
     public static final String MY_TESTPAPER = "Testpaper/myTestpaper";
     public static final String COURSELESSON = "Lesson/getLesson";
