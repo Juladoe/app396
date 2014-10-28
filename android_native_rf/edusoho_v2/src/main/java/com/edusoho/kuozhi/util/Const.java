@@ -203,6 +203,9 @@ public class Const {
     //笔记列表
     public static final String NOTE_LIST_DATA = "Course/getNoteList";
 
+    //笔记编辑
+    public static final String NOTE_CONTENT = "Course/AddNote";
+
     //意见反馈
     public static final String SUGGESTION = "School/sendSuggestion";
 

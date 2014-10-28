@@ -162,12 +162,31 @@
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
+
         <service android:name=".Service.EdusohoMainService" />
         <service android:name=".Service.DownLoadService" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
+
+        <activity
+            android:name=".ui.note.NoteActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.note.NoteList"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.note.NoteContent"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.note.NoteReplyActivity"
+            android:configChanges="keyboard|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait" />
 
     </application>
 

@@ -50,6 +50,13 @@ public class NoteList extends ActionBarBaseActivity {
         init();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        returnObjectFromGson(limit,0,PAGELIMIT,true);
+        pullStart = 0;
+    }
+
     public void init() {
         setBackMode(BACK, title);
         initView();
@@ -75,17 +82,19 @@ public class NoteList extends ActionBarBaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 LessonList lessonList = (LessonList) adapterView.getItemAtPosition(i);
-                showNoteContent(lessonList.courseTitle, lessonList.courseContent);
+                showNoteContent(lessonList.courseTitle, lessonList.courseContent,courseId,lessonList.lessonId);
             }
         });
     }
 
-    public void showNoteContent(final String courseTitle,final String courseContent) {
+    public void showNoteContent(final String courseTitle,final String courseContent,final int courseId,final int lessonId) {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra("title", courseTitle);
-                startIntent.putExtra("content", courseContent);
+                startIntent.putExtra("note_title", courseTitle);
+                startIntent.putExtra("note_content", courseContent);
+                startIntent.putExtra("note_courseId",courseId);
+                startIntent.putExtra("note_lessonId",lessonId);
             }
         };
         app.mEngine.runNormalPlugin("NoteContent", mActivity, callback);
@@ -95,7 +104,7 @@ public class NoteList extends ActionBarBaseActivity {
         data = new ArrayList<LessonList>();
         data.clear();
         for (int i = 0; noteListData != null && i < noteListData.courseNum.size(); i++) {
-            LessonList temp = new LessonList(noteListData.courseNum.get(i), noteListData.courseTitle.get(i), noteListData.courseContent.get(i));
+            LessonList temp = new LessonList(noteListData.courseNum.get(i), noteListData.courseTitle.get(i), noteListData.courseContent.get(i), noteListData.lessonId.get(i));
             data.add(temp);
         }
     }
@@ -140,6 +149,7 @@ public class NoteList extends ActionBarBaseActivity {
             requestDatas = parseJsonValue(object, new TypeToken<ArrayList<HttpDatas>>(){});
             httpDatas = new FilterHttpData(requestDatas);
             noteListData = httpDatas.getNoteListData(courseId);
+            System.out.println("notelistdata:"+noteListData);
             getLessonList();
             text.setText("共" + data.size() + "篇笔记");
         } else {
