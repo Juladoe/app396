@@ -36,7 +36,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_reply_layout);
-        setBackMode(BACK, "回复");
+        setBackMode(BACK, "添加回复");
         initViews();
         initProgressDialog();
     }
@@ -63,7 +63,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reply_submit) {
             if (richFragment.getContent().toString() == null || richFragment.getContent().toString().equals("")) {
-                Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "回复内容不能为空", Toast.LENGTH_LONG).show();
                 return true;
             } else {
                 switch (richFragment.getTypeCode()) {

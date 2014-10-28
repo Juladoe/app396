@@ -68,8 +68,7 @@ public class MyInfoFragment extends BaseFragment {
         setContainerView(R.layout.myinfo_layout);
     }
 
-    private void setStatusLoginLayout()
-    {
+    private void setStatusLoginLayout() {
         mStatusLayout.removeAllViews();
         View view = LayoutInflater.from(mContext).inflate(R.layout.no_login_layout, null);
         mStatusLayout.addView(view);
@@ -105,8 +104,7 @@ public class MyInfoFragment extends BaseFragment {
         return messageTypes;
     }
 
-    public void setUserStatus()
-    {
+    public void setUserStatus() {
         Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
             setStatusLoginLayout();
@@ -149,7 +147,7 @@ public class MyInfoFragment extends BaseFragment {
                 }
                 switch (plugin.action) {
                     case QUESTION:
-                        redirectToMyQuestion();
+                        showMyQuestionOrDiscuss("我的问答", "question");
                         break;
                     case COURSE:
                         showMyCourse();
@@ -158,6 +156,7 @@ public class MyInfoFragment extends BaseFragment {
                         showMyTestpaper();
                         break;
                     case DISCUSS:
+                        showMyQuestionOrDiscuss("我的话题", "discussion");
                         break;
                     case NOTE:
                         showMyNote();
@@ -175,8 +174,7 @@ public class MyInfoFragment extends BaseFragment {
         setUserStatus();
     }
 
-    private void showMyTestpaper()
-    {
+    private void showMyTestpaper() {
         app.mEngine.runNormalPlugin(
                 "FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
@@ -187,29 +185,28 @@ public class MyInfoFragment extends BaseFragment {
         });
     }
 
-    public void showMyNote()
-    {
+    public void showMyNote() {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
 
             }
         };
-        app.mEngine.runNormalPlugin("NoteActivity",mActivity,callback);
+        app.mEngine.runNormalPlugin("NoteActivity", mActivity, callback);
     }
 
-    private void redirectToMyQuestion() {
+    private void showMyQuestionOrDiscuss(final String title, final String type) {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, title);
+                startIntent.putExtra(Const.QUESTION_TYPE, type);
             }
         };
         app.mEngine.runNormalPlugin("QuestionActivity", mActivity, callback);
     }
 
-    private void showMyCourse()
-    {
+    private void showMyCourse() {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {

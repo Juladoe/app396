@@ -12,6 +12,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -164,7 +165,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         View v = null;
         EntireReply entireReply = null;
 
-        if (position != 0) {
+        if (position != 0 && mEntireReplyList.size() > 0) {
             entireReply = mEntireReplyList.get(position - 1);
         }
         if (position == 0) {

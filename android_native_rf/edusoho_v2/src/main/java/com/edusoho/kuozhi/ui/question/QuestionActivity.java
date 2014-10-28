@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 /**
  * @author hby
- *         我的问答
+ *         我的问答/讨论
  */
 public class QuestionActivity extends ActionBarBaseActivity {
     private static final String TAG = "QuestionActivity";
@@ -35,6 +35,8 @@ public class QuestionActivity extends ActionBarBaseActivity {
     private View mLoadView;
     private int mStart;
     private ActionBarBaseActivity mActivity;
+    private String mType;
+    private String mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class QuestionActivity extends ActionBarBaseActivity {
 
     private void initView() {
         mActivity = this;
+        mTitle = getIntent().getStringExtra(Const.ACTIONBAT_TITLE);
+        mType = getIntent().getStringExtra(Const.QUESTION_TYPE);
         mLoadView = (View) findViewById(R.id.load_layout);
         mQuestionRefreshList = (QuestionRefreshListWidget) findViewById(R.id.question_listview);
         mQuestionRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
@@ -70,6 +74,7 @@ public class QuestionActivity extends ActionBarBaseActivity {
     private void loadQuestionDataFromSeek(int start, final boolean isRefresh) {
         RequestUrl url = app.bindUrl(Const.QUESTION, true);
         HashMap<String, String> params = url.getParams();
+        params.put("type", mType);
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 

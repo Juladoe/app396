@@ -42,6 +42,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     private ActionBarBaseActivity mActivity;
     private QuestionReplyListWidget mQuestionRelyList;
     private View mLoadView;
+    //private LinearLayout mEmptyList;
 
     private AQuery mAQuery;
 
@@ -64,7 +65,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     private void initView() {
         mAQuery = new AQuery(this);
-        mLoadView = (View) findViewById(R.id.load_layout);
+        mLoadView = findViewById(R.id.load_layout);
+        //mEmptyList = (LinearLayout) findViewById(R.id.empty_layout);
         mThreadId = getIntent().getIntExtra(Const.THREAD_ID, 0);
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
 
@@ -107,11 +109,16 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
-
                     ReplyResult replyResult = mActivity.gson.fromJson(object, new TypeToken<ReplyResult>() {
                     }.getType());
                     if (replyResult == null) {
                         return;
+                    } else {
+//                        if (replyResult.data.length > 0) {
+//                            mEmptyList.setVisibility(View.GONE);
+//                        } else {
+//                            mEmptyList.setVisibility(View.VISIBLE);
+//                        }
                     }
                     mStart = replyResult.limit + replyResult.start;
                     QuestionReplyListAdapter adapter = (QuestionReplyListAdapter) mQuestionRelyList.getAdapter();
@@ -214,19 +221,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
             case Const.EDIT_QUESTION:
                 mQuestionRelyList.clearAdapterCache();
                 mQuestionRelyList.setRefreshing();
-                //Toast.makeText(this, "问题编辑", 500).show();
-                //getQuestionPostUser();
-//                if (data != null) {
-//                    QuestionDetailModel qdModel = (QuestionDetailModel) data.getSerializableExtra(Const.QUESTION_EDIT_RESULT);
-//                    TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
-//                    ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
-//                    if (!qdModel.content.contains("img src")) {
-//                        contentLoading.setVisibility(View.GONE);
-//                        tvContent.setVisibility(View.VISIBLE);
-//                    }
-//                    URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mContext, contentLoading);
-//                    tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
-//                }
                 break;
             case Const.EDIT_REPLY:
                 //Toast.makeText(this, "回复编辑", 500).show();
