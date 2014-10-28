@@ -39,6 +39,7 @@
     <plugin name="NoteList" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteList"></plugin>
     <plugin name="NoteContent" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContent"></plugin>
     <plugin name="Test" version="1.0" package="com.edusoho.kuozhi.ui.note.Test"></plugin>
+    <plugin name="NoteReplyActivity" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteReplyActivity"></plugin>
 
     <!-- service -->
     <plugin name="EdusohoMainService" version="1.0" package="com.edusoho.kuozhi.Service.EdusohoMainService"></plugin>

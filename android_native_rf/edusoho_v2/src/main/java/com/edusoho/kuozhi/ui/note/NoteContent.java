@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.note;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +24,15 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Question.SubmitResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.HashMap;
@@ -36,11 +43,13 @@ import cn.trinea.android.common.util.DigestUtils;
  * Created by onewoman on 14-10-9.
  */
 public class NoteContent extends ActionBarBaseActivity {
-    private String content,Title;
-    private TextView titleView;
-    private Context context;
+    private int courseId, lessonId;
+    private String content, Title;
 
-    private RichTextBoxFragment richFragment;
+    private TextView titleView;
+    private LinearLayout linear;
+    private ViewGroup vgContent;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,80 +57,62 @@ public class NoteContent extends ActionBarBaseActivity {
         setContentView(R.layout.notecontent_layout);
         context = this;
         init();
-        setBackMode(BACK,"笔记内容");
+        setBackMode(BACK, "笔记内容");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.question_reply_menu, menu);
+        getMenuInflater().inflate(R.menu.note_reply_menu, menu);
         return true;
+    }
+
+    public void initIntentData() {
+        Intent intent = getIntent();
+        Title = intent.getStringExtra("note_title");
+        content = intent.getStringExtra("note_content");
+        courseId = intent.getIntExtra("note_courseId", 0);
+        lessonId = intent.getIntExtra("note_lessonId", 0);
+    }
+
+    public void init() {
+        initIntentData();
+        titleView = (TextView) this.findViewById(R.id.content_title);
+        vgContent = (ViewGroup) getLayoutInflater().inflate(R.layout.note_content_inflate,null);
+        TextView contentView = (TextView) vgContent.findViewById(R.id.content);
+
+        titleView.setText(Title);
+        contentView.setText(Html.fromHtml(content,new NetImageGetter(contentView,content),null));
+        linear = (LinearLayout) findViewById(R.id.rich_text_box_show);
+        linear.addView(vgContent);
+    }
+
+    public void turnToNoteReply(final int courseId, final int lessonId, final String title,final String content)
+    {
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra("note_courseId", courseId);
+                startIntent.putExtra("note_lessonId", lessonId);
+                startIntent.putExtra("note_title",title);
+                startIntent.putExtra(Const.NORMAL_CONTENT,content);
+            }
+        };
+        app.mEngine.runNormalPlugin("NoteReplyActivity", mActivity, callback);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (richFragment.getContent().toString() == null || richFragment.getContent().toString().equals("")) {
-            Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        if (item.getItemId() == R.id.reply_submit) {
-            switch (richFragment.getTypeCode()) {
-                case Const.REPLY: {
-                    RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
-                    HashMap<String, String> params = url.getParams();
-                    params.put("courseId", richFragment.getCourseId());
-                    params.put("threadId", richFragment.getThreadId());
-                    final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
-                    params.put("content", richFragment.setContent(content));
-                    params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
-                    url.setMuiltParams(richFragment.getObjects());
-                    url.setParams(params);
-//                    submitReply(url);
-                    break;
-                }
-            }
-        }
+        int id = item.getItemId();
+        if(id == R.id.note_edit)
+            turnToNoteReply(courseId, lessonId,Title,content);
         return super.onOptionsItemSelected(item);
     }
 
-    public void init()
-    {
-        initIntentData();
-        initView();
-    }
-
-    public void initIntentData()
-    {
-        Intent intent = getIntent();
-        Title = intent.getStringExtra("title");
-        content = intent.getStringExtra("content");
-    }
-
-    public void initView()
-    {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        richFragment = new RichTextBoxFragment();
-        byte[] itemArgs = new byte[]{View.VISIBLE, View.VISIBLE, View.VISIBLE, View.GONE, View.VISIBLE, View.VISIBLE, View.VISIBLE};
-        Bundle bundle = new Bundle();
-        bundle.putByteArray(Const.RICH_ITEM_AGRS, itemArgs);
-        richFragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.rich_text_box_show, richFragment);
-        fragmentTransaction.commit();
-
-        titleView = (TextView) this.findViewById(R.id.content_title);
-//        contentView = (TextView) this.findViewById(R.id.content);
-
-        titleView.setText(Title);
-//        contentView.setText(Html.fromHtml(content,new NetImageGetter(contentView,content),null));
-    }
-
-    private class NetImageGetter implements Html.ImageGetter
-    {
+    private class NetImageGetter implements Html.ImageGetter {
         private TextView mTextView;
         private String html;
 
-        public NetImageGetter(TextView textView, String html)
-        {
+        public NetImageGetter(TextView textView, String html) {
             this.html = html;
             mTextView = textView;
         }
@@ -144,7 +135,7 @@ public class NoteContent extends ActionBarBaseActivity {
 
             try {
                 file.createNewFile();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             aQuery.download(s, file, new AjaxCallback<File>() {

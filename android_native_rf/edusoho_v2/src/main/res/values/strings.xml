@@ -82,4 +82,7 @@
     <string name="course_no_review">该课程尚无评价</string>
 
     <string name="app_code">EduSoho</string>
+
+    <!--note-->
+    <string name="edit_content">编辑</string>
 </resources>
