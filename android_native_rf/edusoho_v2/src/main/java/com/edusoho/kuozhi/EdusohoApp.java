@@ -94,7 +94,7 @@ public class EdusohoApp extends Application {
         super.onCreate();
         Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
-        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -457,10 +457,8 @@ public class EdusohoApp extends Application {
             if (!workSpace.exists()) {
                 workSpace.mkdir();
             }
-            File cache = new File(workSpace, "cache");
-            if (!cache.exists()) {
-                AQUtility.setCacheDir(new File(workSpace, "cache"));
-            }
+
+            AQUtility.setCacheDir(new File(workSpace, "cache"));
         } else {
             Toast.makeText(this, "设备没有内存卡,数据将保存在手机内存中！", Toast.LENGTH_LONG).show();
         }

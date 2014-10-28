@@ -184,11 +184,12 @@ public class CoreEngine {
     }
 
     public void runNormalPlugin(
-            String pluginName, Activity serverActivity, PluginRunCallback callback)
+            String pluginName, Context serverActivity, PluginRunCallback callback)
     {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startIntent.setClassName(serverActivity, pluginModel.packAge);
             if (callback != null) {
                 callback.setIntentDate(startIntent);
@@ -199,11 +200,12 @@ public class CoreEngine {
     }
 
     public void runNormalPluginWithBundle(
-            String pluginName, Activity serverActivity, Bundle bundle)
+            String pluginName, Context serverActivity, Bundle bundle)
     {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startIntent.setClassName(serverActivity, pluginModel.packAge);
             if (bundle != null) {
                 startIntent.putExtras(bundle);
