@@ -919,4 +919,19 @@ public class AppUtil {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
+
+    public static int parseInt(String value)
+    {
+        int i = 0;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Integer.parseInt(value);
+        } catch (Exception e) {
+            i = 0;
+        }
+
+        return i;
+    }
 }

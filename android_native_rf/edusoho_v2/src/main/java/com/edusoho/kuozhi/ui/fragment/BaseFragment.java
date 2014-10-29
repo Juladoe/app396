@@ -55,7 +55,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     protected void changeTitle(String title)
     {
-        mActivity.setBackMode(ActionBarBaseActivity.BACK, title);
+        mActivity.setTitle(title);
     }
 
     protected void startAcitivityWithBundle(String activityName, Bundle bundle)

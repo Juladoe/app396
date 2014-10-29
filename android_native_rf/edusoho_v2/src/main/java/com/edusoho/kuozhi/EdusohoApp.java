@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,7 +24,6 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
-import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CacheAjaxCallback;
@@ -94,7 +92,7 @@ public class EdusohoApp extends Application {
         super.onCreate();
         Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
-        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -457,10 +455,8 @@ public class EdusohoApp extends Application {
             if (!workSpace.exists()) {
                 workSpace.mkdir();
             }
-            File cache = new File(workSpace, "cache");
-            if (!cache.exists()) {
-                AQUtility.setCacheDir(new File(workSpace, "cache"));
-            }
+
+            AQUtility.setCacheDir(new File(workSpace, "cache"));
         } else {
             Toast.makeText(this, "设备没有内存卡,数据将保存在手机内存中！", Toast.LENGTH_LONG).show();
         }

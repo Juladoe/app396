@@ -30,11 +30,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
             mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
         }
 
-        if (mTitle == null) {
-            mTitle = "标题";
-        }
-
-        setBackMode(BACK, mTitle);
+        setBackMode(BACK, mTitle == null ? "标题" : mTitle);
         loadFragment(mFragment, data != null ? data.getExtras() : null);
     }
 
