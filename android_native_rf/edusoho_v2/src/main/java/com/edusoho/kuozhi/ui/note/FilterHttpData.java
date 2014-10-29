@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.ui.note;
 
 import android.util.Log;
 
-import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.model.Note.CollectNode;
+import com.edusoho.kuozhi.model.Note.HttpDatas;
+import com.edusoho.kuozhi.model.Note.NoteListData;
 
 import java.util.ArrayList;
 import java.util.List;
