@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui.course;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -15,19 +14,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.View;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.ui.fragment.CourseInfoFragment;
-import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
-import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
-
-import java.util.ArrayList;
+import com.edusoho.kuozhi.util.Const;
 
 /**
  * Created by howzhi on 14-8-31.
@@ -36,12 +28,13 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
 
     private final Handler handler = new Handler();
     private PagerSlidingTabStrip mTabs;
-    private ViewPager mFragmentPager;
+    protected ViewPager mFragmentPager;
     private MyPagerAdapter fragmentAdapter;
-    private String[] fragmentArrayList;
-    private String[] titles;
-    private String mTitle;
-    private String mFragmentName = null;
+    protected String[] fragmentArrayList;
+    protected String[] titles;
+    protected String mTitle;
+    protected int mMenu;
+    protected String mFragmentName = null;
 
     private Drawable oldBackground = null;
     private int currentColor = R.color.action_bar_bg;
@@ -49,8 +42,8 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     public static final String FRAGMENT = "fragment";
     public static final String LISTS = "lists";
     public static final String TITLES = "titles";
-    public static final String TITLE = "title";
     public static final String FRAGMENT_DATA = "fragment_data";
+    public static final String MENU = "menu";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,21 +52,32 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
         initView();
     }
 
-    private void initView()
+    protected void initIntentData()
     {
         Intent data = getIntent();
         if (data != null) {
-            mTitle = data.getStringExtra(TITLE);
+            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
             titles = data.getStringArrayExtra(TITLES);
             fragmentArrayList = data.getStringArrayExtra(LISTS);
             mFragmentName = data.getStringExtra(FRAGMENT);
+            mMenu = data.getIntExtra(MENU, 0);
         }
 
         if (titles == null || fragmentArrayList == null) {
             longToast("无效列表数据！");
             return;
         }
+    }
+
+    protected void initView()
+    {
+        initIntentData();
         setBackMode(BACK, mTitle);
+        initFragmentPaper();
+    }
+
+    protected void initFragmentPaper()
+    {
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.course_details_info_tabs);
         mFragmentPager = (ViewPager) findViewById(R.id.course_details_info_pager);
         fragmentAdapter = new MyPagerAdapter(
@@ -88,10 +92,12 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
 
         changeColor(currentColor);
         setPagetItem(mFragmentName);
+        mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
     }
 
     private void setPagetItem(String name)
     {
+        Log.d(null, "setPagetItem fragment->" + name);
         for(int i=0; i < fragmentArrayList.length; i++) {
             if (fragmentArrayList[i].equals(name)) {
                 mFragmentPager.setCurrentItem(i);

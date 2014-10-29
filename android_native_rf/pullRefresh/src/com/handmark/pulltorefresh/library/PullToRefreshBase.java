@@ -308,14 +308,13 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 	@Override
 	public final boolean onTouchEvent(MotionEvent event) {
-
 		if (!isPullToRefreshEnabled()) {
 			return false;
 		}
 
 		// If we're refreshing, and the flag is set. Eat the event
 		if (!mScrollingWhileRefreshingEnabled && isRefreshing()) {
-			return true;
+			return false;
 		}
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN && event.getEdgeFlags() != 0) {
@@ -725,6 +724,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	 * @param doScroll - Whether the UI should scroll for this event.
 	 */
 	protected void onRefreshing(final boolean doScroll) {
+        Log.d(null, "onRefreshing mode->" + mMode);
 		if (mMode.showHeaderLoadingLayout()) {
 			mHeaderLayout.refreshing();
 		}
@@ -734,7 +734,6 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 		if (doScroll) {
 			if (mShowViewWhileRefreshing) {
-
 				// Call Refresh Listener when the Scroll has finished
 				OnSmoothScrollFinishedListener listener = new OnSmoothScrollFinishedListener() {
 					@Override

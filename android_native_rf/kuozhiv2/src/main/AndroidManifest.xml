@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kuozhiv2" >
+    android:versionCode="3"
+    android:versionName="2.0.1"
+    package="com.edusoho.kuozhi">
 
     <application
-        android:name="com.edusoho.kuozhi.EdusohoApp"
+        android:name=".EdusohoApp"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/EdusohoAppTheme" >
+        android:theme="@style/EdusohoAppTheme">
         <activity
             android:theme="@style/kuozhiV2StartTheme"
             android:name=".KuozhiActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,6 +26,10 @@
             android:launchMode="singleInstance"
             android:name=".KuozhiSplashActivity"
             android:configChanges="keyboardHidden|orientation"></activity>
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
     </application>
 
 </manifest>

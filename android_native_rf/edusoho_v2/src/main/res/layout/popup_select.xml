@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/popup_bg"
+    android:background="@drawable/material_dlg_bg"
     android:layout_margin="20dp">
 
     <TextView
@@ -45,26 +45,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.edusoho.kuozhi.view.EduSohoPopBtn
-            android:textColor="@color/popup_btn_color"
+        <TextView
+            android:textColor="@color/material_cancel_btn"
             android:id="@+id/popup_cancel_btn"
+            android:textSize="@dimen/material_btn"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:padding="10dp"
             android:tag="left"
-            android:background="@drawable/popup_left_btn"
             android:text="取消"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.edusoho.kuozhi.view.EduSohoPopBtn
+        <TextView
+            android:textSize="@dimen/material_btn"
             android:tag="right"
-            android:textColor="@color/popup_btn_color"
+            android:textColor="@color/material_ok_btn"
             android:id="@+id/popup_ok_btn"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:background="@drawable/popup_right_btn"
             android:text="退出学习"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

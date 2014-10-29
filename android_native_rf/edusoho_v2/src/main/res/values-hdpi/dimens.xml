@@ -10,7 +10,7 @@
     <dimen name="sys_normal">18dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
-    <dimen name="course_list_item_title">18sp</dimen>
+    <dimen name="course_list_item_title">14sp</dimen>
     <dimen name="recommend_sch_info_size">12dp</dimen>
     <dimen name="course_info_title">16dp</dimen>
     <dimen name="course_info_normal">14dp</dimen>
@@ -42,7 +42,7 @@
     <dimen name="notify_icon">30dp</dimen>
     <dimen name="login_icon">25dp</dimen>
     <dimen name="popup_title">20dp</dimen>
-    <dimen name="popup_input">15dp</dimen>
+    <dimen name="popup_input">17dp</dimen>
 
     <!--icon font -->
     <dimen name="font_close">20dp</dimen>
@@ -56,17 +56,17 @@
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
-    <dimen name="nav_layout_btn">8dp</dimen>
+    <dimen name="nav_layout_btn">12dp</dimen>
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">14sp</dimen>
-    <dimen name="recommend_announcement">18sp</dimen>
+    <dimen name="recommend_announcement">12sp</dimen>
     <dimen name="recommend_announcement_label">22sp</dimen>
     <dimen name="recommend_view_more">18sp</dimen>
     <dimen name="material_normal_btn">18sp</dimen>
     <dimen name="found_search_text">18sp</dimen>
     <dimen name="found_search_text_icon">22sp</dimen>
-    <dimen name="found_list_item_text">22sp</dimen>
+    <dimen name="found_list_item_text">20sp</dimen>
     <dimen name="found_list_item_label">14sp</dimen>
     <dimen name="myinfo_plugin_list_item_text">18sp</dimen>
     <dimen name="myinfo_name">16sp</dimen>
@@ -78,4 +78,28 @@
     <dimen name="regist_info_label">14sp</dimen>
     <dimen name="course_empty_text">18sp</dimen>
     <dimen name="course_details_pic">190dp</dimen>
+
+    <dimen name="course_item_pic_width">155dp</dimen>
+    <dimen name="course_item_pic_height">95dp</dimen>
+    <dimen name="testpaper_title">12dp</dimen>
+
+
+    <!--问答列表标题字体 -->
+    <dimen name="question_item_title_size">14sp</dimen>
+    <dimen name="question_item_lesson">12sp</dimen>
+    <dimen name="question_teacher_reply">12sp</dimen>
+    <dimen name="question_edit_button_font">14sp</dimen>
+
+    <!-- testpaper-->
+    <dimen name="my_testpaper_btn">6sp</dimen>
+
+    <dimen name="learn_status_title">12sp</dimen>
+    <dimen name="question_checkbox_padding_left">40dp</dimen>
+    <dimen name="rating_height">32px</dimen>
+    <dimen name="big_rating_height">42px</dimen>
+
+    <!--note-->
+    <dimen name="note_main_paddingtop">5dp</dimen>
+    <dimen name="note_main_paddingleft">3dp</dimen>
+    <dimen name="note_main_paddingright">3dp</dimen>
 </resources>

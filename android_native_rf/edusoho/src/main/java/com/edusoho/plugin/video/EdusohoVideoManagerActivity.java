@@ -12,7 +12,6 @@ import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
-import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 
 import java.util.Map;
 

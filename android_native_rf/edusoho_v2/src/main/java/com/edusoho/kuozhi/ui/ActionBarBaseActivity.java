@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,9 +17,10 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.handler.ClientVersionHandler;
+import com.edusoho.kuozhi.AppConfig;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
@@ -32,17 +34,20 @@ import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
+import com.edusoho.listener.StatusCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by howzhi on 14-8-6.
  */
 public class ActionBarBaseActivity extends ActionBarActivity {
 
-    protected static final String BACK = "返回";
+    private static final String TAG = "ActionBarBaseActivity";
+    public static final String BACK = "返回";
     protected ActionBarBaseActivity mActivity;
     protected Context mContext;
     public EdusohoApp app;
@@ -60,6 +65,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         mActivity = this;
         mContext = this;
+        initActivity();
+    }
+
+    private void initActivity()
+    {
         app = (EdusohoApp) getApplication();
         app.setDisplay(this);
         gson = app.gson;
@@ -67,6 +77,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mService = app.getService();
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
+        setProgressBarIndeterminateVisibility(false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     public EdusohoMainService getService()
@@ -134,6 +150,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mTitleTextView.setText(title == null ? "" : title);
     }
 
+    public void setNormalActionBack(String title)
+    {
+        mActionBar.setDisplayShowCustomEnabled(false);
+        mActionBar.setTitle(title);
+    }
+
     public void setBackMode(String backTitle, String title)
     {
         mTitleTextView = (TextView) getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
@@ -144,37 +166,31 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         layoutParams.gravity = Gravity.CENTER;
 
         mActionBar.setCustomView(mTitleTextView, layoutParams);
-        mActionBar.setDisplayUseLogoEnabled(false);
 
-        if (backTitle == null) {
-            mActionBar.setDisplayHomeAsUpEnabled(false);
-            mActionBar.setDisplayShowTitleEnabled(false);
-        } else {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setTitle(backTitle);
+        mActionBar.setDisplayUseLogoEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        mActionBar.setDisplayShowCustomEnabled(true);
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
+
+        if (backTitle != null) {
+            Log.d(null, "backtitle->" + backTitle);
+            mActionBar.setHomeButtonEnabled(true);
+            mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+            );
+            mActionBar.setIcon(R.drawable.action_bar_back);
+            mActionBar.setDisplayShowHomeEnabled(true);
         }
 
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayShowCustomEnabled(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(null, "menu item->" + item.getItemId());
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void startSplash() {
-        if (app.config.showSplash) {
-            app.mEngine.runNormalPlugin("SplashActivity", this, null);
-            app.config.showSplash = false;
-            app.saveConfig();
-            return;
-        }
-
-        app.sendMessage(SplashActivity.INIT_APP, null);
     }
 
     public String wrapUrl(String url, String... params)
@@ -205,45 +221,65 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return title;
     }
 
-    public boolean checkMobileVersion(HashMap<String, String> versionRange)
+    public boolean checkMobileVersion(
+            HashMap<String, String> versionRange, ClientVersionHandler handler)
     {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 
         System.out.println("version->" + app.apiVersion);
         int result = AppUtil.compareVersion(app.apiVersion, min);
+        if (handler != null) {
+            return handler.execute(min, max, app.apiVersion);
+        }
+
         if (result == Const.LOW_VERSIO) {
-            PopupDialog dlg = PopupDialog.createMuilt(
+            PopupDialog popupDialog = PopupDialog.createMuilt(
                     mContext,
                     "网校提示",
-                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+                    "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。\n或选择其他网校",
                     new PopupDialog.PopupClickListener() {
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                app.updateApp(Const.DEFAULT_UPDATE_URL, true, new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
-                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
-                                    }
-                                });
+                                String code = getResources().getString(R.string.app_code);
+                                String updateUrl = String.format(
+                                        "%s%s?code=%s",
+                                        app.schoolHost,
+                                        Const.DOWNLOAD_URL,
+                                        code
+                                );
+                                app.startUpdateWebView(updateUrl);
+                            } else {
+                                QrSchoolActivity.start(mActivity);
+                                finish();
                             }
                         }
                     });
-
-            dlg.setOkText("立即下载");
-            dlg.show();
+            popupDialog.setCancelText("选择新网校");
+            popupDialog.setOkText("立即下载");
+            popupDialog.show();
             return false;
         }
 
         result = AppUtil.compareVersion(app.apiVersion, max);
         if (result == Const.HEIGHT_VERSIO) {
-            PopupDialog.createNormal(
+            PopupDialog popupDialog = PopupDialog.createMuilt(
                     mContext,
                     "网校提示",
-                    "服务器维护中，请稍后再试。"
-            ).show();
+                    "网校服务器版本过低，无法继续登录！请重新尝试。\n或选择其他网校",
+                    new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            if (button == PopupDialog.OK) {
+                                QrSchoolActivity.start(mActivity);
+                                finish();
+                            }
+                        }
+                    });
+
+            popupDialog.setOkText("选择新网校");
+            popupDialog.show();
             return false;
         }
 
@@ -304,7 +340,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void longToast(String title)
     {
-        Toast.makeText(mContext, title, Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, title, Toast.LENGTH_SHORT).show();
     }
 
     public void ajax(String url, ResultCallback rcl, boolean showLoading)
@@ -358,7 +394,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 if (loading != null) {
                     loading.dismiss();
                 }
-                handleRequest(url, object, status, rcl);
+                if (handleRequest(url, object, status, rcl)){
+                    return;
+                }
                 try {
                     rcl.callback(url,object,status);
                 }catch (Exception e) {
@@ -368,38 +406,71 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
-    private void handleRequest(
+    private boolean handleRequest(
             String url, String object, AjaxStatus status, ResultCallback rcl)
     {
         int code = status.getCode();
         if (code == Const.CACHE_CODE) {
             rcl.callback(url, object, status);
-            return;
+            return true;
         }
 
         if (!app.getNetStatus()) {
             longToast("没有网络服务！请检查网络设置。");
-            return;
+            rcl.error(url, status);
+            return true;
         }
 
         if (code != Const.OK) {
             longToast("服务器访问异常!");
             rcl.error(url, status);
-            return;
+            return true;
         }
 
         if (handlerError(object)) {
-            return;
+            rcl.error(url, status);
+            return true;
         }
+
+        return false;
     }
 
+    public void ajaxPostMuiltKeys(RequestUrl url, final ResultCallback rcl)
+    {
+        app.postByMuiltKeys(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                if (handleRequest(url, object, status, rcl)) {
+                    return;
+                }
+                try {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+
+            @Override
+            public void update(String url, String object, AjaxStatus status) {
+                handleRequest(url, object, status, rcl);
+                try {
+                    rcl.update(url, object, status);
+                } catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+        });
+    }
+    
     public void ajaxPost(
             RequestUrl url, final ResultCallback rcl)
     {
         app.postUrl(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                handleRequest(url, object, status, rcl);
+                if (handleRequest(url, object, status, rcl)){
+                    return;
+                }
                 try {
                     rcl.callback(url,object,status);
                 }catch (Exception e) {
@@ -451,7 +522,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             if (result != null) {
                 com.edusoho.kuozhi.model.Error error = result.error;
                 if (Const.CLIENT_CLOSE.equals(error.name)) {
-                    PopupDialog.createMuilt(
+                    PopupDialog popupDialog = PopupDialog.createMuilt(
                             mContext,
                             "系统提示",
                             error.message,
@@ -459,12 +530,13 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                                 @Override
                                 public void onClick(int button) {
                                     if (button == PopupDialog.OK) {
-                                        removeSchoolItem();
                                         QrSchoolActivity.start(mActivity);
                                         finish();
                                     }
                                 }
-                            }).show();
+                            });
+                    popupDialog.setOkText("选择新网校");
+                    popupDialog.show();
                     return true;
                 }
                 longToast(result.error.message);

@@ -28,7 +28,7 @@
             android:id="@+id/course_details_rating"
             style="@style/courseRatingBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/rating_height"
             android:isIndicator="true"
             android:rating="0" />
 
@@ -64,7 +64,7 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="发表评论"
+            android:text="发表评价"
             android:textSize="@dimen/review_course_commit"
             android:background="@drawable/login_btn_sel"
             android:layout_width="match_parent"

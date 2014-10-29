@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.model.Category;
 import com.edusoho.kuozhi.model.MyInfoPlugin;
 
 import java.util.ArrayList;

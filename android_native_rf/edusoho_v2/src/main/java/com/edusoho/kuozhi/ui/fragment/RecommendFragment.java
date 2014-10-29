@@ -1,28 +1,17 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.SchoolAnnouncement;
 import com.edusoho.kuozhi.model.SchoolBanner;
 import com.edusoho.kuozhi.ui.course.CourseListActivity;
@@ -33,9 +22,10 @@ import com.edusoho.kuozhi.view.EdusohoViewPager;
 import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -46,8 +36,13 @@ public class RecommendFragment extends BaseFragment {
     private EdusohoViewPager mSchoolBanner;
     private TextView mSchoolAnnouncement;
     private CourseListWidget mRecommendCourses;
+    private CourseListWidget mNewCourses;
     private HorizontalListWidget mWeekCourse;
+
+    private PullToRefreshScrollView mRootView;
     public String mTitle = "推荐";
+
+    private View mWeekCourseLabel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,15 +58,66 @@ public class RecommendFragment extends BaseFragment {
     @Override
     protected void initView(View view)
     {
+        mRootView = (PullToRefreshScrollView) view;
         mWeekCourse = (HorizontalListWidget) view.findViewById(R.id.recommend_week_course);
         mRecommendCourses = (CourseListWidget) view.findViewById(R.id.recommend_listview);
+        mNewCourses = (CourseListWidget) view.findViewById(R.id.new_listview);
         mSchoolAnnouncement = (TextView) view.findViewById(R.id.recommend_sch_announcement);
         mSchoolBanner = (EdusohoViewPager) view.findViewById(R.id.school_banner);
 
-        initSchoolBanner();
-        initRecommendCourse();
+        mWeekCourseLabel = view.findViewById(R.id.recommend_week_label);
+
+        mRootView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mRootView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ScrollView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+                initFragment(true);
+                mRootView.onRefreshComplete();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+
+            }
+        });
+        initFragment(false);
+    }
+
+    private void initFragment(boolean isUpdate)
+    {
+        initSchoolBanner(isUpdate);
         initSchoolAnnouncement();
         initWeekCourse();
+        initRecommendCourse();
+        initNewCourse();
+    }
+
+    private void initNewCourse()
+    {
+        RequestUrl url = app.bindUrl(Const.LASTEST_COURSES, false);
+        url.setParams(new String[]{
+                "start", "0",
+                "limit", "2"
+        });
+
+        mNewCourses.setFullHeight(true);
+        mNewCourses.initialise(mActivity, url);
+
+        mNewCourses.setShowMoreBtnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(null, "mNewCourses click->");
+                app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.LASTEST);
+                        startIntent.putExtra(CourseListActivity.TITLE, "最新课程");
+                    }
+                });
+            }
+        });
+
+        mNewCourses.setItemClick(new CourseListScrollListener(mActivity));
     }
 
     private void initWeekCourse()
@@ -82,11 +128,12 @@ public class RecommendFragment extends BaseFragment {
                 "limit", "3"
         });
 
+        mWeekCourse.setLabel(mWeekCourseLabel);
         mWeekCourse.initialise(mActivity, url);
         mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
     }
 
-    private void initSchoolBanner()
+    private void initSchoolBanner(final boolean isUpdate)
     {
         RequestUrl url = app.bindUrl(Const.SCHOOL_BANNER, false);
 
@@ -99,11 +146,19 @@ public class RecommendFragment extends BaseFragment {
                 }.getType());
 
                 if (schoolBanners == null || schoolBanners.isEmpty()) {
-                    return;
+                    schoolBanners = new ArrayList<SchoolBanner>();
+                    schoolBanners.add(SchoolBanner.def());
                 }
-                SchoolBannerAdapter adapter = new SchoolBannerAdapter(app, schoolBanners);
-                mSchoolBanner.setAdapter(adapter);
-                mSchoolBanner.setCurrentItem(0);
+
+                SchoolBannerAdapter adapter;
+                if (isUpdate) {
+                    mSchoolBanner.update(schoolBanners);
+                } else {
+                    adapter = new SchoolBannerAdapter(
+                            mActivity, schoolBanners);
+                    mSchoolBanner.setAdapter(adapter);
+                    mSchoolBanner.setCurrentItem(1);
+                }
             }
         });
     }
@@ -149,6 +204,7 @@ public class RecommendFragment extends BaseFragment {
                 }.getType());
 
                 if (schoolAnnouncement == null) {
+                    mSchoolAnnouncement.setText("暂无网校公告");
                     return;
                 }
                 mSchoolAnnouncement.setText(schoolAnnouncement.info);

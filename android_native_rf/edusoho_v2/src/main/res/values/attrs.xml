@@ -65,4 +65,19 @@
             <enum name="DISABLED" value="3" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="MuiltTextView">
+        <attr name="muiltTitle" format="string" />
+        <attr name="muiltColor" format="color" />
+        <attr name="contentColor" format="color" />
+        <attr name="isFirstPadding" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ChoiceRadioButton">
+        <attr name="button" format="reference" />
+        <attr name="btnText" format="string" />
+        <attr name="btnContent" format="string" />
+        <attr name="btnSize" format="dimension" />
+        <attr name="btnColor" format="color" />
+    </declare-styleable>
 </resources>

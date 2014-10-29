@@ -24,7 +24,7 @@ import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.MessageModel;
 import com.edusoho.kuozhi.core.model.PluginModel;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.model.MessageType;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -36,7 +36,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -122,7 +121,6 @@ public class CoreEngine {
     public void runService(
             String serviceName, Context serverActivity, PluginRunCallback callback)
     {
-        Log.d(null, "name->" + serviceName + mPluginModelHashMap);
         PluginModel pluginModel = mPluginModelHashMap.get(serviceName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -135,12 +133,27 @@ public class CoreEngine {
         }
     }
 
-    public BaseFragment runPluginWithFragment(String pluginName, Activity activity, PluginFragmentCallback callback)
+    public Fragment runPluginWithFragmentByBundle(
+            String pluginName, Activity activity, Bundle bundle)
     {
-        BaseFragment fragment = null;
+        Fragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
-            fragment = (BaseFragment) Fragment.instantiate(activity, pluginModel.packAge);
+            fragment = Fragment.instantiate(activity, pluginModel.packAge);
+            fragment.setArguments(bundle);
+
+            return fragment;
+        }
+        return null;
+    }
+
+    public Fragment runPluginWithFragment(
+            String pluginName, Activity activity, PluginFragmentCallback callback)
+    {
+        Fragment fragment = null;
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            fragment = Fragment.instantiate(activity, pluginModel.packAge);
             if (callback != null) {
                 Bundle bundle = new Bundle();
                 fragment.setArguments(bundle);
@@ -171,11 +184,12 @@ public class CoreEngine {
     }
 
     public void runNormalPlugin(
-            String pluginName, Activity serverActivity, PluginRunCallback callback)
+            String pluginName, Context serverActivity, PluginRunCallback callback)
     {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startIntent.setClassName(serverActivity, pluginModel.packAge);
             if (callback != null) {
                 callback.setIntentDate(startIntent);
@@ -186,13 +200,16 @@ public class CoreEngine {
     }
 
     public void runNormalPluginWithBundle(
-            String pluginName, Activity serverActivity, Bundle bundle)
+            String pluginName, Context serverActivity, Bundle bundle)
     {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startIntent.setClassName(serverActivity, pluginModel.packAge);
-            startIntent.putExtras(bundle);
+            if (bundle != null) {
+                startIntent.putExtras(bundle);
+            }
 
             serverActivity.startActivity(startIntent);
         }
@@ -256,6 +273,11 @@ public class CoreEngine {
     public void unRegistMessageSource(MessageEngine.MessageCallback source)
     {
         messageEngine.unRegistMessageSource(source);
+    }
+
+    public void unRegistPubMessage(MessageType messageType, MessageEngine.MessageCallback source)
+    {
+        messageEngine.unRegistPubMessage(messageType, source);
     }
 
     private void init()
@@ -329,9 +351,7 @@ public class CoreEngine {
     private void initPluginFromXml()
     {
         XmlResourceParser parser = mContext.getResources().getXml(R.xml.core_plugins);
-        System.out.println("paset->" + parser);
         mPluginModelHashMap = parsePluginXml(parser);
-        System.out.println("mPluginModelHashMap->" + mPluginModelHashMap);
     }
 
     public String[] getAssetPlugins(String dirName) throws IOException

@@ -244,19 +244,20 @@ public class FileUtils {
             o.flush();
             return true;
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("FileNotFoundException occurred. ", e);
+            e.printStackTrace();
         } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+            e.printStackTrace();
         } finally {
             if (o != null) {
                 try {
                     o.close();
                     stream.close();
                 } catch (IOException e) {
-                    throw new RuntimeException("IOException occurred. ", e);
+                    e.printStackTrace();
                 }
             }
         }
+        return false;
     }
 
     /**
@@ -272,7 +273,7 @@ public class FileUtils {
         try {
             inputStream = new FileInputStream(sourceFilePath);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("FileNotFoundException occurred. ", e);
+            e.printStackTrace();
         }
         return writeFile(destFilePath, inputStream);
     }

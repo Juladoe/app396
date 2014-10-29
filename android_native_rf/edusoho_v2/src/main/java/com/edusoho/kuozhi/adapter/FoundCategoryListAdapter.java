@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Category;
-import com.edusoho.kuozhi.ui.widget.CategoryListView;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
@@ -20,7 +18,6 @@ import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -188,7 +185,11 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         } else {
             holder.mExpandView.setVisibility(View.GONE);
         }
-        holder.mTitle.setText(category.name);
+        if (category.id == 0) {
+            holder.mTitle.setText("全部");
+        } else {
+            holder.mTitle.setText(category.name);
+        }
         //moveView(holder.mTitle, (category.depth - 1) * 30, category.id);
         return currentView;
     }

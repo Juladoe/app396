@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.ui.course.SchoolCourseActivity;
 
 import java.util.ArrayList;
 

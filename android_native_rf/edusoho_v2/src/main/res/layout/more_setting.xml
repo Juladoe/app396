@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.EduUpdateView
             android:id="@+id/more_setting_set"
             android:textColor="@color/system_light_text"
             android:paddingLeft="20dp"
@@ -77,7 +77,7 @@
             android:paddingTop="18dp"
             android:paddingBottom="17dp"
             android:textSize="@dimen/more_setting_text"
-            android:text="关于网校"
+            android:text="@string/school_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

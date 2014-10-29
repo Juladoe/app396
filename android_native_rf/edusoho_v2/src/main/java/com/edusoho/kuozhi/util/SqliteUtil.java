@@ -6,18 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.edusoho.kuozhi.core.model.Cache;
 
-import org.apache.http.client.HttpClient;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.FileHandler;
 
 public class SqliteUtil extends SQLiteOpenHelper{
 

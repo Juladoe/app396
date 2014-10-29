@@ -11,7 +11,6 @@ import android.widget.TextView;
 public class EduSohoIconView extends TextView{
 
     private Context mContext;
-
     public EduSohoIconView(Context context) {
         super(context);
         mContext = context;

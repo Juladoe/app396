@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.model;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**

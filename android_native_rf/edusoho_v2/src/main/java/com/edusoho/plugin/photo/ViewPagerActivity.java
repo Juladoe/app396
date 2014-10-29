@@ -15,13 +15,13 @@ import android.view.ViewGroup.LayoutParams;
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
 
 public class ViewPagerActivity extends ActionBarBaseActivity{
 
     private ViewPager mViewPager;
     private Bitmap cacheBitmap;
     private StringBuffer mTitle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,13 @@ public class ViewPagerActivity extends ActionBarBaseActivity{
             mViewPager.setOnPageChangeListener(adapter);
             mViewPager.setCurrentItem(index);
         }
+
+        mTitle = new StringBuffer();
+        mTitle.append("图片预览 ")
+                .append(1)
+                .append("/")
+                .append(images.length);
+        setTitle(mTitle.toString());
     }
 
     public static void start(Context context, int index, String[] imageArray)
@@ -89,12 +96,15 @@ public class ViewPagerActivity extends ActionBarBaseActivity{
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
         }
 
         @Override
         public void onPageSelected(int position) {
-            mTitle.append("图片预览 ").append(position).append("/").append(mImages.length);
+            mTitle = new StringBuffer();
+            mTitle.append("图片预览 ")
+                    .append(position + 1)
+                    .append("/")
+                    .append(mImages.length);
             setTitle(mTitle.toString());
         }
 

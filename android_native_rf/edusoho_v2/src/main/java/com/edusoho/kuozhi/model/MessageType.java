@@ -19,6 +19,7 @@ public class MessageType {
 
     public MessageType(String type)
     {
+        this.code = NONE;
         this.type = type;
     }
 

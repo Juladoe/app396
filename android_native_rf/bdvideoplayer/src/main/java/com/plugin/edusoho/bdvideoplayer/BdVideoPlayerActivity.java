@@ -235,7 +235,6 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
         mBackbtn = (ImageButton)findViewById(R.id.back_btn);
         mForwardbtn = (ImageButton)findViewById(R.id.forward_btn);
         mFullBtn = (ImageButton)findViewById(R.id.full_btn);
-        mController = (LinearLayout)findViewById(R.id.controlbar);
 
         mProgress = (SeekBar)findViewById(R.id.media_progress);
         mDuration = (TextView)findViewById(R.id.time_total);

@@ -7,7 +7,6 @@ import java.io.Serializable;
  */
 public class CourseDetailsResult implements Serializable {
     public Course course;
-    public boolean userIsStudent;
     public boolean userFavorited;
     public Member member;
     public Vip vip;

@@ -9,7 +9,6 @@ public class User {
     public int id;
     public String smallAvatar;
     public UserRole[] roles;
-    public String password;
     public String salt;
     public String uri;
     public String title;
@@ -34,4 +33,6 @@ public class User {
     public String createdIp;
     public String createdTime;
     public String about;
+
+    public Vip vip;
 }

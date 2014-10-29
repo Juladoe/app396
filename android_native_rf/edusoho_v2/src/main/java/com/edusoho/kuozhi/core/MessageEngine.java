@@ -5,10 +5,9 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.listener.NormalCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -52,7 +51,23 @@ public class MessageEngine {
         MessageType messageType = new MessageType(msgType, targetName);
 
         MessageCallback messageCallback = sourceMap.get(targetName);
+        if (messageCallback == null) {
+            return;
+        }
         messageCallback.invoke(new WidgetMessage(messageType, body));
+    }
+
+    public void sendMsgToTagetForCallback(
+            int msgType, Bundle body, Class target, NormalCallback callback)
+    {
+        String targetName = target.getSimpleName();
+        MessageType messageType = new MessageType(msgType, targetName);
+
+        MessageCallback messageCallback = sourceMap.get(targetName);
+        if (messageCallback == null) {
+            return;
+        }
+        messageCallback.invoke(new WidgetMessage(messageType, body, callback));
     }
 
     public void sendMsg(String msgType, Bundle body)
@@ -84,6 +99,16 @@ public class MessageEngine {
         sourceMap.remove(targetName);
     }
 
+    public void unRegistPubMessage(MessageType type, MessageCallback source)
+    {
+        if (source == null) {
+            return;
+        }
+        ArrayList<String> list = pubMsgMap.get(type.toString());
+        String targetName = source.getClass().getSimpleName();
+        list.remove(targetName);
+    }
+
     public void registMessageSource(MessageCallback source)
     {
         if (source == null) {
@@ -97,13 +122,16 @@ public class MessageEngine {
         }
 
         for (MessageType msgType : msgTypes) {
+            if (msgType.code != MessageType.NONE) {
+                continue;
+            }
             //all regist msgtype source device
             ArrayList<String> msgList = pubMsgMap.get(msgType.toString());
             if (msgList == null) {
                 msgList = new ArrayList<String>();
             }
 
-            Log.d(null, "regist_message-> " + msgType);
+            Log.d(null, "regist_pub message-> " + msgType);
             if (!msgList.contains(targetName)) {
                 msgList.add(targetName);
             }

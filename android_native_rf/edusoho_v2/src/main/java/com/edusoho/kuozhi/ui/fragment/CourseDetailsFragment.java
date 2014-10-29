@@ -1,30 +1,24 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-import com.androidquery.util.AQUtility;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
+import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.VipLevel;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -41,17 +35,12 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.edusoho.listener.LessonItemClickListener;
-import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -62,7 +51,7 @@ import java.util.Stack;
 public class CourseDetailsFragment extends BaseFragment{
 
     private String mTitle;
-    private String mCourseId;
+    private int mCourseId;
     private Teacher mTeacher;
 
     private AQuery aQuery;
@@ -104,6 +93,15 @@ public class CourseDetailsFragment extends BaseFragment{
     }
 
     @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(DATA_UPDATE, source)
+        };
+        return messageTypes;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -122,7 +120,7 @@ public class CourseDetailsFragment extends BaseFragment{
         Bundle bundle = getArguments();
         if (bundle != null) {
             mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
-            mCourseId = bundle.getString(Const.COURSE_ID);
+            mCourseId = bundle.getInt(Const.COURSE_ID);
         }
 
         mMenuDrawer = mCourseDetailsActivity.getMenuDrawer();
@@ -160,8 +158,9 @@ public class CourseDetailsFragment extends BaseFragment{
         mViewList.add(mCourseTeacherView);
 
         aQuery = new AQuery(view);
-        initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), false);
 
+        initViewData(mCourseDetailsActivity.getCourseDetailsInfo(), false);
+        addHeadImageView();
         mScrollView.setHeadView(mHeadView);
         bindListener();
     }
@@ -199,7 +198,7 @@ public class CourseDetailsFragment extends BaseFragment{
 
                 showProgress(true);
                 mFavoriteBtn.setEnabled(false);
-                String courseId = mCourseResult.course.id;
+                int courseId = mCourseResult.course.id;
                 if (mCourseResult.userFavorited) {
                     unFavoriteCourse(courseId);
                 } else {
@@ -238,11 +237,11 @@ public class CourseDetailsFragment extends BaseFragment{
         view.onShow();
     }
 
-    private void unFavoriteCourse(String courseId)
+    private void unFavoriteCourse(int courseId)
     {
         RequestUrl url = app.bindUrl(Const.UNFAVORITE, true);
         url.setParams(new String[] {
-                "courseId", courseId
+                "courseId", courseId + ""
         });
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
@@ -262,11 +261,11 @@ public class CourseDetailsFragment extends BaseFragment{
     }
 
 
-    private void favoriteCourse(String courseId)
+    private void favoriteCourse(int courseId)
     {
         RequestUrl url = app.bindUrl(Const.FAVORITE, true);
         url.setParams(new String[] {
-                "courseId", courseId
+                "courseId", courseId + ""
         });
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
@@ -362,18 +361,40 @@ public class CourseDetailsFragment extends BaseFragment{
         }
 
         setCourseStatus();
-        addHeadImageView();
 
         aQuery.id(R.id.course_details_rating).rating((float)course.rating);
         String price = course.price <= 0 ? "免费" : "￥" + course.price;
         aQuery.id(R.id.course_details_price).text(price);
-        aQuery.id(R.id.course_details_info_expiry).text("有效期:" + course.expiryDay + "天");
+        if (course.expiryDay > 0) {
+            aQuery.id(R.id.course_details_info_expiry).text("有效期:" + course.expiryDay + "天");
+        }
         aQuery.id(R.id.course_details_studentNum).text(course.studentNum + "学员");
 
-        mCourseGoalsView.setText(AppUtil.goalsToStr(course.goals));
-        mCourseAudiencesView.setText(AppUtil.audiencesToStr(course.audiences));
-        mCourseAboutView.setText(AppUtil.coverCourseAbout(course.about));
-        mCourseTeacherView.initUser(mTeacher.id, mActivity);
+        String goals = AppUtil.goalsToStr(course.goals);
+        if (TextUtils.isEmpty(goals)) {
+            mViewList.remove(mCourseGoalsView);
+            mCourseGoalsView.setVisibility(View.GONE);
+        }
+        mCourseGoalsView.setText(goals);
+
+        String audiences = AppUtil.audiencesToStr(course.audiences);
+        if (TextUtils.isEmpty(audiences)) {
+            mViewList.remove(mCourseAudiencesView);
+            mCourseAudiencesView.setVisibility(View.GONE);
+        }
+        mCourseAudiencesView.setText(audiences);
+
+        String about = AppUtil.coverCourseAbout(course.about);
+        if (TextUtils.isEmpty(about)) {
+            mViewList.remove(mCourseAboutView);
+            mCourseAboutView.setVisibility(View.GONE);
+        }
+
+        mCourseAboutView.setText(about);
+        mCourseTeacherView.initUser(
+                mTeacher == null ? -1 : mTeacher.id,
+                mActivity);
+
         mCourseReviewView.initReview(course.id, mActivity, false);
 
         if (!isUpdate) {
@@ -394,32 +415,41 @@ public class CourseDetailsFragment extends BaseFragment{
 
     private void showCourseMoreInfoListener()
     {
-        View.OnClickListener clickListener = new View.OnClickListener() {
+        mCourseTeacherView.setShowMoreBtn(getClickListener("TeacherInfoFragment"));
+        mCourseAboutView.setShowMoreBtn(getClickListener("CourseInfoFragment"));
+        mCourseReviewView.setShowMoreBtn(getClickListener("ReviewInfoFragment"));
+    }
+
+    private View.OnClickListener getClickListener(final String name)
+    {
+        return new View.OnClickListener(){
             @Override
-            public void onClick(final View view) {
-                app.mEngine.runNormalPlugin(
-                        "CourseDetailsTabActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(TeacherInfoFragment.TEACHER_ID, mTeacher.id);
-                        bundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
-                        bundle.putString(ReviewInfoFragment.COURSE_ID, mCourseResult.course.id);
-
-                        startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, bundle);
-                        startIntent.putExtra(CourseDetailsTabActivity.TITLE, "课程详情");
-                        startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
-                        startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
-                        startIntent.putExtra(
-                                CourseDetailsTabActivity.FRAGMENT, getFragmetName(view.getId()));
-
-                    }
-                });
+            public void onClick(View view) {
+                app.mEngine.runNormalPluginWithBundle(
+                        "CourseDetailsTabActivity",
+                        mActivity,
+                        getFragmentBundle(name)
+                );
             }
         };
+    }
+    private Bundle getFragmentBundle(String fragmentName)
+    {
+        Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putBoolean(Const.IS_STUDENT, false);
+        fragmentBundle.putIntArray(
+                TeacherInfoFragment.TEACHER_ID, AppUtil.getTeacherIds(mCourseResult.course.teachers));
+        fragmentBundle.putSerializable(CourseInfoFragment.COURSE, mCourseResult.course);
+        fragmentBundle.putInt(Const.COURSE_ID, mCourseResult.course.id);
 
-        mCourseTeacherView.setShowMoreBtn(clickListener);
-        mCourseAboutView.setShowMoreBtn(clickListener);
-        mCourseReviewView.setShowMoreBtn(clickListener);
+        Bundle bundle = new Bundle();
+        bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentBundle);
+        bundle.putString(Const.ACTIONBAT_TITLE, "课程详情");
+        bundle.putStringArray(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
+        bundle.putStringArray(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
+        bundle.putString(
+                CourseDetailsTabActivity.FRAGMENT, fragmentName);
+
+        return bundle;
     }
 }

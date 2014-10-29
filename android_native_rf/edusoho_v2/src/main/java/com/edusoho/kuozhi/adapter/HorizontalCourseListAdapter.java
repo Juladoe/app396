@@ -1,30 +1,18 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
-import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
-import com.edusoho.kuozhi.model.Teacher;
-import com.edusoho.kuozhi.util.AppUtil;
-import com.nineoldandroids.animation.ObjectAnimator;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class HorizontalCourseListAdapter extends EdusohoBaseAdapter {
@@ -132,6 +120,9 @@ public class HorizontalCourseListAdapter extends EdusohoBaseAdapter {
             holder.aq.id(R.id.course_pic).image(
                     course.largePicture, false, true, 200, R.drawable.noram_course, null, AQuery.FADE_IN_NETWORK);
         }
+
+        int width = (int)(EdusohoApp.screenW * 0.5f);
+        holder.aq.id(R.id.course_pic).width(width + 2 + 16, false);
     }
 
     protected class ViewHolder {

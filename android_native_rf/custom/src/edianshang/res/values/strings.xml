@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">E电商</string>
+    <string name="app_host">http://school.edianshang.com</string>
+    <string name="school_about">关于E电商</string>
+    <string name="app_code">edianshang</string>
+
+    <string name="app_id">wx68783615bdd51b3d</string>
+</resources>

@@ -33,6 +33,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     public static final String FRAGMENT_TYPE = "fragment_type";
     private int mFramgmentType = LOGIN_TYPE;
     private Handler workHandler;
+    private static boolean isRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +44,15 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     public static void start(Activity context)
     {
-        Intent intent = new Intent();
-        intent.setClass(context, LoginActivity.class);
-        context.startActivity(intent);
+        synchronized (context) {
+            if (isRun) {
+                return;
+            }
+            isRun = true;
+            Intent intent = new Intent();
+            intent.setClass(context, LoginActivity.class);
+            context.startActivity(intent);
+        }
     }
 
     public static void startForResult(Activity context)
@@ -59,9 +66,6 @@ public class LoginActivity extends ActionBarBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case RegistActivity.RESULT:
-                finish();
-                break;
             case QrSchoolActivity.REQUEST_QR:
                 if (resultCode == QrSchoolActivity.RESULT_QR && data != null) {
                     Bundle bundle = data.getExtras();
@@ -151,7 +155,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     public void showFragment(String tag)
     {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        BaseFragment fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+        BaseFragment fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
         fragmentTransaction.replace(R.id.login_container, fragment);
         List<Fragment> fragmentList =  mFragmentManager.getFragments();
         if (fragmentList != null && ! fragmentList.isEmpty()) {
@@ -160,5 +164,11 @@ public class LoginActivity extends ActionBarBaseActivity {
 
         fragmentTransaction.commit();
         setTitle(fragment.getTitle());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isRun = false;
     }
 }

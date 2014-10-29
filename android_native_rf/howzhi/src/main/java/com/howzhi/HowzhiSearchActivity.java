@@ -1,13 +1,7 @@
 package com.howzhi;
 
-import android.view.View;
-
-import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.ui.common.SearchActivity;
-import com.edusoho.kuozhi.ui.course.CourseInfoActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.CommentPopupDialog;
-import com.edusoho.listener.NormalCallback;
 
 /**
  * Created by howzhi on 14-7-8.

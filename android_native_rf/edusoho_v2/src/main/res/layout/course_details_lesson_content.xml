@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/course_details_lesson"
     android:background="@color/system_normal_bg"
-    app:labelTitle="课程列表"
+    app:labelTitle="课时列表"
     android:paddingTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

@@ -1,36 +1,26 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
-import android.widget.ListAdapter;
-import android.widget.RelativeLayout;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.HorizontalCourseListAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
-import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-10.
@@ -43,6 +33,7 @@ public class HorizontalListWidget extends HorizontalScrollView {
     private FrameLayout mContainer;
     private View mLoadView;
     private ActionBarBaseActivity mActivity;
+    private View mLabel;
 
     public HorizontalListWidget(Context context) {
         super(context);
@@ -130,7 +121,11 @@ public class HorizontalListWidget extends HorizontalScrollView {
                 object, new TypeToken<CourseResult>() {
         }.getType());
 
-        if (courseResult == null) {
+        if (courseResult == null || courseResult.data.isEmpty()) {
+            setVisibility(GONE);
+            if (mLabel != null) {
+                mLabel.setVisibility(GONE);
+            }
             return;
         }
 
@@ -154,6 +149,23 @@ public class HorizontalListWidget extends HorizontalScrollView {
         HorizontalCourseListAdapter adapter = (HorizontalCourseListAdapter)
                 mGridView.getAdapter();
         adapter.setItems(courseResult);
+    }
+
+    public void setLabel(View label)
+    {
+        mLabel = label;
+    }
+
+    public void update(RequestUrl requestUrl)
+    {
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                Log.d(null, "HorizontalListWidget->update");
+                updateRequestData(object);
+            }
+        });
     }
 
     public void initialise(ActionBarBaseActivity activity, RequestUrl requestUrl)

@@ -50,4 +50,9 @@ proguard/
 *.log
 
 */.idea/
+android_native_rf/edusoho_v2/src/main/assets/crashlytics-build.properties
+android_native_rf/edusoho_v2/src/main/res/values/com_crashlytics_export_strings.xml
+android_native_rf/kuozhi/src/main/assets/crashlytics-build.properties
+android_native_rf/kuozhi/src/main/res/values/com_crashlytics_export_strings.xml
 android_native_rf/kuozhiv2/src/main/assets/crashlytics-build.properties
+android_native_rf/kuozhiv2/src/main/res/values/com_crashlytics_export_strings.xml

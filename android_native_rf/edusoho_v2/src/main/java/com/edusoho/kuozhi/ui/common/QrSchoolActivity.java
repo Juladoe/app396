@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.BaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -47,7 +46,6 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         setContentView(R.layout.qrsch_layout);
         initView();
         app.addTask("QrSchoolActivity", this);
-        updateApp();
     }
 
     public static void start(Activity context) {
@@ -125,7 +123,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                 return;
                             }
                             School site = schoolResult.site;
-                            if (!checkMobileVersion(site.apiVersionRange)) {
+                            if (!checkMobileVersion(site, site.apiVersionRange)) {
                                 return;
                             };
 
@@ -144,7 +142,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            app.exit();
+            finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -156,7 +154,8 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 String result = bundle.getString("result");
-                showQrResultDlg(result);
+                Log.d(null, "qr->" + result + "&version=2");
+                showQrResultDlg(result + "&version=2");
             }
         }
     }
@@ -185,13 +184,14 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }
 
                     School site = schoolResult.site;
-                    if (!checkMobileVersion(site.apiVersionRange)) {
+                    if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
                     };
 
                     showSchSplash(site.name, site.splashs);
-
-                    if (schoolResult.token != null && ! "".equals(schoolResult.token)) {
+                    if (schoolResult.token == null || "".equals(schoolResult.token)) {
+                        app.removeToken();
+                    } else {
                         app.saveToken(schoolResult);
                     }
                     app.setCurrentSchool(site);
@@ -207,10 +207,10 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     private void showSchSplash(String schoolName, String[] splashs)
     {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        finish();
+        app.appFinish();
     }
 
-    public boolean checkMobileVersion(HashMap<String, String> versionRange)
+    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange)
     {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
@@ -220,18 +220,19 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             PopupDialog dlg = PopupDialog.createMuilt(
                     mContext,
                     "网校提示",
-                    "您的客户端版本过低，无法登录，请立即更新至最新版本。",
+                    "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。",
                     new PopupDialog.PopupClickListener() {
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                app.updateApp(Const.DEFAULT_UPDATE_URL, true, new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        AppUpdateInfo appUpdateInfo = (AppUpdateInfo) obj;
-                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
-                                    }
-                                });
+                                String code = getResources().getString(R.string.app_code);
+                                String updateUrl = String.format(
+                                        "%s/%s?code=%s",
+                                        site.url,
+                                        Const.DOWNLOAD_URL,
+                                        code
+                                );
+                                app.startUpdateWebView(updateUrl);
                             }
                         }
                     });
@@ -246,7 +247,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             PopupDialog.createNormal(
                     mContext,
                     "网校提示",
-                    "服务器维护中，请稍后再试。"
+                    "网校服务器版本过低，无法继续登录！请重新尝试。"
             ).show();
             return false;
         }

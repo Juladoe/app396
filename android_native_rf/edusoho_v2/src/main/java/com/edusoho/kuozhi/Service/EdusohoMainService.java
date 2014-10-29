@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.Service;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -11,10 +10,8 @@ import android.util.Log;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.TokenResult;
-import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
@@ -38,6 +35,7 @@ public class EdusohoMainService extends Service {
     private Queue<AjaxCallback> mAjaxQueue;
 
     public static final int LOGIN_WITH_TOKEN = 0001;
+    public static final int EXIT_USER = 0002;
 
     @Override
     public void onCreate() {
@@ -52,6 +50,9 @@ public class EdusohoMainService extends Service {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
+                    case EXIT_USER:
+                        mLoginUser = null;
+                        break;
                     case LOGIN_WITH_TOKEN:
                         loginWithToken();
                         break;

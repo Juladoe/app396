@@ -8,9 +8,10 @@
     <dimen name="course_teacher_nickname">14sp</dimen>
     <dimen name="course_content_head">18dp</dimen>
     <dimen name="sys_normal">18dp</dimen>
+    <dimen name="sys_small_normal">10dp</dimen>
     <dimen name="course_more_btn">15dp</dimen>
     <dimen name="recommend_sch_size">15dp</dimen>
-    <dimen name="course_list_item_title">18sp</dimen>
+    <dimen name="course_list_item_title">14sp</dimen>
     <dimen name="recommend_sch_info_size">12dp</dimen>
     <dimen name="course_info_title">16dp</dimen>
     <dimen name="course_info_normal">14dp</dimen>
@@ -52,14 +53,15 @@
 
     <!--2.0 -->
     <dimen name="splash_ok_btn">24dp</dimen>
+    <dimen name="normal_padding">6dp</dimen>
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
-    <dimen name="nav_layout_btn">8dp</dimen>
+    <dimen name="nav_layout_btn">6dp</dimen>
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">14sp</dimen>
-    <dimen name="recommend_announcement">18sp</dimen>
+    <dimen name="recommend_announcement">10sp</dimen>
     <dimen name="recommend_announcement_label">22sp</dimen>
     <dimen name="recommend_view_more">18sp</dimen>
     <dimen name="material_normal_btn">18sp</dimen>
@@ -84,4 +86,12 @@
     <dimen name="course_details_info_tab">18sp</dimen>
     <dimen name="review_course_student">14sp</dimen>
     <dimen name="pay_course_text">18sp</dimen>
+
+    <!--问答列表标题字体 -->
+    <dimen name="question_item_title_size">18sp</dimen>
+    <dimen name="question_fill">12sp</dimen>
+    <dimen name="big_rating_height">42px</dimen>
+    <dimen name="question_edit_button_font">8sp</dimen>
+
+
 </resources>

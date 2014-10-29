@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
     <include layout="@layout/nav_setting" />
     <FrameLayout
+        android:background="@color/system_normal_bg"
         android:layout_above="@+id/nav_bottom_layout"
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

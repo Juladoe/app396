@@ -5,31 +5,21 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.widget.AdapterView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.CategoryListAdapter;
 import com.edusoho.kuozhi.adapter.FoundCategoryListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Category;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.nineoldandroids.animation.AnimatorInflater;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-14.
@@ -55,9 +45,10 @@ public class CategoryListView extends FrameLayout {
     {
         mCategoryListView = new ExpandableListView(mContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         mCategoryListView.setLayoutParams(layoutParams);
 
+        mCategoryListView.setBackgroundColor(getResources().getColor(R.color.white));
         mCategoryListView.setGroupIndicator(null);
         mCategoryListView.setSelector(R.drawable.normal_list_select);
         mCategoryListView.setDivider(new ColorDrawable(mContext.getResources().getColor(R.color.found_list_divider)));
@@ -73,6 +64,7 @@ public class CategoryListView extends FrameLayout {
         mCategoryListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+                Log.d(null, "mCategoryListView click->child  groupPosition->" + groupPosition);
                 ExpandableListAdapter adapter = expandableListView.getExpandableListAdapter();
                 Category category = (Category) adapter.getChild(groupPosition, childPosition);
                 itemClick.click(category);
@@ -83,7 +75,9 @@ public class CategoryListView extends FrameLayout {
         mCategoryListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
-                Category category = (Category) expandableListView.getItemAtPosition(groupPosition);
+                Log.d(null, "mCategoryListView click-> group->" + groupPosition);
+                ExpandableListAdapter adapter = expandableListView.getExpandableListAdapter();
+                Category category = (Category)adapter.getGroup(groupPosition);
                 itemClick.click(category);
                 return true;
             }

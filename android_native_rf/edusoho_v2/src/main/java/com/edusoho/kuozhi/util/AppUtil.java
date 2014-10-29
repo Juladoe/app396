@@ -1,42 +1,71 @@
 package com.edusoho.kuozhi.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.CharArrayWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
-import android.util.StringBuilderPrinter;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
+import android.webkit.MimeTypeMap;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.kuozhi.model.AppUpdateInfo;
+import com.edusoho.kuozhi.model.Teacher;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.listener.NormalCallback;
+import com.edusoho.listener.ResultCallback;
+import com.edusoho.listener.StatusCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 import cn.trinea.android.common.util.DigestUtils;
-import cn.trinea.android.common.util.FileUtils;
+
+;
 
 public class AppUtil {
 
@@ -48,6 +77,76 @@ public class AppUtil {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    public static void getImage(
+            Context context, String url, final NormalCallback<Bitmap> callback) {
+        AQuery aQuery = new AQuery(context);
+        AjaxCallback<byte[]> ajaxCallback = new AjaxCallback<byte[]>() {
+            @Override
+            public void callback(String url, byte[] object, AjaxStatus status) {
+                super.callback(url, object, status);
+                Bitmap bitmap = null;
+                BitmapFactory.Options option = new BitmapFactory.Options();
+                option.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(object, 0, object.length, option);
+
+                option.inSampleSize = computeSampleSize(option, -1, 200 * 200);
+                option.inJustDecodeBounds = false;
+                try {
+                    bitmap = BitmapFactory.decodeByteArray(object, 0, object.length, option);
+                    Log.d(null, "bm->" + bitmap);
+                } catch (Exception e) {
+                    bitmap = null;
+                }
+                callback.success(bitmap);
+            }
+        };
+
+        aQuery.ajax(url, byte[].class, 60 * 60, ajaxCallback);
+    }
+
+    public static Bitmap getBitmapFromFile(File file) {
+        Bitmap bitmap = null;
+        BitmapFactory.Options option = new BitmapFactory.Options();
+        option.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+        int width = (int) (EdusohoApp.screenW * 0.5f);
+        option.inSampleSize = computeSampleSize(option, -1, width * width);
+        option.inJustDecodeBounds = false;
+        try {
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+            Log.d(null, "bm->" + bitmap);
+        } catch (Exception e) {
+            bitmap = null;
+        }
+
+        return bitmap;
+    }
+
+    public static int[] getTeacherIds(Teacher[] teachers) {
+        if (teachers == null) {
+            return new int[0];
+        }
+        int[] ids = new int[teachers.length];
+        for (int i = 0; i < teachers.length; i++) {
+            ids[i] = teachers[i].id;
+        }
+
+        return ids;
+    }
+
+    public static boolean inArray(String find, String[] array) {
+        int result = Arrays.binarySearch(array, find, new Comparator<String>() {
+            @Override
+            public int compare(String find, String str) {
+                if (str.equals(find)) {
+                    return 0;
+                }
+                return -1;
+            }
+        });
+        return result >= 0;
+    }
+
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
@@ -57,8 +156,7 @@ public class AppUtil {
     }
 
     public static void touchByGestureDetector(
-            View view, GestureDetector.SimpleOnGestureListener gestureListener)
-    {
+            View view, GestureDetector.SimpleOnGestureListener gestureListener) {
         final GestureDetector gestureDetector = new GestureDetector(gestureListener);
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -68,15 +166,13 @@ public class AppUtil {
         });
     }
 
-    public static boolean urlCacheExistsed(Context context, String url)
-    {
+    public static boolean urlCacheExistsed(Context context, String url) {
         File cacheDir = AQUtility.getCacheDir(context);
         File cacheFile = AQUtility.getExistedCacheByUrl(cacheDir, url);
         return cacheFile != null;
     }
 
-    public static void viewTreeObserver(View view, final NormalCallback callback)
-    {
+    public static void viewTreeObserver(View view, final NormalCallback callback) {
         final ViewTreeObserver observer = view.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -89,8 +185,7 @@ public class AppUtil {
         });
     }
 
-    public static void animForHeight(Object view, int start, int end, int time)
-    {
+    public static void animForHeight(Object view, int start, int end, int time) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
                 view, "height", start, end);
         objectAnimator.setDuration(time);
@@ -98,12 +193,11 @@ public class AppUtil {
         objectAnimator.start();
     }
 
-    public static String coverUrlToCacheKey(RequestUrl requestUrl)
-    {
+    public static String coverUrlToCacheKey(RequestUrl requestUrl) {
         StringBuilder builder = new StringBuilder(requestUrl.url);
 
         HashMap<String, String> map = requestUrl.params;
-        for(String key : map.keySet()) {
+        for (String key : map.keySet()) {
             builder.append("&").append(key);
             builder.append("&").append(map.get(key));
         }
@@ -111,8 +205,7 @@ public class AppUtil {
         return DigestUtils.md5(builder.toString());
     }
 
-    public static String gzip(String input)
-    {
+    public static String gzip(String input) {
         String result = null;
         ByteArrayInputStream reader = null;
         GZIPOutputStream gzipOutputStream = null;
@@ -123,7 +216,7 @@ public class AppUtil {
 
             int len = -1;
             byte[] buffer = new byte[1024];
-            while ( (len = reader.read(buffer)) != -1) {
+            while ((len = reader.read(buffer)) != -1) {
                 gzipOutputStream.write(buffer, 0, len);
             }
 
@@ -134,7 +227,7 @@ public class AppUtil {
             try {
                 reader.close();
                 gzipOutputStream.close();
-            }catch (Exception e){
+            } catch (Exception e) {
                 //nothing}
             }
         }
@@ -142,8 +235,7 @@ public class AppUtil {
         return result;
     }
 
-    public static String unGzip(String input)
-    {
+    public static String unGzip(String input) {
         StringBuilder builder = new StringBuilder();
         GZIPInputStream gzipInputStream = null;
         try {
@@ -152,7 +244,7 @@ public class AppUtil {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(input.getBytes());
             gzipInputStream = new GZIPInputStream(byteArrayInputStream);
 
-            while ( (len = gzipInputStream.read(buffer)) != -1) {
+            while ((len = gzipInputStream.read(buffer)) != -1) {
                 builder.append(new String(buffer, 0, len));
             }
         } catch (Exception e) {
@@ -160,7 +252,7 @@ public class AppUtil {
         } finally {
             try {
                 gzipInputStream.close();
-            }catch (Exception e){
+            } catch (Exception e) {
                 //nothing}
             }
         }
@@ -168,79 +260,80 @@ public class AppUtil {
         return builder.toString();
     }
 
-    public static String coverCourseAbout(String about)
-    {
+    public static String coverCourseAbout(String about) {
         return about.replaceAll("<[^>]+>", "");
     }
 
-    public static int getCourseCorverHeight(int width)
-    {
-        float scale = (float)width / 480;
-        return (int)(270 * scale);
+    public static int getCourseCorverHeight(int width) {
+        float scale = (float) width / 480;
+        return (int) (270 * scale);
     }
 
-    public static int getCourseListCoverHeight(int width)
-    {
-        float scale = (float)width * 0.5f / 480;
-        return (int)(270 * scale);
+    /**
+     * 转换图片长宽比
+     *
+     * @param width
+     * @return
+     */
+
+    public static int getImageWidth(int width) {
+        float scale = (float) width * 0.4f / 480;
+        return (int) (270 * scale);
     }
 
-    public static int getLearnCourseListCoverHeight(int width)
-    {
-        float scale = (float)width * 0.9f / 480;
-        return (int)(270 * scale);
+    public static int getCourseListCoverHeight(int width) {
+        float scale = (float) width / 480;
+        return (int) (270 * scale);
     }
 
-    public static String coverLessonContent(String content)
-    {
+    public static int getLearnCourseListCoverHeight(int width) {
+        float scale = (float) width * 0.9f / 480;
+        return (int) (270 * scale);
+    }
+
+    public static String coverLessonContent(String content) {
         return content.replaceAll("href=[^=]+\\s", "href='javascript:void();' ");
     }
 
-    public static String coverTime(String time)
-    {
+    public static String coverTime(String time) {
         return "".equals(time) ? "" : time.substring(0, 10);
     }
 
-    public static String goalsToStr(String[] goals)
-    {
+    public static String goalsToStr(String[] goals) {
         StringBuffer sb = new StringBuffer();
         for (String goal : goals) {
             sb.append("・").append(goal).append("\n");
         }
         if (TextUtils.isEmpty(sb)) {
-            return "暂无相关信息";
+            return "";
         }
         return sb.toString();
     }
 
-    public static String audiencesToStr(String[] audiences)
-    {
+    public static String audiencesToStr(String[] audiences) {
         StringBuffer sb = new StringBuffer();
         for (String audience : audiences) {
             sb.append("・").append(audience).append("\n");
         }
         if (TextUtils.isEmpty(sb)) {
-            return "暂无相关信息";
+            return "";
         }
         return sb.toString();
     }
 
-    public static void enableBtn(ViewGroup vg, boolean isEnable)
-    {
+    public static void enableBtn(ViewGroup vg, boolean isEnable) {
         int count = vg.getChildCount();
-        for (int i=0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             vg.getChildAt(i).setEnabled(isEnable);
         }
     }
 
     /**
-     *
      * @param layout
      * @param offset
      */
     public static void moveLayout(
-            Context context, final View layout, final int offset, int type, int defsize, int time)
-    {
+            Context context, final View layout, final int offset, int type, int defsize, int time) {
         final int w = layout.getWidth();
         final int h = layout.getHeight();
         final Handler handler = new Handler(context.getMainLooper()) {
@@ -266,8 +359,7 @@ public class AppUtil {
         }, 1, time);
     }
 
-    public static class MoveTimerTask extends TimerTask
-    {
+    public static class MoveTimerTask extends TimerTask {
         public static int LEFT = 0001;
         public static int RIGHT = 0002;
 
@@ -278,23 +370,21 @@ public class AppUtil {
         public int mOffset;
         private int type;
 
-        public MoveTimerTask(int offset, int type, int defsize)
-        {
+        public MoveTimerTask(int offset, int type, int defsize) {
             this.type = type;
             this.step = offset;
-            this.mOffset = type == LEFT? 0: offset;
+            this.mOffset = type == LEFT ? 0 : offset;
             if (defsize == -1) {
-                DEF_SIZE = type == LEFT? 5: -5;
+                DEF_SIZE = type == LEFT ? 5 : -5;
             } else {
-                DEF_SIZE = type == LEFT? defsize: -defsize;
+                DEF_SIZE = type == LEFT ? defsize : -defsize;
             }
             step_def = Math.abs(DEF_SIZE);
         }
 
-        public boolean step()
-        {
+        public boolean step() {
             if (step > 0 && step < step_def) {
-                DEF_SIZE = type == LEFT ?step : -step;
+                DEF_SIZE = type == LEFT ? step : -step;
                 step = 0;
                 return true;
             }
@@ -309,14 +399,12 @@ public class AppUtil {
     }
 
     /**
-     *
      * @param v1
      * @param v2
      * @return
      * @throws RuntimeException
      */
-    public static int compareVersion(String v1, String v2) throws RuntimeException
-    {
+    public static int compareVersion(String v1, String v2) throws RuntimeException {
         if (v1 == null || v2 == null) {
             return Const.NORMAL_VERSIO;
         }
@@ -327,7 +415,7 @@ public class AppUtil {
         }
 
         int length = v1Versons.length;
-        for (int i=0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             int firstVersion = Integer.parseInt(v1Versons[i]);
             int secoundVersion = Integer.parseInt(v2Versons[i]);
             if (firstVersion > secoundVersion) {
@@ -345,11 +433,11 @@ public class AppUtil {
      * Convert a translucent themed Activity
      * {@link android.R.attr#windowIsTranslucent} to a fullscreen opaque
      * Activity.
-     * <p>
+     * <p/>
      * Call this whenever the background of a translucent Activity has changed
      * to become opaque. Doing so will allow the {@link android.view.Surface} of
      * the Activity behind to be released.
-     * <p>
+     * <p/>
      * This call has no effect on non-translucent activities or on activities
      * with the {@link android.R.attr#windowIsFloating} attribute.
      */
@@ -367,10 +455,10 @@ public class AppUtil {
      * {@link android.R.attr#windowIsTranslucent} back from opaque to
      * translucent following a call to
      * {@link #convertActivityFromTranslucent(android.app.Activity)} .
-     * <p>
+     * <p/>
      * Calling this allows the Activity behind this one to be seen again. Once
      * all such Activities have been redrawn
-     * <p>
+     * <p/>
      * This call has no effect on non-translucent activities or on activities
      * with the {@link android.R.attr#windowIsFloating} attribute.
      */
@@ -386,10 +474,464 @@ public class AppUtil {
             Method method = Activity.class.getDeclaredMethod("convertToTranslucent",
                     translucentConversionListenerClazz);
             method.setAccessible(true);
-            method.invoke(activity, new Object[] {
+            method.invoke(activity, new Object[]{
                     null
             });
         } catch (Throwable t) {
         }
+    }
+
+    public static <T extends View> T getViewHolder(View convertView, int layoutId) {
+        SparseArray<View> viewHolder = (SparseArray<View>) convertView.getTag();
+        if (viewHolder == null) {
+            viewHolder = new SparseArray<View>();
+            convertView.setTag(viewHolder);
+        }
+        View childView = viewHolder.get(layoutId);
+        if (childView == null) {
+            childView = convertView.findViewById(layoutId);
+            viewHolder.put(layoutId, childView);
+        }
+        return (T) childView;
+    }
+
+    /**
+     * 计算发布问题天数,服务端获取时间格式：2014-05-20T22:03:43+08:00
+     * 转换为天数或者小时
+     */
+    public static String getPostDays(String postTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long l = 1;
+        try {
+            String tDate = postTime.split("[+]")[0].replace('T', ' ');
+            long milliSec = 1000;
+            Date date = new Date();
+            l = (date.getTime() - sdf.parse(tDate).getTime()) / (milliSec);
+
+
+            //如果大于24返回天数
+            if (l > 24 * 60 * 60) {
+                l = l / (24 * 60 * 60);
+                return String.valueOf(l) + "天前";
+            } else if (l > 60 * 60) {
+                l = l / (60 * 60);
+                return String.valueOf(l) + "小时前";
+            } else if (l > 60) {
+                l = l / (60);
+                return String.valueOf(l) + "分钟前";
+            }
+            if (l < 1) {
+                return "刚刚";
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getPostDays", ex.toString());
+        }
+
+        return String.valueOf(l) + "秒前";
+    }
+
+    /**
+     * 去掉末尾产生的"\n"
+     */
+    public static String removeHtml(String strHtml) {
+        if (strHtml.length() > 0 && strHtml.contains("\n")) {
+            if (strHtml.substring(strHtml.length() - 1, strHtml.length()).equals("\n")) {
+                strHtml = strHtml.substring(0, strHtml.length() - 1);
+                return removeHtml(strHtml);
+            }
+        }
+        return strHtml;
+    }
+
+    /**
+     * 图片缩小
+     *
+     * @param bitmap    图片
+     * @param imageSize 图片大小
+     * @param degree    图片旋转的角度，如果没有旋转，则为0
+     * @param context   context
+     * @return
+     */
+    public static Bitmap scaleImage(Bitmap bitmap, float imageSize, int degree, Context context) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int bounding = Math.round(imageSize * density);
+
+        float xScale = ((float) bounding) / width;
+        float yScale = ((float) bounding) / height;
+        float scale = (xScale <= yScale) ? xScale : yScale;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        matrix.postRotate((float) degree);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+//        width = scaledBitmap.getWidth(); // re-use
+//        height = scaledBitmap.getHeight(); // re-use
+        BitmapDrawable result = new BitmapDrawable(scaledBitmap);
+
+        return scaledBitmap;
+    }
+
+    /**
+     * 图片压缩到500K(质量压缩)
+     *
+     * @param image
+     * @return
+     */
+    public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream baos, int size) {
+        image.compress(Bitmap.CompressFormat.JPEG, size, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+//        int options = 100;
+//        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+//            options -= 10;//每次都减少10
+//            baos.reset();//重置baos即清空baos
+//            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+//
+//        }
+        //ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        //Bitmap bitmap = BitmapFactory.decodeStream(isBm);//把ByteArrayInputStream数据生成图片
+        Bitmap bitmap = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
+        return bitmap;
+    }
+
+    /**
+     * 创建临时图片文件
+     *
+     * @param path
+     * @param os
+     * @return
+     */
+    public static File createFile(String path, ByteArrayOutputStream os, int imageName) {
+        File f = null;
+        try {
+            f = new File(path, "tmpImage" + imageName + ".jpg");
+            f.createNewFile();
+            byte[] bytes = os.toByteArray();
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(bytes);
+        } catch (IOException ioe) {
+            Log.d("AppUtil.createFile-->", ioe.toString());
+        }
+        return f;
+    }
+
+    /**
+     * 获取图片大小
+     *
+     * @param bitmap
+     * @return 返回字节
+     */
+    public static int getImageSize(Bitmap bitmap) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        } else {
+            return bitmap.getByteCount();
+        }
+    }
+
+    /**
+     * 获取图片旋转的角度
+     *
+     * @param imagePath
+     * @return
+     */
+    public static int getImageDegree(String imagePath) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(imagePath);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getImageDegree", ex.toString());
+        }
+        return degree;
+    }
+
+    /**
+     * 去掉由于Html.fromHtml产生的'\n'
+     *
+     * @param spanned
+     * @return
+     */
+    public static CharSequence setHtmlContent(Spanned spanned) {
+        if (spanned.length() > 2 && spanned.subSequence(spanned.length() - 2, spanned.length()).toString().equals("\n\n")) {
+            return spanned.subSequence(0, spanned.length() - 2);
+        }
+        return spanned;
+    }
+
+    public static int computeSampleSize(
+            BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
+        int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
+        int roundedSize;
+        if (initialSize <= 8) {
+            roundedSize = 1;
+            while (roundedSize < initialSize) {
+                roundedSize <<= 1;
+            }
+        } else {
+            roundedSize = (initialSize + 7) / 8 * 8;
+        }
+        return roundedSize;
+    }
+
+    private static int computeInitialSampleSize(
+            BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
+        double w = options.outWidth;
+        double h = options.outHeight;
+        int lowerBound = (maxNumOfPixels == -1) ? 1 : (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
+        int upperBound = (minSideLength == -1) ? 128 : (int) Math.min(Math.floor(w / minSideLength), Math.floor(h / minSideLength));
+        if (upperBound < lowerBound) {
+            // return the larger one when there is no overlapping zone.
+            return lowerBound;
+        }
+        if ((maxNumOfPixels == -1) && (minSideLength == -1)) {
+            return 1;
+        } else if (minSideLength == -1) {
+            return lowerBound;
+        } else {
+            return upperBound;
+        }
+    }
+
+    public static int getNumberLength(int number) {
+        int length = 1;
+        while (number >= 10) {
+            length++;
+            number = number / 10;
+        }
+
+        return length;
+    }
+
+    public static SpannableString getColorTextAfter(String text, String newStr, int color) {
+        StringBuffer stringBuffer = new StringBuffer(text);
+        int start = stringBuffer.length();
+        stringBuffer.append(newStr);
+        SpannableString spannableString = new SpannableString(stringBuffer);
+        spannableString.setSpan(
+                new ForegroundColorSpan(color), start, stringBuffer.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        return spannableString;
+    }
+
+    public static SpannableString getColorTextBefore(String text, String newStr, int color) {
+        StringBuffer stringBuffer = new StringBuffer(text);
+        int start = stringBuffer.length();
+        stringBuffer.append(newStr);
+        SpannableString spannableString = new SpannableString(stringBuffer);
+        spannableString.setSpan(
+                new ForegroundColorSpan(color), 0, start, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        return spannableString;
+    }
+
+    public static Intent getViewFileIntent(File file) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        intent.setAction(Intent.ACTION_VIEW);
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        String type = mimeTypeMap.getMimeTypeFromExtension(
+                MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath()));
+
+        intent.setDataAndType(Uri.fromFile(file), type);
+
+        return intent;
+    }
+
+    public static void checkUpateApp(
+            ActionBarBaseActivity activity, final StatusCallback<AppUpdateInfo> callback) {
+        final EdusohoApp app = activity.app;
+        RequestUrl requestUrl = app.bindUrl(Const.APP_UPDATE, false);
+        String code = activity.getResources().getString(R.string.app_code);
+        requestUrl.setParams(new String[]{
+                "code", code
+        });
+        Log.d(null, "code->" + code);
+        activity.ajaxPost(requestUrl, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
+                        object, new TypeToken<AppUpdateInfo>() {
+                }.getType());
+
+                if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
+                    return;
+                }
+
+                String newVersion = appUpdateInfo.androidVersion;
+                Log.d(null, "old version->" + app.getApkVersion());
+                int result = AppUtil.compareVersion(app.getApkVersion(), newVersion);
+                if (result == Const.LOW_VERSIO) {
+                    callback.success(appUpdateInfo);
+                } else {
+                    callback.error(appUpdateInfo);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 获取系统图片路径
+     */
+
+    public static String getPath(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public static int parseInt(String value)
+    {
+        int i = 0;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Integer.parseInt(value);
+        } catch (Exception e) {
+            i = 0;
+        }
+
+        return i;
     }
 }

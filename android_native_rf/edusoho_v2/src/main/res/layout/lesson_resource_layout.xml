@@ -6,46 +6,13 @@
     android:orientation="vertical"
     android:background="@color/system_normal_bg">
 
-    <LinearLayout
-        android:id="@+id/lesson_resource_checkbox_layout"
-        android:background="@color/system_light_bg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <CheckBox
-            android:id="@+id/lesson_resource_all"
-            android:textColor="@color/system_light_text"
-            android:layout_marginLeft="20dp"
-            android:button="@drawable/lesson_resource_checkbox"
-            android:padding="20dp"
-            android:text="全选"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <com.edusoho.kuozhi.view.EdusohoButton
-        android:layout_alignParentBottom="true"
-        android:layout_margin="40dp"
-        android:id="@+id/lesson_resource_download_btn"
-        android:padding="10dp"
-        app:borderColor="#FFFFFF"
-        app:borderWidth="1dp"
-        app:defaultColor="@color/lesson_resouce_btn_normal"
-        app:focusColor="@color/lesson_resouce_btn_pressed"
-        app:iconPosition="right"
-        app:textSize="@dimen/small_btn"
-        app:radius="3dp"
-        app:textStr="下载"
-        app:textColor="#FFFFFF"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.edusoho.kuozhi.ui.widget.ListWidget
+        android:background="@color/white"
         app:pullMode="DISABLED"
         app:emptyStr="暂无资料"
-        android:layout_below="@id/lesson_resource_checkbox_layout"
-        android:layout_above="@id/lesson_resource_download_btn"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:id="@+id/lesson_resource_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 </RelativeLayout>

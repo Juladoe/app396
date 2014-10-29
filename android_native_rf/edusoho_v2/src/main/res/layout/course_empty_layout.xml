@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_marginTop="-20dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/course_empty_icon"
         android:layout_width="100dp"
         android:layout_height="100dp" />

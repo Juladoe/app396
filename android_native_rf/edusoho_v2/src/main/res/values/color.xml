@@ -30,6 +30,27 @@
     <color name="question_title">#4d4d4d</color>
     <color name="question_lesson">#808080</color>
     <color name="question_background">#f5f5f5</color>
+    <color name="question_select">#e6e6e6</color>
+    <color name="post_edit_color">#38bf6c</color>
+    <color name="normal_reply_tag">#ff067BD4</color>
+    <color name="reply_button_normal">#ffc947</color>
+    <color name="reply_button_pressed">#fdb933</color>
+
+    <!--note-->
+    <color name="list_title_textcolor">#212121</color>
+    <color name="line">#e6e6e6</color>
+    <color name="list_course">#ffc947</color>
+    <color name="list_course_title">#4d4d4d</color>
+    <color name="list_course_content">#757575</color>
+    <color name="note_content_title">#ffc947</color>
+    <color name="note_content">#4d4d4d</color>
+    <color name="note_background">#ffffff</color>
+    <color name="note_main_background">#f5f5f5</color>
+    <color name="list_title_background">#f5f5f5</color>
+    <color name="list_background">#ffffff</color>
+    <color name="note_content_background">#ffffff</color>
+    <color name="content_title_background">#f5f5f5</color>
+    <color name="content_background">#f5f5f5</color>
 
     <!-- custom player -->
     <color name="custom_play_time">#ffffff</color>
@@ -118,10 +139,12 @@
     <color name="learn_status_stroke">#DFDFDF</color>
     <color name="learn_status_gradient">#ffffff</color>
     <color name="learn_status_gradient_pressed">#03b884</color>
+
     <color name="lesson_status_progress_stroke">#ccc</color>
-    <color name="lesson_status_progress_bg_gradient">#ffffff</color>
+    <color name="lesson_status_progress_bg_gradient">#808080</color>
     <color name="lesson_status_progress_sp_gradient">#ffffff</color>
-    <color name="lesson_status_progress_gradient">#0BD399</color>
+    <color name="lesson_status_progress_gradient">#ffc947</color>
+
     <color name="loading_progress_gradient">#03b884</color>
     <color name="loading_progress_bg_gradient">#ddd</color>
     <color name="login_btn_stroke">#ccc</color>
@@ -171,10 +194,11 @@
     <color name="splash_notice_btn_stroke">#FF6600</color>
     <color name="splash_notice_btn_gtadient">#ffffff</color>
 
-    <color name="video_sk_bg_gradient">#ccc</color>
-    <color name="video_sk_gradient">#ffc947</color>
-    <color name="video_thum_gradient">#3c3645</color>
-    <color name="video_thum_gradient_pressed">#ff067BD4</color>
+    <color name="video_sk_bg_gradient">#808080</color>
+    <color name="video_sk_bg_2_gradient">#4d4d4d</color>
+    <color name="video_sk_gradient">#38bf6c</color>
+    <color name="video_thum_gradient">#38bf6c</color>
+    <color name="video_thum_gradient_pressed">#9938bf6c</color>
 
     <color name="viewpager_index_bg_gradinet">#03b884</color>
     <color name="viewpager_index_bg_sel_gradinet">#ffffff</color>
@@ -187,6 +211,7 @@
 
     <!-- 2.0 -->
     <color name="splash_ok_btn">#ffffff</color>
+    <color name="splash_ok_bg">#22808080</color>
     <color name="qr_logo_text">#808080</color>
     <color name="action_bar_bg_stroke">#298c4f</color>
     <color name="action_bar_bg_stroke_alpha">#00298c4f</color>
@@ -218,6 +243,7 @@
     <color name="recommend_label_bg">#e6e6e6</color>
     <color name="recommend_announcement_label">#4d4d4d</color>
     <color name="recommend_announcement_label_icon_bg">#ffc947</color>
+    <color name="recommend_new_label_icon_bg">#38bf6c</color>
     <color name="recommend_weed_label_icon_bg">#ffff291c</color>
     <color name="recommend_view_more">#ffc947</color>
     <color name="recommend_view_more_pressed">#55ffc947</color>
@@ -230,6 +256,7 @@
     <color name="system_light_bg">#e6e6e6</color>
     <color name="shallow_found_bg">#f2f2f2</color>
     <color name="system_normal_text">#808080</color>
+    <color name="system_gray_text">#757575</color>
     <color name="system_normal_text_pressed">#77808080</color>
     <color name="system_light_text">#4d4d4d</color>
     <color name="found_search_bg">#ffffff</color>
@@ -260,11 +287,38 @@
     <color name="course_lesson_item_bg_pressed">#e6e6e6</color>
     <color name="lesson_reource_btn_normal">#ccc</color>
     <color name="lesson_reource_btn_pressed">#77cccccc</color>
-    <color name="lesson_learn_btn_normal">#38bf6c</color>
-    <color name="lesson_learn_btn_pressed">#7738bf6c</color>
+    <color name="lesson_learn_btn_normal">#45d17b</color>
+    <color name="lesson_learn_btn_pressed">#38bf6c</color>
+    <color name="testpaper_enter_btn_normal">#45d17b</color>
+    <color name="testpaper_enter_btn_pressed">#38bf6c</color>
     <color name="lesson_learned_btn_normal">#ffc947</color>
-    <color name="lesson_learned_btn_pressed">#77ffc947</color>
+    <color name="lesson_learned_btn_pressed">#FFB40D</color>
 
-    <color name="lesson_resouce_btn_normal">#38bf6c</color>
-    <color name="lesson_resouce_btn_pressed">#7738bf6c</color>
+    <color name="lesson_resouce_btn_normal">#45d17b</color>
+    <color name="lesson_resouce_btn_pressed">#38bf6c</color>
+
+    <color name="icon_font_pressed">#00ddff</color>
+    <color name="question_stem">#212121</color>
+
+    <color name="question_btn_bg">#000000</color>
+    <color name="question_btn_bg_checked">#ffc947</color>
+    <color name="question_btn_bg_selected">#ff4747</color>
+    <color name="question_fill_hit">#757575</color>
+    <color name="question_fill_text">#4d4d4d</color>
+    <color name="color_red">#d9534f</color>
+    <color name="splash_bg">#fbfbf9</color>
+    <color name="audio_fragment_bg">#4d4d4d</color>
+    <color name="testpaper_result_item_total">#ff4747</color>
+    <color name="testpaper_result_right">#ff4747</color>
+    <color name="testpaper_result_analysis">#ffc947</color>
+    <color name="notify_title">#ffffff</color>
+    <color name="update_color">#ff4747</color>
+
+    <!-- -->
+    <color name="my_testpaper_do_btn_bg">#45d17b</color>
+    <color name="my_testpaper_btn_bg">#f2f2f2</color>
+    <color name="my_testpaper_btn_bg_pressed">#99f2f2f2</color>
+    <color name="my_testpaper_do_btn_bg_pressed">#9945d17b</color>
+    <color name="my_testpaper_btn_blue">#38bf6c</color>
+    <color name="my_testpaper_btn_white">#ffffff</color>
 </resources>

@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.model.Question;
 
+import com.edusoho.kuozhi.model.User;
+
 import java.io.Serializable;
 
 /**
@@ -23,5 +25,7 @@ public class QuestionDetailModel implements Serializable {
     public String latestPostTime;
     public String createdTime;
     public String courseTitle;
-    public QuestionDetailModel[] threads;
+    public String coursePicture;
+    public boolean isTeacherPost;
+    public User user;
 }

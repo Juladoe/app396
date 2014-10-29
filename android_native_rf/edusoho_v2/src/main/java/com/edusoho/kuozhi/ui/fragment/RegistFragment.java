@@ -1,27 +1,23 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.ui.common.AboutActivity;
+import com.edusoho.kuozhi.entity.TokenResult;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.ButtonWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
 import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
-import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -64,11 +60,12 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void onClick(View view) {
                 final String url = app.schoolHost + Const.USERTERMS;
-                app.mEngine.runNormalPlugin("AboutActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(AboutActivity.URL, url);
-                        startIntent.putExtra(AboutActivity.TITLE, "服务条款");
+                        startIntent.putExtra(AboutFragment.URL, url);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "服务条款");
                     }
                 });
             }
@@ -78,6 +75,7 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void onClick(View view) {
                 if (registUser()) {
+                    mRegistBtn.setText("注  册");
                     mRegistBtn.setActionMode(false);
                     mActivity.setProgressBarIndeterminateVisibility(true);
                 }
@@ -131,7 +129,23 @@ public class RegistFragment extends BaseFragment{
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                mActivity.longToast(object);
+                mRegistBtn.setActionMode(true);
+                mActivity.setProgressBarIndeterminateVisibility(false);
+                TokenResult tokenResult = mActivity.parseJsonValue(
+                        object, new TypeToken<TokenResult>(){});
+
+                if (tokenResult == null) {
+                    mActivity.longToast("账号注册失败！请重新尝试！!");
+                    return;
+                }
+
+                app.saveToken(tokenResult);
+                mActivity.finish();
+                app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
                 mRegistBtn.setActionMode(true);
                 mActivity.setProgressBarIndeterminateVisibility(false);
             }

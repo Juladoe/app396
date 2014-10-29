@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:id="@+id/notemain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.handmark.pulltorefresh.library.PullToRefreshGridView
+        android:id="@+id/notegrid"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@color/note_main_background"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth"
+        android:numColumns="2"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:paddingTop="@dimen/note_main_paddingtop"
+        android:paddingRight="@dimen/note_main_paddingright"
+        android:paddingLeft="@dimen/note_main_paddingright"/>
+
+
+
+</RelativeLayout>
+
+

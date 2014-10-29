@@ -1,25 +1,32 @@
 package com.edusoho.kuozhi.model;
 
+import java.io.Serializable;
+
 /**
  * Created by howzhi on 14-9-15.
  */
-public class Member {
+public class Member implements Serializable {
 
     public int id;
     public int courseId;
     public int userId;
     public int orderId;
-    public int deadline;
-    public int levelId;
-    public int learnedNum;
-    public int credit;
-    public int noteNum;
+    public long deadline;
+    public String levelId;
+    public String learnedNum;
+    public String credit;
+    public String noteNum;
     public String noteLastUpdateTime;
-    public int isLearned;
-    public int seq;
+    public String isLearned;
+    public String seq;
     public String remark;
     public int isVisible;
-    public String role;
+    public Role role;
     public int locked;
-    public String createdTime;
+    public int createdTime;
+
+    public enum Role
+    {
+        teacher, student, admin;
+    }
 }

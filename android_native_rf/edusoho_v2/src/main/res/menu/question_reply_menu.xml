@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/reply_submit"
+        android:title="@string/reply_submit"
+        android:orderInCategory="100"
+        android:icon="@drawable/reply_submit"
+        app:showAsAction="ifRoom" />
+</menu>

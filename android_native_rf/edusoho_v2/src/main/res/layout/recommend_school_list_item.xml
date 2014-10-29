@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/course_pic"
-            android:layout_width="155dp"
-            android:layout_height="95dp"
+            android:layout_width="@dimen/course_item_pic_width"
+            android:layout_height="@dimen/course_item_pic_height"
             android:scaleType="fitCenter"
             android:src="@drawable/defaultpic" />
 
@@ -43,7 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="标题"
             android:textSize="@dimen/course_list_item_title"
             android:textStyle="normal" />
 
@@ -62,9 +61,9 @@
                 android:id="@+id/course_rating"
                 style="@style/courseRatingBar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:isIndicator="true"
-                android:rating="2" />
+                android:rating="0" />
 
             <TextView
                 android:gravity="center"

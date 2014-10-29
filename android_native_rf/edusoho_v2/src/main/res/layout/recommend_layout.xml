@@ -1,4 +1,4 @@
-<ScrollView
+<com.handmark.pulltorefresh.library.PullToRefreshScrollView
     android:id="@+id/recommend_layout"
     android:background="@color/recommend_bg"
     android:layout_width="match_parent"
@@ -25,12 +25,14 @@
             android:padding="8dp"
             android:layout_below="@id/school_banner"
             android:layout_width="match_parent"
-            android:layout_height="47dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/recommend_sch_announcement"
                 android:textColor="@color/recommend_announcement"
                 android:textSize="@dimen/recommend_announcement"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:text="网校公告栏"
@@ -99,5 +101,34 @@
             android:layout_below="@id/recommend_announcement_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
+
+        <LinearLayout
+            android:id="@+id/recommend_new_label"
+            android:paddingLeft="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_below="@id/recommend_listview"
+            android:background="@color/recommend_label_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/recommend_announcement_label"
+                android:textSize="@dimen/recommend_announcement_label"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:text="最新"
+                android:drawableLeft="@drawable/recommend_new_label_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp" />
+        </LinearLayout>
+
+        <com.edusoho.kuozhi.ui.widget.CourseListWidget
+            android:id="@+id/new_listview"
+            app:showMoreBtn="true"
+            android:gravity="center"
+            android:layout_below="@id/recommend_new_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
     </RelativeLayout>
-</ScrollView>
+</com.handmark.pulltorefresh.library.PullToRefreshScrollView>

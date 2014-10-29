@@ -1,25 +1,13 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.NormalCallback;
-import com.edusoho.listener.ResultCallback;
-import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
-import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
-
-import java.util.Collections;
 
 /**
  * Created by howzhi on 14-8-22.

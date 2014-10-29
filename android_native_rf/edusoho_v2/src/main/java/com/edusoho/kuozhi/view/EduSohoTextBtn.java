@@ -3,12 +3,19 @@ package com.edusoho.kuozhi.view;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Typeface;
+
+import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-7.
@@ -22,6 +29,11 @@ public class EduSohoTextBtn extends LinearLayout {
     private ColorStateList color;
     private TextView mText;
     private EduSohoIconView mIcon;
+    private FrameLayout mIconLayout;
+    private ImageView mUpdateIcon;
+
+    private boolean mIsUpdate;
+    private HashMap<String, Object> notifyTypes;
 
     public EduSohoTextBtn(Context context) {
         super(context);
@@ -46,19 +58,32 @@ public class EduSohoTextBtn extends LinearLayout {
         LinearLayout.LayoutParams layoutParams = new LayoutParams(0, 0);
         layoutParams.gravity = Gravity.CENTER;
         setLayoutParams(layoutParams);
+        setGravity(Gravity.CENTER);
 
+        LinearLayout.LayoutParams childlp = new LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+
+        mIconLayout = new FrameLayout(mContext);
         mIcon = new EduSohoIconView(mContext);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
-        mIcon.setTextSize(size * iconSizeScale);
-        addView(mIcon);
+        mIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, size * iconSizeScale);
+        mIconLayout.setLayoutParams(childlp);
+        mIconLayout.addView(mIcon);
+        addView(mIconLayout);
 
         mText = new TextView(mContext);
+        mText.setSingleLine();
+        mText.setEllipsize(TextUtils.TruncateAt.MIDDLE);
         mText.setText(text);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(color);
-        mText.setTextSize(size);
+        mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        mText.setLayoutParams(childlp);
         addView(mText);
+
+        notifyTypes = new HashMap<String, Object>();
     }
 
     public void setText(String text)
@@ -91,5 +116,52 @@ public class EduSohoTextBtn extends LinearLayout {
     public void setIcon(int iconId)
     {
         mIcon.setText(iconId);
+    }
+
+    public void setUpdateIcon()
+    {
+        mIsUpdate = true;
+        mUpdateIcon = new ImageView(mContext);
+        mUpdateIcon.setImageResource(R.drawable.update_bg);
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.RIGHT;
+        mUpdateIcon.setLayoutParams(layoutParams);
+        mIconLayout.addView(mUpdateIcon);
+    }
+
+    public void clearUpdateIcon()
+    {
+        mIsUpdate = false;
+        mIconLayout.removeView(mUpdateIcon);
+    }
+
+    public boolean getUpdateMode()
+    {
+        return mIsUpdate;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        mIcon.setEnabled(enabled);
+        mText.setEnabled(enabled);
+    }
+
+    public void addNotifyType(String type)
+    {
+        notifyTypes.put(type, null);
+    }
+
+    public void addNotifyTypes(String[] types)
+    {
+        for (String type : types) {
+            addNotifyType(type);
+        }
+    }
+
+    public boolean hasNotify(String type){
+        return notifyTypes.containsKey(type);
     }
 }

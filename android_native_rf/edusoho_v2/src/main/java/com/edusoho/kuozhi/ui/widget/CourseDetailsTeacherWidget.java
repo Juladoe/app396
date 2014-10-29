@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -16,8 +17,6 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
-
 /**
  * Created by howzhi on 14-8-27.
  */
@@ -27,6 +26,8 @@ public class CourseDetailsTeacherWidget extends CourseDetailsLabelWidget {
     private AQuery mAQuery;
     private int mUserId;
     private ActionBarBaseActivity mActivity;
+
+    public static final int NONE_ID = -1;
 
     public CourseDetailsTeacherWidget(Context context) {
         super(context);
@@ -53,6 +54,10 @@ public class CourseDetailsTeacherWidget extends CourseDetailsLabelWidget {
 
     private void getUserInfo()
     {
+        if (mUserId == -1) {
+            showEmptyLayout();
+            return;
+        }
         RequestUrl url = mActivity.app.bindUrl(Const.USERINFO, true);
         url.setParams(new String[] {
                 "userId", mUserId + ""
@@ -65,6 +70,7 @@ public class CourseDetailsTeacherWidget extends CourseDetailsLabelWidget {
                 mContentView.setVisibility(View.VISIBLE);
                 User user = mActivity.parseJsonValue(object, new TypeToken<User>(){});
                 if (user == null) {
+                    showEmptyLayout();
                     return;
                 }
                 mAQuery.id(R.id.course_userinfo_face).image(
@@ -74,6 +80,13 @@ public class CourseDetailsTeacherWidget extends CourseDetailsLabelWidget {
                 mAQuery.id(R.id.course_userinfo_about).text(AppUtil.coverCourseAbout(user.about));
             }
         });
+    }
+
+    @Override
+    protected View initEmptyLayout() {
+        TextView textView = (TextView) super.initEmptyLayout();
+        textView.setText(R.string.course_no_teacher);
+        return textView;
     }
 
     public void initUser(int userId, final ActionBarBaseActivity actionBarBaseActivity)

@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:focusable="true"
+    android:background="@color/system_normal_bg"
     android:focusableInTouchMode="true"
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:background="@color/system_normal_bg"
         android:orientation="vertical"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.edusoho.kuozhi.ui.widget.CourseDetailsTeacherWidget
-            android:layout_below="@id/course_details_about"
+            android:layout_weight="0"
             android:id="@+id/course_details_teacher"
             app:labelTitle="教师简介"
             android:paddingTop="9dp"
@@ -34,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <me.maxwin.view.XListView
+        <com.edusoho.kuozhi.ui.widget.XCourseListWidget
+            android:layout_weight="1"
             android:background="@color/system_normal_bg"
             android:layout_marginTop="9dp"
             android:layout_marginLeft="19dp"

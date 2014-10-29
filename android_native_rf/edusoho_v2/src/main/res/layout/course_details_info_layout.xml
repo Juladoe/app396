@@ -13,6 +13,8 @@
     android:layout_height="wrap_content">
 
     <com.edusoho.kuozhi.view.EduSohoTextBtn
+        android:orientation="vertical"
+        app:iconSizeScale="2.4"
         android:id="@+id/course_details_favorite"
         android:layout_alignParentRight="true"
         app:color="@color/system_normal_text"
@@ -79,7 +81,7 @@
             android:id="@+id/course_details_rating"
             style="@style/courseRatingBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:isIndicator="true"
             android:rating="0" />
 

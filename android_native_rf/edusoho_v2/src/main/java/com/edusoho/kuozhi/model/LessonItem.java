@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.model;
 /**
  * Created by howzhi on 14-5-24.
  */
-public class LessonItem {
+public class LessonItem<T> {
     public static final int FREE = 1;
 
     public int id;
@@ -17,13 +17,14 @@ public class LessonItem {
     public String summary;
     public String tag;
     public String type;
-    public String content;
+    public T content;
     private int giveCredit;
     private int requireCredit;
     public int mediaId;
     public String mediaSource;
     public String mediaName;
     public String mediaUri;
+    public String headUrl;
     public String length;
     public int materialNum;
     public int quizNum;

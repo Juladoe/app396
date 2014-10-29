@@ -3,9 +3,11 @@ package com.edusoho.kuozhi.ui.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -13,7 +15,9 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LearnLessonListAdapter;
+import com.edusoho.kuozhi.adapter.lesson.LessonEmptyAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.entity.LearnStatus;
 import com.edusoho.kuozhi.entity.LessonsResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -21,6 +25,8 @@ import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.hb.views.PinnedSectionListView;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-8-27.
@@ -30,10 +36,14 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     private ActionBarBaseActivity mActivity;
     protected PinnedSectionListView mContentView;
     private boolean isInitHeight;
-    private String mCourseId;
+    private int mCourseId;
     private AQuery mAQuery;
+    private boolean isLearn;
     private boolean mIsAddToken;
     private String mLessonListJson;
+    private HashMap<Integer, LearnStatus> learnStatuses;
+    private LearnLessonListAdapter mAdapter;
+    private String[] mEmptyText = new String[]{ "课程暂无课时内容" };;
 
     public CourseDetailsLessonWidget(Context context) {
         super(context);
@@ -59,7 +69,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
         mContentView.setDivider(null);
         mContentView.setSelector(getResources().getDrawable(R.drawable.normal_list_select));
         mContentView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mContentView.setPadding(0, 0, 0, 0);
 
         mAQuery = new AQuery(mContentView);
@@ -95,7 +105,7 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     {
         RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, mIsAddToken);
         url.setParams(new String[]{
-                "courseId", mCourseId
+                "courseId", mCourseId + ""
         });
          mActivity.ajaxPost(url, new ResultCallback(){
             @Override
@@ -115,10 +125,32 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
             return;
         }
 
+        learnStatuses = result.learnStatuses;
         setAdapter(result);
         if (isInitHeight) {
             initListHeight(mContentView);
         }
+    }
+
+    public void setIsLearn(boolean isLearn) {
+        this.isLearn = isLearn;
+    }
+
+    public LearnStatus getLearnStatus(int lessonId)
+    {
+        return learnStatuses.get(lessonId);
+    }
+
+    public void updateLessonStatus(HashMap<Integer, LearnStatus> newStatus)
+    {
+        learnStatuses = newStatus;
+        mAdapter.updateLearnStatusList(learnStatuses);
+    }
+
+    public void updateLessonStatus(int index, LearnStatus status)
+    {
+        learnStatuses.put(index, status);
+        mAdapter.updateLearnStatusList(learnStatuses);
     }
 
     public String getLessonListJson()
@@ -128,10 +160,17 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
 
     protected void setAdapter(LessonsResult result)
     {
-        LearnLessonListAdapter adapter = new LearnLessonListAdapter(
+        if (result.lessons.isEmpty()) {
+            mContentView.setAdapter(getEmptyLayoutAdapter());
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mContentView.getLayoutParams();
+            layoutParams.gravity = Gravity.CENTER;
+            mContentView.setLayoutParams(layoutParams);
+            return;
+        }
+        mAdapter = new LearnLessonListAdapter(
                 mContext, result, R.layout.course_details_learning_lesson_item);
-        mContentView.setAdapter(adapter);
-        mContentView.setOnItemClickListener(new LessonItemClickListener(mActivity, mLessonListJson));
+        mContentView.setAdapter(mAdapter);
+        mContentView.setOnItemClickListener(new LessonItemClickListener(mActivity, mLessonListJson, isLearn));
     }
 
     public void setItemClickListener(AdapterView.OnItemClickListener itemClickListener)
@@ -149,10 +188,17 @@ public class CourseDetailsLessonWidget extends CourseDetailsLabelWidget {
     }
 
     public void initLesson(
-            String courseId, ActionBarBaseActivity activity, boolean isAddToken)
+            int courseId, ActionBarBaseActivity activity, boolean isAddToken)
     {
         mCourseId = courseId;
         mActivity = activity;
         this.mIsAddToken = isAddToken;
+    }
+
+    protected ListAdapter getEmptyLayoutAdapter()
+    {
+        LessonEmptyAdapter arrayAdapter = new LessonEmptyAdapter(
+                mContext, mEmptyText, R.layout.course_empty_layout);
+        return arrayAdapter;
     }
 }

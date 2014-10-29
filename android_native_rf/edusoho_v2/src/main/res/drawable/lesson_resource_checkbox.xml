@@ -3,7 +3,7 @@
 
     <!-- 按下状态 -->
     <item android:drawable="@drawable/lesson_resouce_checkbox_sel" android:state_checked="true"/>
-
+    <item android:drawable="@drawable/download_success" android:state_enabled="false"/>
     <!-- 普通无焦点状态 -->
     <item android:drawable="@drawable/lesson_resouce_checkbox_normal"/>
 

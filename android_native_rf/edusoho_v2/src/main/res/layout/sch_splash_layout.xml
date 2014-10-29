@@ -26,6 +26,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:textColor="@color/enter_sch"
+        android:background="@color/splash_ok_bg"
         android:gravity="center"
         android:textSize="@dimen/enter_sch_size"
         android:text="进入网校"

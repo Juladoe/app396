@@ -1,16 +1,13 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.model.Teacher;
@@ -18,32 +15,16 @@ import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
 
-public class ReviewListAdapter extends BaseAdapter {
+public class ReviewListAdapter extends ListBaseAdapter<Review> {
 
-    public Review loginUserComment;
-    public int mLoginUserReviewIndex = -1;
-	private LayoutInflater inflater;
-	private int mResouce;
-	private Context mContext;
-	private ArrayList<Review> mList;
-
-	public ReviewListAdapter(Context context, ArrayList<Review> list, int resource) {
-		mList = list == null ? new ArrayList<Review>() : list;
-		mContext = context;
-		mResouce = resource;
-		inflater = LayoutInflater.from(context);
+	public ReviewListAdapter(Context context,  int resource) {
+		super(context, resource);
 	}
 
-    public void addItem(ArrayList<Review> list)
-    {
+    @Override
+    public void addItems(ArrayList<Review> list) {
         mList.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void setData(ArrayList<Review> list)
-    {
-        mList.clear();
-        addItem(list);
     }
 
 	@Override
@@ -65,7 +46,7 @@ public class ReviewListAdapter extends BaseAdapter {
 	public View getView(int index, View view, ViewGroup vg) {
 		ViewHolder holder;
 		if (view == null) {
-			view = inflater.inflate(mResouce, null);
+			view = inflater.inflate(mResource, null);
 			holder = new ViewHolder();
 			holder.course_comment_rating = (RatingBar) view.findViewById(R.id.review_user_rating);
 			holder.course_comment_user_time = (TextView) view.findViewById(R.id.review_user_time);
@@ -84,7 +65,7 @@ public class ReviewListAdapter extends BaseAdapter {
 		holder.course_comment_user_message.setText(item.content);
 		holder.course_comment_user_nickname.setText(user.nickname);
 		holder.course_comment_rating.setRating((float) item.rating);
-		holder.aq.id(R.id.course_comment_user_avatar).image(
+		holder.aq.id(R.id.review_user_face).image(
                 user.avatar, false, true, 0, R.drawable.course_teacher_avatar);
 
 		return view;

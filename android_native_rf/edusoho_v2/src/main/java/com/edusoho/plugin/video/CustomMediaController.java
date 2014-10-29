@@ -1,12 +1,12 @@
 package com.edusoho.plugin.video;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,7 +15,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.course.LessonActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,7 +32,7 @@ import java.util.TimerTask;
 public class CustomMediaController extends RelativeLayout {
 
     private Context mContext;
-    private Activity mActivity;
+    private ActionBarBaseActivity mActivity;
     private ImageView playBtn;
     private ImageView customRotationBtn;
     private ImageView prevBtn;
@@ -41,6 +44,9 @@ public class CustomMediaController extends RelativeLayout {
     private boolean mIsShowController;
     private boolean mIsSetTotalTime;
     private boolean mIsStop;
+    private int mLastPos;
+
+    private int mHideCount;
 
     private Timer updateTimer;
     private Timer autoHideTimer;
@@ -66,16 +72,31 @@ public class CustomMediaController extends RelativeLayout {
     public void setVideoView(VideoView view)
     {
         mVideoView = view;
+    }
+
+    public void setActivity(ActionBarBaseActivity activity)
+    {
+        mActivity = activity;
         initView();
     }
 
-    public void setActivity(Activity activity)
+    public void ready(final MediaControllerListener listener)
     {
-        mActivity = activity;
-    }
+        updateTimer = new Timer();
+        autoHideTimer = new Timer();
 
-    public void ready()
-    {
+        autoHideTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mIsShowController) {
+                    if (mHideCount <= 0) {
+                        updateHandler.obtainMessage(HIDE).sendToTarget();
+                    }
+                    mHideCount = mHideCount - 1000;
+                }
+            }
+        }, 0, 1000);
+
         updateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -85,9 +106,14 @@ public class CustomMediaController extends RelativeLayout {
                     msg.sendToTarget();
 
                     if (!mIsSetTotalTime) {
-                        msg = updateHandler.obtainMessage(SET_TOTALTIME);
-                        msg.arg1 = mVideoView.getDuration();
-                        msg.sendToTarget();
+                        int total = mVideoView.getDuration();
+                        if (total > 0) {
+                            mIsSetTotalTime = true;
+                            listener.startPlay();
+                            msg = updateHandler.obtainMessage(SET_TOTALTIME);
+                            msg.arg1 = mVideoView.getDuration();
+                            msg.sendToTarget();
+                        }
                     }
                 }
             }
@@ -115,6 +141,7 @@ public class CustomMediaController extends RelativeLayout {
                 String time = dateFromat.format(new Date(msg.arg1 + DEFAULT_TIME));
                 switch (msg.what) {
                     case UPDATE_PLAY_TIME:
+                        mLastPos = msg.arg1;
                         currentTime.setText(time);
                         playSeekBar.setProgress(msg.arg1);
                         break;
@@ -130,51 +157,55 @@ public class CustomMediaController extends RelativeLayout {
         };
 
         bindClickListener();
-        updateTimer = new Timer();
-        autoHideTimer = new Timer();
+    }
+
+    public int getLastPos()
+    {
+        return mLastPos;
     }
 
     private void hide()
     {
+        mHideCount = 0;
         mIsShowController = false;
         setVisibility(View.INVISIBLE);
     }
 
     private void show()
     {
+        mHideCount = 3000;
         mIsShowController = true;
         setVisibility(View.VISIBLE);
-        autoHideTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (mIsShowController) {
-                    updateHandler.obtainMessage(HIDE).sendToTarget();
-                }
-            }
-        }, 3000);
     }
 
-    public void play()
+    public void play(int pos)
     {
-        playBtn.setImageResource(R.drawable.vp_pause_shadow);
+        Log.d(null, "pos->" + pos);
+        playBtn.setImageResource(R.drawable.video_pause);
+
+        mVideoView.start();
+        if (pos > 0) {
+            mVideoView.seekTo(pos);
+            return;
+        }
+
         if (mIsStop) {
-            mVideoView.seekTo(0);
+            mVideoView.seekTo(pos);
             mIsStop = false;
         }
-        mVideoView.start();
     }
 
     public void pause()
     {
-        playBtn.setImageResource(R.drawable.vp_play_shadow);
+        playBtn.setImageResource(R.drawable.video_play);
         mVideoView.pause();
     }
 
     public void stop(MediaPlayer mediaPlayer)
     {
         mIsStop = true;
-        mediaPlayer.pause();
-        playBtn.setImageResource(R.drawable.vp_play_shadow);
+        mVideoView.pause();
+        playBtn.setImageResource(R.drawable.video_play);
     }
 
     /**
@@ -190,7 +221,7 @@ public class CustomMediaController extends RelativeLayout {
                 if (mVideoView.isPlaying()) {
                     pause();
                 } else {
-                    play();
+                    play(0);
                 }
             } else if (id == R.id.custom_next) {
                 current = mVideoView.getCurrentPosition();
@@ -209,8 +240,12 @@ public class CustomMediaController extends RelativeLayout {
                 int screenOrientation = mActivity.getRequestedOrientation();
                 if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    EdusohoApp.app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
+                    mActivity.showActionBar();
                 } else {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    EdusohoApp.app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
+                    mActivity.hideActionBar();
                 }
             }
         }
@@ -239,7 +274,18 @@ public class CustomMediaController extends RelativeLayout {
         nextBtn.setOnClickListener(clickListener);
         customRotationBtn.setOnClickListener(clickListener);
 
-        mVideoView.setOnTouchListener(new View.OnTouchListener() {
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mHideCount = 3000;
+                return true;
+            }
+        });
+    }
+
+    public void setHideListener(View view)
+    {
+        view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -266,5 +312,10 @@ public class CustomMediaController extends RelativeLayout {
             autoHideTimer.cancel();
             autoHideTimer = null;
         }
+    }
+
+    public interface MediaControllerListener
+    {
+        public void startPlay();
     }
 }

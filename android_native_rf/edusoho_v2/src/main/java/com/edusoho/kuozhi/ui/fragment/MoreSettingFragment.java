@@ -2,27 +2,42 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.ui.common.AboutActivity;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.dialog.EdusohoMaterialDialog;
+import com.edusoho.kuozhi.util.annotations.ViewUtil;
+import com.edusoho.kuozhi.view.EduUpdateView;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 
-import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by howzhi on 14-8-25.
  */
 public class MoreSettingFragment extends BaseFragment {
 
+    @ViewUtil("more_setting_logout_btn")
     private View mLogoutBtn;
-    private AQuery mAQuery;
+
+    @ViewUtil("more_setting_set")
+    private EduUpdateView mSettingBtn;
+
+    @ViewUtil("more_setting_about")
+    private View mSettingAbout;
+
+    @ViewUtil("more_setting_qrsearch")
+    private View mSearchBtn;
+
+    @ViewUtil("more_setting_message")
+    private View mMessageBtn;
 
     @Override
     public String getTitle() {
@@ -38,44 +53,110 @@ public class MoreSettingFragment extends BaseFragment {
     protected void showSchoolAbout()
     {
         final String url = app.schoolHost + Const.ABOUT;
-        app.mEngine.runNormalPlugin("AboutActivity", mActivity, new PluginRunCallback() {
+        app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(AboutActivity.URL, url);
-                startIntent.putExtra(AboutActivity.TITLE, "关于网校");
+                startIntent.putExtra(AboutFragment.URL, url);
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, getResources().getString(R.string.school_about));
             }
         });
     }
 
-    @Override
-    protected void initView(View view) {
-        mAQuery = new AQuery(view);
+    private void registNotify()
+    {
+        mSettingBtn.addNotifyType("app_update");
+    }
 
-        mAQuery.id(R.id.more_setting_about).clicked(new View.OnClickListener() {
+    private void bindListener()
+    {
+        mSettingAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showSchoolAbout();
             }
         });
 
-        mLogoutBtn = view.findViewById(R.id.more_setting_logout_btn);
+        mSettingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "SettingFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "设置");
+                    }
+                });
+            }
+        });
+
         mLogoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EdusohoMaterialDialog.createMuilt(
+                PopupDialog.createMuilt(
                         mActivity,
                         "退出提示",
                         "是否退出登录?",
-                        new EdusohoMaterialDialog.PopupClickListener() {
+                        new PopupDialog.PopupClickListener() {
                             @Override
                             public void onClick(int button) {
-                                if (button == EdusohoMaterialDialog.OK) {
+                                if (button == PopupDialog.OK) {
                                     logout();
                                 }
                             }
-                }).show();
+                        }).show();
             }
         });
+
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
+            }
+        });
+
+        mMessageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (app.loginUser == null) {
+                    LoginActivity.start(mActivity);
+                    return;
+                }
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MessageFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    protected void initView(View view) {
+        viewInject(view);
+        registNotify();
+
+        bindListener();
+    }
+
+    private void checkNotify()
+    {
+        Set<String> notifys = app.getNotifys();
+        if (notifys.isEmpty()) {
+            mSettingBtn.setUpdate(false);
+            return;
+        }
+        for (String type : notifys) {
+            if (mSettingBtn == null) {
+                continue;
+            }
+            if (mSettingBtn.hasNotify(type)) {
+                mSettingBtn.setUpdate(true);
+                continue;
+            }
+        }
     }
 
     private void logout()
@@ -85,9 +166,10 @@ public class MoreSettingFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                super.callback(url, object, ajaxStatus);
                 showProgress(false);
                 app.removeToken();
+                mLogoutBtn.setVisibility(View.GONE);
+                app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
             }
         });
     }
@@ -95,6 +177,8 @@ public class MoreSettingFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(null, "MoreSettingFragment->onResume");
+        checkNotify();
         if (app.loginUser != null) {
             mLogoutBtn.setVisibility(View.VISIBLE);
         }

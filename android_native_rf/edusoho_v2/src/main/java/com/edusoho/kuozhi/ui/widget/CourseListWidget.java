@@ -17,15 +17,12 @@ import com.edusoho.kuozhi.view.EdusohoListView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
-
 /**
  * Created by howzhi on 14-8-10.
  */
 
 public class CourseListWidget extends LinearLayout {
 
-    private int showNum;
     private boolean isShowMoreBtn;
     private boolean isFullHeight;
     private Context mContext;
@@ -55,6 +52,11 @@ public class CourseListWidget extends LinearLayout {
 
         mEdusohoListView = new EdusohoListView(mContext);
         addView(mEdusohoListView);
+
+        if (isShowMoreBtn) {
+            mShowMoreBtn = createShowMoreBtn();
+            addView(mShowMoreBtn);
+        }
     }
 
     private View initLoadView()
@@ -73,7 +75,7 @@ public class CourseListWidget extends LinearLayout {
     {
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_more_layout, null);
         view.setLayoutParams(new ViewGroup.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         return view;
     }
 
@@ -118,7 +120,7 @@ public class CourseListWidget extends LinearLayout {
             return;
         }
         CourseListAdapter adapter = (CourseListAdapter) mEdusohoListView.getAdapter();
-        adapter.setItems(courseResult);
+        adapter.addItems(courseResult.data);
     }
 
     private void parseRequestData(ActionBarBaseActivity mActivity, String object)
@@ -132,15 +134,11 @@ public class CourseListWidget extends LinearLayout {
             return;
         }
         CourseListAdapter adapter = new CourseListAdapter(
-                mActivity, courseResult, R.layout.recommend_school_list_item);
+                mActivity, R.layout.recommend_school_list_item);
+        adapter.addItems(courseResult.data);
         mEdusohoListView.setAdapter(adapter);
         if (isFullHeight) {
             mEdusohoListView.initListHeight();
-        }
-
-        if (isShowMoreBtn) {
-            mShowMoreBtn = createShowMoreBtn();
-            addView(mShowMoreBtn);
         }
     }
 }
