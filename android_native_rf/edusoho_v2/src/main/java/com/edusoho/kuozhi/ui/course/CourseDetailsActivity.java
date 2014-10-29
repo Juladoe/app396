@@ -64,6 +64,8 @@ import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,7 +243,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
         }
 
-        setBackMode(BACK, mTitle);
+        setBackMode(BACK, TextUtils.isEmpty(mTitle) ? "课程标题" : mTitle);
 
         mRootContent = (ViewGroup) findViewById(R.id.course_details_content);
         mCoursePicView = (ImageView) findViewById(R.id.course_details_header);
@@ -250,7 +252,9 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mVipLearnBtn = (Button) findViewById(R.id.course_details_vip_learnbtn);
         mLearnBtn = (Button) findViewById(R.id.course_details_learnbtn);
 
-        loadCoursePic();
+        if (!TextUtils.isEmpty(mCoursePic)) {
+            loadCoursePic();
+        }
         loadCourseInfo();
         bindBtnClick();
     }
@@ -447,6 +451,15 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             return;
         }
 
+        if (TextUtils.isEmpty(mCoursePic)) {
+            mCoursePic = mCourseDetailsResult.course.largePicture;
+            loadCoursePic();
+        }
+
+        if (TextUtils.isEmpty(mTitle)) {
+            mTitle = mCourseDetailsResult.course.title;
+            setTitle(mTitle);
+        }
         Member member = mCourseDetailsResult.member;
         String fragment = member != null
                 ? "CourseLearningFragment" : "CourseDetailsFragment";

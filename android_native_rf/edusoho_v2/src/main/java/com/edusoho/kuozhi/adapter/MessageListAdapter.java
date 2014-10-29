@@ -1,30 +1,39 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.text.Editable;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.Html;
-import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
+import android.text.style.CharacterStyle;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Notify;
-
-import org.xml.sax.XMLReader;
-
+import com.edusoho.kuozhi.model.Testpaper.MyTestpaperResult;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
+import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
+import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by howzhi on 14-9-16.
  */
 public class MessageListAdapter extends ListBaseAdapter<Notify>
 {
-
     public MessageListAdapter(
             Context context,  int resource)
     {
@@ -61,23 +70,46 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
         TextView textView = (TextView) view;
         Notify notify = mList.get(index);
 
-        String text = notify.message;
-        textView.setText(Html.fromHtml(text));
+        textView.setText(coverSpanned(notify.message));
+        textView.setClickable(true);
 
-        SpannableString spannableString = new SpannableString(text);
-        ClickableSpan clickableSpan = new NoLineClickSpan(text);
-        spannableString.setSpan(clickableSpan, 0, text.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        textView.setText(spannableString);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         return view;
     }
 
-    private class NoLineClickSpan extends ClickableSpan {
-        String text;
+    private SpannableStringBuilder coverSpanned(String text)
+    {
+        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text);
+        CharacterStyle[] styleSpans = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
+        for (CharacterStyle styleSpan : styleSpans) {
+            if (styleSpan instanceof URLSpan) {
+                URLSpan urlSpan = (URLSpan) styleSpan;
+                int start = spanned.getSpanStart(urlSpan);
+                int end = spanned.getSpanEnd(urlSpan);
+                spanned.removeSpan(urlSpan);
+                spanned.setSpan(
+                        new MessageUrlSpan(urlSpan.getURL()),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+        }
 
-        public NoLineClickSpan(String text) {
-            super();
-            this.text = text;
+        return spanned;
+    }
+
+    private class MessageUrlSpan extends URLSpan
+    {
+        public MessageUrlSpan(String url)
+        {
+            super(url);
+        }
+
+        @Override
+        public void onClick(View widget) {
+            parseUrlAction(getURL());
+            Log.d(null, "click------>" + getURL());
         }
 
         @Override
@@ -86,11 +118,68 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
             ds.setUnderlineText(false);
         }
 
-        @Override
-        public void onClick(View widget) {
-            Log.d(null, "message->onClick");
-            //processHyperLinkClick(text);
+        private void parseUrlAction(String url)
+        {
+            Matcher typeMatcher = TYPE_PAT.matcher(url);
+            if (typeMatcher.find()) {
+                String type1 = typeMatcher.group(1);
+                String type1_value = typeMatcher.group(2);
+                String type2 = typeMatcher.group(4);
+                String type2_value = typeMatcher.group(5);
+                String param = typeMatcher.group(7);
+                String param_value = typeMatcher.group(8);
+
+                Log.d(null, "type-->" + type1);
+                if ("user".equalsIgnoreCase(type1)) {
+                    showUser(AppUtil.parseInt(type1_value));
+                } else if ("course".equalsIgnoreCase(type1)) {
+                    if ("thread".equalsIgnoreCase(type2)) {
+                        return;
+                    }
+                    showCourse(AppUtil.parseInt(type1_value));
+                } else if ("test".equalsIgnoreCase(type1)) {
+                    if ("result".equalsIgnoreCase(type2)) {
+                        showTestPaperResult(AppUtil.parseInt(type1_value));
+                    }
+                }
+            }
         }
     }
 
+    private void showTestPaperResult(int testResultId)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
+        bundle.putInt(TestpaperResultFragment.RESULT_ID, testResultId);
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle(
+                "FragmentPageActivity", mContext, bundle);
+    }
+
+    private void showCourse(final int courseId)
+    {
+        EdusohoApp.app.mEngine.runNormalPlugin(
+                CourseDetailsActivity.TAG, mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(Const.COURSE_ID, courseId);
+            }
+        });
+    }
+
+    private void showUser(final int id)
+    {
+        EdusohoApp.app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TeacherInfoFragment");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, "用户信息");
+                startIntent.putExtra(TeacherInfoFragment.TEACHER_ID, new int[]{ id });
+            }
+        });
+    }
+
+    public static Pattern TYPE_PAT = Pattern.compile(
+            "/([a-zA-Z]+)/(\\w+)/?(([a-zA-Z]+)/?(\\w*))?(#(\\w+)-(\\w+))?",
+            Pattern.DOTALL
+    );
 }

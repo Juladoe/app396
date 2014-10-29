@@ -92,6 +92,12 @@ public class TestpaperResultFragment extends BaseFragment {
                 }
 
                 mTestpaper = testpaperResultType.testpaper;
+
+                if (mTitle == null) {
+                    mTitle = mTestpaper.name;
+                    changeTitle(mTitle);
+                }
+
                 HashMap<QuestionType, Accuracy> accuracy = testpaperResultType.accuracy;
                 ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
                 TestpaperResultListAdapter adapter = new TestpaperResultListAdapter(
