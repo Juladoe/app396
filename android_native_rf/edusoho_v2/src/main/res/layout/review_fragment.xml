@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/review_course_info_layout"
+        android:paddingTop="18dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="18dp"
+        android:background="@color/system_normal_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/review_course_title"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/course_details_lesson_item_title"
+            android:text="标题"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RatingBar
+            android:layout_marginTop="17dp"
+            android:layout_below="@id/review_course_title"
+            android:layout_weight="0"
+            android:id="@+id/course_details_rating"
+            style="@style/courseRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/rating_height"
+            android:isIndicator="true"
+            android:rating="0" />
+
+        <TextView
+            android:layout_marginLeft="12dp"
+            android:gravity="center"
+            android:layout_toRightOf="@id/course_details_rating"
+            android:layout_alignTop="@id/course_details_rating"
+            android:id="@+id/review_course_student"
+            android:textColor="@color/system_normal_text"
+            android:textSize="@dimen/review_course_student"
+            android:text="(0人)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/review_course_commit_layout"
+        android:layout_alignParentBottom="true"
+        android:background="@color/system_normal_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/review_course_commit_btn"
+            android:layout_centerVertical="true"
+            android:textColor="@color/course_details_btn"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="14dp"
+            android:paddingLeft="14dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:text="发表评价"
+            android:textSize="@dimen/review_course_commit"
+            android:background="@drawable/login_btn_sel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <com.edusoho.kuozhi.ui.widget.CourseDetailsReviewWidget
+        android:background="@color/white"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_above="@id/review_course_commit_layout"
+        android:layout_below="@id/review_course_info_layout"
+        android:id="@+id/review_course_reviewlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

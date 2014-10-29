@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="top"
+        android:background="@null"
+        android:hint="添加回复..."
+        android:singleLine="false"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/ll_font_style" />
+
+    <LinearLayout
+        android:id="@+id/ll_font_style"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:gravity="right"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_bold" />
+
+        <ImageView
+            android:id="@+id/iv_italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_italic" />
+
+        <ImageView
+            android:id="@+id/iv_underline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_under_line" />
+
+        <ImageView
+            android:id="@+id/iv_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_font_color" />
+
+        <ImageView
+            android:id="@+id/iv_font_increase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_font_incre"
+            android:src="@drawable/icon_font_size_increase" />
+
+        <ImageView
+            android:id="@+id/iv_font_decrease"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_font_decre"
+            android:src="@drawable/icon_font_size_decrease" />
+
+        <ImageView
+            android:id="@+id/iv_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/widget_photo"
+            android:background="@drawable/icon_camera"
+            android:clickable="true" />
+
+        <ImageView
+            android:id="@+id/iv_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_action_move_gray"
+            android:background="@drawable/icon_photo"
+            android:clickable="true" />
+    </LinearLayout>
+
+</RelativeLayout>

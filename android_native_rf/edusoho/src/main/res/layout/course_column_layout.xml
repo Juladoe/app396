@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/normal_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/actionbar_title" />
+
+    <ListView
+        android:layout_marginLeft="1px"
+        android:layout_below="@id/edusoho_actionbar"
+        android:id="@+id/course_menu_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+</RelativeLayout>

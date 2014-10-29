@@ -1,0 +1,54 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="header_font">18dp</dimen>
+    <dimen name="nav_font">12dp</dimen>
+    <dimen name="course_teacher_nickname">12dp</dimen>
+    <dimen name="course_content_head">18dp</dimen>
+    <dimen name="sys_normal">18dp</dimen>
+    <dimen name="course_more_btn">15dp</dimen>
+    <dimen name="recommend_sch_size">15dp</dimen>
+    <dimen name="course_list_item_title">16dp</dimen>
+    <dimen name="learn_course_list_item_title">20dp</dimen>
+    <dimen name="recommend_sch_info_size">12dp</dimen>
+    <dimen name="course_info_title">16dp</dimen>
+    <dimen name="course_info_normal">14dp</dimen>
+    <dimen name="school_search">16dp</dimen>
+    <dimen name="qr_sch_btn">100dp</dimen>
+    <dimen name="normal_btn">16dp</dimen>
+
+    <dimen name="actionbarSearch">15dp</dimen>
+    <dimen name="actionbarTitle">18dp</dimen>
+    <dimen name="actionbarBack">18dp</dimen>
+    <dimen name="actionbarMenu">25dp</dimen>
+    <dimen name="refresh_btn">20dp</dimen>
+    <dimen name="actionbarMenuMin">20dp</dimen>
+    <dimen name="lesson_type">13dp</dimen>
+    <dimen name="lesson_title">16dp</dimen>
+    <dimen name="navBtn">25dp</dimen>
+    <dimen name="navBtnText">12dp</dimen>
+    <dimen name="slidingMenuWidth">200dp</dimen>
+    <dimen name="behindOffsetRes">10dp</dimen>
+
+    <dimen name="comment_rating_label">16dp</dimen>
+    <dimen name="searchBtn">20dp</dimen>
+    <dimen name="lessonNumber">18dp</dimen>
+    <dimen name="lessonLength">10dp</dimen>
+
+    <dimen name="audio_play_btn">20dp</dimen>
+
+    <dimen name="notify_icon">30dp</dimen>
+    <dimen name="login_icon">25dp</dimen>
+    <dimen name="popup_title">20dp</dimen>
+    <dimen name="popup_input">15dp</dimen>
+
+    <!--icon font -->
+    <dimen name="font_close">20dp</dimen>
+    <dimen name="large_font_cancel">25dp</dimen>
+
+    <dimen name="search_history">20dp</dimen>
+    <dimen name="enter_sch_size">18dp</dimen>
+
+</resources>

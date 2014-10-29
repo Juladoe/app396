@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/system_window_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/actionbar_title" />
+    <RadioGroup
+        android:padding="5dp"
+        android:layout_below="@+id/edusoho_actionbar"
+        android:id="@+id/learn_head_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.edusoho.kuozhi.view.EduSohoTabRadio
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:tag="left"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="在学"
+            android:textColor="@color/course_head_color_sel"
+            android:textSize="@dimen/course_content_head" />
+
+        <com.edusoho.kuozhi.view.EduSohoTabRadio
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/course_tab_right_sel"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="5dp"
+            android:tag="right"
+            android:text="已学"
+            android:textColor="@color/course_head_color_sel"
+            android:textSize="@dimen/course_content_head" />
+    </RadioGroup>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/content_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/learn_head_radiogroup"
+        android:layout_gravity="center" />
+
+</RelativeLayout>

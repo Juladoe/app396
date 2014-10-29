@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:propertyName="backgroundColor"
+    android:duration="500"
+    android:valueFrom="@color/login_btn_gradient"
+    android:valueTo="@color/login_btn_gradient_pressed"
+    android:repeatCount="infinite"
+    android:repeatMode="reverse"
+    android:valueType="intType"></objectAnimator>

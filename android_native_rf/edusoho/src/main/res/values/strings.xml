@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_host">http://try3.edusoho.cn</string>
+    <string name="app_name">阔知学堂</string>
+    <string name="go">Snap</string>
+    <string name="action_settings">action_settings</string>
+    <string name="recomemnd_course_str">推荐课程</string>
+    <string name="school_about">关于网校</string>
+    <string name="menu_more_str">更多</string>
+    <string name="add_school_str">添加网校</string>
+    <string name="exit_str">退出</string>
+    <string name="setting_str">设置</string>
+    <string name="search_str">搜索</string>
+    <string name="search_alt_str">输入网校地址</string>
+    <string name="my_sch_str">我收藏的网校</string>
+
+    <string-array name="exitcourse_array">
+        <item>老师服务态度不好</item>
+        <item>课程内容质量差</item>
+        <item>其他</item>
+    </string-array>
+    <!-- icon font -->
+    <string name="search"></string>
+    <string name="angle_left"></string>
+    <string name="font_close"></string>
+    <string name="font_cancel"></string>
+    <string name="font_learning"></string>
+    <string name="font_user"></string>
+    <string name="font_angle_right"></string>
+    <string name="font_cloud"></string>
+    <string name="font_picture"></string>
+    <string name="font_textpaper"></string>
+    <string name="font_play"></string>
+    <string name="font_microphone"></string>
+    <string name="font_menu_btn"></string>
+    <string name="font_unlock"></string>
+    <string name="font_email"></string>
+    <string name="font_heart"></string>
+    <string name="font_refresh"></string>
+    <string name="font_message"></string>
+    <string name="font_empty"></string>
+    <string name="font_qr"></string>
+    <string name="font_home"></string>
+    <string name="font_play_btn"></string>
+    <string name="font_pause_btn"></string>
+    <string name="font_loading_btn"></string>
+    <string name="font_search_btn"></string>
+    <string name="font_check_btn"></string>
+    <string name="unpublished_text">未发布</string>
+    <string name="font_list"></string>
+    <string name="title_activity_edusoho_video_manager">EdusohoVideoManagerActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>

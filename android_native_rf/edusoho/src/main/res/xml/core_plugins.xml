@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugins>
+    <plugin name="SchoolCourseActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.SchoolCourseActivity"></plugin>
+    <plugin name="CourseLessonActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.CourseLessonActivity"></plugin>
+    <plugin name="CourseInfoActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseInfoActivity"></plugin>
+    <plugin name="FavoriteActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.FavoriteActivity"></plugin>
+    <plugin name="LearningActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LearningActivity"></plugin>
+    <plugin name="AboutActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NormalActivity"></plugin>
+    <plugin name="AlipayActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.AlipayActivity"></plugin>
+    <plugin name="LoginActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.LoginActivity"></plugin>
+    <plugin name="NetSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NetSchoolActivity"></plugin>
+    <plugin name="NotificationActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NotificationActivity"></plugin>
+    <plugin name="QrSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.QrSchoolActivity"></plugin>
+    <plugin name="RegistActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.RegistActivity"></plugin>
+    <plugin name="SearchActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.SearchActivity"></plugin>
+    <plugin name="SettingActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.SettingActivity"></plugin>
+    <plugin name="CourseColumnActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.CourseColumnActivity"></plugin>
+    <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.ui.SplashActivity"></plugin>
+    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.DefaultPageActivity"></plugin>
+</plugins>

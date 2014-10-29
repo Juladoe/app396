@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/course_userinfo"
+    android:paddingTop="12dp"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.edusoho.kuozhi.view.plugin.CircularImageView
+        android:layout_marginRight="20dp"
+        android:id="@+id/course_userinfo_face"
+        android:src="@drawable/myinfo_default_face"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:singleLine="true"
+        android:textStyle="bold"
+        android:textColor="@color/system_normal_text"
+        android:textSize="@dimen/course_details_info_nickname"
+        android:id="@+id/course_userinfo_nickname"
+        android:layout_toRightOf="@id/course_userinfo_face"
+        android:text="姓名"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:maxLines="2"
+        android:textColor="@color/system_normal_text"
+        android:textSize="@dimen/course_details_info_sign"
+        android:layout_alignBottom="@id/course_userinfo_face"
+        android:id="@+id/course_userinfo_sign"
+        android:layout_toRightOf="@id/course_userinfo_face"
+        android:text="个人签名"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/course_userinfo_about"
+        android:textSize="@dimen/course_details_info_subtitle"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/system_normal_text"
+        android:layout_below="@id/course_userinfo_face"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

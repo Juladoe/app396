@@ -1,13 +1,17 @@
 package com.broov.player;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import android.graphics.Color;
 import android.os.Environment;
 
 public class Globals {
 
-	public static String fileName; 
+	public static String fileName;
+	public static ArrayList<String> fileList;
+	public static int currentFileIndex;
+	public static boolean isList;
 
 	// Set this value to true if you're planning to render 3D using OpenGL - it eats some GFX resources, so disabled for 2D
 	//public static boolean NeedDepthBuffer = false;
@@ -26,6 +30,25 @@ public class Globals {
 	public static void setFileName(String fName) {
 		fileName = fName;
 	}
+
+    public static void setFileList(ArrayList<String> fFileList)
+    {
+        isList = true;
+        currentFileIndex = 0;
+        fileList = fFileList;
+        Globals.dbVideoLoop = Globals.PLAY_ALL;
+        Globals.dbAudioLoop = Globals.PLAY_ALL;
+    }
+
+    public static String getNextFileNameFromList(int index)
+    {
+        int size = fileList.size();
+        if (index >= size) {
+            return "";
+        }
+        currentFileIndex = index + 1;
+        return fileList.get(currentFileIndex);
+    }
 
 	public static String getFileName() {
 		if (fileName == null) {

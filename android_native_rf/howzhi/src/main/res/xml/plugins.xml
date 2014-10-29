@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugins>
+    <plugin name="SchoolCourseActivity" version="1.0" package="com.howzhi.HowzhiSchoolActivity"></plugin>
+    <plugin name="SettingActivity" version="1.0" package="com.howzhi.HowzhiSettingActivity"></plugin>
+    <plugin name="CourseInfoActivity" version="1.0" package="com.howzhi.HowzhiCourseInfoActivity"></plugin>
+    <plugin name="SplashActivity" version="1.0" package="com.howzhi.HowzhiSplashActivity"></plugin>
+    <plugin name="SearchActivity" version="1.0" package="com.howzhi.HowzhiSearchActivity"></plugin>
+    <plugin name="DefaultPageActivity" version="1.0" package="com.howzhi.HowzhiDefaultPageActivity"></plugin>
+    <plugin name="LoginActivity" version="1.0" package="com.howzhi.HowzhiLoginActivity"></plugin>
+    <plugin name="RegistActivity" version="1.0" package="com.howzhi.HowzhiRegistActivity"></plugin>
+</plugins>

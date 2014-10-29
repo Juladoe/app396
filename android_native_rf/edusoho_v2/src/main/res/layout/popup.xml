@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/material_dlg_bg"
+    android:layout_margin="20dp">
+
+    <include layout="@layout/popup_header" />
+
+    <TextView
+        android:textColor="@color/material_ok_btn"
+        android:id="@+id/popup_ok_btn"
+        android:clickable="true"
+        android:layout_below="@+id/popup_message"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="确 定"
+        android:textSize="@dimen/material_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

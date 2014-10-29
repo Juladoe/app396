@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/actionbar_title" />
+
+    <ScrollView
+        android:layout_below="@id/edusoho_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:clickable="true"
+                android:layout_margin="8dp"
+                android:id="@id/setting_user_layout"
+                android:padding="15dp"
+                android:background="@drawable/set_item_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.edusoho.kuozhi.view.plugin.CircleImageView
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/course_teacher_avatar"
+                    android:id="@+id/setting_user_avatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp" />
+
+                <TextView
+                    android:layout_marginTop="2dp"
+                    android:layout_alignTop="@id/setting_user_avatar"
+                    android:padding="5dp"
+                    android:id="@+id/setting_user_nickname"
+                    android:layout_toRightOf="@id/setting_user_avatar"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/setting_user_info"
+                    android:padding="5dp"
+                    android:text="暂无个人简介"
+                    android:layout_below="@id/setting_user_nickname"
+                    android:layout_toRightOf="@id/setting_user_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/my_group_layout"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:layout_below="@id/setting_user_layout"
+                android:background="@drawable/card_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:clickable="true"
+                    android:id="@id/setting_favorite_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="收藏课程"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.edusoho.kuozhi.view.EduSohoIconView
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_angle_right"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/setting_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1px" />
+
+                <RelativeLayout
+                    android:clickable="true"
+                    android:id="@id/setting_learn_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="学习计划"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.edusoho.kuozhi.view.EduSohoIconView
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_angle_right"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sch_sel_layout"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:layout_below="@id/my_group_layout"
+                android:background="@drawable/card_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/setting_entersch_layout"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="自动进入网校"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <CheckBox
+                        android:background="@drawable/set_check_sel"
+                        android:id="@+id/setting_check"
+                        android:button="@null"
+                        android:focusable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/setting_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1px" />
+
+                <RelativeLayout
+                    android:background="@drawable/set_child_item_bg"
+                    android:clickable="true"
+                    android:id="@id/sel_sch_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="选择其他网校"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="8dp"
+                android:id="@+id/sch_auto_learn_layout"
+                android:orientation="vertical"
+                android:layout_below="@id/sch_sel_layout"
+                android:background="@drawable/card_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="自动学习下一课时"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <CheckBox
+                        android:background="@drawable/set_check_sel"
+                        android:id="@+id/setting_auto_learn_check"
+                        android:button="@null"
+                        android:focusable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/setting_layout_one"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:layout_below="@id/sch_auto_learn_layout"
+                android:background="@drawable/card_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:clickable="true"
+                    android:id="@id/setting_notification_layout"
+                    android:padding="15dp"
+                    android:background="@drawable/set_child_item_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="系统通知"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.edusoho.kuozhi.view.EduSohoIconView
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_angle_right"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/setting_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1px" />
+
+                <RelativeLayout
+                    android:background="@drawable/set_child_item_bg"
+                    android:clickable="true"
+                    android:id="@id/setting_clear_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="清除缓存"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/setting_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1px" />
+
+                <RelativeLayout
+                    android:background="@drawable/set_child_item_bg"
+                    android:clickable="true"
+                    android:id="@id/setting_about_layout"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:text="关于网校"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.edusoho.kuozhi.view.EduSohoIconView
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_angle_right"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:visibility="invisible"
+                android:gravity="center_horizontal"
+                android:id="@+id/setting_logout_btn"
+                android:layout_margin="8dp"
+                android:layout_below="@id/setting_layout_one"
+                android:padding="10dp"
+                android:text="退出登录"
+                android:textColor="@color/setting_logout_btn_text"
+                android:background="@drawable/logout_btn_sel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
