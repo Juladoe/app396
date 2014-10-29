@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
+import com.edusoho.listener.URLImageGetter;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
 
@@ -81,7 +83,8 @@ public class NoteContent extends ActionBarBaseActivity {
         TextView contentView = (TextView) vgContent.findViewById(R.id.content);
 
         titleView.setText(Title);
-        contentView.setText(Html.fromHtml(content,new NetImageGetter(contentView,content),null));
+        ProgressBar progressBar = new ProgressBar(this);
+        contentView.setText(Html.fromHtml(content,new URLImageGetter(contentView,this,progressBar),null));
         linear = (LinearLayout) findViewById(R.id.rich_text_box_show);
         linear.addView(vgContent);
     }

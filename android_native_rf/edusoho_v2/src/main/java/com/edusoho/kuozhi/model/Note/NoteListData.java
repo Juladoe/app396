@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.note;
+package com.edusoho.kuozhi.model.Note;
 
 import java.util.ArrayList;
 
