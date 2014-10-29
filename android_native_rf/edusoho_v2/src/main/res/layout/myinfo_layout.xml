@@ -58,20 +58,22 @@
         </FrameLayout>
     </RelativeLayout>
 
-    <com.edusoho.kuozhi.ui.widget.MyInfoPluginListView
-        android:background="@color/system_bg"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:id="@+id/myinfo_plugin_list"
-        android:layout_below="@id/myinfo_user_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.edusoho.kuozhi.ui.widget.LearnStatusWidget
         android:visibility="gone"
         android:id="@+id/myinfo_learnStatusWidget"
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <com.edusoho.kuozhi.ui.widget.MyInfoPluginListView
+        android:background="@color/system_bg"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/myinfo_plugin_list"
+        android:layout_above="@id/myinfo_learnStatusWidget"
+        android:layout_below="@id/myinfo_user_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

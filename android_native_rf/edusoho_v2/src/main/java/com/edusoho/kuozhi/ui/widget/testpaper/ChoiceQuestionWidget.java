@@ -28,7 +28,6 @@ import java.util.ArrayList;
 public class ChoiceQuestionWidget extends BaseQuestionWidget {
 
     protected RadioGroup radioGroup;
-    protected TextView stemView;
 
     public ChoiceQuestionWidget(Context context) {
         super(context);
@@ -74,9 +73,7 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
     protected void invalidateData() {
         super.invalidateData();
         radioGroup = (RadioGroup) this.findViewById(R.id.quetion_choice_group);
-        stemView = (TextView) this.findViewById(R.id.question_stem);
 
-        stemView.setText(getQuestionStem());
         ArrayList<String> metas = mQuestion.metas;
         if (metas != null) {
             int size = metas.size();

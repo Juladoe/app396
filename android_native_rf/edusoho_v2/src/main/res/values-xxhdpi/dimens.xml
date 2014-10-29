@@ -85,7 +85,7 @@
     <dimen name="question_teacher_reply">12sp</dimen>
 
     <dimen name="small_btn">7sp</dimen>
-    <dimen name="my_testpaper_btn">5sp</dimen>
+    <dimen name="my_testpaper_btn">7sp</dimen>
 
     <dimen name="learn_status_title">12sp</dimen>
     <dimen name="learn_status_icon">60dp</dimen>

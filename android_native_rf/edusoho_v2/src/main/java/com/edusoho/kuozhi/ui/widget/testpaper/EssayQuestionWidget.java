@@ -55,7 +55,6 @@ import cn.trinea.android.common.util.DigestUtils;
 public class EssayQuestionWidget extends BaseQuestionWidget
         implements MessageEngine.MessageCallback {
 
-    protected TextView stemView;
     private EditText contentEdt;
     private ImageView mPhotoBtn;
     private ImageView mCameraBtn;
@@ -101,7 +100,6 @@ public class EssayQuestionWidget extends BaseQuestionWidget
     private TextWatcher onTextChangedListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
         }
 
         @Override
@@ -131,12 +129,10 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         super.invalidateData();
 
         mToolsLayout = this.findViewById(R.id.essay_tools_layout);
-        stemView = (TextView) this.findViewById(R.id.question_stem);
         contentEdt = (EditText) this.findViewById(R.id.essay_content);
         mPhotoBtn = (ImageView) this.findViewById(R.id.essay_photo);
         mCameraBtn = (ImageView) this.findViewById(R.id.essay_camera);
 
-        stemView.setText(getQuestionStem());
         contentEdt.addTextChangedListener(onTextChangedListener);
 
         mPhotoBtn.setOnClickListener(new OnClickListener() {

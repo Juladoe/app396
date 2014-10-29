@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="15dp"
     android:background="@color/white"
     android:paddingTop="15dp"
     android:layout_height="match_parent">
@@ -41,88 +40,78 @@
         android:layout_height="wrap_content" />
 
     <TextView
+        android:layout_alignBottom="@id/testpaper_icon"
         android:singleLine="true"
         android:ellipsize="end"
         android:padding="3dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/testpaper_course_title"
         android:textSize="@dimen/sys_small_normal"
+        android:layout_toRightOf="@id/testpaper_icon"
         android:textColor="@color/system_light_text"
         android:id="@+id/testpaper_starttime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:singleLine="true"
+        android:maxLines="2"
         android:ellipsize="end"
         android:padding="3dp"
         android:layout_below="@id/testpaper_course_title"
         android:textSize="@dimen/sys_small_normal"
         android:textColor="@color/system_light_text"
         android:layout_toRightOf="@id/testpaper_icon"
-        android:layout_toLeftOf="@id/testpaper_starttime"
         android:id="@+id/testpaper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.edusoho.kuozhi.view.EdusohoButton
-        android:visibility="gone"
-        android:layout_marginRight="10dp"
-        android:id="@+id/testpaper_redo"
-        android:paddingLeft="3dp"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:paddingRight="3dp"
-        android:layout_alignBottom="@id/testpaper_icon"
-        android:layout_toRightOf="@id/testpaper_icon"
-        app:borderWidth="0dp"
-        app:defaultColor="@color/my_testpaper_btn_bg"
-        app:focusColor="@color/my_testpaper_btn_bg_pressed"
-        app:iconPosition="right"
-        app:textSize="@dimen/my_testpaper_btn"
-        app:radius="1dp"
-        app:textStr="重考一次"
-        app:textColor="@color/my_testpaper_btn_blue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/testpaper_icon"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <com.edusoho.kuozhi.view.EdusohoButton
-        android:visibility="gone"
-        android:id="@+id/testpaper_result"
-        android:paddingLeft="3dp"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:paddingRight="3dp"
-        android:layout_alignBottom="@id/testpaper_icon"
-        android:layout_toRightOf="@id/testpaper_redo"
-        app:borderWidth="0dp"
-        app:defaultColor="@color/my_testpaper_btn_bg"
-        app:focusColor="@color/my_testpaper_btn_bg_pressed"
-        app:iconPosition="right"
-        app:textSize="@dimen/my_testpaper_btn"
-        app:radius="1dp"
-        app:textStr="查看结果"
-        app:textColor="@color/my_testpaper_btn_blue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <com.edusoho.kuozhi.view.EdusohoButton
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_marginRight="10dp"
+            android:id="@+id/testpaper_redo"
+            app:borderWidth="0dp"
+            app:defaultColor="@color/white"
+            app:iconPosition="right"
+            app:textSize="@dimen/my_testpaper_btn"
+            app:radius="1dp"
+            app:textStr="重考一次"
+            app:textColor="@color/my_testpaper_btn_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <com.edusoho.kuozhi.view.EdusohoButton
-        android:visibility="gone"
-        android:id="@+id/testpaper_do"
-        android:paddingLeft="3dp"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:paddingRight="3dp"
-        android:layout_alignBottom="@id/testpaper_icon"
-        android:layout_toRightOf="@id/testpaper_icon"
-        app:borderWidth="0dp"
-        app:defaultColor="@color/my_testpaper_do_btn_bg"
-        app:focusColor="@color/my_testpaper_do_btn_bg_pressed"
-        app:iconPosition="right"
-        app:textSize="@dimen/my_testpaper_btn"
-        app:radius="1dp"
-        app:textStr="继续考试"
-        app:textColor="@color/my_testpaper_btn_white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <com.edusoho.kuozhi.view.EdusohoButton
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/testpaper_result"
+            app:borderWidth="0dp"
+            app:defaultColor="@color/white"
+            app:iconPosition="right"
+            app:textSize="@dimen/my_testpaper_btn"
+            app:radius="1dp"
+            app:textStr="查看结果"
+            app:textColor="@color/my_testpaper_btn_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.view.EdusohoButton
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/testpaper_do"
+            app:borderWidth="0dp"
+            app:defaultColor="@color/white"
+            app:iconPosition="right"
+            app:textSize="@dimen/my_testpaper_btn"
+            app:radius="1dp"
+            app:textStr="继续考试"
+            app:textColor="@color/my_testpaper_btn_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 </RelativeLayout>
