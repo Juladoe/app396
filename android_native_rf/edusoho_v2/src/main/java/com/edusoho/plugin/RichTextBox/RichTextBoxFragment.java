@@ -204,7 +204,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
         }
 
-
         if (mColorPickerDialog == null) {
             mColorPickerDialog = new ColorPickerDialog(mContext, R.color.backPressedColor);
             mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
