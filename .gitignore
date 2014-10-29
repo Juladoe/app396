@@ -50,3 +50,4 @@ proguard/
 *.log
 
 */.idea/
+android_native_rf/kuozhiv2/src/main/assets/crashlytics-build.properties
