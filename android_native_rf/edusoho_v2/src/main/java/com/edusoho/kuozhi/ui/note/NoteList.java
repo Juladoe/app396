@@ -10,8 +10,12 @@ import android.widget.Toast;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.Note.NoteListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Note.HttpDatas;
+import com.edusoho.kuozhi.model.Note.LessonList;
+import com.edusoho.kuozhi.model.Note.NoteListData;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -75,7 +79,7 @@ public class NoteList extends ActionBarBaseActivity {
         text = (TextView) this.findViewById(R.id.list_title);
         text.setText("共" + intentTotal + "篇笔记");
         list = (PullToRefreshListView) this.findViewById(R.id.list_content);
-        listadApter = new NoteListAdapter(getLayoutInflater(), this);
+        listadApter = new NoteListAdapter(getLayoutInflater(),this);
         list.setMode(PullToRefreshBase.Mode.BOTH);
         list.setAdapter(listadApter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -147,9 +151,10 @@ public class NoteList extends ActionBarBaseActivity {
     public void parasHttpDatas(String object) {
         if (!app.token.equals("")) {
             requestDatas = parseJsonValue(object, new TypeToken<ArrayList<HttpDatas>>(){});
+            if(requestDatas == null)
+                return ;
             httpDatas = new FilterHttpData(requestDatas);
             noteListData = httpDatas.getNoteListData(courseId);
-            System.out.println("notelistdata:"+noteListData);
             getLessonList();
             text.setText("共" + data.size() + "篇笔记");
         } else {
