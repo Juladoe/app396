@@ -1,23 +1,18 @@
 package com.edusoho.kuozhi.ui.note;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -25,17 +20,11 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
-import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Question.SubmitResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.listener.ResultCallback;
-import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.util.HashMap;
 
 import cn.trinea.android.common.util.DigestUtils;
 
@@ -77,24 +66,23 @@ public class NoteContent extends ActionBarBaseActivity {
     public void init() {
         initIntentData();
         titleView = (TextView) this.findViewById(R.id.content_title);
-        vgContent = (ViewGroup) getLayoutInflater().inflate(R.layout.note_content_inflate,null);
+        vgContent = (ViewGroup) getLayoutInflater().inflate(R.layout.note_content_inflate, null);
         TextView contentView = (TextView) vgContent.findViewById(R.id.content);
 
         titleView.setText(Title);
-        contentView.setText(Html.fromHtml(content,new NetImageGetter(contentView,content),null));
+        contentView.setText(Html.fromHtml(content, new NetImageGetter(contentView, content), null));
         linear = (LinearLayout) findViewById(R.id.rich_text_box_show);
         linear.addView(vgContent);
     }
 
-    public void turnToNoteReply(final int courseId, final int lessonId, final String title,final String content)
-    {
+    public void turnToNoteReply(final int courseId, final int lessonId, final String title, final String content) {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra("note_courseId", courseId);
                 startIntent.putExtra("note_lessonId", lessonId);
-                startIntent.putExtra("note_title",title);
-                startIntent.putExtra(Const.NORMAL_CONTENT,content);
+                startIntent.putExtra("note_title", title);
+                startIntent.putExtra(Const.NORMAL_CONTENT, content);
             }
         };
         app.mEngine.runNormalPlugin("NoteReplyActivity", mActivity, callback);
@@ -103,8 +91,8 @@ public class NoteContent extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.note_edit)
-            turnToNoteReply(courseId, lessonId,Title,content);
+        if (id == R.id.note_edit)
+            turnToNoteReply(courseId, lessonId, Title, content);
         return super.onOptionsItemSelected(item);
     }
 

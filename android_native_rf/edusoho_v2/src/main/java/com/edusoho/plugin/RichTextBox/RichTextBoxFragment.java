@@ -29,9 +29,6 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -39,19 +36,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
-import com.edusoho.kuozhi.model.Question.SubmitResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextFontColor.ColorPickerDialog;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.ByteArrayOutputStream;
@@ -292,7 +283,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                         ivFontSizeIncre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_increase));
                         ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
                         curFontSize = curFontSize + 5;
-                        Log.d("字体大小--------->", String.valueOf(curFontSize));
                         AbsoluteSizeSpan ass = new AbsoluteSizeSpan(curFontSize);
                         etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
                     } else {
@@ -312,7 +302,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                         ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease));
                         curFontSize = curFontSize - 5;
                         AbsoluteSizeSpan ass = new AbsoluteSizeSpan(curFontSize);
-                        Log.d("字体大小--------->", String.valueOf(curFontSize));
                         etContent.getText().setSpan(ass, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
                     } else {
                         ivFontSizeDecre.setImageDrawable(getResources().getDrawable(R.drawable.icon_font_size_decrease_unclick));
@@ -328,12 +317,9 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 //拍照
                 String state = Environment.getExternalStorageState();
                 if (state.equals(Environment.MEDIA_MOUNTED)) {
-                    String saveDir = Environment.getExternalStorageDirectory().getPath() + "/temp_image";
-                    File dirFile = new File(saveDir);
-                    if (!dirFile.exists()) {
-                        dirFile.mkdirs();
-                    }
-                    mCameraImageFile = new File(saveDir, "caremaImage" + mCameraIndex + ".jpg");
+                    //String saveDir = Environment.getExternalStorageDirectory().getPath() + "/temp_image";
+                    String saveDir = ImageLoader.getInstance().getDiskCache().getDirectory().getAbsolutePath();
+                    mCameraImageFile = new File(saveDir, "CameraImage_" + mCameraIndex + ".jpg");
                     mCameraIndex++;
                     if (!mCameraImageFile.exists()) {
                         try {
@@ -364,69 +350,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         return 0;
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.question_reply_menu, menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (etContent.getText().toString() == null || etContent.getText().toString().equals("")) {
-//            Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//        if (item.getItemId() == R.id.reply_submit) {
-//            switch (mTypeCode) {
-//                case Const.REPLY: {
-//                    //新增回复api
-//                    //Toast.makeText(this, "新增回复api", 500).show();
-//                    RequestUrl url = app.bindUrl(Const.REPLY_SUBMIT, true);
-//                    HashMap<String, String> params = url.getParams();
-//                    params.put("courseId", mCourseId);
-//                    params.put("threadId", mThreadId);
-//                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-//                    params.put("content", setContent(content));
-//                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
-//                    url.setMuiltParams(mObjects);
-//                    url.setParams(params);
-//                    submitReply(url);
-//                    break;
-//                }
-//                case Const.EDIT_QUESTION: {
-//                    RequestUrl url = app.bindUrl(Const.EDIT_QUESTION_INFO, true);
-//                    HashMap<String, String> params = url.getParams();
-//                    params.put("courseId", mCourseId);
-//                    params.put("threadId", mThreadId);
-//                    params.put("title", mTitle);
-//                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-//                    params.put("content", setContent(content));
-//                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
-//                    url.setMuiltParams(mObjects);
-//                    url.setParams(params);
-//                    editQuestionSubmit(url);
-//                    break;
-//                }
-//                case Const.EDIT_REPLY: {
-//                    //编辑回复api
-//                    //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
-//                    RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
-//                    HashMap<String, String> params = url.getParams();
-//                    params.put("courseId", mCourseId);
-//                    params.put("threadId", mThreadId);
-//                    params.put("postId", mPostId);
-//                    final String content = AppUtil.removeHtml(Html.toHtml(etContent.getText()));
-//                    params.put("content", setContent(content));
-//                    params.put("imageCount", String.valueOf(mImageHashMap.size()));
-//                    url.setMuiltParams(mObjects);
-//                    url.setParams(params);
-//                    submitReply(url);
-//                    break;
-//                }
-//            }
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -454,6 +377,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                         option.inSampleSize = 2;
                         Bitmap bitmap = BitmapFactory.decodeFile(mCameraImageFile.getPath(), option);
                         insertImage(bitmap, mCameraImageFile.getPath());
+                        mCameraImageFile.delete();
                     }
                 }
                 break;
@@ -482,12 +406,13 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             image = AppUtil.compressImage(image, baos, 100);
         }
 
-        //定义插入图片
+        //插入图片
         Drawable drawable = new BitmapDrawable(image);
         drawable.setBounds(2, 0, drawable.getIntrinsicWidth() + 2, drawable.getIntrinsicHeight() + 2);
         ss.setSpan(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         eb.insert(qqPosition, ss);
 
+        //保存的是压缩后的图片
         mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
         mImageCount++;
     }
@@ -522,70 +447,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 }
             }
         }
-    }
-
-    /**
-     * 编辑问题提交
-     *
-     * @param url
-     */
-
-    private void editQuestionSubmit(RequestUrl url) {
-        mProgressDialog.show();
-        mActivity.ajaxPost(url, new ResultCallback() {
-            @Override
-            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                try {
-                    QuestionDetailModel modelResult = mActivity.gson.fromJson(object, new TypeToken<QuestionDetailModel>() {
-                    }.getType());
-                    mProgressDialog.cancel();
-                    if (modelResult == null) {
-                        return;
-                    } else {
-                        Toast.makeText(mContext, "提交成功", 500).show();
-                        mActivity.setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, modelResult));
-                        mActivity.finish();
-                    }
-                } catch (Exception ex) {
-                    mProgressDialog.cancel();
-                    Log.e(TAG, ex.toString());
-                }
-            }
-        });
-    }
-
-    /**
-     * 回复提交
-     */
-    private void submitReply(RequestUrl url) {
-        mProgressDialog.show();
-        mActivity.ajaxPost(url, new ResultCallback() {
-            @Override
-            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                try {
-                    SubmitResult submitResult = mActivity.gson.fromJson(object, new TypeToken<SubmitResult>() {
-                    }.getType());
-                    mProgressDialog.cancel();
-                    if (submitResult == null) {
-                        return;
-                    } else {
-                        Toast.makeText(mActivity, "提交成功", 500).show();
-                        mActivity.setResult(Const.OK);
-                        mActivity.finish();
-                    }
-                } catch (Exception ex) {
-                    mProgressDialog.cancel();
-                    Log.e(TAG, ex.toString());
-                }
-            }
-
-            @Override
-            public void error(String url, AjaxStatus ajaxStatus) {
-                if (ajaxStatus.getCode() != 200) {
-                    Log.e(TAG, String.valueOf(ajaxStatus.getCode()));
-                }
-            }
-        });
     }
 
     /**

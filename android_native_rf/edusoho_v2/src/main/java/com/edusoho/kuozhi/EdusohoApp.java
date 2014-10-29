@@ -24,7 +24,6 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
-import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CacheAjaxCallback;
