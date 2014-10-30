@@ -33,7 +33,7 @@ public class URLImageGetter implements Html.ImageGetter {
         this.mContainer = v;
         this.mContext = context;
         this.mReplyImageLoading = progressBar;
-        mOptions = new DisplayImageOptions.Builder().delayBeforeLoading(100).cacheOnDisk(true).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +29,7 @@ import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.kuozhi.view.HtmlTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
@@ -266,7 +266,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
             //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
             holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content),
-                    urlImageGetter, null)));
+                    urlImageGetter, new EduTagHandler())));
             mListViewCache.addCache(entireReply.replyModel.id, v);
         } else {
             v = mListViewCache.getOneCacheView(entireReply.replyModel.id);

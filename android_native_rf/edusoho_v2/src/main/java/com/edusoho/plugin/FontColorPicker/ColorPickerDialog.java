@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.edusoho.plugin.RichTextFontColor;
+package com.edusoho.plugin.FontColorPicker;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,7 +43,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.plugin.RichTextFontColor.ColorPickerDialog;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
+import com.edusoho.plugin.FontColorPicker.ColorPickerDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.ByteArrayOutputStream;
@@ -192,21 +194,20 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, new EduTagHandler())));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, new EduTagHandler())));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
         } else {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, null)));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, new EduTagHandler())));
         }
 
-
         if (mColorPickerDialog == null) {
-            mColorPickerDialog = new ColorPickerDialog(mContext, R.color.backPressedColor);
+            mColorPickerDialog = new ColorPickerDialog(mActivity, Color.BLACK);
             mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
         }
 
@@ -421,6 +422,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         @Override
         public void onColorChanged(int color) {
             ForegroundColorSpan fcs = new ForegroundColorSpan(color);
+            etContent.getText().removeSpan(getForeColorStyle());
             etContent.getText().setSpan(fcs, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         }
     };
@@ -582,11 +584,22 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     private AbsoluteSizeSpan getFontSizeStyle() {
-        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart() - 1, etContent.getSelectionEnd(),
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
                 CharacterStyle.class);
         for (int i = 0; i < mCurrentStyle.length; i++) {
             if (mCurrentStyle[i] instanceof AbsoluteSizeSpan) {
                 return (AbsoluteSizeSpan) mCurrentStyle[i];
+            }
+        }
+        return null;
+    }
+
+    private ForegroundColorSpan getForeColorStyle() {
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
+                CharacterStyle.class);
+        for (int i = 0; i < mCurrentStyle.length; i++) {
+            if (mCurrentStyle[i] instanceof ForegroundColorSpan) {
+                return (ForegroundColorSpan) mCurrentStyle[i];
             }
         }
         return null;
