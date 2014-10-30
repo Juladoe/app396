@@ -87,7 +87,6 @@
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="2dp"
                 android:textColor="@color/question_lesson"
-
                 android:text="" />
 
             <ProgressBar
@@ -97,12 +96,17 @@
                 android:visibility="gone"
                 android:id="@+id/pb_reply_content" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/iv_tmp"
-                android:visibility="gone" />
+            <GridView
+                android:id="@+id/gv_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="auto_fit"
+                android:verticalSpacing="5dp"
+                android:horizontalSpacing="5dp"
+                android:stretchMode="columnWidth"></GridView>
+
         </LinearLayout>
     </RelativeLayout>
+
 
 </RelativeLayout>

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +20,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import cn.trinea.android.common.view.HorizontalListView;
+
 /**
  * Created by Hby on 14-9-29.
  */
@@ -29,11 +32,17 @@ public class URLImageGetter implements Html.ImageGetter {
     private ProgressBar mReplyImageLoading;
     private DisplayImageOptions mOptions;
 
+    private HorizontalListView mhListView;
+
     public URLImageGetter(View v, Context context, ProgressBar progressBar) {
         this.mContainer = v;
         this.mContext = context;
         this.mReplyImageLoading = progressBar;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
+    }
+
+    public void setHorListView(HorizontalListView horListView) {
+        this.mhListView = horListView;
     }
 
     @Override
@@ -47,7 +56,11 @@ public class URLImageGetter implements Html.ImageGetter {
         try {
             MyImageLoadingListener myImageLoadingListener = new MyImageLoadingListener(urlDrawable, this.mContainer, this.mReplyImageLoading);
             ImageLoader.getInstance().loadImage(source, mOptions, myImageLoadingListener);
-            //this.mAQuery.id(R.id.iv_tmp).image(source, false, true, 1, R.drawable.defaultpic, myBitmapAjaxCallback);
+
+            if (this.mhListView != null) {
+                ImageView imageView = new ImageView(mContext);
+
+            }
         } catch (Exception ex) {
             Log.d("imageURL--->", ex.toString());
         }

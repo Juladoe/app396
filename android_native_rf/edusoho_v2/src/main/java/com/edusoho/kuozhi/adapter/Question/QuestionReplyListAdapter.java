@@ -1,10 +1,9 @@
-package com.edusoho.kuozhi.adapter;
+package com.edusoho.kuozhi.adapter.Question;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
@@ -12,21 +11,17 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Question.EntireReply;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.model.User;
-import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -40,6 +35,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.trinea.android.common.view.HorizontalListView;
 
 /**
  * Created by hby on 14-9-18.
@@ -181,7 +178,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
                 qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
 
-                //ImageLoader.getInstance().loadImage(mUser.mediumAvatar, new MyImageLoadingListener(qcvHolder.icon));
                 ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, new MyImageLoadingListener());
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
@@ -284,6 +280,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public HtmlTextView tvReplyContent;
         public ImageView ivEdit;
         public ProgressBar pbReplyContent;
+        public HorizontalListView hlImageView;
     }
 
     private static class QuestionContentViewHolder {
@@ -333,39 +330,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     private void createDrawables(TextView tv, int drawableId) {
         Drawable drawable = mContext.getResources().getDrawable(drawableId);
         tv.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
-    }
-
-    public class MyImageGetter implements Html.ImageGetter {
-        private AQuery mAquery;
-
-        public MyImageGetter(AQuery aQuery) {
-            this.mAquery = aQuery;
-        }
-
-        @Override
-        public Drawable getDrawable(String source) {
-            if (!source.contains("http")) {
-                source = QuestionDetailActivity.mHost + source;
-            }
-            Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
-            try {
-                mAquery.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, null, AQuery.FADE_IN_NETWORK);
-                Toast.makeText(mContext, "加载完成", 500).show();
-                Bitmap bitmap = mAquery.getCachedImage(source);
-                float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-                float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-                if (showMaxWidth < bitmap.getWidth()) {
-                    bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, mContext);
-                } else if (showMinWidth >= bitmap.getWidth()) {
-                    bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
-                }
-                drawable = new BitmapDrawable(bitmap);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            } catch (Exception ex) {
-                Log.d("imageURL--->", ex.toString());
-            }
-            return drawable;
-        }
     }
 
     public class MyImageLoadingListener implements ImageLoadingListener {
