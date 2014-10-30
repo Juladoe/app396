@@ -11,8 +11,11 @@ import android.widget.Toast;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.Note.NoteAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Note.CollectNode;
+import com.edusoho.kuozhi.model.Note.HttpDatas;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -74,7 +77,6 @@ public class NoteActivity extends ActionBarBaseActivity {
 
     private PullToRefreshScrollView initEmptyLayout() {
         PullToRefreshScrollView scrollView = new PullToRefreshScrollView(this);
-        //使子元素铺满整个窗口
         scrollView.getRefreshableView().setFillViewport(true);
         scrollView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         scrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -152,6 +154,8 @@ public class NoteActivity extends ActionBarBaseActivity {
         if (!app.token.equals("")) {
             requestDatas = parseJsonValue(object, new TypeToken<ArrayList<HttpDatas>>() {
             });
+            if(requestDatas==null)
+                return ;
             httpDatas = new FilterHttpData(requestDatas);
             collect = httpDatas.getCollect();
             if (pullDown)

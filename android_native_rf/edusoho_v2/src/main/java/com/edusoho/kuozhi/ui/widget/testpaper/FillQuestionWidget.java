@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -27,6 +28,8 @@ import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -39,7 +42,6 @@ import java.util.regex.Pattern;
 public class FillQuestionWidget extends BaseQuestionWidget {
 
     protected LinearLayout fillLayout;
-    protected TextView stemView;
 
     public FillQuestionWidget(Context context) {
         super(context);
@@ -82,17 +84,20 @@ public class FillQuestionWidget extends BaseQuestionWidget {
         }
     };
 
+
+    @Override
+    protected Spanned getQuestionStem() {
+        String stem = String.format("%d, %s", mIndex, parseStem(mQuestion.stem));
+        return Html.fromHtml(stem, new EduImageGetterHandler(mContext, stemView), new EduTagHandler());
+    }
+
     @Override
     protected void invalidateData() {
         super.invalidateData();
         fillLayout = (LinearLayout) this.findViewById(R.id.question_fill_layout);
-        stemView = (TextView) this.findViewById(R.id.question_stem);
 
         Question mQuestion = mQuestionSeq.question;
-        String stem = String.format("%d, %s", mIndex, parseStem(mQuestion.stem));
-        stemView.setText(
-                Html.fromHtml(stem)
-                );
+
         ArrayList<String> answers = mQuestion.answer;
         Resources resources = mContext.getResources();
         fillLayout.removeAllViews();

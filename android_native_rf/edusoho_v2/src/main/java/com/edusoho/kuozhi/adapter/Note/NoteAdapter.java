@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.note;
+package com.edusoho.kuozhi.adapter.Note;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EdusohoBaseAdapter;
+import com.edusoho.kuozhi.model.Note.CollectNode;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;

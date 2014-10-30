@@ -16,6 +16,9 @@ import com.androidquery.AQuery;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewPagerActivity extends ActionBarBaseActivity{
 
     private ViewPager mViewPager;
@@ -35,7 +38,13 @@ public class ViewPagerActivity extends ActionBarBaseActivity{
         mViewPager = (HackyViewPager) findViewById(R.id.images_pager);
         Intent dataIntent = getIntent();
         int index = dataIntent.getIntExtra("index", 0);
-        String[] images = (String[]) dataIntent.getSerializableExtra("images");
+        String[] images = null;
+        if (dataIntent.hasExtra("imageList")) {
+            ArrayList<String> list = dataIntent.getStringArrayListExtra("imageList");
+            images = getImageUrls(list);
+        } else {
+            images = (String[]) dataIntent.getSerializableExtra("images");
+        }
 
         setBackMode(BACK, "图片预览");
         if (images != null && images.length > 0) {
@@ -51,6 +60,14 @@ public class ViewPagerActivity extends ActionBarBaseActivity{
                 .append("/")
                 .append(images.length);
         setTitle(mTitle.toString());
+    }
+
+    private String[] getImageUrls(List<String> list)
+    {
+        String[] imageUrls = new String[list.size()];
+        list.toArray(imageUrls);
+
+        return imageUrls;
     }
 
     public static void start(Context context, int index, String[] imageArray)

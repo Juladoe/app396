@@ -7,10 +7,13 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.widget.testpaper.QuestionWidget;
+import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 
 import java.util.ArrayList;
 
@@ -35,29 +38,28 @@ public abstract class QuestionViewPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    protected Spanned getQuestionStem(Question mQuestion, int mIndex)
+    protected Spanned getQuestionStem(
+            Question mQuestion, int mIndex, TextView textView)
     {
         String stem = "";
         switch (mQuestion.type) {
             case choice:
             case uncertain_choice:
             case single_choice:
-                stem = String.format("%d, (%s) %s %s", mIndex, mQuestion.type.title(), mQuestion.stem, "( )");
-                break;
             case essay:
-                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
-                break;
             case material:
-                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
-                break;
             case determine:
-                stem = mIndex + ", " + mQuestion.stem;
-                break;
             case fill:
-                stem = mIndex + mQuestion.type.title() + mQuestion.stem;
+                stem = String.format(
+                        "%d, (%s) %s (%.2f分)",
+                        mIndex,
+                        mQuestion.type.title(),
+                        mQuestion.stem,
+                        mQuestion.score
+                );
         }
 
-        return Html.fromHtml(stem);
+        return Html.fromHtml(stem, new EduImageGetterHandler(mContext, textView), new EduTagHandler());
     }
 
     @Override

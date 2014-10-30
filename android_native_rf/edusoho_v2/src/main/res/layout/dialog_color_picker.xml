@@ -22,7 +22,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp">
 
-    <com.edusoho.plugin.RichTextFontColor.ColorPickerView
+    <com.edusoho.plugin.FontColorPicker.ColorPickerView
         android:id="@+id/color_picker_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
         android:visibility="gone"
         android:orientation="horizontal">
 
-        <com.edusoho.plugin.RichTextFontColor.ColorPickerPanelView
+        <com.edusoho.plugin.FontColorPicker.ColorPickerPanelView
             android:id="@+id/old_color_panel"
             android:layout_width="0px"
             android:layout_height="fill_parent"
@@ -133,7 +133,7 @@
             android:text="→"
             android:textSize="20sp" />
 
-        <com.edusoho.plugin.RichTextFontColor.ColorPickerPanelView
+        <com.edusoho.plugin.FontColorPicker.ColorPickerPanelView
             android:id="@+id/new_color_panel"
             android:layout_width="0px"
             android:layout_height="wrap_content"
