@@ -8,7 +8,6 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.edusoho.kuozhi.util.AppUtil;
 

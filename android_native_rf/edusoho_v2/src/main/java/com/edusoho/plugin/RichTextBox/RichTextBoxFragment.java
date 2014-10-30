@@ -422,6 +422,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         @Override
         public void onColorChanged(int color) {
             ForegroundColorSpan fcs = new ForegroundColorSpan(color);
+            etContent.getText().removeSpan(getForeColorStyle());
             etContent.getText().setSpan(fcs, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         }
     };
@@ -583,11 +584,22 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     private AbsoluteSizeSpan getFontSizeStyle() {
-        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart() - 1, etContent.getSelectionEnd(),
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
                 CharacterStyle.class);
         for (int i = 0; i < mCurrentStyle.length; i++) {
             if (mCurrentStyle[i] instanceof AbsoluteSizeSpan) {
                 return (AbsoluteSizeSpan) mCurrentStyle[i];
+            }
+        }
+        return null;
+    }
+
+    private ForegroundColorSpan getForeColorStyle() {
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
+                CharacterStyle.class);
+        for (int i = 0; i < mCurrentStyle.length; i++) {
+            if (mCurrentStyle[i] instanceof ForegroundColorSpan) {
+                return (ForegroundColorSpan) mCurrentStyle[i];
             }
         }
         return null;
