@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.edusoho.plugin.RichTextFontColor;
+package com.edusoho.plugin.FontColorPicker;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
