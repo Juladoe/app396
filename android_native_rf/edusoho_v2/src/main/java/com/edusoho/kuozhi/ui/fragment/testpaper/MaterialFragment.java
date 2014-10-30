@@ -41,10 +41,10 @@ public class MaterialFragment extends SelectQuestionFragment{
         if (questionTypeSeqs == null) {
             return;
         }
-        mQuestionType.setText(type.title());
 
         ArrayList<MaterialQuestionTypeSeq> typeSeqs = coverQuestions(questionTypeSeqs);
         mQuestionCount = typeSeqs.size();
+        setQuestionTitle(type.title(), questionTypeSeqs);
         setQuestionNumber(mCurrentIndex);
 
         MaterialQuestionAdapter adapter = new MaterialQuestionAdapter(

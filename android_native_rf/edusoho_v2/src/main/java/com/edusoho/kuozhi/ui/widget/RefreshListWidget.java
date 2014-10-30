@@ -3,6 +3,9 @@ package com.edusoho.kuozhi.ui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 

@@ -174,8 +174,8 @@ public class EssayFragment extends SelectQuestionFragment{
             return;
         }
 
-        mQuestionType.setText(type.title());
         mQuestionCount = questionTypeSeqs.size();
+        setQuestionTitle(type.title(), questionTypeSeqs);
         setQuestionNumber(mCurrentIndex);
 
         QuestionAdapter adapter = new QuestionAdapter(

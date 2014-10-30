@@ -22,7 +22,7 @@ public abstract class SelectQuestionFragment extends QuestionTypeBaseFragment
     @Override
     protected void initView(View view) {
         super.initView(view);
-        mQuestionPager = (HackyViewPager) view.findViewById(R.id.question_pager);
+        mQuestionPager = (ViewPager) view.findViewById(R.id.question_pager);
         mQuestionPager.setOnPageChangeListener(this);
     }
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public abstract class QuestionTypeBaseFragment extends BaseFragment {
 
     protected TextView mQuestionType;
+    protected TextView mQuestionScore;
     protected TextView mQuestionNumber;
     protected TestpaperBaseActivity mTestpaperActivity;
 
@@ -29,6 +30,33 @@ public abstract class QuestionTypeBaseFragment extends BaseFragment {
     @Override
     public String getTitle() {
         return "";
+    }
+
+    /**
+     *
+     * @param title
+     * @param seqs
+     * @param count
+     */
+    protected void setQuestionTitle(
+            String title, ArrayList<QuestionTypeSeq> seqs)
+    {
+        mQuestionType.setText(title);
+        mQuestionScore.setText(
+                String.format("共%.1f分",
+                        getQuestionScore(seqs)
+                )
+        );
+    }
+
+    private double getQuestionScore(ArrayList<QuestionTypeSeq> questionTypeSeqs)
+    {
+        double total = 0;
+        for (QuestionTypeSeq seq: questionTypeSeqs) {
+            total += seq.score;
+        }
+
+        return total;
     }
 
     @Override
@@ -57,6 +85,7 @@ public abstract class QuestionTypeBaseFragment extends BaseFragment {
         super.initView(view);
         mQuestionNumber = (TextView) view.findViewById(R.id.question_number);
         mQuestionType = (TextView) view.findViewById(R.id.question_type);
+        mQuestionScore = (TextView) view.findViewById(R.id.question_score);
 
         mCurrentIndex = 1;
     }

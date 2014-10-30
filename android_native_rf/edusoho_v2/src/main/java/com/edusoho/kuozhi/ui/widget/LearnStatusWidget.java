@@ -93,6 +93,7 @@ public class LearnStatusWidget extends FrameLayout {
                 LasterLearnStatus<Course> lasterLearnStatus = mActivity.parseJsonValue(
                         object, new TypeToken<LasterLearnStatus<Course>>(){});
                 if (lasterLearnStatus == null) {
+                    setVisibility(View.GONE);
                     return;
                 }
 

@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -47,9 +49,16 @@ public class CourseListAdapter<T> extends ListBaseAdapter<T> {
             holder = (ViewHolder) view.getTag();
         }
 
+        if (animArray.keyAt(index) < 0 || null == animArray.get(index)) {
+            animArray.put(index, true);
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.list_item_l_to_r);
+            view.startAnimation(animation);
+        }
+
         invaliViewData(holder, index);
         return view;
     }
+
 
     public void invaliViewData(ViewHolder holder, int index)
     {

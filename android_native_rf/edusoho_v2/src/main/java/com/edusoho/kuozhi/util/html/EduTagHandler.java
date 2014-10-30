@@ -30,7 +30,6 @@ public class EduTagHandler implements Html.TagHandler {
 
     @Override
     public void handleTag(boolean opening, String tag, Editable editable, XMLReader xmlReader) {
-        Log.d(null, "EduTagHandler->" + tag);
         if ("span".equalsIgnoreCase(tag)) {
             if (opening) {
                 startIndex = editable.length();
@@ -56,6 +55,9 @@ public class EduTagHandler implements Html.TagHandler {
 
     private void setStyle(String style, Editable editable)
     {
+        if (style == null) {
+            return;
+        }
         Matcher styleMatcher = STYLE_PAT.matcher(style);
         while (styleMatcher.find()) {
             String name = styleMatcher.group(1);
