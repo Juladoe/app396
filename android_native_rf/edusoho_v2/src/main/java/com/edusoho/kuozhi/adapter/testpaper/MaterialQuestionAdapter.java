@@ -38,7 +38,7 @@ public class MaterialQuestionAdapter extends QuestionViewPagerAdapter {
         ViewGroup viewContent = (ViewGroup) materialView.findViewById(R.id.question_content);
 
         View view = switchQuestionWidget(questionTypeSeq, position + 1);
-        stemText.setText(getQuestionStem(questionTypeSeq.parent.question, position + 1));
+        stemText.setText(getQuestionStem(questionTypeSeq.parent.question, position + 1, stemText));
         viewContent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         container.addView(materialView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

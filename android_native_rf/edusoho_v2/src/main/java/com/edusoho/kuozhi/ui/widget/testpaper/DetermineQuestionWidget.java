@@ -24,7 +24,6 @@ import java.util.ArrayList;
  */
 public class DetermineQuestionWidget extends BaseQuestionWidget {
 
-    protected TextView stemView;
     protected RadioGroup radioGroup;
 
     public DetermineQuestionWidget(Context context) {
@@ -38,10 +37,8 @@ public class DetermineQuestionWidget extends BaseQuestionWidget {
     @Override
     protected void invalidateData() {
         super.invalidateData();
-        stemView = (TextView) this.findViewById(R.id.question_stem);
         radioGroup = (RadioGroup) findViewById(R.id.question_result_radio);
 
-        stemView.setText(getQuestionStem());
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int index) {

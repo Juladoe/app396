@@ -3,9 +3,15 @@ package com.edusoho.kuozhi.ui.widget.testpaper;
 import android.content.Context;
 import android.text.Html;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.CharacterStyle;
+import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -24,6 +30,9 @@ import com.edusoho.kuozhi.model.Testpaper.TestResult;
 import com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.html.EduHtml;
+import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
@@ -35,6 +44,7 @@ import java.util.ArrayList;
  */
 public abstract class BaseQuestionWidget extends RelativeLayout implements IQuestionWidget{
 
+    protected TextView stemView;
     protected Context mContext;
     protected QuestionTypeSeq mQuestionSeq;
     protected Question mQuestion;
@@ -66,6 +76,11 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
     protected abstract void initView(android.util.AttributeSet attrs);
 
     protected void invalidateData(){
+        stemView = (TextView) this.findViewById(R.id.question_stem);
+
+        SpannableStringBuilder spanned = (SpannableStringBuilder) getQuestionStem();
+        spanned = EduHtml.addImageClickListener(spanned, stemView, mContext);
+        stemView.setText(spanned);
     }
 
     @Override
@@ -98,7 +113,7 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
                         mQuestion.score
                 );
         }
-        return Html.fromHtml(stem);
+        return Html.fromHtml(stem, new EduImageGetterHandler(mContext, stemView), new EduTagHandler());
     }
 
     protected void enable(ViewGroup viewGroup, boolean isEnable)

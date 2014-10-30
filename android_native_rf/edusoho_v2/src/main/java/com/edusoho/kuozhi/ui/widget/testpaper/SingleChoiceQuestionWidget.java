@@ -29,7 +29,6 @@ import java.util.ArrayList;
 public class SingleChoiceQuestionWidget extends BaseQuestionWidget {
 
     protected RadioGroup radioGroup;
-    protected TextView stemView;
 
     public SingleChoiceQuestionWidget(Context context) {
         super(context);
@@ -47,9 +46,6 @@ public class SingleChoiceQuestionWidget extends BaseQuestionWidget {
     protected void invalidateData() {
         super.invalidateData();
         radioGroup = (RadioGroup) this.findViewById(R.id.quetion_choice_group);
-        stemView = (TextView) this.findViewById(R.id.question_stem);
-
-        stemView.setText(getQuestionStem());
 
         Question mQuestion = mQuestionSeq.question;
         ArrayList<String> metas = mQuestion.metas;

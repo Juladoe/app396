@@ -91,7 +91,7 @@
     <dimen name="question_edit_button_font">14sp</dimen>
 
     <!-- testpaper-->
-    <dimen name="my_testpaper_btn">6sp</dimen>
+    <dimen name="my_testpaper_btn">8sp</dimen>
 
     <dimen name="learn_status_title">12sp</dimen>
     <dimen name="question_checkbox_padding_left">40dp</dimen>
