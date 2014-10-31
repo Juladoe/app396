@@ -510,6 +510,9 @@ public class AppUtil {
 
 
             //如果大于24返回天数
+            if (l > 30 * 24 * 60 * 60) {
+                return postTime.split("T")[0];
+            }
             if (l > 24 * 60 * 60) {
                 l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
@@ -920,8 +923,7 @@ public class AppUtil {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    public static int parseInt(String value)
-    {
+    public static int parseInt(String value) {
         int i = 0;
         if (value == null) {
             return i;

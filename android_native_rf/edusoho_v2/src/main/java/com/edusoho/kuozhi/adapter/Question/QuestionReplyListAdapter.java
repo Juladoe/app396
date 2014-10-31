@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,8 +36,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.trinea.android.common.view.HorizontalListView;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by hby on 14-9-18.
@@ -177,11 +178,14 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.tvPostTitle = (TextView) v.findViewById(R.id.post_title);
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
                 qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
+                //qcvHolder.ivImage = (ImageView) v.findViewById(R.id.iv_contentImage);
+                qcvHolder.gvImage = (GridView) v.findViewById(R.id.gv_image);
 
                 ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, new MyImageLoadingListener());
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
+
                 if (!mQuestionDetailModel.content.contains("img src")) {
                     qcvHolder.pb_loading.setVisibility(View.GONE);
                     qcvHolder.tvPostContent.setVisibility(View.VISIBLE);
@@ -189,6 +193,10 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 URLImageGetter urlImageGetter = new URLImageGetter(qcvHolder.tvPostContent, mContext, qcvHolder.pb_loading);
                 qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(mQuestionDetailModel.content), urlImageGetter, null)));
                 qcvHolder.btnEdit.setOnClickListener(mOnClickListener);
+//                ImageLoader.getInstance().displayImage(convertUrlStringList(mQuestionDetailModel.content).get(0), qcvHolder.ivImage);
+//                QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
+//                        convertUrlStringList(mQuestionDetailModel.content));
+//                qcvHolder.gvImage.setAdapter(qgvia);
 
                 //第一个问题内容，key==0
                 mListViewCache.addCache(0, v);
@@ -280,7 +288,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public HtmlTextView tvReplyContent;
         public ImageView ivEdit;
         public ProgressBar pbReplyContent;
-        public HorizontalListView hlImageView;
+        public GridView gvImage;
     }
 
     private static class QuestionContentViewHolder {
@@ -291,6 +299,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public TextView tvPostTitle;
         public TextView tvPostContent;
         public ProgressBar pb_loading;
+        //public ImageView ivImage;
+        public GridView gvImage;
     }
 
     public class ListViewCache {
@@ -353,6 +363,19 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public void onLoadingCancelled(String imageUri, View view) {
 
         }
+    }
+
+    /**
+     * @param content
+     */
+    private List<String> convertUrlStringList(String content) {
+        List<String> urlLits = new ArrayList<String>();
+        Matcher m = Pattern.compile("(img src=\".*?\")").matcher(content);
+        while (m.find()) {
+            String[] s = m.group(1).split("src=");
+            urlLits.add(s[1].toString().substring(1, s[1].length() - 1));
+        }
+        return urlLits;
     }
 
 }
