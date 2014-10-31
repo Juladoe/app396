@@ -1,28 +1,24 @@
 package com.edusoho.kuozhi.ui.note;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Note.NoteAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Note.CollectNode;
-import com.edusoho.kuozhi.model.Note.HttpDatas;
+import com.edusoho.kuozhi.model.Note.NoteInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.common.LoginActivity;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.widget.RefreshGridViewWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import java.util.ArrayList;
@@ -31,48 +27,41 @@ import java.util.ArrayList;
  * Created by onewoman on 14-10-9.
  */
 public class NoteActivity extends ActionBarBaseActivity {
-    private int start;
-    private final int PAGELIMIT = 6;
-    private PullToRefreshGridView grid;
+
+    private RefreshGridViewWidget mNoteGridView;
     private PullToRefreshScrollView emptyLayout;
+    private View mLoadView;
     private NoteAdapter noteAdapter;
-    private FilterHttpData httpDatas;
-    public ArrayList<HttpDatas> requestDatas;
-    private ArrayList<CollectNode> collect;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.note_main);
-        start = 0;
-        returnObjectFromGson(0, PAGELIMIT, false);
+        setContentView(R.layout.note_layout);
         initView();
-        setBackMode(BACK, "我的笔记");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        returnObjectFromGson(0, start + PAGELIMIT, true);
     }
 
     private void initView() {
-        grid = (PullToRefreshGridView) this.findViewById(R.id.notegrid);
-        grid.setMode(PullToRefreshBase.Mode.BOTH);
+        setBackMode(BACK, "我的笔记");
 
-        noteAdapter = new NoteAdapter(getLayoutInflater());
-        grid.setAdapter(noteAdapter);
+        mLoadView = findViewById(R.id.load_layout);
+        mNoteGridView = (RefreshGridViewWidget) this.findViewById(R.id.note_gridview);
+        mNoteGridView.setMode(PullToRefreshBase.Mode.BOTH);
+        mNoteGridView.setEmptyText(new String[] { "没有笔记" });
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        noteAdapter = new NoteAdapter(mContext, R.layout.note_list_item);
+        mNoteGridView.setAdapter(noteAdapter);
+
+        mNoteGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println(adapterView.getCount());
-                CollectNode collectNode = (CollectNode) adapterView.getItemAtPosition(i);
-                trunToNoteList(collectNode.courseName, collectNode.courseId, collectNode.total, start + PAGELIMIT);
+                NoteInfo noteInfo = (NoteInfo) adapterView.getItemAtPosition(i);
+                trunToNoteList(noteInfo.courseTitle, noteInfo.coursesId, noteInfo.noteNum);
             }
         });
         setPullToRefreshListener();
+
+        returnObjectFromGson(0);
     }
 
     private PullToRefreshScrollView initEmptyLayout() {
@@ -105,70 +94,60 @@ public class NoteActivity extends ActionBarBaseActivity {
     }
 
     public void setPullToRefreshListener() {
-        grid.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
+        mNoteGridView.setUpdateListener(new RefreshGridViewWidget.UpdateListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                returnObjectFromGson(0, PAGELIMIT, true);
-                start = 0;
-                grid.setMode(PullToRefreshBase.Mode.BOTH);
+            public void update(PullToRefreshBase<GridView> refreshView) {
+                returnObjectFromGson(mNoteGridView.getStart());
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-                start = start + PAGELIMIT;
-                returnObjectFromGson(start, PAGELIMIT, false);
+            public void refresh(PullToRefreshBase<GridView> refreshView) {
+                returnObjectFromGson(0);
             }
         });
     }
 
-    public void trunToNoteList(final String courseTitle, final int courseId, final int total, final int intentLlmit) {
-        PluginRunCallback callback = new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra("courseId", courseId);
-                startIntent.putExtra("total", total);
-                startIntent.putExtra("title", courseTitle);
-                startIntent.putExtra("limit", intentLlmit);
-            }
-        };
-        app.mEngine.runNormalPlugin("NoteList", mActivity, callback);
+    public void trunToNoteList(
+            String courseTitle, int courseId, int total) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.ACTIONBAT_TITLE, courseTitle);
+        bundle.putInt(Const.COURSE_ID, courseId);
+        bundle.putString(FragmentPageActivity.FRAGMENT, "NoteListFragment");
+        bundle.putInt(NoteListFragment.NOTENUM, total);
+
+        app.mEngine.runNormalPluginWithBundle(
+                "FragmentPageActivity", mActivity, bundle
+        );
     }
 
-    public void returnObjectFromGson(int start, int limit, final boolean pullDown) {
-        RequestUrl url = app.bindUrl(Const.NOTE_LIST_DATA, true);
+    public void returnObjectFromGson(final int start) {
+        RequestUrl url = app.bindUrl(Const.USER_NOTES, true);
         url.setParams(new String[]{
-                "start", start + "",
-                "limit", limit + ""
+                "start", String.valueOf(start),
+                "limit", String.valueOf(Const.LIMIT)
         });
         ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                grid.onRefreshComplete();
-                parasHttpDatas(object, pullDown);
+                mNoteGridView.onRefreshComplete();
+                if (mLoadView.getVisibility() == View.VISIBLE) {
+                    mLoadView.setVisibility(View.GONE);
+                }
+                parasHttpDatas(start, object);
             }
         });
     }
 
-    public void parasHttpDatas(String object, boolean pullDown) {
-        if (!app.token.equals("")) {
-            requestDatas = parseJsonValue(object, new TypeToken<ArrayList<HttpDatas>>() {
-            });
-            if(requestDatas==null)
-                return ;
-            httpDatas = new FilterHttpData(requestDatas);
-            collect = httpDatas.getCollect();
-            if (pullDown)
-                noteAdapter.setItem(collect);
-            else
-                noteAdapter.addAllDatas(collect);
-            refreshLayout();
-            if (requestDatas.size() == 0) {
-                grid.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-                Toast.makeText(this,"没有数据了",0).show();
-            }
-        } else {
-            LoginActivity.startForResult(mActivity);
+    public void parasHttpDatas(int start, String object) {
+        ArrayList<NoteInfo> noteInfos = parseJsonValue(
+                object, new TypeToken<ArrayList<NoteInfo>>(){});
+
+        if (noteInfos == null) {
+            return;
         }
+
+        mNoteGridView.pushData(noteInfos);
+        mNoteGridView.setStart(start + Const.LIMIT);
     }
 }
