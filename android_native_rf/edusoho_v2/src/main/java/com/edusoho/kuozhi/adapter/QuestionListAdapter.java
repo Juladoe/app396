@@ -22,9 +22,9 @@ import java.util.List;
  * Created by hby on 14-9-15.
  */
 public class QuestionListAdapter extends ListBaseAdapter {
-//    private Context mContext;
+    //    private Context mContext;
     private List<QuestionDetailModel> mQuestionList;
-//    private int mResourceId;
+    //    private int mResourceId;
     private int mScreenW;
 
     public QuestionListAdapter(Context context, QuestionResult questionResult, int layoutId) {
@@ -94,8 +94,14 @@ public class QuestionListAdapter extends ListBaseAdapter {
         QuestionDetailModel question = mQuestionList.get(position);
 
         holder.tvQuestionTitle.setText(question.title);
-        //holder.tvLesson.setText(question.questionLesson);
+        if (question.number != 0) {
+            holder.tvLesson.setText("课时" + question.number);
+        } else {
+            holder.tvLesson.setVisibility(View.INVISIBLE);
+        }
+
         if (question.isTeacherPost) {
+
             holder.tvTeacherReply.setVisibility(View.VISIBLE);
         } else {
             holder.tvTeacherReply.setVisibility(View.INVISIBLE);

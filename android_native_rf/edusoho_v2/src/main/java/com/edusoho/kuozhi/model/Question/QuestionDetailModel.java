@@ -28,4 +28,5 @@ public class QuestionDetailModel implements Serializable {
     public String coursePicture;
     public boolean isTeacherPost;
     public User user;
+    public int number;
 }
