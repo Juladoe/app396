@@ -40,6 +40,9 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
         animQueue = new LinkedList<View>();
     }
 
+    /**
+     * 同步动画
+     */
     protected void startAnim()
     {
         Log.d(null, "animCount->" + animCount);

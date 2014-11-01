@@ -28,22 +28,35 @@ import java.util.HashMap;
 /**
  * Created by onewoman on 14-10-27.
  */
-public class NoteReplyActivity extends ActionBarBaseActivity{
+public class NoteReplyActivity extends ActionBarBaseActivity {
     private String TAG = "NoteReplyActivity";
     private RichTextBoxFragment richFragment;
     private ProgressDialog mProgressDialog;
+
+    private int mCourseId;
+    private int mLessonId;
+    private String mTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_reply_layout);
-        setBackMode(BACK, getIntent().getStringExtra("note_title"));
+        initIntentData();
         initViews();
         initProgressDialog();
     }
 
+    private void initIntentData()
+    {
+        Intent intent = getIntent();
+        mTitle = intent.getStringExtra(Const.ACTIONBAT_TITLE);
+        mLessonId = intent.getIntExtra(Const.LESSON_ID, 0);
+        mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
+    }
+
     private void initViews() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        setBackMode(BACK, mTitle);
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         richFragment = new RichTextBoxFragment();
         byte[] itemArgs = new byte[]{View.VISIBLE, View.VISIBLE, View.VISIBLE, View.GONE, View.VISIBLE, View.VISIBLE, View.VISIBLE};
         Bundle bundle = new Bundle();
@@ -68,9 +81,9 @@ public class NoteReplyActivity extends ActionBarBaseActivity{
                 return true;
             } else {
                 RequestUrl url = app.bindUrl(Const.NOTE_CONTENT, true);
-                HashMap<String, String> params = url.getParams();
-                params.put("courseId", getIntent().getIntExtra("note_courseId",0) + "");
-                params.put("lessonId", getIntent().getIntExtra("note_lessonId",0) + "");
+                HashMap<String, String> params = url.params;
+                params.put(Const.COURSE_ID, String.valueOf(mCourseId));
+                params.put(Const.LESSON_ID, String.valueOf(mLessonId));
                 final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
                 params.put("content", richFragment.setContent(content));
                 params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
@@ -93,13 +106,14 @@ public class NoteReplyActivity extends ActionBarBaseActivity{
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
-                    NoteSubmitResult noteSubmitResult = mActivity.gson.fromJson(object, new TypeToken<NoteSubmitResult>() {
-                    }.getType());
+                    NoteSubmitResult noteSubmitResult = mActivity.parseJsonValue(
+                            object, new TypeToken<NoteSubmitResult>() {
+                    });
                     mProgressDialog.cancel();
                     if (noteSubmitResult == null) {
                         return;
                     } else {
-                        Toast.makeText(mContext, "提交成功", 500).show();
+                        longToast("提交成功!");
                         mActivity.setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, noteSubmitResult));
                         mActivity.finish();
                     }

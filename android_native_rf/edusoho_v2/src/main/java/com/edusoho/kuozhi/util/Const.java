@@ -201,7 +201,8 @@ public class Const {
     public static final String COURSE_CODE = "Course/coupon";
 
     //笔记列表
-    public static final String NOTE_LIST_DATA = "Course/getNoteList";
+    public static final String USER_NOTES = "Course/getNoteList";
+    public static final String COURSE_NOTES = "Course/getCourseNotes";
 
     //笔记编辑
     public static final String NOTE_CONTENT = "Course/AddNote";

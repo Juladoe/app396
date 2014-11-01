@@ -77,6 +77,8 @@
     <plugin name="AlipayFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AlipayFragment"></plugin>
     <plugin name="MyTestpaperFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MyTestpaperFragment"></plugin>
     <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
+    <plugin name="NoteListFragment" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteListFragment"></plugin>
+    <plugin name="NoteContentFragment" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContentFragment"></plugin>
 
     <!--试卷fragment -->
     <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>

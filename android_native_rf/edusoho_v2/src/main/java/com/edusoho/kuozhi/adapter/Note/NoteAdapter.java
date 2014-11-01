@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.adapter.Note;
 
-import android.view.LayoutInflater;
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.EdusohoBaseAdapter;
-import com.edusoho.kuozhi.model.Note.CollectNode;
+import com.edusoho.kuozhi.adapter.ListBaseAdapter;
+import com.edusoho.kuozhi.model.Note.NoteInfo;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
@@ -18,38 +18,16 @@ import java.util.ArrayList;
 /**
  * Created by onewoman on 14-10-13.
  */
-public class NoteAdapter extends EdusohoBaseAdapter {
-    private LayoutInflater inflater;
-    private ArrayList<CollectNode> collect;
+public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
 
-    public NoteAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
-        this.collect = new ArrayList<CollectNode>();
+    public NoteAdapter(Context context, int resouce) {
+        super(context, resouce);
     }
 
-    public void addAllDatas(ArrayList<CollectNode> datas) {
-        collect.addAll(datas);
+    @Override
+    public void addItems(ArrayList<NoteInfo> list) {
+        mList.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void setItem(ArrayList<CollectNode> datas) {
-        collect.clear();
-        addAllDatas(datas);
-    }
-
-    @Override
-    public int getCount() {
-        return collect.size();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return collect.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
     }
 
     @Override
@@ -57,7 +35,7 @@ public class NoteAdapter extends EdusohoBaseAdapter {
 
         ViewNoteInflate holder;
         if (view == null) {
-            view = inflater.inflate(R.layout.note_inflate, null);
+            view = inflater.inflate(mResource, null);
             holder = new ViewNoteInflate();
             holder.nodeImage = (ImageView) view.findViewById(R.id.note_image);
             holder.nodeTitle = (TextView) view.findViewById(R.id.note_title);
@@ -68,15 +46,16 @@ public class NoteAdapter extends EdusohoBaseAdapter {
             holder = (ViewNoteInflate) view.getTag();
         }
 
-        CollectNode collectNode = collect.get(i);
+        NoteInfo noteInfo = mList.get(i);
+
         int width = (int) (EdusohoApp.screenW * 0.45);
         holder.aQuery.id(R.id.note_image).image(
-                collectNode.courseImage, false, true, 200, R.drawable.noram_course);
+                noteInfo.largePicture, false, true, 200, R.drawable.noram_course);
         holder.aQuery.id(R.id.note_image)
                 .width(width, false)
                 .height(AppUtil.getCourseListCoverHeight(width), false);
-        holder.nodeTitle.setText(collectNode.courseName);
-        holder.noteCount.setText("共" + collectNode.total + "篇笔记");
+        holder.nodeTitle.setText(noteInfo.courseTitle);
+        holder.noteCount.setText("共" + noteInfo.noteNum + "篇笔记");
         return view;
     }
 

@@ -36,7 +36,6 @@ public abstract class QuestionTypeBaseFragment extends BaseFragment {
      *
      * @param title
      * @param seqs
-     * @param count
      */
     protected void setQuestionTitle(
             String title, ArrayList<QuestionTypeSeq> seqs)

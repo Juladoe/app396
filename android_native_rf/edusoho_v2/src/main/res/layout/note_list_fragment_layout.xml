@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/list_title"
+        android:id="@+id/note_list_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:textSize="@dimen/list_title_size"
@@ -16,12 +15,15 @@
         android:paddingLeft="30px"
         android:paddingTop="24px" />
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/list_content"
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:layout_below="@id/note_list_title"
+        android:id="@+id/note_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/list_background"
         android:scrollbars="none"
         android:dividerHeight="1dp"
-        android:divider="@color/line"></com.handmark.pulltorefresh.library.PullToRefreshListView>
-</LinearLayout>
+        android:divider="@color/line" />
+
+    <include layout="@layout/loading_layout"/>
+</RelativeLayout>

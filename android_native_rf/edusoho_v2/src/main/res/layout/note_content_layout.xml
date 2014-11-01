@@ -6,10 +6,12 @@
     android:layout_height="match_parent"
     android:background="@color/note_content_background">
 
-    <com.edusoho.kuozhi.ui.note.MyTextView
-        android:id="@+id/content_title"
+    <TextView
+        android:text="@string/note_content"
+        android:id="@+id/note_lesson_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/material_item_bg"
         android:textSize="@dimen/content_title_size"
         android:textColor="@color/note_content_title"
         android:paddingTop="12dp"
@@ -17,11 +19,22 @@
         android:paddingRight="15dp"
         android:paddingBottom="12dp" />
 
-    <LinearLayout
-        android:id="@+id/rich_text_box_show"
+    <ScrollView
+        android:id="@+id/note_content_scroll"
+        android:fillViewport="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/content_background"
-        android:layout_below="@id/content_title"
-        android:orientation="vertical"/>
+        android:layout_below="@id/note_lesson_title">
+
+        <TextView
+            android:id="@+id/note_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/content_size"
+            android:textColor="@color/note_content"
+            android:paddingTop="18dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="20dp" />
+    </ScrollView>
 </RelativeLayout>
