@@ -101,5 +101,7 @@
     <!--note-->
     <dimen name="note_main_paddingtop">5dp</dimen>
     <dimen name="note_main_paddingleft">3dp</dimen>
+    <dimen name="course_size">15sp</dimen>
+    <dimen name="course_title_size">15sp</dimen>
     <dimen name="note_main_paddingright">3dp</dimen>
 </resources>

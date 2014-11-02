@@ -87,7 +87,7 @@ public class RefreshListWidget extends PullToRefreshListView{
             }
             mAdapter.clear();
         }
-
+        setMode(data.isEmpty() ? Mode.PULL_FROM_START : Mode.BOTH);
         mAdapter.addItems(data);
     }
 

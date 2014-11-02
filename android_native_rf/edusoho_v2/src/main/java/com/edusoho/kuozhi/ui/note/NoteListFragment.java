@@ -65,7 +65,7 @@ public class NoteListFragment extends BaseFragment {
         changeTitle(mTitle);
         mNoteListTitleView.setText(String.format("共%d篇笔记", mNoteNum));
         mListView.setMode(PullToRefreshBase.Mode.BOTH);
-        mListView.setAdapter(new NoteListAdapter(mContext, R.layout.lesson_note_item_layout));
+        mListView.setAdapter(new NoteListAdapter(mContext, R.layout.lesson_note_item_layout, true));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

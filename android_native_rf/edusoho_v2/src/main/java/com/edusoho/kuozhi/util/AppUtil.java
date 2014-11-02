@@ -575,6 +575,26 @@ public class AppUtil {
         return scaledBitmap;
     }
 
+    public static Bitmap scaleImageBySize(
+            Bitmap bitmap, int imageSize, Context context)
+    {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int bounding = Math.round(imageSize * density);
+
+        float xScale = ((float) bounding) / width;
+        float yScale = ((float) bounding) / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(xScale, yScale);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+
+        return scaledBitmap;
+    }
+
     /**
      * 图片压缩到500K(质量压缩)
      *
