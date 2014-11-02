@@ -38,6 +38,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
         setContentView(R.layout.question_reply_layout);
         setBackMode(BACK, "添加回复");
         initViews();
+
         initProgressDialog();
     }
 

@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -510,7 +509,9 @@ public class AppUtil {
 
 
             //如果大于24返回天数
-            if (l > 24 * 60 * 60) {
+            if (l > 30 * 24 * 60 * 60) {
+                return postTime.split("T")[0];
+            } else if (l > 24 * 60 * 60) {
                 l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
             } else if (l > 60 * 60) {
@@ -568,9 +569,6 @@ public class AppUtil {
         matrix.postRotate((float) degree);
 
         Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-//        width = scaledBitmap.getWidth(); // re-use
-//        height = scaledBitmap.getHeight(); // re-use
-        BitmapDrawable result = new BitmapDrawable(scaledBitmap);
 
         return scaledBitmap;
     }
@@ -940,8 +938,7 @@ public class AppUtil {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    public static int parseInt(String value)
-    {
+    public static int parseInt(String value) {
         int i = 0;
         if (value == null) {
             return i;

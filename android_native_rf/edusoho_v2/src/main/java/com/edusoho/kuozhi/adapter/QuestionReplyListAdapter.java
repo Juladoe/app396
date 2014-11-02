@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.kuozhi.view.HtmlTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.URLImageGetter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -56,6 +57,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     private List<ReplyModel> mSumReplyModel;
     private QuestionDetailModel mQuestionDetailModel;
     private int mQuestionDetailLayoutId;
+    private DisplayImageOptions mOptions;
 
     private ListViewCache mListViewCache;
 
@@ -67,6 +69,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         mEntireReplyList = new ArrayList<EntireReply>();
         this.mActivity = activity;
         this.mUser = user;
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
         mSumReplyModel = new ArrayList<ReplyModel>();
         mListViewCache = new ListViewCache();
         for (ReplyModel replyModel : replyResult.data) {
@@ -182,7 +185,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
 
                 //ImageLoader.getInstance().loadImage(mUser.mediumAvatar, new MyImageLoadingListener(qcvHolder.icon));
-                ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, new MyImageLoadingListener());
+                ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, mOptions);
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
