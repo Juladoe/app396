@@ -42,7 +42,7 @@ public class UncertainChoiceFragment extends SelectQuestionFragment{
         }
 
         mQuestionCount = questionTypeSeqs.size();
-        mQuestionType.setText(type.title());
+        setQuestionTitle(type.title(), questionTypeSeqs);
         setQuestionNumber(mCurrentIndex);
 
         QuestionAdapter adapter = new QuestionAdapter(

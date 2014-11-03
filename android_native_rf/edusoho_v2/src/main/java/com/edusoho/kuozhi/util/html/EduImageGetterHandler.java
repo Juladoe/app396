@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
@@ -109,7 +108,6 @@ public class EduImageGetterHandler implements Html.ImageGetter {
                 return;
             }
 
-            Log.d(null, "draw-->" + bitmap);
             canvas.drawBitmap(bitmap, 0, 0, new Paint());
         }
     }

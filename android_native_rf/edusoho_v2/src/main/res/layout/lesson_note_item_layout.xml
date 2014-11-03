@@ -2,27 +2,27 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/linear"
+        android:id="@+id/lesson_note_item_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="36px"
-        android:paddingLeft="30px">
+        android:paddingTop="18dp"
+        android:paddingRight="18dp"
+        android:paddingLeft="18dp">
 
         <TextView
-            android:id="@+id/course"
+            android:id="@+id/lesson_note_item_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/course_size"
             android:textColor="@color/list_course" />
 
         <TextView
-            android:id="@+id/course_title"
+            android:id="@+id/lesson_note_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -31,17 +31,17 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/note_course_content"
+        android:id="@+id/lesson_note_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
         android:textSize="@dimen/course_content_size"
         android:textColor="@color/list_course_content"
-        android:layout_below="@id/linear"
-        android:layout_marginTop="26px"
-        android:paddingBottom="36px"
-        android:paddingLeft="30px"
-        android:paddingRight="30px"/>
+        android:layout_below="@id/lesson_note_item_layout"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="18dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"/>
 
 </RelativeLayout>

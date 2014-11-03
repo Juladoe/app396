@@ -1,12 +1,20 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import com.edusoho.kuozhi.R;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by howzhi on 14-10-20.
@@ -18,12 +26,57 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
     protected Context mContext;
     protected ArrayList<T> mList;
 
+    protected SparseArray<Boolean> animArray;
+    protected Queue<View> animQueue;
+    private int animCount;
+
     public ListBaseAdapter(Context context, int resource)
     {
         mResource = resource;
         mContext = context;
         mList = new ArrayList<T>();
         inflater = LayoutInflater.from(mContext);
+        animArray = new SparseArray<Boolean>();
+        animQueue = new LinkedList<View>();
+    }
+
+    /**
+     * 同步动画
+     */
+    protected void startAnim()
+    {
+        Log.d(null, "animCount->" + animCount);
+        synchronized (mContext) {
+            if (animCount > 0) {
+                return;
+            }
+        }
+        if (animQueue.isEmpty()) {
+            return;
+        }
+        View view = animQueue.poll();
+        if (view == null) {
+            return;
+        }
+
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.list_item_l_to_r);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                animCount ++;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                animCount --;
+                startAnim();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        view.startAnimation(animation);
     }
 
     @Override

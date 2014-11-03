@@ -106,11 +106,10 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
             case determine:
             case fill:
                 stem = String.format(
-                        "%d, (%s) %s (%.2f分)",
+                        "%d, (<font color='#ffca4a'>%.2f分</font>) %s",
                         mIndex,
-                        mQuestion.type.title(),
-                        mQuestion.stem,
-                        mQuestion.score
+                        mQuestion.score,
+                        mQuestion.stem
                 );
         }
         return Html.fromHtml(stem, new EduImageGetterHandler(mContext, stemView), new EduTagHandler());

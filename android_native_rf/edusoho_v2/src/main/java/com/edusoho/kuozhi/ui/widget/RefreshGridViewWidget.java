@@ -3,9 +3,7 @@ package com.edusoho.kuozhi.ui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
+import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -14,6 +12,7 @@ import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.util.Const;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by howzhi on 14-8-25.
  */
-public class RefreshListWidget extends PullToRefreshListView{
+public class RefreshGridViewWidget extends PullToRefreshGridView{
 
     public static final int UPDATE = 0001;
     public static final int REFRESH = 0002;
@@ -37,13 +36,13 @@ public class RefreshListWidget extends PullToRefreshListView{
     private Context mContext;
     private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
 
-    public RefreshListWidget(Context context) {
+    public RefreshGridViewWidget(Context context) {
         super(context);
         mContext = context;
         initView();
     }
 
-    public RefreshListWidget(Context context, AttributeSet attrs) {
+    public RefreshGridViewWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         initView();
@@ -51,6 +50,7 @@ public class RefreshListWidget extends PullToRefreshListView{
 
     private void initView()
     {
+        mStart = 0;
         mMode = REFRESH;
         mLimit = Const.LIMIT;
     }
@@ -88,6 +88,7 @@ public class RefreshListWidget extends PullToRefreshListView{
             mAdapter.clear();
         }
 
+        setMode(data.isEmpty() ? Mode.PULL_FROM_START : Mode.BOTH);
         mAdapter.addItems(data);
     }
 
@@ -125,16 +126,16 @@ public class RefreshListWidget extends PullToRefreshListView{
     public void setUpdateListener(UpdateListener updateListener)
     {
         mUpdateListener = updateListener;
-        setOnRefreshListener(new OnRefreshListener2<ListView>() {
+        setOnRefreshListener(new OnRefreshListener2<GridView>() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
                 mMode = REFRESH;
                 Log.d(TAG, "refresh->");
                 mUpdateListener.refresh(refreshView);
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
                 mMode = UPDATE;
                 Log.d(TAG, "update->");
                 mUpdateListener.update(refreshView);
@@ -150,7 +151,7 @@ public class RefreshListWidget extends PullToRefreshListView{
 
     public interface UpdateListener
     {
-        public void update(PullToRefreshBase<ListView> refreshView);
-        public void refresh(PullToRefreshBase<ListView> refreshView);
+        public void update(PullToRefreshBase<GridView> refreshView);
+        public void refresh(PullToRefreshBase<GridView> refreshView);
     }
 }

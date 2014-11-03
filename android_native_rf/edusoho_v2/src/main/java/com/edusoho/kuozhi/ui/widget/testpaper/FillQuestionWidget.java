@@ -87,7 +87,12 @@ public class FillQuestionWidget extends BaseQuestionWidget {
 
     @Override
     protected Spanned getQuestionStem() {
-        String stem = String.format("%d, %s", mIndex, parseStem(mQuestion.stem));
+        String stem = String.format(
+                "%d, (<font color='#ffca4a'>%.2f分</font>) %s",
+                mIndex,
+                mQuestion.score,
+                parseStem(mQuestion.stem)
+        );
         return Html.fromHtml(stem, new EduImageGetterHandler(mContext, stemView), new EduTagHandler());
     }
 

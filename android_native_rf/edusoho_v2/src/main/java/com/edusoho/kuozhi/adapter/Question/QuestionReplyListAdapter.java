@@ -26,10 +26,12 @@ import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.kuozhi.view.HtmlTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.URLImageGetter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -38,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 /**
  * Created by hby on 14-9-18.
  * 回复List适配器
@@ -54,6 +55,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     private List<ReplyModel> mSumReplyModel;
     private QuestionDetailModel mQuestionDetailModel;
     private int mQuestionDetailLayoutId;
+    private DisplayImageOptions mOptions;
 
     private ListViewCache mListViewCache;
 
@@ -65,6 +67,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         mEntireReplyList = new ArrayList<EntireReply>();
         this.mActivity = activity;
         this.mUser = user;
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
         mSumReplyModel = new ArrayList<ReplyModel>();
         mListViewCache = new ListViewCache();
         for (ReplyModel replyModel : replyResult.data) {
@@ -181,7 +184,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 //qcvHolder.ivImage = (ImageView) v.findViewById(R.id.iv_contentImage);
                 qcvHolder.gvImage = (GridView) v.findViewById(R.id.gv_image);
 
-                ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, new MyImageLoadingListener());
+                //ImageLoader.getInstance().loadImage(mUser.mediumAvatar, new MyImageLoadingListener(qcvHolder.icon));
+                ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, mOptions);
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
@@ -270,7 +274,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
             //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
             holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content),
-                    urlImageGetter, null)));
+                    urlImageGetter, new EduTagHandler())));
             mListViewCache.addCache(entireReply.replyModel.id, v);
         } else {
             v = mListViewCache.getOneCacheView(entireReply.replyModel.id);

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.widget.testpaper.QuestionWidget;
@@ -39,27 +40,8 @@ public abstract class QuestionViewPagerAdapter extends PagerAdapter {
     }
 
     protected Spanned getQuestionStem(
-            Question mQuestion, int mIndex, TextView textView)
-    {
-        String stem = "";
-        switch (mQuestion.type) {
-            case choice:
-            case uncertain_choice:
-            case single_choice:
-            case essay:
-            case material:
-            case determine:
-            case fill:
-                stem = String.format(
-                        "%d, (%s) %s (%.2f分)",
-                        mIndex,
-                        mQuestion.type.title(),
-                        mQuestion.stem,
-                        mQuestion.score
-                );
-        }
-
-        return Html.fromHtml(stem, new EduImageGetterHandler(mContext, textView), new EduTagHandler());
+            MaterialQuestionTypeSeq questionTypeSeq, int mIndex, TextView textView){
+        return null;
     }
 
     @Override

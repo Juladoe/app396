@@ -391,6 +391,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      * @param image
      */
     private void insertImage(Bitmap image, String filePath) {
+        etContent.getText().append("\n");
         Editable eb = etContent.getEditableText();
         //获得光标所在位置
         int qqPosition = etContent.getSelectionStart();
@@ -398,8 +399,8 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         //String key = String.valueOf(mImageCount++);
         SpannableString ss = new SpannableString(key);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if (image.getWidth() > 500) {
-            image = AppUtil.scaleImage(image, IMAGE_WIDTH, AppUtil.getImageDegree(filePath), mContext);
+        if (image.getWidth() > (EdusohoApp.app.screenW * 0.8f)) {
+            image = AppUtil.scaleImage(image, EdusohoApp.app.screenW * 0.8f, AppUtil.getImageDegree(filePath), mContext);
         }
         if (AppUtil.getImageSize(image) > IMAGE_SIZE) {
             image = AppUtil.compressImage(image, baos, 50);
@@ -409,9 +410,11 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
         //插入图片
         Drawable drawable = new BitmapDrawable(image);
-        drawable.setBounds(2, 0, drawable.getIntrinsicWidth() + 2, drawable.getIntrinsicHeight() + 2);
-        ss.setSpan(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = (etContent.getWidth() - drawable.getIntrinsicWidth()) / 2;
+        drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
+        ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         eb.insert(qqPosition, ss);
+        etContent.getText().append("\n");
 
         //保存的是压缩后的图片
         mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
@@ -422,6 +425,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         @Override
         public void onColorChanged(int color) {
             ForegroundColorSpan fcs = new ForegroundColorSpan(color);
+            etContent.getText().removeSpan(getForeColorStyle());
             etContent.getText().setSpan(fcs, mSelectTextStart, mSelectTextEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         }
     };
@@ -583,11 +587,22 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     private AbsoluteSizeSpan getFontSizeStyle() {
-        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart() - 1, etContent.getSelectionEnd(),
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
                 CharacterStyle.class);
         for (int i = 0; i < mCurrentStyle.length; i++) {
             if (mCurrentStyle[i] instanceof AbsoluteSizeSpan) {
                 return (AbsoluteSizeSpan) mCurrentStyle[i];
+            }
+        }
+        return null;
+    }
+
+    private ForegroundColorSpan getForeColorStyle() {
+        mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
+                CharacterStyle.class);
+        for (int i = 0; i < mCurrentStyle.length; i++) {
+            if (mCurrentStyle[i] instanceof ForegroundColorSpan) {
+                return (ForegroundColorSpan) mCurrentStyle[i];
             }
         }
         return null;
