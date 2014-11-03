@@ -130,6 +130,9 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
     public void clear()
     {
         mList.clear();
+        if (mIsCache) {
+            cacheArray.clear();
+        }
     }
 
     public void addItem(T item){}

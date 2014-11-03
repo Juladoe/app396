@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -86,6 +87,7 @@ public class EdusohoApp extends Application {
     public static final String INSTALL_PLUGIN = "install_plugin";
 
     private android.os.Handler mWorkHandler;
+    private ImageLoaderConfiguration mImageLoaderConfiguration;
 
     @Override
     public void onCreate() {
@@ -236,11 +238,12 @@ public class EdusohoApp extends Application {
     }
 
     private void initImageLoaderConfig() {
-        ImageLoaderConfiguration mConfig = new ImageLoaderConfiguration
-                .Builder(this).
-                diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
+        mImageLoaderConfiguration = new ImageLoaderConfiguration
+                .Builder(this)
+                .memoryCacheExtraOptions((int)(screenW * 0.8f), (int)(screenH * 0.8f))
+                .diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
                 .build();
-        ImageLoader.getInstance().init(mConfig);
+        ImageLoader.getInstance().init(mImageLoaderConfiguration);
     }
 
     public void startMainService() {
