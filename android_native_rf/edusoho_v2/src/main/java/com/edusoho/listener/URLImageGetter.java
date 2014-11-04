@@ -83,6 +83,7 @@ public class URLImageGetter implements Html.ImageGetter {
 
         @Override
         public void onLoadingCancelled(String imageUri, View view) {
+            //暂时先考虑多图同路径就触发这个方法，可能也有其他情况。
             Bitmap bitmap = BitmapFactory.decodeFile(ImageLoader.getInstance().getDiskCache().get(imageUri).getPath());
             refreshImageView(bitmap, mURLDrawable);
         }
