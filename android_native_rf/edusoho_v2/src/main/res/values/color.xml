@@ -321,4 +321,7 @@
     <color name="my_testpaper_do_btn_bg_pressed">#9945d17b</color>
     <color name="my_testpaper_btn_blue">#38bf6c</color>
     <color name="my_testpaper_btn_white">#ffffff</color>
+
+    <!-- note-->
+    <color name="note_list_bg">#f9f9f9</color>
 </resources>

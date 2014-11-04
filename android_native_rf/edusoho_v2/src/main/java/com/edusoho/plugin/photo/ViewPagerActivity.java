@@ -56,7 +56,7 @@ public class ViewPagerActivity extends ActionBarBaseActivity{
 
         mTitle = new StringBuffer();
         mTitle.append("图片预览 ")
-                .append(1)
+                .append(index + 1)
                 .append("/")
                 .append(images.length);
         setTitle(mTitle.toString());

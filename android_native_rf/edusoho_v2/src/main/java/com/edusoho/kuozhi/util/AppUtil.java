@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +21,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
@@ -45,6 +47,7 @@ import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.StatusCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -567,6 +570,26 @@ public class AppUtil {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         matrix.postRotate((float) degree);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+
+        return scaledBitmap;
+    }
+
+    public static Bitmap scaleImageBySize(
+            Bitmap bitmap, int imageSize, Context context)
+    {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int bounding = Math.round(imageSize * density);
+
+        float xScale = ((float) bounding) / width;
+        float yScale = ((float) bounding) / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(xScale, yScale);
 
         Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 

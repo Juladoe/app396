@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.util.html;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.EdusohoApp;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by howzhi on 14-10-29.
@@ -24,9 +28,71 @@ public class EduHtml {
     private ArrayList<String> imageArray;
     private Context mContext;
 
+    private static Pattern IMAGE_FILTER = Pattern.compile("<[^>]+/?>", Pattern.DOTALL);
+    private static Pattern IMAGE_URL_FILTER = Pattern.compile("<img src=['\"]([^>'\"]+)['\"][^>]+>", Pattern.DOTALL);
+
     private EduHtml(Context context)
     {
         this.mContext = context;
+    }
+
+    public static SpannableStringBuilder coverHtmlImages(
+            String source, TextView textView, Context context
+    )
+    {
+        EduHtml instance = new EduHtml(context);
+        instance.imageArray = new ArrayList<String>();
+        source = instance.getSourceImages(source);
+
+        SpannableStringBuilder spaned = (SpannableStringBuilder) Html.fromHtml(
+                source, new EduImageGetterHandler(context, textView).setSize(50), new EduTagHandler());
+
+        textView.setClickable(true);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        spaned = instance.addImageClick(spaned, instance.imageArray);
+
+        return spaned;
+    }
+
+    private String getImageUrl(String img)
+    {
+        Matcher matcher = IMAGE_URL_FILTER.matcher(img);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return null;
+    }
+
+    private String getSourceImages(String source)
+    {
+        int imgCount = 0;
+        StringBuilder builder = new StringBuilder();
+        StringBuffer stringBuffer = new StringBuffer();
+
+        Matcher matcher = IMAGE_FILTER.matcher(source);
+        while (matcher.find()) {
+            String tag = matcher.group();
+            if (tag.startsWith("<img")) {
+                String imgUrl = getImageUrl(tag);
+                if (imgUrl != null) {
+                    imageArray.add(imgUrl);
+                }
+                if (imgCount < 3) {
+                    builder.append(tag).append("&nbsp;");
+                };
+                imgCount++;
+            }
+            matcher.appendReplacement(stringBuffer, "");
+        }
+        matcher.appendTail(stringBuffer);
+
+        int length = stringBuffer.length();
+        stringBuffer.delete(length > 20 ? 20 : length, length);
+        if (imgCount > 0) {
+            stringBuffer.append("<p></p>").append(builder);
+        }
+        return stringBuffer.toString();
     }
 
     public static SpannableStringBuilder addImageClickListener(
@@ -36,12 +102,13 @@ public class EduHtml {
         instance.imageArray = new ArrayList<String>();
         textView.setClickable(true);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
-        spaned = instance.addImageClick(spaned);
+        spaned = instance.addImageClick(spaned, null);
 
         return spaned;
     }
 
-    private SpannableStringBuilder addImageClick(SpannableStringBuilder spanned)
+    private SpannableStringBuilder addImageClick(
+            SpannableStringBuilder spanned, ArrayList<String> array)
     {
         CharacterStyle[] characterStyles = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
         int index = 0;
@@ -49,10 +116,13 @@ public class EduHtml {
             if (characterStyle instanceof ImageSpan) {
                 ImageSpan imageSpan = (ImageSpan) characterStyle;
                 String src = imageSpan.getSource();
-                imageArray.add(index, src);
-                ImageClickSpan clickSpan = new ImageClickSpan(src, index++);
+                ImageClickSpan clickSpan = new ImageClickSpan(src, index);
                 int start = spanned.getSpanStart(characterStyle);
                 int end = spanned.getSpanEnd(characterStyle);
+                if (array == null) {
+                    imageArray.add(index, src);
+                }
+                index++;
                 spanned.setSpan(clickSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
@@ -73,7 +143,6 @@ public class EduHtml {
 
         @Override
         public void onClick(View view) {
-            Log.d(null, "image click-->" + imageUrl);
             Bundle bundle = new Bundle();
             bundle.putInt("index", mIndex);
             bundle.putStringArrayList("imageList", imageArray);

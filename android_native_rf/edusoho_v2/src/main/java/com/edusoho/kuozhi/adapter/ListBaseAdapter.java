@@ -27,8 +27,10 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
     protected ArrayList<T> mList;
 
     protected SparseArray<Boolean> animArray;
+    protected SparseArray<View> cacheArray;
     protected Queue<View> animQueue;
     private int animCount;
+    private boolean mIsCache;
 
     public ListBaseAdapter(Context context, int resource)
     {
@@ -36,8 +38,33 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
         mContext = context;
         mList = new ArrayList<T>();
         inflater = LayoutInflater.from(mContext);
+
         animArray = new SparseArray<Boolean>();
         animQueue = new LinkedList<View>();
+    }
+
+    public ListBaseAdapter(Context context, int resouce, boolean isCache)
+    {
+        this(context, resouce);
+        this.mIsCache = isCache;
+        if (isCache) {
+            cacheArray = new SparseArray<View>();
+        }
+    }
+
+    protected View getCacheView(int index)
+    {
+        if (!mIsCache) {
+            return null;
+        }
+        return cacheArray.get(index);
+    }
+
+    protected void setCacheView(int index, View view)
+    {
+        if (mIsCache) {
+            cacheArray.put(index, view);
+        }
     }
 
     /**
@@ -103,6 +130,9 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
     public void clear()
     {
         mList.clear();
+        if (mIsCache) {
+            cacheArray.clear();
+        }
     }
 
     public void addItem(T item){}

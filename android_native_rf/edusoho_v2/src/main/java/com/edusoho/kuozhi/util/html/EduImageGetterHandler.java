@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +19,9 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 /**
  * Created by howzhi on 14-10-29.
@@ -29,19 +32,36 @@ public class EduImageGetterHandler implements Html.ImageGetter {
     private DisplayImageOptions mOptions;
     private Context mContext;
     private TextView mContainer;
+    private int mImageSize;
+
+    private SparseArray<String> mUrlArray;
 
     public EduImageGetterHandler(Context context, TextView view)
     {
+        this.mImageSize = -1;
         this.mContainer = view;
         this.mContext = context;
+        mUrlArray = new SparseArray<String>();
         mOptions = new DisplayImageOptions.Builder().delayBeforeLoading(100).cacheOnDisk(true).build();
+    }
+
+    public EduImageGetterHandler setSize(int size)
+    {
+        mImageSize = size;
+        return this;
     }
 
     @Override
     public Drawable getDrawable(String s) {
         CacheDrawable drawable = new CacheDrawable();
         try{
-            ImageLoader.getInstance().loadImage(s, mOptions, new CustomImageLoadingListener(drawable));
+            ImageLoader loader = ImageLoader.getInstance();
+            if (mImageSize == -1) {
+                loader.loadImage(s, mOptions, new CustomImageLoadingListener(drawable));
+            } else {
+                ImageSize imageSize = new ImageSize(mImageSize, mImageSize);
+                loader.loadImage(s, imageSize, mOptions, new CustomImageLoadingListener(drawable));
+            }
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,24 +77,36 @@ public class EduImageGetterHandler implements Html.ImageGetter {
             this.mDrawable = drawable;
         }
 
-        @Override
-        public void onLoadingCancelled(String imageUri, View view) {
-        }
-
-        @Override
-        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-            if (showMaxWidth < loadedImage.getWidth()) {
-                loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0, mContext);
-            } else if (showMinWidth >= loadedImage.getWidth()) {
-                loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0, mContext);
+        private void setBitmap(Bitmap loadedImage)
+        {
+            if (mImageSize == -1) {
+                float showMaxWidth =  EdusohoApp.app.screenW * 2 / 3f;
+                float showMinWidth =  EdusohoApp.app.screenW * 1 / 8f;
+                if (showMaxWidth < loadedImage.getWidth()) {
+                    loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0, mContext);
+                } else if (showMinWidth >= loadedImage.getWidth()) {
+                    loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0, mContext);
+                }
+            } else {
+                loadedImage = AppUtil.scaleImageBySize(loadedImage, mImageSize, mContext);
             }
 
             mDrawable.bitmap = loadedImage;
             mDrawable.setBounds(0, 0, loadedImage.getWidth(), loadedImage.getHeight());
             mContainer.setText(mContainer.getText());
+        }
+
+        @Override
+        public void onLoadingCancelled(String imageUri, View view) {
+            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageUri, mOptions);
+            setBitmap(loadedImage);
+            Log.d(null, "imageUri onLoadingCancelled--->" + imageUri);
+        }
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            Log.d(null, "imageUri complete--->" + imageUri);
+            setBitmap(loadedImage);
         }
 
         @Override
@@ -86,6 +118,7 @@ public class EduImageGetterHandler implements Html.ImageGetter {
 
         @Override
         public void onLoadingStarted(String imageUri, View view) {
+            Log.d(null, "imageUri onLoadingStarted--->" + imageUri);
         }
     }
 

@@ -2,6 +2,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/note_list_bg"
+    android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -34,7 +36,6 @@
         android:id="@+id/lesson_note_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:ellipsize="end"
         android:textSize="@dimen/course_content_size"
         android:textColor="@color/list_course_content"
