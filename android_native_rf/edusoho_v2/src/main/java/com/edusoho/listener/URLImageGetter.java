@@ -113,6 +113,7 @@ public class URLImageGetter implements Html.ImageGetter {
 
         @Override
         public void onLoadingCancelled(String imageUri, View view) {
+            
 
         }
     }

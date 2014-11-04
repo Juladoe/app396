@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.adapter.Question;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -55,6 +57,7 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d("QuestionGridViewImageAdapter->", "1");
         ViewHolder holder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(mResourceId, null);
@@ -65,7 +68,12 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        ImageLoader.getInstance().displayImage((String) getItem(position), holder.ivContentImage, new ImageLoadingListener() {
+        String url = getItem(position).toString();
+        if (!url.contains("http")) {
+            url = QuestionDetailActivity.mHost + url;
+        }
+
+        ImageLoader.getInstance().displayImage(url, holder.ivContentImage, mOptions, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
 

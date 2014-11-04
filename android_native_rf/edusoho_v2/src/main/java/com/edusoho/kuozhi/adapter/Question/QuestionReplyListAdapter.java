@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Question.EntireReply;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  * Created by hby on 14-9-18.
  * 回复List适配器
@@ -182,9 +185,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
                 qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
                 //qcvHolder.ivImage = (ImageView) v.findViewById(R.id.iv_contentImage);
-                qcvHolder.gvImage = (GridView) v.findViewById(R.id.gv_image);
-
-                //ImageLoader.getInstance().loadImage(mUser.mediumAvatar, new MyImageLoadingListener(qcvHolder.icon));
+                //qcvHolder.gvImage = (GridView) v.findViewById(R.id.gv_image);
                 ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, mOptions);
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
@@ -195,13 +196,17 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                     qcvHolder.tvPostContent.setVisibility(View.VISIBLE);
                 }
                 URLImageGetter urlImageGetter = new URLImageGetter(qcvHolder.tvPostContent, mContext, qcvHolder.pb_loading);
-                qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(mQuestionDetailModel.content), urlImageGetter, null)));
+                qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(mQuestionDetailModel.content),
+                        urlImageGetter, null)));
                 qcvHolder.btnEdit.setOnClickListener(mOnClickListener);
-//                ImageLoader.getInstance().displayImage(convertUrlStringList(mQuestionDetailModel.content).get(0), qcvHolder.ivImage);
-//                QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
-//                        convertUrlStringList(mQuestionDetailModel.content));
-//                qcvHolder.gvImage.setAdapter(qgvia);
 
+                /*-----------------------------------------*/
+                GridView gvImage = new GridView(mContext);
+                addGridView(gvImage, v);
+                //ImageLoader.getInstance().displayImage(convertUrlStringList(mQuestionDetailModel.content).get(0), qcvHolder.ivImage);
+                QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
+                        convertUrlStringList(mQuestionDetailModel.content));
+                gvImage.setAdapter(qgvia);
                 //第一个问题内容，key==0
                 mListViewCache.addCache(0, v);
             } else {
@@ -284,6 +289,20 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         return v;
     }
 
+    private void addGridView(GridView gvImage, View parent) {
+        RelativeLayout rlPostInfo = (RelativeLayout) parent.findViewById(R.id.rl_post_info);
+        RelativeLayout.LayoutParams gvLayout = new RelativeLayout.LayoutParams(EdusohoApp.screenW * 4 / 5,
+                AppUtil.dip2px(mContext, 100));
+        gvLayout.addRule(RelativeLayout.BELOW, R.id.htv_post_content);
+        gvLayout.setMargins(0, 5, 0, 0);
+        gvImage.setNumColumns(3);
+        gvImage.setLayoutParams(gvLayout);
+        gvImage.setVerticalSpacing(5);
+        gvImage.setHorizontalSpacing(5);
+        gvImage.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        rlPostInfo.addView(gvImage);
+    }
+
     private static class ViewHolder {
         public CircularImageView icon;
         public TextView tvReplyType;
@@ -304,7 +323,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public TextView tvPostContent;
         public ProgressBar pb_loading;
         //public ImageView ivImage;
-        public GridView gvImage;
+//        public GridView gvImage;
     }
 
     public class ListViewCache {

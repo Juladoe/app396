@@ -96,15 +96,15 @@
                 android:visibility="gone"
                 android:id="@+id/pb_reply_content" />
 
-            <GridView
-                android:id="@+id/gv_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:numColumns="3"
-                android:verticalSpacing="5dp"
-                android:horizontalSpacing="5dp"
-                android:visibility="gone"
-                android:stretchMode="columnWidth"></GridView>
+            <!--<GridView-->
+                <!--android:id="@+id/gv_image"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:numColumns="3"-->
+                <!--android:verticalSpacing="5dp"-->
+                <!--android:horizontalSpacing="5dp"-->
+                <!--android:stretchMode="columnWidth"-->
+                <!--android:gravity="center"></GridView>-->
 
         </LinearLayout>
     </RelativeLayout>
