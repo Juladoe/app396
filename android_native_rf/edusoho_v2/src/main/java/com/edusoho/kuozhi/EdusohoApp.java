@@ -125,6 +125,37 @@ public class EdusohoApp extends Application {
         query.ajax(requestUrl.url, requestUrl.getKeysMap(), String.class, ajaxCallback);
     }
 
+    public AjaxCallback getUrl(final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback)
+    {
+        Cache cache = mEngine.appCache.getCache(requestUrl);
+        CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                super.callback(url, object, status);
+                if (this.isCacheRequest()) {
+                    mEngine.appCache.updateCache(requestUrl, object);
+                    ajaxResultCallback.update(url, object, status);
+                    return;
+                }
+                mEngine.appCache.setCache(requestUrl, object);
+                ajaxResultCallback.callback(url, object, status);
+            }
+        };
+
+        ajaxCallback.headers(requestUrl.heads);
+        ajaxCallback.timeout(1000 * 10);
+        ajaxCallback.method(AQuery.METHOD_POST);
+
+        if (cache != null) {
+            Log.d(TAG, "get to cache->" + requestUrl.url);
+            mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
+            ajaxCallback.setCacheRequest(true);
+        }
+
+        query.ajax(requestUrl.url, String.class, ajaxCallback);
+        return ajaxCallback;
+    }
+
     public AjaxCallback postUrl(
             final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
         Cache cache = mEngine.appCache.getCache(requestUrl);

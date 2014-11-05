@@ -45,7 +45,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private NavBtnClickListener mNavBtnClickListener;
     private String mCurrentTag;
     private int mSelectBtn;
-    private CacheServer mCacheServer;
 
     private EduSohoTextBtn moreBtn;
 
@@ -72,12 +71,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         });
 
         logSchoolInfoToServer();
-        mCacheServer = new CacheServer(this);
-        mCacheServer.start();
-
-//        for (int i = 0; i < 5; i++) {
-//            Log.d(null, DigestUtils.md5("http://demo-yun-pub.qiniudn.com/wopZUsA1XiDThH1nxnqwCBLIQGU=/lhyQog0VAbJ8CAM9gp4U46HmJQOF/seg1"));
-//        }
     }
 
     private void showUpdateDlg(final AppUpdateInfo result)
@@ -160,7 +153,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mExitTimer = null;
         AQUtility.cleanCacheAsync(this);
         BitmapAjaxCallback.clearCache();
-        mCacheServer.close();
     }
 
     @Override

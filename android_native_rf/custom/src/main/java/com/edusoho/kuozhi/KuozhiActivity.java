@@ -54,21 +54,11 @@ public class KuozhiActivity extends StartActivity {
     @Override
     protected void showSchoolErrorDlg()
     {
-        PopupDialog popupDialog = PopupDialog.createMuilt(
+        PopupDialog.createNormal(
                 mContext,
                 "提示信息",
-                "网校客户端已关闭或网校服务器出现异常。\n请联系管理员！或选择新网校",
-                new PopupDialog.PopupClickListener() {
-                    @Override
-                    public void onClick(int button) {
-                        if (button == PopupDialog.OK) {
-                            QrSchoolActivity.start(mActivity);
-                            finish();
-                        }
-                    }
-                });
-        popupDialog.setOkText("选择新网校");
-        popupDialog.show();
+                "网校客户端已关闭或网校服务器出现异常"
+        ).show();
     }
 
     @Override

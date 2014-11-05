@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">E电商</string>
-    <string name="app_host">http://school.edianshang.com</string>
-    <string name="school_about">关于E电商</string>
-    <string name="app_code">edianshang</string>
+    <string name="app_name"></string>
+    <string name="app_host"></string>
+    <string name="school_about"></string>
+    <string name="app_code"></string>
+    <string name="splash_num">0</string>
 </resources>

@@ -49,7 +49,7 @@ public class CourseListAdapter<T> extends ListBaseAdapter<T> {
             holder = (ViewHolder) view.getTag();
         }
 
-        if (animArray.keyAt(index) < 0 || null == animArray.get(index)) {
+        if (animArray.get(index) == null) {
             animArray.put(index, true);
             Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.list_item_l_to_r);
             view.startAnimation(animation);

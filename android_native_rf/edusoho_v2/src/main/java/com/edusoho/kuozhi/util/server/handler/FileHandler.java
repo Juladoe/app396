@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.net.URLConnection;
 
 import ch.boye.httpclientandroidlib.HttpEntity;
 import ch.boye.httpclientandroidlib.HttpException;
@@ -73,8 +74,9 @@ public class FileHandler implements HttpRequestHandler {
         Log.d(TAG, "md5Name-->" + md5Name);
         if (videoFile.exists()) {
             Log.d(TAG, "cache-->" + videoFile);
-            FileEntity fileEntity = new FileEntity(videoFile, "video/mp2t");
-            Log.d(null, "file->" + fileEntity.getContentLength());
+            FileEntity fileEntity = new FileEntity(new File("/mnt/sdcard-ext/t.mp4"), "video/mp4; charset=UTF-8");
+            httpResponse.setHeader("Content-Type", "video/mp2t; charset=UTF-8");
+            Log.d(TAG, "contentType-->" + "video/mp4; charset=UTF-8");
             httpResponse.setEntity(fileEntity);
             return;
         }
