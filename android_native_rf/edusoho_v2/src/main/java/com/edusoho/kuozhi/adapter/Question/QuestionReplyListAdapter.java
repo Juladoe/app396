@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
@@ -36,6 +37,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,6 +58,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
      */
     private static final float GRIDVIEW_CONTENT_PROPORTION = 0.75f;
     private static final float GRIDVIEW_REPLY_PROPORTION = 0.6f;
+    private static int mContentImageSize = 0;
+    private static int mReplayImageSize = 0;
     private Activity mActivity;
     private List<EntireReply> mEntireReplyList;
     private User mUser;
@@ -200,8 +204,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                     qcvHolder.pb_loading.setVisibility(View.GONE);
                     qcvHolder.tvPostContent.setVisibility(View.VISIBLE);
                 }
-                qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(fitlerImgTag(mQuestionDetailModel.content)),
-                        null, null)));
+                qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
+                        AppUtil.filterSpace(fitlerImgTag(mQuestionDetailModel.content))), null, null)));
                 qcvHolder.btnEdit.setOnClickListener(mOnClickListener);
 
                 /*-----------------添加GridView图片显示控件------------------------*/
@@ -210,7 +214,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                     GridView gvImage = new GridView(mContext);
                     addGridView(gvImage, v, mUrlList.size());
                     QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
-                            mUrlList);
+                            mUrlList, mContentImageSize, AppUtil.px2sp(mContext, mContext.getResources().getDimension(R.dimen.question_content_image_num_font_size)));
                     gvImage.setAdapter(qgvia);
                 }
                 /*---------------------------------------------------------------*/
@@ -236,7 +240,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
 
             if (holder.tvReplyName.getText().equals(mUser.nickname)) {
                 holder.ivEdit.setVisibility(View.VISIBLE);
-                //ivEdit.setOnClickListener(replyEditClickListener);
                 //编辑回复
                 final EntireReply finalEntireReply = entireReply;
                 holder.ivEdit.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +250,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                         startIntent.putExtra(Const.POST_ID, String.valueOf(finalEntireReply.replyModel.id));
                         startIntent.putExtra(Const.THREAD_ID, String.valueOf(finalEntireReply.replyModel.threadId));
                         startIntent.putExtra(Const.COURSE_ID, String.valueOf(finalEntireReply.replyModel.courseId));
-                        startIntent.putExtra(Const.NORMAL_CONTENT, finalEntireReply.replyModel.content);
+                        startIntent.putExtra(Const.NORMAL_CONTENT, AppUtil.filterSpace(finalEntireReply.replyModel.content));
                         mActivity.startActivityForResult(startIntent, Const.EDIT_REPLY);
                     }
                 });
@@ -286,20 +289,15 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             //URLImageGetter urlImageGetter = new URLImageGetter(holder.tvReplyContent, mContext, holder.pbReplyContent);
             //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
             //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
-            holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(fitlerImgTag(entireReply.replyModel.content)),
-                    null, new EduTagHandler())));
-
-//            TextView textview = new TextView(mContext);
-//            textview.setText("我是创建消息的提示框");
-//            LinearLayout layout = (LinearLayout) v.findViewById(R.id.layout_reply_content);
-//            layout.addView(textview);
+            holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
+                    AppUtil.filterSpace(fitlerImgTag(entireReply.replyModel.content))), null, new EduTagHandler())));
 
             ArrayList<String> mUrlList = convertUrlStringList(entireReply.replyModel.content);
             if (mUrlList.size() > 0) {
                 GridView gvImage = new GridView(mContext);
                 addReplyGridView(gvImage, v, mUrlList.size());
                 QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
-                        mUrlList);
+                        mUrlList, mReplayImageSize, AppUtil.px2sp(mContext, mContext.getResources().getDimension(R.dimen.question_reply_image_num_font_size)));
                 gvImage.setAdapter(qgvia);
             }
 
@@ -312,6 +310,13 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         return v;
     }
 
+    /**
+     * 回复内容中动态添加GridView
+     *
+     * @param gvImage
+     * @param parent
+     * @param imageNum
+     */
     private void addReplyGridView(GridView gvImage, View parent, int imageNum) {
         LinearLayout layout = (LinearLayout) parent.findViewById(R.id.layout_reply_content);
 
@@ -324,11 +329,11 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_REPLY_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
         int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_REPLY_PROPORTION / 3 + verticalSapcingNum * GRIDVIEW_SPACING);
 
+        mReplayImageSize = gridviewWidth / 3;
+
         LinearLayout.LayoutParams gvLayout = new LinearLayout.LayoutParams(gridviewWidth,
                 gridviewHeight);
-        //gvLayout.addRule(RelativeLayout.BELOW, R.id.tv_reply_content);
         gvLayout.setMargins(0, 5, 0, 0);
-        //gvImage.setLayoutParams(gvLayout);
         gvImage.setNumColumns(3);
         gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
         gvImage.setHorizontalSpacing(GRIDVIEW_SPACING);
@@ -348,10 +353,12 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
         int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSapcingNum * GRIDVIEW_SPACING);
 
+        mContentImageSize = gridviewWidth / 3;
+
         RelativeLayout.LayoutParams gvLayout = new RelativeLayout.LayoutParams(gridviewWidth,
                 gridviewHeight);
         gvLayout.addRule(RelativeLayout.BELOW, R.id.htv_post_content);
-        gvLayout.setMargins(0, 5, 0, 0);
+        gvLayout.setMargins(0, 10, 0, 0);
         gvImage.setLayoutParams(gvLayout);
         gvImage.setNumColumns(3);
         gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
@@ -472,5 +479,4 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "").replaceAll("(<p>\\n\\t</p>)", "");
     }
-
 }

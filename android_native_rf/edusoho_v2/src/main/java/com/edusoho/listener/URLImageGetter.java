@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,8 +20,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import cn.trinea.android.common.view.HorizontalListView;
-
 /**
  * Created by Hby on 14-9-29.
  */
@@ -29,20 +27,12 @@ public class URLImageGetter implements Html.ImageGetter {
     private static final String TAG = "URLImageGetter";
     private View mContainer;
     private Context mContext;
-    private ProgressBar mReplyImageLoading;
     private DisplayImageOptions mOptions;
 
-    private HorizontalListView mhListView;
-
-    public URLImageGetter(View v, Context context, ProgressBar progressBar) {
+    public URLImageGetter(View v, Context context) {
         this.mContainer = v;
         this.mContext = context;
-        this.mReplyImageLoading = progressBar;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
-    }
-
-    public void setHorListView(HorizontalListView horListView) {
-        this.mhListView = horListView;
     }
 
     @Override
@@ -51,16 +41,9 @@ public class URLImageGetter implements Html.ImageGetter {
         if (!source.contains("http")) {
             source = EdusohoApp.app.host + source;
         }
-
-        //MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer, this.mReplyImageLoading);
         try {
-            MyImageLoadingListener myImageLoadingListener = new MyImageLoadingListener(urlDrawable, this.mContainer, this.mReplyImageLoading);
+            MyImageLoadingListener myImageLoadingListener = new MyImageLoadingListener(urlDrawable, this.mContainer);
             ImageLoader.getInstance().loadImage(source, mOptions, myImageLoadingListener);
-
-            if (this.mhListView != null) {
-                ImageView imageView = new ImageView(mContext);
-
-            }
         } catch (Exception ex) {
             Log.d("imageURL--->", ex.toString());
         }
@@ -72,15 +55,14 @@ public class URLImageGetter implements Html.ImageGetter {
         private View mContainer;
         private ProgressBar mReplyImageLoading;
 
-        public MyImageLoadingListener(URLDrawable d, View v, ProgressBar progressBar) {
+        public MyImageLoadingListener(URLDrawable d, View v) {
             this.mURLDrawable = d;
             this.mContainer = v;
-            this.mReplyImageLoading = progressBar;
         }
 
         @Override
         public void onLoadingStarted(String imageUri, View view) {
-
+            
         }
 
         @Override
@@ -104,9 +86,6 @@ public class URLImageGetter implements Html.ImageGetter {
     private void refreshImageView(Bitmap loadedImage, URLDrawable mURLDrawable) {
         Bitmap bitmap = loadedImage;
 
-        this.mReplyImageLoading.setVisibility(View.GONE);
-        this.mContainer.setVisibility(View.VISIBLE);
-
         float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
         float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
         if (showMaxWidth < bitmap.getWidth()) {
@@ -119,8 +98,14 @@ public class URLImageGetter implements Html.ImageGetter {
         mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         mURLDrawable.drawable = drawable;
         this.mContainer.postInvalidate();
-        TextView tv = (TextView) this.mContainer;
-        tv.setText(tv.getText());
+        if (this.mContainer instanceof TextView) {
+            TextView tv = (TextView) this.mContainer;
+            tv.setText(tv.getText());
+        } else if (this.mContainer instanceof EditText) {
+            EditText et = (EditText) this.mContainer;
+            et.setText(et.getText());
+        }
+
     }
 
     public class URLDrawable extends BitmapDrawable {
@@ -134,44 +119,4 @@ public class URLImageGetter implements Html.ImageGetter {
             }
         }
     }
-
-//    public class MyBitmapAjaxCallback extends BitmapAjaxCallback {
-//        private URLDrawable mURLDrawable;
-//        private String mURL;
-//        private View mContainer;
-//        private ProgressBar mReplyImageLoading;
-//
-//        public MyBitmapAjaxCallback(URLDrawable d, String sourceUrl, View v, ProgressBar progressBar) {
-//            this.mURLDrawable = d;
-//            this.mURL = sourceUrl;
-//            this.mContainer = v;
-//            this.mReplyImageLoading = progressBar;
-//        }
-//
-//        @Override
-//        protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-//
-//            Bitmap bitmap = URLImageGetter.this.mAQuery.getCachedImage(mURL);
-//
-//            this.mReplyImageLoading.setVisibility(View.GONE);
-//            this.mContainer.setVisibility(View.VISIBLE);
-//
-//            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-//            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-//            if (showMaxWidth < bitmap.getWidth()) {
-//                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, URLImageGetter.this.mContext);
-//            } else if (showMinWidth >= bitmap.getWidth()) {
-//                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
-//            }
-//            Drawable drawable = new BitmapDrawable(bitmap);
-//            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//            mURLDrawable.drawable = drawable;
-//            this.mContainer.postInvalidate();
-//            TextView tv = (TextView) this.mContainer;
-//            tv.setText(tv.getText());
-//        }
-//    }
-
-
 }

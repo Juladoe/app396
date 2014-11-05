@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.adapter.Question;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,17 +29,25 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
     private int mResourceId;
     private ArrayList<String> mImageUrlList;
     private DisplayImageOptions mOptions;
+    private int mImageSize;
+    private float mImageNumFontSize;
 
-    public QuestionGridViewImageAdapter(Context context, int layoutId, ArrayList<String> list) {
+    public QuestionGridViewImageAdapter(Context context, int layoutId, ArrayList<String> list, int conImgSize, float fontSize) {
         this.mContext = context;
         this.mResourceId = layoutId;
         this.mImageUrlList = list;
+        this.mImageSize = conImgSize;
+        this.mImageNumFontSize = fontSize;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
     @Override
     public int getCount() {
         if (mImageUrlList != null) {
+            //如果图片超过3个，也只加载3个
+//            if (mImageUrlList.size() > 3) {
+//                return 3;
+//            }
             return mImageUrlList.size();
         }
         return 0;
@@ -76,14 +85,22 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
             url = EdusohoApp.app.host + url;
         }
 
-        if (position == 3 && getCount() > 3) {
+        holder.ivContentImage.getLayoutParams().height = mImageSize;
+        holder.ivContentImage.getLayoutParams().width = mImageSize;
+        holder.tvImageNum.setTextSize(mImageNumFontSize);
+
+        if (position == 2 && mImageUrlList.size() > 3) {
+            holder.tvImageNum.setText(String.format("共%d张", mImageUrlList.size()));
             holder.tvImageNum.setVisibility(View.VISIBLE);
         }
 
         ImageLoader.getInstance().displayImage(url, holder.ivContentImage, mOptions, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-
+                ImageView iv = (ImageView) view;
+                iv.setBackgroundResource(R.drawable.loading_anim_list);
+                AnimationDrawable ad = (AnimationDrawable) iv.getBackground();
+                ad.start();
             }
 
             @Override
@@ -94,7 +111,9 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 ImageView iv = (ImageView) view;
+                AnimationDrawable ad = (AnimationDrawable) iv.getBackground();
                 iv.setImageBitmap(loadedImage);
+                ad.stop();
             }
 
             @Override

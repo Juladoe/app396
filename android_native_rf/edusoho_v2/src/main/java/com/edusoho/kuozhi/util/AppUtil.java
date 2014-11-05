@@ -76,6 +76,16 @@ public class AppUtil {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    public static int sp2px(Context context, float spValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (spValue * scale + 0.5f);
+    }
+
+    public static int px2sp(Context context, float spValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (spValue / scale + 0.5f);
+    }
+
 
     public static void getImage(
             Context context, String url, final NormalCallback<Bitmap> callback) {
@@ -575,8 +585,7 @@ public class AppUtil {
     }
 
     public static Bitmap scaleImageBySize(
-            Bitmap bitmap, int imageSize, Context context)
-    {
+            Bitmap bitmap, int imageSize, Context context) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 
@@ -951,5 +960,14 @@ public class AppUtil {
         }
 
         return i;
+    }
+
+    /**
+     * 去掉'\n','\t'
+     *
+     * @return
+     */
+    public static String filterSpace(String str) {
+        return str.replaceAll("\\n|\\t", "");
     }
 }
