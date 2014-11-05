@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -61,6 +62,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     protected void startAcitivityWithBundle(String activityName, Bundle bundle)
     {
         app.mEngine.runNormalPluginWithBundle(activityName, mActivity, bundle);
+    }
+
+    protected void startActivityWithBundleAndResult(String activityName, int request, final Bundle bundle)
+    {
+        app.mEngine.runPlubinFromFragmentFroResult(activityName, this, request, bundle);
     }
 
     protected void startAcitivity(String activityName, PluginRunCallback callback)
@@ -176,7 +182,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     }
 
     protected void saveViewState(Bundle savedInstanceState){
-    };
+    }
 
     protected void initView(View view){
     }

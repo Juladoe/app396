@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.ui.note;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +24,7 @@ import com.edusoho.kuozhi.util.html.EduTagHandler;
 public class NoteContentFragment extends BaseFragment {
 
     public static final String CONTENT = "noteContent";
+    public static final int REQUEST_RICH_FRAGMENT = 0010;
 
     private String mTitle;
     private String mNoteContent;
@@ -57,7 +60,11 @@ public class NoteContentFragment extends BaseFragment {
         super.initView(view);
 
         mNoteContentView = (TextView) view.findViewById(R.id.note_content);
+        setContent();
+    }
 
+    private void setContent()
+    {
         SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(
                 mNoteContent,
                 new EduImageGetterHandler(mContext, mNoteContentView),
@@ -83,10 +90,22 @@ public class NoteContentFragment extends BaseFragment {
             int courseId, int lessonId, String title, String content) {
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAT_TITLE, title);
-        bundle.putInt(Const.LESSON_ID, lessonId);
-        bundle.putInt(Const.COURSE_ID, courseId);
+        bundle.putString(Const.LESSON_ID, String.valueOf(lessonId));
+        bundle.putString(Const.COURSE_ID, String.valueOf(courseId));
         bundle.putString(Const.NORMAL_CONTENT, content);
 
-        startAcitivityWithBundle("NoteReplyActivity", bundle);
+        startActivityWithBundleAndResult("NoteReplyActivity", REQUEST_RICH_FRAGMENT, bundle);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_RICH_FRAGMENT && resultCode == Const.OK) {
+            if (data != null) {
+                String resultContent = data.getStringExtra(Const.QUESTION_EDIT_RESULT);
+                mNoteContent = resultContent;
+                setContent();
+            }
+        }
     }
 }

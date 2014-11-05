@@ -24,6 +24,7 @@ public class TextLessonFragment extends BaseFragment {
 
     private Handler webViewHandler;
     private static final int SHOW_IMAGES = 0002;
+
     @Override
     public String getTitle() {
         return "";
@@ -94,7 +95,6 @@ public class TextLessonFragment extends BaseFragment {
                 if (url.startsWith("imageindexnurls")) {
                     return true;
                 }
-                view.loadUrl(url);
                 return true;
             }
         });

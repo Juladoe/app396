@@ -237,7 +237,7 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
         Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
         if (testpaper == null) {
-            holder.mCourseTitle.setText("该试卷已经删除");
+            holder.mTestpaperName.setText("该试卷已经删除");
             return;
         }
         Course course = courses.get(getCourseId(testpaper.target));

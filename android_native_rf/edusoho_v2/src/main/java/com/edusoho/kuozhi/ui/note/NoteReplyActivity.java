@@ -33,8 +33,8 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
     private RichTextBoxFragment richFragment;
     private ProgressDialog mProgressDialog;
 
-    private int mCourseId;
-    private int mLessonId;
+    private String mCourseId;
+    private String mLessonId;
     private String mTitle;
 
     @Override
@@ -50,8 +50,8 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
     {
         Intent intent = getIntent();
         mTitle = intent.getStringExtra(Const.ACTIONBAT_TITLE);
-        mLessonId = intent.getIntExtra(Const.LESSON_ID, 0);
-        mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
+        mLessonId = intent.getStringExtra(Const.LESSON_ID);
+        mCourseId = intent.getStringExtra(Const.COURSE_ID);
     }
 
     private void initViews() {
@@ -102,7 +102,7 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
      */
     private void editNoteContentSubmit(RequestUrl url) {
         mProgressDialog.show();
-        mActivity.ajaxPost(url, new ResultCallback() {
+        ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
@@ -114,8 +114,8 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
                         return;
                     } else {
                         longToast("提交成功!");
-                        mActivity.setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, noteSubmitResult));
-                        mActivity.finish();
+                        setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, noteSubmitResult.content));
+                        finish();
                     }
                 } catch (Exception ex) {
                     mProgressDialog.cancel();

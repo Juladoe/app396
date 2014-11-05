@@ -376,8 +376,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
-                    //String proxyUrl = "http://localhost:5820/" + normalLesson.mediaUri;
-                    fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
+                    String proxyUrl = "http://localhost:5820/" + normalLesson.mediaUri;
+                    fragmentData.putString(Const.MEDIA_URL, proxyUrl);
                     fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);

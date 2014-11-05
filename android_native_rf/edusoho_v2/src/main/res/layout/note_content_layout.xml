@@ -11,7 +11,7 @@
         android:id="@+id/note_lesson_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/material_item_bg"
+        android:background="@drawable/note_content_item_bg"
         android:textSize="@dimen/content_title_size"
         android:textColor="@color/note_content_title"
         android:paddingTop="12dp"
