@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -50,7 +49,7 @@ public class URLImageGetter implements Html.ImageGetter {
     public Drawable getDrawable(String source) {
         final URLDrawable urlDrawable = new URLDrawable();
         if (!source.contains("http")) {
-            source = QuestionDetailActivity.mHost + source;
+            source = EdusohoApp.app.host + source;
         }
 
         //MyBitmapAjaxCallback myBitmapAjaxCallback = new MyBitmapAjaxCallback(urlDrawable, source, this.mContainer, this.mReplyImageLoading);

@@ -39,6 +39,7 @@
             android:layout_alignParentLeft="true" />
 
         <LinearLayout
+            android:id="@+id/layout_reply_content"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/civ_reply_pic"
@@ -83,7 +84,7 @@
             <com.edusoho.kuozhi.view.HtmlTextView
                 android:id="@+id/tv_reply_content"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="2dp"
                 android:textColor="@color/question_lesson"

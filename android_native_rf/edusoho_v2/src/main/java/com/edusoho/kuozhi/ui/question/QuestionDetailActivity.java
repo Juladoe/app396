@@ -48,8 +48,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     private HashMap<String, String> mParams;
 
-    public static String mHost = "";
-
     private QuestionDetailModel mQuestionDetailModel;
 
     @Override
@@ -58,7 +56,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         setContentView(R.layout.question_detail_layout);
         initView();
         setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
-        mHost = this.app.host;
         mActivity = this;
 
     }

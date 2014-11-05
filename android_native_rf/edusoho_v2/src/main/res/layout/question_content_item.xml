@@ -96,7 +96,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
             android:layout_marginTop="15dp"
-            android:visibility="gone"
             android:textColor="@color/question_lesson" />
 
         <ProgressBar
@@ -129,6 +128,7 @@
 
     </RelativeLayout>
 
+    <!--分割阴影-->
     <LinearLayout
         android:layout_below="@+id/rl_post_info"
         android:background="@color/question_background"
