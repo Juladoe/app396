@@ -2,6 +2,7 @@ package com.edusoho.listener;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -77,31 +78,36 @@ public class URLImageGetter implements Html.ImageGetter {
 
         @Override
         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            Bitmap bitmap = loadedImage;
-
-            this.mReplyImageLoading.setVisibility(View.GONE);
-            this.mContainer.setVisibility(View.VISIBLE);
-
-            float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-            float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-            if (showMaxWidth < bitmap.getWidth()) {
-                bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, URLImageGetter.this.mContext);
-            } else if (showMinWidth >= bitmap.getWidth()) {
-                bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
-            }
-            Drawable drawable = new BitmapDrawable(bitmap);
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            mURLDrawable.drawable = drawable;
-            this.mContainer.postInvalidate();
-            TextView tv = (TextView) this.mContainer;
-            tv.setText(tv.getText());
+            refreshImageView(loadedImage, mURLDrawable);
         }
 
         @Override
         public void onLoadingCancelled(String imageUri, View view) {
-
+            Bitmap bitmap = BitmapFactory.decodeFile(ImageLoader.getInstance().getDiskCache().get(imageUri).getPath());
+            refreshImageView(bitmap, mURLDrawable);
         }
+    }
+
+    private void refreshImageView(Bitmap loadedImage, URLDrawable mURLDrawable) {
+        Bitmap bitmap = loadedImage;
+
+        this.mReplyImageLoading.setVisibility(View.GONE);
+        this.mContainer.setVisibility(View.VISIBLE);
+
+        float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
+        float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
+        if (showMaxWidth < bitmap.getWidth()) {
+            bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, URLImageGetter.this.mContext);
+        } else if (showMinWidth >= bitmap.getWidth()) {
+            bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
+        }
+        Drawable drawable = new BitmapDrawable(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        mURLDrawable.drawable = drawable;
+        this.mContainer.postInvalidate();
+        TextView tv = (TextView) this.mContainer;
+        tv.setText(tv.getText());
     }
 
     public class URLDrawable extends BitmapDrawable {
