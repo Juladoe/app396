@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.shard;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 
 /**
@@ -18,8 +19,9 @@ public class ListData {
         this.icon = icon;
         this.type = type;
         mContext = context;
-        text = String.valueOf(mContext.getResources().getIdentifier(
-                type,"strings", mContext.getPackageName()));
+        Resources resources = mContext.getResources();
+        text = resources.getString(resources.getIdentifier(
+                type,"string", mContext.getPackageName()));
     }
 
 }

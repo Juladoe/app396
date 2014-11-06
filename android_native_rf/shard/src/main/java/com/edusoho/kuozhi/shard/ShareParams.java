@@ -40,12 +40,9 @@ public class ShareParams {
     }
 
     public ShareParams initShareParams(
-            int notification_icon, String notification_text, String shareTextTitle
-            , String shareTitleUrl, String shareText, String localImagePath, String ShareSite
+            String shareTextTitle,String shareTitleUrl, String shareText, String localImagePath, String ShareSite
     )
     {
-        mNotification_icon = notification_icon;
-        mNotification_text = notification_text;
         mShareTextTitle = shareTextTitle;
         mShareTitleUrl = shareTitleUrl;
         mShareText = shareText;
@@ -105,9 +102,9 @@ public class ShareParams {
         mOneKeyShare.disableSSOWhenAuthorize();
 
         // 分享时Notification的图标和文字
-        mOneKeyShare.setNotification(mNotification_icon, mNotification_text);
+        mOneKeyShare.setNotification(R.drawable.app_splash, mNotification_text);
         // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-        mOneKeyShare.setTitle(mShareTextTitle);
+        mOneKeyShare.setTitle("分享");
         // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
         mOneKeyShare.setTitleUrl(mShareTitleUrl);
         // text是分享文本，所有平台都需要这个字段
