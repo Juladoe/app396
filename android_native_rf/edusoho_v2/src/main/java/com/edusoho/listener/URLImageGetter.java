@@ -106,7 +106,6 @@ public class URLImageGetter implements Html.ImageGetter {
             EditText et = (EditText) this.mContainer;
             et.setText(et.getText());
         }
-
     }
 
     public class URLDrawable extends BitmapDrawable {

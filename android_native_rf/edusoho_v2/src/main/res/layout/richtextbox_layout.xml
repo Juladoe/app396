@@ -9,6 +9,20 @@
     android:paddingBottom="@dimen/activity_vertical_margin">
 
     <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_title"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/login_edt_bg_sel"
+        android:textSize="@dimen/login_edt_text"
+        android:textColorHint="@color/login_edt_hit"
+        android:singleLine="true"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:hint="添加标题..." />
+
+    <EditText
         android:id="@+id/et_content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -16,8 +30,8 @@
         android:background="@null"
         android:hint="添加回复..."
         android:singleLine="false"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/ll_font_style" />
+        android:layout_above="@+id/ll_font_style"
+        android:layout_below="@+id/et_title" />
 
     <LinearLayout
         android:id="@+id/ll_font_style"

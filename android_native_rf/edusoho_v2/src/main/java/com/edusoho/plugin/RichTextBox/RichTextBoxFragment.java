@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
@@ -49,12 +50,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -84,6 +85,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private ImageView ivFontSizeDecre;
     private ImageView ivCamera;
     private ImageView ivPhoto;
+    private EditText etQuestionTitle;
 
     /**
      * 从手机图库中选择图片返回结果表示
@@ -191,6 +193,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivFontSizeDecre = (ImageView) mRichTextBoxView.findViewById(R.id.iv_font_decrease);
         ivPhoto = (ImageView) mRichTextBoxView.findViewById(R.id.iv_photo);
         ivCamera = (ImageView) mRichTextBoxView.findViewById(R.id.iv_camera);
+        etQuestionTitle = (EditText) mRichTextBoxView.findViewById(R.id.et_title);
 
         mCourseId = mActivity.getIntent().getStringExtra(Const.COURSE_ID);
         mThreadId = mActivity.getIntent().getStringExtra(Const.THREAD_ID);
@@ -214,6 +217,13 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         if (mColorPickerDialog == null) {
             mColorPickerDialog = new ColorPickerDialog(mActivity, Color.BLACK);
             mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
+        }
+
+        if (mTitle != null && mTitle != "") {
+            etQuestionTitle.setVisibility(View.VISIBLE);
+            etQuestionTitle.setText(mTitle);
+        } else {
+            etQuestionTitle.setVisibility(View.GONE);
         }
 
         etContent.setOnClickListener(this);
@@ -589,7 +599,11 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     public String getTitle() {
-        return mTitle;
+        return etQuestionTitle.getText().toString().trim();
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     public int getImageHashMapSize() {
@@ -639,7 +653,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     private String addSplitImgTag(String content) {
-        ArrayList<String> urlLits = new ArrayList<String>();
         Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
         while (m.find()) {
             content = content.replace(m.group(1), "<p>" + m.group(1) + "</p>");
