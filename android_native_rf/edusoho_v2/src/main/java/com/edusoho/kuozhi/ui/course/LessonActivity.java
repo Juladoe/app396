@@ -109,6 +109,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
             }
         };
+
         fragmentData = new Bundle();
         initMenuDrawer();
         initView();

@@ -88,7 +88,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
                 int end = spanned.getSpanEnd(urlSpan);
                 spanned.removeSpan(urlSpan);
                 spanned.setSpan(
-                        new MessageUrlSpan(urlSpan.getURL()),
+                        new MessageUrlSpan(urlSpan.getURL(), spanned.subSequence(start, end)),
                         start,
                         end,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -101,9 +101,12 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
 
     private class MessageUrlSpan extends URLSpan
     {
-        public MessageUrlSpan(String url)
+        private CharSequence mTitle;
+
+        public MessageUrlSpan(String url, CharSequence title)
         {
             super(url);
+            this.mTitle = title;
         }
 
         @Override
@@ -134,6 +137,11 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
                     showUser(AppUtil.parseInt(type1_value));
                 } else if ("course".equalsIgnoreCase(type1)) {
                     if ("thread".equalsIgnoreCase(type2)) {
+                        showThread(
+                                AppUtil.parseInt(type1_value),
+                                AppUtil.parseInt(type2_value),
+                                mTitle.toString()
+                        );
                         return;
                     }
                     showCourse(AppUtil.parseInt(type1_value));
@@ -144,6 +152,15 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
                 }
             }
         }
+    }
+
+    private void showThread(int courseId, int threadId, String title)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.COURSE_ID, courseId);
+        bundle.putInt(Const.THREAD_ID, threadId);
+        bundle.putString(Const.QUESTION_TITLE, title);
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle("QuestionDetailActivity", mContext, bundle);
     }
 
     private void showTestPaperResult(int testResultId)
