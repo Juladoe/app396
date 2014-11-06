@@ -5,26 +5,26 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.server.handler.FileHandler;
-import com.edusoho.kuozhi.util.server.handler.StringHandler;
 
-import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.impl.DefaultHttpResponseFactory;
-import org.apache.http.impl.DefaultHttpServerConnection;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpProcessor;
-import org.apache.http.protocol.HttpRequestHandlerRegistry;
-import org.apache.http.protocol.HttpService;
-import org.apache.http.protocol.ResponseConnControl;
-import org.apache.http.protocol.ResponseContent;
-import org.apache.http.protocol.ResponseDate;
-import org.apache.http.protocol.ResponseServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy;
+import ch.boye.httpclientandroidlib.impl.DefaultHttpResponseFactory;
+import ch.boye.httpclientandroidlib.impl.DefaultHttpServerConnection;
+import ch.boye.httpclientandroidlib.params.BasicHttpParams;
+import ch.boye.httpclientandroidlib.params.CoreConnectionPNames;
+import ch.boye.httpclientandroidlib.params.CoreProtocolPNames;
+import ch.boye.httpclientandroidlib.params.HttpParams;
+import ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor;
+import ch.boye.httpclientandroidlib.protocol.HttpRequestHandlerRegistry;
+import ch.boye.httpclientandroidlib.protocol.HttpService;
+import ch.boye.httpclientandroidlib.protocol.ResponseConnControl;
+import ch.boye.httpclientandroidlib.protocol.ResponseContent;
+import ch.boye.httpclientandroidlib.protocol.ResponseDate;
+import ch.boye.httpclientandroidlib.protocol.ResponseServer;
 
 public class CacheServer extends Thread{
 
@@ -75,7 +75,7 @@ public class CacheServer extends Thread{
             // 创建HTTP请求执行器注册表
             HttpRequestHandlerRegistry reqistry = new HttpRequestHandlerRegistry();
             // 增加HTTP请求执行器
-            reqistry.register("*", new FileHandler(mActivity));
+            reqistry.register("*", new FileHandler(mActivity.app.host, mActivity));
             // 设置HTTP请求执行器
             httpService.setHandlerResolver(reqistry);
 			/* 循环接收各客户端 */

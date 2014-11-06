@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.trinea.android.common.util.DigestUtils;
+
 /**
  * Created by howzhi on 14-7-22.
  */

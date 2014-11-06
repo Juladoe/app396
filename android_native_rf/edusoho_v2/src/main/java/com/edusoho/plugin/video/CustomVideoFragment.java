@@ -24,7 +24,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
         /**
          * 发起一次播放任务,当然您不一定要在这发起
          */
-
         if (mLastPos > 0) {
             Log.d(null, "resumePlay--->");
             reloadLessonMediaUrl(new NormalCallback<LessonItem>() {

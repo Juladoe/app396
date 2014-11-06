@@ -143,6 +143,7 @@ public class VideoLessonFragment extends BaseFragment {
                 "BDVideoLessonFragment", mActivity, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
+                //String proxyUrl = "http://localhost:5820/" + lessonItem.mediaUri;
                 bundle.putString(Const.MEDIA_URL, lessonItem.mediaUri);
                 bundle.putString(Const.HEAD_URL, lessonItem.headUrl);
             }

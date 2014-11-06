@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -41,5 +42,11 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
                 fragmentName, mActivity, bundle);
         fragmentTransaction.replace(android.R.id.content, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(FRAGMENT, "onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
