@@ -477,6 +477,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
      * @return
      */
     private String fitlerImgTag(String content) {
-        return content.replaceAll("(<img src=\".*?\" .>)", "").replaceAll("(<p>\\n\\t</p>)", "");
+        return content.replaceAll("(<img src=\".*?\" .>)", "");
+        //return content.replaceAll("(<img src=\".*?\" .>)", "").replaceAll("(<p>\\n\\t</p>)", "");
     }
 }
