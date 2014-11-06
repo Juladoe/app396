@@ -147,6 +147,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
                 if (ajaxStatus.getCode() != 200) {
+                    mProgressDialog.cancel();
                     Log.e(TAG, String.valueOf(ajaxStatus.getCode()));
                 }
             }
@@ -179,7 +180,16 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                     Log.e(TAG, ex.toString());
                 }
             }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                if (ajaxStatus.getCode() != 200) {
+                    mProgressDialog.cancel();
+                    Log.e(TAG, String.valueOf(ajaxStatus.getCode()));
+                }
+            }
         });
+
     }
 
     /**
@@ -189,6 +199,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
         mProgressDialog = new ProgressDialog(mActivity);
         mProgressDialog.setMessage("提交中...");
         mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setCancelable(true);
+        mProgressDialog.setCancelable(false);
     }
 }

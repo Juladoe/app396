@@ -1,10 +1,9 @@
-package com.edusoho.kuozhi.adapter;
+package com.edusoho.kuozhi.adapter.Question;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
@@ -12,20 +11,21 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.androidquery.AQuery;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Question.EntireReply;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.model.User;
-import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -33,7 +33,6 @@ import com.edusoho.kuozhi.util.html.EduTagHandler;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.kuozhi.view.HtmlTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
-import com.edusoho.listener.URLImageGetter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -41,6 +40,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by hby on 14-9-18.
@@ -48,6 +49,17 @@ import java.util.List;
  */
 public class QuestionReplyListAdapter extends ListBaseAdapter {
     private static final String TAG = "QuestionReplyListAdapter";
+    /**
+     * gridview内部间隙
+     */
+    private static final int GRIDVIEW_SPACING = 10;
+    /**
+     * gridview大小比例
+     */
+    private static final float GRIDVIEW_CONTENT_PROPORTION = 0.75f;
+    private static final float GRIDVIEW_REPLY_PROPORTION = 0.6f;
+    private static int mContentImageSize = 0;
+    private static int mReplayImageSize = 0;
     private Activity mActivity;
     private List<EntireReply> mEntireReplyList;
     private User mUser;
@@ -183,19 +195,29 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.tvPostTitle = (TextView) v.findViewById(R.id.post_title);
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
                 qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
-
-                //ImageLoader.getInstance().loadImage(mUser.mediumAvatar, new MyImageLoadingListener(qcvHolder.icon));
                 ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, mOptions);
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
+
                 if (!mQuestionDetailModel.content.contains("img src")) {
                     qcvHolder.pb_loading.setVisibility(View.GONE);
                     qcvHolder.tvPostContent.setVisibility(View.VISIBLE);
                 }
-                URLImageGetter urlImageGetter = new URLImageGetter(qcvHolder.tvPostContent, mContext, qcvHolder.pb_loading);
-                qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(mQuestionDetailModel.content), urlImageGetter, null)));
+                qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
+                        AppUtil.filterSpace(fitlerImgTag(mQuestionDetailModel.content))), null, null)));
                 qcvHolder.btnEdit.setOnClickListener(mOnClickListener);
+
+                /*-----------------添加GridView图片显示控件------------------------*/
+                ArrayList<String> mUrlList = convertUrlStringList(mQuestionDetailModel.content);
+                if (mUrlList.size() > 0) {
+                    GridView gvImage = new GridView(mContext);
+                    addGridView(gvImage, v, mUrlList.size());
+                    QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
+                            mUrlList, mContentImageSize, AppUtil.px2sp(mContext, mContext.getResources().getDimension(R.dimen.question_content_image_num_font_size)));
+                    gvImage.setAdapter(qgvia);
+                }
+                /*---------------------------------------------------------------*/
 
                 //第一个问题内容，key==0
                 mListViewCache.addCache(0, v);
@@ -218,7 +240,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
 
             if (holder.tvReplyName.getText().equals(mUser.nickname)) {
                 holder.ivEdit.setVisibility(View.VISIBLE);
-                //ivEdit.setOnClickListener(replyEditClickListener);
                 //编辑回复
                 final EntireReply finalEntireReply = entireReply;
                 holder.ivEdit.setOnClickListener(new View.OnClickListener() {
@@ -229,7 +250,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                         startIntent.putExtra(Const.POST_ID, String.valueOf(finalEntireReply.replyModel.id));
                         startIntent.putExtra(Const.THREAD_ID, String.valueOf(finalEntireReply.replyModel.threadId));
                         startIntent.putExtra(Const.COURSE_ID, String.valueOf(finalEntireReply.replyModel.courseId));
-                        startIntent.putExtra(Const.NORMAL_CONTENT, finalEntireReply.replyModel.content);
+                        startIntent.putExtra(Const.NORMAL_CONTENT, AppUtil.filterSpace(finalEntireReply.replyModel.content));
                         mActivity.startActivityForResult(startIntent, Const.EDIT_REPLY);
                     }
                 });
@@ -265,11 +286,21 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 holder.tvReplyContent.setVisibility(View.VISIBLE);
             }
 
-            URLImageGetter urlImageGetter = new URLImageGetter(holder.tvReplyContent, mContext, holder.pbReplyContent);
+            //URLImageGetter urlImageGetter = new URLImageGetter(holder.tvReplyContent, mContext, holder.pbReplyContent);
             //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
             //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
-            holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(entireReply.replyModel.content),
-                    urlImageGetter, new EduTagHandler())));
+            holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
+                    AppUtil.filterSpace(fitlerImgTag(entireReply.replyModel.content))), null, new EduTagHandler())));
+
+            ArrayList<String> mUrlList = convertUrlStringList(entireReply.replyModel.content);
+            if (mUrlList.size() > 0) {
+                GridView gvImage = new GridView(mContext);
+                addReplyGridView(gvImage, v, mUrlList.size());
+                QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
+                        mUrlList, mReplayImageSize, AppUtil.px2sp(mContext, mContext.getResources().getDimension(R.dimen.question_reply_image_num_font_size)));
+                gvImage.setAdapter(qgvia);
+            }
+
             mListViewCache.addCache(entireReply.replyModel.id, v);
         } else {
             v = mListViewCache.getOneCacheView(entireReply.replyModel.id);
@@ -277,6 +308,63 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         }
 
         return v;
+    }
+
+    /**
+     * 回复内容中动态添加GridView
+     *
+     * @param gvImage
+     * @param parent
+     * @param imageNum
+     */
+    private void addReplyGridView(GridView gvImage, View parent, int imageNum) {
+        LinearLayout layout = (LinearLayout) parent.findViewById(R.id.layout_reply_content);
+
+        int horizontalSpacingNum = 2;
+        if (imageNum < 3) {
+            horizontalSpacingNum = imageNum % 3 - 1;
+        }
+        int verticalSapcingNum = (int) Math.ceil(imageNum / 3.0) - 1;
+
+        int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_REPLY_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
+        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_REPLY_PROPORTION / 3 + verticalSapcingNum * GRIDVIEW_SPACING);
+
+        mReplayImageSize = gridviewWidth / 3;
+
+        LinearLayout.LayoutParams gvLayout = new LinearLayout.LayoutParams(gridviewWidth,
+                gridviewHeight);
+        gvLayout.setMargins(0, 5, 0, 0);
+        gvImage.setNumColumns(3);
+        gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
+        gvImage.setHorizontalSpacing(GRIDVIEW_SPACING);
+        gvImage.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        layout.addView(gvImage, gvLayout);
+
+    }
+
+    private void addGridView(GridView gvImage, View parent, int imageNum) {
+        RelativeLayout rlPostInfo = (RelativeLayout) parent.findViewById(R.id.rl_post_info);
+        int horizontalSpacingNum = 2;
+        if (imageNum < 3) {
+            horizontalSpacingNum = imageNum % 3 - 1;
+        }
+        int verticalSapcingNum = (int) Math.ceil(imageNum / 3.0) - 1;
+
+        int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
+        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSapcingNum * GRIDVIEW_SPACING);
+
+        mContentImageSize = gridviewWidth / 3;
+
+        RelativeLayout.LayoutParams gvLayout = new RelativeLayout.LayoutParams(gridviewWidth,
+                gridviewHeight);
+        gvLayout.addRule(RelativeLayout.BELOW, R.id.htv_post_content);
+        gvLayout.setMargins(0, 10, 0, 0);
+        gvImage.setLayoutParams(gvLayout);
+        gvImage.setNumColumns(3);
+        gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
+        gvImage.setHorizontalSpacing(GRIDVIEW_SPACING);
+        gvImage.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        rlPostInfo.addView(gvImage);
     }
 
     private static class ViewHolder {
@@ -297,6 +385,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public TextView tvPostTitle;
         public TextView tvPostContent;
         public ProgressBar pb_loading;
+        //public ImageView ivImage;
+//        public GridView gvImage;
     }
 
     public class ListViewCache {
@@ -338,39 +428,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         tv.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
     }
 
-    public class MyImageGetter implements Html.ImageGetter {
-        private AQuery mAquery;
-
-        public MyImageGetter(AQuery aQuery) {
-            this.mAquery = aQuery;
-        }
-
-        @Override
-        public Drawable getDrawable(String source) {
-            if (!source.contains("http")) {
-                source = QuestionDetailActivity.mHost + source;
-            }
-            Drawable drawable = new BitmapDrawable(mContext.getResources().openRawResource(R.drawable.defaultpic));
-            try {
-                mAquery.id(R.id.iv_tmp).image(source, true, true, 1, R.drawable.defaultpic, null, AQuery.FADE_IN_NETWORK);
-                Toast.makeText(mContext, "加载完成", 500).show();
-                Bitmap bitmap = mAquery.getCachedImage(source);
-                float showMaxWidth = EdusohoApp.app.screenW * 2 / 3f;
-                float showMinWidth = EdusohoApp.app.screenW * 1 / 8f;
-                if (showMaxWidth < bitmap.getWidth()) {
-                    bitmap = AppUtil.scaleImage(bitmap, showMaxWidth, 0, mContext);
-                } else if (showMinWidth >= bitmap.getWidth()) {
-                    bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
-                }
-                drawable = new BitmapDrawable(bitmap);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            } catch (Exception ex) {
-                Log.d("imageURL--->", ex.toString());
-            }
-            return drawable;
-        }
-    }
-
     public class MyImageLoadingListener implements ImageLoadingListener {
 
         @Override
@@ -394,4 +451,33 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         }
     }
 
+    /**
+     * 过滤回复内容，提取url
+     *
+     * @param content
+     */
+    private ArrayList<String> convertUrlStringList(String content) {
+        ArrayList<String> urlLits = new ArrayList<String>();
+        Matcher m = Pattern.compile("(img src=\".*?\")").matcher(content);
+        while (m.find()) {
+            String[] s = m.group(1).split("src=");
+            String strUrl = s[1].toString().substring(1, s[1].length() - 1);
+            if (!strUrl.contains("http")) {
+                strUrl = EdusohoApp.app.host + strUrl;
+            }
+            urlLits.add(strUrl);
+        }
+        return urlLits;
+    }
+
+    /**
+     * 过滤img标签
+     *
+     * @param content
+     * @return
+     */
+    private String fitlerImgTag(String content) {
+        return content.replaceAll("(<img src=\".*?\" .>)", "");
+        //return content.replaceAll("(<img src=\".*?\" .>)", "").replaceAll("(<p>\\n\\t</p>)", "");
+    }
 }

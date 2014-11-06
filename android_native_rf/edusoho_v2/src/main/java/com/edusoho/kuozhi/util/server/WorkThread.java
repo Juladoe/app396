@@ -1,13 +1,14 @@
 package com.edusoho.kuozhi.util.server;
 
-import org.apache.http.ConnectionClosedException;
-import org.apache.http.HttpException;
-import org.apache.http.HttpServerConnection;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpService;
 
 import java.io.IOException;
+
+import ch.boye.httpclientandroidlib.ConnectionClosedException;
+import ch.boye.httpclientandroidlib.HttpException;
+import ch.boye.httpclientandroidlib.HttpServerConnection;
+import ch.boye.httpclientandroidlib.protocol.BasicHttpContext;
+import ch.boye.httpclientandroidlib.protocol.HttpContext;
+import ch.boye.httpclientandroidlib.protocol.HttpService;
 
 /**
  * Created by howzhi on 14-10-24.

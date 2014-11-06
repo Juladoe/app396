@@ -237,11 +237,11 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
         Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
         if (testpaper == null) {
-            holder.mCourseTitle.setText("该试卷已经删除");
+            holder.mTestpaperName.setText("该试卷已经删除");
             return;
         }
         Course course = courses.get(getCourseId(testpaper.target));
-        holder.mCourseTitle.setText(course.title);
+        holder.mCourseTitle.setText(String.format("来自课程《%s》", course.title));
         int width = (int)(EdusohoApp.app.screenW * 0.4f);
         if (TextUtils.isEmpty(course.largePicture)) {
             holder.aq.id(R.id.testpaper_icon).image(R.drawable.noram_course);
@@ -260,17 +260,20 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
             holder.mStatusView.setBackgroundDrawable(
                     mActivity.getResources().getDrawable(R.drawable.red_card_bg));
             holder.mShowBtn.setVisibility(View.VISIBLE);
+            holder.mStatusView.setVisibility(View.VISIBLE);
         } else if ("doing".equals(status)) {
             holder.mStatusView.setText("未交卷");
             holder.mStatusView.setBackgroundDrawable(
                     mActivity.getResources().getDrawable(R.drawable.red_card_bg));
             holder.mDoBtn.setVisibility(View.VISIBLE);
+            holder.mStatusView.setVisibility(View.VISIBLE);
         } else if ("finished".equals(status)) {
             holder.mStatusView.setText(String.format("得分:%.1f", testpaperResult.score));
             holder.mStatusView.setBackgroundDrawable(
                     mActivity.getResources().getDrawable(R.drawable.blue_card_bg));
             holder.mRedoBtn.setVisibility(View.VISIBLE);
             holder.mShowBtn.setVisibility(View.VISIBLE);
+            holder.mStatusView.setVisibility(View.VISIBLE);
         }
     }
 

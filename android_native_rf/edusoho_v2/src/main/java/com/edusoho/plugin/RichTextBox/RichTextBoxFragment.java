@@ -44,8 +44,12 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduTagHandler;
+import com.edusoho.listener.URLImageGetter;
 import com.edusoho.plugin.FontColorPicker.ColorPickerDialog;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,6 +61,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by hby on 14-10-16.
@@ -79,6 +85,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private ImageView ivFontSizeDecre;
     private ImageView ivCamera;
     private ImageView ivPhoto;
+    private EditText etQuestionTitle;
 
     /**
      * 从手机图库中选择图片返回结果表示
@@ -116,7 +123,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      * id
      */
     private String mPostId;
-    private String mTitle;
+    private String mTitle = null;
     private String mOriginalContent;
 
     /**
@@ -186,6 +193,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivFontSizeDecre = (ImageView) mRichTextBoxView.findViewById(R.id.iv_font_decrease);
         ivPhoto = (ImageView) mRichTextBoxView.findViewById(R.id.iv_photo);
         ivCamera = (ImageView) mRichTextBoxView.findViewById(R.id.iv_camera);
+        etQuestionTitle = (EditText) mRichTextBoxView.findViewById(R.id.et_title);
 
         mCourseId = mActivity.getIntent().getStringExtra(Const.COURSE_ID);
         mThreadId = mActivity.getIntent().getStringExtra(Const.THREAD_ID);
@@ -194,21 +202,28 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, new EduTagHandler())));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, new URLImageGetter(etContent, mContext), new EduTagHandler())));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, new EduTagHandler())));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(mOriginalContent), new URLImageGetter(etContent, mContext), new EduTagHandler())));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
         } else {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, imgGetter, new EduTagHandler())));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(mOriginalContent), new URLImageGetter(etContent, mContext), new EduTagHandler())));
         }
 
         if (mColorPickerDialog == null) {
             mColorPickerDialog = new ColorPickerDialog(mActivity, Color.BLACK);
             mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
+        }
+
+        if (mTitle != null) {
+            etQuestionTitle.setVisibility(View.VISIBLE);
+            etQuestionTitle.setText(mTitle);
+        } else {
+            etQuestionTitle.setVisibility(View.GONE);
         }
 
         etContent.setOnClickListener(this);
@@ -522,13 +537,38 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             Drawable drawable = null;
             try {
                 Bitmap bitmap = BitmapFactory.decodeFile(ImageLoader.getInstance().getDiskCache().get(source).getPath());
-                float showWidth = EdusohoApp.app.screenW * 0.8f;
-                if (showWidth < bitmap.getHeight()) {
-                    bitmap = AppUtil.scaleImage(bitmap, showWidth, 0, mContext);
-                }
-                drawable = new BitmapDrawable(bitmap);
+                if (bitmap == null) {
+                    ImageLoader.getInstance().loadImage(source, new DisplayImageOptions.Builder().cacheOnDisk(true).build(),
+                            new ImageLoadingListener() {
+                                @Override
+                                public void onLoadingStarted(String imageUri, View view) {
 
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                }
+
+                                @Override
+                                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                                }
+
+                                @Override
+                                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                    //bitmap = loadedImage;
+                                }
+
+                                @Override
+                                public void onLoadingCancelled(String imageUri, View view) {
+
+                                }
+                            });
+                } else {
+                    float showWidth = EdusohoApp.app.screenW * 0.8f;
+                    if (showWidth < bitmap.getHeight()) {
+                        bitmap = AppUtil.scaleImage(bitmap, showWidth, 0, mContext);
+                    }
+                    drawable = new BitmapDrawable(bitmap);
+
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                }
             } catch (Exception ex) {
                 Log.d("imageURL--->", ex.toString());
             }
@@ -559,7 +599,11 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     public String getTitle() {
-        return mTitle;
+        return etQuestionTitle.getText().toString().trim();
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     public int getImageHashMapSize() {
@@ -606,6 +650,14 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             }
         }
         return null;
+    }
+
+    private String addSplitImgTag(String content) {
+        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
+        while (m.find()) {
+            content = content.replace(m.group(1), "<p>" + m.group(1) + "</p>");
+        }
+        return content;
     }
 
 }

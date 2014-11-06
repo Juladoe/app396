@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Note.Note;
 import com.edusoho.kuozhi.model.Note.NoteSubmitResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -30,12 +31,18 @@ import java.util.HashMap;
  */
 public class NoteReplyActivity extends ActionBarBaseActivity {
     private String TAG = "NoteReplyActivity";
+
+    public static final String TYPE = "type";
+    public static final int ADD = 0001;
+    public static final int UPDATE = 0002;
+
     private RichTextBoxFragment richFragment;
     private ProgressDialog mProgressDialog;
 
-    private int mCourseId;
-    private int mLessonId;
+    private String mCourseId;
+    private String mLessonId;
     private String mTitle;
+    private int mType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +57,56 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
     {
         Intent intent = getIntent();
         mTitle = intent.getStringExtra(Const.ACTIONBAT_TITLE);
-        mLessonId = intent.getIntExtra(Const.LESSON_ID, 0);
-        mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
+        mLessonId = intent.getStringExtra(Const.LESSON_ID);
+        mCourseId = intent.getStringExtra(Const.COURSE_ID);
+        mType = intent.getIntExtra(TYPE, UPDATE);
     }
 
     private void initViews() {
         setBackMode(BACK, mTitle);
+
+        if (mType == ADD) {
+            loadLessonNote();
+        } else {
+            showRichFragment(null);
+        }
+    }
+
+    private void showRichFragment(String content)
+    {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         richFragment = new RichTextBoxFragment();
         byte[] itemArgs = new byte[]{View.VISIBLE, View.VISIBLE, View.VISIBLE, View.GONE, View.VISIBLE, View.VISIBLE, View.VISIBLE};
         Bundle bundle = new Bundle();
+        if (content != null) {
+            getIntent().putExtra(Const.NORMAL_CONTENT, content);
+        }
         bundle.putByteArray(Const.RICH_ITEM_AGRS, itemArgs);
         richFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.linear, richFragment);
         fragmentTransaction.commit();
+    }
+
+    private void loadLessonNote()
+    {
+        RequestUrl requestUrl = app.bindUrl(Const.GET_LESSON_NOTE, true);
+        requestUrl.setParams(new String[] {
+                Const.COURSE_ID, String.valueOf(mCourseId),
+                Const.LESSON_ID, String.valueOf(mLessonId),
+        });
+        setProgressBarIndeterminateVisibility(true);
+        ajaxPost(requestUrl, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                setProgressBarIndeterminateVisibility(false);
+                Note note = parseJsonValue(object, new TypeToken<Note>(){});
+                if (note == null) {
+                    showRichFragment("");
+                    return;
+                }
+                showRichFragment(note.content);
+            }
+        });
     }
 
     @Override
@@ -102,7 +145,7 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
      */
     private void editNoteContentSubmit(RequestUrl url) {
         mProgressDialog.show();
-        mActivity.ajaxPost(url, new ResultCallback() {
+        ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
@@ -114,8 +157,8 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
                         return;
                     } else {
                         longToast("提交成功!");
-                        mActivity.setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, noteSubmitResult));
-                        mActivity.finish();
+                        setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, noteSubmitResult.content));
+                        finish();
                     }
                 } catch (Exception ex) {
                     mProgressDialog.cancel();

@@ -83,6 +83,8 @@
     <dimen name="question_item_title_size">18sp</dimen>
     <dimen name="question_item_lesson">14sp</dimen>
     <dimen name="question_teacher_reply">12sp</dimen>
+    <dimen name="question_content_image_num_font_size">10sp</dimen>
+    <dimen name="question_reply_image_num_font_size">8sp</dimen>
 
     <dimen name="small_btn">7sp</dimen>
     <dimen name="my_testpaper_btn">7sp</dimen>

@@ -4,4 +4,5 @@
     <string name="app_host">http://www.17mooc.cn</string>
     <string name="school_about">关于一起慕课</string>
     <string name="app_code">17mooc</string>
+    <string name="splash_num">0</string>
 </resources>

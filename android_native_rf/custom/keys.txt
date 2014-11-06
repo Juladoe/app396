@@ -10,3 +10,9 @@ productFlavors {
                 packageName "com.edusoho_edianshang.kuozhi"
             }
         }
+
+productFlavors {
+        edianshang {
+            packageName "com.lixianggongchang.kuozhi"
+        }
+    }

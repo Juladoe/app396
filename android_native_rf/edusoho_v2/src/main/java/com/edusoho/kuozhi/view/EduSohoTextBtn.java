@@ -83,6 +83,9 @@ public class EduSohoTextBtn extends LinearLayout {
         mText.setLayoutParams(childlp);
         addView(mText);
 
+        if (TextUtils.isEmpty(text)) {
+            mText.setVisibility(GONE);
+        }
         notifyTypes = new HashMap<String, Object>();
     }
 

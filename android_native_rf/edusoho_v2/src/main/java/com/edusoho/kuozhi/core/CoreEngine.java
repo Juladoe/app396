@@ -103,6 +103,20 @@ public class CoreEngine {
         return engine;
     }
 
+    public void runPlubinFromFragmentFroResult(
+            String pluginName, Fragment fragment, int requestCode, Bundle bundle)
+    {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setClassName(fragment.getActivity(), pluginModel.packAge);
+            if (bundle != null) {
+                startIntent.putExtras(bundle);
+            }
+            fragment.startActivityForResult(startIntent, requestCode);
+        }
+    }
+
     public void runNormalPluginForResult(
             String pluginName, Activity serverActivity, int requestCode, PluginRunCallback callback)
     {

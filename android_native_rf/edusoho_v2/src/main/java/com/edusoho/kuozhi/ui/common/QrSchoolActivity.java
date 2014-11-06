@@ -3,28 +3,23 @@ package com.edusoho.kuozhi.ui.common;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.TokenResult;
-import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.School;
-import com.edusoho.kuozhi.model.SchoolResult;
-import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
 import com.edusoho.plugin.qr.CaptureActivity;
@@ -80,65 +75,6 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         });
     }
 
-    private void searchSchool(String searchStr)
-    {
-        if (TextUtils.isEmpty(searchStr)) {
-            longToast("请输入搜索网校url");
-            return;
-        }
-
-        String url = "http://" + searchStr + Const.VERIFYVERSION;
-
-        final LoadDialog loading = LoadDialog.create(mContext);
-        loading.show();
-        app.query.ajax(url, String.class, new AjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                loading.dismiss();
-                int code = status.getCode();
-                if (code != Const.OK) {
-                    PopupDialog.createNormal(mContext, "提示信息", "网络异常！请检查网络链接").show();
-                    return;
-                }
-
-                try {
-                    SystemInfo info = app.gson.fromJson(
-                            object, new TypeToken<SystemInfo>() {
-                    }.getType());
-
-                    if (info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
-                        PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
-                        return;
-                    }
-                    ajaxNormalGet(info.mobileApiUrl + Const.VERIFYSCHOOL, new ResultCallback(){
-                        @Override
-                        public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                            super.callback(url, object, ajaxStatus);
-                            SchoolResult schoolResult = app.gson.fromJson(
-                                    object, new TypeToken<SchoolResult>() {
-                            }.getType());
-
-                            if (schoolResult == null) {
-                                PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
-                                return;
-                            }
-                            School site = schoolResult.site;
-                            if (!checkMobileVersion(site, site.apiVersionRange)) {
-                                return;
-                            };
-
-                            showSchSplash(site.name, site.splashs);
-                            app.setCurrentSchool(site);
-                        }
-                    });
-
-                } catch (Exception e) {
-                    PopupDialog.createNormal(mContext, "错误信息", "没有搜索到网校").show();
-                }
-            }
-        });
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -164,15 +100,19 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.query.ajax(result, String.class, new AjaxCallback<String>(){
+
+        RequestUrl requestUrl = new RequestUrl(result);
+        ajaxGet(requestUrl, new ResultCallback(){
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                loading.dismiss();
+                longToast("二维码信息错误!");
+            }
+
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 loading.dismiss();
-                int code = status.getCode();
-                if (code != Const.OK) {
-                    longToast("二维码信息错误!");
-                    return;
-                }
                 try {
                     final TokenResult schoolResult = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
@@ -186,7 +126,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     School site = schoolResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
-                    };
+                    }
 
                     showSchSplash(site.name, site.splashs);
                     if (schoolResult.token == null || "".equals(schoolResult.token)) {
@@ -196,7 +136,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }
                     app.setCurrentSchool(site);
 
-                }catch (Exception e) {
+                } catch (Exception e) {
                     longToast("二维码信息错误!");
                 }
             }

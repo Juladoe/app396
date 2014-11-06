@@ -461,7 +461,34 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             }
         });
     }
-    
+
+    public void ajaxGet(RequestUrl url, final ResultCallback rcl)
+    {
+        app.getUrl(url, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                if (handleRequest(url, object, status, rcl)){
+                    return;
+                }
+                try {
+                    rcl.callback(url,object,status);
+                }catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+
+            @Override
+            public void update(String url, String object, AjaxStatus status) {
+                handleRequest(url, object, status, rcl);
+                try {
+                    rcl.update(url,object,status);
+                }catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+        });
+    }
+
     public void ajaxPost(
             RequestUrl url, final ResultCallback rcl)
     {

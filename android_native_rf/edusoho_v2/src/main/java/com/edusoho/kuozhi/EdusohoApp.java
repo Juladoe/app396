@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -86,6 +87,7 @@ public class EdusohoApp extends Application {
     public static final String INSTALL_PLUGIN = "install_plugin";
 
     private android.os.Handler mWorkHandler;
+    private ImageLoaderConfiguration mImageLoaderConfiguration;
 
     @Override
     public void onCreate() {
@@ -121,6 +123,37 @@ public class EdusohoApp extends Application {
         ajaxCallback.method(AQuery.METHOD_POST);
 
         query.ajax(requestUrl.url, requestUrl.getKeysMap(), String.class, ajaxCallback);
+    }
+
+    public AjaxCallback getUrl(final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback)
+    {
+        Cache cache = mEngine.appCache.getCache(requestUrl);
+        CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                super.callback(url, object, status);
+                if (this.isCacheRequest()) {
+                    mEngine.appCache.updateCache(requestUrl, object);
+                    ajaxResultCallback.update(url, object, status);
+                    return;
+                }
+                mEngine.appCache.setCache(requestUrl, object);
+                ajaxResultCallback.callback(url, object, status);
+            }
+        };
+
+        ajaxCallback.headers(requestUrl.heads);
+        ajaxCallback.timeout(1000 * 10);
+        ajaxCallback.method(AQuery.METHOD_POST);
+
+        if (cache != null) {
+            Log.d(TAG, "get to cache->" + requestUrl.url);
+            mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
+            ajaxCallback.setCacheRequest(true);
+        }
+
+        query.ajax(requestUrl.url, String.class, ajaxCallback);
+        return ajaxCallback;
     }
 
     public AjaxCallback postUrl(
@@ -236,11 +269,12 @@ public class EdusohoApp extends Application {
     }
 
     private void initImageLoaderConfig() {
-        ImageLoaderConfiguration mConfig = new ImageLoaderConfiguration
-                .Builder(this).
-                diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
+        mImageLoaderConfiguration = new ImageLoaderConfiguration
+                .Builder(this)
+                .memoryCacheExtraOptions((int)(screenW * 0.8f), (int)(screenH * 0.8f))
+                .diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
                 .build();
-        ImageLoader.getInstance().init(mConfig);
+        ImageLoader.getInstance().init(mImageLoaderConfiguration);
     }
 
     public void startMainService() {

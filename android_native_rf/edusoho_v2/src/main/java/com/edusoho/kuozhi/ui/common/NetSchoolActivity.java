@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
@@ -165,16 +166,10 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.query.ajax(url, String.class, new AjaxCallback<String>() {
+        RequestUrl requestUrl = new RequestUrl(url);
+        ajaxGet(requestUrl, new ResultCallback() {
             @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                loading.dismiss();
-                int code = status.getCode();
-                if (code != Const.OK) {
-                    PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
-                    return;
-                }
-
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
                     SystemInfo info = app.gson.fromJson(
                             object, new TypeToken<SystemInfo>() {
@@ -184,10 +179,11 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                         PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                         return;
                     }
-                    ajaxNormalGet(info.mobileApiUrl + Const.VERIFYSCHOOL, new ResultCallback(){
+
+                    RequestUrl requestUrl = new RequestUrl(url);
+                    ajaxGet(requestUrl, new ResultCallback(){
                         @Override
                         public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                            super.callback(url, object, ajaxStatus);
                             SchoolResult schoolResult = app.gson.fromJson(
                                     object, new TypeToken<SchoolResult>() {
                             }.getType());
@@ -199,7 +195,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                             School site = schoolResult.site;
                             if (!checkMobileVersion(site, site.apiVersionRange)) {
                                 return;
-                            };
+                            }
 
                             showSchSplash(site.name, site.splashs);
                             app.setCurrentSchool(site);

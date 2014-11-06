@@ -82,6 +82,7 @@ public class RefreshGridViewWidget extends PullToRefreshGridView{
         if (mMode == REFRESH) {
             if (data == null || data.isEmpty()) {
                 mAdapter = getEmptyLayoutAdapter();
+                getRefreshableView().setNumColumns(1);
                 setAdapter(mAdapter);
                 return;
             }
@@ -96,8 +97,7 @@ public class RefreshGridViewWidget extends PullToRefreshGridView{
     {
         if (mMode == REFRESH) {
             if (item == null || isEmpty) {
-                mAdapter = getEmptyLayoutAdapter();
-                setAdapter(mAdapter);
+                setAdapter(getEmptyLayoutAdapter());
                 return;
             }
             mAdapter.clear();
@@ -131,6 +131,9 @@ public class RefreshGridViewWidget extends PullToRefreshGridView{
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
                 mMode = REFRESH;
                 Log.d(TAG, "refresh->");
+                if (getAdapter() instanceof EmptyAdapter) {
+                    setAdapter(mAdapter);
+                }
                 mUpdateListener.refresh(refreshView);
             }
 

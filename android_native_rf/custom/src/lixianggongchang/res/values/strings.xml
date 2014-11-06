@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">理想职播</string>
+    <string name="app_host">http://college.lixianggongchang.com</string>
+    <string name="school_about">关于理想职播</string>
+    <string name="app_code">lixianggongchang</string>
+    <string name="splash_num">3</string>
+</resources>
