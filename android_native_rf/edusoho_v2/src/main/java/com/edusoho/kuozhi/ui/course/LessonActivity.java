@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.ui.course;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,16 +12,23 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.entity.LearnStatus;
@@ -31,9 +40,11 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.CourseLearningFragment;
 import com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment;
+import com.edusoho.kuozhi.ui.note.NoteReplyActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
@@ -43,6 +54,7 @@ import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -64,14 +76,20 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private Bundle fragmentData;
     private int mIsFree;
     private boolean mIsLearn;
+    private LessonStatus mLessonStatus;
 
     protected MenuDrawer mMenuDrawer;
     private CourseDetailsLessonWidget mCourseLessonView;
-    private EdusohoButton mResourceBtn;
-    private EdusohoButton mLearnBtn;
+    private EduSohoTextBtn mLearnBtn;
+    private EduSohoTextBtn mNoteBtn;
+    private EduSohoTextBtn mQuestionBtn;
+    private EduSohoTextBtn mMoreBtn;
     private View mToolsLayout;
 
     private Handler msgHandler;
+
+    private static final int REQUEST_NOTE = 0010;
+    private static final int REQUEST_QUESTION = 0020;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,8 +238,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         setBackMode(BACK, mTitle);
         mToolsLayout = findViewById(R.id.lesson_tools_layout);
-        mResourceBtn = (EdusohoButton) findViewById(R.id.lesson_resource_btn);
-        mLearnBtn = (EdusohoButton) findViewById(R.id.lesson_learn_btn);
+        mNoteBtn = (EduSohoTextBtn) findViewById(R.id.lesson_note_btn);
+        mQuestionBtn = (EduSohoTextBtn) findViewById(R.id.lesson_question_btn);
+        mMoreBtn = (EduSohoTextBtn) findViewById(R.id.lesson_more_btn);
+        mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
 
         loadLessonList();
         if (mCourseId == 0 || mLessonId == 0) {
@@ -235,7 +255,39 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             Log.d(null, "load status->");
             loadLessonStatus();
         }
+
         bindListener();
+    }
+
+    private void showMoreBtn(View parent)
+    {
+        ListView contentView = (ListView) LayoutInflater.from(mContext).inflate(
+                R.layout.lesson_tools_more_layout, null);
+        ArrayAdapter<String> moreItemAdapter = new ArrayAdapter<String>(
+                mContext, R.layout.lesson_tools_more_list_item, new String[]{ "资料" });
+        contentView.setAdapter(moreItemAdapter);
+        contentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        showLessonResource();
+                        break;
+                }
+            }
+        });
+
+        PopupWindow popupWindow = new PopupWindow(
+                contentView, WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(parent.getWidth());
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+
+        int[] location = new int[2];
+        parent.getLocationOnScreen(location);
+        popupWindow.showAtLocation(
+                parent, Gravity.TOP, location[0], location[1] - (int)(mToolsLayout.getHeight() * 1.5f));
     }
 
     private void loadLessonStatus()
@@ -251,18 +303,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 setProgressBarIndeterminateVisibility(false);
-                LessonStatus status = parseJsonValue(
+                mLessonStatus = parseJsonValue(
                         object, new TypeToken<LessonStatus>(){});
 
-                if (status == null || !status.hasMaterial) {
-                    mResourceBtn.setVisibility(View.GONE);
-                } else {
-                    mResourceBtn.setVisibility(View.VISIBLE);
-                }
-                Log.d(null, "status->" + status);
                 mToolsLayout.setVisibility(View.VISIBLE);
                 showToolsByAnim();
-                setLearnStatus(status == null ? LearnStatus.learning : status.learnStatus);
+                setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
             }
         });
     }
@@ -279,19 +325,21 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
     }
 
+    private void showLessonResource()
+    {
+        if (mLessonStatus == null || !mLessonStatus.hasMaterial)  {
+            longToast("该课时暂无资料！");
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.COURSE_ID, mCourseId);
+        bundle.putInt(Const.LESSON_ID, mLessonId);
+        app.mEngine.runNormalPluginWithBundle(
+                "LessonResourceActivity", mActivity, bundle);
+    }
+
     private void bindListener()
     {
-        mResourceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(Const.COURSE_ID, mCourseId);
-                bundle.putInt(Const.LESSON_ID, mLessonId);
-                app.mEngine.runNormalPluginWithBundle(
-                        "LessonResourceActivity", mActivity, bundle);
-            }
-        });
-
         mLearnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -302,6 +350,53 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     isLearn = (Boolean) mLearnBtn.getTag();
                 }
                 changeLessonStatus(isLearn);
+            }
+        });
+
+        mMoreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMoreBtn(view);
+            }
+        });
+
+        mQuestionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Bundle bundle = new Bundle();
+                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                bundle.putInt(Const.REQUEST_CODE, REQUEST_QUESTION);
+                bundle.putString(Const.THREAD_ID, String.valueOf(""));
+                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
+                bundle.putString(Const.NORMAL_CONTENT, "");
+
+                app.mEngine.runNormalPluginForResult(
+                        "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtras(bundle);
+                    }
+                });
+            }
+        });
+
+        mNoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Bundle bundle = new Bundle();
+                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                bundle.putInt(NoteReplyActivity.TYPE, NoteReplyActivity.ADD);
+                bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
+                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
+                bundle.putString(Const.NORMAL_CONTENT, "");
+
+                app.mEngine.runNormalPluginForResult(
+                        "NoteReplyActivity", mActivity, REQUEST_NOTE, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtras(bundle);
+                    }
+                });
             }
         });
     }
@@ -394,15 +489,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         switch(learnStatus) {
             case learning:
                 mLearnBtn.setTag(true);
-                mLearnBtn.setIconResource(resources.getString(R.string.font_btn_learning));
-                mLearnBtn.setFocusBackgroundColor(resources.getColor(R.color.lesson_learn_btn_pressed));
-                mLearnBtn.setBackgroundColor(resources.getColor(R.color.lesson_learn_btn_normal));
+                mLearnBtn.setIcon(R.string.learning_status);
+                mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learn_btn_normal));
                 break;
             case finished:
                 mLearnBtn.setTag(false);
-                mLearnBtn.setIconResource(resources.getString(R.string.font_btn_finish));
-                mLearnBtn.setFocusBackgroundColor(resources.getColor(R.color.lesson_learned_btn_pressed));
-                mLearnBtn.setBackgroundColor(resources.getColor(R.color.lesson_learned_btn_normal));
+                mLearnBtn.setIcon(R.string.learned_status);
+                mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learned_btn_normal));
                 break;
         }
     }
@@ -466,5 +559,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         super.onDestroy();
         app.sendMsgToTarget(
                 CourseLearningFragment.UPDATE_LEARN_STATUS, null, CourseLearningFragment.class);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_NOTE && resultCode == Const.OK) {
+            longToast("添加笔记成功!");
+            return;
+        }
     }
 }

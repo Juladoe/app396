@@ -72,6 +72,13 @@
     <string name="font_audio">&#xe63a;</string>
     <string name="font_other">&#xe60e;</string>
 
+    <!--lesson tools -->
+    <string name="learned_status">&#xe672;</string>
+    <string name="learning_status">&#xe671;</string>
+    <string name="learn_note">&#xe624;</string>
+    <string name="learn_question">&#xe67b;</string>
+    <string name="learn_more">&#xe616;</string>
+
     <string name="font_btn_learning">&#xe671;</string>
     <string name="font_btn_finish">&#xe672;</string>
     <string name="app_id">wx91c11946311906a3</string>

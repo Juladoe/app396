@@ -256,6 +256,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             }
         }
     }
+
     private class NavBtnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
