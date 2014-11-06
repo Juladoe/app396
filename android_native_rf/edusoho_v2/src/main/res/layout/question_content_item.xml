@@ -68,16 +68,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
 
-            <!--<Button-->
-            <!--android:id="@+id/edu_btn_question_edit"-->
-            <!--android:textSize="14sp"-->
-            <!--android:text="编辑"-->
-            <!--android:textColor="#FFFFFF"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true" />-->
-
         </RelativeLayout>
 
         <TextView
@@ -88,6 +78,7 @@
             android:textColor="@color/question_title"
             android:lineSpacingExtra="2dp"
             android:layout_marginTop="13dp"
+            android:text="title"
             android:textSize="20sp" />
 
         <TextView
@@ -107,16 +98,16 @@
             android:layout_below="@+id/post_title" />
 
         <!--<GridView-->
-            <!--android:id="@+id/gv_image"-->
-            <!--android:layout_below="@+id/htv_post_content"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:numColumns="3"-->
-            <!--android:verticalSpacing="5dp"-->
-            <!--android:horizontalSpacing="5dp"-->
-            <!--android:gravity="center"-->
-            <!--android:stretchMode="columnWidth"></GridView>-->
+        <!--android:id="@+id/gv_image"-->
+        <!--android:layout_below="@+id/htv_post_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:numColumns="3"-->
+        <!--android:verticalSpacing="5dp"-->
+        <!--android:horizontalSpacing="5dp"-->
+        <!--android:gravity="center"-->
+        <!--android:stretchMode="columnWidth"></GridView>-->
 
 
         <!--<ImageView-->
