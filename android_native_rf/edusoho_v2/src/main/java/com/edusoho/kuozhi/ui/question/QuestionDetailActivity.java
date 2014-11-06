@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.QuestionReplyListAdapter;
+import com.edusoho.kuozhi.adapter.Question.QuestionReplyListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
@@ -48,8 +48,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
 
     private HashMap<String, String> mParams;
 
-    public static String mHost = "";
-
     private QuestionDetailModel mQuestionDetailModel;
 
     @Override
@@ -58,7 +56,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         setContentView(R.layout.question_detail_layout);
         initView();
         setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
-        mHost = this.app.host;
         mActivity = this;
 
     }
@@ -131,7 +128,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                         adapter.addItem(replyResult);
                     } else {
                         //第一次打开
-                        adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item, app.loginUser);
+                        adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item,
+                                app.loginUser);
                     }
                     getQuestionPostUser(adapter, replyResult);
                 } catch (Exception ex) {
@@ -163,22 +161,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 if (mQuestionDetailModel == null) {
                     return;
                 }
-
-//                mAQuery.id(R.id.tv_post_name).text(qdModel.user.nickname);
-//                mAQuery.id(R.id.tv_post_date).text(AppUtil.getPostDays(qdModel.createdTime));
-//                mAQuery.id(R.id.post_title).text(qdModel.title);
-//                TextView tvContent = (TextView) findViewById(R.id.htv_post_content);
-//                ProgressBar contentLoading = (ProgressBar) findViewById(R.id.pb_content);
-//                if (!qdModel.content.contains("img src")) {
-//                    contentLoading.setVisibility(View.GONE);
-//                    tvContent.setVisibility(View.VISIBLE);
-//                }
-//                URLImageGetter urlImageGetter = new URLImageGetter(tvContent, mContext, contentLoading);
-//                tvContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(qdModel.content), urlImageGetter, null)));
-
-
                 mAQuery.id(R.id.btn_post_reply).clicked(QuestionDetailActivity.this);
-                //mAQuery.id(R.id.edu_btn_question_edit).clicked(QuestionDetailActivity.this);
             }
         });
     }
