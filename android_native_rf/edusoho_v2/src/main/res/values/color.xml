@@ -325,4 +325,8 @@
     <!-- note-->
     <color name="note_list_item_bg">#f9f9f9</color>
     <color name="note_list_item_bg_pressed">#e6e6e6</color>
+
+    <!-- lesson -->
+    <color name="lesson_tools_normal">#757575</color>
+    <color name="lesson_tools_pressed">#fec856</color>
 </resources>

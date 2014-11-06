@@ -100,7 +100,7 @@ public class PptLessonFragment extends BaseFragment {
                 ListView listView = new ListView(mContext);
                 ArrayList<String> array = new ArrayList<String>();
                 for (int i = 1; i <= ppts.size(); i++) {
-                    array.add(i + "");
+                    array.add(String.valueOf(i));
                 }
 
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
