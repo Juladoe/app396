@@ -62,7 +62,7 @@ public class URLImageGetter implements Html.ImageGetter {
 
         @Override
         public void onLoadingStarted(String imageUri, View view) {
-            
+
         }
 
         @Override
@@ -94,7 +94,8 @@ public class URLImageGetter implements Html.ImageGetter {
             bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
         }
         Drawable drawable = new BitmapDrawable(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        int imageStartLocation = (this.mContainer.getWidth() - drawable.getIntrinsicWidth()) / 2;
+        drawable.setBounds(imageStartLocation, 0, drawable.getIntrinsicWidth() + imageStartLocation, drawable.getIntrinsicHeight());
         mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         mURLDrawable.drawable = drawable;
         this.mContainer.postInvalidate();
