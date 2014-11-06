@@ -324,7 +324,6 @@
 
     <!-- note-->
     <color name="note_list_bg">#f9f9f9</color>
-    <!-- note-->
     <color name="note_list_item_bg">#f9f9f9</color>
     <color name="note_list_item_bg_pressed">#e6e6e6</color>
 </resources>
