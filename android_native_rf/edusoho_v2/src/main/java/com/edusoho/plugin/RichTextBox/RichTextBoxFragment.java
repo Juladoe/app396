@@ -123,7 +123,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      * id
      */
     private String mPostId;
-    private String mTitle;
+    private String mTitle = null;
     private String mOriginalContent;
 
     /**
@@ -219,7 +219,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
         }
 
-        if (mTitle != null && mTitle != "") {
+        if (mTitle != null) {
             etQuestionTitle.setVisibility(View.VISIBLE);
             etQuestionTitle.setText(mTitle);
         } else {
