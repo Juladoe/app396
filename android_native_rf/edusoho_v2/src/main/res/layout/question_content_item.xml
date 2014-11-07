@@ -87,7 +87,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
             android:layout_marginTop="10dp"
-            android:textColor="@color/question_lesson" />
+            android:text="content"
+            android:textSize="18sp"
+            android:textColor="@color/question_title" />
 
         <ProgressBar
             style="?android:attr/progressBarStyleSmall"

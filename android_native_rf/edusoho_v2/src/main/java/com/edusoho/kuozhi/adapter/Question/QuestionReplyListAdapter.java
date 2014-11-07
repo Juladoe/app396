@@ -333,7 +333,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
 
         LinearLayout.LayoutParams gvLayout = new LinearLayout.LayoutParams(gridviewWidth,
                 gridviewHeight);
-        gvLayout.setMargins(0, 5, 0, 0);
+        gvLayout.setMargins(0, 15, 0, 0);
         gvImage.setNumColumns(3);
         gvImage.setVerticalScrollBarEnabled(false);
         gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
@@ -359,7 +359,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         RelativeLayout.LayoutParams gvLayout = new RelativeLayout.LayoutParams(gridviewWidth,
                 gridviewHeight);
         gvLayout.addRule(RelativeLayout.BELOW, R.id.htv_post_content);
-        gvLayout.setMargins(0, 10, 0, 0);
+        gvLayout.setMargins(0, 15, 0, 0);
         gvImage.setLayoutParams(gvLayout);
         gvImage.setVerticalScrollBarEnabled(false);
         gvImage.setNumColumns(3);
