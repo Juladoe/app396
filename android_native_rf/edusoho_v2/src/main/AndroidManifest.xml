@@ -90,7 +90,7 @@
         <activity
             android:name=".ui.DefaultPageActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.course.CourseDetailsActivity"

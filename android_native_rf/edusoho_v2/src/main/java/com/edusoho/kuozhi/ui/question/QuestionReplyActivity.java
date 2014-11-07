@@ -38,7 +38,10 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_reply_layout);
-        setBackMode(BACK, "添加回复");
+
+        Intent intent = getIntent();
+        setBackMode(BACK, intent.hasExtra(Const.ACTIONBAT_TITLE)
+                ? intent.getStringExtra(Const.ACTIONBAT_TITLE) : "添加回复");
         initViews();
 
         initProgressDialog();

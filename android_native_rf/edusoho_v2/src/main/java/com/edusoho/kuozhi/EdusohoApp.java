@@ -25,6 +25,7 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
+import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.CacheAjaxCallback;
@@ -94,7 +95,7 @@ public class EdusohoApp extends Application {
         super.onCreate();
         Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -144,7 +145,7 @@ public class EdusohoApp extends Application {
 
         ajaxCallback.headers(requestUrl.heads);
         ajaxCallback.timeout(1000 * 10);
-        ajaxCallback.method(AQuery.METHOD_POST);
+        ajaxCallback.method(AQuery.METHOD_GET);
 
         if (cache != null) {
             Log.d(TAG, "get to cache->" + requestUrl.url);
@@ -255,6 +256,7 @@ public class EdusohoApp extends Application {
         host = getString(R.string.app_host);
 
         notifyMap = new HashMap<String, Bundle>();
+        initApp();
     }
 
     public void initApp()
@@ -452,7 +454,12 @@ public class EdusohoApp extends Application {
     }
 
     public void addTask(String name, Activity activity) {
+        Activity oldActivity = runTask.get(name);
         runTask.put(name, activity);
+        if (oldActivity != null) {
+            Log.d(null, "remove activity->" + name);
+            oldActivity.finish();
+        }
     }
 
     public void saveConfig() {

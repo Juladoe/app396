@@ -6,7 +6,7 @@
 
     <WebView
         android:scrollbars="none"
-        android:layout_margin="16dp"
+        android:padding="16dp"
         android:background="@color/system_normal_bg"
         android:id="@+id/lesson_webview"
         android:layout_width="match_parent"

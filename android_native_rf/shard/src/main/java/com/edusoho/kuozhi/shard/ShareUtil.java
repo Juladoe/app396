@@ -18,7 +18,7 @@ import static cn.sharesdk.framework.utils.R.getBitmapRes;
 /**
  * Created by onewoman on 14-11-6.
  */
-public class ShareParams {
+public class ShareUtil {
     public int mNotification_icon;
     public String mNotification_text;
     public String mShareTextTitle;
@@ -31,7 +31,7 @@ public class ShareParams {
     private AlertDialog mAlertDialog;
     private ShareHandler mShareHandler;
 
-    public ShareParams(Context context){
+    public ShareUtil(Context context){
         //添加应用信息
         ShareSDK.initSDK(context);
         mOneKeyShare = new OnekeyShare();
@@ -39,10 +39,11 @@ public class ShareParams {
         initDialog();
     }
 
-    public ShareParams initShareParams(
-            String shareTextTitle,String shareTitleUrl, String shareText, String localImagePath, String ShareSite
+    public ShareUtil initShareParams(
+            int icon, String shareTextTitle,String shareTitleUrl, String shareText, String localImagePath, String ShareSite
     )
     {
+        mNotification_icon = icon;
         mShareTextTitle = shareTextTitle;
         mShareTitleUrl = shareTitleUrl;
         mShareText = shareText;
@@ -51,6 +52,17 @@ public class ShareParams {
 
         initOneKeyShare();
         return this;
+    }
+
+    private List<ListData> addWechatPlat(List<ListData> list)
+    {
+        list.add(new ListData(
+                mContext.getResources().getDrawable(R.drawable.logo_wechat), "Wechat", mContext));
+        list.add(new ListData(
+                mContext.getResources().getDrawable(R.drawable.logo_wechatmoments), "WechatMoments", mContext));
+        list.add(new ListData(
+                mContext.getResources().getDrawable(R.drawable.logo_wechatfavorite), "WechatFavorite", mContext));
+        return list;
     }
 
     public void initDialog(){
@@ -63,6 +75,8 @@ public class ShareParams {
             ListData data = new ListData(mContext.getResources().getDrawable(resId),name,mContext);
             list.add(data);
         }
+
+        list = addWechatPlat(list);
         ListView listView = new ListView(mContext);
         ShardListAdapter adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
         listView.setAdapter(adapter);
@@ -100,11 +114,11 @@ public class ShareParams {
     private void initOneKeyShare() {
         //关闭sso授权
         mOneKeyShare.disableSSOWhenAuthorize();
-
+        mOneKeyShare.setDialogMode();
         // 分享时Notification的图标和文字
-        mOneKeyShare.setNotification(R.drawable.app_splash, mNotification_text);
+        mOneKeyShare.setNotification(mNotification_icon, mNotification_text);
         // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-        mOneKeyShare.setTitle("分享");
+        mOneKeyShare.setTitle(mShareTextTitle);
         // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
         mOneKeyShare.setTitleUrl(mShareTitleUrl);
         // text是分享文本，所有平台都需要这个字段
@@ -113,9 +127,9 @@ public class ShareParams {
         mOneKeyShare.setImagePath(mLocalImagePath);
         // imageUrl是图片的网络路径，新浪微博、人人网、QQ空间、
         // 微信的两个平台、Linked-In支持此字段
-//        oks.setImageUrl("http://www.krbb.cn/yefiles/images/20111013/20111013gkxzejgmyr.JPG");
+        //mOneKeyShare.setImageUrl(mLocalImagePath);
         // url仅在微信（包括好友和朋友圈）中使用
-//        oks.setUrl("http://sharesdk.cn");
+        //oks.setUrl("http://sharesdk.cn");
         // site是分享此内容的网站名称，仅在QQ空间使用
         mOneKeyShare.setSite(mShareSite);
     }

@@ -141,6 +141,7 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
         @Override
         public void onClick(View view) {
             int index = (Integer) view.getTag();
+            Log.d(null, "show--->");
             MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
 
             Bundle bundle = new Bundle();

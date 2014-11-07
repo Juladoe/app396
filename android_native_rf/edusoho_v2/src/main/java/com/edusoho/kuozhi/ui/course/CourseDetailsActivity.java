@@ -27,6 +27,7 @@ import android.widget.ListView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ShardListAdapter;
@@ -41,6 +42,8 @@ import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
 import com.edusoho.kuozhi.model.Vip;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.shard.ShareHandler;
+import com.edusoho.kuozhi.shard.ShareUtil;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
@@ -280,6 +283,34 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
      * 分享
      */
     private void shardCourse() {
+
+        Course course = mCourseDetailsResult.course;
+        StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
+        stringBuilder
+                .append(Const.SHARD_COURSE_URL)
+                .append("?courseId=")
+                .append(course.id);
+        ShareUtil shareUtil = new ShareUtil(mContext);
+        shareUtil.initShareParams(
+                R.drawable.icon,
+                course.title,
+                stringBuilder.toString(),
+                AppUtil.coverCourseAbout(course.about),
+                AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture).getAbsolutePath(),
+                app.host
+        );
+        shareUtil.show(new ShareHandler() {
+            @Override
+            public void handler(String type) {
+                //朋友圈
+                int wxType = SendMessageToWX.Req.WXSceneTimeline;
+                if ("Wechat".equals(type)) {
+                    wxType = SendMessageToWX.Req.WXSceneSession;
+                }
+                shardToMM(mCourseDetailsResult.course, mContext, wxType);
+            }
+        });
+        /*
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
 
@@ -318,6 +349,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             }
         });
         alertDialog.show();
+        */
     }
 
     private List<ResolveInfo> filterShardList(List<ResolveInfo> list) {

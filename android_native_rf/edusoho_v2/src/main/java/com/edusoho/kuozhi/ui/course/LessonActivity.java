@@ -366,7 +366,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             @Override
             public void onClick(View view) {
                 final Bundle bundle = new Bundle();
-                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                bundle.putString(Const.ACTIONBAT_TITLE, "添加问答");
                 bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
                 bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
                 bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
