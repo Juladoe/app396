@@ -94,8 +94,8 @@ public class URLImageGetter implements Html.ImageGetter {
             bitmap = AppUtil.scaleImage(bitmap, showMinWidth, 0, mContext);
         }
         Drawable drawable = new BitmapDrawable(bitmap);
-        int imageStartLocation = (this.mContainer.getWidth() - drawable.getIntrinsicWidth()) / 2;
-        drawable.setBounds(imageStartLocation, 0, drawable.getIntrinsicWidth() + imageStartLocation, drawable.getIntrinsicHeight());
+        //int imageStartLocation = (this.mContainer.getWidth() - drawable.getIntrinsicWidth()) / 2;
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         mURLDrawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         mURLDrawable.drawable = drawable;
         this.mContainer.postInvalidate();
