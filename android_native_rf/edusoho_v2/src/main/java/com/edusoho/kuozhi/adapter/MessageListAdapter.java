@@ -139,8 +139,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
                     if ("thread".equalsIgnoreCase(type2)) {
                         showThread(
                                 AppUtil.parseInt(type1_value),
-                                AppUtil.parseInt(type2_value),
-                                mTitle.toString()
+                                AppUtil.parseInt(type2_value)
                         );
                         return;
                     }
@@ -154,12 +153,12 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
         }
     }
 
-    private void showThread(int courseId, int threadId, String title)
+    private void showThread(int courseId, int threadId)
     {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, courseId);
         bundle.putInt(Const.THREAD_ID, threadId);
-        bundle.putString(Const.QUESTION_TITLE, title);
+        bundle.putString(Const.QUESTION_TITLE, "问答标题");
         EdusohoApp.app.mEngine.runNormalPluginWithBundle("QuestionDetailActivity", mContext, bundle);
     }
 
