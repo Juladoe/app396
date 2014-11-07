@@ -28,6 +28,8 @@ import java.util.HashMap;
 
 public class QuestionReplyActivity extends ActionBarBaseActivity {
     private static final String TAG = "QuestionReplyActivity";
+    public static final String ACTION = "action";
+    public static final String TYPE = "type";
 
     private RichTextBoxFragment richFragment;
     private ProgressDialog mProgressDialog;
@@ -91,6 +93,11 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                         params.put("title", richFragment.getTitle());
                         final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
                         params.put("content", richFragment.setContent(content));
+                        Intent intent = getIntent();
+                        params.put("action", intent.hasExtra(ACTION) ? intent.getStringExtra(ACTION) : "update");
+                        params.put(TYPE, intent.getStringExtra(TYPE));
+                        params.put(Const.LESSON_ID, intent.getStringExtra(Const.LESSON_ID));
+
                         params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
                         url.setMuiltParams(richFragment.getObjects());
                         url.setParams(params);

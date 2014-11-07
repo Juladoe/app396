@@ -166,6 +166,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
+
         RequestUrl requestUrl = new RequestUrl(url);
         ajaxGet(requestUrl, new ResultCallback() {
             @Override
@@ -180,7 +181,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                         return;
                     }
 
-                    RequestUrl requestUrl = new RequestUrl(url);
+                    RequestUrl requestUrl = new RequestUrl(info.mobileApiUrl + Const.VERIFYSCHOOL);
                     ajaxGet(requestUrl, new ResultCallback(){
                         @Override
                         public void callback(String url, String object, AjaxStatus ajaxStatus) {

@@ -161,6 +161,8 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                 if (mQuestionDetailModel == null) {
                     return;
                 }
+
+                setTitle(mQuestionDetailModel.title);
                 mAQuery.id(R.id.btn_post_reply).clicked(QuestionDetailActivity.this);
             }
         });
