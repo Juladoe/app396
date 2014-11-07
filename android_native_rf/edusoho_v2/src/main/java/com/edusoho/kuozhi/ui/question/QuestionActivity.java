@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.ErrorAdapter;
 import com.edusoho.kuozhi.adapter.Question.QuestionListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -105,6 +106,33 @@ public class QuestionActivity extends ActionBarBaseActivity {
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                if (ajaxStatus.getCode() != 200) {
+//                    mLoadView.setVisibility(View.GONE);
+//                    mQuestionRefreshList.setVisibility(View.GONE);
+//                    showErrorLayout("加载失败，请点击重试", new ListErrorListener() {
+//                        @Override
+//                        public void error(View errorBtn) {
+//                            mLoadView.setVisibility(View.VISIBLE);
+//                            mQuestionRefreshList.setVisibility(View.VISIBLE);
+//                            loadQuestionDataFromSeek(0, true);
+//                        }
+//                    });
+                    mQuestionRefreshList.setMode(PullToRefreshBase.Mode.DISABLED);
+                    mLoadView.setVisibility(View.GONE);
+                    ErrorAdapter<String> errorAdapter = new ErrorAdapter<String>(mContext, new String[]{"加载失败，请点击重试"}, R.layout.list_error_layout, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mQuestionRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
+                            loadQuestionDataFromSeek(0, true);
+                        }
+                    });
+                    mQuestionRefreshList.setAdapter(errorAdapter);
+                }
+                //super.error(url, ajaxStatus);
             }
         });
     }

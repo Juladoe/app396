@@ -31,7 +31,7 @@ public class QuestionRefreshListWidget extends RefreshListWidget {
         try {
             if (adapter.isEmpty()) {
                 adapter = getEmptyLayoutAdapter();
-            } else {
+            } else if (adapter instanceof QuestionListAdapter) {
                 mAdapter = (QuestionListAdapter) adapter;
             }
             super.setAdapter(adapter);
