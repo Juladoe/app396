@@ -335,6 +335,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 gridviewHeight);
         gvLayout.setMargins(0, 5, 0, 0);
         gvImage.setNumColumns(3);
+        gvImage.setVerticalScrollBarEnabled(false);
         gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
         gvImage.setHorizontalSpacing(GRIDVIEW_SPACING);
         gvImage.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
@@ -360,6 +361,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         gvLayout.addRule(RelativeLayout.BELOW, R.id.htv_post_content);
         gvLayout.setMargins(0, 10, 0, 0);
         gvImage.setLayoutParams(gvLayout);
+        gvImage.setVerticalScrollBarEnabled(false);
         gvImage.setNumColumns(3);
         gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
         gvImage.setHorizontalSpacing(GRIDVIEW_SPACING);
