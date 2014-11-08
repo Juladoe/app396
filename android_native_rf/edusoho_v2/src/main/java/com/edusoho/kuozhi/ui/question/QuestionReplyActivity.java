@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,8 +69,12 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reply_submit) {
+            if (TextUtils.isEmpty(richFragment.getTitle())) {
+                longToast("标题不能为空");
+                return true;
+            }
             if (richFragment.getContent().toString() == null || richFragment.getContent().toString().equals("")) {
-                Toast.makeText(mActivity, "回复内容不能为空", Toast.LENGTH_LONG).show();
+                longToast("回复内容不能为空");
                 return true;
             } else {
                 switch (richFragment.getTypeCode()) {
