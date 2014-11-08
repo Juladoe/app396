@@ -5,7 +5,26 @@
     android:background="@drawable/popup_bg"
     android:layout_margin="20dp">
 
-    <include layout="@layout/popup_header" />
+    <TextView
+        android:singleLine="true"
+        android:textColor="@color/material_title"
+        android:textSize="@dimen/material_title"
+        android:gravity="center"
+        android:padding="10dp"
+        android:id="@+id/popup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/material_content"
+        android:padding="10dp"
+        android:id="@+id/popup_message"
+        android:textSize="@dimen/material_content"
+        android:layout_below="@id/popup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ProgressBar
         style="@android:style/Widget.ProgressBar.Large"

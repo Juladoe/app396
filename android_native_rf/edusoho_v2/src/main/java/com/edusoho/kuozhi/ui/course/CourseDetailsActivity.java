@@ -284,6 +284,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
      */
     private void shardCourse() {
 
+        /*
         Course course = mCourseDetailsResult.course;
         StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
         stringBuilder
@@ -310,7 +311,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 shardToMM(mCourseDetailsResult.course, mContext, wxType);
             }
         });
-        /*
+        */
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
 
@@ -349,7 +350,6 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             }
         });
         alertDialog.show();
-        */
     }
 
     private List<ResolveInfo> filterShardList(List<ResolveInfo> list) {
