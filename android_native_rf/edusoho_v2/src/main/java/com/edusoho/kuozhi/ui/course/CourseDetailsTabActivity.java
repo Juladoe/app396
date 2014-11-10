@@ -15,11 +15,12 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
 
-import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
+
+import extensions.PagerSlidingTabStrip;
 
 /**
  * Created by howzhi on 14-8-31.

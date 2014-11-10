@@ -8,7 +8,8 @@ import com.edusoho.kuozhi.adapter.lesson.LearningListAdapter;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.util.Const;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
+
+import library.PullToRefreshBase;
 
 /**
  * Created by howzhi on 14-9-16.

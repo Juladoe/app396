@@ -7,20 +7,21 @@ import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.util.Const;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshGridView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.util.ArrayList;
+
+import library.PullToRefreshBase;
+import library.PullToRefreshGridView;
 
 /**
  * Created by howzhi on 14-8-25.
  */
-public class RefreshGridViewWidget extends PullToRefreshGridView{
+public class RefreshGridViewWidget extends PullToRefreshGridView {
 
     public static final int UPDATE = 0001;
     public static final int REFRESH = 0002;

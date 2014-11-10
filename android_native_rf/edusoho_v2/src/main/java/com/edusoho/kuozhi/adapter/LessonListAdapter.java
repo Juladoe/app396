@@ -15,10 +15,11 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LessonItem;
-import com.hb.views.PinnedSectionListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import views.PinnedSectionListView;
 
 public class LessonListAdapter extends BaseAdapter
         implements PinnedSectionListView.PinnedSectionListAdapter{

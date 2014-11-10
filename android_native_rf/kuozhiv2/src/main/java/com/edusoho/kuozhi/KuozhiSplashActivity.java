@@ -3,9 +3,10 @@ package com.edusoho.kuozhi;
 import android.view.View;
 
 import com.edusoho.kuozhi.ui.SplashActivity;
-import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 
 import java.util.ArrayList;
+
+import jazzyviewpager.JazzyViewPager;
 
 /**
  * Created by howzhi on 14-8-6.

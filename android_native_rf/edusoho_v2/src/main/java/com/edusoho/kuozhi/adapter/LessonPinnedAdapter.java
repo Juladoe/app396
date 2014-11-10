@@ -5,10 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.model.LessonItem;
-import com.hb.views.PinnedSectionListView;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import views.PinnedSectionListView;
 
 /**
  * Created by howzhi on 14-7-31.

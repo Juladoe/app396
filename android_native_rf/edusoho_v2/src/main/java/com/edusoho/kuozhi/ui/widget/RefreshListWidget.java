@@ -3,9 +3,6 @@ package com.edusoho.kuozhi.ui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -13,15 +10,16 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.util.Const;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.util.ArrayList;
+
+import library.PullToRefreshBase;
+import library.PullToRefreshListView;
 
 /**
  * Created by howzhi on 14-8-25.
  */
-public class RefreshListWidget extends PullToRefreshListView{
+public class RefreshListWidget extends PullToRefreshListView {
 
     public static final int UPDATE = 0001;
     public static final int REFRESH = 0002;

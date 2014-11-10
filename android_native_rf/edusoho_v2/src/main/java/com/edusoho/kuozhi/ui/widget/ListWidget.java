@@ -11,8 +11,9 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
+import library.PullToRefreshBase;
+import library.PullToRefreshListView;
 
 /**
  * Created by howzhi on 14-9-17.

@@ -22,10 +22,11 @@ import com.edusoho.kuozhi.view.EdusohoViewPager;
 import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import java.util.ArrayList;
+
+import library.PullToRefreshBase;
+import library.PullToRefreshScrollView;
 
 
 /**
