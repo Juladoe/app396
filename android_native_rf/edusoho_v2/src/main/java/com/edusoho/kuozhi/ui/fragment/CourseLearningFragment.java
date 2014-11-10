@@ -330,6 +330,18 @@ public class CourseLearningFragment extends BaseFragment {
                 });
             }
         });
+
+        mCourseNoticeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startAcitivity("CourseNoticeFragment",new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.COURSE_ID,mCourseId);
+                    }
+                });
+            }
+        });
     }
 
     private void initCourseAnnouncement()

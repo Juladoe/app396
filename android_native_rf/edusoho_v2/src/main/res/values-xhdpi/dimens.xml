@@ -113,4 +113,9 @@
 
     <dimen name="question_content_image_num_font_size">9sp</dimen>
     <dimen name="question_reply_image_num_font_size">7sp</dimen>
+
+    <!-- course_notice -->
+    <dimen name="course_notice_content">15sp</dimen>
+    <dimen name="course_notice_issue">12sp</dimen>
+    <dimen name="course_notice_issue_time">12sp</dimen>
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:id="@+id/course_notice_refreshlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/course_notice_refreshlist"
+        android:scrollbars="none"
+        android:dividerHeight="1dp"
+        android:divider="@color/line"
+        ></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
+</RelativeLayout>
