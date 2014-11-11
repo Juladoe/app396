@@ -18,10 +18,11 @@ import com.edusoho.kuozhi.ui.widget.RefreshGridViewWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import java.util.ArrayList;
+
+import library.PullToRefreshBase;
+import library.PullToRefreshScrollView;
 
 /**
  * Created by onewoman on 14-10-9.

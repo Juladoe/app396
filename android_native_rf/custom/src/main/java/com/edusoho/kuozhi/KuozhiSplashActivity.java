@@ -5,11 +5,10 @@ import android.view.View;
 
 import com.edusoho.kuozhi.ui.SplashActivity;
 import com.edusoho.kuozhi.util.AppUtil;
-import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 
 import java.util.ArrayList;
 
-import ch.boye.httpclientandroidlib.client.cache.Resource;
+import jazzyviewpager.JazzyViewPager;
 
 /**
  * Created by howzhi on 14-8-6.

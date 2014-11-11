@@ -21,7 +21,7 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 
 import java.util.ArrayList;
 
-import uk.co.senab.photoview.PhotoView;
+import photoview.PhotoView;
 
 public class SchoolSplashActivity extends ActionBarBaseActivity {
 

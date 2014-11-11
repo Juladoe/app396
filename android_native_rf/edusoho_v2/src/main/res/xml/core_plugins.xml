@@ -38,7 +38,6 @@
     <plugin name="NoteActivity" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteActivity"></plugin>
     <plugin name="NoteList" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteList"></plugin>
     <plugin name="NoteContent" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContent"></plugin>
-    <plugin name="Test" version="1.0" package="com.edusoho.kuozhi.ui.note.Test"></plugin>
     <plugin name="NoteReplyActivity" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteReplyActivity"></plugin>
 
     <!-- service -->
@@ -79,6 +78,7 @@
     <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
     <plugin name="NoteListFragment" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteListFragment"></plugin>
     <plugin name="NoteContentFragment" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContentFragment"></plugin>
+    <plugin name="DownLoadListFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.DownLoadListFragment"></plugin>
 
     <!--试卷fragment -->
     <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>

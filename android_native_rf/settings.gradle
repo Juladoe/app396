@@ -1,3 +1,2 @@
-include ':slidingmenu', ':ukphoto', ':videoplayer', ':bdvideoplayer', ':kuozhi', ':custom', ':menudrawer', ':shard'
-include ':howzhi', ':JazzyViewPager', ':edusoho',':PinnedSectionListView' , ':pullRefresh'
-include ':edusoho_v2', ':kuozhiv2', ':PagerSlidingTabStrip', ':PinterestLikeAdapterView', ':commonUtils'
+include ':custom', ':shard', ':material', ':commonLib', ':bdvideoplayer'
+include ':edusoho_v2', ':kuozhiv2', ':commonUtils'

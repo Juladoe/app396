@@ -22,9 +22,10 @@ import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
 import java.util.HashMap;
+
+import library.PullToRefreshBase;
 
 /**
  * @author hby

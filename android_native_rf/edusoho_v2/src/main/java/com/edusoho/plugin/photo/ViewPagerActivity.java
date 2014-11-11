@@ -1,7 +1,5 @@
 
 package com.edusoho.plugin.photo;
-import uk.co.senab.photoview.PhotoView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +16,8 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import photoview.PhotoView;
 
 public class ViewPagerActivity extends ActionBarBaseActivity{
 

@@ -15,8 +15,10 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshGridView;
+
+import library.PullToRefreshBase;
+import library.PullToRefreshGridView;
+
 
 /**
  * Created by howzhi on 14-9-16.

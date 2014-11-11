@@ -24,7 +24,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
@@ -47,15 +46,15 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import menudrawer.MenuDrawer;
+import menudrawer.Position;
 
 /**
  * Created by howzhi on 14-9-15.
