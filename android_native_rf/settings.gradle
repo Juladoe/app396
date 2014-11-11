@@ -1,3 +1,2 @@
-include ':videoplayer', ':bdvideoplayer'
-include ':howzhi', ':edusoho',':kuozhi', ':custom', ':shard', ':material', ':commonLib'
+include ':custom', ':shard', ':material', ':commonLib', ':bdvideoplayer'
 include ':edusoho_v2', ':kuozhiv2', ':commonUtils'
