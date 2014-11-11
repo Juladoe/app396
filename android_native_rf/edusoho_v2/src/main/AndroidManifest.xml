@@ -109,6 +109,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.lesson.LessonQuestionActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.common.PayCourseActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

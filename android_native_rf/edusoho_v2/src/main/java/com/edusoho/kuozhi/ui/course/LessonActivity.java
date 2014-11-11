@@ -60,7 +60,7 @@ import java.util.Arrays;
 /**
  * Created by howzhi on 14-9-15.
  */
-public class LessonActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback{
+public class LessonActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
 
     public static final String TAG = "LessonActivity";
     public static final String CONTENT = "content";
@@ -139,8 +139,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return messageTypes;
     }
 
-    private void initMenuDrawer()
-    {
+    private void initMenuDrawer() {
         mMenuDrawer = MenuDrawer.attach(
                 mActivity, MenuDrawer.Type.OVERLAY, Position.RIGHT, MenuDrawer.MENU_DRAG_WINDOW);
         mMenuDrawer.setContentView(R.layout.lesson_layout);
@@ -162,23 +161,20 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         });
     }
 
-    public int getCourseId()
-    {
+    public int getCourseId() {
         return mCourseId;
     }
 
-    public int getLessonId()
-    {
+    public int getLessonId() {
         return mLessonId;
     }
 
-    private void changeLessonStatus(boolean isLearn)
-    {
+    private void changeLessonStatus(boolean isLearn) {
         mLearnBtn.setEnabled(false);
         setProgressBarIndeterminateVisibility(true);
         RequestUrl requestUrl = app.bindUrl(
                 isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 Const.COURSE_ID, mCourseId + "",
                 Const.LESSON_ID, mLessonId + ""
         });
@@ -200,8 +196,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         });
     }
 
-    private void loadLessonList()
-    {
+    private void loadLessonList() {
         mCourseLessonView = (CourseDetailsLessonWidget) LayoutInflater.from(mActivity).inflate(
                 R.layout.course_details_lesson_content, null);
         mMenuDrawer.setMenuView(mCourseLessonView);
@@ -225,8 +220,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         });
     }
 
-    private void initView()
-    {
+    private void initView() {
         Intent data = getIntent();
         if (data != null) {
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
@@ -261,12 +255,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         bindListener();
     }
 
-    private void showMoreBtn(View parent)
-    {
+    private void showMoreBtn(View parent) {
         ListView contentView = (ListView) LayoutInflater.from(mContext).inflate(
                 R.layout.lesson_tools_more_layout, null);
         ArrayAdapter<String> moreItemAdapter = new ArrayAdapter<String>(
-                mContext, R.layout.lesson_tools_more_list_item, new String[]{ "资料" });
+                mContext, R.layout.lesson_tools_more_list_item, new String[]{"资料", "问答"});
         contentView.setAdapter(moreItemAdapter);
         contentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -275,12 +268,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     case 0:
                         showLessonResource();
                         break;
+                    case 1:
+                        showLessonQuestionList();
+                        break;
                 }
             }
         });
 
         PopupWindow popupWindow = new PopupWindow(
-                contentView, WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
+                contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setWidth(parent.getWidth());
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
@@ -289,13 +285,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
         popupWindow.showAtLocation(
-                parent, Gravity.TOP, location[0], location[1] - (int)(mToolsLayout.getHeight() * 1.5f));
+                parent, Gravity.TOP, location[0], location[1] - (int) (mToolsLayout.getHeight() * 1.5f));
     }
 
-    private void loadLessonStatus()
-    {
+    private void loadLessonStatus() {
         RequestUrl requestUrl = app.bindUrl(Const.LESSON_STATUS, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "courseId", mCourseId + "",
                 "lessonId", mLessonId + ""
         });
@@ -306,7 +301,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 setProgressBarIndeterminateVisibility(false);
                 mLessonStatus = parseJsonValue(
-                        object, new TypeToken<LessonStatus>(){});
+                        object, new TypeToken<LessonStatus>() {
+                });
 
                 mToolsLayout.setVisibility(View.VISIBLE);
                 showToolsByAnim();
@@ -327,9 +323,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
     }
 
-    private void showLessonResource()
-    {
-        if (mLessonStatus == null || !mLessonStatus.hasMaterial)  {
+    private void showLessonResource() {
+        if (mLessonStatus == null || !mLessonStatus.hasMaterial) {
             longToast("该课时暂无资料！");
             return;
         }
@@ -340,8 +335,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 "LessonResourceActivity", mActivity, bundle);
     }
 
-    private void bindListener()
-    {
+    private void showLessonQuestionList() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.LESSON_ID, mLessonId);
+        bundle.putString(Const.LESSON_NAME, mTitle);
+        app.mEngine.runNormalPluginWithBundle("LessonQuestionActivity", mActivity, bundle);
+    }
+
+    private void bindListener() {
         mLearnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -422,10 +423,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void loadLesson(int lessonId)
-    {
+    private void loadLesson(int lessonId) {
         RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "courseId", mCourseId + "",
                 "lessonId", lessonId + ""
         });
@@ -445,20 +445,21 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         });
     }
 
-    private LessonItem getLessonResultType(String lessonType, String object)
-    {
+    private LessonItem getLessonResultType(String lessonType, String object) {
         CourseLessonType courseLessonType = CourseLessonType.value(lessonType);
         LessonItem<String> normalLesson = null;
         switch (courseLessonType) {
             case PPT:
                 LessonItem<ArrayList<String>> pptLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<ArrayList<String>>>(){});
+                        object, new TypeToken<LessonItem<ArrayList<String>>>() {
+                });
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
                 fragmentData.putStringArrayList(CONTENT, pptLesson.content);
                 return pptLesson;
             case TESTPAPER:
                 LessonItem<TestpaperStatus> testpaperLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<TestpaperStatus>>(){});
+                        object, new TypeToken<LessonItem<TestpaperStatus>>() {
+                });
                 TestpaperStatus status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
@@ -471,7 +472,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             case AUDIO:
             case TEXT:
                 normalLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<String>>(){});
+                        object, new TypeToken<LessonItem<String>>() {
+                });
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
@@ -488,10 +490,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return null;
     }
 
-    private void setLearnStatus(LearnStatus learnStatus)
-    {
+    private void setLearnStatus(LearnStatus learnStatus) {
         Resources resources = getResources();
-        switch(learnStatus) {
+        switch (learnStatus) {
             case learning:
                 mLearnBtn.setTag(true);
                 mLearnBtn.setIcon(R.string.learning_status);
@@ -505,11 +506,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
     }
 
-    private void switchLoadLessonContent(LessonItem lessonItem)
-    {
+    private void switchLoadLessonContent(LessonItem lessonItem) {
         CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
         if (lessonType == CourseLessonType.VIDEO
-                && AppUtil.inArray(lessonItem.mediaSource, new String[]{ "youku", "tudou" })) {
+                && AppUtil.inArray(lessonItem.mediaSource, new String[]{"youku", "tudou"})) {
             loadLessonFragment("WebVideoLessonFragment");
             return;
         }
@@ -524,8 +524,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         loadLessonFragment(stringBuilder.toString());
     }
 
-    private void showToolsByAnim()
-    {
+    private void showToolsByAnim() {
         mToolsLayout.measure(0, 0);
         int height = mToolsLayout.getMeasuredHeight();
         Log.d(null, "height->" + height);
@@ -533,14 +532,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 new EdusohoAnimWrap(mToolsLayout), 0, height, 480);
     }
 
-    private void hieToolsByAnim()
-    {
+    private void hieToolsByAnim() {
         AppUtil.animForHeight(
                 new EdusohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 
-    private void loadLessonFragment(String fragmentName)
-    {
+    private void loadLessonFragment(String fragmentName) {
         Log.d(null, "fragmentName->" + fragmentName);
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(

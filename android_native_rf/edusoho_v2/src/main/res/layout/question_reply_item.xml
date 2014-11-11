@@ -26,13 +26,10 @@
         android:id="@+id/ll_post_content"
         android:layout_below="@+id/tv_reply_type"
         android:layout_width="fill_parent"
-
         android:layout_height="wrap_content">
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
-
             android:id="@+id/civ_reply_pic"
-
             android:layout_marginRight="16dp"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -91,7 +88,7 @@
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="2dp"
                 android:textSize="18sp"
-                android:textColor="@color/question_title"
+                android:textColor="@color/question_content_color"
                 android:text="12-08-08" />
 
             <ProgressBar

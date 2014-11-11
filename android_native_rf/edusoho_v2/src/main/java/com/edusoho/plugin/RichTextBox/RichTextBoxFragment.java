@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -202,16 +203,16 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(mOriginalContent, new URLImageGetter(etContent, mContext), new EduTagHandler())));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), new URLImageGetter(etContent, mContext), new EduTagHandler())));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(mOriginalContent), new URLImageGetter(etContent, mContext), new EduTagHandler())));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), new URLImageGetter(etContent, mContext), new EduTagHandler())));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
         } else {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(mOriginalContent), new URLImageGetter(etContent, mContext), new EduTagHandler())));
+            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), new URLImageGetter(etContent, mContext), new EduTagHandler())));
         }
 
         if (mColorPickerDialog == null) {
@@ -598,8 +599,8 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         return mPostId;
     }
 
-    public String getTitle() {
-        return etQuestionTitle.getText().toString().trim();
+    public TextView getTitle() {
+        return etQuestionTitle;
     }
 
     public void setTitle(String title) {

@@ -247,6 +247,7 @@ public class Const {
     public static final String TESTPAPER_DO_TYPE = "do_type";
     public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";
+    public static final String LESSON_NAME = "lesson_name";
     public static final String QUESTION_TYPE = "question_type";
     public static final String MEDIA_URL = "mediaUrl";
     public static final String HEAD_URL = "headUrl";

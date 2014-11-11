@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/civ_post_pic"
-            android:textColor="@color/question_title"
+            android:textColor="@android:color/black"
             android:lineSpacingExtra="2dp"
             android:layout_marginTop="13dp"
             android:text="title"
@@ -89,7 +89,7 @@
             android:layout_marginTop="10dp"
             android:text="content"
             android:textSize="18sp"
-            android:textColor="@color/question_title" />
+            android:textColor="@color/question_content_color" />
 
         <ProgressBar
             style="?android:attr/progressBarStyleSmall"

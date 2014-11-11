@@ -97,9 +97,10 @@ public class QuestionActivity extends ActionBarBaseActivity {
                         if (isRefresh) {
                             adapter.clearAdapter();
                         }
-                        adapter.addItem(questionResult);
+                        adapter.addItems(questionResult.threads);
                     } else {
-                        adapter = new QuestionListAdapter(mContext, questionResult, R.layout.question_item);
+                        adapter = new QuestionListAdapter(mContext, R.layout.question_item);
+                        adapter.addItems(questionResult.threads);
                         mQuestionRefreshList.setAdapter(adapter);
                     }
                     mQuestionRefreshList.setStart(questionResult.start, questionResult.total);

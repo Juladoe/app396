@@ -29,6 +29,7 @@
     <color name="teacher_reply">#ffc947</color>
     <color name="question_title">#4d4d4d</color>
     <color name="question_lesson">#808080</color>
+    <color name="question_content_color">#000000</color>
     <color name="question_reply_time">#ccc</color>
     <color name="question_background">#f5f5f5</color>
     <color name="question_select">#e6e6e6</color>
