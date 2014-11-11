@@ -12,15 +12,15 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseNoticeListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseNotice;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduHtml;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
 import java.util.ArrayList;
+
+import library.PullToRefreshBase;
 
 /**
  * Created by onewoman on 14-11-10.
@@ -66,7 +66,6 @@ public class CourseNoticeFragment extends BaseFragment {
         mRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
                 CourseNotice courseNotice = (CourseNotice) parent.getItemAtPosition(position);
                 TextView textView = new TextView(mContext);
                 textView.setText(EduHtml.coverHtmlImages(courseNotice.content, textView, mContext));

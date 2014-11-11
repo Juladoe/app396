@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
     private static int mContentImageSize = 0;
-    private static final float GRIDVIEW_CONTENT_PROPORTION = 0.55f;
+    private static final float GRIDVIEW_CONTENT_PROPORTION = 0.35f;
     private static final int GRIDVIEW_SPACING = 10;
 
     public CourseNoticeListAdapter(Context context, int resource, boolean iscache){
@@ -45,20 +45,25 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         if(view != null){
             return view;
         }
+
         if(view == null){
             view = inflater.inflate(mResource,null);
         }
+
         courseNoticeContent = (TextView) view.findViewById(R.id.course_notice_content);
         courseNoticeissueTime = (TextView) view.findViewById(R.id.course_notice_issue_time);
+        ViewGroup noticeImagesLayout = (ViewGroup) view.findViewById(R.id.course_notice_images);
 
         CourseNotice courseNotice = mList.get(position);
-        courseNoticeContent.setText(AppUtil.coverCourseAbout(courseNotice.content));
+        String content = AppUtil.coverCourseAbout(courseNotice.content);
+        content = content.replace("\n", "");
+        courseNoticeContent.setText(content);
         courseNoticeissueTime.setText(AppUtil.getPostDays(courseNotice.createdTime));
 
         ArrayList<String> mUrlList = convertUrlStringList(courseNotice.content);
         if (mUrlList.size() > 0) {
             GridView gvImage = new GridView(mContext);
-            addGridView(gvImage, view, mUrlList.size());
+            addGridView(gvImage, noticeImagesLayout, mUrlList.size());
             QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
                     mUrlList, mContentImageSize, AppUtil.px2sp(mContext, mContext.getResources().getDimension(R.dimen.course_notice_content)));
             gvImage.setAdapter(qgvia);
@@ -82,8 +87,7 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         return urlLits;
     }
 
-    private void addGridView(GridView gvImage, View parent, int imageNum) {
-        RelativeLayout rlPostInfo = (RelativeLayout) parent.findViewById(R.id.course_notice_item);
+    private void addGridView(GridView gvImage, ViewGroup parent, int imageNum) {
         int horizontalSpacingNum = 2;
         if (imageNum < 3) {
             horizontalSpacingNum = imageNum % 3 - 1;
@@ -98,7 +102,6 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         RelativeLayout.LayoutParams gvLayout = new RelativeLayout.LayoutParams(gridviewWidth,
                 gridviewHeight);
 
-        gvLayout.addRule(RelativeLayout.BELOW, R.id.course_notice_content);
         gvLayout.setMargins(0, 15, 0, 0);
         gvImage.setLayoutParams(gvLayout);
         gvImage.setVerticalScrollBarEnabled(false);
@@ -106,6 +109,6 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         gvImage.setVerticalSpacing(GRIDVIEW_SPACING);
         gvImage.setHorizontalSpacing(GRIDVIEW_SPACING);
         gvImage.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-        rlPostInfo.addView(gvImage);
+        parent.addView(gvImage);
     }
 }
