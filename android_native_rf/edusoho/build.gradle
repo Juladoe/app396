@@ -17,11 +17,6 @@ dependencies {
     compile files('libs/android-query-full.0.26.8.jar')
     compile files('libs/gson-2.1.jar')
     compile files('libs/core-2.2.jar')
-    compile project(':slidingmenu')
-    compile project(':ukphoto')
-    compile project(':JazzyViewPager')
-    compile project(':bdvideoplayer')
-    compile project(':pullRefresh')
-    compile project(':PinnedSectionListView')
+    compile project(':material')
     compile files('libs/nineoldandroids-2.4.0.jar')
 }

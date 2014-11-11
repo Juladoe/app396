@@ -18,10 +18,11 @@ import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.entity.LearnStatus;
 import com.edusoho.kuozhi.entity.LessonsResult;
 import com.edusoho.kuozhi.model.LessonItem;
-import com.hb.views.PinnedSectionListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import views.PinnedSectionListView;
 
 public class LearnLessonListAdapter extends BaseAdapter
         implements PinnedSectionListView.PinnedSectionListAdapter{

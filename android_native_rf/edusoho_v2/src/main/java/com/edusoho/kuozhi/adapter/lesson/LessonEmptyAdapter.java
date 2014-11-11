@@ -8,7 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.hb.views.PinnedSectionListView;
+
+import views.PinnedSectionListView;
 
 
 /**

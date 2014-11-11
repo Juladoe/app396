@@ -24,9 +24,10 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.LessonItemClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
-import com.hb.views.PinnedSectionListView;
 
 import java.util.HashMap;
+
+import views.PinnedSectionListView;
 
 /**
  * Created by howzhi on 14-8-27.

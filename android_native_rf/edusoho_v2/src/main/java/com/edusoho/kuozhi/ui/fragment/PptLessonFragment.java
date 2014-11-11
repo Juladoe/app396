@@ -27,7 +27,7 @@ import com.edusoho.plugin.photo.HackyViewPager;
 
 import java.util.ArrayList;
 
-import uk.co.senab.photoview.PhotoView;
+import photoview.PhotoView;
 
 /**
  * Created by howzhi on 14-9-18.

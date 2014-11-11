@@ -1,4 +1,4 @@
-<com.handmark.pulltorefresh.library.PullToRefreshScrollView
+<library.PullToRefreshScrollView
     android:id="@+id/recommend_layout"
     android:background="@color/recommend_bg"
     android:layout_width="match_parent"
@@ -131,4 +131,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
     </RelativeLayout>
-</com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+</library.PullToRefreshScrollView>

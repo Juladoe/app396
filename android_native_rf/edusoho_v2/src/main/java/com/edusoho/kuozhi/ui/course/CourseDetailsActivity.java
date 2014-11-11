@@ -63,14 +63,15 @@ import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
-import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import menudrawer.MenuDrawer;
+import menudrawer.Position;
 
 /**
  * Created by howzhi on 14-8-26.

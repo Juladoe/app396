@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.view.PointLayout;
-import com.jfeinstein.jazzyviewpager.JazzyViewPager;
-import com.jfeinstein.jazzyviewpager.OutlineContainer;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -28,6 +26,9 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import jazzyviewpager.JazzyViewPager;
+import jazzyviewpager.OutlineContainer;
 
 public class SplashActivity extends Activity {
 

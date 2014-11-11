@@ -39,6 +39,9 @@ public class MoreSettingFragment extends BaseFragment {
     @ViewUtil("more_setting_message")
     private View mMessageBtn;
 
+    @ViewUtil("more_setting_download")
+    private View mDownloadBtn;
+
     @Override
     public String getTitle() {
         return "更多";
@@ -126,6 +129,19 @@ public class MoreSettingFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MessageFragment");
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
+                    }
+                });
+            }
+        });
+
+        mDownloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "DownLoadListFragment");
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
                     }
                 });
