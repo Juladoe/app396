@@ -694,6 +694,9 @@ public class AppUtil {
      * @return
      */
     public static CharSequence setHtmlContent(Spanned spanned) {
+        if (spanned == null) {
+            return "";
+        }
         if (spanned.length() > 2 && spanned.subSequence(spanned.length() - 2, spanned.length()).toString().equals("\n\n")) {
             return spanned.subSequence(0, spanned.length() - 2);
         }

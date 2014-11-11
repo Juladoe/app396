@@ -43,7 +43,7 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-        mPadding = (int)(EdusohoApp.screenW * 0.2f);
+        mPadding = (int)(EdusohoApp.screenW * 0.3f);
         loadConfig();
         setupJazziness(mSplashMode);
     }

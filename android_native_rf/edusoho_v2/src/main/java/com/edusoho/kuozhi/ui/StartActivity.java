@@ -29,7 +29,6 @@ public class StartActivity extends ActionBarBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
 
-        app.initApp();
         app.registMsgSource(this);
         startSplash();
         registDevice();
@@ -229,6 +228,4 @@ public class StartActivity extends ActionBarBaseActivity
             });
         }
     }
-
-
 }

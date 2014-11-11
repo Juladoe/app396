@@ -167,21 +167,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
         mActionBar.setCustomView(mTitleTextView, layoutParams);
 
-        mActionBar.setDisplayUseLogoEnabled(false);
-        mActionBar.setDisplayShowTitleEnabled(false);
-        mActionBar.setDisplayShowCustomEnabled(true);
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayHomeAsUpEnabled(false);
-
         if (backTitle != null) {
-            Log.d(null, "backtitle->" + backTitle);
             mActionBar.setHomeButtonEnabled(true);
-            mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-            );
+            mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             mActionBar.setIcon(R.drawable.action_bar_back);
             mActionBar.setDisplayShowHomeEnabled(true);
         }
-
     }
 
     @Override

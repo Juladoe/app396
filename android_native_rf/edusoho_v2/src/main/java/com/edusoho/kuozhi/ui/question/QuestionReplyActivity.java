@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 
 public class QuestionReplyActivity extends ActionBarBaseActivity {
     private static final String TAG = "QuestionReplyActivity";
+    public static final String ACTION = "action";
+    public static final String TYPE = "type";
 
     private RichTextBoxFragment richFragment;
     private ProgressDialog mProgressDialog;
@@ -36,7 +39,10 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_reply_layout);
-        setBackMode(BACK, "添加回复");
+
+        Intent intent = getIntent();
+        setBackMode(BACK, intent.hasExtra(Const.ACTIONBAT_TITLE)
+                ? intent.getStringExtra(Const.ACTIONBAT_TITLE) : "添加回复");
         initViews();
 
         initProgressDialog();
@@ -63,8 +69,12 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reply_submit) {
+            if (TextUtils.isEmpty(richFragment.getTitle())) {
+                longToast("标题不能为空");
+                return true;
+            }
             if (richFragment.getContent().toString() == null || richFragment.getContent().toString().equals("")) {
-                Toast.makeText(mActivity, "回复内容不能为空", Toast.LENGTH_LONG).show();
+                longToast("回复内容不能为空");
                 return true;
             } else {
                 switch (richFragment.getTypeCode()) {
@@ -91,6 +101,11 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                         params.put("title", richFragment.getTitle());
                         final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
                         params.put("content", richFragment.setContent(content));
+                        Intent intent = getIntent();
+                        params.put("action", intent.hasExtra(ACTION) ? intent.getStringExtra(ACTION) : "update");
+                        params.put(TYPE, intent.getStringExtra(TYPE));
+                        params.put(Const.LESSON_ID, intent.getStringExtra(Const.LESSON_ID));
+
                         params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
                         url.setMuiltParams(richFragment.getObjects());
                         url.setParams(params);

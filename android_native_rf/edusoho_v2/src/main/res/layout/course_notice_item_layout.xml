@@ -2,44 +2,29 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/course_notice_item"
+    android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
 
     <TextView
         android:id="@+id/course_notice_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="12dp"
         android:textColor="@color/course_notice_content"
         android:textSize="@dimen/course_notice_content"
-        android:lines="4"
+        android:lines="2"
         android:ellipsize="end"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_below="@id/course_notice_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/course_notice_issue_time"
+        android:text="一天前"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="14dp">
-
-        <TextView
-            android:text="发表于"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/course_notice_issue"
-            android:textColor="@color/course_notice_issue" />
-
-        <TextView
-            android:id="@+id/course_notice_issue_time"
-            android:text="一天前"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:textSize="@dimen/course_notice_issue_time"
-            android:textColor="@color/course_notice_issue_time" />
-    </LinearLayout>
+        android:layout_marginLeft="8dp"
+        android:textSize="@dimen/course_notice_issue_time"
+        android:textColor="@color/course_notice_issue_time" />
 </RelativeLayout>

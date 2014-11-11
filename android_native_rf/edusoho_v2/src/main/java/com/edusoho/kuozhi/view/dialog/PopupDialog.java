@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class PopupDialog extends Dialog{
         mPopupOkBtn = (TextView) findViewById(R.id.popup_ok_btn);
         mPopupCancelBtn = (TextView) findViewById(R.id.popup_cancel_btn);
 
+        popMessage.setMovementMethod(new ScrollingMovementMethod());
         mPopupOkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

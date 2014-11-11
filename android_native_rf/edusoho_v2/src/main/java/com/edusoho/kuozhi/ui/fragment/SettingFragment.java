@@ -88,6 +88,11 @@ public class SettingFragment extends BaseFragment {
         registNotify();
 
         mCacheView.setText(getCacheSize());
+        mCheckView.setText(AppUtil.getColorTextAfter(
+                "版本更新 ",
+                mContext.getResources().getString(R.string.apk_version),
+                R.color.system_normal_text
+        ));
         mClearCacheView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

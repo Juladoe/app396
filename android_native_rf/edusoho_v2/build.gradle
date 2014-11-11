@@ -24,6 +24,7 @@ dependencies {
     compile project(':bdvideoplayer')
     compile project(':menudrawer')
     compile project(':pullRefresh')
+    compile project(':shard')
     compile project(':PagerSlidingTabStrip')
     compile project(':PinnedSectionListView')
     compile project(':PinterestLikeAdapterView')

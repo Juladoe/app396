@@ -30,6 +30,7 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
+import com.edusoho.kuozhi.ui.note.NoteContentFragment;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -334,10 +335,11 @@ public class CourseLearningFragment extends BaseFragment {
         mCourseNoticeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAcitivity("CourseNoticeFragment",new PluginRunCallback() {
+                startAcitivity("FragmentPageActivity",new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.COURSE_ID,mCourseId);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "CourseNoticeFragment");
                     }
                 });
             }

@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.CourseLearningFragment;
 import com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment;
 import com.edusoho.kuozhi.ui.note.NoteReplyActivity;
+import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -109,6 +110,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
             }
         };
+
         fragmentData = new Bundle();
         initMenuDrawer();
         initView();
@@ -364,11 +366,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             @Override
             public void onClick(View view) {
                 final Bundle bundle = new Bundle();
-                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
-                bundle.putInt(Const.REQUEST_CODE, REQUEST_QUESTION);
-                bundle.putString(Const.THREAD_ID, String.valueOf(""));
+                bundle.putString(Const.ACTIONBAT_TITLE, "添加问答");
+                bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
+                bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
                 bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
-                bundle.putString(Const.NORMAL_CONTENT, "");
+                bundle.putString(QuestionReplyActivity.TYPE, "question");
+                bundle.putString(Const.QUESTION_TITLE, "");
+                bundle.putString(QuestionReplyActivity.ACTION, "add");
+                bundle.putString(Const.QUESTION_CONTENT, "");
 
                 app.mEngine.runNormalPluginForResult(
                         "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {
@@ -565,6 +570,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_NOTE && resultCode == Const.OK) {
             longToast("添加笔记成功!");
+            return;
+        }
+
+        if (requestCode == Const.EDIT_QUESTION && resultCode == Const.OK) {
+            longToast("添加问题成功!");
             return;
         }
     }
