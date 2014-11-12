@@ -237,6 +237,8 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivPhoto.setOnClickListener(richTextListener);
         ivCamera.setOnClickListener(richTextListener);
 
+        etContent.setSelection(etContent.getText().length());
+
         //mCurFontSize = (int) etContent.getTextSize();
     }
 
@@ -407,7 +409,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      * @param image
      */
     private void insertImage(Bitmap image, String filePath) {
-        etContent.getText().append("\n");
+        etContent.getText().insert(etContent.getSelectionEnd(), "\n");
         Editable eb = etContent.getEditableText();
         //获得光标所在位置
         int qqPosition = etContent.getSelectionStart();
@@ -430,7 +432,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
         ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         eb.insert(qqPosition, ss);
-        etContent.getText().append("\n");
+        etContent.getText().insert(etContent.getSelectionEnd(), "\n");
 
         //保存的是压缩后的图片
         mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
