@@ -45,7 +45,7 @@ public class QuestionActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_question);
         initView();
-        setBackMode(BACK, "我的问答");
+        setBackMode(BACK, mTitle);
     }
 
 

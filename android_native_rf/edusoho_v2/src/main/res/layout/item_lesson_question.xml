@@ -3,12 +3,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/question_item_bg">
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/civ_reply_pic"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_weight="5"
         android:layout_margin="8dp"
         android:layout_gravity="center"
@@ -31,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="5dp"
+            android:textSize="15sp"
             android:text="如何利用" />
 
         <TextView
@@ -40,6 +44,7 @@
             android:layout_below="@+id/tv_thread_title"
             android:layout_alignParentLeft="true"
             android:layout_margin="5dp"
+            android:textColor="@color/teacher_reply"
             android:text="bill" />
 
         <TextView
@@ -48,7 +53,16 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_thread_post_name"
             android:layout_margin="5dp"
+            android:textColor="@color/question_lesson"
             android:text="刚刚" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/question_reply40"
+            android:scaleType="fitXY"
+            android:layout_below="@+id/tv_thread_post_name"
+            android:layout_toLeftOf="@+id/tv_msgs" />
 
         <TextView
             android:id="@+id/tv_msgs"
@@ -58,6 +72,7 @@
             android:layout_below="@+id/tv_thread_post_name"
             android:layout_toLeftOf="@+id/tv_thread_post_time"
             android:layout_margin="5dp"
+            android:textColor="@color/question_lesson"
             android:text="23" />
 
 
