@@ -284,4 +284,5 @@ public class Const {
      */
     public static final int EDIT_REPLY = 0x03;
 
+    public static final String COURSE_NOTICES = "Course/getCourseNotices";
 }

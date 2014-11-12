@@ -331,4 +331,10 @@
     <!-- lesson -->
     <color name="lesson_tools_normal">#757575</color>
     <color name="lesson_tools_pressed">#fec856</color>
+
+    <!-- course_notice -->
+    <color name="course_notice_content">#4d4d4d</color>
+    <color name="course_notice_refreshlist">#ffffff</color>
+    <color name="course_notice_issue">#808080</color>
+    <color name="course_notice_issue_time">#f9ce4f</color>
 </resources>
