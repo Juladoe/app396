@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.edusoho.kuozhi"
+    android:versionCode="@string/apk_code"
+    android:versionName="@string/apk_version"
+    android:windowSoftInputMode="adjustResize">
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:hardwareAccelerated="true"
+        android:theme="@style/EdusohoAppTheme">
+        <activity
+            android:name="com.edusoho.kuozhi.ui.StartActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/startTheme" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.SplashActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.NetSchoolActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.LoginActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.QrSchoolActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.plugin.qr.CaptureActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.plugin.photo.ViewPagerActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.DefaultPageActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.LessonActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.CourseListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.lesson.LessonResourceActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.PayCourseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.lesson.TestpaperActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.FragmentPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.question.QuestionActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.question.QuestionDetailActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.common.QrLoginActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.question.QuestionReplyActivity"
+            android:configChanges="keyboard|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.edusoho.plugin.photo.SchoolSplashActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop" />
+
+        <receiver android:name="com.edusoho.kuozhi.broadcast.NetStatusReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 微信回调接口 -->
+        <activity
+            android:name="com.edusoho.kuozhi.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
+        <service android:name="com.edusoho.kuozhi.Service.EdusohoMainService" />
+        <service android:name="com.edusoho.kuozhi.Service.DownLoadService" />
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
+
+        <activity
+            android:name="com.edusoho.kuozhi.ui.note.NoteActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.note.NoteReplyActivity"
+            android:configChanges="keyboard|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait" />
+
+    </application>
+
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="8" />
+
+</manifest>

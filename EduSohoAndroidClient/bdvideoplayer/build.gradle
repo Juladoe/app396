@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+    useOldManifestMerger true
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
+
+    defaultConfig {
+        applicationId "com.plugin.edusoho.bdvideoplayer"
+        minSdkVersion 9
+        targetSdkVersion 21
+    }
+}
+
+task copyNativeLibs(type: Copy) {
+    from fileTree(dir: 'libs', include: 'armeabi/*.so') into 'build/lib'
+}
+tasks.withType(Compile) {
+    compileTask -> compileTask.dependsOn copyNativeLibs
+}
+clean.dependsOn 'cleanCopyNativeLibs'
+tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+    pkgTask.jniFolders = [new File(buildDir, 'lib')]
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:21.0.0+'
+    compile files('libs/cyberplayer-sdk.jar')
+    compile files('libs/Baidu_CyberPlayer_SDK_1.4.jar')
+}

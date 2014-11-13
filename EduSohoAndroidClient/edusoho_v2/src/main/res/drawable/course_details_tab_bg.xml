@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/material_dlg_stroke" />
+        </shape>
+    </item>
+    <item android:bottom="1dp">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/white"
+                android:centerY="0.45"
+                android:endColor="@color/white"
+                android:startColor="@color/white" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+
+
+</layer-list>

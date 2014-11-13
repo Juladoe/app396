@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 不可用状态 -->
+    <item android:color="@color/menu_btn_pressed" android:state_enabled="false"/>
+
+    <item android:color="@color/menu_btn_pressed" android:state_pressed="true"/>
+
+    <!-- 普通无焦点状态 -->
+    <item android:color="@color/menu_btn_normal"/>
+
+</selector>

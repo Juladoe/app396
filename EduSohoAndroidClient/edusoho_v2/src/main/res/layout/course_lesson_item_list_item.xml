@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/system_window_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    >
+
+    <TextView
+        android:gravity="center_horizontal"
+        android:id="@+id/course_lesson_number"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_margin="10dp"
+        android:textSize="@dimen/lessonNumber"
+        android:text="1" />
+
+    <ProgressBar
+        android:id="@+id/lesson_status_rating"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:progressDrawable="@drawable/lesson_status_progress"
+        android:progress="0"
+        android:max="10" />
+
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:paddingBottom="5dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:singleLine="true"
+            android:textSize="@dimen/lesson_title"
+            android:id="@+id/course_lesson_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:ellipsize="end"
+            android:text="课程标题" />
+
+        <com.edusoho.kuozhi.view.EduSohoIconView
+            android:layout_below="@id/course_lesson_title"
+            android:id="@+id/course_lesson_typeimg"
+            android:padding="2dp"
+            android:textColor="@color/lesson_icon"
+            android:textSize="@dimen/lesson_type"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/font_picture" />
+
+        <TextView
+            android:textColor="@color/lesson_icon"
+            android:textSize="@dimen/lesson_type"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/course_lesson_typeimg"
+            android:layout_alignTop="@id/course_lesson_typeimg"
+            android:id="@+id/course_lesson_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
+    </RelativeLayout>
+
+
+</LinearLayout>

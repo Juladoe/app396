@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="5dp"
+        android:right="5dp">
+        <shape android:shape="rectangle">
+
+            <!-- 是否是圆角 -->
+            <corners android:radius="350dip" />
+
+            <stroke
+                android:width="1px"
+                android:color="@color/set_check_ovel_bg_stroke" />
+
+            <size
+
+                android:height="30dp"
+                android:width="10dp" />
+            <!-- shape的颜色，支持渐变 -->
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/set_check_ovel_bg_sel_gradient"
+                android:centerY="0.45"
+                android:endColor="@color/set_check_ovel_bg_sel_gradient"
+                android:startColor="@color/set_check_ovel_bg_sel_gradient" />
+        </shape>
+    </item>
+    <item
+        android:left="1dp"
+        android:right="30dp">
+        <shape android:shape="oval">
+            <stroke
+                android:width="3px"
+                android:color="@color/set_check_ovel_bg_stroke" />
+
+            <size
+                android:height="30dp"
+                android:width="30dp" />
+            <!-- shape的颜色，支持渐变 -->
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/set_check_ovel_bg_gradient"
+                android:centerY="0.45"
+                android:endColor="@color/set_check_ovel_bg_gradient"
+                android:startColor="@color/set_check_ovel_bg_gradient" />
+        </shape>
+    </item>
+
+    <item android:left="30dp">
+        <shape android:shape="oval">
+
+            <stroke
+                android:width="1px"
+                android:color="@color/set_check_ovel_bg_stroke" />
+
+            <size
+                android:height="30dp"
+                android:width="30dp" />
+            <!-- shape的颜色，支持渐变 -->
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/set_check_ovel_bg_sel_gradient"
+                android:centerY="0.45"
+                android:endColor="@color/set_check_ovel_bg_sel_gradient"
+                android:startColor="@color/set_check_ovel_bg_sel_gradient" />
+        </shape>
+    </item>
+
+</layer-list>

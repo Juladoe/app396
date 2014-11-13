@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/course_details_lesson"
+    android:background="@color/system_normal_bg"
+    app:labelTitle="课时列表"
+    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

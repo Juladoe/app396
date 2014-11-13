@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:gravity="center_vertical"
+    android:background="@color/learn_status_widget_bg"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:scaleType="centerCrop"
+        android:src="@drawable/noram_course"
+        android:layout_weight="0"
+        android:id="@+id/learn_status_widget_coursepic"
+        android:layout_width="@dimen/learn_status_icon"
+        android:layout_height="@dimen/learn_status_icon" />
+
+    <RelativeLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:maxLines="2"
+            android:textSize="@dimen/learn_status_title"
+            android:id="@+id/learn_status_widget_lastLearnCourse"
+            android:text="上次您学习到课时"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textSize="@dimen/learn_status_title"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/learn_status_widget_lastLearnCourse"
+            android:id="@+id/learn_status_widget_learnProgressNum"
+            android:text="课程学习进度:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ProgressBar
+            android:progressDrawable="@drawable/course_learn_status_progress"
+            android:layout_marginTop="5dp"
+            android:id="@+id/learn_status_widget_learnProgress"
+            android:layout_below="@id/learn_status_widget_learnProgressNum"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp" />
+    </RelativeLayout>
+
+    <Button
+        android:layout_weight="0"
+        android:textSize="@dimen/learn_status_widget_learnbtn"
+        android:id="@+id/learn_status_widget_learnBtn"
+        android:textColor="@color/qr_search_btn_text"
+        android:text="继续学习"
+        android:background="@drawable/qr_search_btn_sel"
+        android:layout_width="88dp"
+        android:layout_height="36dp" />
+</LinearLayout>

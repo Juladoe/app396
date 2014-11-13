@@ -1,0 +1,2 @@
+include ':kuozhiv2'
+include ':commonLib', ':bdvideoplayer', ':commonUtils', ':shard', ':edusoho_v2'

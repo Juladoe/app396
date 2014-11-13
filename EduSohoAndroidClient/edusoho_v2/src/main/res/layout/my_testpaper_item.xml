@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:paddingTop="15dp"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_marginRight="16dp"
+        android:id="@+id/testpaper_icon"
+        android:src="@drawable/defaultpic"
+        android:layout_width="@dimen/course_item_pic_width"
+        android:layout_height="@dimen/course_item_pic_height"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:textColor="@color/white"
+        android:layout_margin="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textSize="@dimen/sys_small_normal"
+        android:background="@drawable/red_card_bg"
+        android:layout_alignRight="@id/testpaper_icon"
+        android:id="@+id/testpaper_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:padding="3dp"
+        android:textSize="@dimen/sys_mid_normal"
+        android:textColor="@color/system_light_text"
+        android:layout_toRightOf="@id/testpaper_icon"
+        android:id="@+id/testpaper_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_alignBottom="@id/testpaper_icon"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:padding="3dp"
+        android:textSize="@dimen/sys_small_normal"
+        android:layout_toRightOf="@id/testpaper_icon"
+        android:textColor="@color/system_gray_text"
+        android:id="@+id/testpaper_starttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:padding="3dp"
+        android:layout_below="@id/testpaper_name"
+        android:textSize="@dimen/sys_small_normal"
+        android:textColor="@color/system_gray_text"
+        android:layout_toRightOf="@id/testpaper_icon"
+        android:id="@+id/testpaper_course_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/testpaper_icon"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.edusoho.kuozhi.view.EdusohoButton
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_marginRight="10dp"
+            android:id="@+id/testpaper_redo"
+            app:borderWidth="0dp"
+            app:defaultColor="@color/white"
+            app:iconPosition="right"
+            app:textSize="@dimen/my_testpaper_btn"
+            app:radius="1dp"
+            app:textStr="重考一次"
+            app:textColor="@color/my_testpaper_btn_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.view.EdusohoButton
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/testpaper_result"
+            app:borderWidth="0dp"
+            app:defaultColor="@color/white"
+            app:iconPosition="right"
+            app:textSize="@dimen/my_testpaper_btn"
+            app:radius="1dp"
+            app:textStr="查看结果"
+            app:textColor="@color/my_testpaper_btn_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.view.EdusohoButton
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/testpaper_do"
+            app:borderWidth="0dp"
+            app:defaultColor="@color/white"
+            app:iconPosition="right"
+            app:textSize="@dimen/my_testpaper_btn"
+            app:radius="1dp"
+            app:textStr="继续考试"
+            app:textColor="@color/my_testpaper_btn_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

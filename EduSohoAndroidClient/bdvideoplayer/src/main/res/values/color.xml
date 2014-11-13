@@ -1,0 +1,9 @@
+<resources>
+
+    <color name="video_sk_bg_gradient">#808080</color>
+    <color name="video_sk_bg_2_gradient">#4d4d4d</color>
+    <color name="video_sk_gradient">#38bf6c</color>
+    <color name="video_thum_gradient">#38bf6c</color>
+    <color name="video_thum_gradient_pressed">#9938bf6c</color>
+    <color name="white">#ffffff</color>
+</resources>

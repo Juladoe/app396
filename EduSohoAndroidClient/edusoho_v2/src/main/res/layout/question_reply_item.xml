@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="10dp"
+    android:background="@android:color/white">
+
+
+    <TextView
+        android:id="@+id/tv_reply_type"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="教师的答案（2条）："
+        android:drawablePadding="5dp"
+        android:layout_marginBottom="12dp"
+        android:textSize="18sp"
+        android:drawableLeft="@drawable/recommend_week_label_icon" />
+
+    <RelativeLayout
+        android:id="@+id/ll_post_content"
+        android:layout_below="@+id/tv_reply_type"
+        android:layout_width="fill_parent"
+
+        android:layout_height="wrap_content">
+
+        <com.edusoho.kuozhi.view.plugin.CircularImageView
+
+            android:id="@+id/civ_reply_pic"
+
+            android:layout_marginRight="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true" />
+
+        <LinearLayout
+            android:id="@+id/layout_reply_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/civ_reply_pic"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/rl_reply_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+
+                <TextView
+                    android:id="@+id/tv_reply_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/teacher_reply"
+                    android:text="Jesse"
+                    android:textSize="15sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true" />
+
+                <TextView
+                    android:id="@+id/tv_reply_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12-08-08"
+                    android:layout_below="@+id/tv_reply_name"
+                    android:layout_marginTop="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/question_reply_time" />
+
+                <ImageView
+                    android:id="@+id/iv_reply_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/reply_edit"
+                    android:visibility="visible"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true" />
+
+            </RelativeLayout>
+
+            <com.edusoho.kuozhi.view.HtmlTextView
+                android:id="@+id/tv_reply_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:lineSpacingExtra="2dp"
+                android:textSize="18sp"
+                android:textColor="@color/question_title"
+                android:text="12-08-08" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/pb_reply_content" />
+
+            <!--<GridView-->
+            <!--android:id="@+id/gv_image"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:numColumns="3"-->
+            <!--android:verticalSpacing="5dp"-->
+            <!--android:horizontalSpacing="5dp"-->
+            <!--android:stretchMode="columnWidth"-->
+            <!--android:gravity="center"></GridView>-->
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>
