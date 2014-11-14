@@ -66,6 +66,7 @@
     </style>
 
     <style name="EdusohoAppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowContentOverlay">@null</item>
         <item name="actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:actionMenuTextColor">@color/white</item>
