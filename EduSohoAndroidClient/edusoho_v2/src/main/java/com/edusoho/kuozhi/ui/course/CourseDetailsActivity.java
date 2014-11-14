@@ -27,6 +27,7 @@ import android.widget.ListView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 
+import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ShardListAdapter;
@@ -41,6 +42,8 @@ import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
 import com.edusoho.kuozhi.model.Vip;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.shard.ShareHandler;
+import com.edusoho.kuozhi.shard.ShareUtil;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
@@ -60,6 +63,9 @@ import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

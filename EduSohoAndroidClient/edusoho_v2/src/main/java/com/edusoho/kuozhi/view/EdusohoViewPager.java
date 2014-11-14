@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.model.SchoolBanner;
 import com.edusoho.plugin.photo.HackyViewPager;

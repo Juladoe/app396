@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.GridView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 
 
 import com.edusoho.kuozhi.R;

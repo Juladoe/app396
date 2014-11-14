@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.adapter.Note;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -10,6 +12,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Note.Note;
 import com.edusoho.kuozhi.util.html.EduHtml;
+import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 
 import java.util.ArrayList;
 

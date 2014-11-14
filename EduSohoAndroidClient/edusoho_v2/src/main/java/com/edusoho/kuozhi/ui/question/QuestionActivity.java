@@ -45,7 +45,7 @@ public class QuestionActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_question);
         initView();
-        setBackMode(BACK, "我的问答");
+        setBackMode(BACK, mTitle);
     }
 
 
@@ -98,9 +98,10 @@ public class QuestionActivity extends ActionBarBaseActivity {
                         if (isRefresh) {
                             adapter.clearAdapter();
                         }
-                        adapter.addItem(questionResult);
+                        adapter.addItems(questionResult.threads);
                     } else {
-                        adapter = new QuestionListAdapter(mContext, questionResult, R.layout.question_item);
+                        adapter = new QuestionListAdapter(mContext, R.layout.question_item);
+                        adapter.addItems(questionResult.threads);
                         mQuestionRefreshList.setAdapter(adapter);
                     }
                     mQuestionRefreshList.setStart(questionResult.start, questionResult.total);
@@ -124,7 +125,8 @@ public class QuestionActivity extends ActionBarBaseActivity {
 //                    });
                     mQuestionRefreshList.setMode(PullToRefreshBase.Mode.DISABLED);
                     mLoadView.setVisibility(View.GONE);
-                    ErrorAdapter<String> errorAdapter = new ErrorAdapter<String>(mContext, new String[]{"加载失败，请点击重试"}, R.layout.list_error_layout, new View.OnClickListener() {
+                    ErrorAdapter<String> errorAdapter = new ErrorAdapter<String>(mContext, new String[]{"加载失败，请点击重试"},
+                            R.layout.list_error_layout, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mQuestionRefreshList.setMode(PullToRefreshBase.Mode.BOTH);

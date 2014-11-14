@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.callback.AjaxStatus;
@@ -69,7 +70,8 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reply_submit) {
-            if (TextUtils.isEmpty(richFragment.getTitle())) {
+            TextView tvTitle = richFragment.getTitle();
+            if (tvTitle.getVisibility() == View.VISIBLE && TextUtils.isEmpty(tvTitle.getText())) {
                 longToast("标题不能为空");
                 return true;
             }
@@ -98,7 +100,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                         HashMap<String, String> params = url.getParams();
                         params.put("courseId", richFragment.getCourseId());
                         params.put("threadId", richFragment.getThreadId());
-                        params.put("title", richFragment.getTitle());
+                        params.put("title", tvTitle.getText().toString());
                         final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
                         params.put("content", richFragment.setContent(content));
                         Intent intent = getIntent();
