@@ -68,7 +68,6 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("QuestionGridViewImageAdapter->", "1");
         ViewHolder holder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(mResourceId, null);
@@ -105,7 +104,6 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
             }
 
             @Override

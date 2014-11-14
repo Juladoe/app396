@@ -7,4 +7,5 @@
 
     <!-- The default background of the menu. -->
     <color name="md__defaultBackground">#FF555555</color>
+
 </resources>

@@ -42,6 +42,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         if (app == null) {
             app = EdusohoApp.app;
         }
+
         registMsgSrc();
     }
 

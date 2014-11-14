@@ -10,6 +10,7 @@
         android:scaleType="fitXY"
         android:layout_height="105dp"
         android:layout_width="105dp"
+        android:src="@drawable/defaultpic"
         android:layout_centerHorizontal="true"></ImageView>
 
     <TextView

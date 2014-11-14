@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,10 +13,7 @@ import com.edusoho.kuozhi.adapter.CourseNoticeListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseNotice;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.html.EduHtml;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -31,8 +26,6 @@ import library.PullToRefreshBase;
  */
 public class CourseNoticeFragment extends BaseFragment {
     private int mCourseId;
-    private int mOldHeight = 0;
-    private int mNewHeight = 0;
     private RefreshListWidget mRefreshList;
 
     @Override
@@ -80,23 +73,8 @@ public class CourseNoticeFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final TextView courseNoticeContent = (TextView) view.findViewById(R.id.course_notice_content);
-                final TextView contentContraction = (TextView) view.findViewById(R.id.course_notice_content_contraction);
-                int lines = courseNoticeContent.getLineCount();
-                if (lines < 2 || (contentContraction.getVisibility() == View.VISIBLE)) {
-                    return;
-                }
-                mOldHeight = courseNoticeContent.getHeight();
-                mNewHeight = courseNoticeContent.getLayout().getLineTop(lines);
-                AppUtil.animForHeight(new EdusohoAnimWrap(courseNoticeContent), mOldHeight, mNewHeight, 100);
+                CourseNotice courseNotice = (CourseNotice) parent.getItemAtPosition(position);
 
-                contentContraction.setVisibility(View.VISIBLE);
-                contentContraction.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AppUtil.animForHeight(new EdusohoAnimWrap(courseNoticeContent), mNewHeight, mOldHeight, 100);
-                        contentContraction.setVisibility(View.GONE);
-                    }
-                });
             }
         });
 

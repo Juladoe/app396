@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,8 @@ import com.edusoho.kuozhi.model.CourseNotice;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.html.EduHtml;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -25,11 +28,13 @@ import java.util.regex.Pattern;
  */
 public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
     private static int mContentImageSize = 0;
-    private static final float GRIDVIEW_CONTENT_PROPORTION = 0.35f;
+    private static final float GRIDVIEW_CONTENT_PROPORTION = 0.65f;
     private static final int GRIDVIEW_SPACING = 10;
+    private DisplayImageOptions mOptions;
 
     public CourseNoticeListAdapter(Context context, int resource, boolean iscache){
         super(context, resource,iscache);
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
     @Override
     public void addItems(ArrayList<CourseNotice> list) {
@@ -53,9 +58,7 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
 
         courseNoticeContent = (TextView) view.findViewById(R.id.course_notice_content);
         courseNoticeissueTime = (TextView) view.findViewById(R.id.course_notice_issue_time);
-        ViewGroup noticeImagesLayout = (ViewGroup) view.findViewById(R.id.course_notice_images);
-
-
+        ImageView noticeImage = (ImageView) view.findViewById(R.id.course_notice_image);
 
         CourseNotice courseNotice = mList.get(position);
         String content = AppUtil.coverCourseAbout(courseNotice.content);
@@ -66,11 +69,7 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
 
         ArrayList<String> mUrlList = convertUrlStringList(courseNotice.content);
         if (mUrlList.size() > 0) {
-            GridView gvImage = new GridView(mContext);
-            addGridView(gvImage, noticeImagesLayout, mUrlList.size());
-            QuestionGridViewImageAdapter qgvia = new QuestionGridViewImageAdapter(mContext, R.layout.question_item_grid_image_view,
-                    mUrlList, mContentImageSize, AppUtil.px2sp(mContext, mContext.getResources().getDimension(R.dimen.course_notice_content)));
-            gvImage.setAdapter(qgvia);
+            ImageLoader.getInstance().displayImage(mUrlList.get(0), noticeImage);
         }
 
         setCacheView(position,view);

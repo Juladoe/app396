@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/course_notice_item"
     android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
@@ -11,7 +10,16 @@
     android:paddingLeft="15dp"
     android:paddingRight="15dp">
 
+    <ImageView
+        android:scaleType="centerCrop"
+        android:layout_alignParentRight="true"
+        android:id="@+id/course_notice_image"
+        android:layout_width="64dp"
+        android:layout_height="64dp" />
+
     <TextView
+        android:layout_toLeftOf="@id/course_notice_image"
+        android:layout_marginRight="6dp"
         android:id="@+id/course_notice_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,34 +27,13 @@
         android:textSize="@dimen/course_notice_content"
         android:lines="2"/>
 
-
-
     <TextView
         android:layout_below="@id/course_notice_content"
-        android:id="@+id/course_notice_content_contraction"
-        android:text="收起"
-        android:textColor="@color/course_notice_issue_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:visibility="gone"/>
-
-    <LinearLayout
-        android:layout_marginTop="8dp"
-        android:layout_below="@id/course_notice_content_contraction"
-        android:id="@+id/course_notice_images"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></LinearLayout>
-
-    <TextView
-        android:layout_below="@id/course_notice_images"
-        android:layout_alignParentRight="true"
         android:id="@+id/course_notice_issue_time"
         android:text="一天前"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="6dp"
         android:textSize="@dimen/course_notice_issue_time"
         android:textColor="@color/course_notice_issue_time" />
 </RelativeLayout>
