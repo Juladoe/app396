@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
@@ -255,22 +257,22 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void showMoreBtn(View parent) {
-        ListView contentView = (ListView) LayoutInflater.from(mContext).inflate(
+        View contentView = LayoutInflater.from(mContext).inflate(
                 R.layout.lesson_tools_more_layout, null);
-        ArrayAdapter<String> moreItemAdapter = new ArrayAdapter<String>(
-                mContext, R.layout.lesson_tools_more_list_item, new String[]{"资料", "问答"});
-        contentView.setAdapter(moreItemAdapter);
-        contentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        LinearLayout layoutQuestion = (LinearLayout) contentView.findViewById(R.id.ll_question);
+        LinearLayout layoutProfile = (LinearLayout) contentView.findViewById(R.id.ll_profile);
+
+        layoutQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 0:
-                        showLessonResource();
-                        break;
-                    case 1:
-                        showLessonQuestionList();
-                        break;
-                }
+            public void onClick(View v) {
+                showLessonQuestionList();
+            }
+        });
+
+        layoutProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLessonResource();
             }
         });
 
@@ -284,7 +286,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
         popupWindow.showAtLocation(
-                parent, Gravity.TOP, location[0], location[1] - (int) (mToolsLayout.getHeight() * 1.5f));
+                parent, Gravity.TOP, location[0], location[1] - (int) (mToolsLayout.getHeight() * 2.0f));
     }
 
     private void loadLessonStatus() {
@@ -301,7 +303,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 setProgressBarIndeterminateVisibility(false);
                 mLessonStatus = parseJsonValue(
                         object, new TypeToken<LessonStatus>() {
-                });
+                        });
 
                 mToolsLayout.setVisibility(View.VISIBLE);
                 showToolsByAnim();
@@ -377,11 +379,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
                 app.mEngine.runNormalPluginForResult(
                         "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtras(bundle);
-                    }
-                });
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtras(bundle);
+                            }
+                        });
             }
         });
 
@@ -397,11 +399,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
                 app.mEngine.runNormalPluginForResult(
                         "NoteReplyActivity", mActivity, REQUEST_NOTE, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtras(bundle);
-                    }
-                });
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtras(bundle);
+                            }
+                        });
             }
         });
     }
@@ -451,14 +453,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             case PPT:
                 LessonItem<ArrayList<String>> pptLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<ArrayList<String>>>() {
-                });
+                        });
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
                 fragmentData.putStringArrayList(CONTENT, pptLesson.content);
                 return pptLesson;
             case TESTPAPER:
                 LessonItem<TestpaperStatus> testpaperLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<TestpaperStatus>>() {
-                });
+                        });
                 TestpaperStatus status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
@@ -472,7 +474,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             case TEXT:
                 normalLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<String>>() {
-                });
+                        });
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
@@ -541,11 +543,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(
                 fragmentName, mActivity, new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putAll(fragmentData);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putAll(fragmentData);
+                    }
+                });
         fragmentTransaction.replace(R.id.lesson_content, fragment);
         fragmentTransaction.setCustomAnimations(
                 FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);

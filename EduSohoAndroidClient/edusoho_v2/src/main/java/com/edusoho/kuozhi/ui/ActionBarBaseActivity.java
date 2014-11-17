@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.handler.ClientVersionHandler;
@@ -68,8 +69,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         initActivity();
     }
 
-    private void initActivity()
-    {
+    private void initActivity() {
         app = (EdusohoApp) getApplication();
         app.setDisplay(this);
         gson = app.gson;
@@ -85,18 +85,16 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         super.onSaveInstanceState(outState);
     }
 
-    public EdusohoMainService getService()
-    {
+    public EdusohoMainService getService() {
         return mService;
     }
 
-    public <T> T parseJsonValue(String json, TypeToken<T> typeToken)
-    {
+    public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
         T value = null;
         try {
             value = mActivity.gson.fromJson(
                     json, typeToken.getType());
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return value;
         }
@@ -104,60 +102,50 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return value;
     }
 
-    public CoreEngine getCoreEngine()
-    {
+    public CoreEngine getCoreEngine() {
         return mCoreEngine;
     }
 
-    public Bitmap getBitmap(int redId)
-    {
+    public Bitmap getBitmap(int redId) {
         return app.query.getCachedImage(redId);
     }
 
-    public void runService(String serviceName)
-    {
+    public void runService(String serviceName) {
         app.mEngine.runService(serviceName, mActivity, null);
     }
 
-    public void log(String format, String... strs)
-    {
+    public void log(String format, String... strs) {
         if (EdusohoApp.debug) {
             System.out.println(String.format(format, strs));
         }
     }
 
-    public void enableBtn(ViewGroup vg, boolean isEnable)
-    {
+    public void enableBtn(ViewGroup vg, boolean isEnable) {
         vg.setEnabled(isEnable);
         int count = vg.getChildCount();
-        for (int i=0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             vg.getChildAt(i).setEnabled(isEnable);
         }
     }
 
-    public void hideActionBar()
-    {
+    public void hideActionBar() {
         mActionBar.hide();
     }
 
-    public void showActionBar()
-    {
+    public void showActionBar() {
         mActionBar.show();
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         mTitleTextView.setText(title == null ? "" : title);
     }
 
-    public void setNormalActionBack(String title)
-    {
+    public void setNormalActionBack(String title) {
         mActionBar.setDisplayShowCustomEnabled(false);
         mActionBar.setTitle(title);
     }
 
-    public void setBackMode(String backTitle, String title)
-    {
+    public void setBackMode(String backTitle, String title) {
         mTitleTextView = (TextView) getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
@@ -181,8 +169,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public String wrapUrl(String url, String... params)
-    {
+    public String wrapUrl(String url, String... params) {
         if (params.length > 0) {
             for (String param : params) {
                 url = url.replaceFirst("\\{[\\w\\W^\\/]+\\}", param);
@@ -191,8 +178,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return url;
     }
 
-    public Gson getGson()
-    {
+    public Gson getGson() {
         return app.gson;
     }
 
@@ -200,8 +186,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         app.setCurrentSchool(school);
     }
 
-    private String splitTitle(String title)
-    {
+    private String splitTitle(String title) {
         int length = title.length();
         if (length > 10) {
             return title.substring(0, 10) + "...";
@@ -210,8 +195,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public boolean checkMobileVersion(
-            HashMap<String, String> versionRange, ClientVersionHandler handler)
-    {
+            HashMap<String, String> versionRange, ClientVersionHandler handler) {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 
@@ -274,8 +258,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return true;
     }
 
-    protected void showEmptyLayout(final String text)
-    {
+    protected void showEmptyLayout(final String text) {
         ViewStub emptyLayout = (ViewStub) findViewById(R.id.list_empty_stub);
         if (emptyLayout == null) {
             return;
@@ -290,8 +273,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         emptyLayout.inflate();
     }
 
-    protected void showErrorLayout(final String text, final ListErrorListener listener)
-    {
+    protected void showErrorLayout(final String text, final ListErrorListener listener) {
         ViewStub errorLayout = (ViewStub) findViewById(R.id.list_error_layout);
         errorLayout.setOnInflateListener(new ViewStub.OnInflateListener() {
             @Override
@@ -311,8 +293,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return;
     }
 
-    public void setMenu(int menuViewRes, MenuListener listener)
-    {
+    public void setMenu(int menuViewRes, MenuListener listener) {
         LinearLayout menuLayout = (LinearLayout) findViewById(R.id.actionbar_menu);
         View menuView = getLayoutInflater().inflate(menuViewRes, null);
         menuLayout.addView(menuView);
@@ -326,13 +307,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         public void bind(View menuView);
     }
 
-    public void longToast(String title)
-    {
+    public void longToast(String title) {
         Toast.makeText(mContext, title, Toast.LENGTH_SHORT).show();
     }
 
-    public void ajax(String url, ResultCallback rcl, boolean showLoading)
-    {
+    public void ajax(String url, ResultCallback rcl, boolean showLoading) {
         if (showLoading) {
             ajaxGetString(url, rcl);
         } else {
@@ -341,8 +320,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void ajaxGetString(
-            String url, final ResultCallback rcl)
-    {
+            String url, final ResultCallback rcl) {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
         app.queryUrl(url, String.class, new AjaxCallback<String>() {
@@ -362,8 +340,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                     return;
                 }
                 try {
-                    rcl.callback(url,object,status);
-                }catch (Exception e) {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
                     e.printStackTrace();
                     rcl.error(url, status);
                 }
@@ -372,22 +350,21 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void ajaxPostByLoding(
-            RequestUrl url, final ResultCallback rcl)
-    {
+            RequestUrl url, final ResultCallback rcl) {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.postUrl(url, new ResultCallback(){
+        app.postUrl(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 if (loading != null) {
                     loading.dismiss();
                 }
-                if (handleRequest(url, object, status, rcl)){
+                if (handleRequest(url, object, status, rcl)) {
                     return;
                 }
                 try {
-                    rcl.callback(url,object,status);
-                }catch (Exception e) {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
                     rcl.error(url, status);
                 }
             }
@@ -395,8 +372,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     private boolean handleRequest(
-            String url, String object, AjaxStatus status, ResultCallback rcl)
-    {
+            String url, String object, AjaxStatus status, ResultCallback rcl) {
         int code = status.getCode();
         if (code == Const.CACHE_CODE) {
             rcl.callback(url, object, status);
@@ -423,8 +399,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return false;
     }
 
-    public void ajaxPostMuiltKeys(RequestUrl url, final ResultCallback rcl)
-    {
+    public void ajaxPostMuiltKeys(RequestUrl url, final ResultCallback rcl) {
         app.postByMuiltKeys(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
@@ -450,17 +425,16 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxGet(RequestUrl url, final ResultCallback rcl)
-    {
-        app.getUrl(url, new ResultCallback(){
+    public void ajaxGet(RequestUrl url, final ResultCallback rcl) {
+        app.getUrl(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                if (handleRequest(url, object, status, rcl)){
+                if (handleRequest(url, object, status, rcl)) {
                     return;
                 }
                 try {
-                    rcl.callback(url,object,status);
-                }catch (Exception e) {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
                     rcl.error(url, status);
                 }
             }
@@ -469,8 +443,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             public void update(String url, String object, AjaxStatus status) {
                 handleRequest(url, object, status, rcl);
                 try {
-                    rcl.update(url,object,status);
-                }catch (Exception e) {
+                    rcl.update(url, object, status);
+                } catch (Exception e) {
                     rcl.error(url, status);
                 }
             }
@@ -478,17 +452,16 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void ajaxPost(
-            RequestUrl url, final ResultCallback rcl)
-    {
-        app.postUrl(url, new ResultCallback(){
+            RequestUrl url, final ResultCallback rcl) {
+        app.postUrl(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                if (handleRequest(url, object, status, rcl)){
+                if (handleRequest(url, object, status, rcl)) {
                     return;
                 }
                 try {
-                    rcl.callback(url,object,status);
-                }catch (Exception e) {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
                     rcl.error(url, status);
                 }
             }
@@ -497,17 +470,16 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             public void update(String url, String object, AjaxStatus status) {
                 handleRequest(url, object, status, rcl);
                 try {
-                    rcl.update(url,object,status);
-                }catch (Exception e) {
+                    rcl.update(url, object, status);
+                } catch (Exception e) {
                     rcl.error(url, status);
                 }
             }
         });
     }
 
-    public void ajaxNormalGet(String url, final ResultCallback rcl)
-    {
-        app.queryUrl(url, String.class, new AjaxCallback<String>(){
+    public void ajaxNormalGet(String url, final ResultCallback rcl) {
+        app.queryUrl(url, String.class, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 int code = status.getCode();
@@ -520,20 +492,19 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                     return;
                 }
                 try {
-                    rcl.callback(url,object,status);
-                }catch (Exception e) {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
                     rcl.error(url, status);
                 }
             }
         });
     }
 
-    private boolean handlerError(String errorStr)
-    {
+    private boolean handlerError(String errorStr) {
         try {
             ErrorResult result = app.gson.fromJson(
                     errorStr, new TypeToken<ErrorResult>() {
-            }.getType());
+                    }.getType());
             if (result != null) {
                 com.edusoho.kuozhi.model.Error error = result.error;
                 if (Const.CLIENT_CLOSE.equals(error.name)) {
@@ -563,8 +534,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return false;
     }
 
-    public void removeSchoolItem()
-    {
+    public void removeSchoolItem() {
         SharedPreferences sp = getSharedPreferences(Const.DEFAULT_SCHOOL, MODE_PRIVATE);
         sp.edit().clear().commit();
     }
@@ -572,13 +542,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     /**
      * @suju
      */
-    public interface ListErrorListener
-    {
+    public interface ListErrorListener {
         public void error(View errorBtn);
     }
 
-    protected void updateApp()
-    {
+    protected void updateApp() {
         app.updateApp("http://open.edusoho.com/mobile/meta.php", false, new NormalCallback() {
             @Override
             public void success(Object obj) {
@@ -590,13 +558,13 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                             mActivity,
                             "版本更新",
                             "当前有新版本，是否更新?", new PopupDialog.PopupClickListener() {
-                        @Override
-                        public void onClick(int button) {
-                            if (button == PopupDialog.OK) {
-                                app.startUpdateWebView(appUpdateInfo.updateUrl);
-                            }
-                        }
-                    }).show();
+                                @Override
+                                public void onClick(int button) {
+                                    if (button == PopupDialog.OK) {
+                                        app.startUpdateWebView(appUpdateInfo.updateUrl);
+                                    }
+                                }
+                            }).show();
                 }
             }
         });
