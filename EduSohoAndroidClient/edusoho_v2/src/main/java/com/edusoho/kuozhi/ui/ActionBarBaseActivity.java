@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.handler.ClientVersionHandler;
+import com.edusoho.kuozhi.AppConfig;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
@@ -33,10 +34,12 @@ import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
+import com.edusoho.listener.StatusCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by howzhi on 14-8-6.
@@ -165,12 +168,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.setCustomView(mTitleTextView, layoutParams);
 
         if (backTitle != null) {
-            mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-            /*
-            mActionBar.setHomeButtonEnabled(true);
-            mActionBar.setIcon(R.drawable.action_bar_back);
-            mActionBar.setDisplayShowHomeEnabled(true);
-            */
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
     }

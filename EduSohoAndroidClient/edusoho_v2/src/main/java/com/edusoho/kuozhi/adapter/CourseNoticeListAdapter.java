@@ -11,13 +11,11 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.Question.QuestionGridViewImageAdapter;
 import com.edusoho.kuozhi.model.CourseNotice;
 import com.edusoho.kuozhi.util.AppUtil;
-import com.edusoho.kuozhi.util.html.EduHtml;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -64,7 +62,6 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         String content = AppUtil.coverCourseAbout(courseNotice.content);
         content = content.replace("\n", "");
         courseNoticeContent.setText(content);
-
         courseNoticeissueTime.setText(AppUtil.getPostDays(courseNotice.createdTime));
 
         ArrayList<String> mUrlList = convertUrlStringList(courseNotice.content);

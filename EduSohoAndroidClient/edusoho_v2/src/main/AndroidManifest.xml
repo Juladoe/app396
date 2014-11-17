@@ -79,6 +79,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.lesson.LessonQuestionActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.edusoho.kuozhi.ui.course.CourseListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -123,7 +127,6 @@
             android:configChanges="keyboard|orientation"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.edusoho.plugin.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"

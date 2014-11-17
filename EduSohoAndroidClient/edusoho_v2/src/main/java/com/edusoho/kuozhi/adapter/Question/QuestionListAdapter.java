@@ -13,7 +13,6 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
-import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
@@ -22,50 +21,42 @@ import java.util.List;
 /**
  * Created by hby on 14-9-15.
  */
-public class QuestionListAdapter extends ListBaseAdapter {
+public class QuestionListAdapter<T> extends ListBaseAdapter<T> {
     //    private Context mContext;
-    private List<QuestionDetailModel> mQuestionList;
     //    private int mResourceId;
     private int mScreenW;
 
-    public QuestionListAdapter(Context context, QuestionResult questionResult, int layoutId) {
+    public QuestionListAdapter(Context context, int layoutId) {
         super(context, layoutId);
 //        this.mContext = context;
 //        this.mResourceId = layoutId;
-        mQuestionList = new ArrayList<QuestionDetailModel>();
         mScreenW = EdusohoApp.app.screenW;
-        listAddItem(questionResult.threads);
     }
 
-    public void addItem(QuestionResult questionResult) {
-        listAddItem(questionResult.threads);
+    @Override
+    public void addItems(ArrayList<T> list) {
+        mList.addAll(list);
         notifyDataSetChanged();
     }
 
-    private void listAddItem(QuestionDetailModel[] questionDetailModels) {
-        for (QuestionDetailModel item : questionDetailModels) {
-            mQuestionList.add(item);
-        }
-    }
-
     public void clearAdapter() {
-        mQuestionList.clear();
+        mList.clear();
     }
 
-    public List<QuestionDetailModel> getQuestionList() {
-        return mQuestionList;
+    public List<T> getQuestionList() {
+        return mList;
     }
 
     @Override
     public int getCount() {
-        Log.d("QuestionListAdapter.getCount()-->", mQuestionList.size() + "");
-        return mQuestionList.size();
+        Log.d("QuestionListAdapter.getCount()-->", mList.size() + "");
+        return mList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        if (mQuestionList != null && mQuestionList.size() > 0) {
-            return mQuestionList.get(position);
+        if (mList != null && mList.size() > 0) {
+            return mList.get(position);
         }
         return null;
     }
@@ -92,7 +83,7 @@ public class QuestionListAdapter extends ListBaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        QuestionDetailModel question = mQuestionList.get(position);
+        QuestionDetailModel question = (QuestionDetailModel) mList.get(position);
 
         holder.tvQuestionTitle.setText(question.title);
         if (question.number != 0) {
@@ -120,12 +111,6 @@ public class QuestionListAdapter extends ListBaseAdapter {
         holder.tvReplyAmount.setText(String.valueOf(question.postNum));
         return convertView;
     }
-
-    @Override
-    public void addItems(ArrayList list) {
-
-    }
-
 
     private static class ViewHolder {
         public AQuery aQuery;

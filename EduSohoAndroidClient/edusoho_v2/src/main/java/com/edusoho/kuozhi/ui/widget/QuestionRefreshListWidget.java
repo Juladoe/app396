@@ -12,18 +12,15 @@ import com.edusoho.kuozhi.adapter.Question.QuestionListAdapter;
  * 问题列表List
  */
 public class QuestionRefreshListWidget extends RefreshListWidget {
-    private Context mContext;
     private QuestionListAdapter mAdapter;
     private static final String TAG = "QuestionRefreshListWidget";
 
     public QuestionRefreshListWidget(Context context) {
         super(context);
-        this.mContext = context;
     }
 
     public QuestionRefreshListWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mContext = context;
     }
 
     @Override

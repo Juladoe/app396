@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Notify;
+import com.edusoho.kuozhi.model.Testpaper.MyTestpaperResult;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.adapter.testpaper;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.model.Testpaper.MaterialQuestionTypeSeq;
+import com.edusoho.kuozhi.model.Testpaper.Question;
 import com.edusoho.kuozhi.model.Testpaper.QuestionTypeSeq;
 import com.edusoho.kuozhi.ui.widget.testpaper.QuestionWidget;
+import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 
 import java.util.ArrayList;
 

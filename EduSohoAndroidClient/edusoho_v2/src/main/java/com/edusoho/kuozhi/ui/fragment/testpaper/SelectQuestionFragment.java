@@ -8,6 +8,7 @@ import android.text.style.RelativeSizeSpan;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.plugin.photo.HackyViewPager;
 
 /**
  * Created by howzhi on 14-9-24.

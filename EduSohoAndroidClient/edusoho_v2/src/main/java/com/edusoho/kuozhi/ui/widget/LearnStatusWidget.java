@@ -21,7 +21,9 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
