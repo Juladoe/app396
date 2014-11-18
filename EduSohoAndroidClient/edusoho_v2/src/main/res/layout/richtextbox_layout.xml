@@ -1,44 +1,59 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <EditText
+        android:id="@+id/et_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/et_title"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/login_edt_bg_sel"
-        android:textSize="@dimen/login_edt_text"
-        android:textColorHint="@color/login_edt_hit"
-        android:singleLine="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        android:hint="添加标题..." />
+        android:background="@drawable/login_edt_bg_sel"
+        android:hint="添加标题..."
+        android:singleLine="true"
+        android:textColorHint="@color/login_edt_hit"
+        android:textSize="@dimen/login_edt_text"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/et_content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="top"
+        android:layout_above="@+id/hs_image_list"
+        android:layout_below="@+id/et_title"
         android:background="@null"
+        android:gravity="top"
         android:hint="添加回复..."
-        android:singleLine="false"
-        android:layout_above="@+id/ll_font_style"
-        android:layout_below="@+id/et_title" />
+        android:singleLine="false" />
+
+    <HorizontalScrollView
+        android:id="@+id/hs_image_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_font_style">
+
+        <LinearLayout
+            android:id="@+id/ll_horizontal_image_list"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <LinearLayout
         android:id="@+id/ll_font_style"
-        android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"
-        android:gravity="right"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="right">
 
         <ImageView
             android:id="@+id/iv_bold"
@@ -82,17 +97,17 @@
             android:id="@+id/iv_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/widget_photo"
             android:background="@drawable/icon_camera"
-            android:clickable="true" />
+            android:clickable="true"
+            android:src="@drawable/widget_photo" />
 
         <ImageView
             android:id="@+id/iv_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_action_move_gray"
             android:background="@drawable/icon_photo"
-            android:clickable="true" />
+            android:clickable="true"
+            android:src="@drawable/icon_action_move_gray" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -349,10 +349,10 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         if (imageNum < 3) {
             horizontalSpacingNum = imageNum % 3 - 1;
         }
-        int verticalSapcingNum = (int) Math.ceil(imageNum / 3.0) - 1;
+        int verticalSpacingNum = (int) Math.ceil(imageNum / 3.0) - 1;
 
         int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
-        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSapcingNum * GRIDVIEW_SPACING);
+        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSpacingNum * GRIDVIEW_SPACING);
 
         mContentImageSize = gridviewWidth / 3;
 
