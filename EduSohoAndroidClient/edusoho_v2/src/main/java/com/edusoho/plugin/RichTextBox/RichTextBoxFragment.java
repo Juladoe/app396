@@ -33,7 +33,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +48,6 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduTagHandler;
-import com.edusoho.listener.URLImageGetter;
 import com.edusoho.plugin.FontColorPicker.ColorPickerDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -55,6 +57,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -87,6 +90,9 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private ImageView ivCamera;
     private ImageView ivPhoto;
     private EditText etQuestionTitle;
+    private HorizontalScrollView mHSView;
+    private LinearLayout mLinearImageList;
+    private DisplayImageOptions mOptions;
 
     /**
      * 从手机图库中选择图片返回结果表示
@@ -126,6 +132,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private String mPostId;
     private String mTitle = null;
     private String mOriginalContent;
+    private Spanned mEditContent;
 
     /**
      * 记录文本选择的起始位置
@@ -159,12 +166,14 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRichTextBoxView = inflater.inflate(R.layout.richtextbox_layout, container, false);
         initViews();
+        initHorizontalScrollView();
         initProgressDialog();
         Bundle bundle = getArguments();
         if (bundle != null) {
             mItemArgs = bundle.getByteArray(Const.RICH_ITEM_AGRS);
             setItemVisible();
         }
+
         return mRichTextBoxView;
     }
 
@@ -195,24 +204,29 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ivPhoto = (ImageView) mRichTextBoxView.findViewById(R.id.iv_photo);
         ivCamera = (ImageView) mRichTextBoxView.findViewById(R.id.iv_camera);
         etQuestionTitle = (EditText) mRichTextBoxView.findViewById(R.id.et_title);
-
         mCourseId = mActivity.getIntent().getStringExtra(Const.COURSE_ID);
         mThreadId = mActivity.getIntent().getStringExtra(Const.THREAD_ID);
         mTypeCode = mActivity.getIntent().getIntExtra(Const.REQUEST_CODE, 0);
+        mHSView = (HorizontalScrollView) mRichTextBoxView.findViewById(R.id.hs_image_list);
+        mLinearImageList = (LinearLayout) mRichTextBoxView.findViewById(R.id.ll_horizontal_image_list);
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
 
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), new URLImageGetter(etContent, mContext), new EduTagHandler())));
+            //mEditContent = Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler());
+            etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), new URLImageGetter(etContent, mContext), new EduTagHandler())));
+            //mEditContent = Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler());
+            etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
         } else {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(AppUtil.setHtmlContent(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), new URLImageGetter(etContent, mContext), new EduTagHandler())));
+            //mEditContent = Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler());
+            etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
         }
 
         if (mColorPickerDialog == null) {
@@ -241,6 +255,50 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
         //mCurFontSize = (int) etContent.getTextSize();
     }
+
+    private Html.ImageGetter mImageGetter = new Html.ImageGetter() {
+
+        @Override
+        public Drawable getDrawable(String source) {
+            if (!source.contains("http")) {
+                source = EdusohoApp.app.host + source;
+            }
+            try {
+                final String finalSource = source;
+                ImageLoader.getInstance().loadImage(source, mOptions, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String s, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                        insertImageIntoHorizontalList(bitmap);
+                        //ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        //AppUtil.compressImage(bitmap, baos, 0);
+                        //mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
+                        //mImageHashMap.put(String.valueOf(mImageCount), new File(ImageLoader.getInstance().getDiskCache().get(finalSource).getPath()));
+                        //mImageCount++;
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String s, View view) {
+                        //暂时先考虑多图同路径就触发这个方法，可能也有其他情况。
+                        Bitmap bitmap = BitmapFactory.decodeFile(ImageLoader.getInstance().getDiskCache().get(finalSource).getPath());
+                        insertImageIntoHorizontalList(bitmap);
+                    }
+                });
+            } catch (Exception ex) {
+                Log.d("imageURL--->", ex.toString());
+            }
+            return new BitmapDrawable();
+        }
+    };
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -403,13 +461,93 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         }
     }
 
+    private void initHorizontalScrollView() {
+        HorizontalScrollView hsView = (HorizontalScrollView) mRichTextBoxView.findViewById(R.id.hs_image_list);
+        ViewGroup.LayoutParams lp = hsView.getLayoutParams();
+        lp.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        lp.height = (int) (EdusohoApp.screenW * 0.1f);
+        hsView.setLayoutParams(lp);
+        hsView.setVisibility(View.GONE);
+    }
+
+    /**
+     * 插入图片到HorizontalScrollView
+     *
+     * @param image
+     */
+    private void insertImageIntoHorizontalList(Bitmap image) {
+        try {
+            ViewGroup.LayoutParams lp = mHSView.getLayoutParams();
+            lp.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            lp.height = (int) (EdusohoApp.screenW * 0.2f);
+            mHSView.setLayoutParams(lp);
+            mHSView.setVisibility(View.VISIBLE);
+
+            RelativeLayout relativeLayout1 = new RelativeLayout(mContext);
+            RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams((int) (EdusohoApp.screenW * 0.2f),
+                    (int) (EdusohoApp.screenW * 0.2f));
+            rlp1.setMargins(30, 30, 30, 30);
+            mLinearImageList.addView(relativeLayout1, rlp1);
+
+            ImageView imageView = new ImageView(mContext);
+            imageView.setImageBitmap(image);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            relativeLayout1.addView(imageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT));
+
+            ImageView ivDel = new ImageView(mContext);
+            ivDel.setBackgroundColor(Color.parseColor("#20000000"));
+            ivDel.setImageDrawable(getResources().getDrawable(R.drawable.iconfont_image_del));
+            RelativeLayout.LayoutParams tvDelLayoutParams = new RelativeLayout.LayoutParams((int) (EdusohoApp.screenW * 0.2f * 0.2),
+                    (int) (EdusohoApp.screenW * 0.2f * 0.2));
+            ivDel.setPadding(2, 2, 2, 2);
+            tvDelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            tvDelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            relativeLayout1.addView(ivDel, tvDelLayoutParams);
+            ivDel.setTag(mImageCount);
+            ivDel.setOnClickListener(mImageDelClick);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+    }
+
+    /**
+     * 图片删除事件
+     */
+    private View.OnClickListener mImageDelClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            try {
+                int imageIndex = Integer.valueOf(v.getTag().toString());
+                mImageHashMap.remove(String.valueOf(imageIndex));
+                RelativeLayout parent = (RelativeLayout) v.getParent();
+                int viewIndex = ((ViewGroup) parent.getParent()).indexOfChild(parent);
+                mLinearImageList.removeViewAt(viewIndex);
+                if (mLinearImageList.getChildCount() == 0) {
+                    mHSView.setVisibility(View.GONE);
+                }
+                String strTmp = removeImgTag(Html.toHtml(etContent.getText()), imageIndex);
+                etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(strTmp)), new Html.ImageGetter() {
+                    @Override
+                    public Drawable getDrawable(String source) {
+                        return new BitmapDrawable();
+                    }
+                }, new EduTagHandler()));
+                //strTmp＝
+
+            } catch (Exception ex) {
+                Log.e(TAG, ex.toString());
+            }
+        }
+    };
+
     /**
      * 光标处插入图片
      *
      * @param image
      */
     private void insertImage(Bitmap image, String filePath) {
-        etContent.getText().insert(etContent.getSelectionEnd(), "\n");
+        //etContent.getText().insert(etContent.getSelectionEnd(), "\n");
         Editable eb = etContent.getEditableText();
         //获得光标所在位置
         int qqPosition = etContent.getSelectionStart();
@@ -429,11 +567,14 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         //插入图片
         Drawable drawable = new BitmapDrawable(image);
         int start = (etContent.getWidth() - drawable.getIntrinsicWidth()) / 2;
-        drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
+//        drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
+//        ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        drawable.setBounds(0, 0, 0, 0);
         ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        eb.insert(qqPosition, ss);
-        etContent.getText().insert(etContent.getSelectionEnd(), "\n");
 
+        eb.insert(qqPosition, ss);
+        //etContent.getText().insert(etContent.getSelectionEnd(), "\n");
+        insertImageIntoHorizontalList(image);
         //保存的是压缩后的图片
         mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
         mImageCount++;
@@ -493,31 +634,55 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      * @return
      */
     public String setContent(String strContent) {
-        String str = etContent.getText().toString();
-        int len = mImageHashMap.size();
-        HashMap<String, Object> tmpHashMap = new HashMap<String, Object>();
-        /**
-         * 如果图片有删除，要把内存中对应图片名称删除
-         */
-        for (int i = 0; i < len; i++) {
-            int tag = i + 1;
-            if (!str.contains("image|" + tag)) {
-                mImageHashMap.remove(String.valueOf(tag));
+        try {
+//            String str = etContent.getText().toString();
+//            int len = mImageHashMap.size();
+//            HashMap<String, Object> tmpHashMap = new HashMap<String, Object>();
+            /**
+             * 如果图片有删除，要把HashMap中对应图片名称删除
+             */
+//            for (int i = 0; i < len; i++) {
+//                int tag = i + 1;
+//                if (!str.contains("image|" + tag)) {
+//                    mImageHashMap.remove(String.valueOf(tag));
+//                }
+//            }
+
+            if (mObjects == null) {
+                mObjects = new Object[mImageHashMap.size() * 2];
             }
+
+            Iterator iterator = mImageHashMap.entrySet().iterator();
+            int objectFlags = 0;
+//            String[] strContents = strContent.split("<img src=\"null\">");
+//            int start = 0;
+//            strContent = "";
+//            while (iterator.hasNext()) {
+//                Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
+//                int index = Integer.parseInt(entry.getKey());
+//                while (start < index) {
+//                    strContent = strContent + strContents[start++];
+//                }
+//                strContent = strContent + "<img src=\"null\">";
+//            }
+//            if (start < strContents.length) {
+//                strContent = strContent + strContents[start];
+//            }
+
+            //strContent = strContent.replaceAll("<img src=\"null\">", "");
+
+            //iterator = mImageHashMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
+                strContent = strContent.replaceFirst("<img src=\"null\">", "<img src=\"" + entry.getKey() + "\">");
+                mObjects[objectFlags++] = entry.getKey();
+                mObjects[objectFlags++] = entry.getValue();
+                //strContent = strContent + "<img src=\"" + Integer.parseInt(entry.getKey()) + "\">";
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
         }
 
-        if (mObjects == null) {
-            mObjects = new Object[mImageHashMap.size() * 2];
-        }
-
-        Iterator iterator = mImageHashMap.entrySet().iterator();
-        int objectFlags = 0;
-        while (iterator.hasNext()) {
-            Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
-            strContent = strContent.replaceFirst("<img src=\"null\">", "<img src=\"" + entry.getKey() + "\">");
-            mObjects[objectFlags++] = entry.getKey();
-            mObjects[objectFlags++] = entry.getValue();
-        }
         return strContent;
     }
 
@@ -661,6 +826,29 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             content = content.replace(m.group(1), "<p>" + m.group(1) + "</p>");
         }
         return content;
+    }
+
+    /**
+     * 删除文本控件中的<img>标签
+     *
+     * @param content
+     * @param index
+     * @return
+     */
+    private String removeImgTag(String content, int index) {
+        Matcher m = Pattern.compile("(<img src=\".*?\">)").matcher(content);
+        StringBuffer stringBuffer = new StringBuffer();
+        int tag = 1;
+        while (m.find()) {
+            if (tag == index) {
+                m.appendReplacement(stringBuffer, "");
+                break;
+            }
+            tag++;
+        }
+        m.appendTail(stringBuffer);
+        Log.d("null-->", stringBuffer.toString());
+        return stringBuffer.toString();
     }
 
 }
