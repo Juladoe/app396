@@ -277,6 +277,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                         insertImageIntoHorizontalList(bitmap);
+                        mImageCount++;
                         //ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         //AppUtil.compressImage(bitmap, baos, 0);
                         //mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
@@ -529,14 +530,14 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 if (mLinearImageList.getChildCount() == 0) {
                     mHSView.setVisibility(View.GONE);
                 }
-                String strTmp = removeImgTag(Html.toHtml(etContent.getText()), imageIndex);
+                String strTmp = removeImgTag(Html.toHtml(etContent.getText()), viewIndex);
                 etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(strTmp)), new Html.ImageGetter() {
                     @Override
                     public Drawable getDrawable(String source) {
                         return new BitmapDrawable();
                     }
                 }, new EduTagHandler()));
-                //strTmp＝
+                mImageCount--;
 
             } catch (Exception ex) {
                 Log.e(TAG, ex.toString());
@@ -813,7 +814,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     }
 
     /**
-     * 删除文本控件中的<img>标签
+     * 根据index删除文本中的<img>标签
      *
      * @param content
      * @param index
@@ -822,7 +823,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private String removeImgTag(String content, int index) {
         Matcher m = Pattern.compile("(<img src=\".*?\">)").matcher(content);
         StringBuffer stringBuffer = new StringBuffer();
-        int tag = 1;
+        int tag = 0;
         while (m.find()) {
             if (tag == index) {
                 m.appendReplacement(stringBuffer, "");
