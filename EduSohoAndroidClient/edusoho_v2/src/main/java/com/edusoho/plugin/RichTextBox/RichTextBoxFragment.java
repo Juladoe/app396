@@ -209,6 +209,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         mTypeCode = mActivity.getIntent().getIntExtra(Const.REQUEST_CODE, 0);
         mHSView = (HorizontalScrollView) mRichTextBoxView.findViewById(R.id.hs_image_list);
         mLinearImageList = (LinearLayout) mRichTextBoxView.findViewById(R.id.ll_horizontal_image_list);
+        mLinearImageList.setHorizontalScrollBarEnabled(false);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
 
         if (mTypeCode == Const.EDIT_QUESTION) {
@@ -479,22 +480,27 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         try {
             ViewGroup.LayoutParams lp = mHSView.getLayoutParams();
             lp.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-            lp.height = (int) (EdusohoApp.screenW * 0.2f);
+            lp.height = (int) (EdusohoApp.screenW * 0.21f);
             mHSView.setLayoutParams(lp);
             mHSView.setVisibility(View.VISIBLE);
 
+            //每个图片是个RelativeLayout
             RelativeLayout relativeLayout1 = new RelativeLayout(mContext);
-            RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams((int) (EdusohoApp.screenW * 0.2f),
-                    (int) (EdusohoApp.screenW * 0.2f));
-            rlp1.setMargins(30, 30, 30, 30);
+            RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams((int) (EdusohoApp.screenW * 0.21f),
+                    (int) (EdusohoApp.screenW * 0.21f));
+            int marginSpace = (int) (EdusohoApp.screenW * 0.01f);
+            relativeLayout1.setPadding(marginSpace, marginSpace, marginSpace, marginSpace);
             mLinearImageList.addView(relativeLayout1, rlp1);
 
+            //RelativeLayout中的图片
             ImageView imageView = new ImageView(mContext);
             imageView.setImageBitmap(image);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            relativeLayout1.addView(imageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT));
+            RelativeLayout.LayoutParams ivLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT);
+            relativeLayout1.addView(imageView, ivLayoutParams);
 
+            //RelativeLayout中的删除按钮
             ImageView ivDel = new ImageView(mContext);
             ivDel.setBackgroundColor(Color.parseColor("#20000000"));
             ivDel.setImageDrawable(getResources().getDrawable(R.drawable.iconfont_image_del));
@@ -654,30 +660,11 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
             Iterator iterator = mImageHashMap.entrySet().iterator();
             int objectFlags = 0;
-//            String[] strContents = strContent.split("<img src=\"null\">");
-//            int start = 0;
-//            strContent = "";
-//            while (iterator.hasNext()) {
-//                Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
-//                int index = Integer.parseInt(entry.getKey());
-//                while (start < index) {
-//                    strContent = strContent + strContents[start++];
-//                }
-//                strContent = strContent + "<img src=\"null\">";
-//            }
-//            if (start < strContents.length) {
-//                strContent = strContent + strContents[start];
-//            }
-
-            //strContent = strContent.replaceAll("<img src=\"null\">", "");
-
-            //iterator = mImageHashMap.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
                 strContent = strContent.replaceFirst("<img src=\"null\">", "<img src=\"" + entry.getKey() + "\">");
                 mObjects[objectFlags++] = entry.getKey();
                 mObjects[objectFlags++] = entry.getValue();
-                //strContent = strContent + "<img src=\"" + Integer.parseInt(entry.getKey()) + "\">";
             }
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
