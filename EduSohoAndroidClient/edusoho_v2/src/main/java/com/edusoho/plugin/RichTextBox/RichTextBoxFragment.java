@@ -132,7 +132,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private String mPostId;
     private String mTitle = null;
     private String mOriginalContent;
-    private Spanned mEditContent;
 
     /**
      * 记录文本选择的起始位置
@@ -209,24 +208,22 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         mTypeCode = mActivity.getIntent().getIntExtra(Const.REQUEST_CODE, 0);
         mHSView = (HorizontalScrollView) mRichTextBoxView.findViewById(R.id.hs_image_list);
         mLinearImageList = (LinearLayout) mRichTextBoxView.findViewById(R.id.ll_horizontal_image_list);
-        mLinearImageList.setHorizontalScrollBarEnabled(false);
+        mHSView.setHorizontalScrollBarEnabled(false);
+        mHSView.setVerticalScrollBarEnabled(false);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
 
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            //mEditContent = Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler());
             etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            //mEditContent = Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler());
             etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
         } else {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            //mEditContent = Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler());
             etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
         }
 
