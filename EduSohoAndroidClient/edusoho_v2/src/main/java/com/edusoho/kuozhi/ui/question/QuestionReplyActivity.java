@@ -87,7 +87,8 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                         HashMap<String, String> params = url.getParams();
                         params.put("courseId", richFragment.getCourseId());
                         params.put("threadId", richFragment.getThreadId());
-                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent())) +
+                                AppUtil.removeHtml(Html.toHtml(richFragment.getImageContent()));
                         params.put("content", richFragment.setContent(content));
                         params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
                         url.setMuiltParams(richFragment.getObjects());
@@ -101,13 +102,13 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                         params.put("courseId", richFragment.getCourseId());
                         params.put("threadId", richFragment.getThreadId());
                         params.put("title", tvTitle.getText().toString());
-                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent())) +
+                                AppUtil.removeHtml(Html.toHtml(richFragment.getImageContent()));
                         params.put("content", richFragment.setContent(content));
                         Intent intent = getIntent();
                         params.put("action", intent.hasExtra(ACTION) ? intent.getStringExtra(ACTION) : "update");
                         params.put(TYPE, intent.getStringExtra(TYPE));
                         params.put(Const.LESSON_ID, intent.getStringExtra(Const.LESSON_ID));
-
                         params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
                         url.setMuiltParams(richFragment.getObjects());
                         url.setParams(params);
@@ -122,7 +123,8 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                         params.put("courseId", richFragment.getCourseId());
                         params.put("threadId", richFragment.getThreadId());
                         params.put("postId", richFragment.getPostId());
-                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                        final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent())) +
+                                AppUtil.removeHtml(Html.toHtml(richFragment.getImageContent()));
                         params.put("content", richFragment.setContent(content));
                         params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
                         url.setMuiltParams(richFragment.getObjects());
