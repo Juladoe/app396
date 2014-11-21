@@ -151,7 +151,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                     if (submitResult == null) {
                         return;
                     } else {
-                        Toast.makeText(mActivity, "提交成功", 500).show();
+                        Toast.makeText(mActivity, "提交成功", Toast.LENGTH_SHORT).show();
                         mActivity.setResult(Const.OK);
                         mActivity.finish();
                     }
@@ -188,7 +188,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                     if (modelResult == null) {
                         return;
                     } else {
-                        Toast.makeText(mContext, "提交成功", 500).show();
+                        Toast.makeText(mContext, "提交成功", Toast.LENGTH_SHORT).show();
                         mActivity.setResult(Const.OK, new Intent().putExtra(Const.QUESTION_EDIT_RESULT, modelResult));
                         mActivity.finish();
                     }

@@ -194,14 +194,13 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.btnEdit = (EdusohoButton) v.findViewById(R.id.edu_btn_question_edit);
                 qcvHolder.tvPostTitle = (TextView) v.findViewById(R.id.post_title);
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
-                qcvHolder.pb_loading = (ProgressBar) v.findViewById(R.id.pb_content);
                 ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, mOptions);
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
 
                 if (!mQuestionDetailModel.content.contains("img src")) {
-                    qcvHolder.pb_loading.setVisibility(View.GONE);
+                    //qcvHolder.pb_loading.setVisibility(View.GONE);
                     qcvHolder.tvPostContent.setVisibility(View.VISIBLE);
                 }
                 qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
@@ -233,7 +232,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             holder.tvReplyTime = (TextView) v.findViewById(R.id.tv_reply_time);
             holder.tvReplyContent = (HtmlTextView) v.findViewById(R.id.tv_reply_content);
             holder.ivEdit = (ImageView) v.findViewById(R.id.iv_reply_edit);
-            holder.pbReplyContent = (ProgressBar) v.findViewById(R.id.pb_reply_content);
+            //holder.pbReplyContent = (ProgressBar) v.findViewById(R.id.pb_reply_content);
             v.setTag(holder);
 
             holder.tvReplyName.setText(entireReply.replyModel.user.nickname);
@@ -282,7 +281,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             }
 
             if (!entireReply.replyModel.content.contains("img src")) {
-                holder.pbReplyContent.setVisibility(View.GONE);
+                //holder.pbReplyContent.setVisibility(View.GONE);
                 holder.tvReplyContent.setVisibility(View.VISIBLE);
             }
 
@@ -349,10 +348,10 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         if (imageNum < 3) {
             horizontalSpacingNum = imageNum % 3 - 1;
         }
-        int verticalSapcingNum = (int) Math.ceil(imageNum / 3.0) - 1;
+        int verticalSpacingNum = (int) Math.ceil(imageNum / 3.0) - 1;
 
         int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
-        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSapcingNum * GRIDVIEW_SPACING);
+        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSpacingNum * GRIDVIEW_SPACING);
 
         mContentImageSize = gridviewWidth / 3;
 
@@ -376,7 +375,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public TextView tvReplyTime;
         public HtmlTextView tvReplyContent;
         public ImageView ivEdit;
-        public ProgressBar pbReplyContent;
+        //public ProgressBar pbReplyContent;
     }
 
     private static class QuestionContentViewHolder {
@@ -386,7 +385,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         public EdusohoButton btnEdit;
         public TextView tvPostTitle;
         public TextView tvPostContent;
-        public ProgressBar pb_loading;
+        //public ProgressBar pb_loading;
         //public ImageView ivImage;
 //        public GridView gvImage;
     }
