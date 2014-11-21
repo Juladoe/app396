@@ -24,6 +24,7 @@ public class HackyViewPager extends ViewPager {
 
     private int isDown = 1;
     private float mLastMotionX;
+    private float mLastMotionY;
 
     public HackyViewPager(Context context) {
         super(context);
@@ -46,11 +47,13 @@ public class HackyViewPager extends ViewPager {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         ViewParent parent = getParent();
         final float x = ev.getX();
+        final float y = ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 parent.requestDisallowInterceptTouchEvent(true);
                 isDown = 1;
                 mLastMotionX = x;
+                mLastMotionY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isDown == 1) {
@@ -60,9 +63,13 @@ public class HackyViewPager extends ViewPager {
                         break;
                     }
 
-
                     if (x - mLastMotionX < -5 && getCurrentItem() == getAdapter().getCount() - 1) {
                         isDown = 0;
+                        parent.requestDisallowInterceptTouchEvent(false);
+                        break;
+                    }
+
+                    if (y - mLastMotionY > 50 || y - mLastMotionY < -50) {
                         parent.requestDisallowInterceptTouchEvent(false);
                     }
                 }

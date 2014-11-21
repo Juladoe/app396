@@ -275,13 +275,15 @@ public class Const {
      * 普通回复
      */
     public static final int REPLY = 0x01;
+
     /**
      * 问题编辑
-     */
+    */
     public static final int EDIT_QUESTION = 0x02;
+
     /**
      * 回复编辑
-     */
+    */
     public static final int EDIT_REPLY = 0x03;
 
     public static final String COURSE_NOTICES = "Course/getCourseNotices";

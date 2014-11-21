@@ -3,19 +3,36 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 
+import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.adapter.Course.FoundCourseListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Category;
+import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.course.CourseListActivity;
 import com.edusoho.kuozhi.ui.widget.CategoryListView;
+import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.listener.CourseListScrollListener;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import java.util.HashMap;
+
+import library.PullToRefreshBase;
 
 /**
  * Created by howzhi on 14-8-14.
@@ -24,16 +41,36 @@ import com.nineoldandroids.animation.ObjectAnimator;
 public class FoundFragment extends BaseFragment {
 
     private CategoryListView mCategoryListView;
-    private View mFoundSearchLayout;
     public String mTitle = "发现";
+    private int mCategoryHeight;
+    private int mCurrentCategoryId;
+    private ImageView mSelectIconView;
+    private RefreshListWidget mCourseListView;
 
     public static final int HIDE_ACTION_BAR_CODE = 0001;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        mSelectIconView = mActivity.addTitleViewIcon(R.drawable.found_select_icon);
         setContainerView(R.layout.found_layout);
         Log.d(null, "onCreate");
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.found_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.found_menu_search) {
+            SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+            searchDialogFragment.show(getChildFragmentManager(), "dialog");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -42,7 +79,7 @@ public class FoundFragment extends BaseFragment {
         int type = message.type.code;
         switch (type) {
             case HIDE_ACTION_BAR_CODE:
-                showSearchLayout();
+                //showSearchLayout();
                 break;
         }
     }
@@ -69,17 +106,20 @@ public class FoundFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        Log.d(null, "FoundFragment->init");
-        mFoundSearchLayout = view.findViewById(R.id.found_search_layout);
+        mCourseListView = (RefreshListWidget) view.findViewById(R.id.found_category_course_list);
         mCategoryListView = (CategoryListView) view.findViewById(R.id.found_category_list);
 
-        mFoundSearchLayout.setOnClickListener(new View.OnClickListener() {
+        mCourseListView.setEmptyText(new String[] { "没有搜到相关课程" });
+        mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
+        mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
-            public void onClick(View view) {
-                Log.d(null, "show popwindow search");
-                hideSearchLayout();
-                SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
-                searchDialogFragment.show(getChildFragmentManager(), "dialog");
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                loadCourseList(mCurrentCategoryId, mCourseListView.getStart());
+            }
+
+            @Override
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadCourseList(mCurrentCategoryId, 0);
             }
         });
 
@@ -89,35 +129,83 @@ public class FoundFragment extends BaseFragment {
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {
-                app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(CourseListActivity.TITLE, category.name);
-                        startIntent.putExtra(CourseListActivity.CATEGORY_ID, category.id);
-                    }
-                });
+                loadCourseList(category.id, 0);
+                hideCategoryList();
             }
         });
+
+        mActivity.setTitleClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCategoryListView.getHeight() <= 0) {
+                    showCategoryList();
+                } else {
+                    hideCategoryList();
+                }
+            }
+        });
+
+        loadCourseList(0, 0);
+        mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
     }
 
-    private void hideSearchLayout()
+    private void rotation(View view, float start, float end)
     {
-        EdusohoAnimWrap wrap = new EdusohoAnimWrap(mFoundSearchLayout);
-        mFoundSearchLayout.setTag(mFoundSearchLayout.getHeight());
-        ObjectAnimator animator = ObjectAnimator.ofInt(
-                wrap, "height", wrap.getHeight(), 0);
-        animator.setDuration(300);
-        animator.start();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
+        objectAnimator.setDuration(180);
+        objectAnimator.start();
     }
 
-    private void showSearchLayout()
+    private void hideCategoryList()
     {
-        EdusohoAnimWrap wrap = new EdusohoAnimWrap(mFoundSearchLayout);
-        int height = (Integer)mFoundSearchLayout.getTag();
-        ObjectAnimator animator = ObjectAnimator.ofInt(
-                wrap, "height", 0, height);
-        animator.setDuration(10);
-        animator.start();
+        mCategoryHeight = EdusohoApp.screenH - mActivity.mActionBar.getHeight();
+        AppUtil.animForHeight(
+                new EdusohoAnimWrap(mCategoryListView),
+                mCategoryHeight,
+                0,
+                280
+        );
+        rotation(mSelectIconView, -180, 0);
+    }
+
+    private void showCategoryList()
+    {
+        mCategoryHeight = EdusohoApp.screenH - mActivity.mActionBar.getHeight();
+        AppUtil.animForHeight(
+                new EdusohoAnimWrap(mCategoryListView),
+                0,
+                mCategoryHeight,
+                350
+        );
+        rotation(mSelectIconView, 0, -180);
+    }
+
+    private void loadCourseList(int categoryId, int start)
+    {
+        Log.d(null, "categoryId->" + categoryId);
+        mCurrentCategoryId = categoryId;
+        RequestUrl url = app.bindUrl(Const.COURSES, true);
+        HashMap<String, String> params = url.getParams();
+        params.put(CourseListActivity.CATEGORY_ID, String.valueOf(categoryId));
+        params.put("start", String.valueOf(start));
+        params.put("limit", String.valueOf(Const.LIMIT));
+
+        mActivity.ajaxPost(url, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mCourseListView.onRefreshComplete();
+                CourseResult courseResult = mActivity.gson.fromJson(
+                        object, new TypeToken<CourseResult>() {
+                        }.getType());
+
+                if (courseResult == null) {
+                    return;
+                }
+
+                mCourseListView.pushData(courseResult.data);
+                mCourseListView.setStart(courseResult.start, courseResult.total);
+            }
+        });
     }
 
     @Override

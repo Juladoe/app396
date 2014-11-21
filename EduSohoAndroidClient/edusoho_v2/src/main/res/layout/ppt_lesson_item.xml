@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.co.senab.photoview.PhotoView
+    <photoview.PhotoView
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:id="@+id/ppt_lesson_image"

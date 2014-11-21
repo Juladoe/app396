@@ -44,6 +44,7 @@ import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.StatusCallback;
 import com.google.gson.reflect.TypeToken;
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.ByteArrayInputStream;
@@ -195,12 +196,19 @@ public class AppUtil {
         });
     }
 
-    public static void animForHeight(Object view, int start, int end, int time) {
+    public static ObjectAnimator animForHeight(Object view, int start, int end, int time) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
                 view, "height", start, end);
         objectAnimator.setDuration(time);
         objectAnimator.setInterpolator(new AccelerateInterpolator());
         objectAnimator.start();
+        return objectAnimator;
+    }
+
+    public static void animForHeightWithListener(
+            Object view, int start, int end, int time, Animator.AnimatorListener animatorListener) {
+        ObjectAnimator objectAnimator = animForHeight(view, start, end, time);
+        objectAnimator.addListener(animatorListener);
     }
 
     public static String coverUrlToCacheKey(RequestUrl requestUrl) {

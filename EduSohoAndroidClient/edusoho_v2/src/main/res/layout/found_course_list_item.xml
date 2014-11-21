@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/normal_list_select"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
+
+    <ImageView
+        android:id="@+id/found_list_course_pic"
+        android:layout_width="116dp"
+        android:layout_height="71dp"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="0"
+        android:src="@drawable/noram_course" />
+
+    <RelativeLayout
+        android:layout_gravity="top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="颜色"
+            android:id="@+id/found_list_course_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:maxLines="2"
+            android:textColor="#dd000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:textColor="#80000000"
+            android:drawableLeft="@drawable/course_teacher_icon"
+            android:layout_below="@id/found_list_course_title"
+            android:id="@+id/found_list_course_teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:textColor="#80000000"
+            android:drawableLeft="@drawable/course_student_icon"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/found_list_course_title"
+            android:id="@+id/found_list_course_studentnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:singleLine="true" />
+    </RelativeLayout>
+</LinearLayout>

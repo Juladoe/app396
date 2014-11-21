@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.Course.FoundCourseListAdapter;
 import com.edusoho.kuozhi.adapter.CourseListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
@@ -58,7 +59,7 @@ public class CourseFragment extends BaseFragment {
         mLoadView = view.findViewById(R.id.load_layout);
         mCourseListView =(RefreshListWidget) view.findViewById(R.id.course_liseview);
         mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        mCourseListView.setAdapter(new CourseListAdapter(mContext, R.layout.recommend_school_list_item));
+        mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {

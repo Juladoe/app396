@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- -->
+    <color name="base_light">#ddfdb933</color>
+    <color name="base_white_normal">#ddffffff</color>
+    <color name="base_gray">#dddedede</color>
+    <color name="base_color_normal">#dd2ec368</color>
+
     <color name="lesson_item_bg_pressed">#E5E5E5</color>
     <color name="lesson_item_bg">#ffffff</color>
     <color name="header_bg">#ffffff</color>

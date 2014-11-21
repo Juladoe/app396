@@ -9,10 +9,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.CourseNoticeListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseNotice;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 
@@ -21,6 +23,8 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import library.PullToRefreshBase;
 
@@ -48,8 +52,8 @@ public class CourseNoticeFragment extends BaseFragment {
         changeTitle("公告历史");
         mCourseId = getArguments().getInt(Const.COURSE_ID);
         mRefreshList = (RefreshListWidget) view.findViewById(R.id.course_notice_refreshlist);
-        mRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
-        mRefreshList.setEmptyText(new String[]{"没有公告"});
+        mRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mRefreshList.setEmptyText(new String[]{ "没有公告" });
         mRefreshList.setAdapter(new CourseNoticeListAdapter(mContext, R.layout.course_notice_item_layout, false));
 
         mRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {
@@ -68,23 +72,37 @@ public class CourseNoticeFragment extends BaseFragment {
         mRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final TextView courseNoticeContent = (TextView) view.findViewById(R.id.course_notice_content);
                 CourseNotice courseNotice = (CourseNotice) parent.getItemAtPosition(position);
-
-                TextView textView = new TextView(mContext);
-                textView.setText(EduHtml.coverHtmlImages(courseNotice.content, textView, mContext));
-                AlertDialog alertDialog = new AlertDialog.Builder(mContext)
-                        .setTitle("公告")
-                        .setView(textView)
-                        .create();
-                alertDialog.show();
+                Bundle bundle = new Bundle();
+                bundle.putInt(AboutFragment.TYPE, AboutFragment.FROM_STR);
+                bundle.putString(AboutFragment.CONTENT, filterContent(courseNotice.content));
+                bundle.putString(Const.ACTIONBAT_TITLE, "公告");
+                bundle.putString(FragmentPageActivity.FRAGMENT, "AboutFragment");
+                startAcitivityWithBundle("FragmentPageActivity", bundle);
             }
         });
+
         courseNoticeGsonResponse(0);
     }
 
+    private String filterContent(String content)
+    {
+        StringBuffer stringBuffer = new StringBuffer();
+        Matcher m = Pattern.compile("(img src=\".*?\")").matcher(content);
+        while (m.find()) {
+            String[] s = m.group(1).split("src=");
+            String strUrl = s[1].toString().substring(1, s[1].length() - 1);
+            if (!strUrl.contains("http")) {
+                m.appendReplacement(stringBuffer, String.format("img src='%s'", EdusohoApp.app.host + strUrl));
+            }
+        }
+        m.appendTail(stringBuffer);
+
+        return stringBuffer.toString();
+    }
+
     public void courseNoticeGsonResponse(final int start) {
-        RequestUrl url = app.bindUrl(Const.COURSE_NOTICES, false);
+        RequestUrl url = app.bindUrl(Const.COURSE_NOTICE, false);
         url.setParams(new String[]{
                 "start", String.valueOf(start),
                 "limit", String.valueOf(Const.LIMIT),

@@ -2,24 +2,31 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.Course.WeekCourseAdapter;
+import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.SchoolAnnouncement;
 import com.edusoho.kuozhi.model.SchoolBanner;
-import com.edusoho.kuozhi.ui.course.CourseListActivity;
-import com.edusoho.kuozhi.ui.widget.CourseListWidget;
-import com.edusoho.kuozhi.ui.widget.HorizontalListWidget;
+import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.DividerItemDecoration;
 import com.edusoho.kuozhi.view.EdusohoViewPager;
-import com.edusoho.listener.CourseListScrollListener;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -36,14 +43,10 @@ public class RecommendFragment extends BaseFragment {
 
     private EdusohoViewPager mSchoolBanner;
     private TextView mSchoolAnnouncement;
-    private CourseListWidget mRecommendCourses;
-    private CourseListWidget mNewCourses;
-    private HorizontalListWidget mWeekCourse;
+    private EduSohoListView mWeekCourse;
 
     private PullToRefreshScrollView mRootView;
     public String mTitle = "推荐";
-
-    private View mWeekCourseLabel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,13 +63,9 @@ public class RecommendFragment extends BaseFragment {
     protected void initView(View view)
     {
         mRootView = (PullToRefreshScrollView) view;
-        mWeekCourse = (HorizontalListWidget) view.findViewById(R.id.recommend_week_course);
-        mRecommendCourses = (CourseListWidget) view.findViewById(R.id.recommend_listview);
-        mNewCourses = (CourseListWidget) view.findViewById(R.id.new_listview);
+        mWeekCourse = (EduSohoListView) view.findViewById(R.id.recommend_week_course);
         mSchoolAnnouncement = (TextView) view.findViewById(R.id.recommend_sch_announcement);
         mSchoolBanner = (EdusohoViewPager) view.findViewById(R.id.school_banner);
-
-        mWeekCourseLabel = view.findViewById(R.id.recommend_week_label);
 
         mRootView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mRootView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ScrollView>() {
@@ -78,7 +77,17 @@ public class RecommendFragment extends BaseFragment {
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+            }
+        });
 
+        mSchoolAnnouncement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupDialog.createNormal(
+                        mActivity,
+                        "网校公告",
+                        mSchoolAnnouncement.getText().toString()
+                ).show();
             }
         });
         initFragment(false);
@@ -89,36 +98,6 @@ public class RecommendFragment extends BaseFragment {
         initSchoolBanner(isUpdate);
         initSchoolAnnouncement();
         initWeekCourse();
-        initRecommendCourse();
-        initNewCourse();
-    }
-
-    private void initNewCourse()
-    {
-        RequestUrl url = app.bindUrl(Const.LASTEST_COURSES, false);
-        url.setParams(new String[]{
-                "start", "0",
-                "limit", "2"
-        });
-
-        mNewCourses.setFullHeight(true);
-        mNewCourses.initialise(mActivity, url);
-
-        mNewCourses.setShowMoreBtnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(null, "mNewCourses click->");
-                app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.LASTEST);
-                        startIntent.putExtra(CourseListActivity.TITLE, "最新课程");
-                    }
-                });
-            }
-        });
-
-        mNewCourses.setItemClick(new CourseListScrollListener(mActivity));
     }
 
     private void initWeekCourse()
@@ -129,9 +108,32 @@ public class RecommendFragment extends BaseFragment {
                 "limit", "3"
         });
 
-        mWeekCourse.setLabel(mWeekCourseLabel);
-        mWeekCourse.initialise(mActivity, url);
-        mWeekCourse.setOnItemClick(new CourseListScrollListener(mActivity));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        mWeekCourse.setLayoutManager(linearLayoutManager);
+        mWeekCourse.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL_LIST));
+        WeekCourseAdapter weekCourseAdapter = new WeekCourseAdapter(mContext, R.layout.found_course_list_item);
+        weekCourseAdapter.setOnItemClick(new RecyclerViewListBaseAdapter.RecyclerItemClick() {
+            @Override
+            public void onItemClick(Object obj, int position) {
+                Log.d(null, "position=" + position);
+                Course course = (Course) obj;
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, course.id);
+                bundle.putString(Const.ACTIONBAT_TITLE, course.title);
+                startAcitivityWithBundle(CourseDetailsActivity.TAG, bundle);
+            }
+        });
+
+        mWeekCourse.setAdapter(weekCourseAdapter);
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                CourseResult courseResult = mActivity.parseJsonValue(
+                        object, new TypeToken<CourseResult>(){});
+                mWeekCourse.pushData(courseResult.data);
+                mWeekCourse.initListHeight();
+            }
+        });
     }
 
     private void initSchoolBanner(final boolean isUpdate)
@@ -162,35 +164,6 @@ public class RecommendFragment extends BaseFragment {
                 }
             }
         });
-    }
-
-    private void initRecommendCourse()
-    {
-        RequestUrl url = app.bindUrl(Const.RECOMMEND_COURSES, false);
-        url.setParams(new String[]{
-                "start", "0",
-                "limit", "2"
-        });
-
-        mRecommendCourses.setFullHeight(true);
-        mRecommendCourses.initialise(mActivity, url);
-        
-        mRecommendCourses.setShowMoreBtnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(null, "mRecommendCourses click->");
-                app.mEngine.runNormalPlugin("CourseListActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(CourseListActivity.TITLE, "推荐课程");
-                        startIntent.putExtra(CourseListActivity.TYPE, CourseListActivity.RECOMMEND);
-                    }
-                });
-            }
-        });
-
-        mRecommendCourses.setItemClick(new CourseListScrollListener(mActivity));
-
     }
 
     private void initSchoolAnnouncement()

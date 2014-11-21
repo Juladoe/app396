@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +67,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActivity = this;
         mContext = this;
         initActivity();
+    }
+
+    public void setTitleClickListener(View.OnClickListener clickListener)
+    {
+        mTitleTextView.setOnClickListener(clickListener);
     }
 
     private void initActivity()
@@ -156,16 +162,27 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.setTitle(title);
     }
 
+    public ImageView addTitleViewIcon(int icon)
+    {
+        ViewGroup titleView = (ViewGroup) mActionBar.getCustomView();
+        ImageView imageView = new ImageView(mContext);
+        imageView.setImageResource(icon);
+        titleView.addView(imageView);
+
+        return imageView;
+    }
+
     public void setBackMode(String backTitle, String title)
     {
-        mTitleTextView = (TextView) getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        View titleView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        mTitleTextView = (TextView) titleView.findViewById(R.id.action_bar_title);
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
         layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
 
-        mActionBar.setCustomView(mTitleTextView, layoutParams);
+        mActionBar.setCustomView(titleView, layoutParams);
 
         if (backTitle != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);

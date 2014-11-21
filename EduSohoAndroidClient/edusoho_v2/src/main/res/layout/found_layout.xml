@@ -1,52 +1,23 @@
-<RelativeLayout
-    android:background="@color/system_normal_bg"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:background="@color/system_normal_bg">
 
-    <LinearLayout
-        android:id="@+id/found_search_layout"
-        android:background="@drawable/found_search_layout"
-        android:layout_margin="12dp"
-        android:gravity="center"
-        android:orientation="horizontal"
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        app:rlw_dividerHeight="1px"
+        android:id="@+id/found_category_course_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.edusoho.kuozhi.view.EduSohoIconView
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:gravity="center"
-            android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/found_search_text_icon"
-            android:text="@string/font_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:gravity="center"
-            android:textSize="@dimen/found_search_text"
-            android:textColor="@color/system_normal_text"
-            android:text="搜索"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <com.edusoho.kuozhi.ui.widget.CategoryListView
-        android:scrollbars="none"
+        android:id="@+id/found_category_list"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
         android:background="@color/white"
+        android:dividerHeight="1px"
         android:paddingLeft="17dp"
         android:paddingRight="17dp"
-        android:dividerHeight="1px"
-        android:id="@+id/found_category_list"
-        android:layout_below="@id/found_search_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:scrollbars="none" />
 
 </RelativeLayout>

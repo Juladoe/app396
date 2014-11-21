@@ -1,135 +1,78 @@
-<library.PullToRefreshScrollView
+<library.PullToRefreshScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/recommend_layout"
-    android:background="@color/recommend_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/base_gray">
 
     <RelativeLayout
-        android:paddingTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/recommend_bg"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:background="@color/recommend_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:paddingTop="1dp">
 
         <com.edusoho.kuozhi.view.EdusohoViewPager
-            android:background="@color/recommend_label_bg"
             android:id="@+id/school_banner"
             android:layout_width="match_parent"
-            android:layout_height="185dp" />
+            android:layout_height="185dp"
+            android:background="@color/recommend_label_bg" />
 
         <LinearLayout
+            android:background="@color/base_white_normal"
             android:id="@+id/recommend_announcement_layout"
-            android:gravity="center"
-            android:padding="8dp"
-            android:layout_below="@id/school_banner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/school_banner"
+            android:gravity="center"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/recommend_sch_announcement"
-                android:textColor="@color/recommend_announcement"
-                android:textSize="@dimen/recommend_announcement"
-                android:maxLines="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/recommend_announcement_icon"
+                android:drawablePadding="16dp"
                 android:ellipsize="end"
-                android:drawablePadding="8dp"
                 android:gravity="center_vertical"
+                android:singleLine="true"
                 android:text="网校公告栏"
-                android:drawableLeft="@drawable/announcement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/recommend_announcement"
+                android:textSize="@dimen/recommend_announcement" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/recommend_week_label"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
+        <android.support.v7.widget.CardView
+            card_view:cardBackgroundColor="@color/base_white_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/recommend_announcement_layout"
-            android:background="@color/recommend_label_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_margin="8dp"
+            card_view:cardCornerRadius="2dp"
+            card_view:contentPadding="8dp">
 
-            <TextView
-                android:textColor="@color/recommend_announcement_label"
-                android:textSize="@dimen/recommend_announcement_label"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:text="每周精选"
-                android:drawableLeft="@drawable/recommend_week_label_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp" />
-        </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <com.edusoho.kuozhi.ui.widget.HorizontalListWidget
-            android:padding="8dp"
-            android:scrollbars="none"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/recommend_week_label"
-            android:id="@+id/recommend_week_course"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="每周精选"
+                    android:textColor="@color/base_color_normal"
+                    android:textSize="16sp" />
 
-        </com.edusoho.kuozhi.ui.widget.HorizontalListWidget>
+                <com.edusoho.kuozhi.ui.widget.EduSohoListView
+                    android:id="@+id/recommend_week_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-        <LinearLayout
-            android:id="@+id/recommend_announcement_label"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:layout_below="@id/recommend_week_course"
-            android:background="@color/recommend_label_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:textColor="@color/recommend_announcement_label"
-                android:textSize="@dimen/recommend_announcement_label"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:text="推荐"
-                android:drawableLeft="@drawable/recommend_announcement_label_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp" />
-        </LinearLayout>
-
-        <com.edusoho.kuozhi.ui.widget.CourseListWidget
-            android:id="@+id/recommend_listview"
-            app:showMoreBtn="true"
-            android:gravity="center"
-            android:layout_below="@id/recommend_announcement_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
-
-        <LinearLayout
-            android:id="@+id/recommend_new_label"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:layout_below="@id/recommend_listview"
-            android:background="@color/recommend_label_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:textColor="@color/recommend_announcement_label"
-                android:textSize="@dimen/recommend_announcement_label"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:text="最新"
-                android:drawableLeft="@drawable/recommend_new_label_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp" />
-        </LinearLayout>
-
-        <com.edusoho.kuozhi.ui.widget.CourseListWidget
-            android:id="@+id/new_listview"
-            app:showMoreBtn="true"
-            android:gravity="center"
-            android:layout_below="@id/recommend_new_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></com.edusoho.kuozhi.ui.widget.CourseListWidget>
     </RelativeLayout>
 </library.PullToRefreshScrollView>

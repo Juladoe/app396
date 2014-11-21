@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListAdapter;
@@ -31,26 +32,32 @@ public class RefreshListWidget extends PullToRefreshListView {
 
     private int mMode;
     private ListBaseAdapter mAdapter;
+    private ListBaseAdapter mEmptyAdapter;
     private UpdateListener mUpdateListener;
     private Context mContext;
     private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
 
+    private int mDividerHeight;
+
     public RefreshListWidget(Context context) {
         super(context);
         mContext = context;
-        initView();
+        initView(null);
     }
 
     public RefreshListWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        initView();
+        initView(attrs);
     }
 
-    private void initView()
+    private void initView(AttributeSet attrs)
     {
         mMode = REFRESH;
         mLimit = Const.LIMIT;
+        TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.RefreshListWidget);
+        mDividerHeight = ta.getDimensionPixelSize(R.styleable.RefreshListWidget_rlw_dividerHeight, 0);
+        getRefreshableView().setDividerHeight(mDividerHeight);
     }
 
     public void setStart(int start, int total)
@@ -79,9 +86,13 @@ public class RefreshListWidget extends PullToRefreshListView {
     {
         if (mMode == REFRESH) {
             if (data == null || data.isEmpty()) {
-                mAdapter = getEmptyLayoutAdapter();
-                setAdapter(mAdapter);
+                mEmptyAdapter = getEmptyLayoutAdapter();
+                setAdapter(mEmptyAdapter);
                 return;
+            }
+            if (mEmptyAdapter != null) {
+                mEmptyAdapter = null;
+                setAdapter(mAdapter);
             }
             mAdapter.clear();
         }
@@ -93,9 +104,13 @@ public class RefreshListWidget extends PullToRefreshListView {
     {
         if (mMode == REFRESH) {
             if (item == null || isEmpty) {
-                mAdapter = getEmptyLayoutAdapter();
-                setAdapter(mAdapter);
+                mEmptyAdapter = getEmptyLayoutAdapter();
+                setAdapter(mEmptyAdapter);
                 return;
+            }
+            if (mEmptyAdapter != null) {
+                mEmptyAdapter = null;
+                setAdapter(mAdapter);
             }
             mAdapter.clear();
         }
@@ -143,6 +158,10 @@ public class RefreshListWidget extends PullToRefreshListView {
     @Override
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
+        Log.d(null, "EmptyAdapter--->" + adapter);
+        if (adapter instanceof EmptyAdapter) {
+            return;
+        }
         mAdapter = (ListBaseAdapter) adapter;
     }
 

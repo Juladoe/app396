@@ -17,8 +17,15 @@ import com.edusoho.kuozhi.util.Const;
 public class AboutFragment extends BaseFragment {
 
     public static final String URL = "url";
+    public static final String CONTENT = "content";
+    public static final String TYPE = "type";
+    public static final int FROM_URL = 0010;
+    public static final int FROM_STR = 0020;
+
     private WebView about_content;
     private String mUrl;
+    private int mType;
+    private String mContent;
     private String mTitle;
 
     @Override
@@ -39,6 +46,9 @@ public class AboutFragment extends BaseFragment {
         if (bundle != null) {
             mUrl = bundle.getString(URL);
             mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mContent = bundle.getString(AboutFragment.CONTENT);
+            mType = bundle.getInt(AboutFragment.TYPE, FROM_URL);
+
         }
     }
 
@@ -75,6 +85,11 @@ public class AboutFragment extends BaseFragment {
     private void loadContent()
     {
         showProgress(true);
-        about_content.loadUrl(mUrl);
+        if (mType == FROM_URL) {
+            about_content.loadUrl(mUrl);
+        } else {
+            Log.d(null, "mContent->" + mContent);
+            about_content.loadDataWithBaseURL(null, mContent, "text/html", "utf-8", null);
+        }
     }
 }

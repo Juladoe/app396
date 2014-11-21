@@ -41,7 +41,7 @@ public class DownLoadListFragment extends BaseFragment{
 
         DownloadListAdapter adapter = new DownloadListAdapter(new String[] {"xxx", "ddd" }, R.layout.download_list_item_layout);
         mDownloadRView.setLayoutManager(mLayoutManager);
-        mDownloadRView.setAdapter(adapter);
+        //mDownloadRView.setAdapter(adapter);
     }
 
     private class DownloadListAdapter extends RecyclerView.Adapter<ViewHolder>
