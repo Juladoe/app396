@@ -57,10 +57,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
@@ -91,6 +89,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private ImageView ivCamera;
     private ImageView ivPhoto;
     private EditText etQuestionTitle;
+    private EditText etTmp;
     private HorizontalScrollView mHSView;
     private LinearLayout mLinearImageList;
     private DisplayImageOptions mOptions;
@@ -180,7 +179,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setHasOptionsMenu(false);
     }
 
@@ -211,6 +209,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         mLinearImageList = (LinearLayout) mRichTextBoxView.findViewById(R.id.ll_horizontal_image_list);
         mHSView.setHorizontalScrollBarEnabled(false);
         mHSView.setVerticalScrollBarEnabled(false);
+        etTmp = new EditText(mContext);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
 
         Bundle bundle = getArguments();
@@ -218,18 +217,22 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);
-            etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
+            Html.fromHtml(AppUtil.filterSpace(mOriginalContent), mImageGetter, new EduTagHandler());
+            etContent.setText(Html.fromHtml(removeImgTagFromString(mOriginalContent), null, new EduTagHandler()));
         } else if (mTypeCode == Const.EDIT_REPLY) {
             mPostId = mActivity.getIntent().getStringExtra(Const.POST_ID);
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
+            Html.fromHtml(AppUtil.filterSpace(mOriginalContent), mImageGetter, new EduTagHandler());
+            etContent.setText(Html.fromHtml(removeImgTagFromString(mOriginalContent), null, new EduTagHandler()));
         } else if (mTypeCode == Const.REPLY) {
             mPostId = "";
         } else {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.NORMAL_CONTENT);
-            etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(mOriginalContent)), mImageGetter, new EduTagHandler()));
+            Html.fromHtml(AppUtil.filterSpace(mOriginalContent), mImageGetter, new EduTagHandler());
+            etContent.setText(Html.fromHtml(removeImgTagFromString(mOriginalContent), null, new EduTagHandler()));
         }
 
+        //初始化字体颜色选择画板
         if (mColorPickerDialog == null) {
             mColorPickerDialog = new ColorPickerDialog(mActivity, Color.BLACK);
             mColorPickerDialog.setOnColorChangedListener(mOnColorChangedListener);
@@ -533,14 +536,15 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 if (mLinearImageList.getChildCount() == 0) {
                     mHSView.setVisibility(View.GONE);
                 }
-                String strTmp = removeImgTag(Html.toHtml(etContent.getText()), viewIndex);
-                etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(strTmp)), new Html.ImageGetter() {
-                    @Override
-                    public Drawable getDrawable(String source) {
-                        return new BitmapDrawable();
-                    }
-                }, new EduTagHandler()));
-                mImageCount--;
+                etTmp.setText(Html.fromHtml(AppUtil.filterSpace(removeImgTag(Html.toHtml(etTmp.getText()), viewIndex))));
+
+//                etContent.setText(Html.fromHtml(addSplitImgTag(AppUtil.filterSpace(strTmp)), new Html.ImageGetter() {
+//                    @Override
+//                    public Drawable getDrawable(String source) {
+//                        return new BitmapDrawable();
+//                    }
+//                }, new EduTagHandler()));
+//                mImageCount--;
 
             } catch (Exception ex) {
                 Log.e(TAG, ex.toString());
@@ -554,37 +558,41 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      * @param image
      */
     private void insertImage(Bitmap image, String filePath) {
-        //etContent.getText().insert(etContent.getSelectionEnd(), "\n");
-        Editable eb = etContent.getEditableText();
-        //获得光标所在位置
-        int qqPosition = etContent.getSelectionStart();
-        String key = IMAGE_NAME + String.valueOf(mImageCount);
-        //String key = String.valueOf(mImageCount++);
-        SpannableString ss = new SpannableString(key);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if (image.getWidth() > (EdusohoApp.app.screenW * 0.8f)) {
-            image = AppUtil.scaleImage(image, EdusohoApp.app.screenW * 0.8f, AppUtil.getImageDegree(filePath), mContext);
-        }
-        if (AppUtil.getImageSize(image) > IMAGE_SIZE) {
-            image = AppUtil.compressImage(image, baos, 50);
-        } else {
-            image = AppUtil.compressImage(image, baos, 100);
-        }
+        try {
+            //etContent.getText().insert(etContent.getSelectionEnd(), "\n");
+            //Editable eb = etContent.getEditableText();
+            //获得光标所在位置
+            int qqPosition = etContent.getSelectionStart();
+            String key = IMAGE_NAME + String.valueOf(mImageCount);
+            //String key = String.valueOf(mImageCount++);
+            SpannableString ss = new SpannableString(key);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            if (image.getWidth() > (EdusohoApp.app.screenW * 0.8f)) {
+                image = AppUtil.scaleImage(image, EdusohoApp.app.screenW * 0.8f, AppUtil.getImageDegree(filePath), mContext);
+            }
+            if (AppUtil.getImageSize(image) > IMAGE_SIZE) {
+                image = AppUtil.compressImage(image, baos, 50);
+            } else {
+                image = AppUtil.compressImage(image, baos, 100);
+            }
 
-        //插入图片
-        Drawable drawable = new BitmapDrawable(image);
-        int start = (etContent.getWidth() - drawable.getIntrinsicWidth()) / 2;
+            //插入图片
+            Drawable drawable = new BitmapDrawable(image);
+            //int start = (etContent.getWidth() - drawable.getIntrinsicWidth()) / 2;
 //        drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
 //        ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        drawable.setBounds(0, 0, 0, 0);
-        ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            drawable.setBounds(0, 0, 0, 0);
+            ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        eb.insert(qqPosition, ss);
-        //etContent.getText().insert(etContent.getSelectionEnd(), "\n");
-        insertImageIntoHorizontalList(image);
-        //保存的是压缩后的图片
-        mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
-        mImageCount++;
+            etTmp.getText().insert(etTmp.getSelectionStart(), ss);
+            //etContent.getText().insert(etContent.getSelectionEnd(), "\n");
+            insertImageIntoHorizontalList(image);
+            //保存的是压缩后的图片
+            mImageHashMap.put(String.valueOf(mImageCount), AppUtil.createFile(AQUtility.getCacheDir(mContext).getPath(), baos, mCompressImageName++));
+            mImageCount++;
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
     }
 
     private ColorPickerDialog.OnColorChangedListener mOnColorChangedListener = new ColorPickerDialog.OnColorChangedListener() {
@@ -738,6 +746,10 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         return etContent.getText();
     }
 
+    public Editable getImageContent() {
+        return etTmp.getText();
+    }
+
     public int getTypeCode() {
         return this.mTypeCode;
     }
@@ -812,6 +824,21 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
         while (m.find()) {
             content = content.replace(m.group(1), "<p>" + m.group(1) + "</p>");
+        }
+        return content;
+    }
+
+    /**
+     * 去掉所有<Img>标签
+     *
+     * @param content
+     * @return
+     */
+    private String removeImgTagFromString(String content) {
+        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
+        while (m.find()) {
+            content = content.replace(m.group(1), "");
+            etTmp.setText(Html.fromHtml(Html.toHtml(etTmp.getText()) + m.group(1)));
         }
         return content;
     }
