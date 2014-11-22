@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
+import com.edusoho.kuozhi.adapter.ListLoadAdapter;
 import com.edusoho.kuozhi.util.Const;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class RefreshListWidget extends PullToRefreshListView {
 
     private int mMode;
     private ListBaseAdapter mAdapter;
+    private ListBaseAdapter mLoadAdapter;
     private ListBaseAdapter mEmptyAdapter;
     private UpdateListener mUpdateListener;
     private Context mContext;
@@ -83,6 +85,12 @@ public class RefreshListWidget extends PullToRefreshListView {
         mStart = start;
     }
 
+    public void setLoadAdapter()
+    {
+        mLoadAdapter = new ListLoadAdapter(mContext, R.layout.loading_layout);
+        setAdapter(mLoadAdapter);
+    }
+
     public void setEmptyText(String[] emptyText)
     {
         mEmptyText = emptyText;
@@ -98,6 +106,10 @@ public class RefreshListWidget extends PullToRefreshListView {
             }
             if (mEmptyAdapter != null) {
                 mEmptyAdapter = null;
+                setAdapter(mAdapter);
+            }
+            if (mLoadAdapter != null) {
+                mLoadAdapter = null;
                 setAdapter(mAdapter);
             }
             mAdapter.clear();
@@ -135,7 +147,6 @@ public class RefreshListWidget extends PullToRefreshListView {
         return arrayAdapter;
     }
 
-
     public ListAdapter getAdapter()
     {
         return mAdapter;
@@ -165,7 +176,8 @@ public class RefreshListWidget extends PullToRefreshListView {
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
         Log.d(null, "EmptyAdapter--->" + adapter);
-        if (adapter instanceof EmptyAdapter) {
+        if (adapter instanceof EmptyAdapter
+                || adapter instanceof ListLoadAdapter) {
             return;
         }
         mAdapter = (ListBaseAdapter) adapter;

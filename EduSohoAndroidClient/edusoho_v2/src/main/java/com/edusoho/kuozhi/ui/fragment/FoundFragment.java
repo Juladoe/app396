@@ -190,6 +190,9 @@ public class FoundFragment extends BaseFragment {
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 
+        if (start == 0) {
+            mCourseListView.setLoadAdapter();
+        }
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
