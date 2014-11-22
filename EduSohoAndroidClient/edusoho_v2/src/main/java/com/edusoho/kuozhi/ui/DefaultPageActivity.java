@@ -188,12 +188,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
     private void selectNavBtn(int id) {
         String tag = null;
+        boolean showIcon = false;
         BaseFragment fragment = null;
 
         if (id == R.id.nav_recommend_btn) {
             tag = "RecommendFragment";
         } else if(id == R.id.nav_found_btn) {
             tag = "FoundFragment";
+            showIcon = true;
         }else if(id == R.id.nav_me_btn) {
             tag = "MyInfoFragment";
         }else if(id == R.id.nav_more_btn) {
@@ -214,7 +216,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
         fragmentTransaction.commit();
         mCurrentTag = tag;
-        setTitle(fragment.getTitle());
+        setTitle(fragment.getTitle(), showIcon);
         changeNavBtn(id);
     }
 

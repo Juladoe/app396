@@ -11,7 +11,7 @@
 
     <TextView
         android:layout_weight="1"
-        android:textColor="@color/system_normal_text"
+        android:textColor="@color/base_black_normal"
         android:textSize="@dimen/found_list_item_text"
         android:id="@+id/category_list_item_title"
         android:layout_width="wrap_content"

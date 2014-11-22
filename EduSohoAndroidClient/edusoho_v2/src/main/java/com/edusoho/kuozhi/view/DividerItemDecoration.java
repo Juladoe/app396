@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.edusoho.kuozhi.R;
+
 /*
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -40,7 +42,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public DividerItemDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
+        mDivider = context.getResources().getDrawable(R.drawable.list_divider_color);
+        //mDivider = a.getDrawable(0);
         a.recycle();
         setOrientation(orientation);
     }
@@ -72,6 +75,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
                     .getLayoutParams();
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + 1;
+
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }

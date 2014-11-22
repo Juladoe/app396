@@ -49,6 +49,7 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
+import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
 
 
@@ -368,6 +369,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             @Override
             public void onClick(View view) {
                 final Bundle bundle = new Bundle();
+                bundle.putString(RichTextBoxFragment.HIT, "添加问题");
                 bundle.putString(Const.ACTIONBAT_TITLE, "添加问答");
                 bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
                 bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
@@ -391,6 +393,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             @Override
             public void onClick(View view) {
                 final Bundle bundle = new Bundle();
+                bundle.putString(RichTextBoxFragment.HIT, "添加笔记");
                 bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
                 bundle.putInt(NoteReplyActivity.TYPE, NoteReplyActivity.ADD);
                 bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));

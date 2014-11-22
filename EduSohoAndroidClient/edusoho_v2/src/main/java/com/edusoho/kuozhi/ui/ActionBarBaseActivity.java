@@ -58,6 +58,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public Gson gson;
     protected FragmentManager mFragmentManager;
     private TextView mTitleTextView;
+    private ImageView mTitleIconView;
 
     protected EdusohoMainService mService;
 
@@ -147,6 +148,13 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mTitleTextView.setText(title == null ? "" : title);
     }
 
+    public void setTitle(String title, boolean showIcon) {
+        mTitleTextView.setText(title == null ? "" : title);
+        if (mTitleIconView != null) {
+            mTitleIconView.setVisibility(showIcon ? View.VISIBLE : View.GONE);
+        }
+    }
+
     public void setNormalActionBack(String title) {
         mActionBar.setDisplayShowCustomEnabled(false);
         mActionBar.setTitle(title);
@@ -155,11 +163,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public ImageView addTitleViewIcon(int icon)
     {
         ViewGroup titleView = (ViewGroup) mActionBar.getCustomView();
-        ImageView imageView = new ImageView(mContext);
-        imageView.setImageResource(icon);
-        titleView.addView(imageView);
+        mTitleIconView = new ImageView(mContext);
+        mTitleIconView.setImageResource(icon);
+        titleView.addView(mTitleIconView);
 
-        return imageView;
+        return mTitleIconView;
     }
 
     public void setBackMode(String backTitle, String title)

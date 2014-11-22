@@ -2,6 +2,9 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListAdapter;
@@ -38,6 +41,7 @@ public class RefreshListWidget extends PullToRefreshListView {
     private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
 
     private int mDividerHeight;
+    private int mDividerColor;
 
     public RefreshListWidget(Context context) {
         super(context);
@@ -57,7 +61,9 @@ public class RefreshListWidget extends PullToRefreshListView {
         mLimit = Const.LIMIT;
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.RefreshListWidget);
         mDividerHeight = ta.getDimensionPixelSize(R.styleable.RefreshListWidget_rlw_dividerHeight, 0);
+        mDividerColor = ta.getColor(R.styleable.RefreshListWidget_rlw_dividerColor, 0);
         getRefreshableView().setDividerHeight(mDividerHeight);
+        //getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
     }
 
     public void setStart(int start, int total)

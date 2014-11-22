@@ -261,7 +261,7 @@ public class Const {
     public static final String IS_LEARN = "is_learn";
     public static final String mTestpaperResultId = "testpaperResultId";
 
-    public static final String QUESTION_TITLE = "title";
+    public static final String QUESTION_TITLE = "question_title";
     public static final String QUESTION_EDIT_RESULT = "question_edit_result";
     public static final String THREAD_ID = "thread_id";
     public static final String POST_ID = "post_id";

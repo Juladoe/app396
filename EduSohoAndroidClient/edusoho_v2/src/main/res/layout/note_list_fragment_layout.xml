@@ -20,10 +20,8 @@
         android:id="@+id/note_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/list_background"
         android:scrollbars="none"
-        android:dividerHeight="1dp"
-        android:divider="@color/line" />
+        app:rlw_dividerHeight="1px" />
 
     <include layout="@layout/loading_layout"/>
 </RelativeLayout>
