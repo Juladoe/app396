@@ -129,6 +129,7 @@ public class FoundFragment extends BaseFragment {
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {
+                mCourseListView.setLoadAdapter();
                 loadCourseList(category.id, 0);
                 hideCategoryList();
             }
@@ -145,6 +146,7 @@ public class FoundFragment extends BaseFragment {
             }
         });
 
+        mCourseListView.setLoadAdapter();
         loadCourseList(0, 0);
         mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
     }
@@ -190,9 +192,6 @@ public class FoundFragment extends BaseFragment {
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 
-        if (start == 0) {
-            mCourseListView.setLoadAdapter();
-        }
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {

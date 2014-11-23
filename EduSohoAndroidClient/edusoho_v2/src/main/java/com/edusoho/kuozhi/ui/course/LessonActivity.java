@@ -279,7 +279,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         PopupWindow popupWindow = new PopupWindow(
                 contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth(parent.getWidth());
+        //popupWindow.setWidth(parent.getWidth());
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(0));

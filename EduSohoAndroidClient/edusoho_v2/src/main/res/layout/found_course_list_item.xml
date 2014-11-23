@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/normal_list_select"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -36,8 +37,9 @@
             android:textSize="16sp" />
 
         <TextView
+            android:alpha="0.54"
             android:layout_marginTop="16dp"
-            android:textColor="#80000000"
+            android:textColor="#000000"
             android:drawableLeft="@drawable/course_teacher_icon"
             android:layout_below="@id/found_list_course_title"
             android:id="@+id/found_list_course_teacher"
@@ -47,8 +49,9 @@
             android:singleLine="true" />
 
         <TextView
+            android:alpha="0.54"
             android:layout_marginTop="16dp"
-            android:textColor="#80000000"
+            android:textColor="#000000"
             android:drawableLeft="@drawable/course_student_icon"
             android:layout_alignParentRight="true"
             android:layout_below="@id/found_list_course_title"

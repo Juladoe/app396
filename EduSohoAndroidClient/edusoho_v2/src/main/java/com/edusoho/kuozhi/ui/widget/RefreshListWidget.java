@@ -68,6 +68,11 @@ public class RefreshListWidget extends PullToRefreshListView {
         //getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
     }
 
+    public int getRefreshMode()
+    {
+        return mMode;
+    }
+
     public void setStart(int start, int total)
     {
         mTotal = total;

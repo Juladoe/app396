@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- base color -->
+    <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#ddfdb933</color>
     <color name="base_white_normal">#ddffffff</color>
     <color name="base_black_normal">#dd000000</color>

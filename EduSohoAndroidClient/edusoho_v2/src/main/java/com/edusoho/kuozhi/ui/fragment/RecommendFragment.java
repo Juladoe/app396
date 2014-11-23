@@ -120,14 +120,15 @@ public class RecommendFragment extends BaseFragment {
             }
         });
 
+        mWeekCourse.setIsSetHeight(true);
         mWeekCourse.setAdapter(weekCourseAdapter);
+        mWeekCourse.setLoadAdapter();
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 CourseResult courseResult = mActivity.parseJsonValue(
                         object, new TypeToken<CourseResult>(){});
                 mWeekCourse.pushData(courseResult.data);
-                mWeekCourse.initListHeight();
             }
         });
     }

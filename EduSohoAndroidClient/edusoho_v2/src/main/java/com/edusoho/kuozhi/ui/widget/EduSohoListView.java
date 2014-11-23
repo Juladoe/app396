@@ -7,6 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.RecyclerEmptyAdapter;
+import com.edusoho.kuozhi.adapter.RecyclerLoadAdapter;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 
 import java.util.ArrayList;
@@ -18,7 +21,12 @@ public class EduSohoListView extends RecyclerView {
 
     private Context mContext;
     private RecyclerViewListBaseAdapter mAdapter;
+    private RecyclerViewListBaseAdapter mDataAdapter;
+    private RecyclerViewListBaseAdapter mEmptyAdapter;
+    private RecyclerViewListBaseAdapter mLoadingAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private boolean mIsSetHeight;
 
     public EduSohoListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -32,10 +40,7 @@ public class EduSohoListView extends RecyclerView {
         init(attrs);
     }
 
-    private void init(AttributeSet attrs)
-
-    {
-        //mLayoutManager = new LinearLayoutManager(mContext);
+    private void init(AttributeSet attrs){
     }
 
     public void initListHeight()
@@ -47,20 +52,52 @@ public class EduSohoListView extends RecyclerView {
             viewHolder.itemView.measure(0, 0);
             totalHeight += viewHolder.itemView.getMeasuredHeight();
         }
-
+        Log.d(null, "totalHeight->" + totalHeight);
         ViewGroup.LayoutParams lp = getLayoutParams();
         lp.height = totalHeight;
         setLayoutParams(lp);
     }
 
+    public void setIsSetHeight(boolean isSetHeight)
+    {
+        this.mIsSetHeight = isSetHeight;
+    }
+
+    public void setLoadAdapter()
+    {
+        mLoadingAdapter = new RecyclerLoadAdapter(mContext, R.layout.loading_layout);
+        setAdapter(mLoadingAdapter);
+    }
+
+    public RecyclerViewListBaseAdapter getEmptyAdapter()
+    {
+        mEmptyAdapter = new RecyclerEmptyAdapter(
+                mContext, R.layout.course_empty_layout, new String[]{ "暂无推荐课程" });
+        return mEmptyAdapter;
+    }
+
     public void pushData(ArrayList data)
     {
-        mAdapter.addItems(data);
+        if (data == null || data.isEmpty()) {
+            mEmptyAdapter = getEmptyAdapter();
+            setAdapter(mEmptyAdapter);
+            return;
+        }
+        mDataAdapter.addItems(data);
+        setAdapter(mDataAdapter);
     }
 
     @Override
     public void setAdapter(Adapter adapter) {
-        mAdapter = (RecyclerViewListBaseAdapter) adapter;
         super.setAdapter(adapter);
+        mAdapter = (RecyclerViewListBaseAdapter) adapter;
+        if (mIsSetHeight) {
+            initListHeight();
+        }
+        if (adapter instanceof RecyclerEmptyAdapter
+                || adapter instanceof RecyclerLoadAdapter) {
+            return;
+        }
+        mDataAdapter = (RecyclerViewListBaseAdapter) adapter;
     }
 }
