@@ -74,6 +74,7 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private ActionBarBaseActivity mActivity;
     private EdusohoApp app;
 
+    public static final String HIT = "hit";
     private static final String TAG = "RichTextBoxFragment";
     private static final int IMAGE_WIDTH = 500;
     private static final int IMAGE_SIZE = 1024 * 500;
@@ -211,6 +212,8 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         etTmp = new EditText(mContext);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
 
+        Bundle bundle = getArguments();
+        etContent.setHint(bundle.containsKey(HIT) ? bundle.getString(HIT) : "添加内容");
         if (mTypeCode == Const.EDIT_QUESTION) {
             mOriginalContent = mActivity.getIntent().getStringExtra(Const.QUESTION_CONTENT);
             mTitle = mActivity.getIntent().getStringExtra(Const.QUESTION_TITLE);

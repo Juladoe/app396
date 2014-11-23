@@ -37,6 +37,11 @@ public abstract class RecyclerViewListBaseAdapter<T, E extends RecyclerView.View
     public abstract void addItems(ArrayList<T> list);
 
     @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    @Override
     public void onBindViewHolder(E e, int i) {
         final int index = i;
         if (mRecyclerItemClick != null) {

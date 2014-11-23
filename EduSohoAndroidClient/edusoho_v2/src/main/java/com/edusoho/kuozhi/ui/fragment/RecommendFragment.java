@@ -1,21 +1,17 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.WeekCourseAdapter;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 import com.edusoho.kuozhi.adapter.SchoolBannerAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
@@ -124,14 +120,15 @@ public class RecommendFragment extends BaseFragment {
             }
         });
 
+        mWeekCourse.setIsSetHeight(true);
         mWeekCourse.setAdapter(weekCourseAdapter);
+        mWeekCourse.setLoadAdapter();
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 CourseResult courseResult = mActivity.parseJsonValue(
                         object, new TypeToken<CourseResult>(){});
                 mWeekCourse.pushData(courseResult.data);
-                mWeekCourse.initListHeight();
             }
         });
     }

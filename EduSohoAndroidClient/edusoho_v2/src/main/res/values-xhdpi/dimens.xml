@@ -67,7 +67,7 @@
     <dimen name="material_normal_btn">18sp</dimen>
     <dimen name="found_search_text">18sp</dimen>
     <dimen name="found_search_text_icon">22sp</dimen>
-    <dimen name="found_list_item_text">18sp</dimen>
+    <dimen name="found_list_item_text">16sp</dimen>
     <dimen name="myinfo_plugin_list_item_text">18sp</dimen>
     <dimen name="myinfo_name">16sp</dimen>
     <dimen name="myinfo_group">12sp</dimen>

@@ -6,6 +6,7 @@
 
     <com.edusoho.kuozhi.ui.widget.RefreshListWidget
         app:rlw_dividerHeight="1px"
+        android:scrollbars="none"
         android:id="@+id/found_category_course_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

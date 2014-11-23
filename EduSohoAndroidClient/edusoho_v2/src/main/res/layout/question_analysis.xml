@@ -10,7 +10,7 @@
         app:iconSizeScale="2.4"
         android:id="@+id/question_favorite"
         android:layout_alignParentRight="true"
-        app:color="@color/system_normal_text"
+        app:fontColor="@color/system_normal_text"
         app:size="@dimen/nav_layout_btn"
         app:image="@string/font_favoirte"
         android:layout_width="wrap_content"

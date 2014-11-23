@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.model.Teacher;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -49,7 +50,13 @@ public class WeekCourseAdapter
         super.onBindViewHolder(viewHolder, i);
         Course course = mList.get(i);
         //viewHolder.mCoursePrice.setText(course.price + "");
-        viewHolder.mCourseTeacherName.setText("suju");
+        String teacher = "暂无教师";
+        Teacher[] teachers = course.teachers;
+        if (teachers != null && teachers.length > 0) {
+            teacher = teachers[0].nickname;
+        }
+
+        viewHolder.mCourseTeacherName.setText(teacher);
         viewHolder.mCourseStudentNum.setText(course.studentNum + "");
         viewHolder.mCourseTitle.setText(course.title);
         ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.mCoursePic, mOptions);

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -25,6 +26,7 @@ import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.StatusCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,6 +100,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         School school = app.defaultSchool;
         params.put("siteHost", school.name);
         params.put("siteName", school.host);
+        if (checkSchoolHasLogined(school.host)) {
+            params.put("firstInstall", "true");
+        }
         Log.d(null, "MOBILE_SCHOOL_LOGIN");
         app.logToServer(Const.MOBILE_SCHOOL_LOGIN, params, new AjaxCallback<String>(){
             @Override
@@ -106,6 +111,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
                 Log.d(null, "MOBILE_SCHOOL_LOGIN->" + object);
             }
         });
+    }
+
+    private boolean checkSchoolHasLogined(String host)
+    {
+        if (host.startsWith("http://")) {
+            host = host.substring(7);
+            Log.d(null, "host->" + host);
+        }
+        SharedPreferences sp = getSharedPreferences("search_history", MODE_PRIVATE);
+        if (sp.contains(host)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -188,12 +206,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
     private void selectNavBtn(int id) {
         String tag = null;
+        boolean showIcon = false;
         BaseFragment fragment = null;
 
         if (id == R.id.nav_recommend_btn) {
             tag = "RecommendFragment";
         } else if(id == R.id.nav_found_btn) {
             tag = "FoundFragment";
+            showIcon = true;
         }else if(id == R.id.nav_me_btn) {
             tag = "MyInfoFragment";
         }else if(id == R.id.nav_more_btn) {
@@ -214,7 +234,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
         fragmentTransaction.commit();
         mCurrentTag = tag;
-        setTitle(fragment.getTitle());
+        setTitle(fragment.getTitle(), showIcon);
         changeNavBtn(id);
     }
 

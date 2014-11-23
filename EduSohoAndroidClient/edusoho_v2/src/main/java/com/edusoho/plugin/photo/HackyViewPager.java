@@ -69,7 +69,9 @@ public class HackyViewPager extends ViewPager {
                         break;
                     }
 
-                    if (y - mLastMotionY > 50 || y - mLastMotionY < -50) {
+                    float delayY = y - mLastMotionY;
+                    float delayX = x - mLastMotionX;
+                    if (Math.abs(delayY) > Math.abs(delayX)) {
                         parent.requestDisallowInterceptTouchEvent(false);
                     }
                 }

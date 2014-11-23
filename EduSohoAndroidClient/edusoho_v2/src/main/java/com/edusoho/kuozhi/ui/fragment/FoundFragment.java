@@ -129,6 +129,7 @@ public class FoundFragment extends BaseFragment {
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {
+                mCourseListView.setLoadAdapter();
                 loadCourseList(category.id, 0);
                 hideCategoryList();
             }
@@ -145,6 +146,7 @@ public class FoundFragment extends BaseFragment {
             }
         });
 
+        mCourseListView.setLoadAdapter();
         loadCourseList(0, 0);
         mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
     }

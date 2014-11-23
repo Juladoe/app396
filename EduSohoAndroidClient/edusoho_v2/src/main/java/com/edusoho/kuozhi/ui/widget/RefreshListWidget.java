@@ -2,6 +2,9 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListAdapter;
@@ -10,6 +13,7 @@ import android.widget.ListView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
+import com.edusoho.kuozhi.adapter.ListLoadAdapter;
 import com.edusoho.kuozhi.util.Const;
 
 import java.util.ArrayList;
@@ -32,12 +36,14 @@ public class RefreshListWidget extends PullToRefreshListView {
 
     private int mMode;
     private ListBaseAdapter mAdapter;
+    private ListBaseAdapter mLoadAdapter;
     private ListBaseAdapter mEmptyAdapter;
     private UpdateListener mUpdateListener;
     private Context mContext;
     private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
 
     private int mDividerHeight;
+    private int mDividerColor;
 
     public RefreshListWidget(Context context) {
         super(context);
@@ -57,7 +63,14 @@ public class RefreshListWidget extends PullToRefreshListView {
         mLimit = Const.LIMIT;
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.RefreshListWidget);
         mDividerHeight = ta.getDimensionPixelSize(R.styleable.RefreshListWidget_rlw_dividerHeight, 0);
+        mDividerColor = ta.getColor(R.styleable.RefreshListWidget_rlw_dividerColor, 0);
         getRefreshableView().setDividerHeight(mDividerHeight);
+        //getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
+    }
+
+    public int getRefreshMode()
+    {
+        return mMode;
     }
 
     public void setStart(int start, int total)
@@ -77,6 +90,12 @@ public class RefreshListWidget extends PullToRefreshListView {
         mStart = start;
     }
 
+    public void setLoadAdapter()
+    {
+        mLoadAdapter = new ListLoadAdapter(mContext, R.layout.loading_layout);
+        setAdapter(mLoadAdapter);
+    }
+
     public void setEmptyText(String[] emptyText)
     {
         mEmptyText = emptyText;
@@ -92,6 +111,10 @@ public class RefreshListWidget extends PullToRefreshListView {
             }
             if (mEmptyAdapter != null) {
                 mEmptyAdapter = null;
+                setAdapter(mAdapter);
+            }
+            if (mLoadAdapter != null) {
+                mLoadAdapter = null;
                 setAdapter(mAdapter);
             }
             mAdapter.clear();
@@ -129,7 +152,6 @@ public class RefreshListWidget extends PullToRefreshListView {
         return arrayAdapter;
     }
 
-
     public ListAdapter getAdapter()
     {
         return mAdapter;
@@ -159,7 +181,8 @@ public class RefreshListWidget extends PullToRefreshListView {
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
         Log.d(null, "EmptyAdapter--->" + adapter);
-        if (adapter instanceof EmptyAdapter) {
+        if (adapter instanceof EmptyAdapter
+                || adapter instanceof ListLoadAdapter) {
             return;
         }
         mAdapter = (ListBaseAdapter) adapter;

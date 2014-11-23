@@ -8,6 +8,8 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:visibility="gone"
+        android:padding="8dp"
         android:id="@+id/ll_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,6 +33,7 @@
     </LinearLayout>
 
     <View
+        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="1px"
         android:layout_marginBottom="2dp"
@@ -38,6 +41,7 @@
         android:background="#000000"></View>
 
     <LinearLayout
+        android:padding="8dp"
         android:id="@+id/ll_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

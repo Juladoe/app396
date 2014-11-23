@@ -81,6 +81,7 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
         if (content != null) {
             getIntent().putExtra(Const.NORMAL_CONTENT, content);
         }
+        bundle.putString(RichTextBoxFragment.HIT, "添加笔记");
         bundle.putByteArray(Const.RICH_ITEM_AGRS, itemArgs);
         richFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.linear, richFragment);
@@ -127,7 +128,8 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
                 HashMap<String, String> params = url.params;
                 params.put(Const.COURSE_ID, String.valueOf(mCourseId));
                 params.put(Const.LESSON_ID, String.valueOf(mLessonId));
-                final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()));
+                final String content = AppUtil.removeHtml(Html.toHtml(richFragment.getContent()))
+                                        + AppUtil.removeHtml(Html.toHtml(richFragment.getImageContent()));
                 params.put("content", richFragment.setContent(content));
                 params.put("imageCount", String.valueOf(richFragment.getImageHashMapSize()));
                 url.setMuiltParams(richFragment.getObjects());
