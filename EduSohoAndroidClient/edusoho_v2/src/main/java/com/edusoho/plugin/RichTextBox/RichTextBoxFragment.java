@@ -254,7 +254,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
         etContent.setSelection(etContent.getText().length());
 
-        //mCurFontSize = (int) etContent.getTextSize();
     }
 
     private Html.ImageGetter mImageGetter = new Html.ImageGetter() {
@@ -396,7 +395,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
                 //拍照
                 String state = Environment.getExternalStorageState();
                 if (state.equals(Environment.MEDIA_MOUNTED)) {
-                    //String saveDir = Environment.getExternalStorageDirectory().getPath() + "/temp_image";
                     String saveDir = ImageLoader.getInstance().getDiskCache().getDirectory().getAbsolutePath();
                     mCameraImageFile = new File(saveDir, "CameraImage_" + mCameraIndex + ".jpg");
                     mCameraIndex++;
@@ -576,8 +574,8 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
             //插入图片
             Drawable drawable = new BitmapDrawable(image);
             //int start = (etContent.getWidth() - drawable.getIntrinsicWidth()) / 2;
-//        drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
-//        ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            //drawable.setBounds(start, 2, drawable.getIntrinsicWidth() + start, drawable.getIntrinsicHeight() + 2);
+            //ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             drawable.setBounds(0, 0, 0, 0);
             ss.setSpan(new ImageSpan(drawable), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -647,19 +645,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
      */
     public String setContent(String strContent) {
         try {
-//            String str = etContent.getText().toString();
-//            int len = mImageHashMap.size();
-//            HashMap<String, Object> tmpHashMap = new HashMap<String, Object>();
-            /**
-             * 如果图片有删除，要把HashMap中对应图片名称删除
-             */
-//            for (int i = 0; i < len; i++) {
-//                int tag = i + 1;
-//                if (!str.contains("image|" + tag)) {
-//                    mImageHashMap.remove(String.valueOf(tag));
-//                }
-//            }
-
             if (mObjects == null) {
                 mObjects = new Object[mImageHashMap.size() * 2];
             }

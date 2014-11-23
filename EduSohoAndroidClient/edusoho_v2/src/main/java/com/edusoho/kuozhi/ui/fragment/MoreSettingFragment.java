@@ -9,6 +9,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -50,8 +51,7 @@ public class MoreSettingFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
-    protected void showSchoolAbout()
-    {
+    protected void showSchoolAbout() {
         final String url = app.schoolHost + Const.ABOUT;
         app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
@@ -63,13 +63,11 @@ public class MoreSettingFragment extends BaseFragment {
         });
     }
 
-    private void registNotify()
-    {
+    private void registNotify() {
         mSettingBtn.addNotifyType("app_update");
     }
 
-    private void bindListener()
-    {
+    private void bindListener() {
         mSettingAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,6 +113,23 @@ public class MoreSettingFragment extends BaseFragment {
             }
         });
 
+//        mMessageBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (app.loginUser == null) {
+//                    LoginActivity.start(mActivity);
+//                    return;
+//                }
+//                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+//                    @Override
+//                    public void setIntentDate(Intent startIntent) {
+//                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MessageFragment");
+//                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
+//                    }
+//                });
+//            }
+//        });
+
         mMessageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,10 +137,12 @@ public class MoreSettingFragment extends BaseFragment {
                     LoginActivity.start(mActivity);
                     return;
                 }
-                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("MessageTabActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MessageFragment");
+                        startIntent.putExtra(MessageTabActivity.FRAGMENT_NAME, "MessageFragment");
+                        startIntent.putExtra(MessageTabActivity.FRAGMENT_LIST, Const.MESSAGE_FRAGMENT_LIST);
+                        startIntent.putExtra(MessageTabActivity.TAB_TITLE, Const.MESSAGE_TAB_TITLE);
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
                     }
                 });
@@ -141,8 +158,7 @@ public class MoreSettingFragment extends BaseFragment {
         bindListener();
     }
 
-    private void checkNotify()
-    {
+    private void checkNotify() {
         Set<String> notifys = app.getNotifys();
         if (notifys.isEmpty()) {
             mSettingBtn.setUpdate(false);
@@ -159,11 +175,10 @@ public class MoreSettingFragment extends BaseFragment {
         }
     }
 
-    private void logout()
-    {
+    private void logout() {
         showProgress(true);
         RequestUrl url = app.bindUrl(Const.LOGOUT, true);
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 showProgress(false);

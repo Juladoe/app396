@@ -90,7 +90,7 @@ public class CategoryListView extends FrameLayout {
         loadView.findViewById(R.id.load_text).setVisibility(View.GONE);
         return loadView;
     }
-    
+
     public void initialise(
             final ActionBarBaseActivity mActivity, RequestUrl url)
     {

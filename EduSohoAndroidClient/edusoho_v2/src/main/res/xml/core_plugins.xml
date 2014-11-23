@@ -1,94 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugins>
-    <plugin name="SchoolCourseActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.SchoolCourseActivity"></plugin>
-    <plugin name="CourseLessonActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.CourseLessonActivity"></plugin>
-    <plugin name="CourseInfoActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseInfoActivity"></plugin>
-    <plugin name="FavoriteActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.FavoriteActivity"></plugin>
-    <plugin name="LearningActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LearningActivity"></plugin>
-    <plugin name="NormalActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NormalActivity"></plugin>
-    <plugin name="FragmentPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.FragmentPageActivity"></plugin>
-    <plugin name="LoginActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.LoginActivity"></plugin>
-    <plugin name="NetSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NetSchoolActivity"></plugin>
-    <plugin name="NotificationActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.NotificationActivity"></plugin>
-    <plugin name="QrSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.QrSchoolActivity"></plugin>
-    <plugin name="RegistActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.RegistActivity"></plugin>
-    <plugin name="SearchActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.SearchActivity"></plugin>
-    <plugin name="SettingActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.SettingActivity"></plugin>
-    <plugin name="CourseColumnActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.CourseColumnActivity"></plugin>
-    <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.ui.SplashActivity"></plugin>
-    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.ui.DefaultPageActivity"></plugin>
-    <plugin name="ViewPagerActivity" version="1.0" package="com.edusoho.plugin.photo.ViewPagerActivity"></plugin>
+    <plugin name="SchoolCourseActivity" package="com.edusoho.kuozhi.ui.course.SchoolCourseActivity" version="1.0"></plugin>
+    <plugin name="CourseLessonActivity" package="com.edusoho.kuozhi.ui.lesson.CourseLessonActivity" version="1.0"></plugin>
+    <plugin name="CourseInfoActivity" package="com.edusoho.kuozhi.ui.course.CourseInfoActivity" version="1.0"></plugin>
+    <plugin name="FavoriteActivity" package="com.edusoho.kuozhi.ui.course.FavoriteActivity" version="1.0"></plugin>
+    <plugin name="LearningActivity" package="com.edusoho.kuozhi.ui.course.LearningActivity" version="1.0"></plugin>
+    <plugin name="NormalActivity" package="com.edusoho.kuozhi.ui.common.NormalActivity" version="1.0"></plugin>
+    <plugin name="FragmentPageActivity" package="com.edusoho.kuozhi.ui.common.FragmentPageActivity" version="1.0"></plugin>
+    <plugin name="LoginActivity" package="com.edusoho.kuozhi.ui.common.LoginActivity" version="1.0"></plugin>
+    <plugin name="NetSchoolActivity" package="com.edusoho.kuozhi.ui.common.NetSchoolActivity" version="1.0"></plugin>
+    <plugin name="NotificationActivity" package="com.edusoho.kuozhi.ui.common.NotificationActivity" version="1.0"></plugin>
+    <plugin name="QrSchoolActivity" package="com.edusoho.kuozhi.ui.common.QrSchoolActivity" version="1.0"></plugin>
+    <plugin name="RegistActivity" package="com.edusoho.kuozhi.ui.common.RegistActivity" version="1.0"></plugin>
+    <plugin name="SearchActivity" package="com.edusoho.kuozhi.ui.common.SearchActivity" version="1.0"></plugin>
+    <plugin name="SettingActivity" package="com.edusoho.kuozhi.ui.common.SettingActivity" version="1.0"></plugin>
+    <plugin name="CourseColumnActivity" package="com.edusoho.kuozhi.ui.common.CourseColumnActivity" version="1.0"></plugin>
+    <plugin name="SplashActivity" package="com.edusoho.kuozhi.ui.SplashActivity" version="1.0"></plugin>
+    <plugin name="DefaultPageActivity" package="com.edusoho.kuozhi.ui.DefaultPageActivity" version="1.0"></plugin>
+    <plugin name="ViewPagerActivity" package="com.edusoho.plugin.photo.ViewPagerActivity" version="1.0"></plugin>
 
-    <plugin name="CourseListActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseListActivity"></plugin>
-    <plugin name="CourseDetailsActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity"></plugin>
-    <plugin name="CourseDetailsTabActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity"></plugin>
-    <plugin name="TestpaperActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.TestpaperActivity"></plugin>
-    <plugin name="TestpaperParseActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity"></plugin>
+    <plugin name="CourseListActivity" package="com.edusoho.kuozhi.ui.course.CourseListActivity" version="1.0"></plugin>
+    <plugin name="CourseDetailsActivity" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity" version="1.0"></plugin>
+    <plugin name="CourseDetailsTabActivity" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity" version="1.0"></plugin>
+    <plugin name="TestpaperActivity" package="com.edusoho.kuozhi.ui.lesson.TestpaperActivity" version="1.0"></plugin>
+    <plugin name="TestpaperParseActivity" package="com.edusoho.kuozhi.ui.lesson.TestpaperParseActivity" version="1.0"></plugin>
 
     <!--MyQuestion-->
-    <plugin name="QuestionActivity" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionActivity"></plugin>
-    <plugin name="QuestionDetailActivity" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionDetailActivity"></plugin>
-    <plugin name="QuestionReplyActivity" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionReplyActivity"></plugin>
+    <plugin name="QuestionActivity" package="com.edusoho.kuozhi.ui.question.QuestionActivity" version="1.0"></plugin>
+    <plugin name="QuestionDetailActivity" package="com.edusoho.kuozhi.ui.question.QuestionDetailActivity" version="1.0"></plugin>
+    <plugin name="QuestionReplyActivity" package="com.edusoho.kuozhi.ui.question.QuestionReplyActivity" version="1.0"></plugin>
 
-    <plugin name="PayCourseActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.PayCourseActivity"></plugin>
-    <plugin name="LessonActivity" version="1.0" package="com.edusoho.kuozhi.ui.course.LessonActivity"></plugin>
-    <plugin name="LessonResourceActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.LessonResourceActivity"></plugin>
-    <plugin name="LessonQuestionActivity" version="1.0" package="com.edusoho.kuozhi.ui.lesson.LessonQuestionActivity"></plugin>
+    <plugin name="PayCourseActivity" package="com.edusoho.kuozhi.ui.common.PayCourseActivity" version="1.0"></plugin>
+    <plugin name="LessonActivity" package="com.edusoho.kuozhi.ui.course.LessonActivity" version="1.0"></plugin>
+    <plugin name="LessonResourceActivity" package="com.edusoho.kuozhi.ui.lesson.LessonResourceActivity" version="1.0"></plugin>
+    <plugin name="LessonQuestionActivity" package="com.edusoho.kuozhi.ui.lesson.LessonQuestionActivity" version="1.0"></plugin>
 
     <!--note-->
-    <plugin name="NoteActivity" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteActivity"></plugin>
-    <plugin name="NoteList" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteList"></plugin>
-    <plugin name="NoteContent" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContent"></plugin>
-    <plugin name="NoteReplyActivity" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteReplyActivity"></plugin>
+    <plugin name="NoteActivity" package="com.edusoho.kuozhi.ui.note.NoteActivity" version="1.0"></plugin>
+    <plugin name="NoteList" package="com.edusoho.kuozhi.ui.note.NoteList" version="1.0"></plugin>
+    <plugin name="NoteContent" package="com.edusoho.kuozhi.ui.note.NoteContent" version="1.0"></plugin>
+    <plugin name="NoteReplyActivity" package="com.edusoho.kuozhi.ui.note.NoteReplyActivity" version="1.0"></plugin>
 
     <!-- service -->
-    <plugin name="EdusohoMainService" version="1.0" package="com.edusoho.kuozhi.Service.EdusohoMainService"></plugin>
+    <plugin name="EdusohoMainService" package="com.edusoho.kuozhi.Service.EdusohoMainService" version="1.0"></plugin>
     <!-- fragment -->
-    <plugin name="MyInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MyInfoFragment"></plugin>
-    <plugin name="FoundFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FoundFragment"></plugin>
-    <plugin name="RecommendFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendFragment"></plugin>
-    <plugin name="LoginFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LoginFragment"></plugin>
-    <plugin name="RegistFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RegistFragment"></plugin>
-    <plugin name="MoreSettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MoreSettingFragment"></plugin>
-    <plugin name="CourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseFragment"></plugin>
-    <plugin name="CourseDetailsFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseDetailsFragment"></plugin>
-    <plugin name="TeacherInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment"></plugin>
-    <plugin name="CourseInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseInfoFragment"></plugin>
-    <plugin name="ReviewInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment"></plugin>
-    <plugin name="CourseLearningFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseLearningFragment"></plugin>
-    <plugin name="FavoriteCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FavoriteCourseFragment"></plugin>
-    <plugin name="LearningCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearningCourseFragment"></plugin>
-    <plugin name="LearnedCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragment"></plugin>
-    <plugin name="TextLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment"></plugin>
-    <plugin name="VideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.VideoLessonFragment"></plugin>
-    <plugin name="BDVideoLessonFragment" version="1.0" package="com.edusoho.plugin.video.CustomVideoFragment"></plugin>
-    <plugin name="EduVideoViewFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.video.EduVideoViewFragment"></plugin>
+    <plugin name="MyInfoFragment" package="com.edusoho.kuozhi.ui.fragment.MyInfoFragment" version="1.0"></plugin>
+    <plugin name="FoundFragment" package="com.edusoho.kuozhi.ui.fragment.FoundFragment" version="1.0"></plugin>
+    <plugin name="RecommendFragment" package="com.edusoho.kuozhi.ui.fragment.RecommendFragment" version="1.0"></plugin>
+    <plugin name="LoginFragment" package="com.edusoho.kuozhi.ui.fragment.LoginFragment" version="1.0"></plugin>
+    <plugin name="RegistFragment" package="com.edusoho.kuozhi.ui.fragment.RegistFragment" version="1.0"></plugin>
+    <plugin name="MoreSettingFragment" package="com.edusoho.kuozhi.ui.fragment.MoreSettingFragment" version="1.0"></plugin>
+    <plugin name="CourseFragment" package="com.edusoho.kuozhi.ui.fragment.CourseFragment" version="1.0"></plugin>
+    <plugin name="CourseDetailsFragment" package="com.edusoho.kuozhi.ui.fragment.CourseDetailsFragment" version="1.0"></plugin>
+    <plugin name="TeacherInfoFragment" package="com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment" version="1.0"></plugin>
+    <plugin name="CourseInfoFragment" package="com.edusoho.kuozhi.ui.fragment.CourseInfoFragment" version="1.0"></plugin>
+    <plugin name="ReviewInfoFragment" package="com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment" version="1.0"></plugin>
+    <plugin name="CourseLearningFragment" package="com.edusoho.kuozhi.ui.fragment.CourseLearningFragment" version="1.0"></plugin>
+    <plugin name="FavoriteCourseFragment" package="com.edusoho.kuozhi.ui.fragment.FavoriteCourseFragment" version="1.0"></plugin>
+    <plugin name="LearningCourseFragment" package="com.edusoho.kuozhi.ui.fragment.LearningCourseFragment" version="1.0"></plugin>
+    <plugin name="LearnedCourseFragment" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragment" version="1.0"></plugin>
+    <plugin name="TextLessonFragment" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment" version="1.0"></plugin>
+    <plugin name="VideoLessonFragment" package="com.edusoho.kuozhi.ui.fragment.VideoLessonFragment" version="1.0"></plugin>
+    <plugin name="BDVideoLessonFragment" package="com.edusoho.plugin.video.CustomVideoFragment" version="1.0"></plugin>
+    <plugin name="EduVideoViewFragment" package="com.edusoho.kuozhi.ui.fragment.video.EduVideoViewFragment" version="1.0"></plugin>
 
-    <plugin name="AudioLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AudioLessonFragment"></plugin>
-    <plugin name="PptLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.PptLessonFragment"></plugin>
-    <plugin name="WebVideoLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.WebVideoLessonFragment"></plugin>
-    <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
-    <plugin name="SettingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SettingFragment"></plugin>
-    <plugin name="AboutFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AboutFragment"></plugin>
-    <plugin name="TestpaperLessonFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment"></plugin>
-    <plugin name="SuggestionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SuggestionFragment"></plugin>
-    <plugin name="MessageFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.message.MessageFragment"></plugin>
-    <plugin name="TestpaperResultFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment"></plugin>
-    <plugin name="AlipayFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.AlipayFragment"></plugin>
-    <plugin name="MyTestpaperFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.MyTestpaperFragment"></plugin>
-    <plugin name="RecommendCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment"></plugin>
-    <plugin name="NoteListFragment" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteListFragment"></plugin>
-    <plugin name="NoteContentFragment" version="1.0" package="com.edusoho.kuozhi.ui.note.NoteContentFragment"></plugin>
-    <plugin name="DownLoadListFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.DownLoadListFragment"></plugin>
+    <plugin name="AudioLessonFragment" package="com.edusoho.kuozhi.ui.fragment.AudioLessonFragment" version="1.0"></plugin>
+    <plugin name="PptLessonFragment" package="com.edusoho.kuozhi.ui.fragment.PptLessonFragment" version="1.0"></plugin>
+    <plugin name="WebVideoLessonFragment" package="com.edusoho.kuozhi.ui.fragment.WebVideoLessonFragment" version="1.0"></plugin>
+    <plugin name="RecommendCourseFragment" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment" version="1.0"></plugin>
+    <plugin name="SettingFragment" package="com.edusoho.kuozhi.ui.fragment.SettingFragment" version="1.0"></plugin>
+    <plugin name="AboutFragment" package="com.edusoho.kuozhi.ui.fragment.AboutFragment" version="1.0"></plugin>
+    <plugin name="TestpaperLessonFragment" package="com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment" version="1.0"></plugin>
+    <plugin name="SuggestionFragment" package="com.edusoho.kuozhi.ui.fragment.SuggestionFragment" version="1.0"></plugin>
+    <plugin name="MessageFragment" package="com.edusoho.kuozhi.ui.fragment.message.MessageFragment" version="1.0"></plugin>
+    <plugin name="MessageTabActivity" package="com.edusoho.kuozhi.ui.Message.MessageTabActivity" version="1.0"></plugin>
+    <plugin name="TestpaperResultFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment" version="1.0"></plugin>
+    <plugin name="AlipayFragment" package="com.edusoho.kuozhi.ui.fragment.AlipayFragment" version="1.0"></plugin>
+    <plugin name="MyTestpaperFragment" package="com.edusoho.kuozhi.ui.fragment.MyTestpaperFragment" version="1.0"></plugin>
+    <plugin name="RecommendCourseFragment" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment" version="1.0"></plugin>
+    <plugin name="NoteListFragment" package="com.edusoho.kuozhi.ui.note.NoteListFragment" version="1.0"></plugin>
+    <plugin name="NoteContentFragment" package="com.edusoho.kuozhi.ui.note.NoteContentFragment" version="1.0"></plugin>
+    <plugin name="DownLoadListFragment" package="com.edusoho.kuozhi.ui.fragment.DownLoadListFragment" version="1.0"></plugin>
 
     <!--试卷fragment -->
-    <plugin name="ChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment"></plugin>
-    <plugin name="DetermineFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.DetermineFragment"></plugin>
-    <plugin name="EssayFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.EssayFragment"></plugin>
-    <plugin name="FillFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.FillFragment"></plugin>
-    <plugin name="MaterialFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.MaterialFragment"></plugin>
-    <plugin name="SingleChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.SingleChoiceFragment"></plugin>
-    <plugin name="UncertainChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.UncertainChoiceFragment"></plugin>
+    <plugin name="ChoiceFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.ChoiceFragment" version="1.0"></plugin>
+    <plugin name="DetermineFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.DetermineFragment" version="1.0"></plugin>
+    <plugin name="EssayFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.EssayFragment" version="1.0"></plugin>
+    <plugin name="FillFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.FillFragment" version="1.0"></plugin>
+    <plugin name="MaterialFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.MaterialFragment" version="1.0"></plugin>
+    <plugin name="SingleChoiceFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.SingleChoiceFragment" version="1.0"></plugin>
+    <plugin name="UncertainChoiceFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.UncertainChoiceFragment" version="1.0"></plugin>
 
-    <plugin name="CourseNoticeFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseNoticeFragment"></plugin>
+    <plugin name="CourseNoticeFragment" package="com.edusoho.kuozhi.ui.fragment.CourseNoticeFragment" version="1.0"></plugin>
 </plugins>

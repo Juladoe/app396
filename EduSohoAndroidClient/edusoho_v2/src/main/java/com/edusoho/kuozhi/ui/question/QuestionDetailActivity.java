@@ -111,12 +111,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                     }.getType());
                     if (replyResult == null) {
                         return;
-                    } else {
-//                        if (replyResult.data.length > 0) {
-//                            mEmptyList.setVisibility(View.GONE);
-//                        } else {
-//                            mEmptyList.setVisibility(View.VISIBLE);
-//                        }
                     }
                     mStart = replyResult.limit + replyResult.start;
                     QuestionReplyListAdapter adapter = (QuestionReplyListAdapter) mQuestionRelyList.getAdapter();

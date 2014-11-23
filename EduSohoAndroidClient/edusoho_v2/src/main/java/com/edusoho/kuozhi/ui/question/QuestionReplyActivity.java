@@ -117,7 +117,6 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                     }
                     case Const.EDIT_REPLY: {
                         //编辑回复api
-                        //Log.e(TAG, Html.toHtml(etContent.getText()).toString());
                         RequestUrl url = app.bindUrl(Const.REPLY_EDIT_SUBMIT, true);
                         HashMap<String, String> params = url.getParams();
                         params.put("courseId", richFragment.getCourseId());
