@@ -178,4 +178,10 @@ public class MessageTabActivity extends ActionBarBaseActivity {
             mHandler.removeCallbacks(what);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment fragment = getSupportFragmentManager().getFragments().get(1);
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
 }

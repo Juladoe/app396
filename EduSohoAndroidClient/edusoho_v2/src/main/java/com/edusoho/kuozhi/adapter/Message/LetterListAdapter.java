@@ -25,6 +25,8 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
     private DisplayImageOptions mOptions;
     private static final int TYPE_ITEMS = 2, TYPE_ME = 0, TYPE_OTHER_SIDE = 1;
     private User mLoginUser;
+    private static long TIME_INTERVAL = 1000 * 60 * 5;
+
 
     public LetterListAdapter(Context context, int resource) {
         super(context, resource);
@@ -95,6 +97,12 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
             }
 
             LetterModel model = mList.get(position);
+            if (position != 0) {
+                if (Long.parseLong(model.createdTime) - Long.parseLong(mList.get(position - 1).createdTime) > TIME_INTERVAL) {
+                    holder.tvSendTime.setVisibility(View.VISIBLE);
+                }
+            }
+
             holder.tvSendTime.setText(AppUtil.getPostDays(model.createdTime));
             holder.tvSendContent.setText(model.content);
             ImageLoader.getInstance().displayImage(model.createdUser.mediumAvatar, holder.ciPic, mOptions);

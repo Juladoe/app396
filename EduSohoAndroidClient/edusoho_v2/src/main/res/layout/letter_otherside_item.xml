@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#efeff4">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -15,9 +14,10 @@
             android:layout_centerHorizontal="true"
             android:text="9-4 18:45"
             android:textColor="#36000000"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -30,23 +30,25 @@
                 android:id="@+id/ci_send_pic"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
                 android:src="@drawable/myinfo_default_face" />
 
             <TextView
                 android:id="@+id/tv_send_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chat_white"
+                android:layout_toRightOf="@+id/ci_send_pic"
+                android:background="@drawable/box"
                 android:gravity="left|center_vertical"
-                android:linksClickable="true"
                 android:maxWidth="250dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"
-                android:text="对方的信息对方的信息"
+                android:paddingTop="5dp"
+                android:text="我发送的信息\n我发送的信息\n我发送的信息......."
                 android:textColor="#57000000"
                 android:textSize="17sp" />
 
-        </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

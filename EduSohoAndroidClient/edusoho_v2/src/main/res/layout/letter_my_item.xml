@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#efeff4">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -14,13 +13,14 @@
             android:id="@+id/tv_send_time"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:text="9-4 18:45"
             android:textColor="#36000000"
             android:textSize="12sp"
-            android:layout_alignParentTop="true" />
+            android:visibility="gone" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -29,27 +29,31 @@
             android:gravity="right|center_vertical"
             android:orientation="horizontal">
 
+            <com.edusoho.kuozhi.view.plugin.CircularImageView
+                android:id="@+id/ci_send_pic"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/myinfo_default_face" />
+
             <TextView
                 android:id="@+id/tv_send_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/bg_chat_green"
-                android:gravity="left|center_vertical"
-                android:linksClickable="true"
+                android:layout_toLeftOf="@id/ci_send_pic"
+                android:background="@drawable/box_blue"
+                android:gravity="left|top"
                 android:maxWidth="250dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="15dp"
-                android:text="我发送的信息"
+                android:paddingTop="5dp"
+                android:text="我发送的信息\n我发送的信息\n我发送的信息......."
                 android:textColor="#57000000"
                 android:textSize="17sp" />
 
-            <com.edusoho.kuozhi.view.plugin.CircularImageView
-                android:id="@+id/ci_send_pic"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/myinfo_default_face" />
-        </LinearLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

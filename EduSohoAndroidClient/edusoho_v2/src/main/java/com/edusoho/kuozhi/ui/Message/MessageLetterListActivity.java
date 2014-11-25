@@ -72,14 +72,14 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                LoadLetterListData(0, true);
+                LoadLetterListData(0, false);
             }
         });
-        LoadLetterListData(0, false);
+        LoadLetterListData(0, true);
         btnSendLetter.setOnClickListener(this);
     }
 
-    private void LoadLetterListData(final int start, boolean isRefresh) {
+    private void LoadLetterListData(final int start, final boolean isPullToBottom) {
         RequestUrl url = app.bindUrl(Const.MESSAGE_LIST, true);
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("limit", String.valueOf(Const.LIMIT));
@@ -99,6 +99,9 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
 
                 mLetterList.pushData(result);
                 mLetterList.setStart(start);
+                if (isPullToBottom) {
+                    mLetterList.setSelection(result.size() - 1);
+                }
                 mStart = start + mLetterList.getAdapter().getCount();
             }
 
@@ -108,7 +111,9 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
             }
         };
 
-        this.ajaxPost(url, callback);
+        this.
+
+                ajaxPost(url, callback);
     }
 
     @Override
@@ -125,9 +130,9 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
                 if (object != null) {
                     LetterModel result = gson.fromJson(object, new TypeToken<LetterModel>() {
                     }.getType());
-                    //mLetterList.pushItem(result, false);
                     LetterListAdapter adapter = ((LetterListAdapter) mLetterList.getAdapter());
                     adapter.addItem(result);
+                    mLetterList.setSelection(adapter.getCount() - 1);
                 }
             }
 

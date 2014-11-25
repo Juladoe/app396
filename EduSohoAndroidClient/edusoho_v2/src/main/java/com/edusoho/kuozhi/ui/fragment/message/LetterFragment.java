@@ -33,6 +33,7 @@ import library.PullToRefreshBase;
  */
 public class LetterFragment extends BaseFragment {
     private static final String TAG = "LetterFragment";
+    private static final int RETURN_REFRESH = 0;
     private RefreshListWidget mLetterSummaryList;
     private View mLoadingView;
     private int mStart;
@@ -72,7 +73,7 @@ public class LetterFragment extends BaseFragment {
         mLetterSummaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
-                mActivity.app.mEngine.runNormalPlugin("MessageLetterListActivity", mContext, new PluginRunCallback() {
+                mActivity.app.mEngine.runNormalPluginForResult("MessageLetterListActivity", mActivity, RETURN_REFRESH, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         LetterSummaryModel model = (LetterSummaryModel) parent.getItemAtPosition(position);
@@ -118,9 +119,15 @@ public class LetterFragment extends BaseFragment {
                 super.error(url, ajaxStatus);
             }
         };
-
         mActivity.ajaxPost(requestUrl, callback);
-
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            MessageLetterSummaryAdapter adapter = (MessageLetterSummaryAdapter) mLetterSummaryList.getAdapter();
+            adapter.clear();
+            mLetterSummaryList.setRefreshing();
+        }
+    }
 }

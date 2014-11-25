@@ -14,9 +14,7 @@
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:scrollbars="none"
-        android:smoothScrollbar="true"
-        app:rlw_stackFromBottom="true"
-        app:rlw_transcriptMode="alwaysScroll" />
+        android:smoothScrollbar="true" />
 
     <RelativeLayout
         android:id="@+id/ll_send_info"

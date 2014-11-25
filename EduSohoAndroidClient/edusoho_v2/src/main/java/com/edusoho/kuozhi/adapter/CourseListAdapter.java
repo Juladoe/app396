@@ -87,8 +87,6 @@ public class CourseListAdapter<T> extends ListBaseAdapter<T> {
         if (course.teachers.length > 0) {
             user = course.teachers[0];
             holder.course_teacher_nickname.setText("教师: " + user.nickname);
-            holder.aq.id(R.id.course_teacher_face).image(
-                    user.avatar, false, true);
         }
         holder.course_price.setText(course.price == 0 ? "免费": course.price + "元");
     }
