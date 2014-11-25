@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/course_pic"
             android:layout_margin="10dp"
-            android:drawableLeft="@drawable/price"
             android:drawablePadding="3dp"
             android:padding="3dp"
             android:text="0.2" />
@@ -63,7 +62,6 @@
             android:layout_below="@id/course_pic"
             android:layout_margin="10dp"
             android:layout_toRightOf="@id/course_price"
-            android:drawableLeft="@drawable/group"
             android:drawablePadding="3dp"
             android:padding="3dp"
             android:text="100" />

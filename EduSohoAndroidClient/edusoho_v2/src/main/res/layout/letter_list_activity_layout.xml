@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:id="@+id/letter_list"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/ll_send_info"
+        android:divider="@color/system_normal_bg"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none"
+        android:smoothScrollbar="true"
+        app:rlw_stackFromBottom="true"
+        app:rlw_transcriptMode="alwaysScroll" />
+
+    <RelativeLayout
+        android:id="@+id/ll_send_info"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white">
+
+        <EditText
+            android:id="@+id/et_send_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/btn_send_letter"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/btn_send_letter"
+            android:background="@drawable/login_edt_bg_sel" />
+
+        <Button
+            android:id="@+id/btn_send_letter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/post_reply_btn"
+            android:text="发送"
+            android:textColor="@color/login_text" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

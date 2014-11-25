@@ -26,6 +26,7 @@ import extensions.PagerSlidingTabStrip;
  * Created by hby on 14/11/23.
  */
 public class MessageTabActivity extends ActionBarBaseActivity {
+    private static final String TAG = "MessageTabActivity";
     private PagerSlidingTabStrip mTabs;
     private ViewPager mViewPagers;
 
@@ -38,7 +39,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
     private String[] mTabTitles;
     private String[] mFragmentArrayList;
 
-    public static final String TAB_TITLE = "title";
+    public static final String TAB_TITLES = "title";
     public static final String FRAGMENT_LIST = "fragment_list";
     public static final String FRAGMENT_NAME = "fragment_name";
     public static final String FRAGMENT_DATA = "fragment_data";
@@ -56,35 +57,41 @@ public class MessageTabActivity extends ActionBarBaseActivity {
     private void initDatas() {
         Intent intentData = getIntent();
         if (intentData != null) {
-            mTitle = intentData.getStringExtra(Const.ACTIONBAT_TITLE);
-            mTabTitles = intentData.getStringArrayExtra(TAB_TITLE);
-            mFragmentArrayList = intentData.getStringArrayExtra(FRAGMENT_LIST);
             mFragmentName = intentData.getStringExtra(FRAGMENT_NAME);
+            mFragmentArrayList = intentData.getStringArrayExtra(FRAGMENT_LIST);
+            mTabTitles = intentData.getStringArrayExtra(TAB_TITLES);
+            mTitle = intentData.getStringExtra(Const.ACTIONBAT_TITLE);
         }
-
-        if (mTabTitles == null || mFragmentArrayList == null) {
-            longToast("无效列表数据！");
-            return;
-        }
+//
+//        if (mTabTitles == null || mFragmentArrayList == null) {
+//            longToast("无效列表数据！");
+//            return;
+//        }
     }
 
     private void initViews() {
-        mTabs = (PagerSlidingTabStrip) findViewById(R.id.message_varity_tab);
-        mViewPagers = (ViewPager) findViewById(R.id.message_varity_pager);
-        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), this.mTabTitles, this.mFragmentArrayList);
-        mViewPagers.setAdapter(pagerAdapter);
+        try {
+            mTabs = (PagerSlidingTabStrip) findViewById(R.id.message_varity_tab);
+            mViewPagers = (ViewPager) findViewById(R.id.message_varity_pager);
+            MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), Const.MESSAGE_TAB_TITLE, this.mFragmentArrayList);
+            mTabs.setIndicatorColorResource(R.color.action_bar_bg);
+            mViewPagers.setAdapter(pagerAdapter);
 
-        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-                .getDisplayMetrics());
-        mViewPagers.setPageMargin(pageMargin);
+            final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+                    .getDisplayMetrics());
+            mViewPagers.setPageMargin(pageMargin);
+            mTabs.setViewPager(mViewPagers);
 
-        changeColor(currentColor);
-        setPagetItem(mFragmentName);
-        mViewPagers.setOffscreenPageLimit(mFragmentArrayList.length);
+            changeColor(currentColor);
+            setPageItem(mFragmentName);
+            mViewPagers.setOffscreenPageLimit(mFragmentArrayList.length);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
     }
 
-    private void setPagetItem(String name) {
-        Log.d(null, "setPagetItem fragment->" + name);
+    private void setPageItem(String name) {
+        Log.d(null, "setPageItem fragment->" + name);
         for (int i = 0; i < mFragmentArrayList.length; i++) {
             if (mFragmentArrayList[i].equals(name)) {
                 mViewPagers.setCurrentItem(i);
@@ -94,18 +101,18 @@ public class MessageTabActivity extends ActionBarBaseActivity {
     }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
-        private String[] mTabTitles;
-        private String[] mFragmentLists;
+        private String[] mTitles;
+        private String[] mLists;
 
         public MyPagerAdapter(FragmentManager fm, String[] titles, String[] fragmentLists) {
             super(fm);
-            this.mTabTitles = titles;
-            this.mFragmentLists = fragmentLists;
+            this.mTitles = titles;
+            this.mLists = fragmentLists;
         }
 
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = app.mEngine.runPluginWithFragment(mFragmentLists[i], mActivity, new PluginFragmentCallback() {
+            Fragment fragment = app.mEngine.runPluginWithFragment(mLists[i], mActivity, new PluginFragmentCallback() {
                 @Override
                 public void setArguments(Bundle bundle) {
                     bundle.putAll(getIntent().getBundleExtra(FRAGMENT_DATA));
@@ -116,12 +123,12 @@ public class MessageTabActivity extends ActionBarBaseActivity {
 
         @Override
         public int getCount() {
-            return mTabTitles.length;
+            return mTitles.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mTabTitles[position];
+            return mTitles[position];
         }
     }
 

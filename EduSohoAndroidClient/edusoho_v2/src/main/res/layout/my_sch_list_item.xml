@@ -16,8 +16,7 @@
             android:paddingBottom="8dp"
             android:paddingLeft="3dp"
             android:paddingTop="8dp"
-            android:paddingRight="3dp"
-            android:src="@drawable/logo1" />
+            android:paddingRight="3dp" />
 
         <TextView
             android:layout_below="@id/my_sch_logo"

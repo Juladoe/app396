@@ -112,6 +112,10 @@ public class Const {
     public static final String LASTER_LEARN_COURSE = "User/getUserLastlearning";
     public static final String LASTER_LEARN_LESSON = "Course/getLearnStatus";
 
+    public static final String MESSAGE_LETTER_SUMMARY = "User/getUserMessages";
+    public static final String MESSAGE_LIST = "User/getMessageList";
+    public static final String SEND_LETTER = "User/sendMessage";
+
     /**
      * 获取所有回答
      * 传递参数：courseId，threadId

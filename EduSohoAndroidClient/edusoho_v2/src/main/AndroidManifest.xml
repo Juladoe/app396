@@ -125,14 +125,19 @@
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionReplyActivity"
             android:configChanges="keyboard|orientation"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.edusoho.plugin.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop" />
         <activity
             android:name="com.edusoho.kuozhi.ui.Message.MessageTabActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.edusoho.kuozhi.ui.Message.MessageLetterListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
@@ -162,8 +167,8 @@
         <activity
             android:name="com.edusoho.kuozhi.ui.note.NoteReplyActivity"
             android:configChanges="keyboard|orientation"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

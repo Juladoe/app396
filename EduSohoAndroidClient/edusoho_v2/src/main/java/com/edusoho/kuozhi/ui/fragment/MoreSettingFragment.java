@@ -137,15 +137,18 @@ public class MoreSettingFragment extends BaseFragment {
                     LoginActivity.start(mActivity);
                     return;
                 }
-                app.mEngine.runNormalPlugin("MessageTabActivity", mActivity, new PluginRunCallback() {
+                PluginRunCallback callback = new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(MessageTabActivity.FRAGMENT_DATA, new Bundle());
                         startIntent.putExtra(MessageTabActivity.FRAGMENT_NAME, "MessageFragment");
                         startIntent.putExtra(MessageTabActivity.FRAGMENT_LIST, Const.MESSAGE_FRAGMENT_LIST);
-                        startIntent.putExtra(MessageTabActivity.TAB_TITLE, Const.MESSAGE_TAB_TITLE);
+                        startIntent.putExtra(MessageTabActivity.TAB_TITLES, Const.MESSAGE_TAB_TITLE);
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "通知");
                     }
-                });
+                };
+
+                app.mEngine.runNormalPlugin("MessageTabActivity", mActivity, callback);
             }
         });
     }
