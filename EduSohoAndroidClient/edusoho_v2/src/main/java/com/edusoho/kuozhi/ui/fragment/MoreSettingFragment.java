@@ -39,6 +39,9 @@ public class MoreSettingFragment extends BaseFragment {
     @ViewUtil("more_setting_message")
     private View mMessageBtn;
 
+    @ViewUtil("more_setting_app")
+    private View mAppBtn;
+
     @Override
     public String getTitle() {
         return "更多";
@@ -70,6 +73,12 @@ public class MoreSettingFragment extends BaseFragment {
 
     private void bindListener()
     {
+        mAppBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("EduHtmlAppActivity", mActivity, null);
+            }
+        });
         mSettingAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

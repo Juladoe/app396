@@ -50,7 +50,7 @@ public class EdusohoButton extends FrameLayout {
 
     private int mRadius = 0;
 
-    private Typeface mTextTypeFace = null;
+    private Typeface mTextTypeFace = Typeface.DEFAULT;
     private Typeface mIconTypeFace = null;
 
 
@@ -66,7 +66,7 @@ public class EdusohoButton extends FrameLayout {
     //private static final ArrayList<String> mDefaultIconFonts = new ArrayList<String>(Arrays.asList("fontawesome-webfont.ttf"));
 
     private String mDefaultIconFont = "iconfont.ttf";
-    private String mDefaultTextFont = "robotoregular.ttf";
+    //private String mDefaultTextFont = "robotoregular.ttf";
 
     private ImageView mIconView;
     private TextView mFontIconView;
@@ -80,7 +80,7 @@ public class EdusohoButton extends FrameLayout {
     public EdusohoButton(Context context) {
         super(context);
         this.mContext = context;
-        mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultTextFont);
+        //mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultTextFont);
         mIconTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultIconFont);
         init();
     }
@@ -314,11 +314,11 @@ public class EdusohoButton extends FrameLayout {
                 try {
                     mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), textFontFamily);
                 } catch (Exception e) {
-                    mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultTextFont);
+                    //mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultTextFont);
                 }
 
             } else {
-                mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultTextFont);
+                //mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), mDefaultTextFont);
             }
 
 
@@ -491,7 +491,7 @@ public class EdusohoButton extends FrameLayout {
             mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), String.format("fonts/%s", fontName));
         } catch (Exception e) {
             Log.e("FancyButtons", e.getMessage());
-            mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), String.format("fonts/%s", mDefaultTextFont));
+            //mTextTypeFace = Typeface.createFromAsset(mContext.getAssets(), String.format("fonts/%s", mDefaultTextFont));
         }
 
         if (mTextView == null) {

@@ -90,5 +90,8 @@
     <plugin name="SingleChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.SingleChoiceFragment"></plugin>
     <plugin name="UncertainChoiceFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.testpaper.UncertainChoiceFragment"></plugin>
 
+    <!--htmlapp -->
+    <plugin name="EduHtmlAppActivity" version="1.0" package="com.edusoho.kuozhi.ui.htmlView.EduHtmlAppActivity"></plugin>
+
     <plugin name="CourseNoticeFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseNoticeFragment"></plugin>
 </plugins>
