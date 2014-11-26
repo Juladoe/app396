@@ -30,9 +30,7 @@
         android:layout_height="wrap_content">
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
-
             android:id="@+id/civ_reply_pic"
-
             android:layout_marginRight="16dp"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -45,13 +43,11 @@
             android:layout_toRightOf="@+id/civ_reply_pic"
             android:orientation="vertical">
 
-
             <RelativeLayout
                 android:id="@+id/rl_reply_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp">
-
 
                 <TextView
                     android:id="@+id/tv_reply_name"

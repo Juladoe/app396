@@ -40,10 +40,12 @@ public class RefreshListWidget extends PullToRefreshListView {
     private ListBaseAdapter mEmptyAdapter;
     private UpdateListener mUpdateListener;
     private Context mContext;
-    private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
+    private String[] mEmptyText = new String[]{"没有搜到相关课程，请换个关键词试试！"};
 
     private int mDividerHeight;
     private int mDividerColor;
+    private boolean mStackFromBottom;
+    private int mTranscriptMode;
 
     public RefreshListWidget(Context context) {
         super(context);
@@ -57,24 +59,29 @@ public class RefreshListWidget extends PullToRefreshListView {
         initView(attrs);
     }
 
-    private void initView(AttributeSet attrs)
-    {
+    private void initView(AttributeSet attrs) {
         mMode = REFRESH;
         mLimit = Const.LIMIT;
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.RefreshListWidget);
         mDividerHeight = ta.getDimensionPixelSize(R.styleable.RefreshListWidget_rlw_dividerHeight, 0);
         mDividerColor = ta.getColor(R.styleable.RefreshListWidget_rlw_dividerColor, 0);
+//        mStackFromBottom = ta.getBoolean(R.styleable.RefreshListWidget_rlw_stackFromBottom, false);
+//        mTranscriptMode = ta.getInteger(R.styleable.RefreshListWidget_rlw_transcriptMode, ListView.TRANSCRIPT_MODE_DISABLED);
+//        getRefreshableView().setTranscriptMode(mTranscriptMode);
+//        getRefreshableView().setStackFromBottom(mStackFromBottom);
         getRefreshableView().setDividerHeight(mDividerHeight);
         //getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
     }
 
-    public int getRefreshMode()
-    {
+    public int getRefreshMode() {
         return mMode;
     }
 
-    public void setStart(int start, int total)
-    {
+    public void setSelection(int position) {
+        getRefreshableView().setSelection(position);
+    }
+
+    public void setStart(int start, int total) {
         mTotal = total;
         start = start + mLimit;
         if (start < total) {
@@ -85,24 +92,20 @@ public class RefreshListWidget extends PullToRefreshListView {
         }
     }
 
-    public void setStart(int start)
-    {
+    public void setStart(int start) {
         mStart = start;
     }
 
-    public void setLoadAdapter()
-    {
+    public void setLoadAdapter() {
         mLoadAdapter = new ListLoadAdapter(mContext, R.layout.loading_layout);
         setAdapter(mLoadAdapter);
     }
 
-    public void setEmptyText(String[] emptyText)
-    {
+    public void setEmptyText(String[] emptyText) {
         mEmptyText = emptyText;
     }
 
-    public void pushData(ArrayList data)
-    {
+    public void pushData(ArrayList data) {
         if (mMode == REFRESH) {
             if (data == null || data.isEmpty()) {
                 mEmptyAdapter = getEmptyLayoutAdapter();
@@ -119,12 +122,11 @@ public class RefreshListWidget extends PullToRefreshListView {
             }
             mAdapter.clear();
         }
-        setMode(data.isEmpty() ? Mode.PULL_FROM_START : Mode.BOTH);
+        setMode(data.isEmpty() ? Mode.PULL_FROM_START : getOriginalMode());
         mAdapter.addItems(data);
     }
 
-    public void pushItem(Object item, boolean isEmpty)
-    {
+    public void pushItem(Object item, boolean isEmpty) {
         if (mMode == REFRESH) {
             if (item == null || isEmpty) {
                 mEmptyAdapter = getEmptyLayoutAdapter();
@@ -140,25 +142,21 @@ public class RefreshListWidget extends PullToRefreshListView {
         mAdapter.addItem(item);
     }
 
-    public int getStart()
-    {
+    public int getStart() {
         return mStart;
     }
 
-    protected ListBaseAdapter getEmptyLayoutAdapter()
-    {
-        EmptyAdapter<String> arrayAdapter = new EmptyAdapter<String> (
+    protected ListBaseAdapter getEmptyLayoutAdapter() {
+        EmptyAdapter<String> arrayAdapter = new EmptyAdapter<String>(
                 mContext, R.layout.course_empty_layout, mEmptyText);
         return arrayAdapter;
     }
 
-    public ListAdapter getAdapter()
-    {
+    public ListAdapter getAdapter() {
         return mAdapter;
     }
 
-    public void setUpdateListener(UpdateListener updateListener)
-    {
+    public void setUpdateListener(UpdateListener updateListener) {
         mUpdateListener = updateListener;
         setOnRefreshListener(new OnRefreshListener2<ListView>() {
             @Override
@@ -188,9 +186,9 @@ public class RefreshListWidget extends PullToRefreshListView {
         mAdapter = (ListBaseAdapter) adapter;
     }
 
-    public interface UpdateListener
-    {
+    public interface UpdateListener {
         public void update(PullToRefreshBase<ListView> refreshView);
+
         public void refresh(PullToRefreshBase<ListView> refreshView);
     }
 }

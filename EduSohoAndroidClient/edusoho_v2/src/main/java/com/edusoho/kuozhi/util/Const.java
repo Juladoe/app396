@@ -15,6 +15,10 @@ public class Const {
             "在学课程", "收藏课程", "已学课程"
     };
 
+    public static final String[] MESSAGE_TAB_TITLE = {
+            "消息", "私信"
+    };
+
     /**
      * 考试题目类别
      */
@@ -39,6 +43,11 @@ public class Const {
             "LearningCourseFragment",
             "FavoriteCourseFragment",
             "LearnedCourseFragment"
+    };
+
+    public static final String[] MESSAGE_FRAGMENT_LIST = {
+            "MessageFragment",
+            "LetterFragment"
     };
 
     public static final String[] COURSE_INFO_FRAGMENT = {
@@ -102,6 +111,10 @@ public class Const {
     public static final String NOTIFICATION = "User/getUserNotification";
     public static final String LASTER_LEARN_COURSE = "User/getUserLastlearning";
     public static final String LASTER_LEARN_LESSON = "Course/getLearnStatus";
+
+    public static final String MESSAGE_LETTER_SUMMARY = "User/getUserMessages";
+    public static final String MESSAGE_LIST = "User/getMessageList";
+    public static final String SEND_LETTER = "User/sendMessage";
 
     /**
      * 获取所有回答
@@ -278,12 +291,12 @@ public class Const {
 
     /**
      * 问题编辑
-    */
+     */
     public static final int EDIT_QUESTION = 0x02;
 
     /**
      * 回复编辑
-    */
+     */
     public static final int EDIT_REPLY = 0x03;
 
     public static final String COURSE_NOTICES = "Course/getCourseNotices";

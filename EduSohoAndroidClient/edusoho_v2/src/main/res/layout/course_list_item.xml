@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/system_window_bg"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp" >
+
+    <RelativeLayout
+        android:id="@+id/course_list_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/recommend_sch_sel"
+        android:paddingBottom="8dp" >
+
+        <TextView
+            android:id="@+id/course_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="5dp"
+            android:text="标题"
+            android:textSize="@dimen/course_list_item_title"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/course_pic"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/course_title"
+            android:layout_margin="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/defaultpic" />
+
+        <RatingBar
+            android:id="@+id/course_rating"
+            style="@style/courseRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/course_pic"
+            android:layout_margin="10dp"
+            android:isIndicator="true"
+            android:rating="5" />
+
+        <TextView
+            android:id="@+id/course_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/course_pic"
+            android:layout_margin="10dp"
+            android:drawablePadding="3dp"
+            android:padding="3dp"
+            android:text="0.2" />
+
+        <TextView
+            android:id="@+id/course_studentNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/course_pic"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@id/course_price"
+            android:drawablePadding="3dp"
+            android:padding="3dp"
+            android:text="100" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/course_studentNum"
+            android:layout_margin="8dp"
+            android:padding="5dp" >
+
+            <ImageView
+                android:id="@+id/course_teacher_face"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/course_teacher_avatar" />
+
+            <TextView
+                android:id="@+id/course_teacher_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/course_teacher_face"
+                android:text="昵称"
+                android:textSize="@dimen/course_teacher_nickname" />
+
+            <TextView
+                android:id="@+id/course_teacher_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/course_teacher_face"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/course_teacher_face"
+                android:text="教师介绍"
+                android:textSize="@dimen/course_teacher_nickname" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -43,9 +43,9 @@ public abstract class ListBaseAdapter<T> extends BaseAdapter {
         animQueue = new LinkedList<View>();
     }
 
-    public ListBaseAdapter(Context context, int resouce, boolean isCache)
+    public ListBaseAdapter(Context context, int resource, boolean isCache)
     {
-        this(context, resouce);
+        this(context, resource);
         this.mIsCache = isCache;
         if (isCache) {
             cacheArray = new SparseArray<View>();

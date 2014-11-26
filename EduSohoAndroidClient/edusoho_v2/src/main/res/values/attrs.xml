@@ -3,6 +3,10 @@
     <declare-styleable name="RefreshListWidget">
         <attr name="rlw_dividerHeight" format="dimension" />
         <attr name="rlw_dividerColor" format="color" />
+        <attr name="rlw_stackFromBottom" format="boolean" />
+        <attr name="rlw_transcriptMode" format="integer">
+            <enum name="alwaysScroll" value="2" />
+        </attr>
     </declare-styleable>
     <declare-styleable name="OverScrollView">
         <attr name="refreshHeight" format="dimension" />

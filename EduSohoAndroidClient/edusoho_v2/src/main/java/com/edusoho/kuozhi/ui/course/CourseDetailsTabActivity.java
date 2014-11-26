@@ -64,10 +64,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
             mMenu = data.getIntExtra(MENU, 0);
         }
 
-        if (titles == null || fragmentArrayList == null) {
-            longToast("无效列表数据！");
-            return;
-        }
+
     }
 
     protected void initView()

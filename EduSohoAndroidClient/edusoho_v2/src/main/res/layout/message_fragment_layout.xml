@@ -4,12 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/system_normal_bg">
 
-    <TabHost
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </TabHost>
-
     <include layout="@layout/loading_layout" />
 
     <com.edusoho.kuozhi.ui.widget.RefreshListWidget
