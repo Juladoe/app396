@@ -10,27 +10,34 @@
         <TextView
             android:id="@+id/tv_send_time"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="9-4 18:45"
+            android:background="@drawable/letter_time_bg"
+            android:layout_marginTop="8dp"
             android:textColor="#36000000"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tv_send_time"
-            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:gravity="left|center_vertical"
             android:orientation="horizontal">
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
                 android:id="@+id/ci_send_pic"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/myinfo_default_face" />
 
             <TextView
@@ -40,6 +47,7 @@
                 android:layout_toRightOf="@+id/ci_send_pic"
                 android:background="@drawable/box"
                 android:gravity="left|center_vertical"
+                android:layout_centerInParent="true"
                 android:maxWidth="250dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"

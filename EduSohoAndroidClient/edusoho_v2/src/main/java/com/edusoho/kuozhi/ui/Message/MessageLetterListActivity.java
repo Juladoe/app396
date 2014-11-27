@@ -72,7 +72,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                LoadLetterListData(0, false);
+                LoadLetterListData(mStart, false);
             }
         });
         LoadLetterListData(0, true);
@@ -96,13 +96,14 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
                 if (result == null) {
                     return;
                 }
-
-                mLetterList.pushData(result);
-                mLetterList.setStart(start);
-                if (isPullToBottom) {
-                    mLetterList.setSelection(result.size() - 1);
+                if (result.size() != 0) {
+                    LetterListAdapter adapter = (LetterListAdapter) mLetterList.getAdapter();
+                    adapter.addItemsToBottom(result);
+                    if (isPullToBottom) {
+                        mLetterList.setSelection(result.size());
+                    }
+                    mStart = start + mLetterList.getAdapter().getCount();
                 }
-                mStart = start + mLetterList.getAdapter().getCount();
             }
 
             @Override
@@ -111,9 +112,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
             }
         };
 
-        this.
-
-                ajaxPost(url, callback);
+        this.ajaxPost(url, callback);
     }
 
     @Override
@@ -132,7 +131,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
                     }.getType());
                     LetterListAdapter adapter = ((LetterListAdapter) mLetterList.getAdapter());
                     adapter.addItem(result);
-                    mLetterList.setSelection(adapter.getCount() - 1);
+                    mLetterList.setSelection(adapter.getCount());
                 }
             }
 

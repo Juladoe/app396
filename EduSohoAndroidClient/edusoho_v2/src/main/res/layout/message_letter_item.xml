@@ -68,6 +68,8 @@
                 android:gravity="center_vertical"
                 android:paddingBottom="5dp"
                 android:text="This is a private letter!"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>

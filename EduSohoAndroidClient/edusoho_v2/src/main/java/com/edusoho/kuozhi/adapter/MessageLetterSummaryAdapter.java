@@ -73,6 +73,7 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
             ImageLoader.getInstance().displayImage(model.user.mediumAvatar, holder.ivPic, mOptions);
             holder.tvSendName.setText(model.user.nickname);
             holder.tvSendTime.setText(AppUtil.getPostDays(model.latestMessageTime));
+            Log.d(TAG, holder.tvSendContent.getWidth() + "");
             holder.tvSendContent.setText(model.latestMessageContent);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());

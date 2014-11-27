@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -514,6 +515,61 @@ public class AppUtil {
     }
 
     /**
+     * 将服务器端的时间格式转化为milli Second
+     *
+     * @param time
+     * @return
+     */
+    public static long convertMilliSec(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long returnTime = 0;
+        try {
+            String tDate = time.split("[+]")[0].replace('T', ' ');
+            return sdf.parse(tDate).getTime();
+
+        } catch (Exception ex) {
+            Log.d("AppUtil.getPostDays", ex.toString());
+        }
+        return returnTime;
+    }
+
+    /**
+     * 根据时间转化私信显示的时间
+     * 当天显示，18：00
+     * 昨天显示，昨天 18：00
+     * 比昨天更早，星期几 18：00
+     *
+     * @param t
+     * @return
+     */
+    public static String convertWeekTime(String t) {
+        String result = "";
+        try {
+            String tDate = t.split("[+]")[0].replace('T', ' ');
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar nowCalendar = Calendar.getInstance();
+            Date paramDate = sdf.parse(tDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(paramDate);
+            int interval = nowCalendar.get(Calendar.DATE) - calendar.get(Calendar.DATE);
+            String postTime = (calendar.get(Calendar.HOUR_OF_DAY) >= 10 ? calendar.get(Calendar.HOUR_OF_DAY) : "0" + calendar.get(Calendar.HOUR)) + ":"
+                    + (calendar.get(Calendar.MINUTE) >= 10 ? calendar.get(Calendar.MINUTE) : ("0" + calendar.get(Calendar.MINUTE)));
+            if (interval == 0) {
+                result = postTime;
+            } else if (interval == 1) {
+                result = "昨天 " + postTime;
+            } else {
+                result = (calendar.get(Calendar.MONTH) + 1) + "月" + calendar.get(Calendar.DATE) + "日 " + postTime;
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getPostDays", ex.toString());
+        }
+        return result;
+
+
+    }
+
+    /**
      * 计算发布问题天数,服务端获取时间格式：2014-05-20T22:03:43+08:00
      * 转换为天数或者小时
      */
@@ -525,7 +581,6 @@ public class AppUtil {
             long milliSec = 1000;
             Date date = new Date();
             l = (date.getTime() - sdf.parse(tDate).getTime()) / (milliSec);
-
 
             //如果大于24返回天数
             if (l > 30 * 24 * 60 * 60) {
@@ -803,7 +858,7 @@ public class AppUtil {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
                         object, new TypeToken<AppUpdateInfo>() {
-                }.getType());
+                        }.getType());
 
                 if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
                     return;
