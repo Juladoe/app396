@@ -37,8 +37,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:src="@drawable/myinfo_default_face" />
 
             <TextView
@@ -52,6 +50,7 @@
                 android:maxWidth="250dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="15dp"
+                android:layout_marginLeft="16dp"
                 android:paddingTop="5dp"
                 android:text="我发送的信息\n我发送的信息\n我发送的信息"
                 android:textColor="#57000000"

@@ -144,4 +144,5 @@
         <item name="android:windowEnterAnimation">@anim/fragment_enter</item>
         <item name="android:windowExitAnimation">@anim/fragment_exit</item>
     </style>
+
 </resources>

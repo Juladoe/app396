@@ -1,6 +1,9 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="x_large_font_size">22sp</dimen>
+    <dimen name="middle_font_size">16sp</dimen>
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="header_font">18dp</dimen>
@@ -77,7 +80,7 @@
     <dimen name="search_popwindow_cancel_btn">18dp</dimen>
     <dimen name="login_btn_text">22sp</dimen>
     <dimen name="login_edt_text">18dp</dimen>
-    <dimen name="more_setting_text">18sp</dimen>
+    <dimen name="more_setting_text">16sp</dimen>
     <dimen name="course_details_widget">18sp</dimen>
     <dimen name="course_details_widget_label_padding">6dp</dimen>
     <dimen name="course_details_lesson_item_chapter">18sp</dimen>
