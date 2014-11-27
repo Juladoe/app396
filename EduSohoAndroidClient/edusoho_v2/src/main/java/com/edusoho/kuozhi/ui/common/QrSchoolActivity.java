@@ -138,6 +138,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     showSchSplash(site.name, site.splashs);
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     longToast("二维码信息错误!");
                 }
             }

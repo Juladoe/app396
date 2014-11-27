@@ -45,7 +45,25 @@
             android:background="@drawable/more_setting_line"
             android:layout_width="match_parent"
             android:layout_height="1dp" />
+        <TextView
+            android:id="@+id/more_setting_app"
+            android:textColor="@color/system_light_text"
+            android:paddingLeft="20dp"
+            android:clickable="true"
+            android:background="@drawable/more_setting_list_select2"
+            android:paddingTop="18dp"
+            android:paddingBottom="17dp"
+            android:textSize="@dimen/more_setting_text"
+            android:text="应用"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+        <View
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/more_setting_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
         <com.edusoho.kuozhi.view.EduUpdateView
             android:id="@+id/more_setting_set"
             android:textColor="@color/system_light_text"
