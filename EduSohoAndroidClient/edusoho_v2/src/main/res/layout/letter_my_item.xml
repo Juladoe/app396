@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/ci_send_pic"
                 android:background="@drawable/box_blue"
-                android:gravity="left|center_vertical|"
+                android:gravity="left|center_vertical"
                 android:layout_centerInParent="true"
                 android:maxWidth="250dp"
                 android:layout_marginLeft="16dp"
