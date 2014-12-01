@@ -111,7 +111,6 @@ public class LetterFragment extends BaseFragment {
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }
-
             }
 
             @Override

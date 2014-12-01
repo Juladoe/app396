@@ -43,6 +43,11 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public int getCount() {
         return super.getCount();
     }
@@ -97,13 +102,15 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
             }
 
             LetterModel model = mList.get(position);
+
+            //如果私信与上一条私信时间超过TIME_INTERVAL的得值，则显示时间控件
+            holder.tvSendTime.setVisibility(View.GONE);
             if (position != 0) {
-                if (Long.parseLong(model.createdTime) - Long.parseLong(mList.get(position - 1).createdTime) > TIME_INTERVAL) {
+                if (AppUtil.convertMilliSec(model.createdTime) - AppUtil.convertMilliSec(mList.get(position - 1).createdTime) > TIME_INTERVAL) {
                     holder.tvSendTime.setVisibility(View.VISIBLE);
+                    holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
                 }
             }
-
-            holder.tvSendTime.setText(AppUtil.getPostDays(model.createdTime));
             holder.tvSendContent.setText(model.content);
             ImageLoader.getInstance().displayImage(model.createdUser.mediumAvatar, holder.ciPic, mOptions);
         } catch (Exception ex) {
@@ -120,6 +127,11 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
     @Override
     public void addItems(ArrayList<LetterModel> list) {
         mList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addItemsToBottom(ArrayList<LetterModel> list) {
+        mList.addAll(0, list);
         notifyDataSetChanged();
     }
 
