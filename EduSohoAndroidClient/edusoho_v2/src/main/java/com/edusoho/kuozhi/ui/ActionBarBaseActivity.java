@@ -170,6 +170,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return mTitleIconView;
     }
 
+    public void setBackIcon(int icon)
+    {
+        mActionBar.setHomeAsUpIndicator(icon);
+    }
+
     public void setBackMode(String backTitle, String title)
     {
         View titleView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
@@ -177,7 +182,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
-        layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
+        //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
 
         mActionBar.setCustomView(titleView, layoutParams);
@@ -187,11 +192,17 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         }
     }
 
+    public void setBackMode(String backTitle, String title, int icon)
+    {
+        setBackMode(backTitle, title);
+        setBackIcon(icon);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(null, "menu item->" + item.getItemId());
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

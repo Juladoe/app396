@@ -3,8 +3,7 @@
 
     <!-- 按下状态 -->
     <item android:color="@color/base_gray" android:state_pressed="true"/>
-
     <!-- 普通无焦点状态 -->
-    <item android:color="@color/system_normal_text" />
+    <item android:color="@color/base_bg_color" />
 
 </selector>

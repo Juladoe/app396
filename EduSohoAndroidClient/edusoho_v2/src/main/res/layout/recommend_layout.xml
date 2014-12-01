@@ -20,13 +20,13 @@
             android:background="@color/recommend_label_bg" />
 
         <LinearLayout
-            android:background="@color/base_white_normal"
+            android:background="@drawable/normal_layout_bg"
             android:id="@+id/recommend_announcement_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/school_banner"
             android:gravity="center"
-            android:padding="16dp">
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/recommend_sch_announcement"

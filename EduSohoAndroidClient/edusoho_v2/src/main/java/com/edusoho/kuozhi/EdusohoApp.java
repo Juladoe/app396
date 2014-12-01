@@ -39,8 +39,10 @@ import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
+import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.AjaxResultCallback;
@@ -89,6 +91,9 @@ public class EdusohoApp extends Application {
 
     private android.os.Handler mWorkHandler;
     private ImageLoaderConfiguration mImageLoaderConfiguration;
+
+    //cache 缓存服务器
+    private CacheServer mResouceCacheServer;
 
     @Override
     public void onCreate() {
@@ -244,6 +249,9 @@ public class EdusohoApp extends Application {
         stopService(DownLoadService.getIntent(this));
         notifyMap.clear();
         runTask.clear();
+        if (mResouceCacheServer != null) {
+            mResouceCacheServer.close();
+        }
         System.exit(0);
     }
 
@@ -657,5 +665,14 @@ public class EdusohoApp extends Application {
 
     public void removeNotify(String type) {
         notifyMap.remove(type);
+    }
+
+    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity, int port)
+    {
+        if (mResouceCacheServer == null) {
+            mResouceCacheServer = new CacheServer(activity, port);
+        }
+
+        return mResouceCacheServer;
     }
 }

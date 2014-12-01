@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/system_normal_bg"
+    android:background="@color/base_color_normal"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -17,12 +17,14 @@
         android:layout_height="wrap_content">
 
         <com.edusoho.kuozhi.view.EduSohoIconView
+            android:alpha="0.26"
             android:layout_weight="0"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:gravity="center"
+            android:textColor="@color/base_black_normal"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/found_search_text_icon"
             android:text="@string/font_search"
@@ -30,6 +32,7 @@
             android:layout_height="wrap_content" />
 
         <EditText
+            android:alpha="0.26"
             android:layout_weight="1"
             android:imeOptions="actionSearch"
             android:id="@+id/search_popwindow_edt"
@@ -42,12 +45,13 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:textSize="@dimen/found_search_text"
-            android:textColor="@color/system_normal_text"
+            android:textColor="@color/base_black_normal"
             android:hint="搜索"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.edusoho.kuozhi.view.EduSohoIconView
+            android:alpha="0.26"
             android:visibility="gone"
             android:layout_weight="0"
             android:id="@+id/search_clear_btn"
@@ -58,7 +62,7 @@
             android:gravity="center"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/found_search_text_icon"
-            android:text="@string/font_clear"
+            android:text="@string/font_search_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
