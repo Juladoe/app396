@@ -4,6 +4,7 @@ package com.edusoho.kuozhi.util.server;
 import android.util.Log;
 
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.server.handler.FileHandler;
 
 
@@ -19,6 +20,7 @@ import ch.boye.httpclientandroidlib.params.CoreConnectionPNames;
 import ch.boye.httpclientandroidlib.params.CoreProtocolPNames;
 import ch.boye.httpclientandroidlib.params.HttpParams;
 import ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor;
+import ch.boye.httpclientandroidlib.protocol.HttpRequestHandler;
 import ch.boye.httpclientandroidlib.protocol.HttpRequestHandlerRegistry;
 import ch.boye.httpclientandroidlib.protocol.HttpService;
 import ch.boye.httpclientandroidlib.protocol.ResponseConnControl;
@@ -28,27 +30,53 @@ import ch.boye.httpclientandroidlib.protocol.ResponseServer;
 
 public class CacheServer extends Thread{
 
-    private int port = 5820;
+    private int port = Const.CACHE_PROT;
     private boolean isLoop;
     public static final String TAG = "CacheServer";
     private ActionBarBaseActivity mActivity;
+    private ServerSocket mServerSocket;
+    private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
 
     public CacheServer(ActionBarBaseActivity activity)
     {
         this.mActivity = activity;
+        // 创建HTTP请求执行器注册表
+        mHttpRequestHandlerRegistry = new HttpRequestHandlerRegistry();
+    }
+
+    public CacheServer(ActionBarBaseActivity activity, int port)
+    {
+        this(activity);
+        this.port = port;
+    }
+
+    public void addHandler(String filter, HttpRequestHandler handler)
+    {
+        mHttpRequestHandlerRegistry.register(filter, handler);
+    }
+
+    @Override
+    public synchronized void start() {
+        if (isLoop) {
+            return;
+        }
+        super.start();
     }
 
     @Override
     public void run() {
+        if (isLoop) {
+            return;
+        }
         init();
     }
 
     public void init()
     {
-        ServerSocket serverSocket = null;
+        mServerSocket = null;
         try {
             // 创建服务器套接字
-            serverSocket = new ServerSocket(port);
+            mServerSocket = new ServerSocket(port);
             // 创建HTTP协议处理器
             BasicHttpProcessor httpproc = new BasicHttpProcessor();
             // 增加HTTP协议拦截器
@@ -72,18 +100,18 @@ public class CacheServer extends Thread{
                             "Android Server/1.1");
             // 设置HTTP参数
             httpService.setParams(params);
-            // 创建HTTP请求执行器注册表
-            HttpRequestHandlerRegistry reqistry = new HttpRequestHandlerRegistry();
-            // 增加HTTP请求执行器
-            reqistry.register("*", new FileHandler(mActivity.app.host, mActivity));
+
+            if (mHttpRequestHandlerRegistry.getHandlers().isEmpty()) {
+                mHttpRequestHandlerRegistry.register("*", new FileHandler(mActivity.app.host, mActivity));
+            }
             // 设置HTTP请求执行器
-            httpService.setHandlerResolver(reqistry);
+            httpService.setHandlerResolver(mHttpRequestHandlerRegistry);
 			/* 循环接收各客户端 */
             isLoop = true;
             while (isLoop && !Thread.interrupted()) {
                 // 接收客户端套接字
                 Log.d(TAG, "serverSocket.accept");
-                Socket socket = serverSocket.accept();
+                Socket socket = mServerSocket.accept();
                 // 绑定至服务器端HTTP连接
                 DefaultHttpServerConnection conn = new DefaultHttpServerConnection();
                 conn.bind(socket, params);
@@ -98,8 +126,9 @@ public class CacheServer extends Thread{
             e.printStackTrace();
         } finally {
             try {
-                if (serverSocket != null) {
-                    serverSocket.close();
+                if (mServerSocket != null) {
+                    mServerSocket.close();
+                    Log.d(null, "mServerSocket close");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

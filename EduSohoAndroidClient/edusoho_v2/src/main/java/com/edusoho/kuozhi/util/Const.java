@@ -247,6 +247,8 @@ public class Const {
     public static final int COURSELESSON_REQUEST = 0x1001;
 
     public static final int CACHE_CODE = 0x1111;
+    public static final int CACHE_PROT = 8800;
+    public static final int WEB_RES_PROT = 8801;
 
     //服务器api版本
     public static final int NORMAL_VERSIO = 0;

@@ -79,7 +79,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     private boolean mIsBeingDragged = false;
     private State mState = State.RESET;
     private Mode mMode = Mode.getDefault();
-    private Mode mOriginialMode;
+    private Mode mOriginalMode = Mode.getDefault();;
 
     private Mode mCurrentMode;
     T mRefreshableView;
@@ -430,11 +430,11 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
             mMode = mode;
             updateUIForMode();
         }
-        mOriginialMode = mode;
+        mOriginalMode = mode;
     }
 
     public final Mode getOriginalMode() {
-        return mOriginialMode;
+        return mOriginalMode;
     }
 
     public void setOnPullEventListener(OnPullEventListener<T> listener) {

@@ -43,6 +43,11 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public int getCount() {
         return super.getCount();
     }

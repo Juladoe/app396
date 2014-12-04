@@ -9,7 +9,7 @@ public class Vip implements Serializable{
     public int id;
     public int userId;
     public int levelId;
-    public int deadline;
+    public long deadline;
     public String boughtType;
     public String boughtTime;
     public int boughtDuration;

@@ -4,11 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.model.HtmlApp.Menu;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.server.CacheServer;
+import com.edusoho.kuozhi.util.server.handler.WebResourceHandler;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
@@ -23,8 +32,11 @@ import java.util.concurrent.Executors;
  */
 public class EduHtmlAppActivity extends ActionBarBaseActivity implements CordovaInterface {
 
+    public static final String ASSET_RES = "local://";
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
     private CordovaWebView cordovaWebView;
+    private Menu mMenu;
+    private CacheServer mResouceCacheServer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,22 +45,77 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
         initView();
     }
 
-    protected void initView() {
-        setBackMode(BACK, "标题");
-        cordovaWebView = (CordovaWebView) findViewById(R.id.htmlapp_webView);
-        Config.init();
-        cordovaWebView.loadUrl("file:///android_asset/www/index.html");
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.html_app_menu, menu);
+        return true;
+    }
 
-        cordovaWebView.setWebChromeClient(new WebChromeClient(){
+    @Override
+    public boolean onPrepareOptionsMenu(android.view.Menu menu) {
+        MenuItem rootMenuItem = menu.findItem(R.id.html_app_menu);
+        if (mMenu == null) {
+            rootMenuItem.setVisible(false);
+            return true;
+        }
+        rootMenuItem.setIcon(mMenu.icon);
+        rootMenuItem.setTitle(mMenu.name);
+        int index = 0;
+        for (Menu menuItem : mMenu.item) {
+            Log.d(null, "menuItem->" + menuItem);
+            menu.addSubMenu(android.view.Menu.NONE, index++, 0, menuItem.name).setIcon(menuItem.icon);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (super.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        if (mMenu == null) {
+            return super.onOptionsItemSelected(item);
+        }
+        cordovaWebView.sendJavascript(mMenu.action);
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setMenu(Menu menu)
+    {
+        this.mMenu = menu;
+    }
+
+    protected void initView() {
+        setBackMode(BACK, "标题", R.drawable.action_bar_close);
+        cordovaWebView = (CordovaWebView) findViewById(R.id.htmlapp_webView);
+        cordovaWebView.setVerticalScrollBarEnabled(true);
+        cordovaWebView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
+        Config.init(this);
+
+        mResouceCacheServer = app.getResouceCacheServer(this, Const.WEB_RES_PROT);
+        mResouceCacheServer.addHandler("*", new WebResourceHandler("", this));
+        mResouceCacheServer.start();
+
+        cordovaWebView.loadUrl("http://trymob.edusoho.cn/articleApp", 60000);
+        cordovaWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 setTitle(title);
             }
         });
+
+        cordovaWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
     }
 
     public Context getContext() {
-        return this;
+        return this.getContext();
     }
 
     @Override
@@ -86,5 +153,14 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
             // Send destroy event to JavaScript
             cordovaWebView.handleDestroy();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && cordovaWebView.canGoBack()) {
+            cordovaWebView.goBack();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

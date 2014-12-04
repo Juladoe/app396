@@ -53,7 +53,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         richFragment = new RichTextBoxFragment();
-        byte[] itemArgs = new byte[]{View.VISIBLE, View.VISIBLE, View.VISIBLE, View.VISIBLE, View.VISIBLE, View.VISIBLE, View.VISIBLE};
+        byte[] itemArgs = new byte[]{View.GONE, View.GONE, View.GONE, View.GONE, View.GONE, View.VISIBLE, View.VISIBLE};
         Bundle bundle = new Bundle();
         bundle.putString(RichTextBoxFragment.HIT, getIntent().getStringExtra(RichTextBoxFragment.HIT));
         bundle.putByteArray(Const.RICH_ITEM_AGRS, itemArgs);

@@ -5,6 +5,9 @@
     android:layout_height="match_parent">
 
     <org.apache.cordova.CordovaWebView
+        android:scrollbars="vertical"
+        android:scrollbarSize="2dp"
+        android:scrollbarStyle="outsideOverlay"
         android:id="@+id/htmlapp_webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

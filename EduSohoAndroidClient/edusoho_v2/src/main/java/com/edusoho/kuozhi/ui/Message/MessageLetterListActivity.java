@@ -132,6 +132,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
                     LetterListAdapter adapter = ((LetterListAdapter) mLetterList.getAdapter());
                     adapter.addItem(result);
                     mLetterList.setSelection(adapter.getCount());
+                    etSendContent.getText().clear();
                 }
             }
 

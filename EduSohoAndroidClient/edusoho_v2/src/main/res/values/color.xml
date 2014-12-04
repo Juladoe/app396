@@ -3,11 +3,12 @@
     <!-- base color -->
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#ddfdb933</color>
+    <color name="base_bg_color">#ffffff</color>
     <color name="base_white_normal">#ddffffff</color>
-    <color name="base_black_normal">#dd000000</color>
+    <color name="base_black_normal">#000000</color>
     <color name="base_black_low">#1e000000</color>
-    <color name="base_gray">#dddedede</color>
-    <color name="base_color_normal">#dd2ec368</color>
+    <color name="base_gray">#dedede</color>
+    <color name="base_color_normal">#2ec368</color>
 
     <color name="lesson_item_bg_pressed">#E5E5E5</color>
     <color name="lesson_item_bg">#ffffff</color>
@@ -265,18 +266,18 @@
     <color name="system_normal_bg">#f5f5f5</color>
     <color name="system_light_bg">#e6e6e6</color>
     <color name="shallow_found_bg">#f2f2f2</color>
-    <color name="system_normal_text">#808080</color>
+    <color name="system_normal_text">@color/base_bg_color</color>
     <color name="system_gray_text">#757575</color>
     <color name="system_normal_text_pressed">#77808080</color>
     <color name="system_light_text">#4d4d4d</color>
-    <color name="found_search_bg">#ffffff</color>
+    <color name="found_search_bg">@color/base_bg_color</color>
     <color name="myinfo_bg">#f5f5f5</color>
     <color name="normal_list_listselector">#ffffff</color>
     <color name="normal_list_listselector_pressed">#e6e6e6</color>
     <color name="found_list_divider">#e5e5e5</color>
     <color name="found_list_item_all">#ffc947</color>
     <color name="learn_status_widget_bg">#e6e6e6</color>
-    <color name="search_popwindow_bg">#554d4d4d</color>
+    <color name="search_popwindow_bg">@color/base_color_normal</color>
     <color name="login_edt_hit">#b3b3b3</color>
     <color name="regist_label_text">#38bf6c</color>
     <color name="login_regist_btn">#45d17b</color>
