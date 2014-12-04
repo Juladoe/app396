@@ -9,9 +9,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduHtml;
@@ -31,7 +34,13 @@ public class NoteContentFragment extends BaseFragment {
     private int mLessonId;
     private int mCourseId;
 
+    private String mLearnStatus;
+    private Boolean isLearned = false;
+    private String mLessonTitle;
+
     private TextView mNoteContentView;
+    private TextView mNoteTitleView;
+    private ImageView mLessonEntrance;
 
     @Override
     public String getTitle() {
@@ -44,6 +53,7 @@ public class NoteContentFragment extends BaseFragment {
         setHasOptionsMenu(true);
         setContainerView(R.layout.note_content_layout);
         initIntentData();
+
     }
 
     public void initIntentData() {
@@ -53,13 +63,48 @@ public class NoteContentFragment extends BaseFragment {
         mNoteContent = bundle.getString(CONTENT);
         mLessonId = bundle.getInt(Const.LESSON_ID);
         mCourseId = bundle.getInt(Const.COURSE_ID);
-    }
+        mLessonTitle = bundle.getString(Const.LESSON_NAME);
+
+        }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
+        changeTitle("笔记");
 
         mNoteContentView = (TextView) view.findViewById(R.id.note_content);
+
+        mNoteTitleView = (TextView) view.findViewById(R.id.note_lesson_title);
+        mNoteTitleView.setText(mLessonTitle);
+
+        /**
+         * 跳转到课时页面
+         */
+        mLessonEntrance = (ImageView) view.findViewById(R.id.lesson_entrance);
+        mLessonEntrance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.getCoreEngine().runNormalPlugin(
+                        LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                if(mLearnStatus=="finished")
+                                    isLearned = true;
+//                                startIntent.putExtra(Const.COURSE_ID, mCourseId);
+//                                startIntent.putExtra(Const.FREE, );
+//                                startIntent.putExtra(Const.LESSON_ID, mLessonId);
+//                                startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
+//                                startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
+//                                startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
+//                                startIntent.putExtra(Const.IS_LEARN, isLearned);
+                            }
+                        }
+
+                );
+
+            }
+        });
+
         setContent();
     }
 
@@ -108,4 +153,6 @@ public class NoteContentFragment extends BaseFragment {
             }
         }
     }
+
+
 }

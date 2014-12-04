@@ -192,7 +192,7 @@ public class MyInfoFragment extends BaseFragment {
 
             }
         };
-        app.mEngine.runNormalPlugin("NoteActivity", mActivity, callback);
+        app.mEngine.runNormalPlugin("NoteListActivity", mActivity, callback);
     }
 
     private void showMyQuestionOrDiscuss(final String title, final String type) {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:id="@+id/note_list_view"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@color/note_main_background"
+        app:rlw_dividerHeight="1px"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none"
+        android:smoothScrollbar="true" />
+        />
+
+</LinearLayout>

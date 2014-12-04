@@ -1,41 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/note_background">
+    android:background="@color/note_background"
+    >
 
-    <ImageView
-        android:id="@+id/note_image"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/note_lesson_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:textColor="#2ec368"
+        android:maxLines="1"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+
         />
 
-    <TextView
-        android:id="@+id/note_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/note_list_linear"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/note_image"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="5dp"
-        android:textSize="@dimen/note_title_size"
-        android:singleLine="true"
-        android:ellipsize="end"/>
+        android:orientation="horizontal"
+        android:layout_below="@id/note_lesson_title"
+        android:layout_marginBottom="16dp"
 
-    <TextView
-        android:id="@+id/note_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/note_title"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="8dp"
-        android:paddingLeft="5dp"
-        android:textSize="@dimen/note_count_size"
-        android:singleLine="true"/>
+
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/note_lesson_title"
+            android:layout_weight="1"
+
+            >
+
+             <TextView
+                android:id="@+id/note_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:maxLines="4"
+                android:layout_marginLeft="16dp"
+                android:ellipsize="end"
+                />
+
+            <TextView
+                android:id="@+id/last_update_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="12sp"
+                android:paddingTop="2dp"
+                android:gravity="bottom"
+                android:layout_marginLeft="16dp"
+                android:layout_below="@+id/note_content"
+                />
+
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/note_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="10dp"
+
+            android:scaleType="centerInside"
+            android:layout_weight="2"
+
+            />
+
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>
 

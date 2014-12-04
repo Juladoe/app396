@@ -168,11 +168,18 @@
             android:name="com.edusoho.kuozhi.ui.note.NoteActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
+
+        <activity android:name="com.edusoho.kuozhi.ui.note.NoteListActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.edusoho.kuozhi.ui.note.NoteReplyActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+
+
 
     </application>
 
