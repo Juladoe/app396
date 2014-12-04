@@ -6,16 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/loading_layout" />
+
     <com.edusoho.kuozhi.ui.widget.RefreshListWidget
         android:id="@+id/note_list_view"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:background="@color/note_main_background"
         app:rlw_dividerHeight="1px"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:scrollbars="none"
         android:smoothScrollbar="true" />
         />
+
+    <include layout="@layout/list_empty_info" />
 
 </LinearLayout>

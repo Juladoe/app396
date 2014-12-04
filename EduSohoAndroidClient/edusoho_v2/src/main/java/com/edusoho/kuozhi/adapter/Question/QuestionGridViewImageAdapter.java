@@ -80,9 +80,6 @@ public class QuestionGridViewImageAdapter extends BaseAdapter {
         }
 
         String url = getItem(position).toString();
-        if (!url.contains("http")) {
-            url = EdusohoApp.app.host + url;
-        }
 
         holder.ivContentImage.getLayoutParams().height = mImageSize;
         holder.ivContentImage.getLayoutParams().width = mImageSize;

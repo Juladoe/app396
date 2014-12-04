@@ -38,9 +38,6 @@ public class URLImageGetter implements Html.ImageGetter {
     @Override
     public Drawable getDrawable(String source) {
         final URLDrawable urlDrawable = new URLDrawable();
-        if (!source.contains("http")) {
-            source = EdusohoApp.app.host + source;
-        }
         try {
             MyImageLoadingListener myImageLoadingListener = new MyImageLoadingListener(urlDrawable, this.mContainer);
             ImageLoader.getInstance().loadImage(source, mOptions, myImageLoadingListener);

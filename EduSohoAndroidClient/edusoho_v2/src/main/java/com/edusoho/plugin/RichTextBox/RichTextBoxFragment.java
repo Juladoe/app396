@@ -168,11 +168,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         initHorizontalScrollView();
         initProgressDialog();
         Bundle bundle = getArguments();
-        if (bundle != null) {
-            mItemArgs = bundle.getByteArray(Const.RICH_ITEM_AGRS);
-            setItemVisible();
-        }
-
         return mRichTextBoxView;
     }
 
@@ -263,9 +258,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
         @Override
         public Drawable getDrawable(String source) {
-            if (!source.contains("http")) {
-                source = EdusohoApp.app.host + source;
-            }
             try {
                 final String finalSource = source;
                 ImageLoader.getInstance().loadImage(source, mOptions, new ImageLoadingListener() {
@@ -680,9 +672,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     public Html.ImageGetter imgGetter = new Html.ImageGetter() {
         @Override
         public Drawable getDrawable(String source) {
-            if (!source.contains("http")) {
-                source = app.host + source;
-            }
             Drawable drawable = null;
             try {
                 Bitmap bitmap = BitmapFactory.decodeFile(ImageLoader.getInstance().getDiskCache().get(source).getPath());
@@ -765,22 +754,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
 
     public Object[] getObjects() {
         return mObjects;
-    }
-
-    /**
-     * 控制显示富文本编辑框字体设置，参数：View.VISIBLE,View.GONE
-     */
-    private void setItemVisible() {
-        if (mItemArgs.length > 1) {
-            ivBoldStyle.setVisibility(mItemArgs[0]);
-            ivItalicStyle.setVisibility(mItemArgs[1]);
-            ivUnderLineStyle.setVisibility(mItemArgs[2]);
-            ivFontColor.setVisibility(mItemArgs[3]);
-            ivFontSizeIncre.setVisibility(mItemArgs[4]);
-            ivFontSizeDecre.setVisibility(mItemArgs[4]);
-            ivCamera.setVisibility(mItemArgs[5]);
-            ivPhoto.setVisibility(mItemArgs[6]);
-        }
     }
 
     private AbsoluteSizeSpan getFontSizeStyle() {
