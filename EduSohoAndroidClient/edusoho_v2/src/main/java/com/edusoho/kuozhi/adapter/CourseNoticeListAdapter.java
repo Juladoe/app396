@@ -79,9 +79,6 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
-            if (!strUrl.contains("http")) {
-                strUrl = EdusohoApp.app.host + strUrl;
-            }
             urlLits.add(strUrl);
         }
         return urlLits;

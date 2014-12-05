@@ -38,6 +38,7 @@
     <plugin name="LessonQuestionActivity" package="com.edusoho.kuozhi.ui.lesson.LessonQuestionActivity" version="1.0"></plugin>
 
     <!--note-->
+    <plugin name="NoteListActivity" package="com.edusoho.kuozhi.ui.note.NoteListActivity" version="1.0"></plugin>
     <plugin name="NoteActivity" package="com.edusoho.kuozhi.ui.note.NoteActivity" version="1.0"></plugin>
     <plugin name="NoteList" package="com.edusoho.kuozhi.ui.note.NoteList" version="1.0"></plugin>
     <plugin name="NoteContent" package="com.edusoho.kuozhi.ui.note.NoteContent" version="1.0"></plugin>

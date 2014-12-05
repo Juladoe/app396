@@ -70,30 +70,35 @@
             android:id="@+id/iv_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:src="@drawable/icon_font_bold" />
 
         <ImageView
             android:id="@+id/iv_italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:src="@drawable/icon_font_italic" />
 
         <ImageView
             android:id="@+id/iv_underline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:src="@drawable/icon_font_under_line" />
 
         <ImageView
             android:id="@+id/iv_font_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:src="@drawable/icon_font_color" />
 
         <ImageView
             android:id="@+id/iv_font_increase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:background="@drawable/icon_font_incre"
             android:src="@drawable/icon_font_size_increase" />
 
@@ -110,6 +115,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/icon_camera"
             android:clickable="true"
+            android:visibility="gone"
             android:src="@drawable/widget_photo" />
 
         <ImageView
