@@ -79,33 +79,11 @@ public class NoteContentFragment extends BaseFragment {
         mNoteTitleView = (TextView) view.findViewById(R.id.note_lesson_title);
         mNoteTitleView.setText(mLessonTitle);
 
-        /**
-         * 跳转到课时页面
-         */
-        mLessonEntrance = (ImageView) view.findViewById(R.id.lesson_entrance);
-        mLessonEntrance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActivity.getCoreEngine().runNormalPlugin(
-                        LessonActivity.TAG, mActivity, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                if (mLearnStatus == "finished")
-                                    isLearned = true;
-//                                startIntent.putExtra(Const.COURSE_ID, mCourseId);
-//                                startIntent.putExtra(Const.FREE, );
-//                                startIntent.putExtra(Const.LESSON_ID, mLessonId);
-//                                startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-//                                startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
-//                                startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
-//                                startIntent.putExtra(Const.IS_LEARN, isLearned);
-                            }
-                        }
-
-                );
-            }
-        });
         setContent();
+
+        /**
+         * TODO 跳转到课时页面
+         */
     }
 
     private void setContent() {
