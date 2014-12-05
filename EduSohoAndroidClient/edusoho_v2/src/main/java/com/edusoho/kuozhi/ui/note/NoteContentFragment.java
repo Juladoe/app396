@@ -82,8 +82,6 @@ public class NoteContentFragment extends BaseFragment {
         wvNoteContent = (WebView) view.findViewById(R.id.wvNoteContent);
         mNoteTitleView.setText(mLessonTitle);
 
-        setContent();
-
         /**
          * 跳转到课时页面
          */
@@ -95,15 +93,16 @@ public class NoteContentFragment extends BaseFragment {
                         LessonActivity.TAG, mActivity, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                if (mLearnStatus == "finished")
+                                if (mLearnStatus == "finished") {
                                     isLearned = true;
-//                                startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                                }
+                                startIntent.putExtra(Const.COURSE_ID, mCourseId);
 //                                startIntent.putExtra(Const.FREE, );
-//                                startIntent.putExtra(Const.LESSON_ID, mLessonId);
+                                startIntent.putExtra(Const.LESSON_ID, mLessonId);
 //                                startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
 //                                startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
 //                                startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
-//                                startIntent.putExtra(Const.IS_LEARN, isLearned);
+                                startIntent.putExtra(Const.IS_LEARN, isLearned);
                             }
                         }
 
