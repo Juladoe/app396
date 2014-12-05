@@ -26,7 +26,7 @@
             android:padding="16dp" />
 
         <ImageView
-            android:src="@drawable/iconfont_youjiantou"
+            android:src="@drawable/iconfont_right_arrows"
             android:id="@+id/lesson_entrance"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

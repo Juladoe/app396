@@ -82,6 +82,8 @@ public class NoteContentFragment extends BaseFragment {
         wvNoteContent = (WebView) view.findViewById(R.id.wvNoteContent);
         mNoteTitleView.setText(mLessonTitle);
 
+        setContent();
+
         /**
          * 跳转到课时页面
          */
