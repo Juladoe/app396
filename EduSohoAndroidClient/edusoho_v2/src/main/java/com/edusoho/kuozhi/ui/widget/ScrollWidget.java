@@ -107,6 +107,15 @@ public class ScrollWidget extends ScrollView {
         );
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (getChildCount() > 0) {
+            final View child = getChildAt(0);
+            child.measure(0, 0);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     private void setMarginTop(int top)
     {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();

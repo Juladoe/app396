@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/course_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.ui.widget.ScrollWidget
+        android:id="@+id/course_scroolview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/course_pic"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/course_details_pic"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/noram_course" />
+
+            <RelativeLayout
+                android:id="@+id/course_info_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/course_pic"
+                android:background="@color/base_bg_color"
+                android:padding="16dp">
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:id="@+id/course_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:es_alpha="0.54"
+                    android:textSize="@dimen/base_large_size"
+                    android:textColor="@color/base_black_normal" />
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:textSize="@dimen/base_size"
+                    android:id="@+id/course_student_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/course_title"
+                    android:layout_marginRight="8dp"
+                    app:es_alpha="0.54"
+                    android:drawableLeft="@drawable/course_student_icon"
+                    android:textColor="@color/base_black_normal" />
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:textSize="@dimen/base_size"
+                    android:id="@+id/course_student_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/course_title"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@id/course_student_num"
+                    app:es_alpha="0.54"
+                    android:drawableLeft="@drawable/star_on"
+                    android:textColor="@color/base_black_normal" />
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:textSize="@dimen/base_size"
+                    android:id="@+id/course_student_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/course_title"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@id/course_student_star"
+                    app:es_alpha="0.54"
+                    android:drawableLeft="@drawable/course_price_icon"
+                    android:textColor="@color/base_black_normal" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/course_info_column_tabs_layout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/course_info_label">
+
+                <extensions.PagerSlidingTabStrip
+                    android:id="@+id/course_info_column_tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/course_details_tab_bg"
+                    app:dividerColor="@color/transparent"
+                    app:indicatorColor="@color/action_bar_bg"
+                    app:indicatorHeight="2dp"
+                    app:pst_textColor="@color/system_light_text"
+                    app:pst_textSize="@dimen/course_details_info_tab"
+                    app:tabPaddingLeftRight="14dip"
+                    app:underlineColor="@color/transparent"
+                    app:underlineHeight="0dp" />
+            </LinearLayout>
+
+            <com.edusoho.kuozhi.view.FixHeightViewPager
+                android:id="@+id/course_info_column_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/course_info_column_tabs_layout" />
+        </RelativeLayout>
+
+    </com.edusoho.kuozhi.ui.widget.ScrollWidget>
+</FrameLayout>

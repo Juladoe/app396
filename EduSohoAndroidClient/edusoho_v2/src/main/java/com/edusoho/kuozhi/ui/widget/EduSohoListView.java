@@ -5,14 +5,17 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerEmptyAdapter;
 import com.edusoho.kuozhi.adapter.RecyclerLoadAdapter;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14/11/19.
@@ -51,8 +54,8 @@ public class EduSohoListView extends RecyclerView {
             ViewHolder viewHolder = mAdapter.onCreateViewHolder(this, i);
             viewHolder.itemView.measure(0, 0);
             totalHeight += viewHolder.itemView.getMeasuredHeight();
+            Log.d(null, "item height->" + viewHolder.itemView.getMeasuredHeight());
         }
-        Log.d(null, "totalHeight->" + totalHeight);
         ViewGroup.LayoutParams lp = getLayoutParams();
         lp.height = totalHeight;
         setLayoutParams(lp);
@@ -76,7 +79,7 @@ public class EduSohoListView extends RecyclerView {
         return mEmptyAdapter;
     }
 
-    public void pushData(ArrayList data)
+    public void pushData(List data)
     {
         if (data == null || data.isEmpty()) {
             mEmptyAdapter = getEmptyAdapter();
@@ -85,6 +88,11 @@ public class EduSohoListView extends RecyclerView {
         }
         mDataAdapter.addItems(data);
         setAdapter(mDataAdapter);
+    }
+
+    public void pushItem(Object obj)
+    {
+        mDataAdapter.addItem(obj);
     }
 
     @Override
@@ -99,5 +107,32 @@ public class EduSohoListView extends RecyclerView {
             return;
         }
         mDataAdapter = (RecyclerViewListBaseAdapter) adapter;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int expandSpec = MeasureSpec.makeMeasureSpec(
+                EdusohoApp.screenH, MeasureSpec.AT_MOST);
+        measureChildren(widthMeasureSpec, expandSpec);
+
+        View v = getChildAt(getChildCount() - 1);
+        if (v != null) {
+            expandSpec = MeasureSpec.makeMeasureSpec(
+                    getChildTotalHeight(), MeasureSpec.AT_MOST);
+        }
+
+        super.onMeasure(widthMeasureSpec, expandSpec);
+    }
+
+    private int getChildTotalHeight()
+    {
+        int total = 0;
+        int count = getChildCount();
+        for (int i=0; i < count; i++) {
+            View v = getChildAt(i);
+            total += v.getHeight();
+        }
+
+        return total;
     }
 }
