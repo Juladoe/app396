@@ -98,4 +98,6 @@
 
     <plugin name="CourseNoticeFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseNoticeFragment"></plugin>
 
+    <!--在学课程-->
+    <plugin name="LeaenCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LeaenCourseFragment"></plugin>
 </plugins>
