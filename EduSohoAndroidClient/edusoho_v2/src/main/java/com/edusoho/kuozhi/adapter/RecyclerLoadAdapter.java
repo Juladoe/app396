@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14/11/22.
@@ -28,7 +29,7 @@ public class RecyclerLoadAdapter extends
     }
 
     @Override
-    public void addItems(ArrayList list) {
+    public void addItems(List list) {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder

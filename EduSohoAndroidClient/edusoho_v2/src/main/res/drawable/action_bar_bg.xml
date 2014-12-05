@@ -3,7 +3,6 @@
 
     <item>
         <shape>
-            <size android:height="48dp"/>
             <stroke android:width="0dp"/>
             <!-- shape的颜色，支持渐变 -->
             <gradient
@@ -16,12 +15,4 @@
         </shape>
     </item>
 
-    <item android:top="46dp">
-        <shape android:shape="line">
-            <size android:height="1dp" />
-            <stroke
-                android:dashWidth="4px"
-                android:color="@color/action_bar_bg" />
-        </shape>
-    </item>
 </layer-list>

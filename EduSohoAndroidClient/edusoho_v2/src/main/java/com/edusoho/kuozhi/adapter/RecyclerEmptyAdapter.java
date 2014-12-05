@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14/11/22.
@@ -39,7 +40,7 @@ public class RecyclerEmptyAdapter extends
     }
 
     @Override
-    public void addItems(ArrayList list) {
+    public void addItems(List list) {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder

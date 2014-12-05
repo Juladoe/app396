@@ -17,6 +17,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14/11/19.
@@ -34,7 +35,7 @@ public class WeekCourseAdapter
     }
 
     @Override
-    public void addItems(ArrayList<Course> list) {
+    public void addItems(List<Course> list) {
         mList.addAll(list);
         notifyItemRangeInserted(mList.size() - 1 - list.size(), mList.size() - 1);
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14-10-20.
@@ -34,7 +35,7 @@ public abstract class RecyclerViewListBaseAdapter<T, E extends RecyclerView.View
 
     public void addItem(T item){}
 
-    public abstract void addItems(ArrayList<T> list);
+    public abstract void addItems(List<T> list);
 
     @Override
     public int getItemCount() {

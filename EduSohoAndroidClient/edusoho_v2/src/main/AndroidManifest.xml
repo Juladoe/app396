@@ -114,6 +114,13 @@
             android:name="com.edusoho.kuozhi.ui.common.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:theme="@style/EdusohoTranslucentActionBar"
+            android:name="com.edusoho.kuozhi.ui.course.CorusePaperActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionActivity"
             android:configChanges="keyboard|orientation"
@@ -168,6 +175,11 @@
             android:name="com.edusoho.kuozhi.ui.note.NoteActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
+
+        <activity android:name="com.edusoho.kuozhi.ui.note.NoteListActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.edusoho.kuozhi.ui.note.NoteReplyActivity"
             android:configChanges="keyboard|orientation"

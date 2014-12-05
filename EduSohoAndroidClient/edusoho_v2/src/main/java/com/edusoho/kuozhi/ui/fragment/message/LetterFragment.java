@@ -38,7 +38,6 @@ public class LetterFragment extends BaseFragment {
     private View mLoadingView;
     private int mStart;
 
-
     @Override
     public String getTitle() {
         return "私信";
@@ -58,7 +57,8 @@ public class LetterFragment extends BaseFragment {
         mLetterSummaryList.setMode(PullToRefreshBase.Mode.BOTH);
 
         mLetterSummaryList.setEmptyText(new String[]{"暂无通知"});
-        mLetterSummaryList.setAdapter(new MessageLetterSummaryAdapter(mContext, R.layout.message_letter_item));
+        mLetterSummaryList.setAdapter(new MessageLetterSummaryAdapter(
+                mContext, R.layout.message_letter_item));
         mLetterSummaryList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
