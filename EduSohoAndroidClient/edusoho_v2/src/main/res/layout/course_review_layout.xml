@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        card_view:cardBackgroundColor="@color/base_card_bg"
+        card_view:cardCornerRadius="3dp">
+
+        <RelativeLayout
+            android:id="@+id/review_course_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RatingBar
+                android:id="@+id/course_details_rating"
+                style="@style/courseRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/rating_height"
+                android:layout_centerVertical="true"
+                android:layout_weight="0"
+                android:isIndicator="true"
+                android:rating="0" />
+
+            <TextView
+                android:id="@+id/review_course_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/course_details_rating"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/course_details_rating"
+                android:gravity="center"
+                android:text="(0人)"
+                android:textColor="@color/base_black_normal"
+                android:textSize="@dimen/review_course_student" />
+
+            <TextView
+                android:drawableLeft="@drawable/course_review_edit_icon"
+                android:textColor="@color/base_color_normal"
+                android:layout_width="96dp"
+                android:layout_height="36dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="评价" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:id="@id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

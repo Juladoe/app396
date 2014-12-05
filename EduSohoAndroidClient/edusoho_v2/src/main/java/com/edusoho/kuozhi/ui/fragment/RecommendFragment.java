@@ -120,7 +120,7 @@ public class RecommendFragment extends BaseFragment {
             }
         });
 
-        mWeekCourse.setIsSetHeight(true);
+        //mWeekCourse.setIsSetHeight(true);
         mWeekCourse.setAdapter(weekCourseAdapter);
         mWeekCourse.setLoadAdapter();
         mActivity.ajaxPost(url, new ResultCallback() {

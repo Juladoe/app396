@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="ESTextView">
+        <attr name="es_alpha" format="float" />
+    </declare-styleable>
     <declare-styleable name="RefreshListWidget">
         <attr name="rlw_dividerHeight" format="dimension" />
         <attr name="rlw_dividerColor" format="color" />

@@ -9,13 +9,12 @@
         <shape>
             <gradient
                 android:angle="270"
-                android:centerColor="@color/white"
+                android:centerColor="@color/base_gray"
                 android:centerY="0.45"
-                android:endColor="@color/white"
-                android:startColor="@color/white" />
-            <solid android:color="@color/white" />
+                android:endColor="@color/base_gray"
+                android:startColor="@color/base_gray" />
+            <solid android:color="@color/base_gray" />
         </shape>
     </item>
-
 
 </layer-list>

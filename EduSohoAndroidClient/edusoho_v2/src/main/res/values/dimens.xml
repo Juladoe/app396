@@ -1,4 +1,9 @@
 <resources>
+    <!-- base size -->
+    <dimen name="base_size">14sp</dimen>
+    <dimen name="base_small_size">12sp</dimen>
+    <dimen name="base_large_size">16sp</dimen>
+    <dimen name="base_x_large_size">20sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="large_font_size">20sp</dimen>
@@ -85,10 +90,10 @@
     <dimen name="more_setting_text">16sp</dimen>
     <dimen name="course_details_widget">18sp</dimen>
     <dimen name="course_details_widget_label_padding">6dp</dimen>
-    <dimen name="course_details_lesson_item_chapter">18sp</dimen>
-    <dimen name="course_details_lesson_item_title">16sp</dimen>
-    <dimen name="course_details_lesson_item_type">12sp</dimen>
-    <dimen name="course_details_info_tab">18sp</dimen>
+    <dimen name="course_details_lesson_item_chapter">@dimen/base_size</dimen>
+    <dimen name="course_details_lesson_item_title">@dimen/base_size</dimen>
+    <dimen name="course_details_lesson_item_type">@dimen/base_small_size</dimen>
+    <dimen name="course_details_info_tab">14sp</dimen>
     <dimen name="review_course_student">14sp</dimen>
     <dimen name="pay_course_text">18sp</dimen>
 
