@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class NoteContentFragment extends BaseFragment {
     private TextView mNoteContentView;
     private TextView mNoteTitleView;
     private ImageView mLessonEntrance;
+    private WebView wvNoteContent;
 
     @Override
     public String getTitle() {
@@ -77,6 +79,7 @@ public class NoteContentFragment extends BaseFragment {
 
         mNoteContentView = (TextView) view.findViewById(R.id.note_content);
         mNoteTitleView = (TextView) view.findViewById(R.id.note_lesson_title);
+        wvNoteContent = (WebView) view.findViewById(R.id.wvNoteContent);
         mNoteTitleView.setText(mLessonTitle);
 
         /**
@@ -105,6 +108,7 @@ public class NoteContentFragment extends BaseFragment {
                 );
             }
         });
+
         setContent();
     }
 
@@ -152,10 +156,11 @@ public class NoteContentFragment extends BaseFragment {
      */
     private String setImgToEnd(String content) {
         List<String> imgList = new ArrayList<String>();
-        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
+        content = content.replaceAll("\\n|\\t", "");
+        Matcher m = Pattern.compile("<p>\\s*<img src=\".*?\" .>\\s*</p>|<img src=\".*?\" .>").matcher(content);
         while (m.find()) {
-            imgList.add(m.group(1));
-            content = content.replace(m.group(1), "");
+            imgList.add(m.group(0));
+            content = content.replace(m.group(0), "");
         }
         if (imgList.size() > 0) {
             for (String imgStr : imgList) {

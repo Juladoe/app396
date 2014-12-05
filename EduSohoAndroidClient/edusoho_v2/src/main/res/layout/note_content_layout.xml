@@ -47,4 +47,10 @@
         android:background="@color/note_background"
         android:text="这是笔记内容"
         android:layout_below="@id/note_lesson_entrance" />
+
+    <WebView
+        android:id="@+id/wvNoteContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"></WebView>
 </RelativeLayout>
