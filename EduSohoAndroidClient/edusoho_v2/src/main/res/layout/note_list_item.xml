@@ -17,7 +17,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp" />
 
 
     <LinearLayout
@@ -42,7 +42,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_font_size"
-                android:ellipsize="end"
                 android:maxLines="3"
                 android:textColor="@android:color/black"
                 android:layout_alignParentTop="true"
