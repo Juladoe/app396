@@ -107,9 +107,10 @@
     <dimen name="course_title_size">20sp</dimen>
     <dimen name="course_content_size">14sp</dimen>
     <dimen name="list_title_size">20sp</dimen>
-    <dimen name="note_main_paddingtop">10dp</dimen>
-    <dimen name="note_main_paddingleft">5dp</dimen>
-    <dimen name="note_main_paddingright">5dp</dimen>
+    <dimen name="note_main_padding_top">10dp</dimen>
+    <dimen name="note_main_padding_left">5dp</dimen>
+    <dimen name="note_main_padding_right">5dp</dimen>
+    <dimen name="lesson_entry_right_arrow">24dp</dimen>
 
     <dimen name="question_content_image_num_font_size">9sp</dimen>
     <dimen name="question_reply_image_num_font_size">7sp</dimen>

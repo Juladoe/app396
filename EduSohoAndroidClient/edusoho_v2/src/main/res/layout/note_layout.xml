@@ -17,9 +17,9 @@
         android:numColumns="2"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
-        android:paddingTop="@dimen/note_main_paddingtop"
-        android:paddingRight="@dimen/note_main_paddingright"
-        android:paddingLeft="@dimen/note_main_paddingright" />
+        android:paddingTop="@dimen/note_main_padding_top"
+        android:paddingRight="@dimen/note_main_padding_right"
+        android:paddingLeft="@dimen/note_main_padding_right" />
 
     <include layout="@layout/loading_layout" />
 </RelativeLayout>
