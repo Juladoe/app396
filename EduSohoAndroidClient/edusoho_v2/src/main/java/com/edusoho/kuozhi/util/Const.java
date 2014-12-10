@@ -40,7 +40,7 @@ public class Const {
     };
 
     public static final String[] MY_COURSE_FRAGMENT = {
-            "LearningCourseFragment",
+            "LeaenCourseFragment",
             "FavoriteCourseFragment",
             "LearnedCourseFragment"
     };
