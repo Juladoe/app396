@@ -75,6 +75,7 @@ public class NoteListFragment extends BaseFragment {
                 bundle.putString(Const.ACTIONBAT_TITLE, note.lessonTitle);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "NoteContentFragment");
                 bundle.putString(NoteContentFragment.CONTENT, note.content);
+                bundle.putString(NoteContentFragment.LEARN_STATUS, note.lessonStatus);
                 bundle.putInt(Const.COURSE_ID, note.courseId);
                 bundle.putInt(Const.LESSON_ID, note.lessonId);
 
@@ -115,7 +116,8 @@ public class NoteListFragment extends BaseFragment {
                 mListView.onRefreshComplete();
 
                 ArrayList<Note> notes = mActivity.parseJsonValue(
-                        object, new TypeToken<ArrayList<Note>>(){});
+                        object, new TypeToken<ArrayList<Note>>() {
+                });
                 if (notes == null) {
                     return;
                 }

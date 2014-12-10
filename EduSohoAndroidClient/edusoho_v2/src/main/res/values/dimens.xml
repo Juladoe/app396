@@ -105,5 +105,7 @@
     <dimen name="question_content_image_num_font_size">10sp</dimen>
     <dimen name="question_reply_image_num_font_size">8sp</dimen>
 
+    <dimen name="lesson_entry_right_arrow">8dp</dimen>
+
 
 </resources>
