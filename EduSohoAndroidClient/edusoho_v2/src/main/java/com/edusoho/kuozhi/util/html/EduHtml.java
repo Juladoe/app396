@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.util.html;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -11,6 +10,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,15 +31,17 @@ public class EduHtml {
     private static Pattern IMAGE_FILTER = Pattern.compile("<[^>]+/?>", Pattern.DOTALL);
     private static Pattern IMAGE_URL_FILTER = Pattern.compile("<img src=['\"]([^>'\"]+)['\"][^>]+>", Pattern.DOTALL);
 
-    private EduHtml(Context context)
-    {
+    private static boolean mIsClickable = true;
+    private static boolean mIsMove = false;
+    private static float mShiftDownY;
+
+    private EduHtml(Context context) {
         this.mContext = context;
     }
 
     public static SpannableStringBuilder coverHtmlImages(
             String source, TextView textView, Context context
-    )
-    {
+    ) {
         EduHtml instance = new EduHtml(context);
         instance.imageArray = new ArrayList<String>();
         source = instance.getSourceImages(source);
@@ -54,8 +56,7 @@ public class EduHtml {
         return spaned;
     }
 
-    private String getImageUrl(String img)
-    {
+    private String getImageUrl(String img) {
         Matcher matcher = IMAGE_URL_FILTER.matcher(img);
         if (matcher.find()) {
             return matcher.group(1);
@@ -64,8 +65,7 @@ public class EduHtml {
         return null;
     }
 
-    private String getSourceImages(String source)
-    {
+    private String getSourceImages(String source) {
         int imgCount = 0;
         StringBuilder builder = new StringBuilder();
         StringBuffer stringBuffer = new StringBuffer();
@@ -80,7 +80,8 @@ public class EduHtml {
                 }
                 if (imgCount < 3) {
                     builder.append(tag).append("&nbsp;");
-                };
+                }
+                ;
                 imgCount++;
             }
             matcher.appendReplacement(stringBuffer, "");
@@ -96,20 +97,30 @@ public class EduHtml {
     }
 
     public static SpannableStringBuilder addImageClickListener(
-            SpannableStringBuilder spaned, TextView textView, Context context)
-    {
+            SpannableStringBuilder spaned, TextView textView, Context context) {
         EduHtml instance = new EduHtml(context);
         instance.imageArray = new ArrayList<String>();
         textView.setClickable(true);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setOnTouchListener(tvTouchListener);
         spaned = instance.addImageClick(spaned, null);
-
         return spaned;
     }
 
+    private class MyTextView extends TextView {
+        public MyTextView(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+
+            return super.onTouchEvent(event);
+        }
+    }
+
     private SpannableStringBuilder addImageClick(
-            SpannableStringBuilder spanned, ArrayList<String> array)
-    {
+            SpannableStringBuilder spanned, ArrayList<String> array) {
         CharacterStyle[] characterStyles = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
         int index = 0;
         for (CharacterStyle characterStyle : characterStyles) {
@@ -130,23 +141,56 @@ public class EduHtml {
         return spanned;
     }
 
-    private class ImageClickSpan extends ClickableSpan
-    {
+    private class ImageClickSpan extends ClickableSpan {
         private int mIndex;
         private String imageUrl;
 
-        public ImageClickSpan(String url, int index)
-        {
+        public ImageClickSpan(String url, int index) {
             this.mIndex = index;
             this.imageUrl = url;
         }
 
         @Override
         public void onClick(View view) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("index", mIndex);
-            bundle.putStringArrayList("imageList", imageArray);
-            EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+            if (mIsClickable) {
+                mIsMove = false;
+                mIsClickable = true;
+                Bundle bundle = new Bundle();
+                bundle.putInt("index", mIndex);
+                bundle.putStringArrayList("imageList", imageArray);
+                EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+            }
         }
     }
+    
+    private static View.OnTouchListener tvTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    if (mIsMove) {
+                        mIsClickable = false;
+                        mIsMove = false;
+                    } else {
+                        mIsClickable = true;
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mShiftDownY != event.getY()) {
+                        mIsMove = true;
+                    }
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    mShiftDownY = event.getY();
+                    if (mIsMove) {
+                        mIsClickable = false;
+                        mIsMove = false;
+                    } else {
+                        mIsClickable = true;
+                    }
+                    break;
+            }
+            return false;
+        }
+    };
 }

@@ -80,6 +80,8 @@
     <string name="learn_note">&#xe624;</string>
     <string name="learn_question">&#xe67b;</string>
     <string name="learn_more">&#xe616;</string>
+    <string name="lesson_next">&#xe688;</string>
+    <string name="lesson_previous">&#xe687;</string>
 
     <string name="font_btn_learning">&#xe671;</string>
     <string name="font_btn_finish">&#xe672;</string>
