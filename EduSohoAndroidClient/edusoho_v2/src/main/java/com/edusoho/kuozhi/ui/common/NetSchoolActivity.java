@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -30,9 +29,7 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.view.OverScrollView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
-import com.edusoho.kuozhi.view.dialog.PopupLoaingDialog;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
@@ -41,8 +38,6 @@ import com.google.gson.reflect.TypeToken;
  * @author howzhi
  */
 public class NetSchoolActivity extends ActionBarBaseActivity {
-
-    private OverScrollView mNetSchLayout;
 
     private static String mTitle = "输入域名";
     private static final String SEARCH_HISTORY = "search_history";

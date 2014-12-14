@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * Created by howzhi on 14-5-15.
  */
-public class HtmlTextView extends TextView{
+public class HtmlTextView extends ESTextView{
     private Context mContext;
     private Pattern colorPattern;
     private int mDefaultColor;

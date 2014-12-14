@@ -40,8 +40,8 @@ public class MoreSettingFragment extends BaseFragment {
     @ViewUtil("more_setting_message")
     private View mMessageBtn;
 
-    @ViewUtil("more_setting_app")
-    private View mAppBtn;
+    @ViewUtil("more_setting_offline")
+    private View mOffLineBtn;
 
     @Override
     public String getTitle() {
@@ -72,12 +72,19 @@ public class MoreSettingFragment extends BaseFragment {
 
     private void bindListener()
     {
-        mAppBtn.setOnClickListener(new View.OnClickListener() {
+        mOffLineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.mEngine.runNormalPlugin("EduHtmlAppActivity", mActivity, null);
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "视频下载");
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "LessonDownloadedFragment");
+                    }
+                });
             }
         });
+
         mSettingAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

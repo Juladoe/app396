@@ -3,9 +3,7 @@ package com.edusoho.kuozhi.ui.course;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,10 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
@@ -32,7 +27,7 @@ import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
-import com.edusoho.kuozhi.entity.LearnStatus;
+import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.Lesson.LessonStatus;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.MessageType;
@@ -54,7 +49,6 @@ import com.google.gson.reflect.TypeToken;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import menudrawer.MenuDrawer;
 import menudrawer.Position;

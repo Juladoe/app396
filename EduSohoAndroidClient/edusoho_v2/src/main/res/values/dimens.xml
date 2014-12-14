@@ -4,6 +4,7 @@
     <dimen name="base_small_size">12sp</dimen>
     <dimen name="base_large_size">16sp</dimen>
     <dimen name="base_x_large_size">20sp</dimen>
+    <dimen name="base_xx_large_size">24sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="large_font_size">20sp</dimen>

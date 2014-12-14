@@ -8,37 +8,61 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.model.Cache;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 
 public class SqliteUtil extends SQLiteOpenHelper{
 
     private Context mContext;
+    private static final int dbVersion = 5;
+
+    private static SqliteUtil instance;
+
 	public SqliteUtil(Context context, String name, CursorFactory factory) {
-		super(context, Const.DB_NAME, factory, 1);
+		super(context, Const.DB_NAME, factory, dbVersion);
         mContext = context;
 	}
-	
+
+    public static SqliteUtil getUtil(Context context)
+    {
+        if (instance == null) {
+            instance = new SqliteUtil(context, null, null);
+        }
+        return instance;
+    }
+
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         Log.d(null, "create cache db->");
-		db.execSQL(getInitSql());
+        ArrayList<String> sqlList = getInitSql("db_init.sql");
+        for (String sql : sqlList) {
+            db.execSQL(sql);
+        }
 	}
 
-    private String getInitSql()
+    private ArrayList<String> getInitSql(String name)
     {
+        ArrayList<String> sqlList = new ArrayList<String>();
         InputStream inputStream = null;
         BufferedReader reader = null;
         StringBuilder stringBuilder = new StringBuilder();
         try{
-            inputStream = mContext.getAssets().open("db_init.sql");
+            inputStream = mContext.getAssets().open(name);
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line = null;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
+                if (line.endsWith(";")) {
+                    sqlList.add(stringBuilder.toString());
+                    stringBuilder.delete(0, stringBuilder.length());
+                }
             }
         } catch (Exception e) {
             //nothing
@@ -51,11 +75,15 @@ public class SqliteUtil extends SQLiteOpenHelper{
             }
         }
 
-        return stringBuilder.toString();
+        return sqlList;
     }
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+        Log.d(null, String.format("create db_init_m3u8 db newVersion %d ov %d", newVersion, oldVersion));
+        ArrayList<String> sqlList = getInitSql("db_init_m3u8.sql");
+        for (String sql : sqlList) {
+            db.execSQL(sql);
+        }
 	}
 
     public Cache query(String selection, String... selectionArgs)
@@ -70,8 +98,6 @@ public class SqliteUtil extends SQLiteOpenHelper{
             cache = new Cache(key, value);
         }
         cursor.close();
-        db.close();
-
         return cache;
     }
 
@@ -83,22 +109,62 @@ public class SqliteUtil extends SQLiteOpenHelper{
 			callback.query(cursor);
 		}
 		cursor.close();
-		db.close();
 	}
+
+    public <T> T query(Class<T> type, String attrName, String selection, String... selectionArgs)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(selection, selectionArgs);
+        if (cursor.moveToNext()) {
+            int columnIndex = cursor.getColumnIndex(attrName);
+            if (type == String.class) {
+                return (T) cursor.getString(columnIndex);
+            } else if (type == Integer.class) {
+                return (T) new Integer(cursor.getInt(columnIndex));
+            } else if (type == Float.class) {
+                return (T) new Float(cursor.getFloat(columnIndex));
+            } else if (type == Double.class) {
+                return (T) new Double(cursor.getDouble(columnIndex));
+            }
+        }
+
+        return null;
+    }
+
+    public <T> T query(QueryPaser<T> queryPaser, String selection, String... selectionArgs)
+    {
+        T obj = null;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(selection, selectionArgs);
+        while (cursor.moveToNext()) {
+            obj = queryPaser.parse(cursor);
+            if (queryPaser.isSignle()) {
+                break;
+            }
+        }
+        cursor.close();
+
+        return obj;
+    }
 	
 	public void execSQL(String sql)
 	{
 		SQLiteDatabase db = getWritableDatabase();
 		db.execSQL(sql);
-		db.close();
 	}
+
+    public int delete(String table, String where, String[] args)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        int result = db.delete(table, where, args);
+        return result;
+    }
 
     public int update(String table, ContentValues cv, String where, String[] args)
     {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
         Log.d(null, "upate cache->" + result);
-        db.close();
         return result;
     }
 
@@ -106,7 +172,6 @@ public class SqliteUtil extends SQLiteOpenHelper{
 	{
 		SQLiteDatabase db = getWritableDatabase();
 		long lastId = db.insert(table, null, cv);
-		db.close();
         return lastId;
 	}
 	
@@ -114,4 +179,52 @@ public class SqliteUtil extends SQLiteOpenHelper{
 	{
 		public void query(Cursor cursor){};
 	}
+
+    public static class QueryPaser<T>
+    {
+        public T parse(Cursor cursor){
+            return null;
+        };
+        public boolean isSignle(){
+            return false;
+        }
+    }
+
+    public void close()
+    {
+        getReadableDatabase().close();
+        getWritableDatabase().close();
+    }
+
+    public void saveLocalCache(String type, String key, String value)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put("type", type);
+        cv.put("key", key);
+        cv.put("value", value);
+        long result = insert("data_cache", cv);
+        Log.d(null, "insert to cache->" + result);
+    }
+
+    public <T> T queryForObj(
+            TypeToken<T> typeToken, String selection, String... selectionArgs)
+    {
+        T obj = null;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from data_cache " + selection, selectionArgs);
+        if (cursor.moveToNext()) {
+            String value = cursor.getString(cursor.getColumnIndex("value"));
+            try {
+                obj = EdusohoApp.app.gson.fromJson(
+                        value, typeToken.getType());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return obj;
+            }
+
+        }
+        cursor.close();
+
+        return obj;
+    }
 }

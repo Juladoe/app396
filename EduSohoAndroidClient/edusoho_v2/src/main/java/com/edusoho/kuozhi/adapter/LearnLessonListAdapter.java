@@ -15,8 +15,8 @@ import android.widget.TextView;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.entity.CourseLessonType;
-import com.edusoho.kuozhi.entity.LearnStatus;
-import com.edusoho.kuozhi.entity.LessonsResult;
+import com.edusoho.kuozhi.model.LearnStatus;
+import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.model.LessonItem;
 
 import java.util.ArrayList;

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -34,7 +33,7 @@ import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.model.Cache;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.entity.TokenResult;
+import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
@@ -66,6 +65,7 @@ public class EdusohoApp extends Application {
     public AppConfig config;
     public AQuery query;
     public String host;
+    public String domain;
     public Gson gson;
     public SqliteUtil sqliteUtil;
     public School defaultSchool;
@@ -261,10 +261,19 @@ public class EdusohoApp extends Application {
         gson = new Gson();
         apiVersion = getString(R.string.api_version);
         query = new AQuery(this);
-        host = getString(R.string.app_host);
+        setHost(getString(R.string.app_host));
 
         notifyMap = new HashMap<String, Bundle>();
         initApp();
+    }
+
+    private String getDomain()
+    {
+        Uri hostUri = Uri.parse(app.host);
+        if (hostUri != null) {
+            return hostUri.getHost();
+        }
+        return "";
     }
 
     public void initApp()
@@ -391,10 +400,16 @@ public class EdusohoApp extends Application {
             item.url = map.get("url");
             item.host = map.get("host");
             item.logo = map.get("logo");
-            host = item.host;
+            setHost(item.host);
             item.url = checkSchoolUrl(item.url);
             setCurrentSchool(item);
         }
+    }
+
+    private void setHost(String host)
+    {
+        this.host = host;
+        this.domain = getDomain();
     }
 
     private String checkSchoolUrl(String url) {
@@ -511,6 +526,16 @@ public class EdusohoApp extends Application {
         }
 
         runTask = new HashMap<String, Activity>();
+    }
+
+    public static File getWorkSpace()
+    {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            File sdcard = Environment.getExternalStorageDirectory();
+            return new File(sdcard, "edusoho");
+        }
+
+        return null;
     }
 
     public void setDisplay(Activity activity) {

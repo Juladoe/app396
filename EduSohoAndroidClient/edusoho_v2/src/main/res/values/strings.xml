@@ -27,6 +27,7 @@
         <item>课程内容质量差</item>
         <item>其他</item>
     </string-array>
+
     <!-- icon font -->
     <string name="search"></string>
     <string name="angle_left"></string>
@@ -56,16 +57,16 @@
     <string name="font_check_btn"></string>
     <string name="unpublished_text">未发布</string>
     <string name="font_list"></string>
-    <string name="font_me"></string>
-    <string name="font_recommend"></string>
-    <string name="font_found"></string>
+
+    <string name="font_me">&#xe636;</string>
+    <string name="font_recommend">&#xe634;</string>
+    <string name="font_found">&#xe632;</string>
     <string name="font_more"></string>
     <string name="font_search">&#xe686;</string>
     <string name="font_favoirte"></string>
     <string name="font_clear">&#xe63d;</string>
     <string name="font_search_clear">&#xe655;</string>
     <string name="font_favorited">&#xe646;</string>
-    <string name="font_expand"></string>
     <string name="font_right"></string>
     <string name="font_ppt">&#xe63b;</string>
     <string name="font_document">&#xe63f;</string>
@@ -76,11 +77,14 @@
 
     <!--lesson tools -->
     <string name="learned_status">&#xe672;</string>
+    <string name="course_paybtn">&#xe68b;</string>
     <string name="learning_status">&#xe671;</string>
     <string name="learn_note">&#xe624;</string>
     <string name="learn_question">&#xe67b;</string>
     <string name="learn_more">&#xe616;</string>
 
+    <!-- base font -->
+    <string name="font_expand">&#xe63a;</string>
     <string name="font_btn_learning">&#xe671;</string>
     <string name="font_btn_finish">&#xe672;</string>
     <string name="app_id">wx91c11946311906a3</string>

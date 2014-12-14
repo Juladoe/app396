@@ -60,10 +60,9 @@ public class Const {
     public static final int LIMIT = 10;
 
     //public message type
-    public static final String TAB_MENU_CLICK = "tab_menu_click";
-    public static final String TAB_MENU_ID = "tab_menu_id";
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGING_SUCCESS = "login_success";
+    public static final String REFRESH_REVIEWS = "refresh_review";
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
@@ -155,21 +154,16 @@ public class Const {
     public static final String REGIST = "User/regist";
     public static final String LOGIN = "User/login";
     public static final String ADDCOMMENT = "Course/commitCourse";
-    public static final String COMMENTLIST = "courses/{courseId}/reviews";
     public static final String ABOUT = "School/getSchoolInfo";
-    public static final String COURSE_COLUMN = "course_column";
-    public static final String NOTICE = "me/notifications?";
     public static final String LEARNING = "Course/getLearningCourse";
     public static final String LEARNED = "Course/getLearnedCourse";
     public static final String FAVORITES = "Course/getFavoriteCoruse";
     public static final String PAYCOURSE = "Order/payCourse";
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
-    public static final String REFUNDCOURSE = "courses/{courseId}/refund";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
-    public static final String DEFAULT_UPDATE_URL = "http://open.edusoho.com/mobile/meta.php";
 
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";
@@ -223,12 +217,6 @@ public class Const {
 
     //意见反馈
     public static final String SUGGESTION = "School/sendSuggestion";
-
-    public static final int LEFT = 0001;
-    public static final int RIGHT = 0002;
-
-    public static final int CHECKBOX_ITEM = 0001;
-    public static final int NORMAL_ITEM = 0002;
 
     public static final Object[] QUICK_COMMENTS = {
             "不错", 2.0f,
@@ -298,8 +286,11 @@ public class Const {
 
     /**
      * 回复编辑
-     */
+    */
     public static final int EDIT_REPLY = 0x03;
 
     public static final String COURSE_NOTICES = "Course/getCourseNotices";
+
+    public static final String CACHE_COURSE_TYPE = "course";
+    public static final String CACHE_LESSON_TYPE = "lesson";
 }

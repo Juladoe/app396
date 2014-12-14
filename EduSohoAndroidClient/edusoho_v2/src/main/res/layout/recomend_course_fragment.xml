@@ -15,10 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.edusoho.kuozhi.view.ESTextView
+                app:es_alpha="0.87"
                 android:id="@+id/recommend_course_title"
-                android:textColor="@color/system_light_text"
-                android:textSize="@dimen/course_details_widget"
+                android:textColor="@color/base_black_normal"
+                android:textSize="@dimen/base_size"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:padding="6dp"
@@ -37,7 +38,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textSize="@dimen/comment_rating_label"
+                    android:textSize="@dimen/base_size"
                     android:textColor="@color/popup_color"
                     android:id="@+id/comment_rating_label"
                     android:text="请打分:"
@@ -58,7 +59,7 @@
             <EditText
                 android:layout_margin="6dp"
                 android:id="@+id/recommend_course_input"
-                android:textSize="@dimen/popup_input"
+                android:textSize="@dimen/base_size"
                 android:gravity="top"
                 android:lines="3"
                 android:maxLines="5"

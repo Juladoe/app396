@@ -63,8 +63,6 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
             mFragmentName = data.getStringExtra(FRAGMENT);
             mMenu = data.getIntExtra(MENU, 0);
         }
-
-
     }
 
     protected void initView()

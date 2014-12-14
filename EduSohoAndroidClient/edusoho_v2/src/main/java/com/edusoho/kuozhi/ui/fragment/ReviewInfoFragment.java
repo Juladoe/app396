@@ -2,19 +2,15 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsReviewWidget;
 import com.edusoho.kuozhi.util.Const;
-
-import java.text.DecimalFormat;
 
 /**
  * Created by howzhi on 14-8-31.
@@ -22,15 +18,15 @@ import java.text.DecimalFormat;
 public class ReviewInfoFragment extends BaseFragment {
 
     private CourseDetailsReviewWidget mReviewWidget;
-    public static final String COURSE = "course";
-    public static final int REFRESH_REVIEWS = 0001;
+    public static final String RATING = "rating";
+    public static final String RATING_NUM = "ratingNum";
 
-    private Course mCourse;
-    private TextView mCourseTitleView;
-    private RatingBar mCourseRatingBar;
-    private TextView mCourseStudentView;
-    private Button mCommitBtn;
-    private boolean mIsStudent;
+    private double mRating;
+    private int mCourseId;
+    private String mRatingNum;
+    private TextView mRatingView;
+    private View mReviewBtn;
+    private RatingBar mCourseReviewRatingBar;
 
     @Override
     public String getTitle() {
@@ -40,19 +36,16 @@ public class ReviewInfoFragment extends BaseFragment {
     @Override
     public void invoke(WidgetMessage message) {
         super.invoke(message);
-        int type = message.type.code;
-        switch (type) {
-            case REFRESH_REVIEWS:
-                mReviewWidget.reload();
-                break;
+        String type = message.type.type;
+        if (Const.REFRESH_REVIEWS.equals(type)) {
+            mReviewWidget.reload();
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
-        String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(REFRESH_REVIEWS, source)
+                new MessageType(Const.REFRESH_REVIEWS)
         };
         return messageTypes;
     }
@@ -67,10 +60,9 @@ public class ReviewInfoFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
-        mCommitBtn = (Button) view.findViewById(R.id.review_course_commit_btn);
-        mCourseTitleView = (TextView) view.findViewById(R.id.review_course_title);
-        mCourseRatingBar = (RatingBar) view.findViewById(R.id.course_details_rating);
-        mCourseStudentView = (TextView) view.findViewById(R.id.review_course_student);
+        mCourseReviewRatingBar = (RatingBar) view.findViewById(R.id.course_review_ratingbar);
+        mRatingView = (TextView) view.findViewById(R.id.course_review_rating_view);
+        mReviewBtn = view.findViewById(R.id.course_review_btn);
         mReviewWidget = (CourseDetailsReviewWidget) view.findViewById(R.id.review_course_reviewlist);
         Bundle bundle = getArguments();
         if (bundle == null) {
@@ -78,49 +70,25 @@ public class ReviewInfoFragment extends BaseFragment {
             return;
         }
 
-        mCourse = (Course) bundle.getSerializable(COURSE);
-        int courseId = bundle.getInt(Const.COURSE_ID, 0);
-        mIsStudent = bundle.getBoolean(Const.IS_STUDENT);
+        mCourseId = bundle.getInt(Const.COURSE_ID, 0);
+        mRating = bundle.getDouble(RATING, 0);
+        mRatingNum = bundle.getString(RATING_NUM);
 
-        setFragmentData();
         mReviewWidget.hideTitle();
-        mReviewWidget.initReview(courseId, mActivity, true);
+        mReviewWidget.initReview(mCourseId, mActivity, true);
 
-        mCommitBtn.setOnClickListener(new View.OnClickListener() {
+        mReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
                 bundle.putString(Const.ACTIONBAT_TITLE, "评价课程");
-                bundle.putInt(Const.COURSE_ID, mCourse.id);
+                bundle.putInt(Const.COURSE_ID, mCourseId);
                 startAcitivityWithBundle("FragmentPageActivity", bundle);
             }
         });
-    }
 
-    private void setCommitStatus()
-    {
-        if (app.loginUser == null || !mIsStudent) {
-            mCommitBtn.setVisibility(View.GONE);
-        } else {
-            mCommitBtn.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void setFragmentData()
-    {
-        setCommitStatus();
-        mCourseTitleView.setText(mCourse.title);
-        mCourseRatingBar.setRating((float) mCourse.rating);
-
-        String rating = null;
-        if (mCourse.rating == 0) {
-            rating = "0";
-        } else {
-            DecimalFormat format = new DecimalFormat("#.0");
-            rating = format.format(mCourse.rating);
-        }
-        mCourseStudentView.setText(String.format(
-                "%s分 (%s人)", rating, mCourse.ratingNum));
+        mRatingView.setText(String.format("%.1f分 (%s人)", mRating, mRatingNum));
+        mCourseReviewRatingBar.setRating((float) mRating);
     }
 }

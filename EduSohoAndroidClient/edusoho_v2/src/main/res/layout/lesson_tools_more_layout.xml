@@ -41,6 +41,7 @@
         android:background="#000000"></View>
 
     <LinearLayout
+        android:gravity="center"
         android:padding="8dp"
         android:id="@+id/ll_profile"
         android:layout_width="wrap_content"
@@ -51,17 +52,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
             android:src="@drawable/iconfont_profile" />
 
         <TextView
             android:id="@+id/tv_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:text="资料"
-            android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/sys_normal" />
+            android:textColor="@color/base_black_normal"
+            android:textSize="@dimen/base_large_size" />
 
     </LinearLayout>
 

@@ -19,9 +19,10 @@
             android:layout_marginRight="30dp"
             android:scaleType="fitCenter"
             android:id="@+id/myinfo_logo"
+            android:layout_centerVertical="true"
             android:src="@drawable/myinfo_default_face"
-            android:layout_width="66dp"
-            android:layout_height="66dp" />
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
 
         <TextView
             android:textStyle="bold"

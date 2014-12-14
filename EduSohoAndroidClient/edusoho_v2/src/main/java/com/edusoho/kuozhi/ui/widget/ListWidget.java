@@ -25,7 +25,7 @@ public class ListWidget extends FrameLayout {
     protected View mEmptyView;
     protected TextView mEmptyText;
     protected String mEmptyStr;
-    private PullToRefreshListView mResourceListView;
+    private RefreshListWidget mResourceListView;
     private int mMode;
     private PullToRefreshBase.Mode mPullMode;
 
@@ -76,7 +76,7 @@ public class ListWidget extends FrameLayout {
         }
         mLoadView = initLoadView();
         mEmptyView = initEmptyView();
-        mResourceListView = new PullToRefreshListView(mContext);
+        mResourceListView = new RefreshListWidget(mContext);
         mResourceListView.setMode(mPullMode);
         mResourceListView.getRefreshableView().setDividerHeight(1);
 
