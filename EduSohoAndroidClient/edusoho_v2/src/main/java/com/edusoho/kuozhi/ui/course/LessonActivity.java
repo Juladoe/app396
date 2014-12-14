@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -30,6 +29,7 @@ import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.Lesson.LessonStatus;
 import com.edusoho.kuozhi.model.LessonItem;
+import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -38,7 +38,6 @@ import com.edusoho.kuozhi.ui.fragment.CourseLearningFragment;
 import com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment;
 import com.edusoho.kuozhi.ui.note.NoteReplyActivity;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
-import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
@@ -49,6 +48,7 @@ import com.google.gson.reflect.TypeToken;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import menudrawer.MenuDrawer;
 import menudrawer.Position;
@@ -76,10 +76,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private LessonStatus mLessonStatus;
 
     protected MenuDrawer mMenuDrawer;
-    private CourseDetailsLessonWidget mCourseLessonView;
+    //private CourseDetailsLessonWidget mCourseLessonView;
     private EduSohoTextBtn mLearnBtn;
-    private EduSohoTextBtn mNoteBtn;
-    private EduSohoTextBtn mQuestionBtn;
+    private EduSohoTextBtn mLessonNextBtn;
+    private EduSohoTextBtn mLessonPreviousBtn;
     private EduSohoTextBtn mMoreBtn;
     private View mToolsLayout;
 
@@ -87,6 +87,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private static final int REQUEST_NOTE = 0010;
     private static final int REQUEST_QUESTION = 0020;
+
+    private LessonItem mPreviousLessonItem;
+    private LessonItem mNextLessonItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,69 +189,147 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     return;
                 }
 
-                mCourseLessonView.updateLessonStatus(mLessonId, result);
+                //mCourseLessonView.updateLessonStatus(mLessonId, result);
                 setLearnStatus(result);
             }
         });
     }
 
     private void loadLessonList() {
-        mCourseLessonView = (CourseDetailsLessonWidget) LayoutInflater.from(mActivity).inflate(
-                R.layout.course_details_lesson_content, null);
-        mMenuDrawer.setMenuView(mCourseLessonView);
-
-        mCourseLessonView.initLessonFromJson(mActivity, mLessonListJson);
-        mCourseLessonView.setItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mMenuDrawer.closeMenu();
-                LessonItem lesson = (LessonItem) adapterView.getItemAtPosition(i);
-                hieToolsByAnim();
-                mLessonId = lesson.id;
-                mLessonType = lesson.type;
-                setTitle(lesson.title);
-                loadLesson(mLessonId);
-                if (!mLessonType.equals("testpaper") && mIsLearn) {
-                    Log.d(null, "load status->");
-                    loadLessonStatus();
-                }
-            }
-        });
+//        mCourseLessonView = (CourseDetailsLessonWidget) LayoutInflater.from(mActivity).inflate(
+//                R.layout.course_details_lesson_content, null);
+//        mMenuDrawer.setMenuView(mCourseLessonView);
+//
+//        mCourseLessonView.initLessonFromJson(mActivity, mLessonListJson);
+//        mCourseLessonView.setItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                mMenuDrawer.closeMenu();
+//                LessonItem lesson = (LessonItem) adapterView.getItemAtPosition(i);
+//                hieToolsByAnim();
+//                mLessonId = lesson.id;
+//                mLessonType = lesson.type;
+//                setTitle(lesson.title);
+//                loadLesson(mLessonId);
+//                if (!mLessonType.equals("testpaper") && mIsLearn) {
+//                    Log.d(null, "load status->");
+//                    loadLessonStatus();
+//                }
+//            }
+//        });
     }
 
     private void initView() {
-        Intent data = getIntent();
-        if (data != null) {
-            mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-            mIsFree = data.getIntExtra(Const.FREE, 0);
-            mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
-            mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
-            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
-            mLessonType = data.getStringExtra(Const.LESSON_TYPE);
-            mLessonListJson = data.getStringExtra(Const.LIST_JSON);
+        try {
+            Intent data = getIntent();
+            setBackMode(BACK, mTitle);
+            mToolsLayout = findViewById(R.id.lesson_tools_layout);
+            mLessonNextBtn = (EduSohoTextBtn) findViewById(R.id.lesson_next);
+            mLessonPreviousBtn = (EduSohoTextBtn) findViewById(R.id.lesson_previous);
+            mMoreBtn = (EduSohoTextBtn) findViewById(R.id.lesson_more_btn);
+            mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
+
+            if (data != null) {
+                mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+                mIsFree = data.getIntExtra(Const.FREE, 0);
+                mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
+                mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
+                mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+                mLessonType = data.getStringExtra(Const.LESSON_TYPE);
+                mLessonListJson = data.getStringExtra(Const.LIST_JSON);
+            }
+            //如果mLessonListJson==null,是笔记本页面跳转，如果获取课程下的所有课时信息
+            if (mLessonListJson == null) {
+                RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
+                url.setParams(new String[]{
+                        "courseId", mCourseId + ""
+                });
+                mActivity.ajaxPost(url, new ResultCallback() {
+                    @Override
+                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                        mLessonListJson = object;
+                        initLessonResult();
+
+                        if (mNextLessonItem == null) {
+                            mLessonNextBtn.setEnabled(false);
+                        } else if (mPreviousLessonItem == null) {
+                            mLessonPreviousBtn.setEnabled(false);
+                        }
+                    }
+                });
+            } else {
+                initLessonResult();
+
+                if (mNextLessonItem == null) {
+                    mLessonNextBtn.setEnabled(false);
+                } else if (mPreviousLessonItem == null) {
+                    mLessonPreviousBtn.setEnabled(false);
+                }
+            }
+
+            //loadLessonList();
+            if (mCourseId == 0 || mLessonId == 0) {
+                longToast("课程数据错误！");
+                return;
+            }
+
+            loadLesson(mLessonId);
+
+            if (!mLessonType.equals("testpaper") && mIsLearn) {
+                Log.d(null, "load status->");
+                loadLessonStatus();
+            }
+            bindListener();
+        } catch (Exception ex) {
+            Log.e("lessonActivity", ex.toString());
+        }
+    }
+
+    /**
+     * 初始化前一个课时和后一个课时信息
+     */
+    private void initLessonResult() {
+        LessonsResult result = mActivity.parseJsonValue(
+                mLessonListJson, new TypeToken<LessonsResult>() {
+                });
+        List<LessonItem> list = result.lessons;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).itemType.equals("lesson")) {
+                list.remove(i--);
+            }
         }
 
-        setBackMode(BACK, mTitle);
-        mToolsLayout = findViewById(R.id.lesson_tools_layout);
-        mNoteBtn = (EduSohoTextBtn) findViewById(R.id.lesson_note_btn);
-        mQuestionBtn = (EduSohoTextBtn) findViewById(R.id.lesson_question_btn);
-        mMoreBtn = (EduSohoTextBtn) findViewById(R.id.lesson_more_btn);
-        mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
-
-        loadLessonList();
-        if (mCourseId == 0 || mLessonId == 0) {
-            longToast("课程数据错误！");
-            return;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).id == mLessonId) {
+                if (i == 0) {
+                    mPreviousLessonItem = null;
+                    mNextLessonItem = list.get(i + 1);
+                } else if (i == list.size() - 1) {
+                    mPreviousLessonItem = list.get(i - 1);
+                    mNextLessonItem = null;
+                } else {
+                    mPreviousLessonItem = list.get(i - 1);
+                    mNextLessonItem = list.get(i + 1);
+                }
+            }
         }
+    }
 
-        loadLesson(mLessonId);
-
-        if (!mLessonType.equals("testpaper") && mIsLearn) {
-            Log.d(null, "load status->");
-            loadLessonStatus();
-        }
-
-        bindListener();
+    private void goToAnotherLesson(final LessonItem lessonItem) {
+        mActivity.getCoreEngine().runNormalPlugin(
+                LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                        startIntent.putExtra(Const.FREE, lessonItem.free);
+                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lessonItem.title);
+                        startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
+                        startIntent.putExtra(Const.IS_LEARN, mIsLearn);
+                    }
+                });
     }
 
     private void showMoreBtn(View parent) {
@@ -256,6 +337,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 R.layout.lesson_tools_more_layout, null);
         LinearLayout layoutQuestion = (LinearLayout) contentView.findViewById(R.id.ll_question);
         LinearLayout layoutProfile = (LinearLayout) contentView.findViewById(R.id.ll_profile);
+        LinearLayout layoutNote = (LinearLayout) contentView.findViewById(R.id.ll_note);
+        LinearLayout layoutAddQuestion = (LinearLayout) contentView.findViewById(R.id.ll_add_question);
 
         layoutQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,6 +354,51 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             }
         });
 
+        layoutNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Bundle bundle = new Bundle();
+                bundle.putString(RichTextBoxFragment.HIT, "添加笔记");
+                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                bundle.putInt(NoteReplyActivity.TYPE, NoteReplyActivity.ADD);
+                bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
+                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
+                bundle.putString(Const.NORMAL_CONTENT, "");
+
+                app.mEngine.runNormalPluginForResult(
+                        "NoteReplyActivity", mActivity, REQUEST_NOTE, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtras(bundle);
+                            }
+                        });
+            }
+        });
+
+        layoutAddQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Bundle bundle = new Bundle();
+                bundle.putString(RichTextBoxFragment.HIT, "添加问题");
+                bundle.putString(Const.ACTIONBAT_TITLE, "添加问答");
+                bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
+                bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
+                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
+                bundle.putString(QuestionReplyActivity.TYPE, "question");
+                bundle.putString(Const.QUESTION_TITLE, "");
+                bundle.putString(QuestionReplyActivity.ACTION, "add");
+                bundle.putString(Const.QUESTION_CONTENT, "");
+
+                app.mEngine.runNormalPluginForResult(
+                        "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtras(bundle);
+                            }
+                        });
+            }
+        });
+
         PopupWindow popupWindow = new PopupWindow(
                 contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         //popupWindow.setWidth(parent.getWidth());
@@ -281,9 +409,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
         popupWindow.showAtLocation(
-                parent, Gravity.TOP, location[0], location[1] - (int) (mToolsLayout.getHeight() * 2.0f));
+                parent, Gravity.BOTTOM, parent.getWidth() * 3 / 2, parent.getHeight());
     }
 
+    /**
+     * 获取课时是否已学状态
+     */
     private void loadLessonStatus() {
         RequestUrl requestUrl = app.bindUrl(Const.LESSON_STATUS, true);
         requestUrl.setParams(new String[]{
@@ -359,48 +490,21 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             }
         });
 
-        mQuestionBtn.setOnClickListener(new View.OnClickListener() {
+        mLessonNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Bundle bundle = new Bundle();
-                bundle.putString(RichTextBoxFragment.HIT, "添加问题");
-                bundle.putString(Const.ACTIONBAT_TITLE, "添加问答");
-                bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
-                bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
-                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
-                bundle.putString(QuestionReplyActivity.TYPE, "question");
-                bundle.putString(Const.QUESTION_TITLE, "");
-                bundle.putString(QuestionReplyActivity.ACTION, "add");
-                bundle.putString(Const.QUESTION_CONTENT, "");
-
-                app.mEngine.runNormalPluginForResult(
-                        "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtras(bundle);
-                            }
-                        });
+                if (mNextLessonItem != null) {
+                    goToAnotherLesson(mNextLessonItem);
+                }
             }
         });
 
-        mNoteBtn.setOnClickListener(new View.OnClickListener() {
+        mLessonPreviousBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Bundle bundle = new Bundle();
-                bundle.putString(RichTextBoxFragment.HIT, "添加笔记");
-                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
-                bundle.putInt(NoteReplyActivity.TYPE, NoteReplyActivity.ADD);
-                bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
-                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
-                bundle.putString(Const.NORMAL_CONTENT, "");
-
-                app.mEngine.runNormalPluginForResult(
-                        "NoteReplyActivity", mActivity, REQUEST_NOTE, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtras(bundle);
-                            }
-                        });
+                if (mPreviousLessonItem != null) {
+                    goToAnotherLesson(mPreviousLessonItem);
+                }
             }
         });
     }
@@ -408,7 +512,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.lesson_menu_list) {
-            mMenuDrawer.openMenu();
+            //mMenuDrawer.openMenu();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -416,7 +520,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mIsLearn) {
-            getMenuInflater().inflate(R.menu.lesson_menu, menu);
+            //getMenuInflater().inflate(R.menu.lesson_menu, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }

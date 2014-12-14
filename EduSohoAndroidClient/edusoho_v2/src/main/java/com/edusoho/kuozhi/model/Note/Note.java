@@ -13,8 +13,12 @@ public class Note {
     public int length;
     public int lessonNum;
 
+    public String courseTitle;
     public String createdTime;
     public String updatedTime;
     public String content;
     public String lessonTitle;
+    public String lessonStatus;
+    public int noteNum;
+    public String noteLastUpdateTime;
 }

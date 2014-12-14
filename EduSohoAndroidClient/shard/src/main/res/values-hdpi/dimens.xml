@@ -99,9 +99,9 @@
     <dimen name="big_rating_height">42px</dimen>
 
     <!--note-->
-    <dimen name="note_main_paddingtop">5dp</dimen>
-    <dimen name="note_main_paddingleft">3dp</dimen>
+    <dimen name="note_main_padding_top">5dp</dimen>
+    <dimen name="note_main_padding_left">3dp</dimen>
     <dimen name="course_size">15sp</dimen>
     <dimen name="course_title_size">15sp</dimen>
-    <dimen name="note_main_paddingright">3dp</dimen>
+    <dimen name="note_main_padding_right">3dp</dimen>
 </resources>

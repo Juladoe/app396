@@ -8,7 +8,7 @@
         android:title="@string/edit_content"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/iconfont_bianji"
+        android:icon="@drawable/icon_font_edit"
         />
 
 </menu>

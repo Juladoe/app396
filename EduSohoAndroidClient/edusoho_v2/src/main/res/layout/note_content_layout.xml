@@ -6,36 +6,33 @@
     android:layout_height="match_parent"
     android:background="@color/note_content_background">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/note_lesson_entrance"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:text="@string/note_content"
+            android:text="课时名称"
             android:id="@+id/note_lesson_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/note_content_item_bg"
             android:textSize="@dimen/middle_font_size"
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/note_content_title"
-            android:layout_weight="1"
-            android:padding="16dp" />
+            android:layout_alignParentLeft="true"
+            android:layout_margin="16dp" />
 
         <ImageView
-            android:src="@drawable/iconfont_youjiantou"
-            android:id="@+id/lesson_entrance"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/note_content_item_bg"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:layout_weight="8" />
+            android:src="@drawable/iconfont_right_arrow"
+            android:id="@+id/iv_lesson_entrance"
+            android:layout_width="@dimen/lesson_entry_right_arrow"
+            android:layout_height="@dimen/lesson_entry_right_arrow"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp"
+            android:layout_alignParentRight="true" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/note_content"
@@ -47,4 +44,5 @@
         android:background="@color/note_background"
         android:text="这是笔记内容"
         android:layout_below="@id/note_lesson_entrance" />
+
 </RelativeLayout>

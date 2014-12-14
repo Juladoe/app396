@@ -340,6 +340,7 @@
     <!-- lesson -->
     <color name="lesson_tools_normal">#757575</color>
     <color name="lesson_tools_pressed">#fec856</color>
+    <color name="lesson_redirect_disabled">#32000000</color>
 
     <!-- course_notice -->
     <color name="course_notice_content">#4d4d4d</color>

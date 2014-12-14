@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,17 +11,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduHtml;
 import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
-import com.edusoho.kuozhi.util.html.EduTagHandler;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +37,7 @@ public class NoteContentFragment extends BaseFragment {
 
     public static final String CONTENT = "noteContent";
     public static final int REQUEST_RICH_FRAGMENT = 0010;
+    public static final String LEARN_STATUS = "learn_status";
 
     private String mTitle;
     private String mNoteContent;
@@ -68,6 +72,7 @@ public class NoteContentFragment extends BaseFragment {
         mLessonId = bundle.getInt(Const.LESSON_ID);
         mCourseId = bundle.getInt(Const.COURSE_ID);
         mLessonTitle = bundle.getString(Const.LESSON_NAME);
+        mLearnStatus = bundle.getString(LEARN_STATUS);
     }
 
     @Override
@@ -82,30 +87,61 @@ public class NoteContentFragment extends BaseFragment {
         /**
          * 跳转到课时页面
          */
-        mLessonEntrance = (ImageView) view.findViewById(R.id.lesson_entrance);
+        mLessonEntrance = (ImageView) view.findViewById(R.id.iv_lesson_entrance);
         mLessonEntrance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getLessonInfo(mCourseId, mLessonId);
+            }
+        });
+
+        setContent();
+    }
+
+    /**
+     * 获取单个lesson信息并跳转到lessonActivity
+     *
+     * @param courseId
+     * @param lessonId
+     */
+    private void getLessonInfo(int courseId, int lessonId) {
+        RequestUrl url = app.bindUrl(Const.LESSON, true);
+        HashMap<String, String> params = url.getParams();
+        params.put("courseId", mCourseId + "");
+        params.put("lessonId", mLessonId + "");
+        ResultCallback callback = new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                final LessonItem lessonItem = mActivity.gson.fromJson(object, new TypeToken<LessonItem>() {
+                }.getType());
+                if (lessonItem == null) {
+                    return;
+                }
                 mActivity.getCoreEngine().runNormalPlugin(
                         LessonActivity.TAG, mActivity, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                if (mLearnStatus == "finished")
+                                if (mLearnStatus == "finished") {
                                     isLearned = true;
-//                                startIntent.putExtra(Const.COURSE_ID, mCourseId);
-//                                startIntent.putExtra(Const.FREE, );
-//                                startIntent.putExtra(Const.LESSON_ID, mLessonId);
-//                                startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-//                                startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
-//                                startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
-//                                startIntent.putExtra(Const.IS_LEARN, isLearned);
+                                }
+                                startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                                startIntent.putExtra(Const.FREE, lessonItem.free);
+                                startIntent.putExtra(Const.LESSON_ID, mLessonId);
+                                startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+                                startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
+                                startIntent.putExtra(Const.IS_LEARN, isLearned);
                             }
                         }
 
                 );
             }
-        });
-        setContent();
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                super.error(url, ajaxStatus);
+            }
+        };
+        mActivity.ajaxPost(url, callback);
     }
 
     private void setContent() {
@@ -152,10 +188,11 @@ public class NoteContentFragment extends BaseFragment {
      */
     private String setImgToEnd(String content) {
         List<String> imgList = new ArrayList<String>();
-        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
+        content = content.replaceAll("\\n|\\t", "");
+        Matcher m = Pattern.compile("<p>\\s*<img src=\".*?\" .>\\s*</p>|<img src=\".*?\" .>").matcher(content);
         while (m.find()) {
-            imgList.add(m.group(1));
-            content = content.replace(m.group(1), "");
+            imgList.add(m.group(0));
+            content = content.replace(m.group(0), "");
         }
         if (imgList.size() > 0) {
             for (String imgStr : imgList) {

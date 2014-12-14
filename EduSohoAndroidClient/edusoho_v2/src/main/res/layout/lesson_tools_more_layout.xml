@@ -8,7 +8,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:visibility="gone"
         android:padding="8dp"
         android:id="@+id/ll_question"
         android:layout_width="wrap_content"
@@ -61,6 +60,56 @@
             android:text="资料"
             android:textColor="@color/base_black_normal"
             android:textSize="@dimen/base_large_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="8dp"
+        android:id="@+id/ll_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/add_note" />
+
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="笔记"
+            android:textColor="@color/system_normal_text"
+            android:textSize="@dimen/sys_normal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="8dp"
+        android:id="@+id/ll_add_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/add_question" />
+
+        <TextView
+            android:id="@+id/tv_add_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="提问"
+            android:textColor="@color/system_normal_text"
+            android:textSize="@dimen/sys_normal" />
 
     </LinearLayout>
 
