@@ -70,6 +70,7 @@ public class NoteListActivity extends ActionBarBaseActivity {
                     bundle.putInt(Const.LESSON_ID, noteInfo.lessonId);
                     bundle.putInt(Const.COURSE_ID, noteInfo.coursesId);
                     bundle.putString(Const.LESSON_NAME, noteInfo.lessonTitle);
+                    bundle.putString(Const.LEARN_STATUS, noteInfo.learnStatus);
                     app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());

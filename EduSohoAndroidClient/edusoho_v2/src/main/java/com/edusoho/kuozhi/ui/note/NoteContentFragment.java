@@ -37,7 +37,6 @@ public class NoteContentFragment extends BaseFragment {
 
     public static final String CONTENT = "noteContent";
     public static final int REQUEST_RICH_FRAGMENT = 0010;
-    public static final String LEARN_STATUS = "learn_status";
 
     private String mTitle;
     private String mNoteContent;
@@ -72,7 +71,7 @@ public class NoteContentFragment extends BaseFragment {
         mLessonId = bundle.getInt(Const.LESSON_ID);
         mCourseId = bundle.getInt(Const.COURSE_ID);
         mLessonTitle = bundle.getString(Const.LESSON_NAME);
-        mLearnStatus = bundle.getString(LEARN_STATUS);
+        mLearnStatus = bundle.getString(Const.LEARN_STATUS);
     }
 
     @Override
@@ -121,7 +120,7 @@ public class NoteContentFragment extends BaseFragment {
                         LessonActivity.TAG, mActivity, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                if (mLearnStatus == "finished") {
+                                if (mLearnStatus.equals("finished")) {
                                     isLearned = true;
                                 }
                                 startIntent.putExtra(Const.COURSE_ID, mCourseId);
