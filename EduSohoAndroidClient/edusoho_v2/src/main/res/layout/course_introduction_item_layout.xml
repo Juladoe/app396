@@ -19,14 +19,18 @@
             android:background="@drawable/course_introduction_card_bg"
             android:orientation="vertical">
 
-            <TextView
-                android:textStyle="bold"
+            <com.edusoho.kuozhi.view.ESTextView
+                card_view:es_alpha="0.87"
+                android:textSize="@dimen/base_large_size"
                 android:id="@+id/course_introduction_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/base_color_normal" />
+                android:textColor="@color/base_black_normal" />
 
-            <TextView
+            <com.edusoho.kuozhi.view.ESTextView
+                card_view:es_alpha="0.54"
+                android:textColor="@color/base_black_normal"
+                android:textSize="@dimen/base_size"
                 android:padding="8dp"
                 android:id="@+id/course_introduction_content"
                 android:layout_width="wrap_content"

@@ -108,6 +108,8 @@
     <plugin name="CourseTeacherInfoFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseTeacherInfoFragment"></plugin>
     <plugin name="CourseReviewFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseReviewFragment"></plugin>
     <plugin name="CourseIntroductionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseIntroductionFragment"></plugin>
+    <plugin name="CourseDownloadingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseDownloadingFragment"></plugin>
+    <plugin name="LessonDownloadedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownloadedFragment"></plugin>
 
     <!--在学课程-->
     <plugin name="LeaenCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LeaenCourseFragment"></plugin>

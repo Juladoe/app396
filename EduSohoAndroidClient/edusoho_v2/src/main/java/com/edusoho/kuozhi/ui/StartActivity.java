@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+
 import android.os.Bundle;
 import android.util.Log;
 
@@ -78,24 +79,24 @@ public class StartActivity extends ActionBarBaseActivity
         checkSchoolApiVersion(app.host);
     }
 
-    protected ClientVersionHandler getClientVersionHandler()
-    {
+    protected ClientVersionHandler getClientVersionHandler() {
         return null;
     }
 
     /**
      * 检查网校版本
+     *
      * @param info
      */
-    protected void checkSchoolVersion(SystemInfo info)
-    {
+    protected void checkSchoolVersion(SystemInfo info) {
         ajaxNormalGet(info.mobileApiUrl + Const.VERIFYSCHOOL, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 SchoolResult schoolResult = app.gson.fromJson(
                         object, new TypeToken<SchoolResult>() {
-                }.getType());
+                        }.getType()
+                );
 
                 if (schoolResult == null) {
                     showSchoolErrorDlg();
@@ -115,15 +116,15 @@ public class StartActivity extends ActionBarBaseActivity
     /**
      * 检测网校api版本
      */
-    protected void checkSchoolApiVersion(String host)
-    {
+    protected void checkSchoolApiVersion(String host) {
         ajaxNormalGet(app.host + Const.VERIFYVERSION, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 SystemInfo info = app.gson.fromJson(
                         object, new TypeToken<SystemInfo>() {
-                }.getType());
+                        }.getType()
+                );
                 if (info == null
                         || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
 
@@ -145,8 +146,7 @@ public class StartActivity extends ActionBarBaseActivity
     /**
      * 处理网校异常dlg
      */
-    protected void showSchoolErrorDlg()
-    {
+    protected void showSchoolErrorDlg() {
         PopupDialog popupDialog = PopupDialog.createMuilt(
                 mContext,
                 "提示信息",
@@ -159,7 +159,8 @@ public class StartActivity extends ActionBarBaseActivity
                             finish();
                         }
                     }
-                });
+                }
+        );
         popupDialog.setOkText("选择新网校");
         popupDialog.show();
     }
@@ -195,7 +196,8 @@ public class StartActivity extends ActionBarBaseActivity
                     try {
                         Boolean result = app.gson.fromJson(
                                 object, new TypeToken<Boolean>() {
-                        }.getType());
+                                }.getType()
+                        );
 
                         if (true == result) {
                             app.config.isPublicRegistDevice = true;
@@ -216,7 +218,8 @@ public class StartActivity extends ActionBarBaseActivity
                     try {
                         Boolean result = app.gson.fromJson(
                                 object, new TypeToken<Boolean>() {
-                        }.getType());
+                                }.getType()
+                        );
 
                         if (true == result) {
                             app.config.isRegistDevice = true;

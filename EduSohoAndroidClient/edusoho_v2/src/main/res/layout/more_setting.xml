@@ -45,25 +45,6 @@
             android:background="@drawable/more_setting_line"
             android:layout_width="match_parent"
             android:layout_height="1dp" />
-        <TextView
-            android:id="@+id/more_setting_app"
-            android:textColor="@color/system_light_text"
-            android:paddingLeft="20dp"
-            android:clickable="true"
-            android:background="@drawable/more_setting_list_select2"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:textSize="@dimen/middle_font_size"
-            android:text="应用"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:background="@drawable/more_setting_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
         <com.edusoho.kuozhi.view.EduUpdateView
             android:id="@+id/more_setting_set"
             android:textColor="@color/system_light_text"
@@ -76,7 +57,25 @@
             android:text="设置"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <View
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/more_setting_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
+        <TextView
+            android:id="@+id/more_setting_offline"
+            android:textColor="@color/system_light_text"
+            android:paddingLeft="20dp"
+            android:clickable="true"
+            android:background="@drawable/more_setting_list_select2"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:textSize="@dimen/middle_font_size"
+            android:text="离线观看"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <View
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
@@ -111,7 +110,7 @@
         android:paddingTop="10dp"
         android:paddingRight="14dp"
         android:paddingLeft="14dp"
-        android:textSize="@dimen/large_font_size"
+        android:textSize="@dimen/base_large_size"
         android:textColor="@color/login_text"
         android:text="退出登录"
         android:background="@drawable/logout_btn_sel"

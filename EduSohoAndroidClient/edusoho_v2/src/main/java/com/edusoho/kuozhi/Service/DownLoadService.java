@@ -83,7 +83,6 @@ public class DownLoadService extends Service {
                 this.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         notificationHashMap = new HashMap<Long, Notification>();
-
     }
 
     public static Intent getIntent(Context context)
@@ -117,6 +116,11 @@ public class DownLoadService extends Service {
         }
         downLoadFile();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void downloadM3U8(String file)
+    {
+
     }
 
     private void startTimer() {

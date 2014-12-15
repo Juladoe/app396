@@ -20,7 +20,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.entity.LearnStatus;
+import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.Announcement;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
@@ -30,7 +30,6 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
-import com.edusoho.kuozhi.ui.note.NoteContentFragment;
 import com.edusoho.kuozhi.ui.widget.CourseDetailsLessonWidget;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -326,7 +325,6 @@ public class CourseLearningFragment extends BaseFragment {
                         startIntent.putExtra(Const.COURSE_ID, mCourseId);
                         startIntent.putExtra(Const.IS_STUDENT, true);
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程评价");
-                        startIntent.putExtra(ReviewInfoFragment.COURSE, mCourseDetailsResult.course);
                     }
                 });
             }

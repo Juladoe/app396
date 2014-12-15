@@ -1036,4 +1036,37 @@ public class AppUtil {
     public static String filterSpace(String str) {
         return str.replaceAll("\\n|\\t", "");
     }
+
+    /**
+     * 旋转图片
+     * @param view
+     * @param start
+     * @param end
+     */
+    public static void rotation(View view, float start, float end)
+    {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
+        objectAnimator.setDuration(180);
+        objectAnimator.start();
+    }
+
+    /**
+     * 格式化容量
+     * @param totalSize
+     * @return
+     */
+    public static String formatSize(long totalSize)
+    {
+        Log.d(null, "totalSize->" + totalSize);
+        float kb = 1024.0f;
+        if (totalSize < (kb * kb)) {
+            return String.format("%.1f%s", (totalSize / kb), "KB");
+        }
+
+        if (totalSize < (kb * kb * kb)) {
+            return String.format("%.1f%s", (totalSize / (kb * kb)), "M");
+        }
+
+        return String.format("%.1f%s", (totalSize / (kb * kb * kb)), "G");
+    }
 }

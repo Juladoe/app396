@@ -34,7 +34,7 @@ import com.edusoho.kuozhi.commonlib.R;
 import library.internal.EmptyViewMethodAccessor;
 import library.internal.LoadingLayout;
 
-public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView> {
+public class PullToRefreshListView<T extends ListView> extends PullToRefreshAdapterViewBase<T> {
 
 	private LoadingLayout mHeaderLoadingView;
 	private LoadingLayout mFooterLoadingView;
@@ -215,12 +215,12 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 	}
 
 	@Override
-	protected ListView createRefreshableView(Context context, AttributeSet attrs) {
+	protected T createRefreshableView(Context context, AttributeSet attrs) {
 		ListView lv = createListView(context, attrs);
 
 		// Set it to this so it can be used in ListActivity/ListFragment
 		lv.setId(android.R.id.list);
-		return lv;
+		return (T) lv;
 	}
 
 	@Override

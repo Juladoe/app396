@@ -9,6 +9,5 @@ public class KuozhiActivity extends StartActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Crashlytics.start(this);
     }
 }
