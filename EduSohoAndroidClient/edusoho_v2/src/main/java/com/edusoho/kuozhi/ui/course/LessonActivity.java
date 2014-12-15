@@ -69,8 +69,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private String mLessonListJson;
     private Bundle fragmentData;
-    private int mIsFree;
-    private boolean mIsLearn;
     private LessonStatus mLessonStatus;
 
     protected MenuDrawer mMenuDrawer;
@@ -229,8 +227,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
             if (data != null) {
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                mIsFree = data.getIntExtra(Const.FREE, 0);
-                mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
+                //mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
                 mLessonType = data.getStringExtra(Const.LESSON_TYPE);
@@ -446,7 +443,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonStatus = parseJsonValue(
                         object, new TypeToken<LessonStatus>() {
                         });
-
+                if (mLessonStatus.learnStatus != LearnStatus.finished) {
+                    mLessonStatus.learnStatus = LearnStatus.learning;
+                }
                 mToolsLayout.setVisibility(View.VISIBLE);
                 showToolsByAnim();
                 setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
@@ -535,9 +534,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mIsLearn) {
-            //getMenuInflater().inflate(R.menu.lesson_menu, menu);
-        }
+        //if (mIsLearn) {
+        //getMenuInflater().inflate(R.menu.lesson_menu, menu);
+        //}
         return super.onCreateOptionsMenu(menu);
     }
 

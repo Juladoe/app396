@@ -124,7 +124,7 @@ public class NoteContentFragment extends BaseFragment {
                                     isLearned = true;
                                 }
                                 startIntent.putExtra(Const.COURSE_ID, mCourseId);
-                                startIntent.putExtra(Const.FREE, lessonItem.free);
+                                //startIntent.putExtra(Const.FREE, lessonItem.free);
                                 startIntent.putExtra(Const.LESSON_ID, mLessonId);
                                 startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
                                 startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
