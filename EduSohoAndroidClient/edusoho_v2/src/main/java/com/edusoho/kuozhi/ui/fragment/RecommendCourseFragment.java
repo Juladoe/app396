@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoButton;
 import com.edusoho.listener.ResultCallback;
@@ -41,6 +42,9 @@ public class RecommendCourseFragment extends BaseFragment {
         mActivity = (ActionBarBaseActivity) getActivity();
         setContainerView(R.layout.recomend_course_fragment);
         //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.PopDialogTheme);
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+        }
     }
 
     @Override
@@ -79,8 +83,7 @@ public class RecommendCourseFragment extends BaseFragment {
                         }
                         mActivity.longToast("评论成功!");
                         mActivity.finish();
-                        mActivity.app.sendMsgToTarget(
-                                ReviewInfoFragment.REFRESH_REVIEWS, null, ReviewInfoFragment.class);
+                        mActivity.app.sendMessage(Const.REFRESH_REVIEWS, null);
                     }
                 });
             }

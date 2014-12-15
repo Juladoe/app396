@@ -16,33 +16,46 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.Member;
+import com.edusoho.kuozhi.model.PayStatus;
+import com.edusoho.kuozhi.model.Vip;
+import com.edusoho.kuozhi.model.VipLevel;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.fragment.course.CourseIntroductionFragment;
+import com.edusoho.kuozhi.ui.fragment.course.CourseReviewFragment;
 import com.edusoho.kuozhi.ui.fragment.course.CourseTeacherInfoFragment;
 import com.edusoho.kuozhi.ui.widget.ScrollWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.FixHeightViewPager;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -56,22 +69,24 @@ import extensions.PagerSlidingTabStrip;
 public class CorusePaperActivity extends ActionBarBaseActivity {
 
     private PagerSlidingTabStrip mTabs;
-    protected ViewPager mFragmentPager;
+    protected FixHeightViewPager mFragmentPager;
     private ScrollWidget mCourseScrollView;
-    private FrameLayout mRootView;
+    private RelativeLayout mRootView;
     private ImageView mCoursePicView;
     private ViewGroup mTabsParent;
     private MyPagerAdapter fragmentAdapter;
     protected String[] fragmentArrayList;
     protected String[] titles;
+    private int mTabOffset = -1;
 
     /**
      * Course info
-     */
+    */
     private TextView mCourseTitleView;
     private TextView mCourseStudentNumView;
     private TextView mCourseStarView;
     private TextView mCoursePriceView;
+    private View mPayBtn;
 
     protected String mFragmentName = null;
     private final Handler handler = new Handler();
@@ -133,14 +148,183 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
 
     protected void initFragmentPaper()
     {
+        mPayBtn = findViewById(R.id.course_pay_btn);
         mTabsParent = (ViewGroup) findViewById(R.id.course_info_column_tabs_layout);
-        mRootView = (FrameLayout) findViewById(R.id.course_root_view);
+        mRootView = (RelativeLayout) findViewById(R.id.course_root_view);
         mCoursePicView = (ImageView) findViewById(R.id.course_pic);
         mCourseScrollView = (ScrollWidget) findViewById(R.id.course_scroolview);
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.course_info_column_tabs);
-        mFragmentPager = (ViewPager) findViewById(R.id.course_info_column_pager);
+        mFragmentPager = (FixHeightViewPager) findViewById(R.id.course_info_column_pager);
 
+        mPayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPayBtnAnim(0, 135);
+                showPayBtn(mPayBtn);
+            }
+        });
         loadCourseInfo();
+    }
+
+    private void startPayBtnAnim(int start, int end)
+    {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mPayBtn, "rotation", start, end);
+        animator.setDuration(200);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
+    }
+
+    private void initPayBtn(View contentView)
+    {
+        TextView vipLearnBtn = (TextView) contentView.findViewById(R.id.course_details_vip_learnbtn);
+        TextView learnBtn = (TextView) contentView.findViewById(R.id.course_details_learnbtn);
+
+        Course course = mCourseDetailsResult.course;
+        String vipLevelName = getVipLevelName(course.vipLevelId, mCourseDetailsResult.vipLevels);
+
+        if (course.price <= 0) {
+            learnBtn.setText("加入学习");
+        }
+        if (course.vipLevelId != 0 && !TextUtils.isEmpty(vipLevelName)) {
+            vipLearnBtn.setText(vipLevelName + "免费学");
+        } else {
+            vipLearnBtn.setVisibility(View.GONE);
+        }
+
+        learnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                learnCourse();
+            }
+        });
+        vipLearnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (app.loginUser != null) {
+                    Course course = mCourseDetailsResult.course;
+                    Vip userVip = app.loginUser.vip;
+                    if (userVip == null) {
+                        longToast("不是会员！无法使用会员服务！");
+                        return;
+                    }
+                    if (userVip.levelId < course.vipLevelId) {
+                        longToast("会员等级不够！");
+                        return;
+                    }
+                    learnCourseByVip();
+                } else {
+                    LoginActivity.start(mActivity);
+                }
+            }
+        });
+    }
+
+    public Course getCourse()
+    {
+        return mCourseDetailsResult.course;
+    }
+
+    /*
+    学习课程
+    */
+    private void learnCourse() {
+        RequestUrl url = app.bindUrl(Const.PAYCOURSE, true);
+        url.setParams(new String[]{
+                "payment", "alipay",
+                "courseId", String.valueOf(mCourseId)
+        });
+        ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                PayStatus payStatus = parseJsonValue(
+                        object, new TypeToken<PayStatus>() {
+                        });
+
+                if (payStatus == null) {
+                    longToast("加入学习失败！");
+                    return;
+                }
+
+                if (!Const.RESULT_OK.equals(payStatus.status)) {
+                    longToast(payStatus.message);
+                    return;
+                }
+
+                if (payStatus.paid) {
+                    //免费课程
+                    selectLessonFragment();
+                }
+            }
+        });
+    }
+
+    private void selectLessonFragment()
+    {
+        mFragmentPager.setCurrentItem(2);
+        setFragmentPagerHeight(2);
+    }
+
+    private String getVipLevelName(int level, VipLevel[] vipLevels)
+    {
+        for(VipLevel vipLevel : vipLevels) {
+            if (level == vipLevel.id) {
+                return vipLevel.name;
+            }
+        }
+
+        return "";
+    }
+
+    private void learnCourseByVip() {
+        RequestUrl url = app.bindUrl(Const.VIP_LEARN_COURSE, true);
+        url.setParams(new String[]{
+                "courseId", mCourseId + ""
+        });
+        ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                boolean status = parseJsonValue(
+                        object, new TypeToken<Boolean>() {
+                        });
+
+                if (status) {
+                    longToast("加入学习成功!");
+                    mPayBtn.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void showPayBtn(View parent)
+    {
+        View contentView = LayoutInflater.from(mContext).inflate(
+                R.layout.course_paybtn_layout, null);
+        initPayBtn(contentView);
+
+        PopupWindow popupWindow = new PopupWindow(
+                contentView,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+        );
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+        popupWindow.setAnimationStyle(R.style.PopWindowAnimationShow);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                startPayBtnAnim(135, 0);
+            }
+        });
+
+        int[] location = new int[2];
+        parent.getLocationOnScreen(location);
+        contentView.measure(0, 0);
+        popupWindow.showAtLocation(
+                parent, Gravity.LEFT|Gravity.TOP,
+                location[0] - contentView.getMeasuredWidth() + 16,
+                location[1] - contentView.getMeasuredHeight() + 16
+        );
     }
 
     private void initCourseInfo()
@@ -154,7 +338,26 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
         mCourseTitleView.setText(course.title);
         mCourseStudentNumView.setText(course.studentNum);
         mCourseStarView.setText(course.ratingNum);
-        mCoursePriceView.setText(String.format("%.1f", course.price));
+        mCoursePriceView.setText(course.price > 0 ? String.format("%.1f", course.price) : "免费");
+
+        //初始化tab组件位置
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = mTabsParent.getTop();
+        layoutParams.height = mTabs.getHeight();
+        mTabs.setLayoutParams(layoutParams);
+
+        Member member = mCourseDetailsResult.member;
+        if (member != null) {
+            mPayBtn.setVisibility(View.GONE);
+            selectLessonFragment();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.course_learning_menu, menu);
+        return true;
     }
 
     private void addScrollListener()
@@ -166,31 +369,34 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
 
             @Override
             public void onScroll(int l, int t, int oldl, int oldt) {
+                Log.d(null, "t->" + t);
                 if (mAlpha <= 255 && mAlpha >= 0) {
                     mAlpha = t > 255 ? 255 : t < 0 ? 0 : t;
-                    Log.d(null, "mAlpha->" + mAlpha);
                     setActionBarBackground();
                 }
 
-                int[] locations = new int[2];
-                mTabsParent.getLocationOnScreen(locations);
-
-                int top = mTabsParent.getTop() - mActionBar.getHeight();
-                if (t > top && mTabsParent.getChildCount() > 0) {
-                    int height = mTabs.getHeight();
-                    mTabsParent.removeView(mTabs);
-                    mRootView.addView(mTabs);
-                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.topMargin = mActionBar.getHeight();
-                    layoutParams.height = height;
-                    mTabs.setLayoutParams(layoutParams);
-                } else if (t < top && mTabsParent.getChildCount() == 0) {
-                    mRootView.removeView(mTabs);
-                    mTabsParent.addView(mTabs);
+                //辅助layout的top 减去滑动组件top差距
+                int top = mTabsParent.getTop() - t;
+                int tabTop = mTabs.getTop();
+                if (top > mActionBar.getHeight()) {
+                    mTabOffset = -1;
+                    setTabsLayoutParams(top);
+                } else  {
+                    if (tabTop != mActionBar.getHeight()) {
+                        mTabOffset = t;
+                        setFragmentPagerHeight(mFragmentPager.getCurrentItem());
+                        setTabsLayoutParams(mActionBar.getHeight());
+                    }
                 }
             }
         });
+    }
+
+    private void setTabsLayoutParams(int top)
+    {
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTabs.getLayoutParams();
+        layoutParams.topMargin = top;
+        mTabs.setLayoutParams(layoutParams);
     }
 
     private View getLoadView() {
@@ -200,14 +406,17 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
 
     private void loadCourseInfo() {
         final View mLoadView = getLoadView();
-        mRootView.addView(mLoadView);
+        mRootView.addView(
+                mLoadView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
 
         RequestUrl url = app.bindUrl(Const.COURSE, true);
         url.setParams(new String[]{
                 "courseId", mCourseId + ""
         });
 
-        setProgressBarIndeterminateVisibility(true);
         ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
@@ -245,7 +454,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
             mTitle = mCourseDetailsResult.course.title;
             setTitle(mTitle);
         }
-        initCourseInfo();
+
         fragmentAdapter = new MyPagerAdapter(
                 mActivity.getSupportFragmentManager(), fragmentArrayList, titles);
 
@@ -253,13 +462,55 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         mFragmentPager.setPageMargin(pageMargin);
+        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if (mTabOffset != -1) {
+                    mCourseScrollView.scrollTo(0, mTabOffset);
+                    setFragmentPagerHeight(i);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
+
         mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
 
         mFragmentPager.setAdapter(fragmentAdapter);
         mTabs.setViewPager(mFragmentPager);
 
         changeColor(currentColor);
-        setPagetItem(mFragmentName);
+        initCourseInfo();
+        //setPagetItem(mFragmentName);
+    }
+
+    private void setFragmentPagerHeight(int i)
+    {
+        int childHeight = mFragmentPager.getChildHeight(i);
+        int realFragmentPagerHeight = EdusohoApp.screenH
+                - mActionBar.getHeight()
+                - mTabs.getHeight();
+
+        int fragmentPagerHeight = childHeight;
+        if (childHeight < realFragmentPagerHeight) {
+            fragmentPagerHeight = realFragmentPagerHeight;
+        }
+
+        int oldFragmentPagerHeight = mFragmentPager.getHeight();
+        if (oldFragmentPagerHeight > fragmentPagerHeight
+                && (oldFragmentPagerHeight - fragmentPagerHeight) < 20) {
+            return;
+        }
+        mFragmentPager.setIsMeasure(true);
+        ViewGroup.LayoutParams layoutParams = mFragmentPager.getLayoutParams();
+        layoutParams.height = fragmentPagerHeight;
+        mFragmentPager.setLayoutParams(layoutParams);
     }
 
     private void setPagetItem(String name)
@@ -328,7 +579,6 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
                     fragments[position], mActivity, new PluginFragmentCallback() {
                         @Override
                         public void setArguments(Bundle bundle) {
-                            Intent data = getIntent();
                             bundle.putAll(getBundle(fragments[position]));
                         }
                     });
@@ -356,6 +606,8 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
             bundle.putInt(Const.COURSE_ID, course.id);
         } else if (fragmentName.equals("CourseReviewFragment")) {
             bundle.putInt(Const.COURSE_ID, course.id);
+            bundle.putDouble(CourseReviewFragment.RATING, course.rating);
+            bundle.putString(CourseReviewFragment.RATING_NUM, course.ratingNum);
         }
 
         return bundle;

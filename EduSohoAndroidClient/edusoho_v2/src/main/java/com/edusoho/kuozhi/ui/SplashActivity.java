@@ -44,24 +44,22 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-        mPadding = (int)(EdusohoApp.screenW * 0.3f);
+        mPadding = (int) (EdusohoApp.screenW * 0.3f);
         loadConfig();
         setupJazziness(mSplashMode);
     }
 
-    protected void loadConfig()
-    {
+    protected void loadConfig() {
         mSplashMode = JazzyViewPager.TransitionEffect.ZoomIn;
     }
 
-    private void setWindowAlpha(float alpha)
-    {
+    private void setWindowAlpha(float alpha) {
         Window window = getWindow();
         window.setBackgroundDrawable(new ColorDrawable(0));
         WindowManager.LayoutParams wl = window.getAttributes();
-        wl.flags=WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        wl.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         wl.format = PixelFormat.RGBA_8888;
-        wl.alpha=0.0f;
+        wl.alpha = 0.0f;
         window.setAttributes(wl);
     }
 
@@ -87,7 +85,7 @@ public class SplashActivity extends Activity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 int size = mViewList.size();
-                if (position < (size -2)) {
+                if (position < (size - 2)) {
                     mJazzy.setBackgroundColor(Color.WHITE);
                 } else {
                     mJazzy.setBackgroundColor(Color.alpha(255));
@@ -110,8 +108,7 @@ public class SplashActivity extends Activity {
         });
     }
 
-    private RelativeLayout createLastSplashView(int imageId)
-    {
+    private RelativeLayout createLastSplashView(int imageId) {
         RelativeLayout relativeLayout = new RelativeLayout(this);
         relativeLayout.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -142,9 +139,8 @@ public class SplashActivity extends Activity {
         return relativeLayout;
     }
 
-    private Bitmap getBitmap(int imageId)
-    {
-        BitmapFactory.Options opts=new BitmapFactory.Options();
+    private Bitmap getBitmap(int imageId) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = Bitmap.Config.RGB_565;
         opts.inPurgeable = true;
         opts.inInputShareable = true;
@@ -153,7 +149,7 @@ public class SplashActivity extends Activity {
 
         try {
             inputStream.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             //
         }
         return bitmap;
@@ -165,12 +161,11 @@ public class SplashActivity extends Activity {
         super.onDestroy();
     }
 
-    protected ArrayList<View> createSplashList(int[] imageIds)
-    {
+    protected ArrayList<View> createSplashList(int[] imageIds) {
         ArrayList<View> mViewList = new ArrayList<View>();
         int size = imageIds.length;
 
-        for (int i=0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             if (i == (size - 1)) {
                 mViewList.add(createLastSplashView(imageIds[i]));
                 continue;
@@ -188,16 +183,14 @@ public class SplashActivity extends Activity {
         return mViewList;
     }
 
-    public ArrayList<View> initSplashList()
-    {
+    public ArrayList<View> initSplashList() {
         return null;
     }
 
-    private class SplashAdapter extends PagerAdapter
-    {
+    private class SplashAdapter extends PagerAdapter {
         private ArrayList<View> mViewList;
-        public SplashAdapter(ArrayList<View> viewList)
-        {
+
+        public SplashAdapter(ArrayList<View> viewList) {
             this.mViewList = viewList;
         }
 
@@ -208,14 +201,17 @@ public class SplashActivity extends Activity {
             mJazzy.setObjectForPosition(view, position);
             return view;
         }
+
         @Override
         public void destroyItem(ViewGroup container, int position, Object obj) {
             container.removeView(mJazzy.findViewFromObject(position));
         }
+
         @Override
         public int getCount() {
             return mViewList.size();
         }
+
         @Override
         public boolean isViewFromObject(View view, Object obj) {
             if (view instanceof OutlineContainer) {

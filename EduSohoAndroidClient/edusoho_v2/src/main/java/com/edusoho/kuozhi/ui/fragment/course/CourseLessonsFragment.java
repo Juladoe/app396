@@ -4,17 +4,26 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.CourseLessonAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.entity.LessonsResult;
+import com.edusoho.kuozhi.entity.CourseLessonType;
+import com.edusoho.kuozhi.model.LessonItem;
+import com.edusoho.kuozhi.model.LessonsResult;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by howzhi on 14/12/2.
@@ -22,8 +31,10 @@ import com.google.gson.reflect.TypeToken;
 public class CourseLessonsFragment extends BaseFragment {
 
     private EduSohoListView mListView;
+    private TextView mLessonInfoView;
     private int mCourseId;
     private CourseLessonAdapter mAdapter;
+    private View mLessonDownloadBtn;
 
     @Override
     public String getTitle() {
@@ -39,7 +50,8 @@ public class CourseLessonsFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-
+        mLessonDownloadBtn = view.findViewById(R.id.lesson_download_btn);
+        mLessonInfoView = (TextView) view.findViewById(R.id.course_lesson_totalInfo);
         mListView = (EduSohoListView) view.findViewById(R.id.list_view);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -52,7 +64,7 @@ public class CourseLessonsFragment extends BaseFragment {
         if (bundle != null) {
             mCourseId = bundle.getInt(Const.COURSE_ID, 0);
         }
-        loadLessons(false);
+        loadLessons(true);
     }
 
     private void loadLessons(boolean mIsAddToken)
@@ -64,14 +76,50 @@ public class CourseLessonsFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                LessonsResult lessonsResult = mActivity.parseJsonValue(
+                final LessonsResult lessonsResult = mActivity.parseJsonValue(
                         object, new TypeToken<LessonsResult>(){});
                 if (lessonsResult == null) {
                     return;
                 }
 
-                mListView.pushData(lessonsResult.lessons);
+                int lessonNum = 0;
+                long totalTime = 0;
+                DateFormat format = new SimpleDateFormat("mm:ss");
+                try {
+                    for (LessonItem lessonItem : lessonsResult.lessons) {
+                        CourseLessonType type = CourseLessonType.value(lessonItem.type);
+                        if (type == CourseLessonType.VIDEO) {
+                            totalTime += format.parse(lessonItem.length).getTime();
+                        }
+
+                        if (LessonItem.ItemType.cover(lessonItem.itemType) == LessonItem.ItemType.LESSON) {
+                            lessonNum ++;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                mLessonInfoView.setText(String.format(
+                        "共%d个课时,视频课时总时长为%s", lessonNum, format.format(new Date(totalTime))));
+
                 mAdapter.updateLearnStatus(lessonsResult.learnStatuses);
+                mListView.pushData(lessonsResult.lessons);
+                mLessonDownloadBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(FragmentPageActivity.FRAGMENT, "CourseDownloadingFragment");
+                        bundle.putString(Const.ACTIONBAT_TITLE, "下载列表");
+
+                        CorusePaperActivity activity = (CorusePaperActivity)getActivity();
+                        bundle.putString(
+                                CourseDownloadingFragment.COURSE_JSON, app.gson.toJson(activity.getCourse()));
+                        bundle.putString(
+                                CourseDownloadingFragment.LIST_JSON, app.gson.toJson(lessonsResult.lessons));
+                        startAcitivityWithBundle("FragmentPageActivity", bundle);
+                    }
+                });
             }
         });
     }

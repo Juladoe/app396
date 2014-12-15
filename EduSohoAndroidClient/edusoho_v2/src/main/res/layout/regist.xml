@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="21dp"
     android:paddingRight="21dp"
     android:layout_below="@id/edusoho_actionbar"
@@ -15,6 +16,7 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:textSize="@dimen/base_size"
             android:focusableInTouchMode="true"
             android:singleLine="true"
             android:id="@+id/regist_email_edt"
@@ -35,6 +37,7 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:textSize="@dimen/base_size"
             android:focusable="true"
             android:textColorHint="@color/login_edt_hit"
             android:singleLine="true"
@@ -55,6 +58,7 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:textSize="@dimen/base_size"
             android:textColorHint="@color/login_edt_hit"
             android:singleLine="true"
             android:id="@+id/regist_pass_edt"
@@ -75,6 +79,7 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:textSize="@dimen/base_size"
             android:textColorHint="@color/login_edt_hit"
             android:singleLine="true"
             android:id="@+id/regist_pass2_edt"
@@ -88,7 +93,8 @@
     </RelativeLayout>
 
     <com.edusoho.kuozhi.view.HtmlTextView
-        android:textColor="@color/system_normal_text"
+        app:es_alpha="0.87"
+        android:textColor="@color/base_black_normal"
         android:layout_below="@id/input_pass2_layout"
         android:id="@+id/regist_info_lable"
         android:textSize="@dimen/regist_info_label"
@@ -99,11 +105,11 @@
     <com.edusoho.kuozhi.ui.widget.ButtonWidget
         android:layout_marginTop="30dp"
         android:id="@+id/regist_btn"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp"
-        android:textSize="@dimen/login_btn_text"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textSize="@dimen/base_large_size"
         android:textColor="@color/login_text"
         android:text="注  册"
         android:background="@drawable/login_btn_sel"

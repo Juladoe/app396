@@ -3,35 +3,25 @@ package com.edusoho.kuozhi.adapter.Course;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
-import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
-import com.edusoho.kuozhi.entity.LearnStatus;
+import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.LessonItem;
-import com.edusoho.kuozhi.model.Teacher;
-import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.html.EduHtml;
 import com.edusoho.kuozhi.view.ESTextView;
-import com.edusoho.listener.ResultCallback;
-import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -195,6 +185,7 @@ public class CourseLessonAdapter
         public TextView mTitle;
         public View mLessonLayout;
         public ImageView mLessonProgress;
+        public CheckBox mDownloadCheckBox;
 
         public ViewHolder(View view){
             super(view);
@@ -204,6 +195,7 @@ public class CourseLessonAdapter
             mChapter = (ESTextView) view.findViewById(R.id.course_details_lesson_chapter);
             mLessonType = (TextView) view.findViewById(R.id.course_details_lesson_type);
             mLessonProgress = (ImageView) view.findViewById(R.id.course_details_lesson_progress);
+            mDownloadCheckBox = (CheckBox) view.findViewById(R.id.course_lesson_donwload_checkbox);
         }
     }
 }

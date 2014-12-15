@@ -1,12 +1,9 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
@@ -17,8 +14,6 @@ import com.edusoho.kuozhi.model.CourseNotice;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
-
-import com.edusoho.kuozhi.util.html.EduHtml;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 

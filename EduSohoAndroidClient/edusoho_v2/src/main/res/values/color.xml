@@ -2,9 +2,9 @@
 <resources>
     <!-- base color -->
     <color name="base_card_bg">#ffffff</color>
-    <color name="base_light">#ddfdb933</color>
+    <color name="base_light">#fdb933</color>
     <color name="base_bg_color">#ffffff</color>
-    <color name="base_white_normal">#ddffffff</color>
+    <color name="base_white_normal">#ffffff</color>
     <color name="base_black_normal">#000000</color>
     <color name="base_black_low">#1e000000</color>
     <color name="base_gray">#dedede</color>
@@ -285,7 +285,7 @@
     <color name="more_setting_line">#e5e5e5</color>
     <color name="course_divider">#e5e5e5</color>
     <color name="course_details_info_bg">#bbffffff</color>
-    <color name="course_details_btn">#ffffff</color>
+    <color name="course_details_btn">@color/base_white_normal</color>
     <color name="lesson_item_free">#ffc947</color>
     <color name="pay_course_old_price">#ffc947</color>
     <color name="pay_course_end_price">#ff4747</color>

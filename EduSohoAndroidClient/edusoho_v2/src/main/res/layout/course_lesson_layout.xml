@@ -1,13 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <com.edusoho.kuozhi.ui.widget.EduSohoListView
-        android:layout_margin="8dp"
-        android:id="@id/list_view"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:id="@+id/course_lesson_totalInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/base_black_normal"
+                    android:textSize="@dimen/base_size"
+                    card_view:es_alpha="0.87" />
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    card_view:es_alpha="0.87"
+                    android:id="@+id/lesson_download_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/lesson_download_icon"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="下载"
+                    android:textColor="@color/base_color_normal" />
+
+            </RelativeLayout>
+
+            <com.edusoho.kuozhi.ui.widget.EduSohoListView
+                android:id="@id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

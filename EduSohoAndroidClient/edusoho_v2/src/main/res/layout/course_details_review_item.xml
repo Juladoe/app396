@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/course_userinfo"
-    android:paddingBottom="13dp"
-    android:paddingTop="13dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:background="@color/base_bg_color"
+        android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -14,14 +15,15 @@
             android:layout_marginRight="20dp"
             android:id="@+id/review_user_face"
             android:src="@drawable/myinfo_default_face"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.ESTextView
+            app:es_alpha="0.87"
             android:singleLine="true"
             android:textStyle="bold"
-            android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/course_details_info_nickname"
+            android:textColor="@color/base_black_normal"
+            android:textSize="@dimen/base_small_size"
             android:id="@+id/review_user_nickname"
             android:layout_toRightOf="@id/review_user_face"
             android:text="昵称"
@@ -37,10 +39,11 @@
             android:layout_height="@dimen/rating_height"
             android:isIndicator="true" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.ESTextView
+            app:es_alpha="0.54"
             android:maxLines="2"
-            android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/course_details_info_sign"
+            android:textColor="@color/base_black_normal"
+            android:textSize="@dimen/base_small_size"
             android:layout_alignBottom="@id/review_user_face"
             android:id="@+id/review_user_time"
             android:layout_toRightOf="@id/review_user_face"
@@ -48,11 +51,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.ESTextView
+            app:es_alpha="0.87"
             android:id="@+id/course_userinfo_message"
-            android:textSize="@dimen/course_details_info_subtitle"
+            android:textSize="@dimen/base_size"
             android:layout_marginTop="8dp"
-            android:textColor="@color/system_normal_text"
+            android:layout_toRightOf="@id/review_user_face"
+            android:textColor="@color/base_black_normal"
             android:layout_below="@id/review_user_face"
             android:text="评论内容"
             android:layout_width="match_parent"
