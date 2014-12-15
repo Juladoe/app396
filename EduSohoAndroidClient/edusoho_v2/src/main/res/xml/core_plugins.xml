@@ -109,4 +109,6 @@
     <plugin name="CourseReviewFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseReviewFragment"></plugin>
     <plugin name="CourseIntroductionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseIntroductionFragment"></plugin>
 
+    <!--在学课程-->
+    <plugin name="LeaenCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LeaenCourseFragment"></plugin>
 </plugins>
