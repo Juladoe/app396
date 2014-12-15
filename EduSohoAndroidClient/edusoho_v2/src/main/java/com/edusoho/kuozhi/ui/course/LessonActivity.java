@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,11 +46,8 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
-
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import menudrawer.MenuDrawer;
 import menudrawer.Position;
 
@@ -73,8 +69,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private String mLessonListJson;
     private Bundle fragmentData;
-    private int mIsFree;
-    private boolean mIsLearn;
     private LessonStatus mLessonStatus;
 
     protected MenuDrawer mMenuDrawer;
@@ -92,6 +86,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private LessonItem mPreviousLessonItem;
     private LessonItem mNextLessonItem;
+    private ArrayList<LessonItem> mCleanLessonList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,16 +227,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
             if (data != null) {
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                mIsFree = data.getIntExtra(Const.FREE, 0);
-                mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
+                //mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
                 mLessonType = data.getStringExtra(Const.LESSON_TYPE);
                 mLessonListJson = data.getStringExtra(Const.LIST_JSON);
             }
-
             setBackMode(BACK, mTitle);
-            //如果mLessonListJson==null,是笔记本页面跳转，如果获取课程下的所有课时信息
+            //如果mLessonListJson==null,是从笔记本页面跳转，需要获取课程下的所有课时信息
             if (mLessonListJson == null) {
                 RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
                 url.setParams(new String[]{
@@ -251,23 +244,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     @Override
                     public void callback(String url, String object, AjaxStatus ajaxStatus) {
                         mLessonListJson = object;
+                        clearLessonResult();
                         initLessonResult();
-
-                        if (mNextLessonItem == null) {
-                            mLessonNextBtn.setEnabled(false);
-                        } else if (mPreviousLessonItem == null) {
-                            mLessonPreviousBtn.setEnabled(false);
-                        }
+                        initRedirectBtn();
                     }
                 });
             } else {
+                clearLessonResult();
                 initLessonResult();
-
-                if (mNextLessonItem == null) {
-                    mLessonNextBtn.setEnabled(false);
-                } else if (mPreviousLessonItem == null) {
-                    mLessonPreviousBtn.setEnabled(false);
-                }
+                initRedirectBtn();
             }
 
             //loadLessonList();
@@ -278,13 +263,40 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
             loadLesson(mLessonId);
 
-            if (!mLessonType.equals("testpaper") && mIsLearn) {
-                Log.d(null, "load status->");
-                loadLessonStatus();
-            }
             bindListener();
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
+        }
+    }
+
+    private void initRedirectBtn() {
+        if (mNextLessonItem == null) {
+            mLessonNextBtn.setEnabled(false);
+        } else {
+            mLessonNextBtn.setEnabled(true);
+        }
+        if (mPreviousLessonItem == null) {
+            mLessonPreviousBtn.setEnabled(false);
+        } else {
+            mLessonPreviousBtn.setEnabled(true);
+        }
+    }
+
+    /**
+     * 去掉mLessonListJson中不是lesson的item
+     *
+     * @return
+     */
+    private void clearLessonResult() {
+        LessonsResult result = mActivity.parseJsonValue(
+                mLessonListJson, new TypeToken<LessonsResult>() {
+                });
+        mCleanLessonList = result.lessons;
+
+        for (int i = 0; i < mCleanLessonList.size(); i++) {
+            if (!mCleanLessonList.get(i).itemType.equals("lesson")) {
+                mCleanLessonList.remove(i--);
+            }
         }
     }
 
@@ -292,22 +304,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
      * 初始化前一个课时和后一个课时信息
      */
     private void initLessonResult() {
-        LessonsResult result = mActivity.parseJsonValue(
-                mLessonListJson, new TypeToken<LessonsResult>() {
-                });
-        List<LessonItem> list = result.lessons;
-
-        for (int i = 0; i < list.size(); i++) {
-            if (!list.get(i).itemType.equals("lesson")) {
-                list.remove(i--);
-            }
-        }
-
+        ArrayList<LessonItem> list = mCleanLessonList;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).id == mLessonId) {
                 if (i == 0) {
                     mPreviousLessonItem = null;
-                    mNextLessonItem = list.get(i + 1);
+                    mNextLessonItem = list.size() > 1 ? list.get(i + 1) : null;
                 } else if (i == list.size() - 1) {
                     mPreviousLessonItem = list.get(i - 1);
                     mNextLessonItem = null;
@@ -320,19 +322,27 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void goToAnotherLesson(final LessonItem lessonItem) {
-        mActivity.getCoreEngine().runNormalPlugin(
-                LessonActivity.TAG, mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.COURSE_ID, mCourseId);
-                        startIntent.putExtra(Const.FREE, lessonItem.free);
-                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lessonItem.title);
-                        startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
-                        startIntent.putExtra(Const.IS_LEARN, mIsLearn);
-                    }
-                });
+        mLessonId = lessonItem.id;
+        mLessonType = lessonItem.type;
+        initLessonResult();
+        initRedirectBtn();
+        hieToolsByAnim();
+        setTitle(lessonItem.title);
+        loadLesson(mLessonId);
+
+//        mActivity.getCoreEngine().runNormalPlugin(
+//                LessonActivity.TAG, mActivity, new PluginRunCallback() {
+//                    @Override
+//                    public void setIntentDate(Intent startIntent) {
+//                        startIntent.putExtra(Const.COURSE_ID, mCourseId);
+//                        startIntent.putExtra(Const.FREE, lessonItem.free);
+//                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+//                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+//                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lessonItem.title);
+//                        startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
+//                        startIntent.putExtra(Const.IS_LEARN, mIsLearn);
+//                    }
+//                });
     }
 
     private void showMoreBtn(View parent) {
@@ -433,7 +443,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonStatus = parseJsonValue(
                         object, new TypeToken<LessonStatus>() {
                         });
-
+                if (mLessonStatus.learnStatus != LearnStatus.finished) {
+                    mLessonStatus.learnStatus = LearnStatus.learning;
+                }
                 mToolsLayout.setVisibility(View.VISIBLE);
                 showToolsByAnim();
                 setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
@@ -522,9 +534,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mIsLearn) {
-            //getMenuInflater().inflate(R.menu.lesson_menu, menu);
-        }
+        //if (mIsLearn) {
+        //getMenuInflater().inflate(R.menu.lesson_menu, menu);
+        //}
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -543,6 +555,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 LessonItem lessonItem = getLessonResultType(mLessonType, object);
                 if (lessonItem == null) {
                     return;
+                } else {
+                    if (!mLessonType.equals("testpaper") && (lessonItem.free == 0 ? true : false)) {
+                        loadLessonStatus();
+                    }
                 }
 
                 switchLoadLessonContent(lessonItem);
