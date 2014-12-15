@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment.course;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -9,12 +10,16 @@ import android.widget.TextView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.CourseLessonAdapter;
+import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
+import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.Const;
@@ -120,7 +125,61 @@ public class CourseLessonsFragment extends BaseFragment {
                         startAcitivityWithBundle("FragmentPageActivity", bundle);
                     }
                 });
+
+                mAdapter.setOnItemClick(new RecyclerViewListBaseAdapter.RecyclerItemClick() {
+                    @Override
+                    public void onItemClick(Object obj, int position) {
+                        showLesson((LessonItem)obj);
+                    }
+                });
             }
         });
+    }
+
+    private void showLesson(final LessonItem lesson)
+    {
+        CourseLessonType courseLessonType = CourseLessonType.value(lesson.type);
+        if (courseLessonType == CourseLessonType.EMPTY) {
+            mActivity.longToast("客户端暂不支持此课时类型！");
+            return;
+        }
+
+        if (Const.NETEASE_OPEN_COURSE.equals(lesson.mediaSource)) {
+            mActivity.longToast("客户端暂不支持网易云视频");
+            return;
+        }
+
+        if (!"published".equals(lesson.status)) {
+            mActivity.longToast("课时尚未发布！请稍后浏览！");
+            return;
+        }
+        if (lesson.free != LessonItem.FREE ) {
+            if (mActivity.app.loginUser == null) {
+                mActivity.longToast("请登录后学习！");
+                LoginActivity.start(mActivity);
+                return;
+            }
+
+            /*
+            if (!mIsLearn) {
+                mActivity.longToast("请加入学习！");
+                return;
+            }
+            */
+        }
+
+        mActivity.getCoreEngine().runNormalPlugin(
+                LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.COURSE_ID, lesson.courseId);
+                        startIntent.putExtra(Const.FREE, lesson.free);
+                        startIntent.putExtra(Const.LESSON_ID, lesson.id);
+                        startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
+                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                        //startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
+                        //startIntent.putExtra(Const.IS_LEARN, mIsLearn);
+                    }
+                });
     }
 }

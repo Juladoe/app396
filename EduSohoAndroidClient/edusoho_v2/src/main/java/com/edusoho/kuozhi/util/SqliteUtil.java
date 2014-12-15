@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class SqliteUtil extends SQLiteOpenHelper{
 
     private Context mContext;
-    private static final int dbVersion = 5;
+    private static final int dbVersion = 6;
 
     private static SqliteUtil instance;
 

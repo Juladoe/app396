@@ -117,7 +117,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
 
         titles = new String[] { "简介",  "教师", "课程列表",  "评价" };
         fragmentArrayList = new String[] {
-                "CourseIntroductionFragment", "CourseTeacherInfoFragment",
+                "CourseTeacherInfoFragment", "CourseTeacherInfoFragment",
                 "CourseLessonsFragment", "CourseReviewFragment"
         };
 

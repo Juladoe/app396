@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
@@ -47,9 +49,9 @@ import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import menudrawer.MenuDrawer;
 import menudrawer.Position;
 
@@ -222,7 +224,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void initView() {
         try {
             Intent data = getIntent();
-            setBackMode(BACK, mTitle);
             mToolsLayout = findViewById(R.id.lesson_tools_layout);
             mLessonNextBtn = (EduSohoTextBtn) findViewById(R.id.lesson_next);
             mLessonPreviousBtn = (EduSohoTextBtn) findViewById(R.id.lesson_previous);
@@ -238,6 +239,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonType = data.getStringExtra(Const.LESSON_TYPE);
                 mLessonListJson = data.getStringExtra(Const.LIST_JSON);
             }
+
+            setBackMode(BACK, mTitle);
             //如果mLessonListJson==null,是笔记本页面跳转，如果获取课程下的所有课时信息
             if (mLessonListJson == null) {
                 RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
@@ -580,9 +583,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
+                    File localFile = getLocalLesson(normalLesson.id);
                     //String proxyUrl = "http://localhost:5820/" + normalLesson.mediaUri;
-                    fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
-                    fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
+                    if (localFile != null) {
+                        fragmentData.putString(Const.MEDIA_URL, localFile.getAbsolutePath());
+                    } else {
+                        fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
+                        fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
+                    }
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
@@ -590,6 +598,27 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 return normalLesson;
         }
         return null;
+    }
+
+    /**
+     * 获取本地视频列表
+     * @param lessonId
+     * @return
+     */
+    private File getLocalLesson(int lessonId)
+    {
+        File workSpace = EdusohoApp.getWorkSpace();
+        if (workSpace == null) {
+            return null;
+        }
+
+        StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
+        dirBuilder.append("/videos/")
+                .append(app.domain)
+                .append("/")
+                .append(lessonId);
+
+        return new File(dirBuilder.toString(), "play.m3u8");
     }
 
     private void setLearnStatus(LearnStatus learnStatus) {

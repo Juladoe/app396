@@ -79,7 +79,7 @@ public class LocalLessonDownListAdapter
             if (modle != null) {
                 viewHolder.mDownloadProgressBar.setMax(modle.totalNum);
                 viewHolder.mDownloadProgressBar.setProgress(modle.downloadNum);
-                totalSize = (int) (downloadSize * (modle.downloadNum / (float) modle.totalNum));
+                totalSize = (int) (downloadSize * (modle.totalNum / (float) modle.downloadNum));
             }
         }
 

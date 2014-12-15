@@ -354,7 +354,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 playUrl = uri.getPath();
             }
         }
-
+        Log.d(null, "playUrl->" + playUrl);
         return playUrl;
     }
 

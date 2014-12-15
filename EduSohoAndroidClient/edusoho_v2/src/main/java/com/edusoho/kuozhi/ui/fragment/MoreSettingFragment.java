@@ -75,7 +75,7 @@ public class MoreSettingFragment extends BaseFragment {
         mOffLineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("LocalCoruseActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.ACTIONBAT_TITLE, "视频下载");

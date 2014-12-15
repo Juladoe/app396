@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,7 +28,7 @@ import java.util.Timer;
 
 /**
  * Created by howzhi on 14-9-26.
- */
+*/
 public class VideoLessonFragment extends BaseFragment {
 
     private VideoView mVideoView;

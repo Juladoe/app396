@@ -43,6 +43,7 @@
     <plugin name="NoteList" package="com.edusoho.kuozhi.ui.note.NoteList" version="1.0"></plugin>
     <plugin name="NoteContent" package="com.edusoho.kuozhi.ui.note.NoteContent" version="1.0"></plugin>
     <plugin name="NoteReplyActivity" package="com.edusoho.kuozhi.ui.note.NoteReplyActivity" version="1.0"></plugin>
+    <plugin name="LocalCoruseActivity" package="com.edusoho.kuozhi.ui.course.LocalCoruseActivity" version="1.0"></plugin>
 
     <!-- service -->
     <plugin name="EdusohoMainService" package="com.edusoho.kuozhi.Service.EdusohoMainService" version="1.0"></plugin>
@@ -64,7 +65,7 @@
     <plugin name="LearningCourseFragment" package="com.edusoho.kuozhi.ui.fragment.LearningCourseFragment" version="1.0"></plugin>
     <plugin name="LearnedCourseFragment" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragment" version="1.0"></plugin>
     <plugin name="TextLessonFragment" package="com.edusoho.kuozhi.ui.fragment.TextLessonFragment" version="1.0"></plugin>
-    <plugin name="VideoLessonFragment" package="com.edusoho.kuozhi.ui.fragment.VideoLessonFragment" version="1.0"></plugin>
+    <plugin name="VideoLessonFragment" package="com.edusoho.plugin.video.CustomVideoFragment" version="1.0"></plugin>
     <plugin name="BDVideoLessonFragment" package="com.edusoho.plugin.video.CustomVideoFragment" version="1.0"></plugin>
     <plugin name="EduVideoViewFragment" package="com.edusoho.kuozhi.ui.fragment.video.EduVideoViewFragment" version="1.0"></plugin>
     <plugin name="CoursePageFragment" package="com.edusoho.kuozhi.ui.fragment.course.CoursePageFragment" version="1.0"></plugin>

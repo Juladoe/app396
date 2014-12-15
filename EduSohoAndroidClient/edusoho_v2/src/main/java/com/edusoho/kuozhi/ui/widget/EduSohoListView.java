@@ -156,9 +156,10 @@ public class EduSohoListView extends RecyclerView {
 
         View v = getChildAt(getChildCount() - 1);
         if (v != null) {
-            Log.d(null, "v->" + v.getHeight());
+            int totalH = getChildTotalHeight();
+            Log.d(null, "totalH->" + totalH);
             expandSpec = MeasureSpec.makeMeasureSpec(
-                    getChildTotalHeight(), MeasureSpec.AT_MOST);
+                    totalH, MeasureSpec.AT_MOST);
         }
 
         super.onMeasure(widthMeasureSpec, expandSpec);

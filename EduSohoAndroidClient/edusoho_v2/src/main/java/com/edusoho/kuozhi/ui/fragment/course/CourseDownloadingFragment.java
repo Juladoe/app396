@@ -94,7 +94,8 @@ public class CourseDownloadingFragment extends BaseFragment {
                         "course-" + mCourse.id,
                         app.gson.toJson(mCourse)
                 );
-                M3U8DownService.startDown(mContext, lessonItem.id, lessonItem.courseId);
+                M3U8DownService.startDown(
+                        mContext, lessonItem.id, lessonItem.courseId, lessonItem.title);
                 mAdapter.updateLessonIds(lessonItem.id, DownLoadStatus.STARTING);
             }
         });

@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.util.server.handler;
 import android.net.Uri;
 import android.util.Log;
 
-import com.androidquery.util.AQUtility;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 
 import java.io.BufferedInputStream;
@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.net.URLConnection;
 
 import ch.boye.httpclientandroidlib.HttpEntity;
 import ch.boye.httpclientandroidlib.HttpException;
@@ -65,22 +64,19 @@ public class FileHandler implements HttpRequestHandler {
 
         String url = httpRequest.getRequestLine().getUri();
         url = url.substring(1, url.length());
+        Uri fileName = Uri.parse(url);
 
-        Uri proxyUri = Uri.parse(url);
-
-        String md5Name = DigestUtils.md5(proxyUri.toString());
-        File videoFile = getVideoFile(md5Name);
-        Log.d(TAG, "proxyUri-->" + proxyUri.toString());
-        Log.d(TAG, "md5Name-->" + md5Name);
+        File videoFile = getLocalFile(fileName.toString());
+        Log.d(null, "fileName->" + fileName);
         if (videoFile.exists()) {
-            Log.d(TAG, "cache-->" + videoFile);
-            FileEntity fileEntity = new FileEntity(new File("/mnt/sdcard-ext/t.mp4"), "video/mp4; charset=UTF-8");
-            httpResponse.setHeader("Content-Type", "video/mp2t; charset=UTF-8");
-            Log.d(TAG, "contentType-->" + "video/mp4; charset=UTF-8");
+            Log.d(null, "cache->" + videoFile);
+            FileEntity fileEntity = new FileEntity(videoFile);
+            //httpResponse.setHeader("Content-Type", "video/mp2t; charset=UTF-8");
             httpResponse.setEntity(fileEntity);
             return;
         }
-        HttpEntity entity = proxyRequest(proxyUri.getHost(), proxyUri.toString());
+
+        HttpEntity entity = proxyRequest(fileName.getHost(), fileName.toString());
         httpResponse.setEntity(entity);
     }
 
@@ -152,7 +148,7 @@ public class FileHandler implements HttpRequestHandler {
             this.name = name;
             try {
                 String md5Name = DigestUtils.md5(name);
-                File videoFile = getVideoFile(md5Name);
+                File videoFile = getLocalFile(md5Name);
                 outputStream = new FileOutputStream(videoFile);
                 mWriteMode = true;
                 Log.d(TAG, "create file->" + md5Name);
@@ -190,7 +186,7 @@ public class FileHandler implements HttpRequestHandler {
         }
     }
 
-    private File getVideoFile(String name)
+    private File getLocalFile(String name)
     {
         File videoDir = getVideoDir();
         File videoFile = new File(videoDir, name);
@@ -199,17 +195,15 @@ public class FileHandler implements HttpRequestHandler {
 
     private File getVideoDir()
     {
-        File cacheDir = AQUtility.getCacheDir(mActivity);
-        File videoDir = new File(cacheDir, "videos");
-        if (!videoDir.exists()) {
-            videoDir.mkdir();
+        File workSpace = EdusohoApp.getWorkSpace();
+        if (workSpace == null) {
+            return null;
         }
 
-        File hostDir = new File(videoDir, mTargetHost);
-        if (!hostDir.exists()) {
-            hostDir.mkdir();
-        }
+        StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
+        dirBuilder.append("/videos/")
+                .append(mTargetHost);
 
-        return hostDir;
+        return new File(dirBuilder.toString());
     }
 }

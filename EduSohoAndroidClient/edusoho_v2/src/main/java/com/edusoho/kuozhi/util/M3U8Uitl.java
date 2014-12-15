@@ -58,7 +58,7 @@ public class M3U8Uitl {
             "#EXTINF:([\\d\\.]+),", Pattern.DOTALL);
     private static Pattern M3U8_EXT_X_KEY_PAT = Pattern.compile(
             "#EXT-X-KEY:METHOD=AES-128,URI=\"([^,\"]+)\",IV=(\\w+)", Pattern.DOTALL);
-    private static Pattern URL_PAT = Pattern.compile("(http://[^\"]+)", Pattern.DOTALL);
+    private static Pattern URL_PAT = Pattern.compile("(http://[^\"\n]+)", Pattern.DOTALL);
 
     private Context mContext;
     private LessonItem mLessonItem;
@@ -217,7 +217,6 @@ public class M3U8Uitl {
             return;
         }
 
-
         Log.d(TAG, "load lesson " + lessonId);
         loadLessonUrl(lessonId, courseId);
     }
@@ -283,9 +282,11 @@ public class M3U8Uitl {
 
         //插入需要下载的任务
         for (String key : m3U8File.keyList) {
+            Log.d(TAG, "insert m3u8 key " + key);
             insertM3U8SourceToDb(mLessonItem.id, key);
         }
         for (String key : m3U8File.urlList) {
+            Log.d(TAG, "insert m3u8 src " + key);
             insertM3U8SourceToDb(mLessonItem.id, key);
         }
     }
@@ -295,14 +296,13 @@ public class M3U8Uitl {
      *
      * @param lessonId
      * @param url
-     */
+    */
     private void insertM3U8SourceToDb(int lessonId, String url) {
         ContentValues cv = new ContentValues();
         cv.put("lessonId", lessonId);
         cv.put("finish", 0);
         cv.put("url", DigestUtils.md5(url));
         mSqliteUtil.insert("data_m3u8_url", cv);
-        Log.d(TAG, "insert m3u8 src " + url);
     }
 
     private void updateDownloadStatus(String url, int finish) {
@@ -336,11 +336,12 @@ public class M3U8Uitl {
         String playList = m3U8DbModle.playList;
         StringBuffer stringBuffer = new StringBuffer();
         Matcher matcher = URL_PAT.matcher(playList);
+
+        String replaceStr = "http://localhost:8800/" + mLessonItem.id + "/";
         while (matcher.find()) {
             String url = matcher.group();
             matcher.appendReplacement(
-                    stringBuffer, new File(dir, DigestUtils.md5(url)).getAbsolutePath());
-            stringBuffer.append("\n");
+                    stringBuffer, replaceStr + DigestUtils.md5(url));
         }
         matcher.appendTail(stringBuffer);
 
@@ -368,6 +369,7 @@ public class M3U8Uitl {
                     Intent intent = new Intent(DownLoadStatusReceiver.ACTION);
                     intent.putExtra(Const.LESSON_ID, mLessonItem.id);
                     intent.putExtra(Const.COURSE_ID, mLessonItem.courseId);
+                    intent.putExtra(Const.ACTIONBAT_TITLE, mLessonItem.title);
                     mContext.sendBroadcast(intent);
                 } catch (Exception e) {
                     //超时处理
@@ -444,24 +446,26 @@ public class M3U8Uitl {
     }
 
     /*
-    解析m3u8列表
-     */
+        解析m3u8列表
+    */
     private M3U8File parseM3u8ListFile(InputStream inputStream) {
         M3U8File m3U8File = new M3U8File();
         StringBuilder stringBuilder = new StringBuilder();
         int pos = -1;
+        String oldKey = null;
         try {
             BufferedReader bufferedInputStream = new BufferedReader(
                     new InputStreamReader(inputStream));
             String line = null;
             while ((line = bufferedInputStream.readLine()) != null) {
-                stringBuilder.append(line);
+                stringBuilder.append(line).append("\n");
                 Matcher matcher = M3U8_STREAM_PAT.matcher(line);
                 if (matcher.find()) {
                     if (m3U8File.m3u8List == null) {
                         m3U8File.type = M3U8File.STREAM_LIST;
                         m3U8File.m3u8List = new ArrayList<M3U8ListItem>();
                     }
+
                     M3U8ListItem item = new M3U8ListItem();
                     item.bandwidth = Integer.parseInt(matcher.group(2));
                     item.programId = Integer.parseInt(matcher.group(1));
@@ -472,25 +476,23 @@ public class M3U8Uitl {
 
                 matcher = M3U8_EXT_X_KEY_PAT.matcher(line);
                 if (matcher.find()) {
-                    if (m3U8File.keyList == null) {
-                        m3U8File.type = M3U8File.PLAY_LIST;
-                        m3U8File.keyList = new ArrayList<String>();
+                    m3U8File.type = M3U8File.PLAY_LIST;
+                    String key = matcher.group(1);
+                    if (! key.equals(oldKey)) {
+                        oldKey = key;
+                        m3U8File.keyList.add(matcher.group(1));
                     }
-                    m3U8File.keyList.add(matcher.group(1));
                     pos = 1;
                     continue;
                 }
 
                 matcher = M3U8_EXTINF_PAT.matcher(line);
                 if (matcher.find()) {
-                    if (m3U8File.urlList == null) {
-                        m3U8File.type = M3U8File.PLAY_LIST;
-                        m3U8File.urlList = new ArrayList<String>();
-                    }
+                    m3U8File.type = M3U8File.PLAY_LIST;
                     pos = 2;
                     continue;
                 }
-
+                //判断url类型
                 switch (pos) {
                     case 0:
                         M3U8ListItem m3U8ListItem = m3U8File.m3u8List.get(
@@ -518,8 +520,8 @@ public class M3U8Uitl {
             }
         }
 
-        Log.d(TAG, "end parse m3u8 file");
         m3U8File.content = stringBuilder.toString();
+        Log.d(TAG, "end parse m3u8 file ");
         return m3U8File;
     }
 }

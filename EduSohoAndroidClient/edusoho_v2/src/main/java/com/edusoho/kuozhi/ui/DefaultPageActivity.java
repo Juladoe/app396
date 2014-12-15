@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.StatusCallback;
@@ -72,6 +73,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         });
 
         logSchoolInfoToServer();
+        new CacheServer(mActivity, Const.CACHE_PROT).start();
     }
 
     private void showUpdateDlg(final AppUpdateInfo result)
