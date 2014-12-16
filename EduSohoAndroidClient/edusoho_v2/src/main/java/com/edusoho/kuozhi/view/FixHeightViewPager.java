@@ -28,28 +28,30 @@ public class FixHeightViewPager extends ViewPager {
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        /*
-        int expandSpec = MeasureSpec.makeMeasureSpec(
-                200, MeasureSpec.EXACTLY);
-        measureChildren(widthMeasureSpec, expandSpec);
-        */
         if (isMeasure) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
+
         int height = 0;
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            int expandSpec = MeasureSpec.makeMeasureSpec(
+                    Integer.MAX_VALUE >>2, MeasureSpec.AT_MOST);
+            child.measure(widthMeasureSpec, expandSpec);
+            //child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            //int h = child.getMeasuredHeight();
             int h = child.getMeasuredHeight();
+            Log.d(null, "h-> " + h);
             childHeightList.add(i, h);
             if (h > height)
                 height = h;
         }
         Log.d(null, "viewpager count->" + count);
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
 
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST);
+        //setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 

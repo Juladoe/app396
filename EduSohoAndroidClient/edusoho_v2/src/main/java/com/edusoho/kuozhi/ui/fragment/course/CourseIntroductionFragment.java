@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment.course;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;

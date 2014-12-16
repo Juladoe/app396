@@ -61,8 +61,6 @@
     <string name="font_me">&#xe636;</string>
     <string name="font_recommend">&#xe634;</string>
     <string name="font_found">&#xe632;</string>
-    <string name="font_more"></string>
-    <string name="font_search">&#xe686;</string>
     <string name="font_favoirte"></string>
     <string name="font_clear">&#xe63d;</string>
     <string name="font_search_clear">&#xe655;</string>
@@ -76,9 +74,9 @@
     <string name="font_other">&#xe60e;</string>
 
     <!--lesson tools -->
-    <string name="learned_status">&#xe672;</string>
+    <string name="learned_status">&#xe657;</string>
     <string name="course_paybtn">&#xe68b;</string>
-    <string name="learning_status">&#xe671;</string>
+    <string name="learning_status">&#xe656;</string>
     <string name="learn_note">&#xe624;</string>
     <string name="learn_question">&#xe67b;</string>
     <string name="learn_more">&#xe616;</string>
@@ -86,6 +84,8 @@
     <string name="lesson_previous">&#xe687;</string>
 
     <!-- base font -->
+    <string name="font_search">&#xe64b;</string>
+    <string name="font_more">&#xe68e;</string>
     <string name="font_expand">&#xe63a;</string>
     <string name="font_btn_learning">&#xe671;</string>
     <string name="font_btn_finish">&#xe672;</string>

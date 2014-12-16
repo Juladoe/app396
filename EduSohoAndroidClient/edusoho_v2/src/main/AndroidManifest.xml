@@ -154,6 +154,7 @@
         <activity
             android:name="com.edusoho.kuozhi.ui.Message.MessageLetterListActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <receiver android:name="com.edusoho.kuozhi.broadcast.NetStatusReceiver">
