@@ -2,18 +2,14 @@ package com.edusoho.kuozhi.ui.Message;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Message.LetterListAdapter;
-import com.edusoho.kuozhi.adapter.MessageListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Message.LetterModel;
-import com.edusoho.kuozhi.model.Message.LetterResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -35,7 +31,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
     private EditText etSendContent;
     private View btnSendLetter;
     public static final String CONVERSATION_ID = "conversation_Id";
-    public static final String CONVERSATION_WITH = "conversation_with";
+    public static final String CONVERSATION_FROM_NAME = "conversation_with";
     public static final String CONVERSATION_FROM_ID = "conversation_from_Id";
 
     private int mStart;
@@ -53,7 +49,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
 
     private void initData() {
         mConversationId = getIntent().getIntExtra(CONVERSATION_ID, 0);
-        mConversationName = getIntent().getStringExtra(CONVERSATION_WITH);
+        mConversationName = getIntent().getStringExtra(CONVERSATION_FROM_NAME);
         mFromId = getIntent().getIntExtra(CONVERSATION_FROM_ID, 0);
     }
 

@@ -7,12 +7,15 @@ import android.view.View;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.Service.PusherService;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EduUpdateView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
@@ -70,8 +73,7 @@ public class MoreSettingFragment extends BaseFragment {
         mSettingBtn.addNotifyType("app_update");
     }
 
-    private void bindListener()
-    {
+    private void bindListener() {
         mOffLineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

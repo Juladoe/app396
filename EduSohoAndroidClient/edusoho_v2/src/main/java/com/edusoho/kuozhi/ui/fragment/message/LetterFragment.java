@@ -73,7 +73,7 @@ public class LetterFragment extends BaseFragment {
                         LetterSummaryModel model = (LetterSummaryModel) parent.getItemAtPosition(position);
                         if (model != null) {
                             startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, model.id);
-                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_WITH, model.user.nickname);
+                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_NAME, model.user.nickname);
                             startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_ID, model.fromId);
                         }
                     }
