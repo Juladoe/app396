@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
@@ -45,9 +46,8 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
-
+import java.io.File;
 import java.util.ArrayList;
-
 import menudrawer.MenuDrawer;
 import menudrawer.Position;
 
@@ -599,9 +599,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
+                    File localFile = getLocalLesson(normalLesson.id);
                     //String proxyUrl = "http://localhost:5820/" + normalLesson.mediaUri;
-                    fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
-                    fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
+                    if (localFile != null) {
+                        fragmentData.putString(Const.MEDIA_URL, localFile.getAbsolutePath());
+                    } else {
+                        fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
+                        fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
+                    }
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
@@ -609,6 +614,27 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 return normalLesson;
         }
         return null;
+    }
+
+    /**
+     * 获取本地视频列表
+     * @param lessonId
+     * @return
+     */
+    private File getLocalLesson(int lessonId)
+    {
+        File workSpace = EdusohoApp.getWorkSpace();
+        if (workSpace == null) {
+            return null;
+        }
+
+        StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
+        dirBuilder.append("/videos/")
+                .append(app.domain)
+                .append("/")
+                .append(lessonId);
+
+        return new File(dirBuilder.toString(), "play.m3u8");
     }
 
     private void setLearnStatus(LearnStatus learnStatus) {

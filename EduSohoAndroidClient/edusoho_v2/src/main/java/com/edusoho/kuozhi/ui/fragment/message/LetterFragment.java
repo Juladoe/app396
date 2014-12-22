@@ -13,7 +13,6 @@ import com.edusoho.kuozhi.adapter.MessageLetterSummaryAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
-import com.edusoho.kuozhi.model.Message.LetterSummaryResult;
 import com.edusoho.kuozhi.ui.Message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
@@ -21,11 +20,7 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.PipedOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import cn.trinea.android.common.util.ToastUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -36,7 +31,6 @@ public class LetterFragment extends BaseFragment {
     private static final int RETURN_REFRESH = 0;
     private RefreshListWidget mLetterSummaryList;
     private View mLoadingView;
-    private int mStart;
 
     @Override
     public String getTitle() {
@@ -62,7 +56,7 @@ public class LetterFragment extends BaseFragment {
         mLetterSummaryList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                loadLetterSummary(mStart, false);
+                loadLetterSummary(mLetterSummaryList.getStart(), false);
             }
 
             @Override
@@ -79,7 +73,7 @@ public class LetterFragment extends BaseFragment {
                         LetterSummaryModel model = (LetterSummaryModel) parent.getItemAtPosition(position);
                         if (model != null) {
                             startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, model.id);
-                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_WITH, model.user.nickname);
+                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_NAME, model.user.nickname);
                             startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_ID, model.fromId);
                         }
                     }
@@ -91,9 +85,10 @@ public class LetterFragment extends BaseFragment {
 
     private void loadLetterSummary(final int start, final boolean isRefresh) {
         RequestUrl requestUrl = app.bindUrl(Const.MESSAGE_LETTER_SUMMARY, true);
-        HashMap<Object, String> hashMap = new HashMap<Object, String>();
-        hashMap.put("limit", String.valueOf(Const.LIMIT));
-        hashMap.put("start", "0");
+        requestUrl.setParams(new String[] {
+                "limit", String.valueOf(Const.LIMIT),
+                "start", String.valueOf(start)
+        });
         final ResultCallback callback = new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
@@ -107,7 +102,7 @@ public class LetterFragment extends BaseFragment {
                     }
 
                     mLetterSummaryList.pushData(result);
-                    mLetterSummaryList.setStart(start);
+                    mLetterSummaryList.setStart(start + Const.LIMIT);
                 } catch (Exception ex) {
                     Log.e(TAG, ex.toString());
                 }

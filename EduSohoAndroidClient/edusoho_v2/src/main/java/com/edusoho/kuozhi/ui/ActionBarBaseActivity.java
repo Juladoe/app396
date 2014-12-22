@@ -71,13 +71,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         initActivity();
     }
 
-    public void setTitleClickListener(View.OnClickListener clickListener)
-    {
+    public void setTitleClickListener(View.OnClickListener clickListener) {
         mTitleTextView.setOnClickListener(clickListener);
     }
 
-    private void initActivity()
-    {
+    private void initActivity() {
         app = (EdusohoApp) getApplication();
         app.setDisplay(this);
         gson = app.gson;
@@ -86,6 +84,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
         setProgressBarIndeterminateVisibility(false);
+        app.mActivity = mActivity;
+        app.mContext = mContext;
     }
 
     @Override
@@ -160,8 +160,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.setTitle(title);
     }
 
-    public ImageView addTitleViewIcon(int icon)
-    {
+    public ImageView addTitleViewIcon(int icon) {
         ViewGroup titleView = (ViewGroup) mActionBar.getCustomView();
         mTitleIconView = new ImageView(mContext);
         mTitleIconView.setImageResource(icon);
@@ -170,13 +169,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return mTitleIconView;
     }
 
-    public void setBackIcon(int icon)
-    {
+    public void setBackIcon(int icon) {
         mActionBar.setHomeAsUpIndicator(icon);
     }
 
-    public void setBackMode(String backTitle, String title)
-    {
+    public void setBackMode(String backTitle, String title) {
         View titleView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
         mTitleTextView = (TextView) titleView.findViewById(R.id.action_bar_title);
         mTitleTextView.setText(title);
@@ -192,8 +189,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         }
     }
 
-    public void setBackMode(String backTitle, String title, int icon)
-    {
+    public void setBackMode(String backTitle, String title, int icon) {
         setBackMode(backTitle, title);
         setBackIcon(icon);
     }

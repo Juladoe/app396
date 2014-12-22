@@ -15,7 +15,7 @@
     <TextView
         android:singleLine="true"
         android:ellipsize="end"
-        android:textSize="@dimen/sys_mid_normal"
+        android:textSize="@dimen/base_size"
         android:textColor="@color/notify_title"
         android:layout_toRightOf="@id/notify_icon"
         android:id="@+id/notify_title"

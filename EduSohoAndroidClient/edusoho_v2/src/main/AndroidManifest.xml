@@ -22,6 +22,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -124,6 +126,8 @@
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionActivity"
             android:configChanges="keyboard|orientation"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.question.QuestionDetailActivity"
@@ -142,14 +146,19 @@
             android:name="com.edusoho.plugin.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop" />
+
         <activity
             android:name="com.edusoho.kuozhi.ui.Message.MessageTabActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name="com.edusoho.kuozhi.ui.course.LocalCoruseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.edusoho.kuozhi.ui.Message.MessageLetterListActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <receiver android:name="com.edusoho.kuozhi.broadcast.NetStatusReceiver">
@@ -177,7 +186,8 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.edusoho.kuozhi.ui.note.NoteListActivity"
+        <activity
+            android:name="com.edusoho.kuozhi.ui.note.NoteListActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
@@ -186,6 +196,10 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+
+        <service android:name=".Service.PusherService" />
+        <receiver android:name=".broadcast.AlarmReceiver" />
+
 
     </application>
 

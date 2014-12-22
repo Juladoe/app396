@@ -480,7 +480,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
             }
         });
 
-        mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
+        //mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
 
         mFragmentPager.setAdapter(fragmentAdapter);
         mTabs.setViewPager(mFragmentPager);

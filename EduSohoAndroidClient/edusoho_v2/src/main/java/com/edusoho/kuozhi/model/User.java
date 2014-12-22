@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.model;
 
+import java.io.Serializable;
+
 /**
  * Created by howzhi on 14-5-25.
  */
-public class User {
+public class User implements Serializable {
     public String nickname;
     public String email;
     public int id;
