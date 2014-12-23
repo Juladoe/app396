@@ -1,0 +1,12 @@
+diff a/EduSohoAndroidClient/edusoho_v2/src/main/res/values/strings.xml b/EduSohoAndroidClient/edusoho_v2/src/main/res/values/strings.xml	(rejected hunks)
+@@ -99,6 +99,9 @@
+     <!-- note -->
+     <string name="edit_content">编辑</string>
+     <string name="note_content">笔记内容</string>
++<<<<<<< HEAD
+     <string name="hello_blank_fragment">Hello blank fragment</string>
++=======
++>>>>>>> 8d18352983fdad09c442a86bfbd9ce637b3df96c
+ 
+ </resources>
+\ No newline at end of file

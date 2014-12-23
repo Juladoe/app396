@@ -166,6 +166,7 @@
     <color name="regist_btn_gradient">#ffffff</color>
     <color name="regist_btn_gradient_pressed">#fff7f7f7</color>
 
+    <color name="standby_stress_color">#ff5822</color>
     <color name="logout_btn_stroke">#aaa</color>
     <color name="logout_btn_gradient">#ddff5d47</color>
     <color name="logout_btn_gradient_pressed">#ff5d47</color>

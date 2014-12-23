@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListAdapter;
@@ -62,7 +63,8 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
         mDividerHeight = ta.getDimensionPixelSize(R.styleable.RefreshListWidget_rlw_dividerHeight, 0);
         mDividerColor = ta.getColor(R.styleable.RefreshListWidget_rlw_dividerColor, 0);
         getRefreshableView().setDividerHeight(mDividerHeight);
-        Log.d(null, "getRefreshableView " +getRefreshableView());
+        getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
+        Log.d(null, "getRefreshableView " +mDividerHeight);
     }
 
     public int getRefreshMode() {
