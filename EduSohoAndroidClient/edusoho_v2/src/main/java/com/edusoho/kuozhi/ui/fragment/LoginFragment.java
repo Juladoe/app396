@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
@@ -88,7 +89,7 @@ public class LoginFragment extends BaseFragment {
                     public void callback(String url, String object, AjaxStatus ajaxStatus) {
                         TokenResult result = app.gson.fromJson(
                                 object, new TypeToken<TokenResult>() {
-                        }.getType());
+                                }.getType());
                         if (result != null) {
                             app.saveToken(result);
                             mActivity.setResult(LoginActivity.OK);

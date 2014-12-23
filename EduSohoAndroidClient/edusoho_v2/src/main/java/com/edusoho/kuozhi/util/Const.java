@@ -287,11 +287,28 @@ public class Const {
 
     /**
      * 回复编辑
-    */
+     */
     public static final int EDIT_REPLY = 0x03;
 
     public static final String COURSE_NOTICES = "Course/getCourseNotices";
 
     public static final String CACHE_COURSE_TYPE = "course";
     public static final String CACHE_LESSON_TYPE = "lesson";
+
+    //Pusher相关 --------------------------------
+    public static final int PUSH_CODE = 32;
+    public static final int APP_ID = 1;
+    public static final String PUSH_CMD_CODE = "CMD";
+    public static final String PUSH_TICK_ALARM = "TICK";
+
+    public static final String LOCAL_PUSH_DATA = "pushData";
+    public static final String SERVER_IP = "serverIp";
+    public static final String SERVER_PORT = "serverPort";
+    public static final String PUSH_PORT = "pushPort";
+    public static final String USER_ID = "userName";
+    public static final String SENT_PKGS = "sentPkgs";
+    public static final String RECEIVE_PKGS = "receivePkgs";
+
+    //------------------------------------------
+
 }

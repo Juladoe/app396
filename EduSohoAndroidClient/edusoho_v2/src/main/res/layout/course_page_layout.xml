@@ -90,7 +90,7 @@
             <com.edusoho.kuozhi.view.FixHeightViewPager
                 android:id="@+id/course_info_column_pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@id/course_info_column_tabs_layout" />
         </RelativeLayout>
 

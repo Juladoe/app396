@@ -6,14 +6,14 @@
 
     <stroke
         android:width="1px"
-        android:color="@color/reply_button_pressed"
+        android:color="@color/base_color_normal"
         />
     <!-- shape的颜色，支持渐变 -->
     <gradient
         android:angle="270"
-        android:centerColor="@color/reply_button_pressed"
+        android:centerColor="@color/base_color_normal"
         android:centerY="0.45"
-        android:endColor="@color/reply_button_pressed"
-        android:startColor="@color/reply_button_pressed" />
+        android:endColor="@color/base_color_normal"
+        android:startColor="@color/base_color_normal" />
 
 </shape>

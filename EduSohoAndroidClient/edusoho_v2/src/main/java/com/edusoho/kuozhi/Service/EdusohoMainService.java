@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.Service;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,22 +56,20 @@ public class EdusohoMainService extends Service {
                         mLoginUser = null;
                         break;
                     case LOGIN_WITH_TOKEN:
-                        loginWithToken();
+                        loginWithToken((ActionBarBaseActivity) msg.obj);
                         break;
                 }
             }
         };
     }
 
-    public void sendMessage(int type, Object obj)
-    {
+    public void sendMessage(int type, Object obj) {
         Message message = workHandler.obtainMessage(type);
         message.obj = obj;
         message.sendToTarget();
     }
 
-    public void stopAjaxFromQueue()
-    {
+    public void stopAjaxFromQueue() {
         AjaxCallback ajaxCallback = null;
         while ((ajaxCallback = mAjaxQueue.poll()) != null) {
             Log.d(null, "abort->" + ajaxCallback);
@@ -77,8 +77,7 @@ public class EdusohoMainService extends Service {
         }
     }
 
-    private void loginWithToken()
-    {
+    private void loginWithToken(final ActionBarBaseActivity activity) {
         if ("".equals(app.token)) {
             return;
         }
@@ -93,17 +92,17 @@ public class EdusohoMainService extends Service {
 
             Log.d(null, "send loginwithtoken message token->" + app.token);
             RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
-            AjaxCallback ajaxCallback = app.postUrl(url, new ResultCallback(){
+            AjaxCallback ajaxCallback = app.postUrl(url, new ResultCallback() {
                 @Override
                 public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                    Log.d(null, " loginWithToken->" + object);
                     mAjaxQueue.poll();
                     TokenResult result = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
                     if (result != null) {
                         mLoginUser = result.user;
                         app.saveToken(result);
+                        //PushUtil.startPusherService(activity, activity.getBaseContext(), mLoginUser);
                     }
                     app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                 }
@@ -113,8 +112,7 @@ public class EdusohoMainService extends Service {
         }
     }
 
-    public static EdusohoMainService getService()
-    {
+    public static EdusohoMainService getService() {
         return mService;
     }
 
@@ -128,8 +126,7 @@ public class EdusohoMainService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public static void start(ActionBarBaseActivity activity)
-    {
+    public static void start(ActionBarBaseActivity activity) {
         activity.runService(TAG);
     }
 }

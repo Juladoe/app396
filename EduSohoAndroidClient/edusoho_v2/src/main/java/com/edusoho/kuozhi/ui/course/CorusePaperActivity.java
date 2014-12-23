@@ -117,7 +117,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
 
         titles = new String[] { "简介",  "教师", "课程列表",  "评价" };
         fragmentArrayList = new String[] {
-                "CourseTeacherInfoFragment", "CourseTeacherInfoFragment",
+                "CourseIntroductionFragment", "CourseTeacherInfoFragment",
                 "CourseLessonsFragment", "CourseReviewFragment"
         };
 
@@ -480,7 +480,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
             }
         });
 
-        mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
+        //mFragmentPager.setOffscreenPageLimit(fragmentArrayList.length);
 
         mFragmentPager.setAdapter(fragmentAdapter);
         mTabs.setViewPager(mFragmentPager);

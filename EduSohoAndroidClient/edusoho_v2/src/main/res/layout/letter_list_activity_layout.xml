@@ -19,7 +19,7 @@
     <RelativeLayout
         android:id="@+id/ll_send_info"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/white">
 
@@ -32,13 +32,15 @@
             android:layout_toLeftOf="@+id/btn_send_letter"
             android:background="@drawable/login_edt_bg_sel" />
 
-        <Button
+        <com.edusoho.kuozhi.view.ESTextView
+            android:textSize="@dimen/base_small_size"
             android:id="@+id/btn_send_letter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_margin="5dp"
-            android:background="@drawable/post_reply_btn"
+            android:padding="8dp"
+            android:background="@drawable/post_reply_normal"
             android:text="发送"
             android:textColor="@color/login_text" />
 
