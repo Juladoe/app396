@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="9">
+
+        <com.edusoho.kuozhi.view.ESTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="16dp"
+            android:textSize="@dimen/middle_font_size"
+            android:text="在学课程"
+            android:id="@+id/tv_title"
+            android:textColor="@android:color/black"
+            app:es_alpha="0.87" />
+
+        <com.edusoho.kuozhi.view.ESTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:textSize="@dimen/small_font_size"
+            android:layout_marginBottom="16dp"
+            android:text="副标题"
+            android:id="@+id/tv_content"
+            android:textColor="@android:color/black"
+            app:es_alpha="0.54" />
+
+        <com.edusoho.kuozhi.view.ESTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2014-12-22"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_alignBaseline="@id/tv_title"
+            android:textSize="@dimen/small_font_size"
+            android:textColor="@android:color/black"
+            app:es_alpha="0.54" />
+
+        <TextView
+            android:id="@+id/civ_post_pic"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_alignBottom="@+id/tv_content"
+            android:text="1"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:background="@drawable/new_msg_logo" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>
