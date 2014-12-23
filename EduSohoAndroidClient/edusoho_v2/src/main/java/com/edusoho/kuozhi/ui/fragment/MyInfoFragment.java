@@ -179,7 +179,7 @@ public class MyInfoFragment extends BaseFragment {
                 "FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestpaperFragment");
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestFragment");
                 startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
             }
         });
