@@ -240,14 +240,19 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         holder.mDoBtn.setVisibility(View.GONE);
         holder.mStatusView.setVisibility(View.GONE);
 
+//        holder.mTeachersay.setText(String.format("评语：%s",testpaperResult.teacherSay));
+
         if (testpaperResult.teacherSay == null){
-            holder.mTeachersay.setVisibility(View.INVISIBLE);
+            holder.mTeachersay.setVisibility(View.GONE);
         }
         else{
+            holder.mTeachersay.setVisibility(View.VISIBLE);
             holder.mTeachersay.setText(String.format("评语：%s",testpaperResult.teacherSay));
         }
         holder.mTestpaperName.setText(testpaperResult.paperName);
-        holder.mTestpaperStartTime.setText(testpaperResult.beginTime);
+        String startTime = testpaperResult.beginTime;
+        holder.mTestpaperStartTime.setText(startTime.substring(0,10));
+//        holder.mTestpaperStartTime.setText(testpaperResult.beginTime);
 
         Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
         if (testpaper == null) {

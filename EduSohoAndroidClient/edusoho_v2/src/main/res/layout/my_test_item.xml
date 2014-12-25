@@ -38,6 +38,7 @@
 
                 <TextView
                     android:id="@+id/test_teacher_say"
+                    android:singleLine="true"
                     android:maxLines="2"
                     android:ellipsize="end"
                     android:textSize="@dimen/small_font_size"
@@ -86,22 +87,24 @@
                 android:layout_weight="11">
 
                 <ImageView
+                    android:padding="8dp"
                     android:id="@+id/testpaper_icon"
                     android:src="@drawable/iconfont_test_circle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:scaleType="centerInside"
                     />
 
                 <TextView
                     android:textColor="@color/white"
-                    android:textSize="@dimen/large_font_size"
+                    android:textSize="@dimen/middle_font_size"
                     android:gravity="center"
                     android:id="@+id/testpaper_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="30dp"
                     />
 
                 <TextView
@@ -109,12 +112,13 @@
                     android:paddingTop="8dp"
                     android:id="@+id/testpaper_full_mark"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/small_font_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
-                    android:layout_below="@id/testpaper_status"/>
+                    android:layout_below="@id/testpaper_status"
+                    />
 
             </RelativeLayout>
 
