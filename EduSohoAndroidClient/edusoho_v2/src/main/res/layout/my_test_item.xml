@@ -27,7 +27,7 @@
 
                 <com.edusoho.kuozhi.view.ESTextView
                     app:es_alpha="0.87"
-                    android:maxLines="2"
+                    android:singleLine="true"
                     android:ellipsize="end"
                     android:textSize="@dimen/middle_font_size"
                     android:textColor="@android:color/black"
@@ -76,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="8dp"
+                    android:paddingBottom="8dp"
                     android:gravity="bottom"/>
 
             </RelativeLayout>
@@ -83,7 +84,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="118dp"
                 android:layout_weight="11">
 
                 <ImageView
@@ -97,18 +98,29 @@
                     />
 
                 <TextView
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/middle_font_size"
+                    android:id="@+id/testpaper_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <com.edusoho.kuozhi.view.ESTextView
                     android:textColor="@color/white"
                     android:textSize="@dimen/middle_font_size"
                     android:gravity="center"
-                    android:id="@+id/testpaper_status"
+                    android:id="@+id/my_score"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
                     />
 
-                <TextView
-                    android:text="xxxx"
+                <com.edusoho.kuozhi.view.ESTextView
+                    app:es_alpha="0.7"
                     android:paddingTop="8dp"
                     android:id="@+id/testpaper_full_mark"
                     android:textColor="@color/white"
@@ -117,12 +129,18 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
-                    android:layout_below="@id/testpaper_status"
+                    android:layout_below="@id/my_score"
                     />
 
             </RelativeLayout>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e5e5e5"
+            android:layout_below="@id/test_item_layout"></View>
 
         <LinearLayout
             android:layout_below="@+id/test_item_layout"
@@ -146,6 +164,13 @@
                 app:textColor="@color/my_testpaper_btn_blue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <View
+                android:id="@+id/verticle_parting_line"
+                android:visibility="gone"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e5e5e5"></View>
 
             <com.edusoho.kuozhi.view.EdusohoButton
                 android:layout_weight="1"
