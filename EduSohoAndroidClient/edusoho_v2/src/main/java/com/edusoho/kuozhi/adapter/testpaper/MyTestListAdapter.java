@@ -1,23 +1,16 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.EdusohoBaseAdapter;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperData;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperResult;
 import com.edusoho.kuozhi.model.Testpaper.Testpaper;
@@ -25,7 +18,6 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.EdusohoButton;
 
@@ -152,7 +144,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
             Bundle bundle = new Bundle();
             bundle.putString(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
-            bundle.putString(Const.ACTIONBAT_TITLE, testpaperResult.paperName + " 考试结果");
+            bundle.putString(Const.ACTIONBAR_TITLE, testpaperResult.paperName + " 考试结果");
             bundle.putInt(TestpaperResultFragment.RESULT_ID, testpaperResult.id);
             mActivity.app.mEngine.runNormalPluginWithBundle(
                     "FragmentPageActivity", mActivity, bundle);
@@ -174,7 +166,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
 
         Bundle bundle = new Bundle();
-        bundle.putString(Const.ACTIONBAT_TITLE, testpaperResult.paperName);
+        bundle.putString(Const.ACTIONBAR_TITLE, testpaperResult.paperName);
         bundle.putInt(Const.mTestpaperResultId, testpaperResult.id);
         bundle.putInt(Const.LESSON_ID, getLessonId(testpaperResult.target));
         bundle.putInt(Const.TESTPAPER_DO_TYPE, type);
@@ -188,7 +180,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
 
         Bundle bundle = new Bundle();
-        bundle.putString(Const.ACTIONBAT_TITLE, testpaperResult.paperName);
+        bundle.putString(Const.ACTIONBAR_TITLE, testpaperResult.paperName);
         bundle.putInt(Const.MEDIA_ID, testpaperResult.testId);
         bundle.putInt(Const.LESSON_ID, getLessonId(testpaperResult.target));
         bundle.putInt(Const.TESTPAPER_DO_TYPE, type);

@@ -62,7 +62,7 @@ public class TestpaperResultFragment extends BaseFragment {
         if (bundle != null) {
             mTestpaperResultId = bundle.getInt(RESULT_ID, 0);
             mStatus = bundle.getString(Const.STATUS);
-            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
         }
     }
 
@@ -119,7 +119,7 @@ public class TestpaperResultFragment extends BaseFragment {
                     @Override
                     public void onClick(View view) {
                         Bundle bundle = new Bundle();
-                        bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                        bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
                         bundle.putInt(TestpaperResultFragment.RESULT_ID, mTestpaperResultId);
                         bundle.putInt(Const.LESSON_ID, 0);
                         bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());

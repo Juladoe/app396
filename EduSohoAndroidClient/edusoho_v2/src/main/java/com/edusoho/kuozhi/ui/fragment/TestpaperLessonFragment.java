@@ -84,7 +84,7 @@ public class TestpaperLessonFragment extends BaseFragment {
             mLessonId = bundle.getInt(Const.LESSON_ID);
             mResultId = bundle.getInt(RESULT_ID);
             mStstus = bundle.getString(Const.STATUS);
-            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
         }
     }
 
@@ -126,7 +126,7 @@ public class TestpaperLessonFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, mTitle + " 考试结果");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, mTitle + " 考试结果");
                         startIntent.putExtra(TestpaperResultFragment.RESULT_ID, mResultId);
                         startIntent.putExtra(Const.STATUS, mStstus);
                     }
@@ -139,7 +139,7 @@ public class TestpaperLessonFragment extends BaseFragment {
     private void doTestpaper(int type)
     {
         Bundle bundle = new Bundle();
-        bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+        bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
         bundle.putInt(Const.MEDIA_ID, mTestId);
         bundle.putInt(Const.LESSON_ID, mLessonId);
         bundle.putInt(Const.TESTPAPER_DO_TYPE, type);

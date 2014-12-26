@@ -369,7 +369,7 @@ public class M3U8Uitl {
                     Intent intent = new Intent(DownLoadStatusReceiver.ACTION);
                     intent.putExtra(Const.LESSON_ID, mLessonItem.id);
                     intent.putExtra(Const.COURSE_ID, mLessonItem.courseId);
-                    intent.putExtra(Const.ACTIONBAT_TITLE, mLessonItem.title);
+                    intent.putExtra(Const.ACTIONBAR_TITLE, mLessonItem.title);
                     mContext.sendBroadcast(intent);
                 } catch (Exception e) {
                     //超时处理

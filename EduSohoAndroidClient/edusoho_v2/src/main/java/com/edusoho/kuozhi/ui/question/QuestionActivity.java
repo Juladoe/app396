@@ -51,7 +51,7 @@ public class QuestionActivity extends ActionBarBaseActivity {
 
     private void initView() {
         mActivity = this;
-        mTitle = getIntent().getStringExtra(Const.ACTIONBAT_TITLE);
+        mTitle = getIntent().getStringExtra(Const.ACTIONBAR_TITLE);
         mType = getIntent().getStringExtra(Const.QUESTION_TYPE);
         mLoadView = (View) findViewById(R.id.load_layout);
         mQuestionRefreshList = (QuestionRefreshListWidget) findViewById(R.id.question_listview);

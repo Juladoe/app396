@@ -148,7 +148,7 @@ public class TestpaperCardFragment extends DialogFragment {
                         if (result) {
                             Bundle bundle = new Bundle();
                             bundle.putString(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
-                            bundle.putString(Const.ACTIONBAT_TITLE, " 考试结果");
+                            bundle.putString(Const.ACTIONBAR_TITLE, " 考试结果");
 
                             PaperResult paperResult = mTestpaperActivity.getTestpaperResult();
                             bundle.putInt(TestpaperResultFragment.RESULT_ID, paperResult.id);

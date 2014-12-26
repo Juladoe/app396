@@ -7,10 +7,14 @@
     <dimen name="base_xx_large_size">24sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="large_font_size">20sp</dimen><!--大字-->
-    <dimen name="middle_font_size">16sp</dimen><!--中字-->
-    <dimen name="small_font_size">14sp</dimen><!--小一/二字-->
-    <dimen name="x_small_font_size">12sp</dimen><!--超小字-->
+    <dimen name="large_font_size">20sp</dimen>
+    <!--大字-->
+    <dimen name="middle_font_size">16sp</dimen>
+    <!--中字-->
+    <dimen name="small_font_size">14sp</dimen>
+    <!--小一/二字-->
+    <dimen name="x_small_font_size">12sp</dimen>
+    <!--超小字-->
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -108,5 +112,5 @@
 
     <dimen name="lesson_entry_right_arrow">8dp</dimen>
 
-
+    <dimen name="schoolroom_item_logo">6dp</dimen>
 </resources>

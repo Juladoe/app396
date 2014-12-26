@@ -239,7 +239,7 @@ public class CourseLearningFragment extends BaseFragment {
 
             Bundle bundle = new Bundle();
             bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentData);
-            bundle.putString(Const.ACTIONBAT_TITLE, "课程详情");
+            bundle.putString(Const.ACTIONBAR_TITLE, "课程详情");
             bundle.putStringArray(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
             bundle.putStringArray(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
             app.mEngine.runNormalPluginWithBundle(
@@ -294,7 +294,7 @@ public class CourseLearningFragment extends BaseFragment {
         checkMemberExprie();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
             mCourseId = bundle.getInt(Const.COURSE_ID);
         }
 
@@ -324,7 +324,7 @@ public class CourseLearningFragment extends BaseFragment {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
                         startIntent.putExtra(Const.COURSE_ID, mCourseId);
                         startIntent.putExtra(Const.IS_STUDENT, true);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "课程评价");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "课程评价");
                     }
                 });
             }

@@ -96,6 +96,7 @@ public class LoginFragment extends BaseFragment {
                             mActivity.finish();
                             app.sendMessage(Const.LOGING_SUCCESS, null);
                             app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
+                            //app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
                         } else {
                             mActivity.longToast("用户名或密码错误！");
                         }

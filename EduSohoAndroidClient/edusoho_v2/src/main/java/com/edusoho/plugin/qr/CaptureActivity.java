@@ -80,7 +80,7 @@ public final class CaptureActivity extends ActionBarBaseActivity implements
     {
         Intent intent = getIntent();
         if (intent != null) {
-            mTitle = intent.getStringExtra(Const.ACTIONBAT_TITLE);
+            mTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
         }
 
         if (mTitle == null || TextUtils.isEmpty(mTitle)) {

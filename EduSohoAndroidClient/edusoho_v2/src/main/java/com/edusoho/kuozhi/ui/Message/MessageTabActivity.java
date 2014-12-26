@@ -60,7 +60,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
             mFragmentName = intentData.getStringExtra(FRAGMENT_NAME);
             mFragmentArrayList = intentData.getStringArrayExtra(FRAGMENT_LIST);
             mTabTitles = intentData.getStringArrayExtra(TAB_TITLES);
-            mTitle = intentData.getStringExtra(Const.ACTIONBAT_TITLE);
+            mTitle = intentData.getStringExtra(Const.ACTIONBAR_TITLE);
         }
 //
 //        if (mTabTitles == null || mFragmentArrayList == null) {

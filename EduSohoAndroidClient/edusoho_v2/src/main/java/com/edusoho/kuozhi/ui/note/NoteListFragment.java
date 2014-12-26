@@ -51,7 +51,7 @@ public class NoteListFragment extends BaseFragment {
     public void initIntentData() {
         Bundle bundle = getArguments();
         mCourseId = bundle.getInt(Const.COURSE_ID, 0);
-        mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+        mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
         mNoteNum = bundle.getInt("noteNum", 0);
     }
 
@@ -72,7 +72,7 @@ public class NoteListFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Note note = (Note) adapterView.getItemAtPosition(i);
                 Bundle bundle = new Bundle();
-                bundle.putString(Const.ACTIONBAT_TITLE, note.lessonTitle);
+                bundle.putString(Const.ACTIONBAR_TITLE, note.lessonTitle);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "NoteContentFragment");
                 bundle.putString(NoteContentFragment.CONTENT, note.content);
                 bundle.putString(Const.LEARN_STATUS, note.lessonStatus);

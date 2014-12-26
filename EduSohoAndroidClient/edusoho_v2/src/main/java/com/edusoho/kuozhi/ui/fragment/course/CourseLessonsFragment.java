@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.ui.fragment.course;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -115,7 +114,7 @@ public class CourseLessonsFragment extends BaseFragment {
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString(FragmentPageActivity.FRAGMENT, "CourseDownloadingFragment");
-                        bundle.putString(Const.ACTIONBAT_TITLE, "下载列表");
+                        bundle.putString(Const.ACTIONBAR_TITLE, "下载列表");
 
                         CorusePaperActivity activity = (CorusePaperActivity)getActivity();
                         bundle.putString(
@@ -176,7 +175,7 @@ public class CourseLessonsFragment extends BaseFragment {
                         startIntent.putExtra(Const.FREE, lesson.free);
                         startIntent.putExtra(Const.LESSON_ID, lesson.id);
                         startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                         //startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
                         //startIntent.putExtra(Const.IS_LEARN, mIsLearn);
                     }

@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.ui.course;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -21,18 +20,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
@@ -58,8 +52,6 @@ import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.apache.cordova.App;
 
 import extensions.PagerSlidingTabStrip;
 
@@ -129,7 +121,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity {
     {
         Intent data = getIntent();
         if (data != null) {
-            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+            mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
             mCoursePic = data.getStringExtra(COURSE_PIC);
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
         }

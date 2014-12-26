@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.ui.course;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,12 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.AdapterView;
 
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -30,7 +26,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.ShardListAdapter;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -64,9 +59,6 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +66,7 @@ import menudrawer.MenuDrawer;
 import menudrawer.Position;
 
 /**
- * Created by howzhi on 14-8-26.
+ * Created by howzhi on 14-8-26.课程
  */
 public class CourseDetailsActivity extends ActionBarBaseActivity
         implements MessageEngine.MessageCallback {
@@ -242,7 +234,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private void initView() {
         Intent data = getIntent();
         if (data != null) {
-            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+            mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
             mCoursePic = data.getStringExtra(COURSE_PIC);
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
         }
@@ -619,7 +611,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             @Override
             public void setArguments(Bundle bundle) {
                 bundle.putInt(Const.COURSE_ID, mCourseId);
-                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
             }
         });
         fragmentTransaction.replace(android.R.id.list, fragment);
