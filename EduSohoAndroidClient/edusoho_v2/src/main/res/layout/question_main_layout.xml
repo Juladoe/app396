@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:id="@+id/question_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:footerDividersEnabled="true"
+        app:rlw_dividerHeight="2px"
+        android:scrollbars="none"
+        ></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
+</RelativeLayout>

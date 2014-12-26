@@ -200,6 +200,10 @@
         <service android:name=".Service.PusherService" />
         <receiver android:name=".broadcast.AlarmReceiver" />
 
+        <activity android:name=".ui.QuestionNew.QuestionActivity"
+                  android:configChanges="keyboard|orientation"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"/>
 
     </application>
 

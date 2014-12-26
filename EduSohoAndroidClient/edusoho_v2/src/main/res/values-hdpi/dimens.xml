@@ -108,4 +108,12 @@
     <dimen name="course_title_size">15sp</dimen>
     <dimen name="note_main_padding_right">3dp</dimen>
     <dimen name="lesson_entry_right_arrow">16dp</dimen>
+
+    <!--question_new-->
+    <dimen name="question_user_head_image_size">32dp</dimen>
+    <dimen name="question_reply_image_size">48dp</dimen>
+
+    <dimen name="question_super_small_font_size">12dp</dimen>
+    <dimen name="question_small_font_size">12dp</dimen>
+    <dimen name="question_middle_font_size">14dp</dimen>
 </resources>

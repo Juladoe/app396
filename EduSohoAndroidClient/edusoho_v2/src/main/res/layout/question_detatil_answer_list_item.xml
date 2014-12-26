@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="12dp">
+
+    <include layout="@layout/question_answer_user_head_fragment"
+             android:id="@+id/question_user_head_framelayout"
+        />
+
+    <TextView
+        android:id="@+id/question_detail_answer_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/question_user_head_framelayout"
+        android:layout_alignTop="@id/question_user_head_framelayout"
+        android:textSize="@dimen/question_small_font_size"
+        android:textColor="#2ec368"
+        android:text="Joanie"/>
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:id="@+id/question_detail_answer_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/question_user_head_framelayout"
+        android:layout_marginRight="16dp"
+        app:es_alpha="0.54"
+        android:textSize="@dimen/question_small_font_size"
+        android:text="2014-12-16"/>
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:id="@+id/question_detatil_answer_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/question_detail_answer_user_name"
+        android:layout_alignLeft="@id/question_detail_answer_user_name"
+        android:layout_alignRight="@id/question_detail_answer_time"
+        android:layout_marginTop="12dp"
+        app:es_alpha="0.87"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:textSize="@dimen/question_small_font_size"
+        android:text="我是回复的内容我是回复的内容我是回复的内容我是回复的内容我是回复的内容
+        我是回复的内容我是回复的内容我是回复的内容我是回复的内容我是回复的内容我是回复的内容
+        我是回复的内容我是回复的内容我是回复的内容我是回复的内容我是回复的内容我是回复的内容
+        我是回复的内容我是回复的内容"
+        />
+
+</RelativeLayout>

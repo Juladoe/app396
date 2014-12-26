@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+    <TextView
+        android:id="@+id/question_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我是问题的题目"
+        android:textColor="#2ec368"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/question_answer_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/question_title"
+        android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:lines="3"
+        android:text="我是问题的答案我是问题的答案我是问题的答案我是问题的答案我是问题的答案我是问题的答案"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/question_answer_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/question_answer_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:text="(5条回答)"
+        android:textColor="#ccc"
+        android:textSize="14sp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/question_answer_count"
+        android:layout_alignBottom="@id/question_answer_count"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/question_answer_icon"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/question_answer_count"
+        android:layout_alignLeft="@id/question_title"
+        android:layout_toLeftOf="@id/question_answer_count"
+        android:orientation="horizontal">
+
+        <com.edusoho.kuozhi.view.ESTextView
+            android:id="@+id/question_course_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            app:es_alpha="0.54"
+            android:singleLine="true"
+            android:text="我是课时的标题"
+            android:textSize="@dimen/question_super_small_font_size"/>
+
+        <com.edusoho.kuozhi.view.ESTextView
+            android:id="@+id/question_answer_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:es_alpha="0.54"
+            android:text="刚刚"
+            android:textSize="@dimen/question_super_small_font_size"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
