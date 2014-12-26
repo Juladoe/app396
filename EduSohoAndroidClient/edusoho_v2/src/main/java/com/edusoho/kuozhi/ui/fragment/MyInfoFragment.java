@@ -149,6 +149,7 @@ public class MyInfoFragment extends BaseFragment {
                 switch (plugin.action) {
                     case QUESTION:
                         showMyQuestionOrDiscuss("我的问答", "question");
+//                        showMyQuestion();
                         break;
                     case COURSE:
                         showMyCourse();
@@ -157,7 +158,7 @@ public class MyInfoFragment extends BaseFragment {
                         showMyTestpaper();
                         break;
                     case DISCUSS:
-                        showMyQuestionOrDiscuss("我的话题", "discussion");
+//                        showMyQuestionOrDiscuss("我的话题", "discussion");
                         break;
                     case NOTE:
                         showMyNote();
@@ -195,6 +196,15 @@ public class MyInfoFragment extends BaseFragment {
         };
         app.mEngine.runNormalPlugin("NoteListActivity", mActivity, callback);
     }
+
+//    private void showMyQuestion(){
+//        PluginRunCallback callback = new PluginRunCallback() {
+//            @Override
+//            public void setIntentDate(Intent startIntent) {
+//            }
+//        };
+//        app.mEngine.runNormalPlugin("QuestionActivity",mActivity,callback);
+//    }
 
     private void showMyQuestionOrDiscuss(final String title, final String type) {
         PluginRunCallback callback = new PluginRunCallback() {

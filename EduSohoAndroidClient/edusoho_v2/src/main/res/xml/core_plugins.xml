@@ -114,4 +114,11 @@
 
     <!--在学课程-->
     <plugin name="LeaenCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LeaenCourseFragment"></plugin>
+
+    <!--问答-->
+    <plugin name="QuestionActivity" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionActivity"></plugin>
+    <plugin name="QuestionDetatilFragment" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionDetatilFragment"></plugin>
+    <plugin name="QuestionReplyFragment" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionReplyFragment"></plugin>
+
+
 </plugins>
