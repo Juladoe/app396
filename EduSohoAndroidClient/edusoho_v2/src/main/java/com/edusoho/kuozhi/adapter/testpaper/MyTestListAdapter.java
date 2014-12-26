@@ -1,11 +1,14 @@
 package com.edusoho.kuozhi.adapter.testpaper;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -29,7 +32,7 @@ import com.edusoho.kuozhi.view.EdusohoButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
+public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
     protected ActionBarBaseActivity mActivity;
     public ArrayList<MyTestpaperResult> myTestpaperResults;
@@ -40,7 +43,7 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
     private DoClick doClick;
     private ShowClick showClick;
 
-    public TestpaperListAdapter(ActionBarBaseActivity activity, int resource) {
+    public MyTestListAdapter(ActionBarBaseActivity activity, int resource) {
         super(activity, resource);
         mActivity = activity;
 
@@ -103,13 +106,18 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
             holder = new ViewHolder();
             holder.mCourseTitle = (TextView) view.findViewById(R.id.testpaper_course_title);
             holder.mTestpaperName = (TextView) view.findViewById(R.id.testpaper_name);
+            holder.mTeachersay = (TextView) view.findViewById(R.id.test_teacher_say);
             holder.mRedoBtn = (EdusohoButton) view.findViewById(R.id.testpaper_redo);
             holder.mShowBtn = (EdusohoButton) view.findViewById(R.id.testpaper_result);
             holder.mDoBtn = (EdusohoButton) view.findViewById(R.id.testpaper_do);
             holder.mStatusView = (TextView) view.findViewById(R.id.testpaper_status);
             holder.mTestpaperStartTime = (TextView) view.findViewById(R.id.testpaper_starttime);
+            holder.mFullMark = (TextView) view.findViewById(R.id.testpaper_full_mark);
+            holder.mVPartingLine = (View) view.findViewById(R.id.verticle_parting_line);
+            holder.mScore = (TextView) view.findViewById(R.id.my_score);
 
-            holder.aq = new AQuery(view);
+            holder.mCircle = (ImageView) view.findViewById(R.id.testpaper_icon);
+//            holder.aq = new AQuery(view);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -158,6 +166,7 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
         @Override
         public void onClick(View view) {
             int index = (Integer) view.getTag();
+//            doTestpaper(TestpaperActivity.DO,index);
             showTestpaper(TestpaperActivity.SHOW_TEST, index);
         }
     }
@@ -226,60 +235,63 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
     public void invaliViewData(ViewHolder holder, int index)
     {
+        if (index == 0){
+            Log.i("0000","00000");
+        }
         MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
 
         holder.mRedoBtn.setVisibility(View.GONE);
         holder.mShowBtn.setVisibility(View.GONE);
         holder.mDoBtn.setVisibility(View.GONE);
         holder.mStatusView.setVisibility(View.GONE);
+        holder.mFullMark.setVisibility(View.GONE);
+        holder.mScore.setVisibility(View.GONE);
 
+        if (testpaperResult.teacherSay == null){
+            holder.mTeachersay.setVisibility(View.GONE);
+        }
+        else{
+            holder.mTeachersay.setVisibility(View.VISIBLE);
+            holder.mTeachersay.setText(String.format("评语：%s",testpaperResult.teacherSay));
+        }
         holder.mTestpaperName.setText(testpaperResult.paperName);
-        holder.mTestpaperStartTime.setText(testpaperResult.beginTime);
+        String startTime = testpaperResult.beginTime;
+        holder.mTestpaperStartTime.setText(startTime.substring(0,10));
 
         Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
         if (testpaper == null) {
             holder.mTestpaperName.setText("该试卷已经删除");
             return;
         }
+        holder.mFullMark.setText(String.format("满分：%s", (int)testpaper.score));
         Course course = courses.get(getCourseId(testpaper.target));
-        holder.mCourseTitle.setText(String.format("课程:《%s》", course.title));
-        int width = (int)(EdusohoApp.app.screenW * 0.4f);
-        if (TextUtils.isEmpty(course.largePicture)) {
-            holder.aq.id(R.id.testpaper_icon).image(R.drawable.noram_course);
-        } else {
-            holder.aq.id(R.id.testpaper_icon).image(
-                    course.largePicture, false, true, width, R.drawable.noram_course);
-            holder.aq.id(R.id.testpaper_icon)
-                    .width(width, false)
-                    .height(AppUtil.getCourseListCoverHeight(width), false);
-        }
+        holder.mCourseTitle.setText(String.format("来自课程:《%s》", course.title));
 
         String status = testpaperResult.status;
-
         if ("reviewing".equals(status)) {
             holder.mStatusView.setText("正在批阅");
-            holder.mStatusView.setBackgroundDrawable(
-                    mActivity.getResources().getDrawable(R.drawable.red_card_bg));
             holder.mShowBtn.setVisibility(View.VISIBLE);
             holder.mStatusView.setVisibility(View.VISIBLE);
+
         } else if ("doing".equals(status)) {
             holder.mStatusView.setText("未交卷");
-            holder.mStatusView.setBackgroundDrawable(
-                    mActivity.getResources().getDrawable(R.drawable.red_card_bg));
             holder.mDoBtn.setVisibility(View.VISIBLE);
             holder.mStatusView.setVisibility(View.VISIBLE);
+
         } else if ("finished".equals(status)) {
-            holder.mStatusView.setText(String.format("得分:%.1f", testpaperResult.score));
-            holder.mStatusView.setBackgroundDrawable(
-                    mActivity.getResources().getDrawable(R.drawable.blue_card_bg));
+            Log.i("ddd","finished " + index);
+            holder.mScore.setText(String.format("%.1f", testpaperResult.score));
             holder.mRedoBtn.setVisibility(View.VISIBLE);
+            holder.mVPartingLine.setVisibility(View.VISIBLE);
             holder.mShowBtn.setVisibility(View.VISIBLE);
-            holder.mStatusView.setVisibility(View.VISIBLE);
+            holder.mScore.setVisibility(View.VISIBLE);
+            holder.mFullMark.setVisibility(View.VISIBLE);
+
         }
     }
 
     protected class ViewHolder {
-        public AQuery aq;
+        public ImageView mCircle;
         public TextView mCourseTitle;
         public TextView mStatusView;
         public TextView mTestpaperName;
@@ -287,6 +299,10 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
         public EdusohoButton mRedoBtn;
         public EdusohoButton mShowBtn;
         public EdusohoButton mDoBtn;
+        public TextView mTeachersay;
+        public TextView mFullMark;
+        public View mVPartingLine;
+        public TextView mScore;
     }
 
 }

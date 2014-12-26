@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/base_card_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/test_item_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="7">
+
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    app:es_alpha="0.87"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/middle_font_size"
+                    android:textColor="@android:color/black"
+                    android:id="@+id/testpaper_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"/>
+
+                <TextView
+                    android:id="@+id/test_teacher_say"
+                    android:singleLine="true"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/small_font_size"
+                    android:textColor="@color/standby_stress_color"
+                    android:layout_below="@id/testpaper_name"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    app:es_alpha="0.54"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_below="@id/test_teacher_say"
+                    android:textSize="@dimen/small_font_size"
+                    android:textColor="@android:color/black"
+                    android:id="@+id/testpaper_course_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"/>
+
+
+                <TextView
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/x_small_font_size"
+                    android:layout_below="@+id/testpaper_course_title"
+                    android:textColor="@color/system_gray_text"
+                    android:id="@+id/testpaper_starttime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="8dp"
+                    android:paddingBottom="8dp"
+                    android:gravity="bottom"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="118dp"
+                android:layout_weight="11">
+
+                <ImageView
+                    android:padding="8dp"
+                    android:id="@+id/testpaper_icon"
+                    android:src="@drawable/iconfont_test_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    />
+
+                <TextView
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/middle_font_size"
+                    android:id="@+id/testpaper_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/middle_font_size"
+                    android:gravity="center"
+                    android:id="@+id/my_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    />
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    app:es_alpha="0.7"
+                    android:paddingTop="8dp"
+                    android:id="@+id/testpaper_full_mark"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/small_font_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:layout_below="@id/my_score"
+                    />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e5e5e5"
+            android:layout_below="@id/test_item_layout"></View>
+
+        <LinearLayout
+            android:layout_below="@+id/test_item_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+
+            <com.edusoho.kuozhi.view.EdusohoButton
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:layout_marginRight="2dp"
+                android:id="@+id/testpaper_redo"
+                app:borderWidth="0dp"
+                app:defaultColor="@color/white"
+                app:iconPosition="right"
+                app:textSize="@dimen/my_testpaper_btn"
+                app:radius="1dp"
+                app:textStr="重考一次"
+                app:textColor="@color/my_testpaper_btn_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:id="@+id/verticle_parting_line"
+                android:visibility="gone"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e5e5e5"></View>
+
+            <com.edusoho.kuozhi.view.EdusohoButton
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:id="@+id/testpaper_result"
+                app:borderWidth="0dp"
+                app:defaultColor="@color/white"
+                app:iconPosition="right"
+                app:textSize="@dimen/my_testpaper_btn"
+                app:radius="1dp"
+                app:textStr="查看结果"
+                app:textColor="@color/my_testpaper_btn_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.edusoho.kuozhi.view.EdusohoButton
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:id="@+id/testpaper_do"
+                app:borderWidth="0dp"
+                app:defaultColor="@color/white"
+                app:iconPosition="right"
+                app:textSize="@dimen/my_testpaper_btn"
+                app:radius="1dp"
+                app:textStr="继续考试"
+                app:textColor="@color/my_testpaper_btn_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

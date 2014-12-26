@@ -83,6 +83,9 @@
     <plugin name="MessageLetterListActivity" package="com.edusoho.kuozhi.ui.Message.MessageLetterListActivity" version="1.0"></plugin>
     <plugin name="MessageTabActivity" package="com.edusoho.kuozhi.ui.Message.MessageTabActivity" version="1.0"></plugin>
     <plugin name="TestpaperResultFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment" version="1.0"></plugin>
+
+    <plugin name="MyTestFragment" package="com.edusoho.kuozhi.ui.fragment.MyTestFragment" version="1.0"></plugin>
+
     <plugin name="AlipayFragment" package="com.edusoho.kuozhi.ui.fragment.AlipayFragment" version="1.0"></plugin>
     <plugin name="MyTestpaperFragment" package="com.edusoho.kuozhi.ui.fragment.MyTestpaperFragment" version="1.0"></plugin>
     <plugin name="RecommendCourseFragment" package="com.edusoho.kuozhi.ui.fragment.RecommendCourseFragment" version="1.0"></plugin>

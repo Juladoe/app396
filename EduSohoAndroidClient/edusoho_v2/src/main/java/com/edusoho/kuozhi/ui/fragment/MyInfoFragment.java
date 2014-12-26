@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.ui.widget.LearnStatusWidget;
 import com.edusoho.kuozhi.ui.widget.MyInfoPluginListView;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 
@@ -169,7 +168,7 @@ public class MyInfoFragment extends BaseFragment {
 
         if (app.loginUser == null && !"".equals(app.token)) {
             Log.d(null, "checkout token->");
-            mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, mActivity);
+            mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
             return;
         }
 
@@ -179,12 +178,12 @@ public class MyInfoFragment extends BaseFragment {
     private void showMyTestpaper() {
         app.mEngine.runNormalPlugin(
                 "FragmentPageActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestpaperFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
-                    }
-                });
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestFragment");
+                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
+            }
+        });
     }
 
     public void showMyNote() {
