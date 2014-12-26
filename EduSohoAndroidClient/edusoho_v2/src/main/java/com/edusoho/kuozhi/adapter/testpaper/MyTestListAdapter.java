@@ -124,6 +124,9 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         holder.mRedoBtn.setOnClickListener(redoClick);
         holder.mDoBtn.setOnClickListener(doClick);
         holder.mShowBtn.setOnClickListener(showClick);
+        if(index == 0){
+            Log.i("00",""+index);
+        }
         return view;
     }
 
@@ -238,6 +241,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         holder.mStatusView.setVisibility(View.GONE);
         holder.mFullMark.setVisibility(View.GONE);
         holder.mScore.setVisibility(View.GONE);
+        holder.mVPartingLine.setVisibility(View.GONE);
 
         if (testpaperResult.teacherSay == null){
             holder.mTeachersay.setVisibility(View.GONE);
