@@ -9,7 +9,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
+import com.edusoho.kuozhi.ui.message.MessageTabActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
