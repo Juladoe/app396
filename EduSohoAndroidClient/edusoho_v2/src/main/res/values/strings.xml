@@ -60,7 +60,7 @@
     <string name="font_me"></string>
     <string name="font_recommend"></string>
     <string name="font_found"></string>
-    <string name="font_more"></string>
+    <string name="font_more">&#xe6a6;</string>
     <string name="font_search"></string>
     <string name="font_favoirte"></string>
     <string name="font_clear"></string>

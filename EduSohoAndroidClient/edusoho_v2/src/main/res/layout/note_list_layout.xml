@@ -13,12 +13,12 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         app:rlw_dividerHeight="1px"
-
+        app:rlw_dividerColor="@color/load_bg"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:scrollbars="none"
         android:smoothScrollbar="true" />
-        />
+    />
 
     <include layout="@layout/list_empty_info" />
 

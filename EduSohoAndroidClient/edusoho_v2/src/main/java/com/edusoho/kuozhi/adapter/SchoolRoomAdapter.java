@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -64,9 +65,16 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
             holder.tvContent = (ESTextView) convertView.findViewById(R.id.tv_content);
             holder.tvTime = (ESTextView) convertView.findViewById(R.id.tv_time);
             holder.tvMsgSum = (TextView) convertView.findViewById(R.id.tv_msg_sum);
+            holder.llInterval = (LinearLayout) convertView.findViewById(R.id.ll_interval);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
+        }
+
+        if (position == mList.size() - 1) {
+            holder.llInterval.setVisibility(View.VISIBLE);
+        } else {
+            holder.llInterval.setVisibility(View.GONE);
         }
         SchoolRoomResult schoolRoomModel = (SchoolRoomResult) mList.get(position);
         SchoolRoomItem item = schoolRoomModel.data;
@@ -133,6 +141,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
         public ESTextView tvContent;
         public ESTextView tvTime;
         public TextView tvMsgSum;
+        public LinearLayout llInterval;
     }
 
     /**

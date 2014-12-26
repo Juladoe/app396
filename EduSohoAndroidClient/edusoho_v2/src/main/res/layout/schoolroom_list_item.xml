@@ -7,77 +7,92 @@
     android:layout_height="match_parent"
     android:background="@drawable/question_item_bg">
 
-    <com.edusoho.kuozhi.view.EduSohoTextBtn
-        android:id="@+id/iv_logo"
-        android:orientation="vertical"
-        android:background="@color/register_text"
-        app:fontColor="@android:color/white"
-        app:iconSizeScale="2.4"
-        android:layout_centerVertical="true"
-        app:size="@dimen/schoolroom_item_logo"
-        app:image="@string/lesson_next"
-        android:clickable="false"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_width="32dp"
-        android:layout_height="32dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:orientation="horizontal"
+        android:background="@color/question_background"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"
+        android:id="@+id/ll_interval"></LinearLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/iv_logo">
+        android:layout_below="@+id/ll_interval">
 
-        <com.edusoho.kuozhi.view.ESTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+        <com.edusoho.kuozhi.view.EduSohoTextBtn
+            android:id="@+id/iv_logo"
+            android:orientation="vertical"
+            android:background="@color/register_text"
+            app:fontColor="@android:color/white"
+            app:iconSizeScale="2.4"
+            android:layout_centerVertical="true"
+            app:size="@dimen/schoolroom_item_logo"
+            app:image="@string/lesson_next"
+            android:clickable="false"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="8dp"
-            android:textSize="@dimen/middle_font_size"
-            android:text="在学课程"
-            android:id="@+id/tv_title"
-            android:textColor="@android:color/black"
-            app:es_alpha="0.87" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
 
-        <com.edusoho.kuozhi.view.ESTextView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title"
-            android:layout_alignParentLeft="true"
-            android:textSize="@dimen/small_font_size"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
-            android:text="副标题"
-            android:id="@+id/tv_content"
-            android:textColor="@android:color/black"
-            app:es_alpha="0.54" />
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/iv_logo">
 
-        <com.edusoho.kuozhi.view.ESTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2014-12-22"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp"
-            android:layout_alignBaseline="@id/tv_title"
-            android:id="@+id/tv_time"
-            android:textSize="@dimen/small_font_size"
-            android:textColor="@android:color/black"
-            app:es_alpha="0.54" />
+            <com.edusoho.kuozhi.view.ESTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/middle_font_size"
+                android:text="在学课程"
+                android:id="@+id/tv_title"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.87" />
 
-        <TextView
-            android:id="@+id/tv_msg_sum"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp"
-            android:layout_alignBottom="@+id/tv_content"
-            android:text="1"
-            android:gravity="center"
-            android:textSize="@dimen/x_small_font_size"
-            android:visibility="invisible"
-            android:textColor="@android:color/white"
-            android:background="@drawable/new_msg_logo" />
+            <com.edusoho.kuozhi.view.ESTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title"
+                android:layout_alignParentLeft="true"
+                android:textSize="@dimen/small_font_size"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:text="副标题"
+                android:id="@+id/tv_content"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.54" />
 
+            <com.edusoho.kuozhi.view.ESTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014-12-22"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignBaseline="@id/tv_title"
+                android:id="@+id/tv_time"
+                android:textSize="@dimen/small_font_size"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.54" />
+
+            <TextView
+                android:id="@+id/tv_msg_sum"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignBottom="@+id/tv_content"
+                android:text="1"
+                android:gravity="center"
+                android:textSize="@dimen/x_small_font_size"
+                android:visibility="invisible"
+                android:textColor="@android:color/white"
+                android:background="@drawable/new_msg_logo" />
+
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

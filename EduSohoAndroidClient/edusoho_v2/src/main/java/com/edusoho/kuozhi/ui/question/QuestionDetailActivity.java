@@ -57,7 +57,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         initView();
         setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
         mActivity = this;
-
     }
 
     private void initView() {
