@@ -141,7 +141,7 @@ public class PayCourseActivity extends ActionBarBaseActivity
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
-                                startIntent.putExtra(Const.ACTIONBAT_TITLE, "支付课程-" + mTitle);
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, "支付课程-" + mTitle);
                                 startIntent.putExtra("payurl", payStatus.payUrl);
                             }
                         });

@@ -62,8 +62,8 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.RefreshListWidget);
         mDividerHeight = ta.getDimensionPixelSize(R.styleable.RefreshListWidget_rlw_dividerHeight, 0);
         mDividerColor = ta.getColor(R.styleable.RefreshListWidget_rlw_dividerColor, 0);
-        getRefreshableView().setDividerHeight(mDividerHeight);
         getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
+        getRefreshableView().setDividerHeight(mDividerHeight);
         Log.d(null, "getRefreshableView " +mDividerHeight);
     }
 

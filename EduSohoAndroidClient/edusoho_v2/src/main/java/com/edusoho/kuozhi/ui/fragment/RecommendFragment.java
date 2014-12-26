@@ -115,7 +115,7 @@ public class RecommendFragment extends BaseFragment {
                 Course course = (Course) obj;
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, course.id);
-                bundle.putString(Const.ACTIONBAT_TITLE, course.title);
+                bundle.putString(Const.ACTIONBAR_TITLE, course.title);
                 startAcitivityWithBundle(CourseDetailsActivity.TAG, bundle);
             }
         });

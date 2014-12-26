@@ -60,7 +60,7 @@
     <string name="font_me"></string>
     <string name="font_recommend"></string>
     <string name="font_found"></string>
-    <string name="font_more"></string>
+    <string name="font_more">&#xe6a6;</string>
     <string name="font_search"></string>
     <string name="font_favoirte"></string>
     <string name="font_clear"></string>
@@ -89,6 +89,13 @@
     <string name="font_btn_learning"></string>
     <string name="font_btn_finish"></string>
     <string name="app_id">wx91c11946311906a3</string>
+
+    <!-- schoolroom -->
+    <string name="schoolroom_course">&#xe645;</string>
+    <string name="schoolroom_question">&#xe647;</string>
+    <string name="schoolroom_discussion">&#xe646;</string>
+    <string name="schoolroom_note">&#xe644;</string>
+    <string name="schoolroom_letter">&#xe693;</string>
 
     <!-- 网校提示字符 -->
     <string name="testpaper_reviewing">请耐心等待老师批阅，老师批阅后可查看全部考试结果</string>

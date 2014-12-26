@@ -66,7 +66,7 @@ public class NoteContentFragment extends BaseFragment {
 
     public void initIntentData() {
         Bundle bundle = getArguments();
-        mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+        mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
         mNoteContent = bundle.getString(CONTENT);
         mLessonId = bundle.getInt(Const.LESSON_ID);
         mCourseId = bundle.getInt(Const.COURSE_ID);
@@ -90,7 +90,7 @@ public class NoteContentFragment extends BaseFragment {
         mLessonEntrance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLessonInfo(mCourseId, mLessonId);
+                getLessonInfo();
             }
         });
 
@@ -99,11 +99,8 @@ public class NoteContentFragment extends BaseFragment {
 
     /**
      * 获取单个lesson信息并跳转到lessonActivity
-     *
-     * @param courseId
-     * @param lessonId
      */
-    private void getLessonInfo(int courseId, int lessonId) {
+    private void getLessonInfo() {
         RequestUrl url = app.bindUrl(Const.LESSON, true);
         HashMap<String, String> params = url.getParams();
         params.put("courseId", mCourseId + "");
@@ -127,7 +124,7 @@ public class NoteContentFragment extends BaseFragment {
                                 //startIntent.putExtra(Const.FREE, lessonItem.free);
                                 startIntent.putExtra(Const.LESSON_ID, mLessonId);
                                 startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-                                startIntent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
                                 startIntent.putExtra(Const.IS_LEARN, isLearned);
                             }
                         }
@@ -154,7 +151,7 @@ public class NoteContentFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.note_edit) {
             Bundle bundle = new Bundle();
-            bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+            bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
             bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
             bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
             bundle.putString(Const.NORMAL_CONTENT, mNoteContent);

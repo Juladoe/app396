@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Notify;
-import com.edusoho.kuozhi.model.Testpaper.MyTestpaperResult;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
@@ -188,7 +187,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TeacherInfoFragment");
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, "用户信息");
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, "用户信息");
                 startIntent.putExtra(TeacherInfoFragment.TEACHER_ID, new int[]{ id });
             }
         });

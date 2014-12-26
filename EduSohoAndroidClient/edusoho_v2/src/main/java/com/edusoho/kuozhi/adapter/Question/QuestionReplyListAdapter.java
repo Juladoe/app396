@@ -200,7 +200,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
 
                 if (!mQuestionDetailModel.content.contains("img src")) {
-                    //qcvHolder.pb_loading.setVisibility(View.GONE);
                     qcvHolder.tvPostContent.setVisibility(View.VISIBLE);
                 }
                 qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
@@ -232,7 +231,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             holder.tvReplyTime = (TextView) v.findViewById(R.id.tv_reply_time);
             holder.tvReplyContent = (HtmlTextView) v.findViewById(R.id.tv_reply_content);
             holder.ivEdit = (ImageView) v.findViewById(R.id.iv_reply_edit);
-            //holder.pbReplyContent = (ProgressBar) v.findViewById(R.id.pb_reply_content);
             v.setTag(holder);
 
             holder.tvReplyName.setText(entireReply.replyModel.user.nickname);
@@ -281,13 +279,8 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             }
 
             if (!entireReply.replyModel.content.contains("img src")) {
-                //holder.pbReplyContent.setVisibility(View.GONE);
                 holder.tvReplyContent.setVisibility(View.VISIBLE);
             }
-
-            //URLImageGetter urlImageGetter = new URLImageGetter(holder.tvReplyContent, mContext, holder.pbReplyContent);
-            //Html.fromHtml方法不知道为什么会产生"\n\n"，所以去掉
-            //entireReply.replyModel.content = "<font color='#FF0505'>text</font>";
             holder.tvReplyContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
                     AppUtil.filterSpace(fitlerImgTag(entireReply.replyModel.content))), null, new EduTagHandler())));
 
@@ -303,7 +296,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
             mListViewCache.addCache(entireReply.replyModel.id, v);
         } else {
             v = mListViewCache.getOneCacheView(entireReply.replyModel.id);
-            //holder = (ViewHolder) ListViewCache.getOneCacheView(entireReply.replyModel.id).getTag();
         }
 
         return v;

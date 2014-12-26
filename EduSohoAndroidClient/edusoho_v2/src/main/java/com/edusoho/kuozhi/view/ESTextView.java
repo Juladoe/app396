@@ -41,11 +41,11 @@ public class ESTextView extends TextView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(null, "action->"+ event.getAction());
+        Log.d(null, "action->" + event.getAction());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (mOnClickListener == null) {
-                    return true;
+                    return super.onTouchEvent(event);
                 }
                 changeAlpha(mDefautAlpha - 0.33f);
                 break;
@@ -61,15 +61,13 @@ public class ESTextView extends TextView {
         mOnClickListener = l;
     }
 
-    private void initView(AttributeSet attrs)
-    {
+    private void initView(AttributeSet attrs) {
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.ESTextView);
         mDefautAlpha = ta.getFloat(R.styleable.ESTextView_es_alpha, 1.0f);
         changeAlpha(mDefautAlpha);
     }
 
-    public void changeAlpha(float alpha)
-    {
+    public void changeAlpha(float alpha) {
         if (Build.VERSION.SDK_INT < 11) {
             ViewHelper.setAlpha(this, alpha);
         } else {

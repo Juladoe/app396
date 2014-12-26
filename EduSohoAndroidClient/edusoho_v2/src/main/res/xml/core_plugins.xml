@@ -114,5 +114,5 @@
     <plugin name="CourseIntroductionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseIntroductionFragment"></plugin>
     <plugin name="CourseDownloadingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseDownloadingFragment"></plugin>
     <plugin name="LessonDownloadedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownloadedFragment"></plugin>
-
+    <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment"></plugin>
 </plugins>

@@ -108,4 +108,6 @@
     <dimen name="course_title_size">15sp</dimen>
     <dimen name="note_main_padding_right">3dp</dimen>
     <dimen name="lesson_entry_right_arrow">16dp</dimen>
+
+    <dimen name="schoolroom_item_logo">12dp</dimen>
 </resources>

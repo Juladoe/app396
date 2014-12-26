@@ -32,9 +32,7 @@ import library.PullToRefreshBase;
  * 问答详情
  */
 public class QuestionDetailActivity extends ActionBarBaseActivity implements View.OnClickListener {
-
-
-    private static final String TAG = "QuestionDetailActivity";
+    public static final String TAG = "QuestionDetailActivity";
     private int mStart;
     private Button btnReply;
 
@@ -59,7 +57,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         initView();
         setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
         mActivity = this;
-
     }
 
     private void initView() {

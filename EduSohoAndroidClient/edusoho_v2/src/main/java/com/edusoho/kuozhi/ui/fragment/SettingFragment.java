@@ -118,7 +118,7 @@ public class SettingFragment extends BaseFragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "SuggestionFragment");
-                bundle.putString(Const.ACTIONBAT_TITLE, "意见反馈");
+                bundle.putString(Const.ACTIONBAR_TITLE, "意见反馈");
                 startAcitivityWithBundle("FragmentPageActivity", bundle);
             }
         });

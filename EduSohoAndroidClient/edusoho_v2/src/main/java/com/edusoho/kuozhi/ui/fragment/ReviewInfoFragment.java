@@ -82,7 +82,7 @@ public class ReviewInfoFragment extends BaseFragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
-                bundle.putString(Const.ACTIONBAT_TITLE, "评价课程");
+                bundle.putString(Const.ACTIONBAR_TITLE, "评价课程");
                 bundle.putInt(Const.COURSE_ID, mCourseId);
                 startAcitivityWithBundle("FragmentPageActivity", bundle);
             }

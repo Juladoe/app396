@@ -92,7 +92,7 @@ public class CourseReviewFragment extends BaseFragment {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
-                bundle.putString(Const.ACTIONBAT_TITLE, "评价课程");
+                bundle.putString(Const.ACTIONBAR_TITLE, "评价课程");
                 bundle.putInt(Const.COURSE_ID, mCourseId);
                 startAcitivityWithBundle("FragmentPageActivity", bundle);
             }
@@ -114,7 +114,7 @@ public class CourseReviewFragment extends BaseFragment {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
-                bundle.putString(Const.ACTIONBAT_TITLE, "评价列表");
+                bundle.putString(Const.ACTIONBAR_TITLE, "评价列表");
                 bundle.putInt(Const.COURSE_ID, mCourseId);
                 bundle.putDouble(CourseReviewFragment.RATING, mRating);
                 bundle.putString(CourseReviewFragment.RATING_NUM, mRatingNum);
