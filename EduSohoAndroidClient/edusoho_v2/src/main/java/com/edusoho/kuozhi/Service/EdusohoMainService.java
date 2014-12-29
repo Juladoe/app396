@@ -103,7 +103,6 @@ public class EdusohoMainService extends Service {
                     if (result != null) {
                         mLoginUser = result.user;
                         app.saveToken(result);
-                        //PushUtil.startPusherService(activity, activity.getBaseContext(), mLoginUser);
                     }
                     app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                     //app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);

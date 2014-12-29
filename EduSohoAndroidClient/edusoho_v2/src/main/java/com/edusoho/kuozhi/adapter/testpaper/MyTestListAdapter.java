@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
 import com.edusoho.kuozhi.ui.lesson.TestpaperActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.EdusohoButton;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
 
     protected ActionBarBaseActivity mActivity;
+    private static final String TAG = "MyTestListAdapter";
     public ArrayList<MyTestpaperResult> myTestpaperResults;
     public HashMap<Integer, Testpaper> myTestpapers;
     public HashMap<Integer, Course> courses;
@@ -60,8 +62,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         courses.clear();
     }
 
-    private void listAddItem(MyTestpaperData data)
-    {
+    private void listAddItem(MyTestpaperData data) {
         Log.d(null, "listAddItem->");
         myTestpaperResults.addAll(data.myTestpaperResults);
         myTestpapers.putAll(data.myTestpapers);
@@ -69,8 +70,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
     }
 
     @Override
-    public void addItem(MyTestpaperData data)
-    {
+    public void addItem(MyTestpaperData data) {
         listAddItem(data);
         notifyDataSetChanged();
     }
@@ -104,12 +104,11 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
             holder.mDoBtn = (EdusohoButton) view.findViewById(R.id.testpaper_do);
             holder.mStatusView = (TextView) view.findViewById(R.id.testpaper_status);
             holder.mTestpaperStartTime = (TextView) view.findViewById(R.id.testpaper_starttime);
-            holder.mFullMark = (TextView) view.findViewById(R.id.testpaper_full_mark);
-            holder.mVPartingLine = (View) view.findViewById(R.id.verticle_parting_line);
+            holder.mFullMark = (ESTextView) view.findViewById(R.id.testpaper_full_mark);
+            holder.mVPartingLine = view.findViewById(R.id.verticle_parting_line);
             holder.mScore = (TextView) view.findViewById(R.id.my_score);
 
             holder.mCircle = (ImageView) view.findViewById(R.id.testpaper_icon);
-//            holder.aq = new AQuery(view);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -124,14 +123,13 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         holder.mRedoBtn.setOnClickListener(redoClick);
         holder.mDoBtn.setOnClickListener(doClick);
         holder.mShowBtn.setOnClickListener(showClick);
-        if(index == 0){
-            Log.i("00",""+index);
+        if (index == 0) {
+            Log.d(this.TAG, holder.mFullMark.getVisibility() + "");
         }
         return view;
     }
 
-    public class RedoClick implements View.OnClickListener
-    {
+    public class RedoClick implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             int index = (Integer) view.getTag();
@@ -139,13 +137,12 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         }
     }
 
-    public class ShowClick implements View.OnClickListener
-    {
+    public class ShowClick implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             int index = (Integer) view.getTag();
             Log.d(null, "show--->");
-            MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
+            MyTestpaperResult testpaperResult = myTestpaperResults.get(index);
 
             Bundle bundle = new Bundle();
             bundle.putString(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
@@ -156,8 +153,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         }
     }
 
-    public class DoClick implements View.OnClickListener
-    {
+    public class DoClick implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             int index = (Integer) view.getTag();
@@ -166,9 +162,8 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         }
     }
 
-    private void showTestpaper(int type, int index)
-    {
-        MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
+    private void showTestpaper(int type, int index) {
+        MyTestpaperResult testpaperResult = myTestpaperResults.get(index);
 
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAR_TITLE, testpaperResult.paperName);
@@ -180,9 +175,8 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
                 "TestpaperActivity", mActivity, bundle);
     }
 
-    private void doTestpaper(int type, int index)
-    {
-        MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
+    private void doTestpaper(int type, int index) {
+        MyTestpaperResult testpaperResult = myTestpaperResults.get(index);
 
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAR_TITLE, testpaperResult.paperName);
@@ -195,8 +189,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         mActivity.finish();
     }
 
-    private int getCourseId(String target)
-    {
+    private int getCourseId(String target) {
         int id = 0;
         if (target == null) {
             return 0;
@@ -205,7 +198,7 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         if (array != null && array.length > 0) {
             try {
                 id = Integer.parseInt(array[1]);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -213,14 +206,13 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         return id;
     }
 
-    private int getLessonId(String target)
-    {
+    private int getLessonId(String target) {
         int id = 0;
         String[] array = target.split("-");
         if (array != null && array.length > 0) {
             try {
                 id = Integer.parseInt(array[2]);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 //
             }
         }
@@ -228,67 +220,71 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         return id;
     }
 
-    public void invaliViewData(ViewHolder holder, int index)
-    {
-        if (index == 0){
-            Log.i("0000","00000");
-        }
-        MyTestpaperResult testpaperResult =  myTestpaperResults.get(index);
+    public void invaliViewData(ViewHolder holder, int index) {
+        MyTestpaperResult testpaperResult = myTestpaperResults.get(index);
 
         holder.mRedoBtn.setVisibility(View.GONE);
         holder.mShowBtn.setVisibility(View.GONE);
         holder.mDoBtn.setVisibility(View.GONE);
         holder.mStatusView.setVisibility(View.GONE);
-        holder.mFullMark.setVisibility(View.GONE);
+
         holder.mScore.setVisibility(View.GONE);
         holder.mVPartingLine.setVisibility(View.GONE);
 
-        if (testpaperResult.teacherSay == null){
+        if (testpaperResult.teacherSay == null) {
             holder.mTeachersay.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             holder.mTeachersay.setVisibility(View.VISIBLE);
-            holder.mTeachersay.setText(String.format("评语：%s",testpaperResult.teacherSay));
+            holder.mTeachersay.setText(String.format("评语：%s", testpaperResult.teacherSay));
         }
         holder.mTestpaperName.setText(testpaperResult.paperName);
         String startTime = testpaperResult.beginTime;
-        holder.mTestpaperStartTime.setText(startTime.substring(0,10));
+        holder.mTestpaperStartTime.setText(startTime.substring(0, 10));
 
         Testpaper testpaper = myTestpapers.get(testpaperResult.testId);
         if (testpaper == null) {
             holder.mTestpaperName.setText("该试卷已经删除");
             return;
         }
-        holder.mFullMark.setText(String.format("满分：%s", (int)testpaper.score));
+        holder.mFullMark.setText(String.format("满分：%s", (int) testpaper.score));
         Course course = courses.get(getCourseId(testpaper.target));
         holder.mCourseTitle.setText(String.format("来自课程:《%s》", course.title));
 
+        if (index == 0) {
+            Log.d("1", "1");
+        }
         String status = testpaperResult.status;
         if ("reviewing".equals(status)) {
+            //显示查看结果
             holder.mStatusView.setText("正在批阅");
             holder.mShowBtn.setVisibility(View.VISIBLE);
             holder.mStatusView.setVisibility(View.VISIBLE);
+            holder.mFullMark.setVisibility(View.GONE);
 
         } else if ("doing".equals(status)) {
+            //显示继续考试
             holder.mStatusView.setText("未交卷");
             holder.mDoBtn.setVisibility(View.VISIBLE);
             holder.mStatusView.setVisibility(View.VISIBLE);
+            holder.mFullMark.setVisibility(View.GONE);
 
         } else if ("finished".equals(status)) {
-            Log.i("ddd","finished " + index);
+            //重考一次、查看结果
             holder.mScore.setText(String.format("%.1f", testpaperResult.score));
             holder.mRedoBtn.setVisibility(View.VISIBLE);
             holder.mVPartingLine.setVisibility(View.VISIBLE);
             holder.mShowBtn.setVisibility(View.VISIBLE);
             holder.mScore.setVisibility(View.VISIBLE);
             holder.mFullMark.setVisibility(View.VISIBLE);
-
         }
     }
 
     protected class ViewHolder {
         public ImageView mCircle;
         public TextView mCourseTitle;
+        /**
+         * 试卷状态
+         */
         public TextView mStatusView;
         public TextView mTestpaperName;
         public TextView mTestpaperStartTime;
@@ -296,8 +292,14 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         public EdusohoButton mShowBtn;
         public EdusohoButton mDoBtn;
         public TextView mTeachersay;
-        public TextView mFullMark;
+        /**
+         * 总分
+         */
+        public ESTextView mFullMark;
         public View mVPartingLine;
+        /**
+         * 得分
+         */
         public TextView mScore;
     }
 

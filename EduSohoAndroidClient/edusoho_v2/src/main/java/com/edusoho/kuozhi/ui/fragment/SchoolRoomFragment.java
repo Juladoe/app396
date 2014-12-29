@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Note.NoteInfo;
+import com.edusoho.kuozhi.model.Push.PushMsg;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomEnum;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -48,6 +49,9 @@ public class SchoolRoomFragment extends BaseFragment {
     public static final int REFRESH = 0010;
     public static final int LOGINT_WITH_TOKEN = 0020;
     public static final int LOGOUT = 0021;
+    public static final int PUSH_ITEM = 0022;
+
+    public static final String PUSH_MODEL = "push_model";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -218,6 +222,10 @@ public class SchoolRoomFragment extends BaseFragment {
         mActivity.ajaxPost(url, callback);
     }
 
+    private void loadOneItem() {
+        Log.d(TAG, "new item");
+    }
+
     @Override
     public void invoke(WidgetMessage message) {
         super.invoke(message);
@@ -229,8 +237,14 @@ public class SchoolRoomFragment extends BaseFragment {
                 loadSchoolRoomData();
                 break;
             case LOGOUT:
+                break;
+            case PUSH_ITEM:
+                PushMsg pushMsg = (PushMsg) message.data.getSerializable(PUSH_MODEL);
+                if (pushMsg != null) {
+                    loadOneItem();
+                }
+                break;
         }
-
     }
 
     @Override

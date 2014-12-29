@@ -71,6 +71,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        //暂时最后一项私信需要间隔，需修改
         if (position == mList.size() - 1) {
             holder.llInterval.setVisibility(View.VISIBLE);
         } else {

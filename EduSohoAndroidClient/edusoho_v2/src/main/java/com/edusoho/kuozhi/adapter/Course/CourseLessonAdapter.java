@@ -34,8 +34,7 @@ public class CourseLessonAdapter
     private ActionBarBaseActivity mActivity;
     private HashMap<Integer, LearnStatus> mUserLearns;
 
-    public CourseLessonAdapter(ActionBarBaseActivity activity, int resource)
-    {
+    public CourseLessonAdapter(ActionBarBaseActivity activity, int resource) {
         super(activity, resource);
         this.mActivity = activity;
     }
@@ -46,8 +45,7 @@ public class CourseLessonAdapter
         notifyItemInserted(mList.size() - 1);
     }
 
-    public void updateLearnStatus(HashMap<Integer, LearnStatus> userLearns)
-    {
+    public void updateLearnStatus(HashMap<Integer, LearnStatus> userLearns) {
         this.mUserLearns = userLearns;
     }
 
@@ -90,8 +88,7 @@ public class CourseLessonAdapter
     }
 
     private void setLessonInfo(
-            ViewHolder viewHolder, LessonItem lesson)
-    {
+            ViewHolder viewHolder, LessonItem lesson) {
         viewHolder.mLessonLayout.setVisibility(View.VISIBLE);
         viewHolder.mTitle.setText(lesson.title);
 
@@ -130,14 +127,13 @@ public class CourseLessonAdapter
                 mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
     }
 
-    private void setLessonProgress(int lessonId, ImageView statusImageView)
-    {
+    private void setLessonProgress(int lessonId, ImageView statusImageView) {
         LearnStatus status = mUserLearns.get(lessonId);
         if (status == null) {
             statusImageView.setImageResource(R.drawable.learn_status_normal);
             return;
         }
-        switch (status){
+        switch (status) {
             case finished:
                 statusImageView.setImageResource(R.drawable.learn_status_learned);
                 break;
@@ -148,8 +144,7 @@ public class CourseLessonAdapter
     }
 
     private void setChapterInfo(
-            ViewHolder viewHolder, LessonItem lesson)
-    {
+            ViewHolder viewHolder, LessonItem lesson) {
         viewHolder.mChapter.setVisibility(View.VISIBLE);
         if ("unit".equals(lesson.type)) {
             viewHolder.mChapter.setPadding(AQUtility.dip2pixel(mContext, 44), 0, 0, 0);
@@ -163,8 +158,7 @@ public class CourseLessonAdapter
         }
     }
 
-    private void setFreeTextStyle(TextView textView, String text)
-    {
+    private void setFreeTextStyle(TextView textView, String text) {
         StringBuilder str = new StringBuilder(textView.getText());
         int start = str.length();
         Spannable spannable = new SpannableString(str.append(text));
@@ -178,8 +172,7 @@ public class CourseLessonAdapter
         textView.setText(spannable);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mLessonType;
         public ESTextView mChapter;
         public TextView mTitle;
@@ -187,7 +180,7 @@ public class CourseLessonAdapter
         public ImageView mLessonProgress;
         public CheckBox mDownloadCheckBox;
 
-        public ViewHolder(View view){
+        public ViewHolder(View view) {
             super(view);
 
             mTitle = (TextView) view.findViewById(R.id.course_details_lesson_title);
