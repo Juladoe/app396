@@ -108,7 +108,7 @@ public class FoundFragment extends BaseFragment {
         mCourseListView = (RefreshListWidget) view.findViewById(R.id.found_category_course_list);
         mCategoryListView = (CategoryListView) view.findViewById(R.id.found_category_list);
 
-        mCourseListView.setEmptyText(new String[] { "没有搜到相关课程" });
+        mCourseListView.setEmptyText(new String[]{"没有搜到相关课程"});
         mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
@@ -150,15 +150,13 @@ public class FoundFragment extends BaseFragment {
         mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
     }
 
-    private void rotation(View view, float start, float end)
-    {
+    private void rotation(View view, float start, float end) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
         objectAnimator.setDuration(180);
         objectAnimator.start();
     }
 
-    private void hideCategoryList()
-    {
+    private void hideCategoryList() {
         mCategoryHeight = EdusohoApp.screenH - mActivity.mActionBar.getHeight();
         AppUtil.animForHeight(
                 new EdusohoAnimWrap(mCategoryListView),
@@ -169,8 +167,7 @@ public class FoundFragment extends BaseFragment {
         rotation(mSelectIconView, -180, 0);
     }
 
-    private void showCategoryList()
-    {
+    private void showCategoryList() {
         mCategoryHeight = EdusohoApp.screenH - mActivity.mActionBar.getHeight();
         AppUtil.animForHeight(
                 new EdusohoAnimWrap(mCategoryListView),
@@ -181,8 +178,7 @@ public class FoundFragment extends BaseFragment {
         rotation(mSelectIconView, 0, -180);
     }
 
-    private void loadCourseList(int categoryId, int start)
-    {
+    private void loadCourseList(int categoryId, int start) {
         Log.d(null, "categoryId->" + categoryId);
         mCurrentCategoryId = categoryId;
         RequestUrl url = app.bindUrl(Const.COURSES, true);
@@ -191,7 +187,7 @@ public class FoundFragment extends BaseFragment {
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mCourseListView.onRefreshComplete();

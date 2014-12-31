@@ -27,7 +27,7 @@
             android:gravity="center"
             android:text="问答"
             android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/sys_normal" />
+            android:textSize="@dimen/middle_font_size" />
 
     </LinearLayout>
 
@@ -58,8 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="资料"
-            android:textColor="@color/base_black_normal"
-            android:textSize="@dimen/base_large_size" />
+            android:textColor="@color/system_normal_text"
+            android:textSize="@dimen/middle_font_size" />
 
     </LinearLayout>
 
@@ -84,7 +84,7 @@
             android:gravity="center"
             android:text="笔记"
             android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/sys_normal" />
+            android:textSize="@dimen/middle_font_size" />
 
     </LinearLayout>
 
@@ -109,7 +109,7 @@
             android:gravity="center"
             android:text="提问"
             android:textColor="@color/system_normal_text"
-            android:textSize="@dimen/sys_normal" />
+            android:textSize="@dimen/middle_font_size" />
 
     </LinearLayout>
 

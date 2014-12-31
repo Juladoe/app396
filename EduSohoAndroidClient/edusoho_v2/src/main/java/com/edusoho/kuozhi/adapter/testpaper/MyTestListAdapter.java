@@ -250,9 +250,6 @@ public class MyTestListAdapter extends ListBaseAdapter<MyTestpaperData> {
         Course course = courses.get(getCourseId(testpaper.target));
         holder.mCourseTitle.setText(String.format("来自课程:《%s》", course.title));
 
-        if (index == 0) {
-            Log.d("1", "1");
-        }
         String status = testpaperResult.status;
         if ("reviewing".equals(status)) {
             //显示查看结果

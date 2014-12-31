@@ -85,14 +85,14 @@ public class PushUtil {
      */
     public static void savePusherServiceInfo(Context context, User user) {
         try {
-            SharedPreferences account = context.getSharedPreferences(Const.LOCAL_PUSH_DATA, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = account.edit();
-            editor.putString(Const.SERVER_IP, "192.168.1.3");
-            editor.putString(Const.SERVER_PORT, "9966");
-            editor.putString(Const.USER_ID, user.id + "");
+//            SharedPreferences account = context.getSharedPreferences(Const.LOCAL_PUSH_DATA, Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = account.edit();
+//            editor.putString(Const.SERVER_IP, "192.168.1.3");
+//            editor.putString(Const.SERVER_PORT, "9966");
+//            editor.putString(Const.USER_ID, user.id + "");
 //        editor.putString(Const.SENT_PKGS, "0");
 //        editor.putString(Const.RECEIVE_PKGS, "0");
-            editor.commit();
+//            editor.commit();
         } catch (Exception ex) {
 
         }
@@ -106,9 +106,9 @@ public class PushUtil {
      * @param user
      */
     public static void startPusherService(Activity activity, Context context, User user) {
-        savePusherServiceInfo(context, user);
-        Intent intent = new Intent(activity, PusherService.class);
-        context.startService(intent);
+//        savePusherServiceInfo(context, user);
+//        Intent intent = new Intent(activity, PusherService.class);
+//        context.startService(intent);
     }
 
     /**
@@ -118,8 +118,8 @@ public class PushUtil {
      * @param context
      */
     public static void stopPusherService(Activity activity, Context context) {
-        Intent intent = new Intent(activity, PusherService.class);
-        context.stopService(intent);
+//        Intent intent = new Intent(activity, PusherService.class);
+//        context.stopService(intent);
     }
 
 }
