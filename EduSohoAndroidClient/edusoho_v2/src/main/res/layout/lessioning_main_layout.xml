@@ -11,7 +11,8 @@
             android:layout_height="match_parent"
             android:paddingTop="10dp"
             android:footerDividersEnabled="true"
-            app:rlw_dividerHeight="2px"
+            app:rlw_dividerHeight="1px"
+            app:rlw_dividerColor="@color/load_bg"
             android:scrollbars="none"
             android:id="@+id/lession_listview"></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
 

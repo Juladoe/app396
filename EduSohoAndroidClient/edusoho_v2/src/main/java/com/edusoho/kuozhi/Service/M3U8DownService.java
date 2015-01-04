@@ -171,7 +171,7 @@ public class M3U8DownService extends Service {
         @Override
         public void invoke(Intent intent) {
             int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
-            String title = intent.getStringExtra(Const.ACTIONBAT_TITLE);
+            String title = intent.getStringExtra(Const.ACTIONBAR_TITLE);
             M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(
                     mContext, lessonId, EdusohoApp.app.domain);
             if (m3U8DbModle == null) {

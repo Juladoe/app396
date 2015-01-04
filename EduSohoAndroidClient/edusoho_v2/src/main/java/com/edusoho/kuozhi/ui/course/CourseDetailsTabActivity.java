@@ -57,7 +57,7 @@ public class CourseDetailsTabActivity extends ActionBarBaseActivity {
     {
         Intent data = getIntent();
         if (data != null) {
-            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+            mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
             titles = data.getStringArrayExtra(TITLES);
             fragmentArrayList = data.getStringArrayExtra(LISTS);
             mFragmentName = data.getStringExtra(FRAGMENT);

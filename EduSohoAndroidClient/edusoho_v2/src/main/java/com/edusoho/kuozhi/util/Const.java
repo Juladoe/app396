@@ -211,6 +211,7 @@ public class Const {
     //笔记列表
     public static final String USER_NOTES = "Course/getNoteList";
     public static final String COURSE_NOTES = "Course/getCourseNotes";
+    public static final String ONE_NOTE = "Course/getOneNote";
 
     //笔记编辑
     public static final String NOTE_CONTENT = "Course/AddNote";
@@ -259,7 +260,7 @@ public class Const {
     public static final String STATUS = "status";
     public static final String MEDIA_SOURCE = "mediaSource";
     public static final String LESSON_TYPE = "type";
-    public static final String ACTIONBAT_TITLE = "title";
+    public static final String ACTIONBAR_TITLE = "title";
     public static final String IS_STUDENT = "is_student";
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
@@ -274,6 +275,8 @@ public class Const {
     public static final String RICH_ITEM_AGRS = "rich_item_args";
 
     public static final String REQUEST_CODE = "reply_type";
+
+    public static final String SCHOOL_ROOM = "Course/getSchoolRoom";
 
     /**
      * 普通回复
@@ -299,7 +302,6 @@ public class Const {
     public static final int PUSH_CODE = 32;
     public static final int APP_ID = 1;
     public static final String PUSH_CMD_CODE = "CMD";
-    public static final String PUSH_TICK_ALARM = "TICK";
 
     public static final String LOCAL_PUSH_DATA = "pushData";
     public static final String SERVER_IP = "serverIp";
@@ -310,5 +312,6 @@ public class Const {
     public static final String RECEIVE_PKGS = "receivePkgs";
 
     //------------------------------------------
+
 
 }

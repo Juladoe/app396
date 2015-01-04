@@ -21,11 +21,12 @@
         android:layout_below="@id/question_title"
         android:layout_marginTop="12dp"
         android:ellipsize="end"
-        android:lines="3"
+        android:maxLines="3"
+        android:minLines="1"
         android:text="我是问题的答案我是问题的答案我是问题的答案我是问题的答案我是问题的答案我是问题的答案"
         android:textSize="14sp"/>
 
-    <TextView
+    <com.edusoho.kuozhi.view.ESTextView
         android:id="@+id/question_answer_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
         android:text="(5条回答)"
-        android:textColor="#ccc"
+        app:es_alpha="0.54"
         android:textSize="14sp"/>
 
     <ImageView
@@ -60,6 +61,7 @@
             android:layout_marginRight="12dp"
             app:es_alpha="0.54"
             android:singleLine="true"
+            android:ellipsize="end"
             android:text="我是课时的标题"
             android:textSize="@dimen/question_super_small_font_size"/>
 

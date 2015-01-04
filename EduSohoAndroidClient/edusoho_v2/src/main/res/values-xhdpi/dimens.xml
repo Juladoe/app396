@@ -127,4 +127,7 @@
     <dimen name="question_super_small_font_size">12dp</dimen>
     <dimen name="question_small_font_size">14dp</dimen>
     <dimen name="question_middle_font_size">16dp</dimen>
+
+    <dimen name="schoolroom_item_logo">12dp</dimen>
+
 </resources>

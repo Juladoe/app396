@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:footerDividersEnabled="true"
-        app:rlw_dividerHeight="2px"
+        app:rlw_dividerHeight="1px"
+        app:rlw_dividerColor="@color/load_bg"
         android:scrollbars="none"
         ></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
+    <include layout="@layout/loading_layout" />
 </RelativeLayout>

@@ -2,16 +2,23 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/question_detatil_describe_inflate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:layout_height="wrap_content">
+
+    <include layout="@layout/loading_layout"/>
+
+    <RelativeLayout
+        android:id="@+id/question_detatil_describe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
     <TextView
         android:id="@+id/question_detail_describe_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/question_middle_font_size"
-        android:text="我是提问的标题"/>
+        android:textSize="@dimen/question_middle_font_size"/>
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/question_detatil_describe_user_head_image"
@@ -34,8 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/question_small_font_size"
-            android:textColor="#2ec368"
-            android:text="Joanie"/>
+            android:textColor="#2ec368"/>
 
         <com.edusoho.kuozhi.view.ESTextView
             android:id="@+id/question_detatile_describe_time"
@@ -43,9 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             app:es_alpha="0.54"
-            android:textSize="@dimen/question_small_font_size"
-            android:text="2014-2-16"
-            />
+            android:textSize="@dimen/question_small_font_size"/>
     </LinearLayout>
 
     <TextView
@@ -54,8 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/question_detatil_describe_user_head_image"
         android:layout_marginTop="16dp"
-        android:textSize="@dimen/question_small_font_size"
-        android:text="我是问题的描述"/>
+        android:textSize="@dimen/question_small_font_size"/>
 
     <LinearLayout
         android:id="@+id/question_describe_image"
@@ -74,8 +77,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginLeft="5dp"
         app:es_alpha="0.54"
-        android:textSize="@dimen/question_small_font_size"
-        android:text="22"/>
+        android:textSize="@dimen/question_small_font_size"/>
 
     <ImageView
         android:id="@+id/question_detail_describe_answer_count_icon"
@@ -94,8 +96,7 @@
         android:layout_marginLeft="5dp"
         android:layout_toLeftOf="@id/question_detail_describe_answer_count_icon"
         app:es_alpha="0.54"
-        android:textSize="@dimen/question_small_font_size"
-        android:text="233"/>
+        android:textSize="@dimen/question_small_font_size"/>
 
     <ImageView
         android:id="@+id/question_detail_describe_browse_icon"
@@ -116,6 +117,15 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:textSize="@dimen/question_small_font_size"
-        android:textColor="#2ec368"
-        android:text="火星人"/>
+        android:textColor="#2ec368"/>
+
+    </RelativeLayout>
+
+    <com.edusoho.kuozhi.view.ESImageView
+        android:id="@+id/question_detatil_line"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_below="@id/question_detatil_describe"
+        android:background="#000"
+        app:es_alpha="0.12"/>
 </RelativeLayout>

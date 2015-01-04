@@ -70,7 +70,7 @@ public class LessonItemClickListener implements AdapterView.OnItemClickListener
                 startIntent.putExtra(Const.FREE, lesson.free);
                 startIntent.putExtra(Const.LESSON_ID, lesson.id);
                 startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                 startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
                 startIntent.putExtra(Const.IS_LEARN, mIsLearn);
             }

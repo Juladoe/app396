@@ -21,9 +21,7 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -160,7 +158,7 @@ public class LearnStatusWidget extends FrameLayout {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.COURSE_ID, course.id);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, course.title);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, course.title);
                         startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
                     }
                 });
@@ -197,7 +195,7 @@ public class LearnStatusWidget extends FrameLayout {
                         startIntent.putExtra(Const.FREE, lesson.free);
                         startIntent.putExtra(Const.LESSON_ID, lesson.id);
                         startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                         startIntent.putExtra(Const.LIST_JSON, lessonJson);
                     }
                 });

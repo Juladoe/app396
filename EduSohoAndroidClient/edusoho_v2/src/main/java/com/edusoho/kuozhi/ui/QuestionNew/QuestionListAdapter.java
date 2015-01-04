@@ -1,19 +1,23 @@
 package com.edusoho.kuozhi.ui.QuestionNew;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
+import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
+import com.edusoho.kuozhi.model.Question.QuestionResult;
+import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
 
 /**
  * Created by onewoman on 2014/12/22.
  */
-public class QuestionListAdapter extends ListBaseAdapter<QuestionListData>{
+public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
 
     public QuestionListAdapter(Context context, int resource) {
         super(context, resource);
@@ -60,12 +64,16 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionListData>{
         tvQuestionAnswerTime = (TextView) view.findViewById(R.id.question_answer_time);
         tvQuestionCourseTitle = (TextView) view.findViewById(R.id.question_course_title);
 
-        QuestionListData questionListData = mList.get(i);
-        tvQuestiongTitle.setText(questionListData.questiongTitle);
-        tvQuestionAnswerCount.setText(questionListData.questionAnswerCount);
-        tvQuestionAnswerContent.setText(questionListData.questionAnswerContent);
-        tvQuestionAnswerTime.setText(questionListData.questionAnswerTime);
-        tvQuestionCourseTitle.setText(questionListData.questionCourseTitle);
+        QuestionDetailModel questionListData = mList.get(i);
+        tvQuestiongTitle.setText(questionListData.title);
+        tvQuestionAnswerCount.setText(String.valueOf(questionListData.postNum));
+        if(questionListData.latestPostContent != null){
+            tvQuestionAnswerContent.setText(Html.fromHtml(questionListData.latestPostContent));
+        }else{
+            tvQuestionAnswerContent.setText("");
+        }
+        tvQuestionAnswerTime.setText(AppUtil.getPostDays(questionListData.latestPostTime));
+        tvQuestionCourseTitle.setText(questionListData.courseTitle);
 
         return view;
     }

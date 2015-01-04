@@ -148,7 +148,6 @@ public class MyInfoFragment extends BaseFragment {
                 switch (plugin.action) {
                     case QUESTION:
                         showMyQuestionOrDiscuss("我的问答", "question");
-//                        showMyQuestion();
                         break;
                     case COURSE:
                         showMyCourse();
@@ -157,7 +156,7 @@ public class MyInfoFragment extends BaseFragment {
                         showMyTestpaper();
                         break;
                     case DISCUSS:
-//                        showMyQuestionOrDiscuss("我的话题", "discussion");
+                        showMyQuestionOrDiscuss("我的话题", "discussion");
                         break;
                     case NOTE:
                         showMyNote();
@@ -178,12 +177,12 @@ public class MyInfoFragment extends BaseFragment {
     private void showMyTestpaper() {
         app.mEngine.runNormalPlugin(
                 "FragmentPageActivity", mActivity, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestFragment");
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
-            }
-        });
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestFragment");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "我的考试");
+                    }
+                });
     }
 
     public void showMyNote() {
@@ -196,24 +195,15 @@ public class MyInfoFragment extends BaseFragment {
         app.mEngine.runNormalPlugin("NoteListActivity", mActivity, callback);
     }
 
-//    private void showMyQuestion(){
-//        PluginRunCallback callback = new PluginRunCallback() {
-//            @Override
-//            public void setIntentDate(Intent startIntent) {
-//            }
-//        };
-//        app.mEngine.runNormalPlugin("QuestionActivity",mActivity,callback);
-//    }
-
     private void showMyQuestionOrDiscuss(final String title, final String type) {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, title);
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
             }
         };
-        app.mEngine.runNormalPlugin("QuestionActivity", mActivity, callback);
+        app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
     }
 
     private void showMyCourse() {
@@ -223,7 +213,7 @@ public class MyInfoFragment extends BaseFragment {
                 startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, new Bundle());
                 startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.MY_COURSE_FRAGMENT);
                 startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.MY_COURSE_TITLE);
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的课程");
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, "我的课程");
                 startIntent.putExtra(
                         CourseDetailsTabActivity.FRAGMENT, "");
             }

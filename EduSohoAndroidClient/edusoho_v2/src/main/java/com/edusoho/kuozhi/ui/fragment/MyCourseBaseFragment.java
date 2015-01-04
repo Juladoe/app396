@@ -137,7 +137,7 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.COURSE_ID, course.id);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, course.title);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, course.title);
                         startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
                     }
                 });

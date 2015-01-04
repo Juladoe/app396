@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
+import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.listener.ResultCallback;
@@ -105,6 +106,7 @@ public class EdusohoMainService extends Service {
                         //PushUtil.startPusherService(activity, activity.getBaseContext(), mLoginUser);
                     }
                     app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
+                    //app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
                 }
             });
 

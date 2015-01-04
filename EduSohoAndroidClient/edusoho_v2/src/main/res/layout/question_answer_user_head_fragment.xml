@@ -18,11 +18,13 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/question_detail_answer_user_role"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:background="#ff5822"
+            android:visibility="gone"
             android:text="教师"
             android:textColor="#fff"
             android:textSize="12sp"/>

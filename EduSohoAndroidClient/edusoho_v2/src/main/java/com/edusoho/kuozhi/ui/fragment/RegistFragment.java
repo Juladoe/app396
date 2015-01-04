@@ -9,14 +9,12 @@ import android.widget.EditText;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.Service.PusherService;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.ButtonWidget;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -67,7 +65,7 @@ public class RegistFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AboutFragment.URL, url);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "服务条款");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "服务条款");
                     }
                 });
             }

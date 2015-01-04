@@ -107,6 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/icon_font_decre"
+            android:visibility="gone"
             android:src="@drawable/icon_font_size_decrease" />
 
         <ImageView
@@ -115,7 +116,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/icon_camera"
             android:clickable="true"
-            android:visibility="gone"
             android:src="@drawable/widget_photo" />
 
         <ImageView

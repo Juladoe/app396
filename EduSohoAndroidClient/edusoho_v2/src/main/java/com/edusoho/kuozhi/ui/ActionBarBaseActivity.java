@@ -124,9 +124,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void log(String format, String... strs) {
         if (EdusohoApp.debug) {
-            System.out.println(String.format(format, strs));
+            System.out.println(String.format(format,strs));
         }
-
     }
 
     public void enableBtn(ViewGroup vg, boolean isEnable) {

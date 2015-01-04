@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-    <include layout="@layout/question_detatil_describe_inflate"
-        android:id="@+id/question_detatil_describe_inflate"/>
-
-    <ImageView
-        android:id="@+id/question_detatil_line"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_below="@id/question_detatil_describe_inflate"
-        android:src="#ccc"/>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.edusoho.kuozhi.ui.widget.RefreshListWidget
         android:id="@+id/question_detail_answer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/question_detatil_line"
-        app:rlw_dividerHeight="2px"
-        android:scrollbars="none"></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
+        android:scrollbars="none"
+        app:rlw_dividerColor="@color/load_bg"
+        app:rlw_dividerHeight="1px"></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
 </RelativeLayout>

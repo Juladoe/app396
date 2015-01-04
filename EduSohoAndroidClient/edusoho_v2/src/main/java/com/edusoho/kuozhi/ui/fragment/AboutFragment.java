@@ -45,7 +45,7 @@ public class AboutFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mUrl = bundle.getString(URL);
-            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
             mContent = bundle.getString(AboutFragment.CONTENT);
             mType = bundle.getInt(AboutFragment.TYPE, FROM_URL);
 

@@ -7,15 +7,12 @@ import android.view.View;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.Service.PusherService;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EduUpdateView;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
@@ -64,7 +61,7 @@ public class MoreSettingFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(AboutFragment.URL, url);
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, getResources().getString(R.string.school_about));
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, getResources().getString(R.string.school_about));
             }
         });
     }
@@ -80,7 +77,7 @@ public class MoreSettingFragment extends BaseFragment {
                 app.mEngine.runNormalPlugin("LocalCoruseActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "视频下载");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "视频下载");
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "LessonDownloadedFragment");
                     }
                 });
@@ -101,7 +98,7 @@ public class MoreSettingFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "SettingFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "设置");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "设置");
                     }
                 });
             }
@@ -146,7 +143,7 @@ public class MoreSettingFragment extends BaseFragment {
                         startIntent.putExtra(MessageTabActivity.FRAGMENT_NAME, "MessageFragment");
                         startIntent.putExtra(MessageTabActivity.FRAGMENT_LIST, Const.MESSAGE_FRAGMENT_LIST);
                         startIntent.putExtra(MessageTabActivity.TAB_TITLES, Const.MESSAGE_TAB_TITLE);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "消息");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "消息");
                     }
                 };
 
