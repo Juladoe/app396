@@ -17,6 +17,8 @@ import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 

@@ -23,7 +23,7 @@ import java.util.HashMap;
 /**
  * Created by howzhi on 14-8-21.
  */
-public class RegistFragment extends BaseFragment{
+public class RegistFragment extends BaseFragment {
 
     public static final String TAG = "RegistFragment";
 
@@ -65,7 +65,7 @@ public class RegistFragment extends BaseFragment{
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AboutFragment.URL, url);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, "服务条款");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "服务条款");
                     }
                 });
             }
@@ -83,8 +83,7 @@ public class RegistFragment extends BaseFragment{
         });
     }
 
-    private void showUserTerm(String url)
-    {
+    private void showUserTerm(String url) {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -93,27 +92,26 @@ public class RegistFragment extends BaseFragment{
         startActivity(intent);
     }
 
-    private boolean registUser()
-    {
+    private boolean registUser() {
         String email = mEmailEdt.getText().toString();
         if (TextUtils.isEmpty(email)) {
             mActivity.longToast("请输入邮箱地址");
             return false;
         }
 
-        String nickname =  mUserNameEdt.getText().toString();
+        String nickname = mUserNameEdt.getText().toString();
         if (TextUtils.isEmpty(nickname)) {
             mActivity.longToast("请输入昵称");
             return false;
         }
 
-        String pass =  mPassEdt.getText().toString();
+        String pass = mPassEdt.getText().toString();
         if (TextUtils.isEmpty(pass)) {
             mActivity.longToast("请输入密码");
             return false;
         }
 
-        String pass2 =  mPass2Edt.getText().toString();
+        String pass2 = mPass2Edt.getText().toString();
         if (!pass.equals(pass2)) {
             mActivity.longToast("两次密码不相同");
             return false;
@@ -125,14 +123,15 @@ public class RegistFragment extends BaseFragment{
         params.put("nickname", nickname);
         params.put("password", pass);
 
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mRegistBtn.setActionMode(true);
                 mActivity.setProgressBarIndeterminateVisibility(false);
                 TokenResult tokenResult = mActivity.parseJsonValue(
-                        object, new TypeToken<TokenResult>(){});
+                        object, new TypeToken<TokenResult>() {
+                        });
 
                 if (tokenResult == null) {
                     mActivity.longToast("账号注册失败！请重新尝试！!");

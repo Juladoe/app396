@@ -172,6 +172,7 @@ public class Const {
     public static final String LASTEST_COURSES = "School/getLatestCourses";
     public static final String WEEK_COURSES = "School/getWeekRecommendCourses";
     public static final String CATEGORYS = "Category/getAllCategories";
+    public static final String GET_TAGS = "Category/getTags";
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
@@ -212,6 +213,7 @@ public class Const {
     //笔记列表
     public static final String USER_NOTES = "Course/getNoteList";
     public static final String COURSE_NOTES = "Course/getCourseNotes";
+    public static final String ONE_NOTE = "Course/getOneNote";
 
     //笔记编辑
     public static final String NOTE_CONTENT = "Course/AddNote";
@@ -260,7 +262,7 @@ public class Const {
     public static final String STATUS = "status";
     public static final String MEDIA_SOURCE = "mediaSource";
     public static final String LESSON_TYPE = "type";
-    public static final String ACTIONBAT_TITLE = "title";
+    public static final String ACTIONBAR_TITLE = "title";
     public static final String IS_STUDENT = "is_student";
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
@@ -276,6 +278,8 @@ public class Const {
 
     public static final String REQUEST_CODE = "reply_type";
 
+    public static final String SCHOOL_ROOM = "Course/getSchoolRoom";
+
     /**
      * 普通回复
      */
@@ -288,7 +292,7 @@ public class Const {
 
     /**
      * 回复编辑
-    */
+     */
     public static final int EDIT_REPLY = 0x03;
 
     public static final String COURSE_NOTICES = "Course/getCourseNotices";
@@ -296,9 +300,24 @@ public class Const {
     public static final String CACHE_COURSE_TYPE = "course";
     public static final String CACHE_USER_TYPE = "user";
     public static final String CACHE_LESSON_TYPE = "lesson";
+
     public static final String CACHE_KEY_TYPE = "m3u8_key";
 
     public static final int NET_WIFI = 0;
     public static final int NET_3G_WIFI = 1;
     public static final int NET_NONE = 2;
+
+    //Pusher相关 --------------------------------
+    public static final int PUSH_CODE = 32;
+    public static final int APP_ID = 1;
+    public static final String PUSH_CMD_CODE = "CMD";
+
+    public static final String LOCAL_PUSH_DATA = "pushData";
+    public static final String SERVER_IP = "serverIp";
+    public static final String SERVER_PORT = "serverPort";
+    public static final String PUSH_PORT = "pushPort";
+    public static final String USER_ID = "userName";
+    public static final String SENT_PKGS = "sentPkgs";
+    public static final String RECEIVE_PKGS = "receivePkgs";
+
 }

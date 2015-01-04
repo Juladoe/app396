@@ -177,12 +177,12 @@ public class MyInfoFragment extends BaseFragment {
     private void showMyTestpaper() {
         app.mEngine.runNormalPlugin(
                 "FragmentPageActivity", mActivity, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestpaperFragment");
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的考试");
-            }
-        });
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "MyTestpaperFragment");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "我的考试");
+                    }
+                });
     }
 
     public void showMyNote() {
@@ -199,7 +199,7 @@ public class MyInfoFragment extends BaseFragment {
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, title);
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
             }
         };
@@ -213,7 +213,7 @@ public class MyInfoFragment extends BaseFragment {
                 startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, new Bundle());
                 startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.MY_COURSE_FRAGMENT);
                 startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.MY_COURSE_TITLE);
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, "我的课程");
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, "我的课程");
                 startIntent.putExtra(
                         CourseDetailsTabActivity.FRAGMENT, "");
             }

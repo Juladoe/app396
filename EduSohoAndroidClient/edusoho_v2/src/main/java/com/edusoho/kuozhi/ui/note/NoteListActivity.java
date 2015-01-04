@@ -2,25 +2,18 @@ package com.edusoho.kuozhi.ui.note;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Note.NoteAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Note.Note;
 import com.edusoho.kuozhi.model.Note.NoteInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.ui.widget.RefreshGridViewWidget;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -29,7 +22,6 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 
 import library.PullToRefreshBase;
-import library.PullToRefreshListView;
 import library.PullToRefreshScrollView;
 
 
@@ -64,7 +56,7 @@ public class NoteListActivity extends ActionBarBaseActivity {
                 try {
                     NoteInfo noteInfo = (NoteInfo) adapterView.getItemAtPosition(i);
                     Bundle bundle = new Bundle();
-                    bundle.putString(Const.ACTIONBAT_TITLE, noteInfo.lessonTitle);
+                    bundle.putString(Const.ACTIONBAR_TITLE, noteInfo.lessonTitle);
                     bundle.putString(FragmentPageActivity.FRAGMENT, "NoteContentFragment");
                     bundle.putString(NoteContentFragment.CONTENT, noteInfo.content);
                     bundle.putInt(Const.LESSON_ID, noteInfo.lessonId);

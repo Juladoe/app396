@@ -119,4 +119,6 @@
     <dimen name="course_notice_content">16sp</dimen>
     <dimen name="course_notice_issue">15sp</dimen>
     <dimen name="course_notice_issue_time">13sp</dimen>
+
+    <dimen name="schoolroom_item_logo">12dp</dimen>
 </resources>

@@ -18,15 +18,17 @@ public class CourseListActivity extends ActionBarBaseActivity {
     public static final String TITLE = "title";
     public static final String CATEGORY_ID = "categoryId";
     public static final String SEARCH_TEXT = "search";
+    public static final String TAG_ID = "tagId";
     public static final String TYPE = "type";
 
-    public static final int RECOMMEND= 0001;
-    public static final int LASTEST= 0002;
+    public static final int RECOMMEND = 0001;
+    public static final int LASTEST = 0002;
 
     private String mTitle;
     private int mCategoryId;
     private int mType;
     private String mSearchText;
+    private String mTagId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,28 +37,29 @@ public class CourseListActivity extends ActionBarBaseActivity {
         initView();
     }
 
-    private void initView()
-    {
+    private void initView() {
         Intent data = getIntent();
         if (data != null) {
             mSearchText = data.getStringExtra(SEARCH_TEXT);
             mType = data.getIntExtra(TYPE, 0);
             mTitle = data.hasExtra(TITLE) ? data.getStringExtra(TITLE) : "课程列表";
             mCategoryId = data.getIntExtra(CATEGORY_ID, 0);
+            mTagId = data.getStringExtra(TAG_ID);
         }
         setBackMode(BACK, mTitle);
 
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(
                 "CourseFragment", mActivity, new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putInt(CATEGORY_ID, mCategoryId);
-                bundle.putString(SEARCH_TEXT, mSearchText);
-                bundle.putInt(TYPE, mType);
-                bundle.putString(CourseFragment.TITLE, mTitle);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putInt(CATEGORY_ID, mCategoryId);
+                        bundle.putString(SEARCH_TEXT, mSearchText);
+                        bundle.putInt(TYPE, mType);
+                        bundle.putString(CourseFragment.TITLE, mTitle);
+                        bundle.putString(CourseListActivity.TAG_ID, mTagId);
+                    }
+                });
 
         fragmentTransaction.add(R.id.fragment_layout, fragment);
         fragmentTransaction.commit();

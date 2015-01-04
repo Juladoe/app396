@@ -246,6 +246,7 @@ public class M3U8DownService extends Service {
                 return;
             }
             String title = m3U8Uitl.getLessonTitle();
+
             M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(
                     mContext, loginUser.id, lessonId, EdusohoApp.app.domain, M3U8Uitl.ALL);
             if (m3U8DbModle == null) {

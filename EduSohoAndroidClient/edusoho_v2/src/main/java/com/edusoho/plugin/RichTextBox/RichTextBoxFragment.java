@@ -167,7 +167,6 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         initViews();
         initHorizontalScrollView();
         initProgressDialog();
-        Bundle bundle = getArguments();
         return mRichTextBoxView;
     }
 

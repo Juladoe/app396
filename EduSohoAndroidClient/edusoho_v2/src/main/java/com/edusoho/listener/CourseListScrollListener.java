@@ -1,18 +1,12 @@
 package com.edusoho.listener;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
-import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
-import com.edusoho.kuozhi.ui.fragment.AboutFragment;
 import com.edusoho.kuozhi.util.Const;
 
 /**
@@ -44,7 +38,7 @@ public class CourseListScrollListener implements AbsListView.OnScrollListener, A
         Course course = (Course) parent.getItemAtPosition(index);
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, course.id);
-        bundle.putString(Const.ACTIONBAT_TITLE, course.title);
+        bundle.putString(Const.ACTIONBAR_TITLE, course.title);
         mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
     }
 }

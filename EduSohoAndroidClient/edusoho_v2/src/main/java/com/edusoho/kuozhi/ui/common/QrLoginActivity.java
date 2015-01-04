@@ -36,7 +36,7 @@ public class QrLoginActivity extends ActionBarBaseActivity {
     private void startQrSearch()
     {
         Intent qrIntent = new Intent();
-        qrIntent.putExtra(Const.ACTIONBAT_TITLE, "扫描登录用户");
+        qrIntent.putExtra(Const.ACTIONBAR_TITLE, "扫描登录用户");
         qrIntent.setClass(mContext, CaptureActivity.class);
         startActivityForResult(qrIntent, REQUEST_QR);
     }

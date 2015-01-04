@@ -193,7 +193,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
     private void initIntentData() {
         Intent data = getIntent();
         if (data != null) {
-            mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+            mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
             mCoursePic = data.getStringExtra(COURSE_PIC);
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
         }

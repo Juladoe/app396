@@ -31,6 +31,7 @@ public class XCourseListWidget extends FrameLayout {
     private View mEmptyLayout;
     private PullToRefreshGridView mCourseListWidget;
     private String mEmptyText = "没有搜到相关课程，请换个关键词试试！";
+    private int numColumn = 2;
 
     public XCourseListWidget(Context context) {
         super(context);
@@ -53,10 +54,11 @@ public class XCourseListWidget extends FrameLayout {
     {
         mCourseListWidget = new PullToRefreshGridView(mContext);
         GridView gridView = mCourseListWidget.getRefreshableView();
-        gridView.setSmoothScrollbarEnabled(false);
-        gridView.setNumColumns(2);
+        gridView.setNumColumns(numColumn);
         gridView.setBackgroundColor(Color.TRANSPARENT);
         gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        gridView.setSmoothScrollbarEnabled(true);
+        gridView.setFastScrollEnabled(true);
         mCourseListWidget.setLayoutParams(new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         addView(mCourseListWidget);
@@ -95,6 +97,14 @@ public class XCourseListWidget extends FrameLayout {
         if (mEmptyLayout == null) {
             mCourseListWidget.setOnRefreshListener(refreshListener);
         }
+    }
+
+    public void scrollLater()
+    {
+        GridView gridView = mCourseListWidget.getRefreshableView();
+        int count = mAdapter.getCount();
+        int mod = count % 10;
+        gridView.smoothScrollToPosition(mod > 0 ? count - mod : count - 10);
     }
 
     private void refreshView()

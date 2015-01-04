@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.ui.fragment.course;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,7 +159,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                         }
                         Bundle bundle = new Bundle();
                         bundle.putString(FragmentPageActivity.FRAGMENT, "CourseDownloadingFragment");
-                        bundle.putString(Const.ACTIONBAT_TITLE, "下载列表");
+                        bundle.putString(Const.ACTIONBAR_TITLE, "下载列表");
 
                         CorusePaperActivity activity = (CorusePaperActivity)getActivity();
                         bundle.putString(
@@ -251,7 +250,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                         startIntent.putExtra(Const.IS_LEARN, courseDetailsResult.member != null);
                         startIntent.putExtra(Const.LESSON_ID, lesson.id);
                         startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                         startIntent.putExtra(LessonActivity.FROM_CACHE, mM3U8DbModles.indexOfKey(lesson.id) >= 0);
                     }
                 });

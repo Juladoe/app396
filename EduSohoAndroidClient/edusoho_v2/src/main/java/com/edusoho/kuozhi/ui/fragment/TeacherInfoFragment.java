@@ -72,7 +72,7 @@ public class TeacherInfoFragment extends BaseFragment {
                 final Course course = (Course) parent.getItemAtPosition(position);
                 Bundle data = new Bundle();
                 data.putInt(Const.COURSE_ID, course.id);
-                data.putString(Const.ACTIONBAT_TITLE, course.title);
+                data.putString(Const.ACTIONBAR_TITLE, course.title);
                 data.putString(CourseDetailsActivity.COURSE_PIC, course.largePicture);
 
                 mActivity.app.mEngine.runNormalPluginWithBundle(

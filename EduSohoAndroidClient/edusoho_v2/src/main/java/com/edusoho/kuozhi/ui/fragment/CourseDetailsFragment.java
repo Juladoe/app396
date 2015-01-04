@@ -119,7 +119,7 @@ public class CourseDetailsFragment extends BaseFragment{
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mTitle = bundle.getString(Const.ACTIONBAT_TITLE);
+            mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
             mCourseId = bundle.getInt(Const.COURSE_ID);
         }
 
@@ -443,7 +443,7 @@ public class CourseDetailsFragment extends BaseFragment{
 
         Bundle bundle = new Bundle();
         bundle.putBundle(CourseDetailsTabActivity.FRAGMENT_DATA, fragmentBundle);
-        bundle.putString(Const.ACTIONBAT_TITLE, "课程详情");
+        bundle.putString(Const.ACTIONBAR_TITLE, "课程详情");
         bundle.putStringArray(CourseDetailsTabActivity.LISTS, Const.COURSE_INFO_FRAGMENT);
         bundle.putStringArray(CourseDetailsTabActivity.TITLES, Const.COURSE_INFO_TITLE);
         bundle.putString(

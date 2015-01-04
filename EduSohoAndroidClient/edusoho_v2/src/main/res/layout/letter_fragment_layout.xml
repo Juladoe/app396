@@ -13,7 +13,6 @@
         android:id="@+id/letter_summary_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/system_normal_bg"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:scrollbars="none"

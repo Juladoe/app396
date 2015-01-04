@@ -123,7 +123,6 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
         super.initView(view);
         initBundle();
         mListView = (EduSohoListView) view.findViewById(R.id.list_view);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mListView.setLayoutManager(linearLayoutManager);
         mListView.addItemDecoration(
@@ -174,7 +173,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
         }
         Bundle bundle = new Bundle();
         bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
-        bundle.putString(Const.ACTIONBAT_TITLE, "评价课程");
+        bundle.putString(Const.ACTIONBAR_TITLE, "评价课程");
         bundle.putInt(Const.COURSE_ID, mCourseId);
         startAcitivityWithBundle("FragmentPageActivity", bundle);
     }
@@ -246,7 +245,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
                 bundle.putBoolean(ReviewInfoFragment.IS_STUDENT, result.member != null);
-                bundle.putString(Const.ACTIONBAT_TITLE, "评价列表");
+                bundle.putString(Const.ACTIONBAR_TITLE, "评价列表");
                 bundle.putInt(Const.COURSE_ID, mCourseId);
                 bundle.putDouble(CourseReviewFragment.RATING, mRating);
                 bundle.putString(CourseReviewFragment.RATING_NUM, mRatingNum);

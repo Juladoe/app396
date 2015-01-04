@@ -95,7 +95,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
     @Override
     protected void initIntentData() {
         Intent data = getIntent();
-        mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+        mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
         mTestId = data.getIntExtra(Const.MEDIA_ID, 0);
         mTestpaperResultId = data.getIntExtra(Const.mTestpaperResultId, 0);
         mLessonId = data.getIntExtra(Const.LESSON_ID, 0);

@@ -407,7 +407,7 @@ public class M3U8Uitl {
             Intent intent = new Intent(DownLoadStatusReceiver.ACTION);
             intent.putExtra(Const.LESSON_ID, mLessonId);
             intent.putExtra(Const.COURSE_ID, mCourseId);
-            intent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
+            intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
             mContext.sendBroadcast(intent);
         } catch (Exception e) {
             //超时处理
@@ -618,7 +618,7 @@ public class M3U8Uitl {
                     Intent intent = new Intent(DownLoadStatusReceiver.ACTION);
                     intent.putExtra(Const.LESSON_ID, mLessonId);
                     intent.putExtra(Const.COURSE_ID, mCourseId);
-                    intent.putExtra(Const.ACTIONBAT_TITLE, mLessonTitle);
+                    intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
                     mContext.sendBroadcast(intent);
                 } catch (Exception e) {
                     //超时处理

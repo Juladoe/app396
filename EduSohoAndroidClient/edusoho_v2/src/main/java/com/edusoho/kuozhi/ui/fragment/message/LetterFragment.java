@@ -13,7 +13,7 @@ import com.edusoho.kuozhi.adapter.MessageLetterSummaryAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
-import com.edusoho.kuozhi.ui.Message.MessageLetterListActivity;
+import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -73,7 +73,7 @@ public class LetterFragment extends BaseFragment {
                         LetterSummaryModel model = (LetterSummaryModel) parent.getItemAtPosition(position);
                         if (model != null) {
                             startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, model.id);
-                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_WITH, model.user.nickname);
+                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_NAME, model.user.nickname);
                             startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_ID, model.fromId);
                         }
                     }

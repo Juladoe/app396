@@ -42,6 +42,7 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -75,6 +76,9 @@ public class EdusohoApp extends Application {
     public String apiVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
+
+    public Activity mActivity;
+    public Context mContext;
 
     public String token;
 
@@ -134,8 +138,7 @@ public class EdusohoApp extends Application {
         query.ajax(requestUrl.url, requestUrl.getKeysMap(), String.class, ajaxCallback);
     }
 
-    public AjaxCallback getUrl(final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback)
-    {
+    public AjaxCallback getUrl(final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
         Cache cache = mEngine.appCache.getCache(requestUrl);
         CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
             @Override
@@ -290,8 +293,7 @@ public class EdusohoApp extends Application {
         AjaxCallback.setTimeout(1000 * 10);
     }
 
-    private String getDomain()
-    {
+    private String getDomain() {
         Uri hostUri = Uri.parse(app.host);
         if (hostUri != null) {
             return hostUri.getHost();
@@ -299,8 +301,7 @@ public class EdusohoApp extends Application {
         return "";
     }
 
-    public void initApp()
-    {
+    public void initApp() {
         initWorkSpace();
         initImageLoaderConfig();
         loadConfig();
@@ -313,7 +314,7 @@ public class EdusohoApp extends Application {
     private void initImageLoaderConfig() {
         mImageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(this)
-                .memoryCacheExtraOptions((int)(screenW * 0.8f), (int)(screenH * 0.8f))
+                .memoryCacheExtraOptions((int) (screenW * 0.8f), (int) (screenH * 0.8f))
                 .diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
@@ -436,8 +437,7 @@ public class EdusohoApp extends Application {
         }
     }
 
-    private void setHost(String host)
-    {
+    private void setHost(String host) {
         this.host = host;
         this.domain = getDomain();
     }
@@ -484,7 +484,10 @@ public class EdusohoApp extends Application {
             loginUser = result.user;
             SqliteUtil.saveUser(loginUser);
         }
+
+        PushUtil.startPusherService(mActivity, mContext, loginUser);
     }
+
 
     public void removeToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
@@ -501,6 +504,7 @@ public class EdusohoApp extends Application {
             return;
         }
         mService.sendMessage(EdusohoMainService.EXIT_USER, null);
+        PushUtil.stopPusherService(mActivity, mContext);
         Log.d(null, "remove->token user->" + loginUser);
     }
 
@@ -567,8 +571,7 @@ public class EdusohoApp extends Application {
         runTask = new HashMap<String, Activity>();
     }
 
-    public static File getWorkSpace()
-    {
+    public static File getWorkSpace() {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             File sdcard = Environment.getExternalStorageDirectory();
             return new File(sdcard, "edusoho");
@@ -643,7 +646,7 @@ public class EdusohoApp extends Application {
                 public void callback(String url, String object, AjaxStatus status) {
                     TokenResult result = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
                     if (result != null) {
                         saveToken(result);
                     }
@@ -704,7 +707,7 @@ public class EdusohoApp extends Application {
                         super.callback(url, object, status);
                         final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
                                 object, new TypeToken<AppUpdateInfo>() {
-                        }.getType());
+                                }.getType());
 
                         if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
                             return;

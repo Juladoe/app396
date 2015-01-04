@@ -94,6 +94,7 @@ public class LessonQuestionListAdapter<T> extends ListBaseAdapter<T> {
             holder.tvTitle.setText(model.title);
             holder.tvPostTime.setText(AppUtil.getPostDays(model.createdTime));
             holder.tvMsgs.setText(String.valueOf(model.postNum));
+
         } catch (Exception ex) {
             Log.d(TAG, ex.toString());
         }

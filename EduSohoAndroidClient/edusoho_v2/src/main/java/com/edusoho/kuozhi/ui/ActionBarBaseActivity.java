@@ -74,8 +74,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mTitleLayoutView.setOnClickListener(clickListener);
     }
 
-    private void initActivity()
-    {
+    private void initActivity() {
         app = (EdusohoApp) getApplication();
         app.setDisplay(this);
         gson = app.gson;
@@ -84,6 +83,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
         setProgressBarIndeterminateVisibility(false);
+        app.mActivity = mActivity;
+        app.mContext = mContext;
     }
 
     @Override
@@ -124,6 +125,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         if (EdusohoApp.debug) {
             System.out.println(String.format(format, strs));
         }
+
     }
 
     public void enableBtn(ViewGroup vg, boolean isEnable) {
@@ -158,8 +160,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.setTitle(title);
     }
 
-    public ImageView addTitleViewIcon(int icon)
-    {
+    public ImageView addTitleViewIcon(int icon) {
         ViewGroup titleView = (ViewGroup) mActionBar.getCustomView();
         mTitleIconView = new ImageView(mContext);
         mTitleIconView.setImageResource(icon);
@@ -168,8 +169,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return mTitleIconView;
     }
 
-    public void setBackIcon(int icon)
-    {
+    public void setBackIcon(int icon) {
         mActionBar.setHomeAsUpIndicator(icon);
     }
 
@@ -190,8 +190,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         }
     }
 
-    public void setBackMode(String backTitle, String title, int icon)
-    {
+    public void setBackMode(String backTitle, String title, int icon) {
         setBackMode(backTitle, title);
         setBackIcon(icon);
     }

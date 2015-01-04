@@ -292,7 +292,7 @@ public class WebVideoLessonFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.MEDIA_URL, url);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, mWebView.getTitle());
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, mWebView.getTitle());
                     }
                 });
                 webViewStop();
@@ -304,7 +304,7 @@ public class WebVideoLessonFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.MEDIA_URL, url);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, mWebView.getTitle());
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, mWebView.getTitle());
                     }
                 });
                 mWebView.loadUrl(mUri);

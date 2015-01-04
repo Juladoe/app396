@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:background="#e5e5e5"
+        android:id="@+id/my_test_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:rlw_dividerHeight="8dp"
+        app:rlw_dividerColor="@color/transparent"
+        android:fadingEdge="horizontal"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true"
+        android:padding="4dp"
+        android:cacheColorHint="@color/transparent"
+        />
+
+    <include layout="@layout/loading_layout" />
+
+    <include layout="@layout/list_empty_info" />
+
+</RelativeLayout>

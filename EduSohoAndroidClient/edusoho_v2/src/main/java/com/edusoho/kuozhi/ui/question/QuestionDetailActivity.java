@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.adapter.Question.QuestionReplyListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -31,9 +32,7 @@ import library.PullToRefreshBase;
  * 问答详情
  */
 public class QuestionDetailActivity extends ActionBarBaseActivity implements View.OnClickListener {
-
-
-    private static final String TAG = "QuestionDetailActivity";
+    public static final String TAG = "QuestionDetailActivity";
     private int mStart;
     private Button btnReply;
 
@@ -58,7 +57,6 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
         initView();
         setBackMode(BACK, getIntent().getStringExtra(Const.QUESTION_TITLE));
         mActivity = this;
-
     }
 
     private void initView() {
@@ -114,6 +112,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                     }
                     mStart = replyResult.limit + replyResult.start;
                     QuestionReplyListAdapter adapter = (QuestionReplyListAdapter) mQuestionRelyList.getAdapter();
+
                     if (adapter != null) {
                         if (isRefresh) {
                             //下拉刷新清空
@@ -122,6 +121,11 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
                         }
                         adapter.addItem(replyResult);
                     } else {
+                        //用于判断在程序关闭的情况推送消息，必须用MainService去获取LoginUser的信息
+                        if (app.loginUser == null) {
+                            mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+                            Log.d(TAG, app.loginUser.largeAvatar);
+                        }
                         //第一次打开
                         adapter = new QuestionReplyListAdapter(mContext, mActivity, replyResult, R.layout.question_reply_item,
                                 app.loginUser);

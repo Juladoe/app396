@@ -69,12 +69,12 @@
     <string name="font_found">&#xe632;</string>
     <string name="font_clear">&#xe63d;</string>
     <string name="font_right"></string>
-    <string name="font_ppt">&#xe63b;</string>
-    <string name="font_document">&#xe63f;</string>
-    <string name="font_image">&#xe639;</string>
-    <string name="font_video">&#xe638;</string>
-    <string name="font_audio">&#xe63a;</string>
-    <string name="font_other">&#xe60e;</string>
+    <string name="font_ppt"></string>
+    <string name="font_document"></string>
+    <string name="font_image"></string>
+    <string name="font_video"></string>
+    <string name="font_audio"></string>
+    <string name="font_other"></string>
 
     <!--lesson tools -->
     <string name="learned_status">&#xe657;</string>
@@ -97,14 +97,21 @@
     <string name="font_btn_finish">&#xe672;</string>
     <string name="app_id">wx91c11946311906a3</string>
 
+    <!-- schoolroom -->
+    <string name="schoolroom_course">&#xe645;</string>
+    <string name="schoolroom_question">&#xe647;</string>
+    <string name="schoolroom_discussion">&#xe646;</string>
+    <string name="schoolroom_note">&#xe644;</string>
+    <string name="schoolroom_letter">&#xe693;</string>
+
     <!-- 网校提示字符 -->
     <string name="testpaper_reviewing">请耐心等待老师批阅，老师批阅后可查看全部考试结果</string>
     <string name="course_no_teacher">该课程尚未设置教师</string>
     <string name="course_no_review">还没有评价哦~</string>
-
     <string name="app_code">edusoho</string>
 
-    <!--note-->
+    <!-- note -->
     <string name="edit_content">编辑</string>
     <string name="note_content">笔记内容</string>
+
 </resources>

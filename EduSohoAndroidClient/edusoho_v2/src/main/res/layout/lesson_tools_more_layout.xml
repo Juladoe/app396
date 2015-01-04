@@ -21,6 +21,7 @@
         android:textColor="@color/base_black_normal"
         android:textSize="@dimen/base_x_large_size" />
 
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
@@ -38,6 +39,7 @@
         android:drawableLeft="@drawable/iconfont_profile"
         android:textColor="@color/base_black_normal"
         android:textSize="@dimen/base_x_large_size" />
+
 
     <View
         android:layout_width="wrap_content"
@@ -74,4 +76,5 @@
         android:drawableLeft="@drawable/add_question"
         android:textColor="@color/base_black_normal"
         android:textSize="@dimen/base_x_large_size" />
+
 </LinearLayout>

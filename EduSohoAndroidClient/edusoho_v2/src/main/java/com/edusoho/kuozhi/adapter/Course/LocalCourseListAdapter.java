@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.adapter.Course;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -267,7 +266,7 @@ public class LocalCourseListAdapter
                                     startIntent.putExtra(Const.FREE, lesson.free);
                                     startIntent.putExtra(Const.LESSON_ID, lesson.id);
                                     startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                                    startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                                 }
                             }
                     );

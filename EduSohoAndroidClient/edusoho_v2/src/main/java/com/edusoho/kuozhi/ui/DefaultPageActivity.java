@@ -60,7 +60,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         app.addTask("DefaultPageActivity", this);
 
-        AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>(){
+        AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>() {
             @Override
             public void success(AppUpdateInfo obj) {
                 Log.d(null, "new verson" + obj.androidVersion);
@@ -75,28 +75,26 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         logSchoolInfoToServer();
     }
 
-    private void showUpdateDlg(final AppUpdateInfo result)
-    {
+    private void showUpdateDlg(final AppUpdateInfo result) {
         PopupDialog popupDialog = PopupDialog.createMuilt(
                 mActivity,
                 "版本更新",
                 "更新内容\n" + result.updateInfo, new PopupDialog.PopupClickListener() {
-            @Override
-            public void onClick(int button) {
-                if (button == PopupDialog.OK) {
-                    app.startUpdateWebView(result.updateUrl);
-                } else {
-                    app.removeNotify("app_update");
-                }
-            }
-        });
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            app.startUpdateWebView(result.updateUrl);
+                        } else {
+                            app.removeNotify("app_update");
+                        }
+                    }
+                });
 
         popupDialog.setOkText("更新");
         popupDialog.show();
     }
 
-    private void logSchoolInfoToServer()
-    {
+    private void logSchoolInfoToServer() {
         Map<String, String> params = app.getPlatformInfo();
         School school = app.defaultSchool;
         params.put("siteHost", school.name);
@@ -105,7 +103,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             params.put("firstInstall", "true");
         }
         Log.d(null, "MOBILE_SCHOOL_LOGIN");
-        app.logToServer(Const.MOBILE_SCHOOL_LOGIN, params, new AjaxCallback<String>(){
+        app.logToServer(Const.MOBILE_SCHOOL_LOGIN, params, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 super.callback(url, object, status);
@@ -114,8 +112,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         });
     }
 
-    private boolean checkSchoolHasLogined(String host)
-    {
+    private boolean checkSchoolHasLogined(String host) {
         if (host.startsWith("http://")) {
             host = host.substring(7);
             Log.d(null, "host->" + host);
@@ -133,8 +130,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         checkNotify();
     }
 
-    private void checkNotify()
-    {
+    private void checkNotify() {
         Set<String> notifys = app.getNotifys();
         moreBtn.clearUpdateIcon();
         for (String type : notifys) {
@@ -196,8 +192,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void returnHome()
-    {
+    private void returnHome() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -212,14 +207,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
         if (id == R.id.nav_recommend_btn) {
             tag = "RecommendFragment";
-        } else if(id == R.id.nav_found_btn) {
+        } else if (id == R.id.nav_found_btn) {
             tag = "FoundFragment";
             showIcon = true;
-        }else if(id == R.id.nav_me_btn) {
+        } else if (id == R.id.nav_me_btn) {
+            //tag = "SchoolRoomFragment";
             tag = "MyInfoFragment";
-        }else if(id == R.id.nav_more_btn) {
+        } else if (id == R.id.nav_more_btn) {
             tag = "MoreSettingFragment";
-        }else {
+        } else {
             return;
         }
 
@@ -239,8 +235,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         changeNavBtn(id);
     }
 
-    private void hideFragment(String tag)
-    {
+    private void hideFragment(String tag) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
         if (fragment == null) {
@@ -250,21 +245,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         fragmentTransaction.commit();
     }
 
-    private void hideAllFragments()
-    {
+    private void hideAllFragments() {
         List<Fragment> fragments = mFragmentManager.getFragments();
         if (fragments == null) {
             return;
         }
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        for (Fragment fragment: fragments) {
+        for (Fragment fragment : fragments) {
             fragmentTransaction.hide(fragment);
         }
         fragmentTransaction.commit();
     }
 
-    private void changeNavBtn(int id)
-    {
+    private void changeNavBtn(int id) {
         mNavBtnLayout = (ViewGroup) findViewById(R.id.nav_bottom_layout);
         int count = mNavBtnLayout.getChildCount();
         for (int i = 0; i < count; i++) {

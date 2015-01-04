@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.ui.note;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.util.Log;
@@ -56,7 +55,7 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
     private void initIntentData()
     {
         Intent intent = getIntent();
-        mTitle = intent.getStringExtra(Const.ACTIONBAT_TITLE);
+        mTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
         mLessonId = intent.getStringExtra(Const.LESSON_ID);
         mCourseId = intent.getStringExtra(Const.COURSE_ID);
         mType = intent.getIntExtra(TYPE, UPDATE);

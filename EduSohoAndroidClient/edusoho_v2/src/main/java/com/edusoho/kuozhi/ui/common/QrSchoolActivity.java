@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
@@ -96,13 +97,12 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         }
     }
 
-    private void showQrResultDlg(final String result)
-    {
+    private void showQrResultDlg(final String result) {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
 
         RequestUrl requestUrl = new RequestUrl(result);
-        ajaxGet(requestUrl, new ResultCallback(){
+        ajaxGet(requestUrl, new ResultCallback() {
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
@@ -116,12 +116,13 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                 try {
                     final TokenResult schoolResult = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
 
                     if (schoolResult == null) {
                         longToast("二维码信息错误!");
                         return;
                     }
+
                     Log.d(null, "token---->"+ schoolResult.token);
                     School site = schoolResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
@@ -146,14 +147,12 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
 
     }
 
-    private void showSchSplash(String schoolName, String[] splashs)
-    {
+    private void showSchSplash(String schoolName, String[] splashs) {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
         app.appFinish();
     }
 
-    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange)
-    {
+    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 

@@ -38,8 +38,7 @@ public class CourseLessonAdapter
     private HashMap<Integer, LearnStatus> mUserLearns;
     SparseArray<M3U8DbModle> mM3U8DbModles;
 
-    public CourseLessonAdapter(ActionBarBaseActivity activity, int resource)
-    {
+    public CourseLessonAdapter(ActionBarBaseActivity activity, int resource) {
         super(activity, resource);
         this.mActivity = activity;
     }
@@ -167,14 +166,13 @@ public class CourseLessonAdapter
                 mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
     }
 
-    private void setLessonProgress(int lessonId, ImageView statusImageView)
-    {
+    private void setLessonProgress(int lessonId, ImageView statusImageView) {
         LearnStatus status = mUserLearns.get(lessonId);
         if (status == null) {
             statusImageView.setImageResource(R.drawable.learn_status_normal);
             return;
         }
-        switch (status){
+        switch (status) {
             case finished:
                 statusImageView.setImageResource(R.drawable.learn_status_learned);
                 break;
@@ -201,8 +199,7 @@ public class CourseLessonAdapter
         }
     }
 
-    private void setFreeTextStyle(TextView textView, String text)
-    {
+    private void setFreeTextStyle(TextView textView, String text) {
         StringBuilder str = new StringBuilder(textView.getText());
         int start = str.length();
         Spannable spannable = new SpannableString(str.append(text));
@@ -232,7 +229,7 @@ public class CourseLessonAdapter
         public ImageView mLessonProgress;
         public View mDownloadStatusBtn;
 
-        public ViewHolder(View view){
+        public ViewHolder(View view) {
             super(view);
 
             mTitle = (TextView) view.findViewById(R.id.course_details_lesson_title);

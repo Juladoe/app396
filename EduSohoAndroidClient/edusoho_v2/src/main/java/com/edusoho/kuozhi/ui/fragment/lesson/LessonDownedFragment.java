@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.DownCourseListAdapter;
-import com.edusoho.kuozhi.adapter.Course.LocalCourseListAdapter;
 import com.edusoho.kuozhi.adapter.ExpandListEmptyAdapter;
 import com.edusoho.kuozhi.adapter.lesson.LocalLessonDownListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -25,11 +23,9 @@ import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.course.LocalCoruseActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
-import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
@@ -37,15 +33,12 @@ import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import cn.trinea.android.common.util.FileUtils;
-import cn.trinea.android.common.util.ListUtils;
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -260,7 +253,7 @@ public class LessonDownedFragment extends BaseFragment {
                                 startIntent.putExtra(Const.FREE, lesson.free);
                                 startIntent.putExtra(Const.LESSON_ID, lesson.id);
                                 startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                                startIntent.putExtra(Const.ACTIONBAT_TITLE, lesson.title);
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                             }
                         }
                 );

@@ -134,8 +134,9 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
                 final Course course = (Course) adapterView.getItemAtPosition(i);
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, course.id);
-                bundle.putString(Const.ACTIONBAT_TITLE, course.title);
+                bundle.putString(Const.ACTIONBAR_TITLE, course.title);
                 mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
+
             }
         });
 
@@ -196,6 +197,7 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
 
         if (isAppend) {
             mAdapter.addItemLast(courseResult.data);
+            mCourseListWidget.scrollLater();
         } else {
             mAdapter.setItem(courseResult.data);
         }

@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.LoginFragment;
 import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -42,8 +43,7 @@ public class LoginActivity extends ActionBarBaseActivity {
         initView();
     }
 
-    public static void start(Activity context)
-    {
+    public static void start(Activity context) {
         synchronized (context) {
             if (isRun) {
                 return;
@@ -80,8 +80,7 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     }
 
-    private void showQrResultDlg(final String result)
-    {
+    private void showQrResultDlg(final String result) {
         if (!result.startsWith(app.host)) {
             longToast("请登录" + getString(R.string.app_name) + "－网校！");
             return;
@@ -89,7 +88,7 @@ public class LoginActivity extends ActionBarBaseActivity {
 
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.query.ajax(result, String.class, new AjaxCallback<String>(){
+        app.query.ajax(result, String.class, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 int code = status.getCode();
@@ -101,7 +100,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                 try {
                     final TokenResult schoolResult = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
                     if (schoolResult == null) {
                         loading.dismiss();
                         longToast("二维码信息错误!");
@@ -122,13 +121,13 @@ public class LoginActivity extends ActionBarBaseActivity {
                                 app.saveToken(schoolResult);
                                 app.setCurrentSchool(site);
                                 setResult(EXIT);
-                                overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 finish();
                             }
                         }, SystemClock.uptimeMillis() + 500);
 
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     loading.dismiss();
                     longToast("二维码信息错误!");
                 }
@@ -156,13 +155,12 @@ public class LoginActivity extends ActionBarBaseActivity {
         showFragment(tag);
     }
 
-    public void showFragment(String tag)
-    {
+    public void showFragment(String tag) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         BaseFragment fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
         fragmentTransaction.replace(R.id.login_container, fragment);
-        List<Fragment> fragmentList =  mFragmentManager.getFragments();
-        if (fragmentList != null && ! fragmentList.isEmpty()) {
+        List<Fragment> fragmentList = mFragmentManager.getFragments();
+        if (fragmentList != null && !fragmentList.isEmpty()) {
             fragmentTransaction.addToBackStack(tag);
         }
 

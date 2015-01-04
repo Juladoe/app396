@@ -148,8 +148,7 @@ public class FoundFragment extends BaseFragment {
         });
     }
 
-    private void rotation(View view, float start, float end)
-    {
+    private void rotation(View view, float start, float end) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
         objectAnimator.setDuration(180);
         objectAnimator.start();
@@ -170,8 +169,7 @@ public class FoundFragment extends BaseFragment {
         rotation(mSelectIconView, 0, -180);
     }
 
-    private void loadCourseList(int categoryId, int start)
-    {
+    private void loadCourseList(int categoryId, int start) {
         Log.d(null, "categoryId->" + categoryId);
         mCurrentCategoryId = categoryId;
         RequestUrl url = app.bindUrl(Const.COURSES, true);
@@ -180,7 +178,7 @@ public class FoundFragment extends BaseFragment {
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mCourseListView.onRefreshComplete();

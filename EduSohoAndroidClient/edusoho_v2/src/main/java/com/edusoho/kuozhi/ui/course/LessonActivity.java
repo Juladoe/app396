@@ -45,14 +45,12 @@ import com.edusoho.kuozhi.util.M3U8Uitl;
 import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.util.ArrayList;
 import menudrawer.MenuDrawer;
-import menudrawer.Position;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -191,7 +189,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
                 mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
-                mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
+                mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
                 mLessonType = data.getStringExtra(Const.LESSON_TYPE);
                 mLessonListJson = data.getStringExtra(Const.LIST_JSON);
                 mFromCache = data.getBooleanExtra(FROM_CACHE, false);
@@ -325,7 +323,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             public void onClick(View v) {
                 final Bundle bundle = new Bundle();
                 bundle.putString(RichTextBoxFragment.HIT, "添加笔记");
-                bundle.putString(Const.ACTIONBAT_TITLE, mTitle);
+                bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
                 bundle.putInt(NoteReplyActivity.TYPE, NoteReplyActivity.ADD);
                 bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
                 bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
@@ -346,7 +344,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             public void onClick(View v) {
                 final Bundle bundle = new Bundle();
                 bundle.putString(RichTextBoxFragment.HIT, "添加问题");
-                bundle.putString(Const.ACTIONBAT_TITLE, "添加问答");
+                bundle.putString(Const.ACTIONBAR_TITLE, "添加问答");
                 bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
                 bundle.putString(Const.LESSON_ID, String.valueOf(mLessonId));
                 bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
@@ -579,7 +577,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putInt(TestpaperLessonFragment.RESULT_ID, status.resultId);
                 fragmentData.putString(Const.STATUS, status.status);
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
-                fragmentData.putString(Const.ACTIONBAT_TITLE, testpaperLesson.title);
+                fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case VIDEO:
             case AUDIO:
