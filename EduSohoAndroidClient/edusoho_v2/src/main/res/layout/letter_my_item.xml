@@ -27,10 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tv_send_time"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="right|center_vertical"
-            android:orientation="horizontal">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
                 android:id="@+id/ci_send_pic"
@@ -53,7 +51,6 @@
                 android:maxWidth="250dp"
                 android:layout_marginLeft="16dp"
                 android:paddingTop="5dp"
-                android:text="我我我我我我我我\n我我我我我\n我我我我我"
                 android:textColor="#000000"
                 android:textSize="17sp" />
         </RelativeLayout>

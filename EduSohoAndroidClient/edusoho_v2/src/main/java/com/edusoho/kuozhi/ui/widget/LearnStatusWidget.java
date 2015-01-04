@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,15 +156,10 @@ public class LearnStatusWidget extends FrameLayout {
         mStartLearnBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.app.mEngine.runNormalPlugin(
-                        CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.COURSE_ID, course.id);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, course.title);
-                        startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
-                    }
-                });
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, course.id);
+                bundle.putString(Const.ACTIONBAT_TITLE, course.title);
+                mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
             }
         });
     }

@@ -110,7 +110,7 @@ public class FillQuestionWidget extends BaseQuestionWidget {
         for (int i=1; i <= size; i++) {
             EditText editText = new EditText(mContext);
             editText.setSingleLine();
-            editText.setPadding(10, 5, 5, 5);
+            editText.setPadding(10, 5, 5, 0);
             editText.setHint("答案" + i);
             editText.setTextColor(resources.getColor(R.color.question_fill_text));
             editText.setHintTextColor(resources.getColor(R.color.question_fill_hit));

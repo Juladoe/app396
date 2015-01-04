@@ -25,23 +25,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
-        android:visibility="gone">
-
-        <CheckBox
-            android:button="@drawable/lesson_download_checkbox_sel"
-            android:id="@+id/course_lesson_donwload_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="8dp"
-            android:visibility="gone" />
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/course_lesson_donwload_checkbox"
             android:id="@+id/course_details_lesson_title_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:background="@drawable/course_details_lesson_title_bg"
@@ -78,5 +67,19 @@
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:src="@drawable/learn_status_normal" />
+
+        <TextView
+            android:layout_margin="7dp"
+            android:layout_alignBottom="@id/course_details_lesson_title_layout"
+            android:background="@drawable/blue_card_bg"
+            android:text="已缓存"
+            android:textSize="@dimen/base_x_small_size"
+            android:textColor="@color/base_white_normal"
+            android:id="@+id/course_lesson_donwload_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="3dp"
+            android:visibility="gone" />
     </RelativeLayout>
 </LinearLayout>

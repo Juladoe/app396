@@ -135,7 +135,8 @@ public class SchoolSplashActivity extends ActionBarBaseActivity {
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setScaleType(ImageView.ScaleType.FIT_XY);
-            app.query.id(photoView).image(mImages[position], false, true, 0, 0, cacheBitmap, AQuery.FADE_IN);
+            app.query.id(photoView).image(
+                    mImages[position], false, true, 0, 0, cacheBitmap, AQuery.FADE_IN);
             container.addView(photoView);
             return photoView;
         }

@@ -112,7 +112,13 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
                         mQuestion.stem
                 );
         }
-        return Html.fromHtml(stem, new EduImageGetterHandler(mContext, stemView), new EduTagHandler());
+
+        int width = EdusohoApp.screenW - AppUtil.dip2px(mContext, 30) - 10;
+        return Html.fromHtml(
+                stem,
+                new EduImageGetterHandler(mContext, stemView),
+                new EduTagHandler()
+        );
     }
 
     protected void enable(ViewGroup viewGroup, boolean isEnable)
@@ -254,7 +260,7 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
                     btn.setTextColor(getResources().getColor(R.color.course_favorited));
                 } else {
                     btn.setIcon(R.string.font_favoirte);
-                    btn.setTextColor(getResources().getColor(R.color.system_normal_text));
+                    btn.setTextColor(getResources().getColor(R.color.base_black_normal));
                 }
             }
         });

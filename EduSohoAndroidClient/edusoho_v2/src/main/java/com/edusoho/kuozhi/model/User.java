@@ -34,5 +34,7 @@ public class User {
     public String createdTime;
     public String about;
 
+    public int dataType;
+
     public Vip vip;
 }

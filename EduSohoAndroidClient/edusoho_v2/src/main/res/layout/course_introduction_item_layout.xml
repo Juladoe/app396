@@ -8,11 +8,15 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         card_view:cardBackgroundColor="@color/base_card_bg"
         card_view:cardCornerRadius="3dp">
 
         <LinearLayout
+            android:id="@+id/course_introduction_layout"
             android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,9 +31,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/base_black_normal" />
 
-            <com.edusoho.kuozhi.view.ESTextView
-                card_view:es_alpha="0.54"
-                android:textColor="@color/base_black_normal"
+            <TextView
+                android:textColor="@color/base_black_54"
                 android:textSize="@dimen/base_size"
                 android:padding="8dp"
                 android:id="@+id/course_introduction_content"

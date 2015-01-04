@@ -49,7 +49,7 @@ public class NoteContentFragment extends BaseFragment {
 
     private TextView mNoteContentView;
     private TextView mNoteTitleView;
-    private ImageView mLessonEntrance;
+    private View mLessonEntrance;
 
     @Override
     public String getTitle() {
@@ -86,7 +86,7 @@ public class NoteContentFragment extends BaseFragment {
         /**
          * 跳转到课时页面
          */
-        mLessonEntrance = (ImageView) view.findViewById(R.id.iv_lesson_entrance);
+        mLessonEntrance = view.findViewById(R.id.note_lesson_entrance);
         mLessonEntrance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

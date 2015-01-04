@@ -3,8 +3,8 @@ package com.edusoho.kuozhi.view;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,13 @@ public class FixHeightViewPager extends ViewPager {
 
     private boolean isMeasure;
     private ArrayList<Integer> childHeightList;
+    private GestureDetector mGestureDetector;
+    private TouchCallback mTouchCallback = new TouchCallback() {
+        @Override
+        public boolean onTouchEvent(MotionEvent ev) {
+            return false;
+        }
+    };
 
     public FixHeightViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -26,6 +33,11 @@ public class FixHeightViewPager extends ViewPager {
         childHeightList = new ArrayList<Integer>();
     }
 
+    public void setInterceptTouchCallback(TouchCallback touchCallback)
+    {
+        mTouchCallback = touchCallback;
+    }
+
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (isMeasure) {
@@ -33,25 +45,21 @@ public class FixHeightViewPager extends ViewPager {
             return;
         }
 
+        /*
         int height = 0;
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            int expandSpec = MeasureSpec.makeMeasureSpec(
-                    Integer.MAX_VALUE >>2, MeasureSpec.AT_MOST);
-            child.measure(widthMeasureSpec, expandSpec);
-            //child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            //int h = child.getMeasuredHeight();
+            child.measure(0, 0);
             int h = child.getMeasuredHeight();
-            Log.d(null, "h-> " + h);
             childHeightList.add(i, h);
             if (h > height)
                 height = h;
         }
-        Log.d(null, "viewpager count->" + count);
 
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST);
-        //setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);
+        Log.d(null, "height-> " + height);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        */
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -64,5 +72,25 @@ public class FixHeightViewPager extends ViewPager {
     {
         Integer height = childHeightList.get(i);
         return height == null ? 0 : height;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mTouchCallback.onTouchEvent(ev)) {
+            return false;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mTouchCallback.onTouchEvent(ev)) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    public interface TouchCallback {
+        public boolean onTouchEvent(MotionEvent ev);
     }
 }

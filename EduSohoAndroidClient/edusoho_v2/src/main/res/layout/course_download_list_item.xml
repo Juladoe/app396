@@ -4,17 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        card_view:cardBackgroundColor="@color/base_card_bg"
-        card_view:cardCornerRadius="2dp">
-
         <RelativeLayout
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:background="@drawable/card_bg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/course_pic"
@@ -29,11 +24,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="@id/course_pic"
-                android:clickable="true"
                 android:padding="8dp"
                 android:text="@string/font_expand"
                 android:textColor="@color/base_black_normal"
-                android:textSize="@dimen/base_x_large_size" />
+                android:textSize="@dimen/base_xx_large_size" />
 
             <com.edusoho.kuozhi.view.ESTextView
                 android:id="@+id/course_title"
@@ -55,12 +49,5 @@
                 android:layout_toRightOf="@id/course_pic"
                 android:textSize="@dimen/base_small_size"
                 card_view:alpha="0.54" />
-
-            <com.edusoho.kuozhi.ui.widget.EduSohoListView
-                android:id="@id/list_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/course_pic" />
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
 </LinearLayout>

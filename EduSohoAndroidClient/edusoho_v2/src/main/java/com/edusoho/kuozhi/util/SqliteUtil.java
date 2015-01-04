@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.core.model.Cache;
+import com.edusoho.kuozhi.model.User;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
@@ -21,13 +22,18 @@ import java.util.ArrayList;
 public class SqliteUtil extends SQLiteOpenHelper{
 
     private Context mContext;
-    private static final int dbVersion = 6;
+    private static final int dbVersion = 9;
+    private static final int oldVersion = 8;
 
     private static SqliteUtil instance;
 
 	public SqliteUtil(Context context, String name, CursorFactory factory) {
-		super(context, Const.DB_NAME, factory, dbVersion);
+		super(context, Const.DB_NAME, null, dbVersion);
+        Log.d("SqliteUtil", "dbVersion " + dbVersion);
         mContext = context;
+
+        //更新
+        onUpgrade(getWritableDatabase(), oldVersion, dbVersion);
 	}
 
     public static SqliteUtil getUtil(Context context)
@@ -76,7 +82,8 @@ public class SqliteUtil extends SQLiteOpenHelper{
         }
 
         return sqlList;
-    }
+}
+
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(null, String.format("create db_init_m3u8 db newVersion %d ov %d", newVersion, oldVersion));
@@ -164,7 +171,7 @@ public class SqliteUtil extends SQLiteOpenHelper{
     {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
-        Log.d(null, "upate cache->" + result);
+        Log.d(null, "upate sqlite ->" + result);
         return result;
     }
 
@@ -226,5 +233,27 @@ public class SqliteUtil extends SQLiteOpenHelper{
         cursor.close();
 
         return obj;
+    }
+
+    public static void saveUser(User user)
+    {
+        //保存用户
+        EdusohoApp app = EdusohoApp.app;
+        ContentValues cv = new ContentValues();
+        cv.put("key", "user-" + user.id);
+        cv.put("value", app.gson.toJson(user));
+        cv.put("type", Const.CACHE_USER_TYPE);
+        SqliteUtil.getUtil(app).insert("data_cache", cv);
+    }
+
+    public static void clearUser(int userId)
+    {
+        //保存用户
+        EdusohoApp app = EdusohoApp.app;
+        SqliteUtil.getUtil(app).delete(
+                "data_cache",
+                "key=?",
+                new String[] { "user-" + userId }
+        );
     }
 }

@@ -50,7 +50,7 @@ public class LetterFragment extends BaseFragment {
         mLoadingView = view.findViewById(R.id.load_layout);
         mLetterSummaryList.setMode(PullToRefreshBase.Mode.BOTH);
 
-        mLetterSummaryList.setEmptyText(new String[]{"暂无通知"});
+        mLetterSummaryList.setEmptyText(new String[]{ "暂无私信" }, R.drawable.icon_discussion);
         mLetterSummaryList.setAdapter(new MessageLetterSummaryAdapter(
                 mContext, R.layout.message_letter_item));
         mLetterSummaryList.setUpdateListener(new RefreshListWidget.UpdateListener() {

@@ -46,18 +46,5 @@ public class CourseListScrollListener implements AbsListView.OnScrollListener, A
         bundle.putInt(Const.COURSE_ID, course.id);
         bundle.putString(Const.ACTIONBAT_TITLE, course.title);
         mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
-
-        /*
-        final Course course = (Course) parent.getItemAtPosition(index);
-        mActivity.app.mEngine.runNormalPlugin(
-                CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(Const.COURSE_ID, course.id);
-                startIntent.putExtra(Const.ACTIONBAT_TITLE, course.title);
-                startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
-            }
-        });
-        */
     }
 }

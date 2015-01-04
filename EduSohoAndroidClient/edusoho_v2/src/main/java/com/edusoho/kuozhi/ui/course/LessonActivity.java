@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.androidquery.callback.AjaxStatus;
@@ -34,6 +33,7 @@ import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.Testpaper.TestpaperStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.CourseLearningFragment;
 import com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment;
@@ -41,8 +41,11 @@ import com.edusoho.kuozhi.ui.note.NoteReplyActivity;
 import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.M3U8Uitl;
+import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
@@ -58,6 +61,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     public static final String TAG = "LessonActivity";
     public static final String CONTENT = "content";
+    public static final String FROM_CACHE = "from_cache";
     public static final int SHOW_TOOLS = 0001;
     public static final int HIDE_TOOLS = 0002;
 
@@ -69,10 +73,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private String mLessonListJson;
     private Bundle fragmentData;
+    private boolean mFromCache;
+    private boolean mIsLearn;
     private LessonStatus mLessonStatus;
 
     protected MenuDrawer mMenuDrawer;
-    //private CourseDetailsLessonWidget mCourseLessonView;
     private EduSohoTextBtn mLearnBtn;
     private EduSohoTextBtn mLessonNextBtn;
     private EduSohoTextBtn mLessonPreviousBtn;
@@ -84,6 +89,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private static final int REQUEST_NOTE = 0010;
     private static final int REQUEST_QUESTION = 0020;
 
+    private LessonItem mLessonItem;
     private LessonItem mPreviousLessonItem;
     private LessonItem mNextLessonItem;
     private ArrayList<LessonItem> mCleanLessonList;
@@ -91,6 +97,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.lesson_layout);
         msgHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -102,13 +109,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     case HIDE_TOOLS:
                         hieToolsByAnim();
                         break;
-
                 }
             }
         };
 
         fragmentData = new Bundle();
-        initMenuDrawer();
         initView();
         app.registMsgSource(this);
     }
@@ -135,30 +140,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return messageTypes;
     }
 
-    private void initMenuDrawer() {
-        mMenuDrawer = MenuDrawer.attach(
-                mActivity, MenuDrawer.Type.OVERLAY, Position.RIGHT, MenuDrawer.MENU_DRAG_WINDOW);
-        mMenuDrawer.setContentView(R.layout.lesson_layout);
-        mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
-
-        mMenuDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
-            @Override
-            public void onDrawerStateChange(int oldState, int newState) {
-                if (newState == MenuDrawer.STATE_OPEN) {
-                    mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
-                } else if (newState == MenuDrawer.STATE_CLOSED) {
-                    mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
-                }
-            }
-
-            @Override
-            public void onDrawerSlide(float openRatio, int offsetPixels) {
-            }
-        });
-    }
-
     public int getCourseId() {
         return mCourseId;
+    }
+
+    public LessonItem getLessonItem()
+    {
+        return mLessonItem;
     }
 
     public int getLessonId() {
@@ -167,7 +155,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void changeLessonStatus(boolean isLearn) {
         mLearnBtn.setEnabled(false);
-        setProgressBarIndeterminateVisibility(true);
         RequestUrl requestUrl = app.bindUrl(
                 isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
         requestUrl.setParams(new String[]{
@@ -186,34 +173,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     return;
                 }
 
-                //mCourseLessonView.updateLessonStatus(mLessonId, result);
                 setLearnStatus(result);
             }
         });
-    }
-
-    private void loadLessonList() {
-//        mCourseLessonView = (CourseDetailsLessonWidget) LayoutInflater.from(mActivity).inflate(
-//                R.layout.course_details_lesson_content, null);
-//        mMenuDrawer.setMenuView(mCourseLessonView);
-//
-//        mCourseLessonView.initLessonFromJson(mActivity, mLessonListJson);
-//        mCourseLessonView.setItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                mMenuDrawer.closeMenu();
-//                LessonItem lesson = (LessonItem) adapterView.getItemAtPosition(i);
-//                hieToolsByAnim();
-//                mLessonId = lesson.id;
-//                mLessonType = lesson.type;
-//                setTitle(lesson.title);
-//                loadLesson(mLessonId);
-//                if (!mLessonType.equals("testpaper") && mIsLearn) {
-//                    Log.d(null, "load status->");
-//                    loadLessonStatus();
-//                }
-//            }
-//        });
     }
 
     private void initView() {
@@ -227,13 +189,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
             if (data != null) {
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                //mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
+                mIsLearn = data.getBooleanExtra(Const.IS_LEARN, false);
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mTitle = data.getStringExtra(Const.ACTIONBAT_TITLE);
                 mLessonType = data.getStringExtra(Const.LESSON_TYPE);
                 mLessonListJson = data.getStringExtra(Const.LIST_JSON);
+                mFromCache = data.getBooleanExtra(FROM_CACHE, false);
             }
             setBackMode(BACK, mTitle);
+
             //如果mLessonListJson==null,是从笔记本页面跳转，需要获取课程下的所有课时信息
             if (mLessonListJson == null) {
                 RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
@@ -243,6 +207,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mActivity.ajaxPost(url, new ResultCallback() {
                     @Override
                     public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                        Log.d(null, "load LessonListJson");
                         mLessonListJson = object;
                         clearLessonResult();
                         initLessonResult();
@@ -255,15 +220,17 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 initRedirectBtn();
             }
 
-            //loadLessonList();
             if (mCourseId == 0 || mLessonId == 0) {
                 longToast("课程数据错误！");
                 return;
             }
 
+            if (mFromCache) {
+                Log.d(TAG, "mFromCache");
+                loadLessonFromCache(mLessonId);
+                return;
+            }
             loadLesson(mLessonId);
-
-            bindListener();
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
@@ -286,7 +253,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
      * 去掉mLessonListJson中不是lesson的item
      *
      * @return
-     */
+    */
     private void clearLessonResult() {
         LessonsResult result = mActivity.parseJsonValue(
                 mLessonListJson, new TypeToken<LessonsResult>() {
@@ -321,7 +288,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
     }
 
-    private void goToAnotherLesson(final LessonItem lessonItem) {
+    private void goToAnotherLesson(LessonItem lessonItem) {
         mLessonId = lessonItem.id;
         mLessonType = lessonItem.type;
         initLessonResult();
@@ -329,29 +296,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         hieToolsByAnim();
         setTitle(lessonItem.title);
         loadLesson(mLessonId);
-
-//        mActivity.getCoreEngine().runNormalPlugin(
-//                LessonActivity.TAG, mActivity, new PluginRunCallback() {
-//                    @Override
-//                    public void setIntentDate(Intent startIntent) {
-//                        startIntent.putExtra(Const.COURSE_ID, mCourseId);
-//                        startIntent.putExtra(Const.FREE, lessonItem.free);
-//                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-//                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-//                        startIntent.putExtra(Const.ACTIONBAT_TITLE, lessonItem.title);
-//                        startIntent.putExtra(Const.LIST_JSON, mLessonListJson);
-//                        startIntent.putExtra(Const.IS_LEARN, mIsLearn);
-//                    }
-//                });
     }
 
     private void showMoreBtn(View parent) {
         View contentView = LayoutInflater.from(mContext).inflate(
                 R.layout.lesson_tools_more_layout, null);
-        LinearLayout layoutQuestion = (LinearLayout) contentView.findViewById(R.id.ll_question);
-        LinearLayout layoutProfile = (LinearLayout) contentView.findViewById(R.id.ll_profile);
-        LinearLayout layoutNote = (LinearLayout) contentView.findViewById(R.id.ll_note);
-        LinearLayout layoutAddQuestion = (LinearLayout) contentView.findViewById(R.id.ll_add_question);
+        View layoutQuestion = contentView.findViewById(R.id.tv_question);
+        View layoutProfile = contentView.findViewById(R.id.tv_profile);
+        View layoutNote = contentView.findViewById(R.id.tv_note);
+        View layoutAddQuestion = contentView.findViewById(R.id.tv_add_question);
 
         layoutQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,7 +367,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         PopupWindow popupWindow = new PopupWindow(
                 contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        //popupWindow.setWidth(parent.getWidth());
+        popupWindow.setWidth((int)(parent.getWidth() * 1.2f));
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(0));
@@ -435,11 +388,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 "lessonId", mLessonId + ""
         });
 
-        setProgressBarIndeterminateVisibility(true);
         ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                setProgressBarIndeterminateVisibility(false);
                 mLessonStatus = parseJsonValue(
                         object, new TypeToken<LessonStatus>() {
                         });
@@ -463,6 +414,18 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             msgHandler.obtainMessage(HIDE_TOOLS).sendToTarget();
             hideActionBar();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(null, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d(null, "onRestoreInstanceState");
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void showLessonResource() {
@@ -526,44 +489,73 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.lesson_menu_list) {
-            //mMenuDrawer.openMenu();
-        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //if (mIsLearn) {
-        //getMenuInflater().inflate(R.menu.lesson_menu, menu);
-        //}
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void loadLesson(int lessonId) {
+    private void loadLesson(int lessonId)
+    {
+        M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(
+                mContext, app.loginUser.id, lessonId, app.domain, M3U8Uitl.FINISH);
+        if (m3U8DbModle != null) {
+            loadLessonFromCache(lessonId);
+        } else {
+            loadLessonFromNet(lessonId);
+        }
+    }
+
+    private void loadLessonFromNet(int lessonId) {
+        Log.d(TAG, "loadLessonFromNet " + lessonId);
+        mFromCache = false;
         RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
         requestUrl.setParams(new String[]{
                 "courseId", mCourseId + "",
                 "lessonId", lessonId + ""
         });
 
-        setProgressBarIndeterminateVisibility(true);
         ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                setProgressBarIndeterminateVisibility(false);
                 LessonItem lessonItem = getLessonResultType(mLessonType, object);
                 if (lessonItem == null) {
                     return;
-                } else {
-                    if (!mLessonType.equals("testpaper") && (lessonItem.free == 0 ? true : false)) {
-                        loadLessonStatus();
-                    }
+                }
+                if (!mLessonType.equals("testpaper") && mIsLearn) {
+                    loadLessonStatus();
+                    bindListener();
                 }
 
                 switchLoadLessonContent(lessonItem);
             }
         });
+    }
+
+    private void loadLessonFromCache(int lessonId) {
+        Log.d(TAG, "loadLessonFromCache " + lessonId);
+        mFromCache = true;
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
+        String object = sqliteUtil.query(
+                String.class,
+                "value",
+                "select * from data_cache where type=? and key=?",
+                Const.CACHE_LESSON_TYPE,
+                "lesson-" + lessonId
+        );
+
+        LessonItem lessonItem = getLessonResultType(mLessonType, object);
+        if (lessonItem == null) {
+            return;
+        }
+        if (!mLessonType.equals("testpaper") && mIsLearn) {
+            loadLessonStatus();
+            bindListener();
+        }
+        mLessonItem = lessonItem;
+        switchLoadLessonContent(lessonItem);
     }
 
     private LessonItem getLessonResultType(String lessonType, String object) {
@@ -595,18 +587,16 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 normalLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<String>>() {
                         });
+                if (mFromCache) {
+                    normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                }
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
-                    File localFile = getLocalLesson(normalLesson.id);
-                    //String proxyUrl = "http://localhost:5820/" + normalLesson.mediaUri;
-                    if (localFile != null) {
-                        fragmentData.putString(Const.MEDIA_URL, localFile.getAbsolutePath());
-                    } else {
-                        fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
-                        fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
-                    }
+                    fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
+                    fragmentData.putBoolean(FROM_CACHE, mFromCache);
+                    fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
@@ -655,14 +645,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void switchLoadLessonContent(LessonItem lessonItem) {
         CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
-        if (lessonType == CourseLessonType.VIDEO
-                && AppUtil.inArray(lessonItem.mediaSource, new String[]{"youku", "tudou"})) {
-            loadLessonFragment("WebVideoLessonFragment");
+        if (Const.NETEASE_OPEN_COURSE.equals(lessonItem.mediaSource)) {
+            mActivity.longToast("客户端暂不支持网易云视频");
             return;
         }
 
-        if (Const.NETEASE_OPEN_COURSE.equals(lessonItem.mediaSource)) {
-            mActivity.longToast("客户端暂不支持网易云视频");
+        if (lessonType == CourseLessonType.VIDEO
+                && AppUtil.inArray(lessonItem.mediaSource, new String[]{"youku", "tudou"})) {
+            loadLessonFragment("WebVideoLessonFragment");
             return;
         }
 

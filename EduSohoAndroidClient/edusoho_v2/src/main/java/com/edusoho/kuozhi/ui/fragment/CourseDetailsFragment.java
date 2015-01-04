@@ -260,12 +260,11 @@ public class CourseDetailsFragment extends BaseFragment{
         });
     }
 
-
     private void favoriteCourse(int courseId)
     {
         RequestUrl url = app.bindUrl(Const.FAVORITE, true);
         url.setParams(new String[] {
-                "courseId", courseId + ""
+                "courseId", String.valueOf(courseId)
         });
         mActivity.ajaxPost(url, new ResultCallback(){
             @Override

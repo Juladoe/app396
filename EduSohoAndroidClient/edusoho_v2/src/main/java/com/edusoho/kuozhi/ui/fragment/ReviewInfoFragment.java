@@ -21,8 +21,11 @@ public class ReviewInfoFragment extends BaseFragment {
     public static final String RATING = "rating";
     public static final String RATING_NUM = "ratingNum";
 
+    public static final String IS_STUDENT = "is_student";
+
     private double mRating;
     private int mCourseId;
+    private boolean mIsStudent;
     private String mRatingNum;
     private TextView mRatingView;
     private View mReviewBtn;
@@ -70,6 +73,7 @@ public class ReviewInfoFragment extends BaseFragment {
             return;
         }
 
+        mIsStudent = bundle.getBoolean(IS_STUDENT, false);
         mCourseId = bundle.getInt(Const.COURSE_ID, 0);
         mRating = bundle.getDouble(RATING, 0);
         mRatingNum = bundle.getString(RATING_NUM);
@@ -77,6 +81,9 @@ public class ReviewInfoFragment extends BaseFragment {
         mReviewWidget.hideTitle();
         mReviewWidget.initReview(mCourseId, mActivity, true);
 
+        if (mIsStudent) {
+            mReviewBtn.setVisibility(View.VISIBLE);
+        }
         mReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

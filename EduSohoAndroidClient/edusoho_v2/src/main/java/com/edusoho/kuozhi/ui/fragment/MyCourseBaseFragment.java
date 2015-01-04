@@ -132,15 +132,10 @@ public abstract class MyCourseBaseFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final Course course = (Course) adapterView.getItemAtPosition(i);
-                mActivity.app.mEngine.runNormalPlugin(
-                        CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.COURSE_ID, course.id);
-                        startIntent.putExtra(Const.ACTIONBAT_TITLE, course.title);
-                        startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, course.largePicture);
-                    }
-                });
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, course.id);
+                bundle.putString(Const.ACTIONBAT_TITLE, course.title);
+                mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
             }
         });
 

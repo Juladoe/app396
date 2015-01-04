@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.Service.M3U8DownService;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
@@ -75,6 +76,10 @@ public class MoreSettingFragment extends BaseFragment {
         mOffLineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (app.loginUser == null) {
+                    LoginActivity.startForResult(mActivity);
+                    return;
+                }
                 app.mEngine.runNormalPlugin("LocalCoruseActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -188,6 +193,11 @@ public class MoreSettingFragment extends BaseFragment {
                 app.removeToken();
                 mLogoutBtn.setVisibility(View.GONE);
                 app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+
+                M3U8DownService service = M3U8DownService.getService();
+                if (service != null) {
+                    service.cancelAllDownloadTask();
+                }
             }
         });
     }

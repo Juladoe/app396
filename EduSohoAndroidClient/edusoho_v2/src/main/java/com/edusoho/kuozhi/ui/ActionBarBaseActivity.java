@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.handler.ClientVersionHandler;
-import com.edusoho.kuozhi.AppConfig;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
@@ -36,12 +35,10 @@ import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
-import com.edusoho.listener.StatusCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by howzhi on 14-8-6.
@@ -58,6 +55,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public Gson gson;
     protected FragmentManager mFragmentManager;
     private TextView mTitleTextView;
+    private View mTitleLayoutView;
     private ImageView mTitleIconView;
 
     protected EdusohoMainService mService;
@@ -73,7 +71,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void setTitleClickListener(View.OnClickListener clickListener)
     {
-        mTitleTextView.setOnClickListener(clickListener);
+        mTitleLayoutView.setOnClickListener(clickListener);
     }
 
     private void initActivity()
@@ -177,15 +175,15 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void setBackMode(String backTitle, String title)
     {
-        View titleView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
-        mTitleTextView = (TextView) titleView.findViewById(R.id.action_bar_title);
+        mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.action_bar_title);
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.WRAP_CONTENT);
+                ActionBar.LayoutParams.MATCH_PARENT);
         //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
 
-        mActionBar.setCustomView(titleView, layoutParams);
+        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
 
         if (backTitle != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -216,20 +214,13 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return url;
     }
 
+    public View getCustomView()
+    {
+        return mTitleLayoutView;
+    }
+
     public Gson getGson() {
         return app.gson;
-    }
-
-    public void saveCurrentSchool(School school) {
-        app.setCurrentSchool(school);
-    }
-
-    private String splitTitle(String title) {
-        int length = title.length();
-        if (length > 10) {
-            return title.substring(0, 10) + "...";
-        }
-        return title;
     }
 
     public boolean checkMobileVersion(
@@ -237,7 +228,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 
-        System.out.println("version->" + app.apiVersion);
+        Log.d(null, "api max version" + max + " min " + min);
         int result = AppUtil.compareVersion(app.apiVersion, min);
         if (handler != null) {
             return handler.execute(min, max, app.apiVersion);
@@ -391,7 +382,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             RequestUrl url, final ResultCallback rcl) {
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.postUrl(url, new ResultCallback() {
+        app.postUrl(false, url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 if (loading != null) {
@@ -417,14 +408,14 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             return true;
         }
 
-        if (!app.getNetStatus()) {
-            longToast("没有网络服务！请检查网络设置。");
+        if (!app.getNetIsConnect()) {
             rcl.error(url, status);
             return true;
         }
 
         if (code != Const.OK) {
             longToast("服务器访问异常!");
+            Log.d(null, "code->" + code);
             rcl.error(url, status);
             return true;
         }
@@ -489,9 +480,36 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
+    public void ajaxPostWithAbort(RequestUrl url, final ResultCallback rcl)
+    {
+        app.postUrl(true, url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus status) {
+                if (handleRequest(url, object, status, rcl)) {
+                    return;
+                }
+                try {
+                    rcl.callback(url, object, status);
+                } catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+
+            @Override
+            public void update(String url, String object, AjaxStatus status) {
+                handleRequest(url, object, status, rcl);
+                try {
+                    rcl.update(url, object, status);
+                } catch (Exception e) {
+                    rcl.error(url, status);
+                }
+            }
+        });
+    }
+
     public void ajaxPost(
             RequestUrl url, final ResultCallback rcl) {
-        app.postUrl(url, new ResultCallback() {
+        app.postUrl(false, url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 if (handleRequest(url, object, status, rcl)) {

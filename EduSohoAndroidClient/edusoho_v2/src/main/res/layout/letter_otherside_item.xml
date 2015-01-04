@@ -54,7 +54,6 @@
                 android:paddingRight="5dp"
                 android:layout_marginRight="16dp"
                 android:paddingTop="5dp"
-                android:text="我我我我\n我我我我\n我我我我我\n我我我我我"
                 android:textColor="#000000"
                 android:textSize="17sp" />
 

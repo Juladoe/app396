@@ -60,8 +60,8 @@ public class SchoolBannerAdapter extends PagerAdapter {
     }
 
     @Override
-    public View instantiateItem(ViewGroup container, int position) {
-        final SchoolBanner banner = mSchoolBanners.get(position);
+    public View instantiateItem(ViewGroup container, final int position) {
+        SchoolBanner banner = mSchoolBanners.get(position);
         ImageView photoView = new ImageView(container.getContext());
         photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         if ("localRes".equals(banner.url)) {
@@ -76,6 +76,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SchoolBanner banner = mSchoolBanners.get(position);
                 if ("webview".equals(banner.action)) {
                     Bundle bundle = new Bundle();
                     bundle.putString(AboutFragment.URL, banner.params);
@@ -84,7 +85,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
                 } else if ("course".equals(banner.action)) {
                     Bundle bundle = new Bundle();
                     bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(banner.params));
-                    mActivity.app.mEngine.runNormalPluginWithBundle(CourseDetailsActivity.TAG, mActivity, bundle);
+                    mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
                 }
             }
         });

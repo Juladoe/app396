@@ -19,7 +19,16 @@ public abstract class RecyclerViewListBaseAdapter<T, E extends RecyclerView.View
     protected int mResource;
     protected Context mContext;
     protected ArrayList<T> mList;
-    private RecyclerItemClick mRecyclerItemClick;
+    protected RecyclerItemClick mRecyclerItemClick;
+    protected View mHeadView;
+
+    protected int mMode;
+    public final static int UPDATE = 0001;
+    public final static int ADD = 0002;
+
+    public static final int VIEW_TYPE_HEADER = 0;
+    public static final int VIEW_TYPE_CONTENT = 1;
+    public static final int VIEW_TYPE_FOOTER = 2;
 
     public RecyclerViewListBaseAdapter(Context context, int resource)
     {
@@ -29,10 +38,27 @@ public abstract class RecyclerViewListBaseAdapter<T, E extends RecyclerView.View
         inflater = LayoutInflater.from(mContext);
     }
 
+    public void setMode(int mode)
+    {
+        mMode = mode;
+    }
+
+    public void addHeadView(View headView)
+    {
+        mHeadView = headView;
+        mList.add(0, null);
+    }
+
     public void clear()
     {
         Log.d(null, "adapter clear");
         mList.clear();
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return VIEW_TYPE_CONTENT;
     }
 
     public void addItem(T item){}
@@ -60,7 +86,6 @@ public abstract class RecyclerViewListBaseAdapter<T, E extends RecyclerView.View
     public void setOnItemClick(RecyclerItemClick recyclerItemClick)
     {
         this.mRecyclerItemClick = recyclerItemClick;
-
     }
 
     public static abstract class RecyclerItemClick

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +106,6 @@ public class MyInfoFragment extends BaseFragment {
     }
 
     public void setUserStatus() {
-        Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
             setStatusLoginLayout();
             mUserLogo.setImageResource(R.drawable.myinfo_default_face);
@@ -156,7 +156,7 @@ public class MyInfoFragment extends BaseFragment {
                         showMyTestpaper();
                         break;
                     case DISCUSS:
-                        showMyQuestionOrDiscuss("我的话题", "discussion");
+                        showMyQuestionOrDiscuss("我的讨论", "discussion");
                         break;
                     case NOTE:
                         showMyNote();
@@ -165,8 +165,8 @@ public class MyInfoFragment extends BaseFragment {
             }
         });
 
-        if (app.loginUser == null && !"".equals(app.token)) {
-            Log.d(null, "checkout token->");
+        if (app.loginUser == null && !TextUtils.isEmpty(app.token)) {
+            Log.d(null, "checkout token->" + app.token);
             mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
             return;
         }

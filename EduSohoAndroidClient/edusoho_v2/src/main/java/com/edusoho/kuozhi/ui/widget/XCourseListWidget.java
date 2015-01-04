@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -82,6 +83,8 @@ public class XCourseListWidget extends FrameLayout {
         View emptyLayout = LayoutInflater.from(mContext).inflate(
                 R.layout.course_empty_layout, null);
         TextView textView = (TextView) emptyLayout.findViewById(R.id.list_empty_text);
+        ImageView iconView = (ImageView) emptyLayout.findViewById(R.id.list_empty_icon);
+        iconView.setImageResource(R.drawable.icon_course_empty);
         textView.setText(mEmptyText);
 
         return emptyLayout;

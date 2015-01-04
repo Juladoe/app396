@@ -3,11 +3,16 @@
     <!-- base color -->
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
+    <color name="base_light_red">#ff5822</color>
     <color name="base_bg_color">#ffffff</color>
     <color name="base_white_normal">#ffffff</color>
     <color name="base_black_normal">#000000</color>
-    <color name="base_black_low">#1e000000</color>
-    <color name="base_gray">#dedede</color>
+    <color name="base_black_35">#35000000</color>
+    <color name="base_black_87">#dd000000</color>
+    <color name="base_black_54">#85000000</color>
+    <color name="base_black_12">#1e000000</color>
+    <color name="base_black_low">#f2f2f2</color>
+    <color name="base_gray">#ececec</color>
     <color name="base_color_normal">#2ec368</color>
 
     <color name="lesson_item_bg_pressed">#E5E5E5</color>

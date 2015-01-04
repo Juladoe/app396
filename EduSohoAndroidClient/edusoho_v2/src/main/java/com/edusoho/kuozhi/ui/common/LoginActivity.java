@@ -57,6 +57,10 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     public static void startForResult(Activity context)
     {
+        if (isRun) {
+            return;
+        }
+        isRun = true;
         Intent intent = new Intent();
         intent.setClass(context, LoginActivity.class);
         context.startActivityForResult(intent, LOGIN);

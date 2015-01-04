@@ -48,7 +48,7 @@ public class CourseNoticeFragment extends BaseFragment {
         mCourseId = getArguments().getInt(Const.COURSE_ID);
         mRefreshList = (RefreshListWidget) view.findViewById(R.id.course_notice_refreshlist);
         mRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        mRefreshList.setEmptyText(new String[]{ "没有公告" });
+        mRefreshList.setEmptyText(new String[]{ "暂无课程公告" }, R.drawable.icon_notify);
         mRefreshList.setAdapter(new CourseNoticeListAdapter(mContext, R.layout.course_notice_item_layout, false));
 
         mRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {

@@ -242,6 +242,10 @@ public class TestpaperListAdapter extends ListBaseAdapter<MyTestpaperData> {
             return;
         }
         Course course = courses.get(getCourseId(testpaper.target));
+        if (course == null) {
+            holder.mCourseTitle.setText("考试课程已删除");
+            return;
+        }
         holder.mCourseTitle.setText(String.format("来自课程《%s》", course.title));
         int width = (int)(EdusohoApp.app.screenW * 0.4f);
         if (TextUtils.isEmpty(course.largePicture)) {

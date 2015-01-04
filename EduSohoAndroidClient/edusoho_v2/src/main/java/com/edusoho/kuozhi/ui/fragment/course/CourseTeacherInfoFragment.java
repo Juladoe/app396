@@ -23,7 +23,7 @@ import java.util.Arrays;
 /**
  * Created by howzhi on 14/12/2.
  */
-public class CourseTeacherInfoFragment extends BaseFragment {
+public class CourseTeacherInfoFragment extends ViewPagerBaseFragment {
 
     private EduSohoListView mListView;
     public static final String IDS = "ids";
@@ -40,6 +40,11 @@ public class CourseTeacherInfoFragment extends BaseFragment {
     }
 
     @Override
+    public EduSohoListView getListView() {
+        return mListView;
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
 
@@ -50,6 +55,7 @@ public class CourseTeacherInfoFragment extends BaseFragment {
 
         CourseTeacherAdapter adapter = new CourseTeacherAdapter(
                 mActivity, R.layout.course_teacher_item_layout);
+        mListView.setEmptyString(new String[] { "该课程没有教师" }, R.drawable.icon_empty_teacher);
         mListView.setAdapter(adapter);
 
         Bundle bundle = getArguments();

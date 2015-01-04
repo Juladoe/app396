@@ -122,7 +122,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         longToast("二维码信息错误!");
                         return;
                     }
-                    Log.d(null, "token---->`"+ schoolResult.token);
+                    Log.d(null, "token---->"+ schoolResult.token);
                     School site = schoolResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;

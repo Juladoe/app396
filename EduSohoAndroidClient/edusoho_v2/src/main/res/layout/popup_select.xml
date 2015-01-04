@@ -3,41 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/material_dlg_bg"
+    android:padding="8dp"
     android:layout_margin="20dp">
 
     <TextView
+        android:background="@drawable/course_info_bg"
         android:textColor="@color/popup_color"
-        android:textSize="@dimen/popup_title"
-        android:gravity="center"
+        android:textSize="@dimen/base_large_size"
+        android:gravity="left|center"
         android:textStyle="bold"
         android:padding="5dp"
         android:text="退出课程学习"
         android:id="@+id/popup_title"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="40dp" />
 
     <TextView
+        android:visibility="visible"
         android:textColor="@color/popup_color"
         android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
+        android:padding="5dp"
         android:layout_below="@id/popup_title"
         android:id="@+id/popup_select_label"
-        android:text="退学原因"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Spinner
-        android:padding="10dp"
-        android:background="@drawable/card_bg"
-        android:entries="@array/exitcourse_array"
-        android:layout_margin="10dp"
+    <RadioGroup
         android:layout_below="@id/popup_select_label"
         android:id="@+id/popup_select"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </Spinner>
+        </RadioGroup>
 
     <LinearLayout
         android:gravity="center_horizontal"

@@ -183,7 +183,7 @@ public class CourseLearningFragment extends BaseFragment {
     {
         ExitCoursePopupDialog.create(mActivity, new ExitCoursePopupDialog.PopupClickListener() {
             @Override
-            public void onClick(int button, String selStr) {
+            public void onClick(int button, int position, String selStr) {
                 if (button == ExitCoursePopupDialog.CANCEL) {
                     return;
                 }

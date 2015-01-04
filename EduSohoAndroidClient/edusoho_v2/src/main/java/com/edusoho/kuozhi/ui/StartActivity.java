@@ -67,8 +67,9 @@ public class StartActivity extends ActionBarBaseActivity
     }
 
     protected void initApp() {
-        if (!app.getNetStatus()) {
+        if (!app.getNetIsConnect()) {
             longToast("没有网络服务！请检查网络设置。");
+            startApp();
             return;
         }
         if (app.host == null || "".equals(app.host)) {

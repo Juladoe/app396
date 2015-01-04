@@ -42,7 +42,10 @@ public class EduImageGetterHandler implements Html.ImageGetter {
         this.mContainer = view;
         this.mContext = context;
         mUrlArray = new SparseArray<String>();
-        mOptions = new DisplayImageOptions.Builder().delayBeforeLoading(100).cacheOnDisk(true).build();
+        mOptions = new DisplayImageOptions.Builder()
+                .delayBeforeLoading(100)
+                .cacheOnDisk(true)
+                .build();
     }
 
     public EduImageGetterHandler setSize(int size)
@@ -53,6 +56,9 @@ public class EduImageGetterHandler implements Html.ImageGetter {
 
     @Override
     public Drawable getDrawable(String s) {
+        if (! s.startsWith("http:")) {
+            s = EdusohoApp.app.host + s;
+        }
         CacheDrawable drawable = new CacheDrawable();
         try{
             ImageLoader loader = ImageLoader.getInstance();
@@ -79,16 +85,18 @@ public class EduImageGetterHandler implements Html.ImageGetter {
 
         private void setBitmap(Bitmap loadedImage)
         {
+            float showMaxWidth, showMinWidth;
             if (mImageSize == -1) {
-                float showMaxWidth =  EdusohoApp.app.screenW * 2 / 3f;
-                float showMinWidth =  EdusohoApp.app.screenW * 1 / 8f;
-                if (showMaxWidth < loadedImage.getWidth()) {
-                    loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0, mContext);
-                } else if (showMinWidth >= loadedImage.getWidth()) {
-                    loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0, mContext);
-                }
+                showMaxWidth =  EdusohoApp.app.screenW * 0.9f;
+                showMinWidth =  EdusohoApp.app.screenW * 0.5f;
             } else {
-                loadedImage = AppUtil.scaleImageBySize(loadedImage, mImageSize, mContext);
+                showMaxWidth =  mImageSize * 0.9f;
+                showMinWidth =  mImageSize * 0.9f;
+            }
+            if (showMaxWidth < loadedImage.getWidth()) {
+                loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0, mContext);
+            } else if (showMinWidth >= loadedImage.getWidth()) {
+                loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0, mContext);
             }
 
             mDrawable.bitmap = loadedImage;

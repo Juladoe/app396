@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/course_lesson_headview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:id="@+id/course_lesson_totalInfo"
+        app:es_alpha="0.87"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_size" />
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:id="@+id/lesson_download_btn"
+        app:es_alpha="0.87"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:drawableLeft="@drawable/lesson_download_icon"
+        android:drawablePadding="3dp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="下载"
+        android:textColor="@color/base_color_normal" />
+
+</RelativeLayout>

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@drawable/lesson_downed_list_bg"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
@@ -11,7 +12,17 @@
         android:layout_weight="1"
         android:padding="8dp">
 
+        <CheckBox
+            android:checked="false"
+            android:button="@drawable/normal_checkbox_sel"
+            android:id="@+id/lesson_download_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone" />
+
         <com.edusoho.kuozhi.view.ESTextView
+            android:layout_toRightOf="@id/lesson_download_checkbox"
             android:singleLine="true"
             android:ellipsize="end"
             android:id="@+id/lesson_title"
@@ -21,6 +32,7 @@
             app:es_alpha="0.87" />
 
         <ProgressBar
+            android:layout_toRightOf="@id/lesson_download_checkbox"
             android:id="@+id/lesson_download_progress"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
@@ -35,6 +47,7 @@
             android:progressDrawable="@drawable/course_learn_status_progress" />
 
         <com.edusoho.kuozhi.view.ESTextView
+            android:layout_toRightOf="@id/lesson_download_checkbox"
             android:id="@+id/lesson_download_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +64,8 @@
         android:layout_margin="8dp"
         android:layout_weight="0"
         android:button="@null"
+        android:checked="false"
         android:drawableRight="@drawable/lesson_download_btn_sel"
-        android:text="正在下载"
+        android:text="开始下载"
         android:textSize="10sp" />
 </LinearLayout>
