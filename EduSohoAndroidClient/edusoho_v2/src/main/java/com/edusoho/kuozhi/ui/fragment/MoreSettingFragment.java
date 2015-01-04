@@ -187,7 +187,8 @@ public class MoreSettingFragment extends BaseFragment {
                 showProgress(false);
                 app.removeToken();
                 mLogoutBtn.setVisibility(View.GONE);
-                app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+                app.sendMsgToTarget(SchoolRoomFragment.LOGOUT, null, SchoolRoomFragment.class);
+                //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
             }
         });
     }

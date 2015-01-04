@@ -238,6 +238,7 @@ public class SchoolRoomFragment extends BaseFragment {
                 loadSchoolRoomData();
                 break;
             case LOGOUT:
+                loadSchoolRoomData();
                 break;
             case PUSH_ITEM:
                 PushMsg pushMsg = (PushMsg) message.data.getSerializable(PUSH_MODEL);
