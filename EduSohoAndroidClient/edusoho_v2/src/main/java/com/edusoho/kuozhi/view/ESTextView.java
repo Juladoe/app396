@@ -18,7 +18,7 @@ import com.nineoldandroids.view.ViewHelper;
  */
 public class ESTextView extends TextView {
 
-    private float mDefautAlpha;
+    private float mDefautAlpha = 1.0f;
     private Context mContext;
     private OnClickListener mOnClickListener;
 

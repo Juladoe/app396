@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.Message;
+package com.edusoho.kuozhi.ui.message;
 
 import android.os.Bundle;
 import android.view.View;
@@ -114,7 +114,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
     @Override
     public void onClick(View v) {
         RequestUrl url = app.bindUrl(Const.SEND_LETTER, true);
-        url.setParams(new String[] {
+        url.setParams(new String[]{
                 "conversationId", String.valueOf(mConversationId),
                 "fromId", String.valueOf(mFromId),
                 "content", etSendContent.getText().toString()
@@ -129,6 +129,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
                     adapter.addItem(result);
                     mLetterList.setSelection(adapter.getCount());
                     etSendContent.getText().clear();
+                    mStart++;
                 }
             }
 

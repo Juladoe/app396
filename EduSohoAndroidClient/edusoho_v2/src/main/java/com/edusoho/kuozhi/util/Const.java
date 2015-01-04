@@ -171,6 +171,7 @@ public class Const {
     public static final String LASTEST_COURSES = "School/getLatestCourses";
     public static final String WEEK_COURSES = "School/getWeekRecommendCourses";
     public static final String CATEGORYS = "Category/getAllCategories";
+    public static final String GET_TAGS = "Category/getTags";
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";

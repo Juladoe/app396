@@ -355,4 +355,6 @@
     <color name="schoolroom_discussion">#1f89e2</color>
     <color name="schoolroom_note">#38bf6c</color>
     <color name="schoolroom_letter">#1fcde2</color>
+
+    <color name="tag_color">#df000000</color>
 </resources>

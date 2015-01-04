@@ -108,7 +108,7 @@
                     android:layout_centerVertical="true"
                     />
 
-                <com.edusoho.kuozhi.view.ESTextView
+                <TextView
                     android:textColor="@color/white"
                     android:textSize="@dimen/middle_font_size"
                     android:gravity="center"

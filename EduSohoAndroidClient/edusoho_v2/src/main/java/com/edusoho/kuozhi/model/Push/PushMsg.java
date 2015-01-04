@@ -1,18 +1,19 @@
 package com.edusoho.kuozhi.model.Push;
 
-import android.app.Activity;
 import android.content.ContextWrapper;
 import android.content.Intent;
 
-import com.edusoho.kuozhi.ui.Message.MessageLetterListActivity;
+import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.Const;
+
+import java.io.Serializable;
 
 /**
  * Created by JesseHuang on 14/12/18.
  * 用于处理推送的信息
  */
-public class PushMsg {
+public class PushMsg implements Serializable {
     private String mTypeId;
 
     /**
@@ -95,8 +96,10 @@ public class PushMsg {
                 intent = new Intent(activity, QuestionDetailActivity.class);
                 intent.putExtra(Const.COURSE_ID, Integer.parseInt(mObjectId));
                 intent.putExtra(Const.THREAD_ID, Integer.parseInt(mOtherId));
-
                 break;
+            case 2:
+                notificationTitle = "最新资讯";
+                notificationContent = "Edusoho的最新资讯";
         }
     }
 }

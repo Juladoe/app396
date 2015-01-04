@@ -75,7 +75,7 @@ public class LessonQuestionListAdapter<T> extends ListBaseAdapter<T> {
             holder.tvTitle.setText(model.title);
             holder.tvPostName.setText(model.user.nickname);
             holder.tvPostTime.setText(AppUtil.getPostDays(model.createdTime));
-            holder.tvMsgs.setText(model.postNum);
+            holder.tvMsgs.setText(model.postNum + "");
 
 
         } catch (Exception ex) {
