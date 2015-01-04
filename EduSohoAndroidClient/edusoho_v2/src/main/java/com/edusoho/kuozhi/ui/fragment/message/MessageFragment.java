@@ -36,7 +36,7 @@ public class MessageFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return "消息";
+        return "通知";
     }
 
     @Override

@@ -52,6 +52,7 @@ public class MoreSettingFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         setContainerView(R.layout.more_setting);
         super.onCreate(savedInstanceState);
+
     }
 
     protected void showSchoolAbout() {

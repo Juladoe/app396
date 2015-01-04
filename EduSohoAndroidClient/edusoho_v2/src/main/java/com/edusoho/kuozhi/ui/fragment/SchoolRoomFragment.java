@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.SchoolRoomAdapter;
+import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.model.Push.PushMsg;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomEnum;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
@@ -44,7 +46,6 @@ public class SchoolRoomFragment extends BaseFragment {
 
     private View mView;
     private RefreshListWidget mSchoolRoomListView;
-    private View mLoadView;
 
     public static final int REFRESH = 0010;
     public static final int LOGINT_WITH_TOKEN = 0020;
@@ -56,7 +57,6 @@ public class SchoolRoomFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -69,12 +69,16 @@ public class SchoolRoomFragment extends BaseFragment {
 
     private void initView() {
         mSchoolRoomListView = (RefreshListWidget) mView.findViewById(R.id.lv_schoolroom);
-        mLoadView = mView.findViewById(R.id.load_layout);
+        //mLoadView = mView.findViewById(R.id.load_layout);
         mSchoolRoomListView.setMode(PullToRefreshBase.Mode.DISABLED);
         mSchoolRoomListView.setEmptyText(new String[]{"您尚未登录"});
         mSchoolRoomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (app.loginUser == null) {
+                    LoginActivity.start(mActivity);
+                    return;
+                }
                 SchoolRoomResult schoolRoomResult = (SchoolRoomResult) parent.getItemAtPosition(position);
                 int schoolRoomType = SchoolRoomEnum.getIndex(schoolRoomResult.title);
                 showItemActivity(schoolRoomType, schoolRoomResult);
@@ -181,7 +185,7 @@ public class SchoolRoomFragment extends BaseFragment {
      * 跳转到私信详情界面(NoteContentFragment)
      */
     private void goToMessageLetterListActivity(final SchoolRoomResult result) {
-        mActivity.app.mEngine.runNormalPlugin("MessageLetterListActivity", mContext, new PluginRunCallback() {
+        mActivity.app.mEngine.runNormalPlugin("LetterActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, Integer.parseInt(result.data.id));
@@ -197,16 +201,13 @@ public class SchoolRoomFragment extends BaseFragment {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
-                    mLoadView.setVisibility(View.GONE);
+                    //mLoadView.setVisibility(View.GONE);
                     List<SchoolRoomResult> schoolRoomList = mActivity.parseJsonValue(
                             object, new TypeToken<ArrayList<SchoolRoomResult>>() {
                             });
-                    if (schoolRoomList == null) {
-                        return;
-                    }
 
                     SchoolRoomAdapter<SchoolRoomResult> schoolRoomAdapter = new SchoolRoomAdapter(mContext,
-                            R.layout.schoolroom_list_item);
+                            R.layout.schoolroom_list_item, app.loginUser);
                     schoolRoomAdapter.addItems(schoolRoomList);
                     mSchoolRoomListView.setAdapter(schoolRoomAdapter);
                 } catch (Exception ex) {

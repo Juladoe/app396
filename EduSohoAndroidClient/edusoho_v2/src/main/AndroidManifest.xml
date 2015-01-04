@@ -196,6 +196,10 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.edusoho.kuozhi.ui.message.LetterActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
 
         <service android:name=".Service.PusherService" />
         <receiver android:name=".broadcast.AlarmReceiver" />

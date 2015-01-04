@@ -52,6 +52,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
         initDatas();
         setBackMode(BACK, mTitle);
         initViews();
+        getApplicationContext();
     }
 
     private void initDatas() {

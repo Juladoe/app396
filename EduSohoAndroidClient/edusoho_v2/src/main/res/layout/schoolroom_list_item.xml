@@ -57,6 +57,20 @@
             <com.edusoho.kuozhi.view.ESTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/middle_font_size"
+                android:text="在学课程(居中)"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:id="@+id/tv_title_center"
+                android:visibility="gone"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.87" />
+
+            <com.edusoho.kuozhi.view.ESTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_title"
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/small_font_size"
@@ -89,7 +103,7 @@
                 android:text="1"
                 android:gravity="center"
                 android:textSize="@dimen/x_small_font_size"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:background="@drawable/new_msg_logo" />
 

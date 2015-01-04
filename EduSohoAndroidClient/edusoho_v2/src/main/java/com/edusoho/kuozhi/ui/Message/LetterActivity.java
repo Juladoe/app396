@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.fragment.message;
+package com.edusoho.kuozhi.ui.message;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,41 +13,36 @@ import com.edusoho.kuozhi.adapter.MessageLetterSummaryAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
-import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+
 import library.PullToRefreshBase;
 
 /**
- * Created by Hby on 14/11/23.
+ * Created by JesseHuang on 14/12/31.
  */
-public class LetterFragment extends BaseFragment {
+public class LetterActivity extends ActionBarBaseActivity {
     private static final String TAG = "LetterFragment";
     private static final int RETURN_REFRESH = 0;
     private RefreshListWidget mLetterSummaryList;
     private View mLoadingView;
 
     @Override
-    public String getTitle() {
-        return "私信";
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.letter_fragment_layout);
+        setContentView(R.layout.letter_fragment_layout);
+        initView();
     }
 
-    @Override
-    protected void initView(View view) {
-        super.initView(view);
-        mLetterSummaryList = (RefreshListWidget) view.findViewById(R.id.letter_summary_list);
-        mLoadingView = view.findViewById(R.id.load_layout);
+    private void initView() {
+        setBackMode(BACK, "私信");
+        mLetterSummaryList = (RefreshListWidget) findViewById(R.id.letter_summary_list);
+        mLoadingView = findViewById(R.id.load_layout);
         mLetterSummaryList.setMode(PullToRefreshBase.Mode.BOTH);
 
         mLetterSummaryList.setEmptyText(new String[]{"暂无私信"});
@@ -85,7 +80,7 @@ public class LetterFragment extends BaseFragment {
 
     private void loadLetterSummary(final int start, final boolean isRefresh) {
         RequestUrl requestUrl = app.bindUrl(Const.MESSAGE_LETTER_SUMMARY, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "limit", String.valueOf(Const.LIMIT),
                 "start", String.valueOf(start)
         });
@@ -116,12 +111,4 @@ public class LetterFragment extends BaseFragment {
         mActivity.ajaxPost(requestUrl, callback);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            MessageLetterSummaryAdapter adapter = (MessageLetterSummaryAdapter) mLetterSummaryList.getAdapter();
-            adapter.clear();
-            mLetterSummaryList.setRefreshing();
-        }
-    }
 }
