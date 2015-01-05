@@ -40,7 +40,7 @@ public class Const {
     };
 
     public static final String[] MY_COURSE_FRAGMENT = {
-            "LearningCourseFragment",
+            "LeaenCourseFragment",
             "FavoriteCourseFragment",
             "LearnedCourseFragment"
     };
@@ -319,5 +319,11 @@ public class Const {
     public static final String USER_ID = "userName";
     public static final String SENT_PKGS = "sentPkgs";
     public static final String RECEIVE_PKGS = "receivePkgs";
+
+
+    /**
+     * 获取单个回答的内容
+     */
+    public static final String ONE_REPLY = "Course/getOneThreadPost";
 
 }

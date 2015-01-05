@@ -24,6 +24,7 @@ public class QuestionDetailModel implements Serializable {
     public int latestPostUserId;
     public String latestPostTime;
     public String createdTime;
+    public String latestPostContent;
     public String courseTitle;
     public String coursePicture;
     public boolean isTeacherPost;

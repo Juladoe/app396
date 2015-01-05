@@ -200,7 +200,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             if (mLessonListJson == null) {
                 RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
                 url.setParams(new String[]{
-                        "courseId", mCourseId + ""
+                        "courseId", String.valueOf(mCourseId)
                 });
                 mActivity.ajaxPost(url, new ResultCallback() {
                     @Override
@@ -497,8 +497,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void loadLesson(int lessonId)
     {
+        int userId = app.loginUser == null ? 0 : app.loginUser.id;
         M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(
-                mContext, app.loginUser.id, lessonId, app.domain, M3U8Uitl.FINISH);
+                mContext, userId, lessonId, app.domain, M3U8Uitl.FINISH);
         if (m3U8DbModle != null) {
             loadLessonFromCache(lessonId);
         } else {

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.view.plugin.CircularImageView
+        android:id="@+id/question_answer_head_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/question_answer_icon"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/question_answer_head_image"
+        android:layout_alignBottom="@id/question_answer_head_image"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/question_answer_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Joanie"/>
+
+        <TextView
+            android:id="@+id/question_answer_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="2014-12-16"/>
+    </LinearLayout>
+
+    <com.edusoho.kuozhi.view.ESImageView
+        android:id="@+id/question_answer_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/question_answer_head_image"
+        android:background="#000"
+        app:es_alpha="0.12"/>
+
+    <TextView
+        android:id="@+id/question_answer_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/question_answer_line"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textSize="14sp"
+        android:text="我是回复的内容我是回复的内容我是回复的内容
+        我是回复的内容我是回复的内容我是回复的内容我是回复的内容
+        我是回复的内容我是回复的内容我是回复的内容我是回复的内容"/>
+
+    <ListView
+        android:id="@+id/question_answer_image_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/question_answer_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:scrollbars="none"></ListView>
+
+</RelativeLayout>

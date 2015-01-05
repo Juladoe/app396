@@ -6,4 +6,5 @@ package com.edusoho.kuozhi.model;
 public class LearnCourse extends Course {
     public int memberIsLearned;
     public int memberLearnedNum;
+    public String lastLessonTitle;
 }

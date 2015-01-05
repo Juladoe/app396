@@ -203,7 +203,7 @@ public class MyInfoFragment extends BaseFragment {
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
             }
         };
-        app.mEngine.runNormalPlugin("QuestionActivity", mActivity, callback);
+        app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
     }
 
     private void showMyCourse() {

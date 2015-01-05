@@ -142,11 +142,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                 mLessonInfoView.setText(String.format(
                         "共%d个课时,视频课时总时长为%s", lessonNum, fullFormat.format(new Date(totalTime))));
 
-                try {
-                    mM3U8DbModles = getLocalM3U8Models(lessonsResult.lessons);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                mM3U8DbModles = getLocalM3U8Models(lessonsResult.lessons);
                 mAdapter.updateLearnStatus(lessonsResult.learnStatuses);
                 mAdapter.updateM3U8Models(mM3U8DbModles);
                 mListView.pushData(lessonsResult.lessons);
@@ -188,7 +184,8 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
             ids[i] = lessons.get(i).id;
         }
 
-        return M3U8Uitl.getM3U8ModleList(mContext, ids, app.loginUser.id, app.domain, 1);
+        int userId = app.loginUser != null ? app.loginUser.id : 0;
+        return M3U8Uitl.getM3U8ModleList(mContext, ids, userId, app.domain, 1);
     }
 
     private void showLesson(final LessonItem lesson)
