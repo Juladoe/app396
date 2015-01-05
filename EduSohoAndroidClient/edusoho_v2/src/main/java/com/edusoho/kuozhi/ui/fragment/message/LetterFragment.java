@@ -21,6 +21,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+
 import library.PullToRefreshBase;
 
 /**
@@ -56,12 +57,12 @@ public class LetterFragment extends BaseFragment {
         mLetterSummaryList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                loadLetterSummary(mLetterSummaryList.getStart(), false);
+                loadLetterSummary(mLetterSummaryList.getStart());
             }
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                loadLetterSummary(0, true);
+                loadLetterSummary(0);
             }
         });
         mLetterSummaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,12 +81,12 @@ public class LetterFragment extends BaseFragment {
                 });
             }
         });
-        loadLetterSummary(0, false);
+        loadLetterSummary(0);
     }
 
-    private void loadLetterSummary(final int start, final boolean isRefresh) {
+    private void loadLetterSummary(final int start) {
         RequestUrl requestUrl = app.bindUrl(Const.MESSAGE_LETTER_SUMMARY, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "limit", String.valueOf(Const.LIMIT),
                 "start", String.valueOf(start)
         });

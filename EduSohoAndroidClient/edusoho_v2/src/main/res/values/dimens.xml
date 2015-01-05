@@ -113,4 +113,5 @@
     <dimen name="lesson_entry_right_arrow">8dp</dimen>
 
     <dimen name="schoolroom_item_logo">6dp</dimen>
+    <dimen name="message_head_icon">30dp</dimen>
 </resources>

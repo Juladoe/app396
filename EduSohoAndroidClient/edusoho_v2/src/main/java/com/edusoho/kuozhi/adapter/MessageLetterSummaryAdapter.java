@@ -65,6 +65,7 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
                 holder.tvSendName = (TextView) convertView.findViewById(R.id.tv_send_name);
                 holder.tvSendTime = (TextView) convertView.findViewById(R.id.tv_send_time);
                 holder.tvSendContent = (TextView) convertView.findViewById(R.id.tv_send_content);
+                holder.ivUnreadMsg = (ImageView) convertView.findViewById(R.id.iv_unread_msg);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -75,6 +76,11 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
             holder.tvSendTime.setText(AppUtil.getPostDays(model.latestMessageTime));
             Log.d(TAG, holder.tvSendContent.getWidth() + "");
             holder.tvSendContent.setText(model.latestMessageContent);
+            if (model.unreadNum > 0) {
+                holder.ivUnreadMsg.setVisibility(View.VISIBLE);
+            } else {
+                holder.ivUnreadMsg.setVisibility(View.GONE);
+            }
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
         }
@@ -86,6 +92,7 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
         public TextView tvSendName;
         public TextView tvSendContent;
         public TextView tvSendTime;
+        public ImageView ivUnreadMsg;
     }
 
     @Override
