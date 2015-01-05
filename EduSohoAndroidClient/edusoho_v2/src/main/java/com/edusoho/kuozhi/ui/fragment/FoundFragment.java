@@ -8,9 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-
 import com.androidquery.callback.AjaxStatus;
-import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.FoundCourseListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -40,7 +38,6 @@ import library.PullToRefreshBase;
 public class FoundFragment extends BaseFragment {
 
     private CategoryListView mCategoryListView;
-    public String mTitle = "发现";
     private int mCategoryHeight;
     private int mCurrentCategoryId;
     private ImageView mSelectIconView;
@@ -105,10 +102,9 @@ public class FoundFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        mCourseListView = (RefreshListWidget) view.findViewById(R.id.found_category_course_list);
         mCategoryListView = (CategoryListView) view.findViewById(R.id.found_category_list);
-
-        mCourseListView.setEmptyText(new String[]{"没有搜到相关课程"});
+        mCourseListView = (RefreshListWidget) view.findViewById(R.id.found_category_course_list);
+        mCourseListView.setEmptyText(new String[] { "没有搜到相关课程" }, R.drawable.icon_course_empty);
         mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
@@ -122,32 +118,34 @@ public class FoundFragment extends BaseFragment {
             }
         });
 
+        mActivity.setTitleClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCategoryListView.getHeight() > 0) {
+                    hideCategoryList();
+                } else {
+                    showCategoryList();
+                }
+            }
+        });
+
+        mCourseListView.setLoadAdapter();
+        changeTitle("全部");
+        loadCourseList(0, 0);
+        mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
+
         RequestUrl url = app.bindUrl(Const.CATEGORYS, false);
         mCategoryListView.initialise(mActivity, url);
 
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {
+                changeTitle(category.id == 0 ? "全部" : category.name);
                 mCourseListView.setLoadAdapter();
                 loadCourseList(category.id, 0);
                 hideCategoryList();
             }
         });
-
-        mActivity.setTitleClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCategoryListView.getHeight() <= 0) {
-                    showCategoryList();
-                } else {
-                    hideCategoryList();
-                }
-            }
-        });
-
-        mCourseListView.setLoadAdapter();
-        loadCourseList(0, 0);
-        mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
     }
 
     private void rotation(View view, float start, float end) {
@@ -156,25 +154,18 @@ public class FoundFragment extends BaseFragment {
         objectAnimator.start();
     }
 
-    private void hideCategoryList() {
-        mCategoryHeight = EdusohoApp.screenH - mActivity.mActionBar.getHeight();
-        AppUtil.animForHeight(
-                new EdusohoAnimWrap(mCategoryListView),
-                mCategoryHeight,
-                0,
-                280
-        );
+    private void hideCategoryList()
+    {
+        mCategoryHeight = mCourseListView.getHeight();
+        AppUtil.animForHeight(new EdusohoAnimWrap(mCategoryListView), mCategoryHeight, 0, 240);
         rotation(mSelectIconView, -180, 0);
     }
 
-    private void showCategoryList() {
-        mCategoryHeight = EdusohoApp.screenH - mActivity.mActionBar.getHeight();
-        AppUtil.animForHeight(
-                new EdusohoAnimWrap(mCategoryListView),
-                0,
-                mCategoryHeight,
-                350
-        );
+    private void showCategoryList()
+    {
+        mCategoryHeight = mCourseListView.getHeight();
+        AppUtil.animForHeight(new EdusohoAnimWrap(mCategoryListView), 0, mCategoryHeight, 180);
+        mCategoryListView.scrollToTop();
         rotation(mSelectIconView, 0, -180);
     }
 

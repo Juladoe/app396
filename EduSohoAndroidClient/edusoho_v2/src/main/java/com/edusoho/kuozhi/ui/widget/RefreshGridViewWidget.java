@@ -35,6 +35,8 @@ public class RefreshGridViewWidget extends PullToRefreshGridView {
     private ListBaseAdapter mAdapter;
     private UpdateListener mUpdateListener;
     private Context mContext;
+
+    private int mEmptyIcon = R.drawable.course_empty_icon;
     private String[] mEmptyText = new String[]{ "没有搜到相关课程，请换个关键词试试！" };
 
     public RefreshGridViewWidget(Context context) {
@@ -78,6 +80,12 @@ public class RefreshGridViewWidget extends PullToRefreshGridView {
         mEmptyText = emptyText;
     }
 
+    public void setEmptyText(String[] emptyText, int icon)
+    {
+        mEmptyText = emptyText;
+        mEmptyIcon = icon;
+    }
+
     public void pushData(ArrayList data)
     {
         if (mMode == REFRESH) {
@@ -114,10 +122,9 @@ public class RefreshGridViewWidget extends PullToRefreshGridView {
     protected ListBaseAdapter getEmptyLayoutAdapter()
     {
         EmptyAdapter<String> arrayAdapter = new EmptyAdapter<String> (
-                mContext, R.layout.course_empty_layout, mEmptyText);
+                mContext, R.layout.course_empty_layout, mEmptyText, mEmptyIcon);
         return arrayAdapter;
     }
-
 
     public ListAdapter getAdapter()
     {

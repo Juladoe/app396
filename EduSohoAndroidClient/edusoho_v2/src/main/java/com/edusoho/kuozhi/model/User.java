@@ -37,5 +37,7 @@ public class User implements Serializable {
     public String about;
     public String signature;
 
+    public int dataType;
+
     public Vip vip;
 }

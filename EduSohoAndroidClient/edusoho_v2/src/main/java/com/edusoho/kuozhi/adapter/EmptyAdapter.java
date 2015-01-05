@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
  */
 public class EmptyAdapter<T> extends ListBaseAdapter<T>
 {
+    private int mEmptyIcon;
+
     public EmptyAdapter(Context context, int resource)
     {
         super(context, resource);
@@ -26,6 +29,12 @@ public class EmptyAdapter<T> extends ListBaseAdapter<T>
         for (T text : array) {
             mList.add(text);
         }
+    }
+
+    public EmptyAdapter(Context context, int resource, T[] array, int icon)
+    {
+        this(context, resource, array);
+        this.mEmptyIcon = icon;
     }
 
     @Override
@@ -45,6 +54,9 @@ public class EmptyAdapter<T> extends ListBaseAdapter<T>
         }
 
         TextView textView = (TextView) convertView.findViewById(R.id.list_empty_text);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.list_empty_icon);
+
+        imageView.setImageResource(mEmptyIcon);
         textView.setText((String)mList.get(position));
 
         AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(

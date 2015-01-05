@@ -1,60 +1,51 @@
 package com.edusoho.kuozhi.ui.fragment.lesson;
 
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.LocalCourseListAdapter;
-import com.edusoho.kuozhi.broadcast.DownLoadStatusReceiver;
-import com.edusoho.kuozhi.broadcast.callback.StatusCallback;
+import com.edusoho.kuozhi.adapter.lesson.LocalLessonDownListAdapter;
 import com.edusoho.kuozhi.model.Course;
-import com.edusoho.kuozhi.model.LessonItem;
-import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.model.MessageType;
+import com.edusoho.kuozhi.model.WidgetMessage;
+import com.edusoho.kuozhi.ui.course.LocalCoruseActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
 import com.edusoho.kuozhi.util.SqliteUtil;
-import com.google.gson.reflect.TypeToken;
-
-import org.apache.cordova.App;
+import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by howzhi on 14/12/11.
- */
+*/
+
 public class LessonDownloadedFragment extends BaseFragment {
 
-    private EduSohoListView mListView;
-    private SqliteUtil mSqliteUtil;
-    private ArrayList<Course> mLocalCourses;
-    private SparseArray<M3U8DbModle> m3U8DbModles;
-    private HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
-    private LocalCourseListAdapter mAdapter;
-    private DownLoadStatusReceiver mDownLoadStatusReceiver;
+    protected EduSohoListView mListView;
+    protected ArrayList<Course> mLocalCourses;
+    protected LocalCourseListAdapter mAdapter;
 
-    private TextView mDeviceSpaceInfo;
-    private String host;
+    private View mToolsLayout;
+    private TextView mSelectAllBtn;
+    private View mDelBtn;
+    protected TextView mDeviceSpaceInfo;
+
+    public static final String FINISH = "finish";
 
     @Override
     public String getTitle() {
@@ -67,54 +58,128 @@ public class LessonDownloadedFragment extends BaseFragment {
     }
 
     @Override
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(FINISH)
+        };
+        return messageTypes;
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        String type = message.type.type;
+        if (FINISH.equals(type)) {
+            updateLocalCourseList();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.offline_menu_edit) {
-            if (mLocalCourses == null || mLocalCourses.isEmpty()) {
-                return true;
+            if (item.isChecked()) {
+                hideBtnLayout();
+                item.setTitle("编辑");
+                mAdapter.selectAll(LocalLessonDownListAdapter.INVISIBLE);
+            } else {
+                showBtnLayout();
+                item.setTitle("取消");
+                mAdapter.selectAll(LocalLessonDownListAdapter.UNCHECK);
             }
-            clearAllLocalCache();
-            mListView.clear();
-            loadLocalCourseList();
+
+            item.setChecked(! item.isChecked());
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void clearAllLocalCache() {
-        SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
-        sqliteUtil.delete(
-                "data_cache",
-                "type=?",
-                new String[]{Const.CACHE_LESSON_TYPE}
-        );
-        clearVideoCache();
+    private void showBtnLayout()
+    {
+        mToolsLayout.measure(0, 0);
+        AppUtil.animForHeight(
+                new EdusohoAnimWrap(mToolsLayout), 0, mToolsLayout.getMeasuredHeight(), 320);
     }
 
-    private void clearVideoCache() {
+    private void hideBtnLayout()
+    {
+        AppUtil.animForHeight(
+                new EdusohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
+    }
+
+    private String coverM3U8Ids(ArrayList<Integer> ids)
+    {
+        StringBuffer idsStr = new StringBuffer("(");
+        for (int id : ids) {
+            idsStr.append(id).append(",");
+        }
+        if (idsStr.length() > 1) {
+            idsStr.deleteCharAt(idsStr.length() - 1);
+        }
+        idsStr.append(")");
+
+        return idsStr.toString();
+    }
+
+    private String coverLessonIds(ArrayList<Integer> ids)
+    {
+        StringBuffer idsStr = new StringBuffer("(");
+        for (int id : ids) {
+            idsStr.append("'lesson-").append(id).append("',");
+        }
+        if (idsStr.length() > 1) {
+            idsStr.deleteCharAt(idsStr.length() - 1);
+        }
+        idsStr.append(")");
+
+        return idsStr.toString();
+    }
+
+    private void clearLocalCache(ArrayList<Integer> ids) {
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
+
+        String m3u8LessonIds = coverM3U8Ids(ids);
+        String cacheLessonIds = coverLessonIds(ids);
+        sqliteUtil.execSQL(String.format(
+                        "delete from data_cache where type='%s' and key in %s",
+                        Const.CACHE_LESSON_TYPE,
+                        cacheLessonIds.toString()
+                )
+        );
+        sqliteUtil.execSQL(String.format(
+                        "delete from data_m3u8 where host='%s' and lessonId in %s",
+                        app.domain,
+                        m3u8LessonIds.toString())
+        );
+
+        clearVideoCache(ids);
+    }
+
+    private void clearVideoCache(ArrayList<Integer> ids) {
         File workSpace = EdusohoApp.getWorkSpace();
         if (workSpace == null) {
             return;
         }
-        File videosDir = new File(workSpace, "videos");
-        FileUtils.deleteFile(videosDir.getAbsolutePath());
+        File videosDir = new File(workSpace, "videos/" + app.domain);
+        for (int id : ids) {
+            FileUtils.deleteFile(new File(videosDir, String.valueOf(id)).getAbsolutePath());
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mSqliteUtil = SqliteUtil.getUtil(mContext);
-        Uri hostUri = Uri.parse(app.host);
-        if (hostUri != null) {
-            this.host = hostUri.getHost();
-        }
         setContainerView(R.layout.lesson_downloading_layout);
+        app.startPlayCacheServer(mActivity);
     }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
 
+        mToolsLayout = view.findViewById(R.id.download_tools_layout);
+        mSelectAllBtn = (TextView) view.findViewById(R.id.download_select_all_btn);
+        mDelBtn = view.findViewById(R.id.download_del_btn);
         mDeviceSpaceInfo = (TextView) view.findViewById(R.id.download_device_info);
         mListView = (EduSohoListView) view.findViewById(R.id.list_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -124,15 +189,34 @@ public class LessonDownloadedFragment extends BaseFragment {
                 R.drawable.lesson_download_empty_icon
         );
 
-        mAdapter = new LocalCourseListAdapter(mContext, R.layout.course_download_list_item);
-        mListView.setAdapter(mAdapter);
-        mListView.setFixHeight(EdusohoApp.screenH - mActivity.mActionBar.getHeight());
-
-        mLocalCourses = new ArrayList<Course>();
-        mLocalLessons = new HashMap<Integer, ArrayList<LessonItem>>();
-
-        loadDeviceSpaceInfo();
         loadLocalCourseList();
+        loadDeviceSpaceInfo();
+        mDelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLocalCourses == null || mLocalCourses.isEmpty()) {
+                    return;
+                }
+
+                clearLocalCache(mAdapter.getSelectLessonId());
+                updateLocalCourseList();
+            }
+        });
+
+        mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSelectAllBtn.getTag() != null) {
+                    mSelectAllBtn.setTag(null);
+                    mAdapter.selectAll(LocalLessonDownListAdapter.UNCHECK);
+                    mSelectAllBtn.setText("全选");
+                } else {
+                    mSelectAllBtn.setTag(true);
+                    mAdapter.selectAll(LocalLessonDownListAdapter.CHECKED);
+                    mSelectAllBtn.setText("取消");
+                }
+            }
+        });
     }
 
     private long[] getDeviceSpaceSize()
@@ -165,106 +249,30 @@ public class LessonDownloadedFragment extends BaseFragment {
         );
     }
 
-    private void loadLocalCourseList() {
-        final ArrayList<LessonItem> list = new ArrayList<LessonItem>();
-        SqliteUtil.QueryPaser<ArrayList<LessonItem>> queryPaser;
-        queryPaser = new SqliteUtil.QueryPaser<ArrayList<LessonItem>>() {
-            @Override
-            public ArrayList<LessonItem> parse(Cursor cursor) {
-                String value = cursor.getString(cursor.getColumnIndex("value"));
-                LessonItem item = mActivity.parseJsonValue(
-                        value, new TypeToken<LessonItem>() {
-                });
-                list.add(item);
-                return list;
-            }
-        };
+    protected void updateLocalCourseList()
+    {
+        LocalCoruseActivity activity = (LocalCoruseActivity) getActivity();
+        LocalCoruseActivity.LocalCourseModel model = activity.getLocalCourseList(
+                M3U8Uitl.FINISH, null, null);
 
-        ArrayList<LessonItem> lessonItems = mSqliteUtil.query(
-                queryPaser,
-                "select * from data_cache where type=?",
-                Const.CACHE_LESSON_TYPE
-        );
+        mAdapter.clear();
+        mAdapter.updateLocalLesson(model.mLocalLessons);
+        mAdapter.updateM3U8Model(model.m3U8DbModles);
+        mAdapter.addItems(model.mLocalCourses);
+        mListView.setAdapter(mAdapter);
+    }
 
-        if (lessonItems != null) {
-            int index = 0;
-            int[] ids = new int[lessonItems.size()];
-            for (LessonItem lessonItem : lessonItems) {
-                if (!mLocalLessons.containsKey(lessonItem.courseId)) {
-                    mLocalCourses.add(getLocalCourse(lessonItem.courseId));
-                    mLocalLessons.put(lessonItem.courseId, new ArrayList<LessonItem>());
-                }
+    protected void loadLocalCourseList()
+    {
+        mListView.setFixHeight(-1);
+        mAdapter = new LocalCourseListAdapter(mActivity, R.layout.course_download_list_item);
+        mListView.setAdapter(mAdapter);
+        LocalCoruseActivity activity = (LocalCoruseActivity) getActivity();
+        LocalCoruseActivity.LocalCourseModel model = activity.getLocalCourseList(M3U8Uitl.FINISH, null, null);
 
-                ArrayList<LessonItem> lessons = mLocalLessons.get(lessonItem.courseId);
-                lessons.add(lessonItem);
-                ids[index++] = lessonItem.id;
-            }
-
-            m3U8DbModles = M3U8Uitl.getM3U8ModleList(mContext, ids, this.host);
-            mAdapter.setM3U8Modles(m3U8DbModles);
-        } else {
-            mLocalCourses.clear();
-            mLocalLessons.clear();
-        }
-
-        mAdapter.setLocalLessons(mLocalLessons);
+        mAdapter.setM3U8Modles(model.m3U8DbModles);
+        mLocalCourses = model.mLocalCourses;
+        mAdapter.setLocalLessons(model.mLocalLessons);
         mListView.pushData(mLocalCourses);
     }
-
-    private Course getLocalCourse(int courseId) {
-        SqliteUtil.QueryPaser<Course> queryPaser;
-        queryPaser = new SqliteUtil.QueryPaser<Course>() {
-            @Override
-            public Course parse(Cursor cursor) {
-                String value = cursor.getString(cursor.getColumnIndex("value"));
-                Course course = mActivity.parseJsonValue(
-                        value, new TypeToken<Course>() {
-                });
-                return course;
-            }
-
-            @Override
-            public boolean isSignle() {
-                return true;
-            }
-        };
-
-        Course course = mSqliteUtil.query(
-                queryPaser,
-                "select * from data_cache where type=? and key=?",
-                Const.CACHE_COURSE_TYPE,
-                "course-" + courseId
-        );
-
-        return course;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mDownLoadStatusReceiver == null) {
-            mDownLoadStatusReceiver = new DownLoadStatusReceiver(mStatusCallback);
-            Log.d(null, "regist DownLoadStatusReceiver");
-            mActivity.registerReceiver(
-                    mDownLoadStatusReceiver, new IntentFilter(DownLoadStatusReceiver.ACTION));
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mActivity.unregisterReceiver(mDownLoadStatusReceiver);
-        Log.d(null, "unregist DownLoadStatusReceiver");
-    }
-
-    private StatusCallback mStatusCallback = new StatusCallback() {
-        @Override
-        public void invoke(Intent intent) {
-            int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
-            M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(mContext, lessonId, host);
-            mAdapter.updateM3U8Modles(lessonId, m3U8DbModle);
-            mAdapter.refreshData(LocalCourseListAdapter.UPDATE);
-        }
-    };
-
 }

@@ -49,7 +49,6 @@ public class QuestionListAdapter<T> extends ListBaseAdapter<T> {
 
     @Override
     public int getCount() {
-        Log.d("QuestionListAdapter.getCount()-->", mList.size() + "");
         return mList.size();
     }
 
@@ -68,7 +67,6 @@ public class QuestionListAdapter<T> extends ListBaseAdapter<T> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("QuestionListAdapter.getView()", String.valueOf(position));
         ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(mResource, null);

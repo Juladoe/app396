@@ -18,6 +18,11 @@
         <item name="android:windowExitAnimation">@anim/popwindow_hide</item>
     </style>
 
+    <style name="CategoryListPopWindowAnimationShow">
+        <item name="android:windowEnterAnimation">@anim/category_list_popwindow_open</item>
+        <item name="android:windowExitAnimation">@anim/category_list_popwindow_hide</item>
+    </style>
+
     <style name="SplashTheme" parent="AppBaseTheme">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
@@ -72,6 +77,7 @@
 
     <style name="EdusohoAppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
         <item name="actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:actionMenuTextColor">@color/white</item>
@@ -89,8 +95,9 @@
     </style>
 
     <style name="EdusohoActionBarMenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
-        <item name="android:textSize">18sp</item>
-        <item name="textSize">18sp</item>
+        <item name="android:textSize">@dimen/base_large_size</item>
+        <item name="textSize">@dimen/base_large_size</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="EdusohoActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
@@ -115,7 +122,7 @@
 
     <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/action_bar_back</item>
-        <item name="android:textSize">@dimen/action_bar_title</item>
+        <item name="android:textSize">@dimen/base_size</item>
         <item name="android:textStyle">normal</item>
     </style>
 

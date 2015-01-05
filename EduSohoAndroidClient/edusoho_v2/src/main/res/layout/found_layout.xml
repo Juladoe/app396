@@ -7,6 +7,10 @@
     <com.edusoho.kuozhi.ui.widget.RefreshListWidget
         app:rlw_dividerHeight="1px"
         android:scrollbars="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true"
         android:id="@+id/found_category_course_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -20,5 +24,4 @@
         android:paddingLeft="17dp"
         android:paddingRight="17dp"
         android:scrollbars="none" />
-
 </RelativeLayout>

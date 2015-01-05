@@ -34,6 +34,7 @@ public class LessionListAdapter extends ListBaseAdapter<LearnCourse>{
             viewHolder.tvItemTitle = (TextView) convertView.findViewById(R.id.lession_list_title);
             viewHolder.tvItemLasslessionTitle = (TextView) convertView.findViewById(R.id.lession_list_lasslessontitle);
             viewHolder.itemProgress = (ProgressBar) convertView.findViewById(R.id.lession_list_progress);
+            viewHolder.tvItemProgress = (TextView) convertView.findViewById(R.id.lession_list_progress_text);
             viewHolder.aQuery = new AQuery(convertView);
             convertView.setTag(viewHolder);
         }else{
@@ -43,15 +44,14 @@ public class LessionListAdapter extends ListBaseAdapter<LearnCourse>{
         LearnCourse learnCourse = mList.get(position);
         viewHolder.aQuery.id(R.id.lession_list_img).image(learnCourse.largePicture);
         viewHolder.tvItemTitle.setText(learnCourse.title);
-        //todo
-//        String learnCourseContent = learnCourse.
+
         if(learnCourse.lastLessonTitle != null) {
             String lastLessonTitle = String.format("学习到课时%d:%s",learnCourse.memberLearnedNum,learnCourse.lastLessonTitle);
             viewHolder.tvItemLasslessionTitle.setText(lastLessonTitle);
         }
 
-        //todo
-//        viewHolder.tvItemProgress.setText("30%");
+        String progress = Math.round((learnCourse.memberLearnedNum/ (learnCourse.lessonNum * 1.0)) * 100) + "%";
+        viewHolder.tvItemProgress.setText(progress);
         viewHolder.itemProgress.setMax(learnCourse.lessonNum);
         viewHolder.itemProgress.setProgress(learnCourse.memberLearnedNum);
 
@@ -61,6 +61,7 @@ public class LessionListAdapter extends ListBaseAdapter<LearnCourse>{
     private class ViewHolder{
         TextView tvItemTitle;
         TextView tvItemLasslessionTitle;
+        TextView tvItemProgress;
         ProgressBar itemProgress;
         AQuery aQuery;
     }

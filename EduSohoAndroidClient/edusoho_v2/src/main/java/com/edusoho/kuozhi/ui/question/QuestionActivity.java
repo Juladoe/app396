@@ -67,7 +67,10 @@ public class QuestionActivity extends ActionBarBaseActivity {
             }
         });
 
-        mQuestionRefreshList.setEmptyText(new String[]{"暂无提问的记录"});
+        mQuestionRefreshList.setEmptyText(
+                new String[]{ "question".equals(mType) ? "暂无提问的记录" : "暂没有讨论记录" },
+                "question".equals(mType) ? R.drawable.icon_question : R.drawable.icon_discussion
+        );
         mQuestionRefreshList.setOnItemClickListener(new QuestionListScrollListener());
         loadQuestionDataFromSeek(0, false);
     }

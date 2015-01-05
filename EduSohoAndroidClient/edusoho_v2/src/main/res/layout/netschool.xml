@@ -37,7 +37,7 @@
             android:layout_marginTop="8dp"
             android:id="@+id/normal_search_btn"
             android:padding="10dp"
-            android:textSize="@dimen/searchBtn"
+            android:textSize="@dimen/base_x_large_size"
             android:textColor="@color/qr_school_url_btn_text"
             android:text="搜索"
             android:background="@drawable/qr_shcool_url_btn_sel"

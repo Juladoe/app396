@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class M3U8File {
     public static int STREAM_LIST = 1;
     public static int PLAY_LIST = 2;
+    public static int STREAM = 3;
 
     public int type;
     public boolean allowCache;

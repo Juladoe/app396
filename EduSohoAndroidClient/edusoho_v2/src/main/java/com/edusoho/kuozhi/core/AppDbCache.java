@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.core;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.androidquery.callback.AjaxCallback;
@@ -12,6 +13,7 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -28,6 +30,7 @@ public class AppDbCache implements AppCache{
     }
 
     private static String[] FILTERS = {
+            Const.CHECKTOKEN,
             Const.CATEGORYS,
             Const.WEEK_COURSES,
             Const.RECOMMEND_COURSES,
@@ -47,23 +50,24 @@ public class AppDbCache implements AppCache{
 
     private boolean isCache(String url)
     {
-        int result = Arrays.binarySearch(FILTERS, url, new Comparator<String>() {
-            @Override
-            public int compare(String s, String s2) {
-                if (s2.contains(s)) {
-                    return 0;
-                }
-                return 1;
+        Uri queryUrl = Uri.parse(url);
+        if (queryUrl == null) {
+            return false;
+        }
+        for (String filter : FILTERS) {
+            String path = queryUrl.getPath();
+            if (path.endsWith(filter)) {
+                return true;
             }
-        });
+        }
 
-        return result >= 0;
+        return false;
     }
 
     @Override
     public <T> void cacheCallback(String url, Cache cache, AjaxCallback<T> ajaxCallback)
     {
-        AjaxStatus ajaxStatus = new AjaxStatus(200, "cache");
+        AjaxStatus ajaxStatus = new AjaxStatus(Const.CACHE_CODE, "cache");
         ajaxCallback.callback(url, (T)cache.get(), ajaxStatus);
     }
 
@@ -79,7 +83,8 @@ public class AppDbCache implements AppCache{
         if (!isCache(requestUrl.url)) {
             return null;
         }
-        Log.d(null, "get cache->" + requestUrl);
+
+        Log.d(null, "get cache ->" + requestUrl.url);
         String cacheKey = AppUtil.coverUrlToCacheKey(requestUrl);
         Cache cache = sqliteUtil.query("select * from data_cache where key = ?", new String[] { cacheKey });
         return cache;
@@ -87,10 +92,10 @@ public class AppDbCache implements AppCache{
 
     @Override
     public void updateCache(RequestUrl requestUrl, Object cache) {
-        if (!isCache(requestUrl.url)) {
+        if (cache == null || !isCache(requestUrl.url)) {
             return;
         }
-        Log.d(null, "update cache->" + requestUrl);
+        Log.d(null, "update cache->" + requestUrl.url);
         String cacheKey = AppUtil.coverUrlToCacheKey(requestUrl);
         ContentValues cv = new ContentValues();
         cv.put("value", cache.toString());
@@ -104,7 +109,7 @@ public class AppDbCache implements AppCache{
         if (!isCache(requestUrl.url) || cache == null) {
             return;
         }
-        Log.d(null, "set cache->" + requestUrl);
+        Log.d(null, "set cache->" + requestUrl.url);
         String cacheKey = AppUtil.coverUrlToCacheKey(requestUrl);
         ContentValues cv = new ContentValues();
         cv.put("type", "");
@@ -116,12 +121,10 @@ public class AppDbCache implements AppCache{
     @Override
     public void delCache(RequestUrl key)
     {
-
     }
 
     @Override
     public void clear()
     {
-
     }
 }

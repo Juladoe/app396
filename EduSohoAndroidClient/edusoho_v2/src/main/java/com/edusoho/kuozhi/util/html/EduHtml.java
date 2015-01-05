@@ -81,7 +81,6 @@ public class EduHtml {
                 if (imgCount < 3) {
                     builder.append(tag).append("&nbsp;");
                 }
-                ;
                 imgCount++;
             }
             matcher.appendReplacement(stringBuffer, "");

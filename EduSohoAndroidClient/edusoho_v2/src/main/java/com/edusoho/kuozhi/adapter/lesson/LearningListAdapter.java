@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.model.LearnCourse;
+import com.edusoho.kuozhi.util.AppUtil;
 
 /**
  * Created by howzhi on 14-9-1.
@@ -41,7 +42,7 @@ public class LearningListAdapter extends AbstractCourseListAdapter {
         spannableString.setSpan(
                 new ForegroundColorSpan(Color.GREEN)
                 , start
-                , start + 1
+                , start + AppUtil.getNumberLength(course.memberLearnedNum)
                 , SpannableString.SPAN_EXCLUSIVE_INCLUSIVE
         );
         holder.learnStatus.setText(spannableString);

@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -8,7 +7,6 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.testpaper.MyTestListAdapter;
-import com.edusoho.kuozhi.adapter.testpaper.TestpaperListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.BaseResult;
 import com.edusoho.kuozhi.model.Testpaper.MyTestpaperData;

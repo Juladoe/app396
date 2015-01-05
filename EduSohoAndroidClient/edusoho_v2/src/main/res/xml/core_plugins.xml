@@ -113,6 +113,7 @@
     <plugin name="CourseReviewFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseReviewFragment"></plugin>
     <plugin name="CourseIntroductionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseIntroductionFragment"></plugin>
     <plugin name="CourseDownloadingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseDownloadingFragment"></plugin>
+
     <plugin name="LessonDownloadedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownloadedFragment"></plugin>
 
     <!--在学课程-->
@@ -124,5 +125,9 @@
     <plugin name="QuestionReplyFragment" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionReplyFragment"></plugin>
 
 
+    <plugin name="LessonDowningFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDowningFragment"></plugin>
+    <plugin name="LessonDownedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownedFragment"></plugin>
+
     <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment"></plugin>
+
 </plugins>

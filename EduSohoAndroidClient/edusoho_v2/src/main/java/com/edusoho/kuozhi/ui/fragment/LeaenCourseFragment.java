@@ -1,14 +1,17 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LessionListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.LearnCourse;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
@@ -25,6 +28,7 @@ public class LeaenCourseFragment extends BaseFragment{
     private LessionListAdapter mLessionListAdapter;
     private RefreshListWidget mLessioningList;
     private View mLoadView;
+    private static final int LEAENCOURSE = 0;
     @Override
     public String getTitle() {
         return "在学课程";
@@ -44,6 +48,17 @@ public class LeaenCourseFragment extends BaseFragment{
         mLessioningList.setMode(PullToRefreshBase.Mode.BOTH);
         mLessionListAdapter = new LessionListAdapter(R.layout.lessioning_item_inflate,mContext);
         mLessioningList.setAdapter(mLessionListAdapter);
+        mLessioningList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LearnCourse learnCourse = (LearnCourse) parent.getItemAtPosition(position);
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, learnCourse.id);
+                bundle.putString(Const.ACTIONBAR_TITLE, learnCourse.title);
+                startActivityWithBundleAndResult("CorusePaperActivity", LEAENCOURSE, bundle);
+            }
+        });
+
         mLessioningList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
@@ -95,5 +110,13 @@ public class LeaenCourseFragment extends BaseFragment{
 
         mLessioningList.pushData(courseResult.data);
         mLessioningList.setStart(start,courseResult.total);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LEAENCOURSE){
+            getLeaenCourseReponseDatas(0);
+        }
     }
 }

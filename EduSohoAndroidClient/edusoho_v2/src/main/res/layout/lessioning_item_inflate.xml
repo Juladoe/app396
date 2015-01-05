@@ -23,16 +23,23 @@
         android:text="水果课：如何挑出最好吃的水果"
         android:textSize="16sp"></TextView>
 
-
+    <TextView
+        android:id="@+id/lession_list_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/lession_list_img"
+        android:layout_alignParentRight="true"
+        android:text="30%"/>
 
     <ProgressBar
         android:id="@+id/lession_list_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:progressDrawable="@drawable/learn_course_progress"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="4dp"
         android:layout_alignBottom="@id/lession_list_img"
-        android:layout_toRightOf="@id/lession_list_img"
+        android:layout_alignLeft="@id/lession_list_title"
+        android:layout_toLeftOf="@id/lession_list_progress_text"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
         android:maxWidth="100dp"

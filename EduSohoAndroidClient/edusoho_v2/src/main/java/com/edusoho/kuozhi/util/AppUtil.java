@@ -326,6 +326,7 @@ public class AppUtil {
         if (TextUtils.isEmpty(sb)) {
             return "";
         }
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -337,6 +338,7 @@ public class AppUtil {
         if (TextUtils.isEmpty(sb)) {
             return "";
         }
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -631,15 +633,15 @@ public class AppUtil {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 
-        float density = context.getResources().getDisplayMetrics().density;
-        int bounding = Math.round(imageSize * density);
+        //float density = context.getResources().getDisplayMetrics().density;
+        int bounding = Math.round(imageSize);
 
         float xScale = ((float) bounding) / width;
         float yScale = ((float) bounding) / height;
         float scale = (xScale <= yScale) ? xScale : yScale;
 
         Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
+        matrix.postScale(xScale, xScale);
         matrix.postRotate((float) degree);
 
         Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
@@ -1023,6 +1025,20 @@ public class AppUtil {
             i = Integer.parseInt(value);
         } catch (Exception e) {
             i = 0;
+        }
+
+        return i;
+    }
+
+    public static float parseFloat(String value) {
+        float i = 0.0f;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Float.parseFloat(value);
+        } catch (Exception e) {
+            i = 0.0f;
         }
 
         return i;

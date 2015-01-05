@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.model;
 
+import com.edusoho.kuozhi.model.Lesson.UploadFile;
+
 /**
  * Created by howzhi on 14-5-24.
  */
@@ -33,6 +35,8 @@ public class LessonItem<T> {
     public int userId;
     public String createdTime;
     public String itemType;
+
+    public UploadFile uploadFile;
 
 
     public static enum ItemType{

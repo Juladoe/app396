@@ -47,7 +47,7 @@ public class NoteListActivity extends ActionBarBaseActivity {
         mLoadView = findViewById(R.id.load_layout);
         mNoteListView = (RefreshListWidget) this.findViewById(R.id.note_list_view);
         mNoteListView.setMode(PullToRefreshBase.Mode.BOTH);
-        mNoteListView.setEmptyText(new String[]{"没有笔记"});
+        mNoteListView.setEmptyText(new String[]{ "暂无笔记" }, R.drawable.icon_note);
         noteAdapter = new NoteAdapter(mContext, R.layout.note_list_item);
         mNoteListView.setAdapter(noteAdapter);
         mNoteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

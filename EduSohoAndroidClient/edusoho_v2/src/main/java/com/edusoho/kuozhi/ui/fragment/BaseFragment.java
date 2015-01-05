@@ -57,6 +57,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     protected void changeTitle(String title)
     {
+        mTitle = title;
         mActivity.setTitle(title);
     }
 
@@ -105,7 +106,6 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
                 if (viewUtil != null) {
                     int id = getResources().getIdentifier(
                             viewUtil.value(), "id", mContext.getPackageName());
-                    Log.d(null, "viewUtil->id " + id);
                     field.set(this, contentView.findViewById(id));
                 }
             }

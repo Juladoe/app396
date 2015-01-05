@@ -4,7 +4,9 @@
     <!-- 是否是圆角 -->
     <corners android:radius="0dip" />
 
-    <stroke android:width="0px"
+    <stroke
+        android:width="1px"
+        android:color="@color/card_bg_stroke"
 
         />
     <!-- shape的颜色，支持渐变 -->

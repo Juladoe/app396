@@ -8,8 +8,6 @@
         android:background="@color/system_normal_bg"
         android:id="@+id/my_course_xlistview"
         android:scrollbars="none"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

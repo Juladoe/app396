@@ -4,7 +4,14 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.edusoho.kuozhi.EdusohoApp;
+import com.edusoho.kuozhi.core.model.Cache;
+import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.M3U8Uitl;
+import com.edusoho.kuozhi.util.SqliteUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -64,10 +71,41 @@ public class FileHandler implements HttpRequestHandler {
 
         String url = httpRequest.getRequestLine().getUri();
         url = url.substring(1, url.length());
-        Uri fileName = Uri.parse(url);
+        Uri queryUri = Uri.parse(url);
 
-        File videoFile = getLocalFile(fileName.toString());
-        Log.d(null, "fileName->" + fileName);
+        String queryName = queryUri.toString();
+        Log.d(null, "queryName->" + queryName);
+
+        if (queryName.startsWith("playlist")) {
+            int lessonId = AppUtil.parseInt(queryName.substring("playlist/".length(), queryName.length()));
+            User loginUser = mActivity.app.loginUser;
+            if (loginUser == null) {
+                return;
+            }
+            M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(
+                    mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Uitl.ALL);
+            if (m3U8DbModle != null) {
+                httpResponse.setEntity(new StringEntity(m3U8DbModle.playList));
+                return;
+            }
+        }
+
+        //判断是不是key
+        if (queryName.startsWith("ext_x_key")) {
+            SqliteUtil sqliteUtil = SqliteUtil.getUtil(mActivity);
+            Cache keyCache = sqliteUtil.query(
+                    "select * from data_cache where key=? and type=?",
+                    queryName,
+                    Const.CACHE_KEY_TYPE
+            );
+            if (keyCache != null) {
+                httpResponse.setEntity(new StringEntity(keyCache.value));
+                return;
+            }
+        }
+
+        //本地ts文件
+        File videoFile = getLocalFile(queryName.toString());
         if (videoFile.exists()) {
             Log.d(null, "cache->" + videoFile);
             FileEntity fileEntity = new FileEntity(videoFile);
@@ -76,7 +114,7 @@ public class FileHandler implements HttpRequestHandler {
             return;
         }
 
-        HttpEntity entity = proxyRequest(fileName.getHost(), fileName.toString());
+        HttpEntity entity = proxyRequest(queryUri.getHost(), queryName);
         httpResponse.setEntity(entity);
     }
 
@@ -200,8 +238,14 @@ public class FileHandler implements HttpRequestHandler {
             return null;
         }
 
+        User loginUser = mActivity.app.loginUser;
+        if (loginUser == null) {
+            return null;
+        }
         StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
         dirBuilder.append("/videos/")
+                .append(loginUser.id)
+                .append("/")
                 .append(mTargetHost);
 
         return new File(dirBuilder.toString());

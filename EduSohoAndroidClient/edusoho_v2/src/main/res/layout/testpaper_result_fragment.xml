@@ -84,7 +84,7 @@
         android:padding="10dp"
         android:layout_above="@id/testpaper_result_show"
         android:id="@+id/testpaper_result_review"
-        android:textColor="@color/system_normal_text"
+        android:textColor="@color/base_light_red"
         android:textSize="@dimen/sys_mid_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

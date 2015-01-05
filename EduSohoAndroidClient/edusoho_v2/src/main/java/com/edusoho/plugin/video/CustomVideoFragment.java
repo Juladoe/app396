@@ -26,6 +26,10 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
          */
         if (mLastPos > 0) {
             Log.d(null, "resumePlay--->");
+            if (isCacheVideo) {
+                mEventHandler.sendEmptyMessage(EVENT_START);
+                return;
+            }
             reloadLessonMediaUrl(new NormalCallback<LessonItem>() {
                 @Override
                 public void success(LessonItem lessonItem) {

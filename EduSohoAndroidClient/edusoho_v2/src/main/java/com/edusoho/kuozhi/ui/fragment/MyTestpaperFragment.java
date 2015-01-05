@@ -56,7 +56,7 @@ public class MyTestpaperFragment extends BaseFragment {
         mCourseListView.setMode(PullToRefreshBase.Mode.BOTH);
         mCourseListView.setAdapter(new TestpaperListAdapter(
                 mActivity, R.layout.my_testpaper_item));
-        mCourseListView.setEmptyText(new String[] { "暂无考试" });
+        mCourseListView.setEmptyText(new String[] { "暂无考试" }, R.drawable.icon_testpaper);
 
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override

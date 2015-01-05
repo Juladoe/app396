@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.ui.message;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -98,6 +99,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
                     if (isPullToBottom) {
                         mLetterList.setSelection(result.size());
                     }
+
                     mStart = start + mLetterList.getAdapter().getCount();
                 }
             }
@@ -113,6 +115,11 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
 
     @Override
     public void onClick(View v) {
+        String content = etSendContent.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            longToast("请输入私信内容!");
+            return;
+        }
         RequestUrl url = app.bindUrl(Const.SEND_LETTER, true);
         url.setParams(new String[]{
                 "conversationId", String.valueOf(mConversationId),

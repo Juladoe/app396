@@ -33,6 +33,7 @@ public class CategoryListView extends FrameLayout {
     public CategoryListView(Context context) {
         super(context);
         mContext = context;
+        initView(null);
     }
 
     public CategoryListView(android.content.Context context, android.util.AttributeSet attrs) {
@@ -44,6 +45,8 @@ public class CategoryListView extends FrameLayout {
     private void initView(android.util.AttributeSet attrs)
     {
         mCategoryListView = new ExpandableListView(mContext);
+        mCategoryListView.setStackFromBottom(true);
+        mCategoryListView.setTranscriptMode(ExpandableListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         mCategoryListView.setLayoutParams(layoutParams);
@@ -57,6 +60,11 @@ public class CategoryListView extends FrameLayout {
 
         mLoadView = initLoadView();
         addView(mLoadView);
+    }
+
+    public void scrollToTop()
+    {
+        mCategoryListView.scrollTo(0, 0);
     }
 
     public void setItemClick(final ItemClickListener itemClick)

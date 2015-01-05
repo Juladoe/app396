@@ -56,7 +56,7 @@
             android:layout_height="36dp" />
 
         <EditText
-            android:textColor="@color/system_normal_text"
+            android:textColor="@color/base_black_54"
             android:id="@+id/pay_course_card_edt"
             android:paddingBottom="5dp"
             android:paddingLeft="20dp"

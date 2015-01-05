@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Teacher;
+import com.edusoho.kuozhi.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -50,7 +51,6 @@ public class WeekCourseAdapter
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         super.onBindViewHolder(viewHolder, i);
         Course course = mList.get(i);
-        //viewHolder.mCoursePrice.setText(course.price + "");
         String teacher = "暂无教师";
         Teacher[] teachers = course.teachers;
         if (teachers != null && teachers.length > 0) {
@@ -58,7 +58,13 @@ public class WeekCourseAdapter
         }
 
         viewHolder.mCourseTeacherName.setText(teacher);
-        viewHolder.mCourseStudentNum.setText(course.studentNum + "");
+        if (Const.SHOW_STUDENT_NUM.equals(course.showStudentNumType)) {
+            viewHolder.mCourseStudentNum.setVisibility(View.VISIBLE);
+            viewHolder.mCourseStudentNum.setText(course.studentNum + "");
+        } else {
+            viewHolder.mCourseStudentNum.setVisibility(View.GONE);
+        }
+
         viewHolder.mCourseTitle.setText(course.title);
         ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.mCoursePic, mOptions);
     }

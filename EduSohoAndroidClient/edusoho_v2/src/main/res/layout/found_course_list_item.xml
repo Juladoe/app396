@@ -11,6 +11,12 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
     <ImageView
         android:id="@+id/found_list_course_pic"
         android:layout_width="116dp"
@@ -19,14 +25,8 @@
         android:layout_weight="0"
         android:src="@drawable/noram_course" />
 
-    <RelativeLayout
-        android:layout_gravity="top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
         <TextView
+            android:layout_toRightOf="@id/found_list_course_pic"
             android:text="颜色"
             android:id="@+id/found_list_course_title"
             android:layout_width="wrap_content"
@@ -37,11 +37,12 @@
             android:textSize="16sp" />
 
         <TextView
+            android:layout_marginBottom="5dp"
+            android:layout_alignBottom="@id/found_list_course_pic"
+            android:layout_toRightOf="@id/found_list_course_pic"
             android:alpha="0.54"
-            android:layout_marginTop="16dp"
             android:textColor="#000000"
             android:drawableLeft="@drawable/course_teacher_icon"
-            android:layout_below="@id/found_list_course_title"
             android:id="@+id/found_list_course_teacher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,12 +50,12 @@
             android:singleLine="true" />
 
         <TextView
+            android:layout_marginBottom="5dp"
+            android:layout_alignBottom="@id/found_list_course_pic"
             android:alpha="0.54"
-            android:layout_marginTop="16dp"
             android:textColor="#000000"
             android:drawableLeft="@drawable/course_student_icon"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/found_list_course_title"
             android:id="@+id/found_list_course_studentnum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

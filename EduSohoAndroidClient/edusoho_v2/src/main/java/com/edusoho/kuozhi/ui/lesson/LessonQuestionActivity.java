@@ -58,7 +58,7 @@ public class LessonQuestionActivity extends ActionBarBaseActivity {
         setBackMode(BACK, mLessonName);
 
         mLessonQuestionList = (LessonQuestionRefreshListWidget) findViewById(R.id.qrlw_question_reply);
-        mLoadView = (View) findViewById(R.id.load_layout);
+        mLoadView = findViewById(R.id.load_layout);
         mLessonQuestionList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mLessonQuestionList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
@@ -120,7 +120,7 @@ public class LessonQuestionActivity extends ActionBarBaseActivity {
                         }
                         adapter.addItems(questionResult.threads);
                     } else {
-                        adapter = new LessonQuestionListAdapter(mContext, R.layout.item_lesson_question);
+                        adapter = new LessonQuestionListAdapter(mActivity, R.layout.item_lesson_question);
                         adapter.addItems(questionResult.threads);
                         mLessonQuestionList.setAdapter(adapter);
                     }

@@ -37,6 +37,8 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
     private ListBaseAdapter mLoadAdapter;
     private ListBaseAdapter mEmptyAdapter;
     private Context mContext;
+
+    private int mEmptyIcon = R.drawable.course_empty_icon;
     private String[] mEmptyText = new String[]{"没有搜到相关课程，请换个关键词试试！"};
 
     private int mDividerHeight;
@@ -64,7 +66,6 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
         mDividerColor = ta.getColor(R.styleable.RefreshListWidget_rlw_dividerColor, 0);
         getRefreshableView().setDivider(new ColorDrawable(mDividerColor));
         getRefreshableView().setDividerHeight(mDividerHeight);
-        Log.d(null, "getRefreshableView " +mDividerHeight);
     }
 
     public int getRefreshMode() {
@@ -97,6 +98,11 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
 
     public void setEmptyText(String[] emptyText) {
         mEmptyText = emptyText;
+    }
+
+    public void setEmptyText(String[] emptyText, int icon) {
+        mEmptyText = emptyText;
+        mEmptyIcon = icon;
     }
 
     public void pushData(ArrayList data) {
@@ -142,7 +148,7 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
 
     protected ListBaseAdapter getEmptyLayoutAdapter() {
         EmptyAdapter<String> arrayAdapter = new EmptyAdapter<String>(
-                mContext, R.layout.course_empty_layout, mEmptyText);
+                mContext, R.layout.course_empty_layout, mEmptyText, mEmptyIcon);
         return arrayAdapter;
     }
 

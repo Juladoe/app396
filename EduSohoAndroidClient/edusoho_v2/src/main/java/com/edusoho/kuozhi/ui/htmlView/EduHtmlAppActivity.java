@@ -93,7 +93,7 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
         cordovaWebView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         Config.init(this);
 
-        mResouceCacheServer = app.getResouceCacheServer(this, Const.WEB_RES_PROT);
+        mResouceCacheServer = app.getResouceCacheServer(this);
         mResouceCacheServer.addHandler("*", new WebResourceHandler("", this));
         mResouceCacheServer.start();
 
