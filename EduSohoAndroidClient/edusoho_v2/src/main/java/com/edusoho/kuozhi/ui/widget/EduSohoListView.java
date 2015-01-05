@@ -29,11 +29,12 @@ public class EduSohoListView extends RecyclerView {
     private RecyclerViewListBaseAdapter mEmptyAdapter;
     private RecyclerViewListBaseAdapter mLoadingAdapter;
 
-    private String[] mEmptyStrs = { "暂无推荐课程" };
+    private String[] mEmptyStrs = { "暂无相关内容" };
     private int mEmptyIcon = R.drawable.course_empty_icon;
+    private int mEmptyLayout = R.layout.course_empty_layout;
 
     private boolean mIsSetHeight;
-    private int mFixHeight = 0;
+    private int mFixHeight = 1;
 
     public EduSohoListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,6 +46,17 @@ public class EduSohoListView extends RecyclerView {
         super(context, attrs, defStyle);
         mContext = context;
         init(attrs);
+    }
+
+    public boolean isTop()
+    {
+        LayoutManager layoutManager = getLayoutManager();
+        View view = layoutManager.getChildAt(0);
+        int position = getChildPosition(view);
+        if (position == 0) {
+            return view.getTop() >= getPaddingTop();
+        }
+        return false;
     }
 
     private void init(AttributeSet attrs){
@@ -73,6 +85,7 @@ public class EduSohoListView extends RecyclerView {
         }
         ViewGroup.LayoutParams lp = getLayoutParams();
         lp.height = totalHeight;
+        mFixHeight = totalHeight;
         setLayoutParams(lp);
     }
 
@@ -92,6 +105,11 @@ public class EduSohoListView extends RecyclerView {
         this.mEmptyStrs = emptyString;
     }
 
+    public void setEmptyLayout(int emptyLayout)
+    {
+        this.mEmptyLayout = emptyLayout;
+    }
+
     public void setEmptyString(String[] emptyString, int icon)
     {
         this.mEmptyStrs = emptyString;
@@ -100,14 +118,34 @@ public class EduSohoListView extends RecyclerView {
 
     public RecyclerViewListBaseAdapter getEmptyAdapter()
     {
+        if (mEmptyAdapter != null) {
+            return mEmptyAdapter;
+        }
         mEmptyAdapter = new RecyclerEmptyAdapter(
-                mContext, R.layout.course_empty_layout, mEmptyStrs, mEmptyIcon);
+                mContext, mEmptyLayout, mEmptyStrs, mEmptyIcon);
         return mEmptyAdapter;
+    }
+
+    public void setEmptyAdapter(RecyclerEmptyAdapter emptyAdapter)
+    {
+        this.mEmptyAdapter = emptyAdapter;
     }
 
     public void clear()
     {
         mDataAdapter.clear();
+    }
+
+    public void refreshData(int mode)
+    {
+        if (mAdapter.getItemCount() == 0) {
+            mEmptyAdapter = getEmptyAdapter();
+            setAdapter(mEmptyAdapter);
+            return;
+        }
+
+        mAdapter.setMode(mode);
+        mAdapter.notifyDataSetChanged();
     }
 
     public void pushData(List data)
@@ -150,6 +188,7 @@ public class EduSohoListView extends RecyclerView {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
+
         int expandSpec = MeasureSpec.makeMeasureSpec(
                 Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
         measureChildren(widthMeasureSpec, expandSpec);
@@ -157,9 +196,8 @@ public class EduSohoListView extends RecyclerView {
         View v = getChildAt(getChildCount() - 1);
         if (v != null) {
             int totalH = getChildTotalHeight();
-            Log.d(null, "totalH->" + totalH);
             expandSpec = MeasureSpec.makeMeasureSpec(
-                    totalH, MeasureSpec.AT_MOST);
+                    totalH, MeasureSpec.EXACTLY);
         }
 
         super.onMeasure(widthMeasureSpec, expandSpec);

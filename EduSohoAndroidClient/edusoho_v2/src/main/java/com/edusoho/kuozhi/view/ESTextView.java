@@ -6,7 +6,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -67,7 +66,12 @@ public class ESTextView extends TextView {
         changeAlpha(mDefautAlpha);
     }
 
-    public void changeAlpha(float alpha) {
+    public void setDefaultAlpha(float alpha) {
+        mDefautAlpha = alpha;
+    }
+
+    public void changeAlpha(float alpha)
+    {
         if (Build.VERSION.SDK_INT < 11) {
             ViewHelper.setAlpha(this, alpha);
         } else {

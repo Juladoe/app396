@@ -144,7 +144,7 @@ public class QuestionDetailActivity extends ActionBarBaseActivity implements Vie
     private void getQuestionPostUser(final QuestionReplyListAdapter adapter, final ReplyResult replyResult) {
         RequestUrl url = app.bindUrl(Const.QUESTION_INFO, true);
         url.setParams(mParams);
-        app.postUrl(url, new ResultCallback() {
+        app.postUrl(false, url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mQuestionRelyList.onRefreshComplete();

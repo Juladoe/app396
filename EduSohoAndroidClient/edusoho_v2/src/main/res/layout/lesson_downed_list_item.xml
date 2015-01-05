@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@drawable/lesson_downed_list_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="16dp"
+    android:paddingLeft="9dp"
+    android:paddingRight="9dp"
+    android:paddingTop="16dp">
+
+    <CheckBox
+        android:layout_marginRight="8dp"
+        android:id="@+id/lesson_download_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/normal_checkbox_sel"
+        android:checked="false"
+        android:visibility="gone" />
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:id="@+id/lesson_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_small_size"
+        app:es_alpha="0.87" />
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:id="@+id/lesson_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_small_size"
+        app:es_alpha="0.54" />
+</LinearLayout>

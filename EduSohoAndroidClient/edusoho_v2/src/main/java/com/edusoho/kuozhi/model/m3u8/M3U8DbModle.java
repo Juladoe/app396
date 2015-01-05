@@ -6,6 +6,7 @@ package com.edusoho.kuozhi.model.m3u8;
 public class M3U8DbModle {
 
     public int id;
+    public int userId;
     public int finish;
     public String host;
     public int lessonId;
@@ -18,6 +19,7 @@ public class M3U8DbModle {
         return "M3U8DbModle{" +
                 "id=" + id +
                 ", finish=" + finish +
+                ", userId=" + userId +
                 ", host='" + host + '\'' +
                 ", lessonId=" + lessonId +
                 ", totalNum=" + totalNum +

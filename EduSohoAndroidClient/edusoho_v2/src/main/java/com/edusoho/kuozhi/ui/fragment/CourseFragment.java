@@ -63,6 +63,7 @@ public class CourseFragment extends BaseFragment {
         mCourseListView = (RefreshListWidget) view.findViewById(R.id.course_liseview);
         mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
+        mCourseListView.setEmptyText(new String[] { "没有搜到相关课程，请换个关键词试试！" }, R.drawable.icon_course_empty);
 
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override

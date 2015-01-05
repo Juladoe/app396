@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.adapter.Course;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduHtml;
+import com.edusoho.kuozhi.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.util.html.EduTagHandler;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -77,7 +83,11 @@ public class CourseTeacherAdapter
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 User user = mActivity.parseJsonValue(object, new TypeToken<User>(){});
                 if (user != null) {
-                    Spanned spanned = EduHtml.coverHtmlImages(user.about, viewHolder.mContent, mContext);
+                    Spanned spanned = Html.fromHtml(
+                            user.about,
+                            new EduImageGetterHandler(mContext, viewHolder.mContent),
+                            new EduTagHandler()
+                    );
                     viewHolder.mContent.setText(spanned);
                 }
             }

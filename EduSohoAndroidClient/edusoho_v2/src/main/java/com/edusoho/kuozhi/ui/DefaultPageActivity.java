@@ -73,7 +73,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         });
 
         logSchoolInfoToServer();
-        new CacheServer(mActivity, Const.CACHE_PROT).start();
     }
 
     private void showUpdateDlg(final AppUpdateInfo result) {

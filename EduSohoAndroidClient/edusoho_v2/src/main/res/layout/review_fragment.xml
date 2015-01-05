@@ -35,6 +35,7 @@
             card_view:es_alpha="0.87" />
 
         <com.edusoho.kuozhi.view.ESTextView
+            android:visibility="gone"
             android:id="@+id/course_review_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

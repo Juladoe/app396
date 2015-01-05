@@ -50,13 +50,16 @@ import java.util.ArrayList;
  */
 public class SearchDialogFragment extends DialogFragment {
 
-    private View mCancelBtn;
+    private TextView mCancelBtn;
     private EditText mSearchEdt;
     private View mClearBtn;
     private Context mContext;
     private EdusohoApp mApp;
     private ActionBarBaseActivity mActivity;
     private View view;
+
+    private static final int SEARCH = 0;
+    private static final int CANCEL = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,11 +82,12 @@ public class SearchDialogFragment extends DialogFragment {
         mSearchEdt = (EditText) view.findViewById(R.id.search_popwindow_edt);
         mSearchEdt.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_CLASS_TEXT);
 
-        mCancelBtn = view.findViewById(R.id.search_popwindow_cancel_btn);
+        mCancelBtn = (TextView) view.findViewById(R.id.search_popwindow_cancel_btn);
         mClearBtn = view.findViewById(R.id.search_clear_btn);
 
         bindViewListener();
-        loadTags();
+        //loadTags();
+        view.findViewById(R.id.rl_tags).setVisibility(View.GONE);
         return view;
     }
 
@@ -193,9 +197,13 @@ public class SearchDialogFragment extends DialogFragment {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 0 && mClearBtn.getVisibility() == View.GONE) {
                     mClearBtn.setVisibility(View.VISIBLE);
+                    mCancelBtn.setTag(SEARCH);
+                    mCancelBtn.setText("搜索");
                     return;
                 }
                 if (charSequence.length() == 0) {
+                    mCancelBtn.setTag(CANCEL);
+                    mCancelBtn.setText("取消");
                     mClearBtn.setVisibility(View.GONE);
                 }
             }
@@ -216,7 +224,18 @@ public class SearchDialogFragment extends DialogFragment {
         mCancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                Object tag = mCancelBtn.getTag();
+                if (tag == null) {
+                    dismiss();
+                    return;
+                }
+
+                int type = (Integer) tag;
+                if (type == SEARCH) {
+                    searchCourse(mSearchEdt.getText().toString());
+                } else {
+                    dismiss();
+                }
             }
         });
 

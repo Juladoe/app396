@@ -90,7 +90,7 @@
     <dimen name="testpaper_title">14dp</dimen>
     <dimen name="question_stem">15dp</dimen>
     <dimen name="testpaper_card_label">16dp</dimen>
-    <dimen name="small_btn">10sp</dimen>
+    <dimen name="small_btn">8sp</dimen>
 
     <dimen name="learn_status_title">10sp</dimen>
 

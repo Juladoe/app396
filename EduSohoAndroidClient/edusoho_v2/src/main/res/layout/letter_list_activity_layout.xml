@@ -5,18 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
-        android:id="@+id/letter_list"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/ll_send_info"
-        android:divider="@color/system_normal_bg"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="false"
-        android:scrollbars="none"
-        android:smoothScrollbar="true" />
-
     <RelativeLayout
+        android:paddingBottom="3dp"
         android:id="@+id/ll_send_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,4 +36,14 @@
 
     </RelativeLayout>
 
+    <com.edusoho.kuozhi.ui.widget.RefreshListWidget
+        android:id="@+id/letter_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_send_info"
+        android:divider="@color/system_normal_bg"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none"
+        android:smoothScrollbar="true" />
 </RelativeLayout>

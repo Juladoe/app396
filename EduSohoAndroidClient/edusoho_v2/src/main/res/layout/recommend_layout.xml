@@ -3,15 +3,14 @@
     android:id="@+id/recommend_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:background="@color/base_gray">
+    android:background="@color/base_gray"
+    android:scrollbars="none">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:paddingTop="1dp">
+        android:focusableInTouchMode="true">
 
         <com.edusoho.kuozhi.view.EdusohoViewPager
             android:id="@+id/school_banner"
@@ -20,11 +19,11 @@
             android:background="@color/recommend_label_bg" />
 
         <LinearLayout
-            android:background="@drawable/normal_layout_bg"
             android:id="@+id/recommend_announcement_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/school_banner"
+            android:background="@drawable/normal_layout_bg"
             android:gravity="center"
             android:padding="8dp">
 
@@ -42,37 +41,31 @@
                 android:textSize="@dimen/recommend_announcement" />
         </LinearLayout>
 
-        <android.support.v7.widget.CardView
-            card_view:cardBackgroundColor="@color/base_card_bg"
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:background="@color/base_white_normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/recommend_announcement_layout"
-            android:layout_margin="8dp"
-            card_view:cardCornerRadius="2dp"
-            card_view:contentPadding="8dp">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <com.edusoho.kuozhi.view.ESTextView
+                card_view:es_alpha="0.87"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:text="每周精选"
+                android:textColor="@color/base_black_normal"
+                android:textSize="@dimen/base_large_size" />
+
+            <com.edusoho.kuozhi.ui.widget.EduSohoListView
+                android:id="@+id/recommend_week_course"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:text="每周精选"
-                    android:textColor="@color/base_color_normal"
-                    android:textSize="16sp" />
-
-                <com.edusoho.kuozhi.ui.widget.EduSohoListView
-                    android:id="@+id/recommend_week_course"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="none" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                android:layout_height="match_parent"
+                android:scrollbars="none" />
+        </LinearLayout>
 
     </RelativeLayout>
 </library.PullToRefreshScrollView>

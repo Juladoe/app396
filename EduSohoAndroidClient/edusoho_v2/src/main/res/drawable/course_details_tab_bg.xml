@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape>
-            <solid android:color="@color/material_dlg_stroke" />
-        </shape>
-    </item>
-    <item android:bottom="1dp">
-        <shape>
-            <gradient
-                android:angle="270"
-                android:centerColor="@color/base_gray"
-                android:centerY="0.45"
-                android:endColor="@color/base_gray"
-                android:startColor="@color/base_gray" />
-            <solid android:color="@color/base_gray" />
-        </shape>
-    </item>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-</layer-list>
+    <gradient
+        android:angle="270"
+        android:centerColor="#ddffffff"
+        android:centerY="0.45"
+        android:endColor="#ddffffff"
+        android:startColor="#ddffffff" />
+    <stroke android:color="#ddffffff"/>
+</shape>

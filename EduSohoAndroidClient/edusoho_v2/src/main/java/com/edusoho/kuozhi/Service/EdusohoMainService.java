@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.Service;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -18,7 +17,6 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
 import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -91,21 +89,46 @@ public class EdusohoMainService extends Service {
                 return;
             }
 
-            Log.d(null, "send loginwithtoken message token->" + app.token);
+            Log.d(null, "send loginwithtoken message " + app.token);
             RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
-            AjaxCallback ajaxCallback = app.postUrl(url, new ResultCallback() {
+
+            AjaxCallback ajaxCallback = app.postUrl(false, url, new ResultCallback(){
                 @Override
                 public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                    Log.d(null, "callback loginWithToken->" + ajaxStatus.getCode());
                     mAjaxQueue.poll();
                     TokenResult result = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                            }.getType());
+                    }.getType());
+                    Log.d(null, "callback loginWithToken result->" + result);
+
                     if (result != null) {
                         mLoginUser = result.user;
                         app.saveToken(result);
                     }
                     //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                     app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
+                }
+
+                @Override
+                public void update(String url, String object, AjaxStatus ajaxStatus) {
+                    int code = ajaxStatus.getCode();
+                    Log.d(null, "update loginWithToken ->" + code);
+                    if (code != Const.OK) {
+                        return;
+                    }
+                    TokenResult result = app.gson.fromJson(
+                            object, new TypeToken<TokenResult>() {}.getType());
+                    if (result == null) {
+                        if (mLoginUser != null) {
+                            app.removeToken();
+                            app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+                        }
+                        return;
+                    }
+                    mLoginUser = result.user;
+                    app.saveToken(result);
+                    app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                 }
             });
 

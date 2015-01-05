@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -42,9 +44,6 @@ public class RecommendCourseFragment extends BaseFragment {
         mActivity = (ActionBarBaseActivity) getActivity();
         setContainerView(R.layout.recomend_course_fragment);
         //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.PopDialogTheme);
-        if (app.loginUser == null) {
-            LoginActivity.start(mActivity);
-        }
     }
 
     @Override

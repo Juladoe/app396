@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
+
+    defaultConfig {
+        applicationId "com.edusoho"
+        minSdkVersion 9
+        targetSdkVersion 21
+    }
+
+    productFlavors {
+        custom {
+            applicationId "com.edusoho_edianshang.kuozhi"
+        }
+    }
+
+    sourceSets {
+        custom {
+            res.srcDirs = ['src/edianshang/res']
+        }
+    }
+}
+
+dependencies {
+    compile project(':edusoho_v2')
+}

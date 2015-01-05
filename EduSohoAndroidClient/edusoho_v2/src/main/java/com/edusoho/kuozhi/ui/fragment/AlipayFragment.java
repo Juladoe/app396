@@ -65,18 +65,17 @@ public class AlipayFragment extends BaseFragment {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                if (url.startsWith(mHost) && ! isEqualsURl(mPayurl, url)) {
-                    app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, PayCourseActivity.class);
-                    mActivity.finish();
-                    return;
-                }
-
+                Log.d(null, "url ->" + url);
                 Matcher matcher = urlPat.matcher(url);
-                Log.d(null, "url matcher->" + matcher);
                 if (matcher.find()) {
                     String callBack = matcher.group(1);
                     String param = matcher.group(2);
                     callMethod(callBack, param);
+                    return;
+                }
+                if (url.startsWith(mHost) && ! isEqualsURl(mPayurl, url)) {
+                    app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, PayCourseActivity.class);
+                    mActivity.finish();
                     return;
                 }
             }

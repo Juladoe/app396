@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -50,7 +52,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private ImageView mPlaybtn = null;
     private ImageView mBackbtn = null;
     private ImageView mForwardbtn = null;
-    private ImageView mFullBtn = null;
+    private CheckBox mFullBtn = null;
 
     private RelativeLayout mController = null;
 
@@ -60,6 +62,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     private boolean mIsHwDecode = false;
     private boolean mIsPlayEnd;
+    protected boolean isCacheVideo;
     private int mDecodeMode;
 
     protected EventHandler mEventHandler;
@@ -247,7 +250,24 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     private Timer autoHideTimer;
-    private boolean mIsShowController;
+    private TimerTask autoHideTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            if (!mIsShowController) {
+                return;
+            }
+            if (mIsShowController && mIsShowControllerCount > 5) {
+                mIsShowControllerCount = 0;
+                mUIHandler.obtainMessage(HIDE).sendToTarget();
+                return;
+            }
+            mIsShowControllerCount++;
+            Log.d(null, "mIsShowControllerCount " + mIsShowControllerCount);
+        }
+    };
+
+    private boolean mIsShowController = true;
+    private int mIsShowControllerCount;
 
     private void hideController()
     {
@@ -259,14 +279,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     {
         mIsShowController = true;
         mController.setVisibility(View.VISIBLE);
-        autoHideTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (mIsShowController) {
-                    mUIHandler.obtainMessage(HIDE).sendToTarget();
-                }
-            }
-        }, 3000);
     }
 
     /**
@@ -328,6 +340,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
         Bundle bundle = getArguments();
         mIsHwDecode = bundle.getBoolean("isHW", false);
+        isCacheVideo = bundle.getBoolean("from_cache", false);
+        Log.d(null, "isCacheVideo " + isCacheVideo);
         mSoLibDir = bundle.getString("soLibDir");
         mDecodeMode = bundle.getInt("decode", BVideoView.DECODE_SW);
 
@@ -365,7 +379,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mPlaybtn = (ImageView)view.findViewById(R.id.play_btn);
         mBackbtn = (ImageView)view.findViewById(R.id.back_btn);
         mForwardbtn = (ImageView)view.findViewById(R.id.forward_btn);
-        mFullBtn = (ImageView)view.findViewById(R.id.full_btn);
+        mFullBtn = (CheckBox)view.findViewById(R.id.full_btn);
 
         mProgress = (SeekBar)view.findViewById(R.id.media_progress);
         mDuration = (TextView)view.findViewById(R.id.time_total);
@@ -401,6 +415,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    mIsShowControllerCount = 0;
                     if (mIsShowController) {
                         hideController();
                     } else {
@@ -421,6 +436,18 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         */
 
         mVV.setDecodeMode(mDecodeMode);
+
+        mController.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mIsShowControllerCount = 0;
+                    return true;
+                }
+                return false;
+            }
+        });
+        autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
     }
 
     @Override
@@ -485,6 +512,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 e.printStackTrace();
             }
         }
+        if (autoHideTimer != null) {
+            autoHideTimer.cancel();
+            autoHideTimer = null;
+        }
     }
 
     @Override
@@ -543,7 +574,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     private void showErrorDialog()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        Activity activity = getActivity();
+        if (activity == null) {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         AlertDialog alertDialog = builder.setTitle("播放提示")
                 .setMessage("该课时视频不能播放")
                 .setNegativeButton("确定", new DialogInterface.OnClickListener() {
@@ -561,9 +596,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 为控件注册回调处理函数
      */
     private void registerCallbackForControl(){
-        mFullBtn.setOnClickListener(new View.OnClickListener() {
+        mFullBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //水平
                 int screenOrientation = mContext.getRequestedOrientation();
                 if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {

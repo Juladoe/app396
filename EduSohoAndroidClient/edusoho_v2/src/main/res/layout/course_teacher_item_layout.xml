@@ -28,6 +28,7 @@
 
             <com.edusoho.kuozhi.view.ESTextView
                 card_view:es_alpha="0.87"
+                android:textSize="@dimen/base_size"
                 android:layout_alignTop="@id/teacher_face"
                 android:layout_toRightOf="@id/teacher_face"
                 android:id="@+id/teacher_nickname"
@@ -37,6 +38,7 @@
             <com.edusoho.kuozhi.view.ESTextView
                 card_view:es_alpha="0.54"
                 android:layout_marginTop="8dp"
+                android:textSize="@dimen/base_small_size"
                 android:layout_below="@id/teacher_nickname"
                 android:layout_toRightOf="@id/teacher_face"
                 android:id="@+id/teacher_info"
