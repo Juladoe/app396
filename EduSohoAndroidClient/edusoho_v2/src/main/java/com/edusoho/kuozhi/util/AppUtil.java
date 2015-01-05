@@ -1030,6 +1030,20 @@ public class AppUtil {
         return i;
     }
 
+    public static float parseFloat(String value) {
+        float i = 0.0f;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Float.parseFloat(value);
+        } catch (Exception e) {
+            i = 0.0f;
+        }
+
+        return i;
+    }
+
     /**
      * 去掉'\n','\t'
      *
