@@ -143,7 +143,6 @@ public class SearchDialogFragment extends DialogFragment {
 
     /**
      * 排列热门标签
-     *
      */
     private void initTagsView(ArrayList<TagModel> tagList) {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_tags);
@@ -171,7 +170,7 @@ public class SearchDialogFragment extends DialogFragment {
             textView.setBackgroundResource(R.drawable.search_tag_btn_bg);
             textView.measure(0, 0);
             float wid = textView.getMeasuredWidth();
-            if (curScreenWid > wid + tagMargin) {
+            if (curScreenWid > wid + tagMargin * 2) {
 
             } else {
                 curScreenWid = EdusohoApp.screenW - tagMargin;
@@ -180,7 +179,7 @@ public class SearchDialogFragment extends DialogFragment {
                 linearLayout.addView(newLinearLayout, linearLayoutParams);
                 tmpLinearLayout = newLinearLayout;
             }
-            curScreenWid = curScreenWid - wid - tagMargin;
+            curScreenWid = curScreenWid - wid - tagMargin * 2;
             textView.setOnClickListener(tagClickListener);
             tmpLinearLayout.addView(textView, params);
         }

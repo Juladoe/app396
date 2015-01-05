@@ -47,7 +47,6 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
 
     @Override
     public long getItemId(int i) {
-
         return super.getItemId(i);
     }
 
@@ -86,11 +85,14 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
             holder.llInterval.setVisibility(View.GONE);
         }
         if (mUser != null) {
-            //暂时最后一项私信需要间隔，需修改
             SchoolRoomItem item = schoolRoomModel.data;
-            holder.tvContent.setText(removeHtmlSpace(Html.fromHtml(removeImgTagFromString(item.content)).toString()));
-            holder.tvTime.setText(AppUtil.getPostDays(item.time));
-            changeItemUI(holder, View.VISIBLE);
+            if (item != null) {
+                holder.tvContent.setText(removeHtmlSpace(Html.fromHtml(removeImgTagFromString(item.content)).toString()));
+                holder.tvTime.setText(AppUtil.getPostDays(item.time));
+                changeItemUI(holder, View.VISIBLE);
+            } else {
+                changeItemUI(holder, View.GONE);
+            }
         } else {
             changeItemUI(holder, View.GONE);
         }

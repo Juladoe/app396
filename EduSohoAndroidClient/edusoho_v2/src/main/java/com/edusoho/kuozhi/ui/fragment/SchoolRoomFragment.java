@@ -106,7 +106,7 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 3:
                 //讨论
-                goToQuestionDetailActivity("我的话题", "discussion");
+                goToQuestionDetailActivity("我的讨论", "discussion");
                 break;
             case 4:
                 //笔记
