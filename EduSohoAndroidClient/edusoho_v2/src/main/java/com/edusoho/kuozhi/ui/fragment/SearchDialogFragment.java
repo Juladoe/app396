@@ -86,7 +86,8 @@ public class SearchDialogFragment extends DialogFragment {
         mClearBtn = view.findViewById(R.id.search_clear_btn);
 
         bindViewListener();
-        loadTags();
+        //loadTags();
+        view.findViewById(R.id.rl_tags).setVisibility(View.GONE);
         return view;
     }
 

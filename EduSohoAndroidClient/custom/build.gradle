@@ -12,13 +12,13 @@ android {
 
     productFlavors {
         custom {
-            applicationId "com.lixianggongchang.kuozhi"
+            applicationId "com.edusoho_edianshang.kuozhi"
         }
     }
 
     sourceSets {
         custom {
-            res.srcDirs = ['src/lixianggongchang/res']
+            res.srcDirs = ['src/edianshang/res']
         }
     }
 }
