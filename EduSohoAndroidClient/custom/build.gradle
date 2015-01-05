@@ -12,13 +12,13 @@ android {
 
     productFlavors {
         custom {
-            applicationId "com.edusoho_edianshang.kuozhi"
+            applicationId "com.edusoho_17mooc.kuozhi"
         }
     }
 
     sourceSets {
         custom {
-            res.srcDirs = ['src/edianshang/res']
+            res.srcDirs = ['src/edusoho_17mooc/res']
         }
     }
 }
