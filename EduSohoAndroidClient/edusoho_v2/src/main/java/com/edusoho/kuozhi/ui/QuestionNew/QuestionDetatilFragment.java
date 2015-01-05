@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -22,9 +21,8 @@ import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Question.QuestionGridViewImageAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.adapter.QuestionNew.QuestionDetatilAnswerListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
@@ -71,6 +69,8 @@ public class QuestionDetatilFragment extends BaseFragment{
     private static final StringBuilder SHARE_QUESTION_URL = new StringBuilder("http://trymob.edusoho.cn/");
     private static final float GRIDVIEW_CONTENT_PROPORTION = 0.9f;
     private static int mContentImageSize = 0;
+
+    private static final int REPLYRESULT = 4;
 
     private HashMap<String,String> mParams = new HashMap<String, String>();
 
@@ -129,7 +129,7 @@ public class QuestionDetatilFragment extends BaseFragment{
                 if ("Wechat".equals(type)) {
                     wxType = SendMessageToWX.Req.WXSceneSession;
                 }
-                shardToMM(mActivity, wxType);
+                shardToMM(mContext, wxType);
             }
         });
     }
@@ -162,7 +162,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         intentThreadId = bundle.getInt(Const.THREAD_ID);
         intentCourseId = bundle.getInt(Const.COURSE_ID);
         SHARE_QUESTION_URL.append("course/");
-        SHARE_QUESTION_URL.append(String.valueOf(intentCourseId));
+        SHARE_QUESTION_URL.append(String.valueOf(intentCourseId)+"/");
         SHARE_QUESTION_URL.append("thread/");
         SHARE_QUESTION_URL.append(String.valueOf(intentThreadId));
 
@@ -182,7 +182,6 @@ public class QuestionDetatilFragment extends BaseFragment{
                 bundle.putInt(Const.REQUEST_CODE, Const.REPLY);
                 bundle.putString(Const.THREAD_ID, String.valueOf(intentThreadId));
                 bundle.putString(Const.COURSE_ID, String.valueOf(intentCourseId));
-                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionReplyActivity");
                 startActivityWithBundleAndResult("QuestionReplyActivity", Const.REPLY, bundle);
             }
         });
@@ -211,7 +210,7 @@ public class QuestionDetatilFragment extends BaseFragment{
                 bundle.putString(Const.QUESTION_TITLE, mQuestionDetailModel.title);
                 bundle.putInt(Const.THREAD_ID,intentThreadId);
                 bundle.putString(FragmentPageActivity.FRAGMENT,"QuestionReplyFragment");
-                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity",mActivity,bundle);
+                startActivityWithBundleAndResult("FragmentPageActivity",REPLYRESULT,bundle);
             }
         });
         refushListener();
@@ -341,6 +340,10 @@ public class QuestionDetatilFragment extends BaseFragment{
 
             case Const.REPLY:
                 getQuestionDetatilDescribeReponseData();
+                getQuestionReplyListReponseData(0);
+                break;
+
+            case REPLYRESULT:
                 getQuestionReplyListReponseData(0);
                 break;
         }

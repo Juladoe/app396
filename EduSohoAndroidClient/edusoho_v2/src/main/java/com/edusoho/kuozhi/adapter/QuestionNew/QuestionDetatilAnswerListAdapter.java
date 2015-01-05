@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.QuestionNew;
+package com.edusoho.kuozhi.adapter.QuestionNew;
 
 import android.content.Context;
 import android.text.Html;

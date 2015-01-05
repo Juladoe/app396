@@ -7,19 +7,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.QuestionNew.QuestionReplyAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Question.OneReply;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
-import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.plugin.CircularImageView;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,9 +33,12 @@ import java.util.regex.Pattern;
  * Created by onewoman on 2014/12/22.
  */
 public class QuestionReplyFragment extends BaseFragment{
-//    private View mQuestionReplyLoadView;
-    private ListView mQuestionAnswerContentImage;
     private ReplyModel mReplyModel;
+    private TextView mQuestionAnswerContent;
+    private ListView mQuestionAnswerContentImage;
+
+    private HashMap<String, String> mOneReplyParams = new HashMap<String, String>();
+
     private int mThreadId;
     @Override
     public String getTitle() {
@@ -70,17 +79,38 @@ public class QuestionReplyFragment extends BaseFragment{
         changeTitle(bundle.getString(Const.QUESTION_TITLE));
         mThreadId = bundle.getInt(Const.THREAD_ID);
 
-//        mQuestionReplyLoadView = view.findViewById(R.id.load_layout);
-        ImageView imageView = (ImageView) view.findViewById(R.id.question_answer_head_image);
-        ImageLoader.getInstance().displayImage(mReplyModel.user.mediumAvatar,imageView);
+        mOneReplyParams.put("courseId",String.valueOf(mReplyModel.courseId));
+        mOneReplyParams.put("postId", String.valueOf(mReplyModel.id));
+
+        CircularImageView circularImageView = (CircularImageView)view.findViewById(R.id.question_answer_head_image);
+        ImageLoader.getInstance().displayImage(mReplyModel.user.mediumAvatar,circularImageView);
         ((TextView)view.findViewById(R.id.question_answer_user_name)).setText(mReplyModel.user.nickname);
         ((TextView)view.findViewById(R.id.question_answer_time)).setText(AppUtil.getPostDays(mReplyModel.createdTime));
-        ((TextView)view.findViewById(R.id.question_answer_content)).setText(Html.fromHtml(fitlerImgTag(mReplyModel.content)));
+        mQuestionAnswerContent = ((TextView)view.findViewById(R.id.question_answer_content));
         mQuestionAnswerContentImage = (ListView) view.findViewById(R.id.question_answer_image_list);
+        getQuestionOneReplyReponseData();
+    }
+
+    public void getQuestionOneReplyReponseData(){
+        RequestUrl requestUrl = app.bindUrl(Const.ONE_REPLY, true);
+        requestUrl.setParams(mOneReplyParams);
+
+        mActivity.ajaxPost(requestUrl,new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                OneReply oneReply = mActivity.parseJsonValue(object,new TypeToken<OneReply>(){});
+                setQuestionOneReplyData(oneReply);
+            }
+        });
+    }
+
+    public void setQuestionOneReplyData(OneReply oneReply){
+        mQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(oneReply.content)));
+
         QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext,R.layout.question_reply_inflate);
         mQuestionAnswerContentImage.setAdapter(questionReplyAdapter);
-        questionReplyAdapter.addItems(convertUrlStringList(mReplyModel.content));
-//        mQuestionReplyLoadView.setVisibility(View.GONE);
+        questionReplyAdapter.addItems(convertUrlStringList(oneReply.content));
     }
 
     private String fitlerImgTag(String content) {
@@ -101,7 +131,7 @@ public class QuestionReplyFragment extends BaseFragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Const.EDIT_REPLY){
-
+            getQuestionOneReplyReponseData();
         }
     }
 }

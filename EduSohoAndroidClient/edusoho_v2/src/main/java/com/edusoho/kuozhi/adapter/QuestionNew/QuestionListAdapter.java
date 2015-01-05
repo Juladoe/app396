@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.QuestionNew;
+package com.edusoho.kuozhi.adapter.QuestionNew;
 
 import android.content.Context;
 import android.text.Html;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
-import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
