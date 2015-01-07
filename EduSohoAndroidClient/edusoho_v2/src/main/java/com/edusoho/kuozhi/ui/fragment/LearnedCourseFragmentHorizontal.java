@@ -4,28 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.LessionListAdapter;
+import com.edusoho.kuozhi.adapter.LearnedCourseAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.LearnCourse;
 import com.edusoho.kuozhi.model.LearnCourseResult;
-import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import library.PullToRefreshBase;
-
 /**
- * Created by onewoman on 2014/12/3.
- * 在学课程
+ * Created by JesseHuang on 15/1/7.
+ * 在学课程中的已学课程
  */
-public class LeaenCourseFragment extends HorizontalCourseFragment {
+public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public String getTitle() {
@@ -39,7 +33,7 @@ public class LeaenCourseFragment extends HorizontalCourseFragment {
 
     @Override
     public void getLeaenCourseReponseDatas(final int start) {
-        RequestUrl url = app.bindUrl(Const.LEARNING, true);
+        RequestUrl url = app.bindUrl(Const.LEARNED, true);
         url.setParams(new String[]{
                 "start", start + "",
                 "limit", Const.LIMIT + ""
@@ -63,7 +57,7 @@ public class LeaenCourseFragment extends HorizontalCourseFragment {
 
     @Override
     public BaseAdapter getAdapter() {
-        return new LessionListAdapter(R.layout.lessioning_item_inflate, mContext);
+        return new LearnedCourseAdapter(R.layout.learned_course_item, mContext);
     }
 
     private void parseResponse(String object, int start) {

@@ -22,19 +22,15 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.StatusCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import cn.trinea.android.common.util.DigestUtils;
 
 /**
  * Created by howzhi on 14-7-22.
@@ -148,13 +144,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     }
 
     private void initView() {
-        moreBtn = (EduSohoTextBtn) findViewById(R.id.nav_more_btn);
+        moreBtn = (EduSohoTextBtn) findViewById(R.id.nav_me_btn);
         mNavBtnClickListener = new NavBtnClickListener();
         bindNavOnClick();
         if (app.token == null || "".equals(app.token)) {
             mSelectBtn = R.id.nav_recommend_btn;
         } else {
-            mSelectBtn = R.id.nav_me_btn;
+            mSelectBtn = R.id.nav_schoolroom_btn;
         }
 
         selectNavBtn(mSelectBtn);
@@ -210,10 +206,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         } else if (id == R.id.nav_found_btn) {
             tag = "FoundFragment";
             showIcon = true;
-        } else if (id == R.id.nav_me_btn) {
+        } else if (id == R.id.nav_schoolroom_btn) {
             tag = "SchoolRoomFragment";
             //tag = "MyInfoFragment";
-        } else if (id == R.id.nav_more_btn) {
+        } else if (id == R.id.nav_me_btn) {
             tag = "MoreSettingFragment";
         } else {
             return;

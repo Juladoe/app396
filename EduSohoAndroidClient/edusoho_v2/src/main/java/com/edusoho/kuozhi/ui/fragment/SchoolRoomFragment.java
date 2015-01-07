@@ -27,6 +27,7 @@ import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.note.NoteContentFragment;
 import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
+import com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -124,10 +125,14 @@ public class SchoolRoomFragment extends BaseFragment {
      * 跳转到课程界面（CourseDetailsActivity）
      */
     private void goToCourseDetailsActivity(final SchoolRoomResult result) {
-        Bundle bundle = new Bundle();
-        bundle.putString(Const.ACTIONBAR_TITLE, "在学课程");
-        bundle.putString(FragmentPageActivity.FRAGMENT, "LearningCourseFragment");
-        app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+        try {
+            Bundle bundle = new Bundle();
+            bundle.putString(Const.ACTIONBAR_TITLE, "在学课程");
+            bundle.putString(LearningRoomActivity.FRAGMENT_NAME, "在学课程");
+            app.mEngine.runNormalPluginWithBundle("LearningRoomActivity", mContext, bundle);
+        } catch (Exception ex) {
+            Log.d(TAG, ex.toString());
+        }
 
 //        PluginRunCallback callback = new PluginRunCallback() {
 //            @Override

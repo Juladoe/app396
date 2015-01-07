@@ -15,6 +15,13 @@ public class Const {
             "在学课程", "收藏课程", "已学课程"
     };
 
+    /**
+     * 学堂，在学课程
+     */
+    public static final String[] SCHOOL_ROOM_COURSE = {
+            "正在学习", "已学完"
+    };
+
     public static final String[] MESSAGE_TAB_TITLE = {
             "通知", "私信"
     };
@@ -43,6 +50,11 @@ public class Const {
             "LeaenCourseFragment",
             "FavoriteCourseFragment",
             "LearnedCourseFragment"
+    };
+
+    public static final String[] SCHOOLROOM_COURSE_FRAGMENT = {
+            "LeaenCourseFragment",
+            "LearnedCourseFragmentHorizontal",
     };
 
     public static final String[] MESSAGE_FRAGMENT_LIST = {

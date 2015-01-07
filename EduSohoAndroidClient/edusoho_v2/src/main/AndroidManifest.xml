@@ -156,6 +156,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.edusoho.kuozhi.ui.message.MessageLetterListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:windowSoftInputMode="adjustResize"
@@ -204,10 +208,11 @@
         <service android:name=".Service.PusherService" />
         <receiver android:name=".broadcast.AlarmReceiver" />
 
-        <activity android:name=".ui.QuestionNew.QuestionNewActivity"
-                  android:configChanges="keyboard|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ui.QuestionNew.QuestionNewActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

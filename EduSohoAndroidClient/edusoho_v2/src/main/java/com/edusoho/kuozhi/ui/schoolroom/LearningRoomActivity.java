@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.message;
+package com.edusoho.kuozhi.ui.schoolroom;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -23,92 +23,80 @@ import com.edusoho.kuozhi.util.Const;
 import extensions.PagerSlidingTabStrip;
 
 /**
- * Created by hby on 14/11/23.
+ * Created by JesseHuang on 15/1/6.
+ * 在学课堂
  */
-public class MessageTabActivity extends ActionBarBaseActivity {
-    private static final String TAG = "MessageTabActivity";
-    private PagerSlidingTabStrip mTabs;
+public class LearningRoomActivity extends ActionBarBaseActivity {
+    private static String TAG = "LearningRoomActivity";
+    private String mActivityTitle;
+    private PagerSlidingTabStrip mPagerTab;
     private ViewPager mViewPagers;
 
     private final Handler mHandler = new Handler();
     private Drawable oldBackground = null;
     private int currentColor = R.color.action_bar_title;
 
-    private String mTitle;
-    private String mFragmentName;
-    private String[] mTabTitles;
-    private String[] mFragmentArrayList;
-
     public static final String TAB_TITLES = "title";
     public static final String FRAGMENT_LIST = "fragment_list";
+    public static final String FRAGMENT_TITLES = "fragment_titles";
     public static final String FRAGMENT_NAME = "fragment_name";
     public static final String FRAGMENT_DATA = "fragment_data";
 
+    private String mCurrFragmentName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.message_tab_layout);
-        initDatas();
-        setBackMode(BACK, mTitle);
-        initViews();
-        getApplicationContext();
+        setContentView(R.layout.learning_room_layout);
+        initData();
+        initView();
     }
 
-    private void initDatas() {
-        Intent intentData = getIntent();
-        if (intentData != null) {
-            mFragmentName = intentData.getStringExtra(FRAGMENT_NAME);
-            mFragmentArrayList = intentData.getStringArrayExtra(FRAGMENT_LIST);
-            mTabTitles = intentData.getStringArrayExtra(TAB_TITLES);
-            mTitle = intentData.getStringExtra(Const.ACTIONBAR_TITLE);
-        }
-//
-//        if (mTabTitles == null || mFragmentArrayList == null) {
-//            longToast("无效列表数据！");
-//            return;
-//        }
-    }
-
-    private void initViews() {
+    private void initView() {
         try {
-            mTabs = (PagerSlidingTabStrip) findViewById(R.id.message_varity_tab);
-            mViewPagers = (ViewPager) findViewById(R.id.message_varity_pager);
-            MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), Const.MESSAGE_TAB_TITLE, this.mFragmentArrayList);
-            mTabs.setIndicatorColorResource(R.color.action_bar_bg);
-            mViewPagers.setAdapter(pagerAdapter);
-
+            setBackMode(BACK, mActivityTitle);
+            mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.learning_room_pager_slide);
+            mViewPagers = (ViewPager) findViewById(R.id.learning_room_viewpager);
+            MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), Const.SCHOOL_ROOM_COURSE, Const.SCHOOLROOM_COURSE_FRAGMENT);
+            mViewPagers.setAdapter(myPagerAdapter);
             final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                     .getDisplayMetrics());
             mViewPagers.setPageMargin(pageMargin);
-            mTabs.setViewPager(mViewPagers);
+            mPagerTab.setViewPager(mViewPagers);
 
             changeColor(currentColor);
-            setPageItem(mFragmentName);
-            mViewPagers.setOffscreenPageLimit(mFragmentArrayList.length);
+            setPageItem(mCurrFragmentName);
+            mViewPagers.setOffscreenPageLimit(Const.SCHOOLROOM_COURSE_FRAGMENT.length);
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            Log.d(TAG, ex.toString());
+        }
+    }
+
+    private void initData() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mActivityTitle = bundle.getString(Const.ACTIONBAR_TITLE);
+            mCurrFragmentName = bundle.getString(FRAGMENT_NAME);
         }
     }
 
     private void setPageItem(String name) {
-        Log.d(null, "setPageItem fragment->" + name);
-        for (int i = 0; i < mFragmentArrayList.length; i++) {
-            if (mFragmentArrayList[i].equals(name)) {
+        for (int i = 0; i < Const.SCHOOLROOM_COURSE_FRAGMENT.length; i++) {
+            if (Const.SCHOOLROOM_COURSE_FRAGMENT[i].equals(name)) {
                 mViewPagers.setCurrentItem(i);
                 return;
             }
         }
     }
 
-    private class MyPagerAdapter extends FragmentPagerAdapter {
+    public class MyPagerAdapter extends FragmentPagerAdapter {
         private String[] mTitles;
         private String[] mLists;
 
-        public MyPagerAdapter(FragmentManager fm, String[] titles, String[] fragmentLists) {
+        public MyPagerAdapter(FragmentManager fm, String[] titles, String[] list) {
             super(fm);
-            this.mTitles = titles;
-            this.mLists = fragmentLists;
+            mTitles = titles;
+            mLists = list;
         }
 
         @Override
@@ -116,7 +104,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
             Fragment fragment = app.mEngine.runPluginWithFragment(mLists[i], mActivity, new PluginFragmentCallback() {
                 @Override
                 public void setArguments(Bundle bundle) {
-                    bundle.putAll(getIntent().getBundleExtra(FRAGMENT_DATA));
+
                 }
             });
             return fragment;
@@ -124,7 +112,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
 
         @Override
         public int getCount() {
-            return mTitles.length;
+            return mLists.length;
         }
 
         @Override
@@ -134,7 +122,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
     }
 
     private void changeColor(int newColor) {
-        mTabs.setIndicatorColor(newColor);
+        mPagerTab.setIndicatorColor(newColor);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 

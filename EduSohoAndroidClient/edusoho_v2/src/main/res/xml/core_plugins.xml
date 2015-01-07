@@ -129,5 +129,6 @@
     <plugin name="LessonDownedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownedFragment"></plugin>
 
     <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment"></plugin>
-
+    <plugin name="LearningRoomActivity" version="1.0" package="com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity"></plugin>
+    <plugin name="LearnedCourseFragmentHorizontal" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragmentHorizontal"></plugin>
 </plugins>
