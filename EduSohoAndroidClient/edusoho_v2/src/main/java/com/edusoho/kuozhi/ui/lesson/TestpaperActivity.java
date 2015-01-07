@@ -282,6 +282,10 @@ public class TestpaperActivity extends TestpaperBaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (!mIsRun){
+            startTask();
+        }
+        /*
         if (mStopType == PHOTO_CAMEAR) {
             startTask();
             return;
@@ -298,6 +302,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
             });
             mLoadDlg.show();
         }
+        */
     }
 
     private void stopTask()

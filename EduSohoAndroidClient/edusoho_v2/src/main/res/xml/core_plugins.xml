@@ -82,8 +82,8 @@
     <plugin name="SuggestionFragment" package="com.edusoho.kuozhi.ui.fragment.SuggestionFragment" version="1.0"></plugin>
     <plugin name="MessageFragment" package="com.edusoho.kuozhi.ui.fragment.message.MessageFragment" version="1.0"></plugin>
     <plugin name="LetterFragment" package="com.edusoho.kuozhi.ui.fragment.message.LetterFragment" version="1.0"></plugin>
-    <plugin name="MessageLetterListActivity" package="com.edusoho.kuozhi.ui.Message.MessageLetterListActivity" version="1.0"></plugin>
-    <plugin name="MessageTabActivity" package="com.edusoho.kuozhi.ui.Message.MessageTabActivity" version="1.0"></plugin>
+    <plugin name="MessageLetterListActivity" package="com.edusoho.kuozhi.ui.message.MessageLetterListActivity" version="1.0"></plugin>
+    <plugin name="MessageTabActivity" package="com.edusoho.kuozhi.ui.message.MessageTabActivity" version="1.0"></plugin>
     <plugin name="TestpaperResultFragment" package="com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment" version="1.0"></plugin>
 
     <plugin name="MyTestFragment" package="com.edusoho.kuozhi.ui.fragment.MyTestFragment" version="1.0"></plugin>
@@ -115,6 +115,22 @@
     <plugin name="CourseReviewFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseReviewFragment"></plugin>
     <plugin name="CourseIntroductionFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseIntroductionFragment"></plugin>
     <plugin name="CourseDownloadingFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.course.CourseDownloadingFragment"></plugin>
+
     <plugin name="LessonDownloadedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownloadedFragment"></plugin>
+
+    <!--在学课程-->
+    <plugin name="LeaenCourseFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LeaenCourseFragment"></plugin>
+
+    <!--问答-->
+    <plugin name="QuestionNewActivity" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionNewActivity"></plugin>
+    <plugin name="QuestionDetatilFragment" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionDetatilFragment"></plugin>
+    <plugin name="QuestionReplyFragment" version="1.0" package="com.edusoho.kuozhi.ui.QuestionNew.QuestionReplyFragment"></plugin>
+
+
+    <plugin name="LessonDowningFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDowningFragment"></plugin>
+    <plugin name="LessonDownedFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.lesson.LessonDownedFragment"></plugin>
+
     <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment"></plugin>
+    <plugin name="LearningRoomActivity" version="1.0" package="com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity"></plugin>
+    <plugin name="LearnedCourseFragmentHorizontal" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragmentHorizontal"></plugin>
 </plugins>

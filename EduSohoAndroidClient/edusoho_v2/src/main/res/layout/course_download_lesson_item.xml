@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:background="@drawable/course_details_lesson_title_bg"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@drawable/more_setting_list_select"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -37,13 +38,16 @@
     </LinearLayout>
 
     <CheckBox
-
+        android:clickable="false"
         android:layout_marginLeft="8dp"
         android:enabled="false"
         android:layout_weight="0"
         android:id="@+id/course_lesson_donwload_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:button="@drawable/lesson_download_checkbox_sel" />
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:textSize="@dimen/base_small_size"
+        android:drawableTop="@drawable/lesson_download_checkbox_sel"
+        android:button="@null" />
 </LinearLayout>

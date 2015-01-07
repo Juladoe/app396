@@ -14,6 +14,7 @@
         app:dividerColor="@color/transparent"
         app:indicatorColor="@color/action_bar_bg"
         app:tabPaddingLeftRight="14dip"
+        app:indicatorHeight="2dp"
         app:underlineHeight="0dp"
         android:background="@drawable/course_details_tab_bg"
         app:underlineColor="@color/transparent" />

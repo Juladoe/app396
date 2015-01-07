@@ -10,13 +10,12 @@
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/civ_reply_pic"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="5"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_margin="8dp"
-        android:layout_gravity="center"
+        android:layout_gravity="left|top"
         android:scaleType="fitXY"
-        android:src="@drawable/nav_bg_normal" />
+        android:src="@drawable/myinfo_default_face" />
     <!--<ImageView-->
     <!--android:layout_width="fill_parent"-->
     <!--android:layout_height="48dp"-->
@@ -35,8 +34,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="5dp"
             android:textSize="15sp"
-            android:textColor="@android:color/black"
-            android:text="如何利用" />
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/tv_thread_post_name"
@@ -44,18 +42,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_thread_title"
             android:layout_alignParentLeft="true"
-            android:layout_margin="5dp"
-            android:textColor="@color/teacher_reply"
-            android:text="bill" />
+            android:layout_margin="3dp"
+            android:textSize="@dimen/base_small_size"
+            android:textColor="@color/teacher_reply" />
 
         <TextView
+            android:textSize="@dimen/base_small_size"
             android:id="@+id/tv_thread_post_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_thread_post_name"
-            android:layout_margin="5dp"
-            android:textColor="@color/question_lesson"
-            android:text="刚刚" />
+            android:layout_margin="3dp"
+            android:textColor="@color/question_lesson" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -73,8 +71,7 @@
             android:layout_below="@+id/tv_thread_post_name"
             android:layout_toLeftOf="@+id/tv_thread_post_time"
             android:layout_margin="5dp"
-            android:textColor="@color/question_lesson"
-            android:text="23" />
+            android:textColor="@color/question_lesson" />
 
 
     </RelativeLayout>

@@ -2,7 +2,7 @@ package com.edusoho.kuozhi.entity;
 
 public enum CourseLessonType {
 	
-	VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY;
+	VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY, CHAPTER, UNIT;
 	
 	public static CourseLessonType value(String typeName)
 	{

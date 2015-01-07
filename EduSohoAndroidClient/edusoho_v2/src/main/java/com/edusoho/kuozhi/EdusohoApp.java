@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -27,6 +28,7 @@ import com.androidquery.util.AQUtility;
 import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.Service.M3U8DownService;
 import com.edusoho.kuozhi.core.CacheAjaxCallback;
 import com.edusoho.kuozhi.core.CoreEngine;
 import com.edusoho.kuozhi.core.MessageEngine;
@@ -98,6 +100,7 @@ public class EdusohoApp extends Application {
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;
+    private CacheServer mPlayCacheServer;
 
     @Override
     public void onCreate() {
@@ -151,9 +154,8 @@ public class EdusohoApp extends Application {
             }
         };
 
-        ajaxCallback.headers(requestUrl.heads);
-        ajaxCallback.timeout(1000 * 10);
         ajaxCallback.method(AQuery.METHOD_GET);
+        ajaxCallback.url(requestUrl.url);
 
         if (cache != null) {
             Log.d(TAG, "get to cache->" + requestUrl.url);
@@ -166,12 +168,13 @@ public class EdusohoApp extends Application {
     }
 
     public AjaxCallback postUrl(
-            final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
+            boolean isAbort,
+            final RequestUrl requestUrl,
+            final AjaxResultCallback ajaxResultCallback) {
         Cache cache = mEngine.appCache.getCache(requestUrl);
         CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
-                super.callback(url, object, status);
                 if (this.isCacheRequest()) {
                     mEngine.appCache.updateCache(requestUrl, object);
                     ajaxResultCallback.update(url, object, status);
@@ -185,6 +188,9 @@ public class EdusohoApp extends Application {
         ajaxCallback.headers(requestUrl.heads);
         ajaxCallback.timeout(1000 * 10);
         ajaxCallback.method(AQuery.METHOD_POST);
+        if (isAbort) {
+            ajaxCallback.async(this);
+        }
 
         if (cache != null) {
             Log.d(TAG, "get to cache->" + requestUrl.url);
@@ -255,6 +261,17 @@ public class EdusohoApp extends Application {
         if (mResouceCacheServer != null) {
             mResouceCacheServer.close();
         }
+
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.close();
+        }
+
+        M3U8DownService m3U8DownService = M3U8DownService.getService();
+        if (m3U8DownService != null) {
+                m3U8DownService.cancelAllDownloadTask();
+        };
+
+        SqliteUtil.getUtil(this).close();
         System.exit(0);
     }
 
@@ -263,11 +280,17 @@ public class EdusohoApp extends Application {
         app = this;
         gson = new Gson();
         apiVersion = getString(R.string.api_version);
-        query = new AQuery(this);
+        initAquery();
         setHost(getString(R.string.app_host));
-
         notifyMap = new HashMap<String, Bundle>();
         initApp();
+    }
+
+    private void initAquery()
+    {
+        query = new AQuery(this);
+        AjaxCallback.setAgent("Android");
+        AjaxCallback.setTimeout(1000 * 10);
     }
 
     private String getDomain() {
@@ -328,10 +351,17 @@ public class EdusohoApp extends Application {
         app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
-    public boolean getNetStatus() {
+    public boolean getNetIsConnect() {
         ConnectivityManager connManager = (ConnectivityManager)
                 getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isAvailable();
+    }
+
+    public boolean getNetIsWiFi() {
+        ConnectivityManager connManager = (ConnectivityManager)
+                getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return networkInfo != null && networkInfo.isAvailable();
     }
 
@@ -382,7 +412,7 @@ public class EdusohoApp extends Application {
     public void setCurrentSchool(School school) {
         app.defaultSchool = school;
         app.schoolHost = school.url + "/";
-
+        setHost(school.host);
         SharedPreferences sp = getSharedPreferences("defaultSchool", MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("name", school.name);
@@ -427,6 +457,8 @@ public class EdusohoApp extends Application {
         config.isRegistDevice = sp.getBoolean("registDevice", false);
         config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
+
+        config.offlineType = sp.getInt("offlineType", 0);
         if (config.startWithSchool) {
             loadDefaultSchool();
         }
@@ -446,7 +478,13 @@ public class EdusohoApp extends Application {
         edit.commit();
 
         token = result.token == null || "".equals(result.token) ? "" : result.token;
-        loginUser = "".equals(token) ? null : result.user;
+        if (TextUtils.isEmpty(token)) {
+            loginUser = null;
+        } else {
+            loginUser = result.user;
+            SqliteUtil.saveUser(loginUser);
+        }
+
         PushUtil.startPusherService(mActivity, mContext, loginUser);
     }
 
@@ -457,6 +495,7 @@ public class EdusohoApp extends Application {
         edit.putString("token", "");
         edit.commit();
 
+        SqliteUtil.clearUser(loginUser == null ? 0 : loginUser.id);
         token = null;
         loginUser = null;
 
@@ -495,11 +534,12 @@ public class EdusohoApp extends Application {
         edit.putBoolean("registDevice", config.isRegistDevice);
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
+        edit.putInt("offlineType", config.offlineType);
         edit.commit();
     }
 
     public void query(String url, final ResultCallback callback, Activity mActivity) {
-        if (!getNetStatus()) {
+        if (!getNetIsConnect()) {
             PopupDialog.createNormal(
                     mActivity, "提示信息", "无网络,请检查网络和手机设置!").show();
             mActivity.finish();
@@ -694,11 +734,27 @@ public class EdusohoApp extends Application {
         notifyMap.remove(type);
     }
 
-    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity, int port) {
+    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity)
+    {
         if (mResouceCacheServer == null) {
-            mResouceCacheServer = new CacheServer(activity, port);
+            mResouceCacheServer = new CacheServer(activity, Const.WEB_RES_PROT);
         }
 
         return mResouceCacheServer;
+    }
+
+    /**
+     * 启动播放器缓存server
+     * @param activity
+     * @return
+     */
+    public CacheServer startPlayCacheServer(ActionBarBaseActivity activity)
+    {
+        if (mPlayCacheServer == null) {
+            mPlayCacheServer = new CacheServer(activity, Const.CACHE_PROT);
+            mPlayCacheServer.start();
+        }
+
+        return mPlayCacheServer;
     }
 }

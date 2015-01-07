@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomEnum;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomItem;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
+import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.EduSohoTextBtn;
@@ -27,9 +30,11 @@ import java.util.regex.Pattern;
  */
 public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
 
+    private User mUser;
 
-    public SchoolRoomAdapter(Context context, int resource) {
+    public SchoolRoomAdapter(Context context, int resource, User user) {
         super(context, resource);
+        mUser = user;
     }
 
     @Override
@@ -42,7 +47,6 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
 
     @Override
     public long getItemId(int i) {
-
         return super.getItemId(i);
     }
 
@@ -62,6 +66,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
             holder = new ViewHolder();
             holder.ivLogo = (EduSohoTextBtn) convertView.findViewById(R.id.iv_logo);
             holder.tvTitle = (ESTextView) convertView.findViewById(R.id.tv_title);
+            holder.tvTitleCenter = (ESTextView) convertView.findViewById(R.id.tv_title_center);
             holder.tvContent = (ESTextView) convertView.findViewById(R.id.tv_content);
             holder.tvTime = (ESTextView) convertView.findViewById(R.id.tv_time);
             holder.tvMsgSum = (TextView) convertView.findViewById(R.id.tv_msg_sum);
@@ -71,18 +76,27 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        SchoolRoomResult schoolRoomModel = (SchoolRoomResult) mList.get(position);
+        holder.tvTitle.setText(schoolRoomModel.title);
+        holder.tvTitleCenter.setText(schoolRoomModel.title);
         if (position == mList.size() - 1) {
             holder.llInterval.setVisibility(View.VISIBLE);
         } else {
             holder.llInterval.setVisibility(View.GONE);
         }
-        SchoolRoomResult schoolRoomModel = (SchoolRoomResult) mList.get(position);
-        SchoolRoomItem item = schoolRoomModel.data;
-        holder.tvTitle.setText(schoolRoomModel.title);
-        holder.tvContent.setText(removeHtmlSpace(Html.fromHtml(removeImgTagFromString(item.content)).toString()));
-        holder.tvTime.setText(AppUtil.getPostDays(item.time));
+        if (mUser != null) {
+            SchoolRoomItem item = schoolRoomModel.data;
+            if (item != null) {
+                holder.tvContent.setText(removeHtmlSpace(Html.fromHtml(removeImgTagFromString(item.content)).toString()));
+                holder.tvTime.setText(AppUtil.getPostDays(item.time));
+                changeItemUI(holder, View.VISIBLE);
+            } else {
+                changeItemUI(holder, View.GONE);
+            }
+        } else {
+            changeItemUI(holder, View.GONE);
+        }
         getImageIndex(schoolRoomModel.title, holder.ivLogo);
-
         return convertView;
     }
 
@@ -119,6 +133,19 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
         }
     }
 
+    /**
+     * @param holder
+     * @param visibility
+     */
+    private void changeItemUI(ViewHolder holder, int visibility) {
+        holder.tvContent.setVisibility(visibility);
+        holder.tvTime.setVisibility(visibility);
+        holder.tvTitle.setVisibility(visibility);
+        holder.tvTitleCenter.setVisibility(visibility == View.GONE ? View.VISIBLE : View.GONE);
+        //holder.tvMsgSum.setVisibility(visibility);
+        //holder.llInterval.setVisibility(visibility);
+    }
+
     @Override
     public void addItems(ArrayList<T> list) {
         mList.addAll(list);
@@ -138,6 +165,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
     private static class ViewHolder {
         public EduSohoTextBtn ivLogo;
         public ESTextView tvTitle;
+        public ESTextView tvTitleCenter;
         public ESTextView tvContent;
         public ESTextView tvTime;
         public TextView tvMsgSum;

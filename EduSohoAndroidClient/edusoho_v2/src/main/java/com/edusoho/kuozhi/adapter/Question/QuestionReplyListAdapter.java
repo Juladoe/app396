@@ -155,7 +155,6 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
 
     @Override
     public int getCount() {
-        Log.d("QuestionReplyListAdapter.getCount()-->", mEntireReplyList.size() + "");
         //算上详细问题内容，+1
         return mEntireReplyList.size() + 1;
     }
@@ -194,7 +193,7 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 qcvHolder.btnEdit = (EdusohoButton) v.findViewById(R.id.edu_btn_question_edit);
                 qcvHolder.tvPostTitle = (TextView) v.findViewById(R.id.post_title);
                 qcvHolder.tvPostContent = (TextView) v.findViewById(R.id.htv_post_content);
-                ImageLoader.getInstance().displayImage(mUser.mediumAvatar, qcvHolder.icon, mOptions);
+                ImageLoader.getInstance().displayImage(mQuestionDetailModel.user.mediumAvatar, qcvHolder.icon, mOptions);
                 qcvHolder.tvPostName.setText(mQuestionDetailModel.user.nickname);
                 qcvHolder.tvPostDate.setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
                 qcvHolder.tvPostTitle.setText(mQuestionDetailModel.title);
@@ -204,6 +203,10 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
                 }
                 qcvHolder.tvPostContent.setText(AppUtil.setHtmlContent(Html.fromHtml(AppUtil.removeHtml(
                         AppUtil.filterSpace(fitlerImgTag(mQuestionDetailModel.content))), null, null)));
+
+                qcvHolder.btnEdit.setVisibility(
+                        mUser.id == mQuestionDetailModel.userId ? View.VISIBLE: View.GONE
+                );
                 qcvHolder.btnEdit.setOnClickListener(mOnClickListener);
 
                 /*-----------------添加GridView图片显示控件------------------------*/
@@ -455,6 +458,9 @@ public class QuestionReplyListAdapter extends ListBaseAdapter {
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
+            if (!strUrl.startsWith("http://")) {
+                strUrl = EdusohoApp.app.host + strUrl;
+            }
             urlLits.add(strUrl);
         }
         return urlLits;

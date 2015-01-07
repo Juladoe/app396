@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.PointLayout;
 
 import android.app.Activity;
@@ -44,9 +45,15 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-        mPadding = (int) (EdusohoApp.screenW * 0.3f);
+        mPadding = getSplashPadding();
         loadConfig();
         setupJazziness(mSplashMode);
+    }
+
+    protected int getSplashPadding()
+    {
+        float padding = AppUtil.parseFloat(getResources().getString(R.string.splash_padding));
+        return (int) (EdusohoApp.screenW * padding);
     }
 
     protected void loadConfig() {

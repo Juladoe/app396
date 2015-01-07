@@ -8,16 +8,19 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.broadcast.AlarmReceiver;
 import com.edusoho.kuozhi.model.Push.PushMsg;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.StartActivity;
+import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 import com.edusoho.kuozhi.ui.question.QuestionActivity;
 import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -34,6 +37,7 @@ public class PusherService extends Service {
     private PowerManager.WakeLock mWakeLock;
     private TcpClient mTcpClient;
     protected PendingIntent tickPendIntent;
+    private EdusohoApp mApp;
 
     public static final String WAKE = "WAKE";
     public static final String RESET = "RESET";
@@ -87,6 +91,11 @@ public class PusherService extends Service {
                 PushMsg pushMsg;
                 if (msgs != null && msgs.length > 1) {
                     pushMsg = new PushMsg(msgs, PusherService.this);
+                    if (pushMsg.getTypeId().equals("2")) {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(SchoolRoomFragment.PUSH_MODEL, pushMsg);
+                        mApp.sendMsgToTarget(SchoolRoomFragment.PUSH_ITEM, bundle, SchoolRoomFragment.class);
+                    }
                     notifyUser(Const.PUSH_CODE, pushMsg.getNotificationTitle(), pushMsg.getNotificationContent(), "收到推送信息", pushMsg.getIntent());
                 }
             }
@@ -96,6 +105,7 @@ public class PusherService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mApp = (EdusohoApp) getApplication();
         Log.d(TAG, "PusherService is onCreate!");
         setTickAlarm();
 

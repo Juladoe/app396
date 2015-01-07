@@ -15,8 +15,15 @@ public class Const {
             "在学课程", "收藏课程", "已学课程"
     };
 
+    /**
+     * 学堂，在学课程
+     */
+    public static final String[] SCHOOL_ROOM_COURSE = {
+            "正在学习", "已学完"
+    };
+
     public static final String[] MESSAGE_TAB_TITLE = {
-            "消息", "私信"
+            "通知", "私信"
     };
 
     /**
@@ -40,9 +47,14 @@ public class Const {
     };
 
     public static final String[] MY_COURSE_FRAGMENT = {
-            "LearningCourseFragment",
+            "LeaenCourseFragment",
             "FavoriteCourseFragment",
             "LearnedCourseFragment"
+    };
+
+    public static final String[] SCHOOLROOM_COURSE_FRAGMENT = {
+            "LeaenCourseFragment",
+            "LearnedCourseFragmentHorizontal",
     };
 
     public static final String[] MESSAGE_FRAGMENT_LIST = {
@@ -70,6 +82,7 @@ public class Const {
     public static final boolean fileCacheYes = true;
 
     public static final String RESULT_OK = "ok";
+    public static final String SHOW_STUDENT_NUM = "opened";
     public static final String RESULT_SUCCESS = "success";
     public static final String RESULT_ERROR = "error";
     public static final String CLIENT_CLOSE = "client_closed";
@@ -171,6 +184,7 @@ public class Const {
     public static final String LASTEST_COURSES = "School/getLatestCourses";
     public static final String WEEK_COURSES = "School/getWeekRecommendCourses";
     public static final String CATEGORYS = "Category/getAllCategories";
+    public static final String GET_TAGS = "Category/getTags";
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
@@ -297,7 +311,14 @@ public class Const {
     public static final String COURSE_NOTICES = "Course/getCourseNotices";
 
     public static final String CACHE_COURSE_TYPE = "course";
+    public static final String CACHE_USER_TYPE = "user";
     public static final String CACHE_LESSON_TYPE = "lesson";
+
+    public static final String CACHE_KEY_TYPE = "m3u8_key";
+
+    public static final int NET_WIFI = 0;
+    public static final int NET_3G_WIFI = 1;
+    public static final int NET_NONE = 2;
 
     //Pusher相关 --------------------------------
     public static final int PUSH_CODE = 32;
@@ -312,7 +333,10 @@ public class Const {
     public static final String SENT_PKGS = "sentPkgs";
     public static final String RECEIVE_PKGS = "receivePkgs";
 
-    //------------------------------------------
 
+    /**
+     * 获取单个回答的内容
+     */
+    public static final String ONE_REPLY = "Course/getOneThreadPost";
 
 }

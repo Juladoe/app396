@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by howzhi on 14/12/2.
  */
-public class CourseIntroductionFragment extends BaseFragment {
+public class CourseIntroductionFragment extends ViewPagerBaseFragment {
 
     private EduSohoListView mListView;
     public static final String TITLES = "titles";
@@ -24,6 +24,11 @@ public class CourseIntroductionFragment extends BaseFragment {
     @Override
     public String getTitle() {
         return null;
+    }
+
+    @Override
+    public EduSohoListView getListView() {
+        return mListView;
     }
 
     @Override
@@ -53,7 +58,6 @@ public class CourseIntroductionFragment extends BaseFragment {
             list.add(new String[] { titles[i], contents[i]});
         }
 
-        //mListView.setIsSetHeight(true);
         mListView.pushData(list);
     }
 }

@@ -5,7 +5,7 @@
         android:id="@+id/offline_menu_edit"
         android:orderInCategory="100"
         yourapp:showAsAction="ifRoom"
-        android:icon="@drawable/offline_menu_edit"
+        android:checked="false"
         android:title="编辑">
     </item>
 </menu>

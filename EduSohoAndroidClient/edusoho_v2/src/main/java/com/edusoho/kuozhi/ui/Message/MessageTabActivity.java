@@ -32,7 +32,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
 
     private final Handler mHandler = new Handler();
     private Drawable oldBackground = null;
-    private int currentColor = R.color.action_bar_bg;
+    private int currentColor = R.color.action_bar_title;
 
     private String mTitle;
     private String mFragmentName;
@@ -52,6 +52,7 @@ public class MessageTabActivity extends ActionBarBaseActivity {
         initDatas();
         setBackMode(BACK, mTitle);
         initViews();
+        getApplicationContext();
     }
 
     private void initDatas() {

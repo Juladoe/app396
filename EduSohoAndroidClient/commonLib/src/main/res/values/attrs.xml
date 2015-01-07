@@ -58,6 +58,7 @@
         <attr name="tabBackground" format="reference" />
         <attr name="shouldExpand" format="boolean" />
         <attr name="pst_textAllCaps" format="boolean" />
+        <attr name="click_down_alpha" format="float" />
     </declare-styleable>
 
     <declare-styleable name="JazzyViewPager">

@@ -3,6 +3,7 @@ create table if not exists data_m3u8 (
     finish integer,
     host varchar(255),
     lessonId integer,
+    userId integer,
     total_num integer,
     download_num integer,
     play_list text

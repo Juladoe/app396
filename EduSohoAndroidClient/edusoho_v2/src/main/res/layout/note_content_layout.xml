@@ -6,12 +6,16 @@
     android:layout_height="match_parent"
     android:background="@color/note_content_background">
 
-    <RelativeLayout
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center"
         android:id="@+id/note_lesson_entrance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:layout_weight="1"
             android:text="课时名称"
             android:id="@+id/note_lesson_title"
             android:layout_width="wrap_content"
@@ -20,19 +24,16 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/note_content_title"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="16dp" />
+            android:layout_alignParentLeft="true" />
 
-        <ImageView
+        <com.edusoho.kuozhi.view.ESImageView
+            app:es_alpha="0.54"
+            android:layout_weight="0"
             android:src="@drawable/iconfont_right_arrow"
-            android:id="@+id/iv_lesson_entrance"
-            android:layout_width="@dimen/lesson_entry_right_arrow"
-            android:layout_height="@dimen/lesson_entry_right_arrow"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="13dp"
-            android:layout_alignParentRight="true" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/note_content"
@@ -42,7 +43,6 @@
         android:textColor="@color/note_content"
         android:padding="16dp"
         android:background="@color/note_background"
-        android:text="这是笔记内容"
         android:layout_below="@id/note_lesson_entrance" />
 
 </RelativeLayout>

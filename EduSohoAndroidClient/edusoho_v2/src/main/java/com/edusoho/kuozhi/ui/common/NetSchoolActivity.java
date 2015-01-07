@@ -167,6 +167,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
+                    loading.dismiss();
                     SystemInfo info = app.gson.fromJson(
                             object, new TypeToken<SystemInfo>() {
                     }.getType());

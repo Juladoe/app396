@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Teacher;
+import com.edusoho.kuozhi.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -56,7 +57,12 @@ public class FoundCourseListAdapter extends ListBaseAdapter<Course> {
 
         Course course = mList.get(i);
         holder.mCourseTitle.setText(course.title);
-        holder.mCourseStudentNum.setText(String.valueOf(course.studentNum));
+        if (Const.SHOW_STUDENT_NUM.equals(course.showStudentNumType)) {
+            holder.mCourseStudentNum.setVisibility(View.VISIBLE);
+            holder.mCourseStudentNum.setText(String.valueOf(course.studentNum));
+        } else {
+            holder.mCourseStudentNum.setVisibility(View.GONE);
+        }
 
         Teacher[] teachers = course.teachers;
         if (teachers != null && teachers.length > 0) {

@@ -9,7 +9,7 @@
     android:paddingBottom="8dp"
     android:gravity="center"
     android:text="立即体验"
-    android:textSize="@dimen/splash_ok_btn"
+    android:textSize="@dimen/base_large_size"
     android:textColor="@color/splash_ok_btn"
     android:background="@drawable/qr_search_btn_sel"
     android:layout_centerHorizontal="true"

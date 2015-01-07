@@ -21,6 +21,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+
 import library.PullToRefreshBase;
 
 /**
@@ -49,19 +50,18 @@ public class LetterFragment extends BaseFragment {
         mLetterSummaryList = (RefreshListWidget) view.findViewById(R.id.letter_summary_list);
         mLoadingView = view.findViewById(R.id.load_layout);
         mLetterSummaryList.setMode(PullToRefreshBase.Mode.BOTH);
-
-        mLetterSummaryList.setEmptyText(new String[]{"暂无通知"});
+        mLetterSummaryList.setEmptyText(new String[]{"暂无私信"}, R.drawable.icon_discussion);
         mLetterSummaryList.setAdapter(new MessageLetterSummaryAdapter(
                 mContext, R.layout.message_letter_item));
         mLetterSummaryList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                loadLetterSummary(mLetterSummaryList.getStart(), false);
+                loadLetterSummary(mLetterSummaryList.getStart());
             }
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                loadLetterSummary(0, true);
+                loadLetterSummary(0);
             }
         });
         mLetterSummaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,12 +80,12 @@ public class LetterFragment extends BaseFragment {
                 });
             }
         });
-        loadLetterSummary(0, false);
+        loadLetterSummary(0);
     }
 
-    private void loadLetterSummary(final int start, final boolean isRefresh) {
+    private void loadLetterSummary(final int start) {
         RequestUrl requestUrl = app.bindUrl(Const.MESSAGE_LETTER_SUMMARY, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "limit", String.valueOf(Const.LIMIT),
                 "start", String.valueOf(start)
         });

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,6 +41,11 @@ public class RecyclerEmptyAdapter extends
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(mContext).inflate(mResource, viewGroup, false);
+
+        AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(
+                AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT);
+        layoutParams.height = viewGroup.getHeight();
+        v.setLayoutParams(layoutParams);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }

@@ -9,4 +9,9 @@ import java.io.Serializable;
 public class SchoolRoomResult implements Serializable {
     public String title;
     public SchoolRoomItem data;
+
+    public SchoolRoomResult(String t, SchoolRoomItem d) {
+        title = t;
+        data = d;
+    }
 }

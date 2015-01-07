@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 
+import cn.trinea.android.common.util.AppUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -35,6 +36,7 @@ public class CourseFragment extends BaseFragment {
 
     private int mCategoryId;
     private String mTitle;
+    private String mTagId;
     private String mSearchText;
     private int mType;
     private String baseUrl;
@@ -58,9 +60,10 @@ public class CourseFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         mLoadView = view.findViewById(R.id.load_layout);
-        mCourseListView =(RefreshListWidget) view.findViewById(R.id.course_liseview);
+        mCourseListView = (RefreshListWidget) view.findViewById(R.id.course_liseview);
         mCourseListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
+        mCourseListView.setEmptyText(new String[] { "没有搜到相关课程，请换个关键词试试！" }, R.drawable.icon_course_empty);
 
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
@@ -82,10 +85,13 @@ public class CourseFragment extends BaseFragment {
             mSearchText = bundle.getString(CourseListActivity.SEARCH_TEXT);
             mTitle = bundle.getString(TITLE);
             mCategoryId = bundle.getInt(CourseListActivity.CATEGORY_ID, 0);
+            mTagId = bundle.getString(CourseListActivity.TAG_ID);
         }
 
         baseUrl = Const.COURSES;
         if (mSearchText != null && !TextUtils.isEmpty(mSearchText)) {
+            baseUrl = Const.SEARCH_COURSE;
+        } else if (mTagId != null && !TextUtils.isEmpty(mTagId)) {
             baseUrl = Const.SEARCH_COURSE;
         } else if (mType == CourseListActivity.RECOMMEND) {
             baseUrl = Const.RECOMMEND_COURSES;
@@ -96,23 +102,26 @@ public class CourseFragment extends BaseFragment {
         loadCourseFromNet(0);
     }
 
-    private void loadCourseFromNet(int start)
-    {
+    private void loadCourseFromNet(int start) {
         RequestUrl url = app.bindUrl(baseUrl, true);
         HashMap<String, String> params = url.getParams();
+        if (mTagId != null && !TextUtils.isEmpty(mTagId)) {
+            params.put(CourseListActivity.TAG_ID, mTagId);
+        } else {
+            params.put(CourseListActivity.SEARCH_TEXT, mSearchText);
+        }
         params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");
-        params.put(CourseListActivity.SEARCH_TEXT, mSearchText);
         params.put("start", start + "");
         params.put("limit", Const.LIMIT + "");
 
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 mLoadView.setVisibility(View.GONE);
                 mCourseListView.onRefreshComplete();
                 CourseResult courseResult = mActivity.gson.fromJson(
                         object, new TypeToken<CourseResult>() {
-                }.getType());
+                        }.getType());
 
                 if (courseResult == null) {
                     return;

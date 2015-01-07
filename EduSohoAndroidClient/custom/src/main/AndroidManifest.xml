@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.edusoho"
+    android:versionCode="11"
+    android:versionName="2.3.4">
+
+    <application
+        android:name=".kuozhi.EdusohoApp"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/EdusohoAppTheme">
+        <activity
+            android:name=".kuozhi.KuozhiActivity"
+            android:label="@string/app_name"
+            android:theme="@style/CustomStartTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".kuozhi.KuozhiSplashActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"></activity>
+    </application>
+
+</manifest>

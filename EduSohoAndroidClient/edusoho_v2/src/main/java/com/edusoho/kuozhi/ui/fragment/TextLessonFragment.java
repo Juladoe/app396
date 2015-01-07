@@ -63,7 +63,7 @@ public class TextLessonFragment extends BaseFragment {
         mLessonWebview = (WebView) view.findViewById(R.id.lesson_webview);
         initWebViewSetting();
         showProgress(true);
-        mLessonWebview.loadDataWithBaseURL(null, mContent, "text/html", "utf-8", null);
+        mLessonWebview.loadDataWithBaseURL("file:///android_asset/consult.html", mContent, "text/html", "utf-8", null);
     }
 
     private void initWebViewSetting()

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -45,8 +46,9 @@ public class WebVideoLessonFragment extends BaseFragment {
     private WebView mWebView;
     public static final String MESSAGE_ID = "WebVideoActivity";
     public static final String AUTO_SCREEN = "auto_screen";
-    public static final int MESSAGE_OPEN_FULL = 0001;
-    public static final int MESSAGE_CLOSE_FULL = 0002;
+
+    public static final int HIDE = 0001;
+    public static final int FULL_SCREEN = 0002;
     public static final int CHECK_HTML_PLAYER = 0011;
 
     private Handler workHandler;
@@ -81,7 +83,6 @@ public class WebVideoLessonFragment extends BaseFragment {
             return;
         }
 
-        mActivity.setProgressBarIndeterminateVisibility(true);
         workHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -92,6 +93,12 @@ public class WebVideoLessonFragment extends BaseFragment {
                                 "if (divs[i].className == 'x-zoomin'){" +
                                 "window.obj.addFullScreenEvent();" +
                                 "divs[i].addEventListener('click', function(event){window.obj.toggleFullScreen(), false});}}");
+                        break;
+                    case HIDE:
+                        hide();
+                        break;
+                    case FULL_SCREEN:
+                        fullScreen();
                         break;
                 }
             }
@@ -213,10 +220,10 @@ public class WebVideoLessonFragment extends BaseFragment {
         public void toggleFullScreen()
         {
             if (isFullScreen) {
-                hide();
+                workHandler.obtainMessage(HIDE).sendToTarget();
                 return;
             }
-            fullScreen();
+            workHandler.obtainMessage(FULL_SCREEN).sendToTarget();
         }
     }
 
@@ -225,14 +232,15 @@ public class WebVideoLessonFragment extends BaseFragment {
         isFullScreen = true;
         app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
         mActivity.showActionBar();
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     private void hide()
     {
         isFullScreen = false;
-
         app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
         mActivity.hideActionBar();
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         if (mView == null) {
             return;
         }

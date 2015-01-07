@@ -2,16 +2,24 @@ package com.edusoho.kuozhi.adapter.lesson;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
+import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -23,9 +31,13 @@ import java.util.ArrayList;
 public class LessonQuestionListAdapter<T> extends ListBaseAdapter<T> {
     private static final String TAG = "LessonQuestionListAdapter";
     private DisplayImageOptions mOptions;
+    private SparseArray<User> mUserList;
+    private ActionBarBaseActivity mActivity;
 
-    public LessonQuestionListAdapter(Context mContext, int layoutId) {
-        super(mContext, layoutId);
+    public LessonQuestionListAdapter(ActionBarBaseActivity activity, int layoutId) {
+        super(activity, layoutId);
+        mActivity = activity;
+        mUserList = new SparseArray<User>();
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
@@ -71,17 +83,42 @@ public class LessonQuestionListAdapter<T> extends ListBaseAdapter<T> {
             }
 
             QuestionDetailModel model = (QuestionDetailModel) mList.get(position);
-            ImageLoader.getInstance().displayImage(model.user.mediumAvatar, holder.civ, mOptions);
-            holder.tvTitle.setText(model.title);
-            holder.tvPostName.setText(model.user.nickname);
-            holder.tvPostTime.setText(AppUtil.getPostDays(model.createdTime));
-            holder.tvMsgs.setText(model.postNum);
 
+            User user = mUserList.get(model.userId);
+            if (user == null) {
+                loadUserFromNet(model.userId, holder);
+            } else {
+                holder.tvPostName.setText(user.nickname);
+                ImageLoader.getInstance().displayImage(user.mediumAvatar, holder.civ, mOptions);
+            }
+            holder.tvTitle.setText(model.title);
+            holder.tvPostTime.setText(AppUtil.getPostDays(model.createdTime));
+            holder.tvMsgs.setText(String.valueOf(model.postNum));
 
         } catch (Exception ex) {
             Log.d(TAG, ex.toString());
         }
         return convertView;
+    }
+
+    private void loadUserFromNet(
+            int userId, final ViewHolder holder)
+    {
+        RequestUrl url = mActivity.app.bindUrl(Const.USERINFO, false);
+        url.setParams(new String[] {
+                "userId", String.valueOf(userId)
+        });
+        mActivity.ajaxPost(url, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                User user = mActivity.parseJsonValue(object, new TypeToken<User>(){});
+                if (user != null) {
+                    mUserList.put(user.id, user);
+                    holder.tvPostName.setText(user.nickname);
+                    ImageLoader.getInstance().displayImage(user.mediumAvatar, holder.civ, mOptions);
+                }
+            }
+        });
     }
 
     private static class ViewHolder {

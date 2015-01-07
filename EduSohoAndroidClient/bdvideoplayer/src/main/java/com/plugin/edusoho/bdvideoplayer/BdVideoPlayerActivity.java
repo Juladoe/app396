@@ -388,13 +388,13 @@ public class BdVideoPlayerActivity extends Activity implements OnPreparedListene
                 // TODO Auto-generated method stub
 
                 if (mVV.isPlaying()) {
-                    mPlaybtn.setImageResource(R.drawable.play_btn_style);
+                    mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
-                    mPlaybtn.setImageResource(R.drawable.pause_btn_style);
+                    mPlaybtn.setImageResource(R.drawable.video_pause);
                     /**
                      * 继续播放
                      */

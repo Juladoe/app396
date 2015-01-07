@@ -37,14 +37,12 @@ public class AudioLessonFragment extends BaseFragment {
     public static final int HIDE_LOADING = 0001;
     private static final int UPDATE_PLAY_TIME = 0001;
     private static final int SET_TOTALTIME = 0002;
-    private static final int DEFAULT_TIME = 3600 * 1000 * 16;
-    private static SimpleDateFormat dateFromat = new SimpleDateFormat("HH:mm:ss");
 
     private Handler updateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            String time = dateFromat.format(new Date(msg.arg1 + DEFAULT_TIME));
+            String time = timeFormat(msg.arg1 / 1000);
             switch (msg.what) {
                 case UPDATE_PLAY_TIME:
                     mCurrentTime.setText(time);
@@ -78,6 +76,20 @@ public class AudioLessonFragment extends BaseFragment {
         Bundle bundle = getArguments();
         mUri = bundle.getString(Const.MEDIA_URL);
         Log.d(null, "uri->" + mUri);
+    }
+
+    private String timeFormat(int second){
+        int hh = second / 3600;
+        int mm = second % 3600 / 60;
+        int ss = second % 60;
+        String strTemp = "";
+        if (0 != hh) {
+            strTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
+        } else {
+            strTemp = String.format("%02d:%02d", mm, ss);
+        }
+
+        return strTemp;
     }
 
     @Override

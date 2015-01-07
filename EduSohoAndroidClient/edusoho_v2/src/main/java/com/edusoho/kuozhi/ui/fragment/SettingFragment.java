@@ -2,19 +2,25 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.Service.M3U8DownService;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EduUpdateView;
+import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.StatusCallback;
 
 import java.io.File;
@@ -28,8 +34,14 @@ public class SettingFragment extends BaseFragment {
     @ViewUtil("setting_clear_btn")
     private View mClearCacheView;
 
+    @ViewUtil("setting_offline_set_btn")
+    private View mOfflineSetBtn;
+
     @ViewUtil("setting_cache_view")
     private TextView mCacheView;
+
+    @ViewUtil("setting_offline_set_value")
+    private TextView mOfflineSetView;
 
     @ViewUtil("setting_load_progress")
     private ProgressBar mLoadProgressBar;
@@ -37,6 +49,9 @@ public class SettingFragment extends BaseFragment {
 
     @ViewUtil("setting_check_version")
     private EduUpdateView mCheckView;
+
+    @ViewUtil("setting_logout_btn")
+    private Button mLogoutBtn;
 
     @Override
     public String getTitle() {
@@ -77,6 +92,9 @@ public class SettingFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         checkNotify();
+        if (app.loginUser != null) {
+            mLogoutBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -84,6 +102,9 @@ public class SettingFragment extends BaseFragment {
         super.initView(view);
         viewInject(view);
         registNotify();
+        //设置缓存模式
+        String[] array = getResources().getStringArray(R.array.offline_array);
+        mOfflineSetView.setText(array[app.config.offlineType]);
 
         mCacheView.setText(getCacheSize());
         mCheckView.setText(AppUtil.getColorTextAfter(
@@ -149,7 +170,67 @@ public class SettingFragment extends BaseFragment {
                 });
             }
         });
+
+        mOfflineSetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExitCoursePopupDialog.createNormal(
+                        mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button, int position, String selStr) {
+                                if (button == ExitCoursePopupDialog.CANCEL) {
+                                    return;
+                                }
+
+                                app.config.offlineType = position;
+                                app.saveConfig();
+                                mOfflineSetView.setText(selStr);
+                            }
+                }).show();
+            }
+        });
+
+        mLogoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupDialog.createMuilt(
+                        mActivity,
+                        "退出提示",
+                        "是否退出登录?",
+                        new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.OK) {
+                                    logout();
+                                }
+                            }
+                        }).show();
+            }
+        });
     }
+
+    private void logout() {
+        showProgress(true);
+        RequestUrl url = app.bindUrl(Const.LOGOUT, true);
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                showProgress(false);
+                app.removeToken();
+                mLogoutBtn.setVisibility(View.GONE);
+                app.sendMsgToTarget(MineFragment.LOGOUT, null, MineFragment.class);
+//                app.sendMsgToTarget(SchoolRoomFragment.LOGOUT, null, SchoolRoomFragment.class);
+                //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+
+                M3U8DownService service = M3U8DownService.getService();
+                if (service != null) {
+                    service.cancelAllDownloadTask();
+                }
+            }
+        });
+    }
+
+
 
     private void clearCache()
     {

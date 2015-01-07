@@ -48,8 +48,7 @@ public class NoteActivity extends ActionBarBaseActivity {
         mLoadView = findViewById(R.id.load_layout);
         mNoteGridView = (RefreshGridViewWidget) this.findViewById(R.id.note_gridview);
         mNoteGridView.setMode(PullToRefreshBase.Mode.BOTH);
-        mNoteGridView.setEmptyText(new String[]{"没有笔记"});
-
+        mNoteGridView.setEmptyText(new String[] { "暂无笔记" }, R.drawable.icon_note);
         noteAdapter = new NoteAdapter(mContext, R.layout.note_list_item);
         mNoteGridView.setAdapter(noteAdapter);
 

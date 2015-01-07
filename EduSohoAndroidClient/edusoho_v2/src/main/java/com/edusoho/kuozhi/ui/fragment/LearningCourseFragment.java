@@ -49,6 +49,7 @@ public class LearningCourseFragment extends MyCourseBaseFragment {
 
         if (isAppend) {
             mAdapter.addItemLast(courseResult.data);
+            mCourseListWidget.scrollLater();
         } else {
             mAdapter.setItem(courseResult.data);
         }

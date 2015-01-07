@@ -93,10 +93,10 @@ public class RecommendFragment extends BaseFragment {
     {
         initSchoolBanner(isUpdate);
         initSchoolAnnouncement();
-        initWeekCourse();
+        initWeekCourse(isUpdate);
     }
 
-    private void initWeekCourse()
+    private void initWeekCourse(boolean isUpdate)
     {
         RequestUrl url = app.bindUrl(Const.WEEK_COURSES, false);
         url.setParams(new String[]{
@@ -106,21 +106,21 @@ public class RecommendFragment extends BaseFragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mWeekCourse.setLayoutManager(linearLayoutManager);
+        mWeekCourse.setFixHeight(0);
         mWeekCourse.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL_LIST));
         WeekCourseAdapter weekCourseAdapter = new WeekCourseAdapter(mContext, R.layout.found_course_list_item);
         weekCourseAdapter.setOnItemClick(new RecyclerViewListBaseAdapter.RecyclerItemClick() {
             @Override
             public void onItemClick(Object obj, int position) {
-                Log.d(null, "position=" + position);
                 Course course = (Course) obj;
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, course.id);
                 bundle.putString(Const.ACTIONBAR_TITLE, course.title);
-                startAcitivityWithBundle(CourseDetailsActivity.TAG, bundle);
+                mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
             }
         });
 
-        //mWeekCourse.setIsSetHeight(true);
+
         mWeekCourse.setAdapter(weekCourseAdapter);
         mWeekCourse.setLoadAdapter();
         mActivity.ajaxPost(url, new ResultCallback() {
@@ -140,7 +140,7 @@ public class RecommendFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                super.callback(url, object, ajaxStatus);
+                Log.d(null, "object ->" + object);
                 ArrayList<SchoolBanner> schoolBanners = app.gson.fromJson(
                         object, new TypeToken<ArrayList<SchoolBanner>>() {
                 }.getType());

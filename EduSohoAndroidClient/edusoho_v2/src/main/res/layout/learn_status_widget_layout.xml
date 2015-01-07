@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:padding="10dp"
@@ -48,13 +49,15 @@
             android:layout_height="6dp" />
     </RelativeLayout>
 
-    <Button
+    <com.edusoho.kuozhi.view.ESTextView
+        app:es_alpha="0.87"
+        android:padding="8dp"
         android:layout_weight="0"
-        android:textSize="@dimen/learn_status_widget_learnbtn"
+        android:textSize="@dimen/base_small_size"
         android:id="@+id/learn_status_widget_learnBtn"
         android:textColor="@color/qr_search_btn_text"
         android:text="继续学习"
         android:background="@drawable/qr_search_btn_sel"
-        android:layout_width="88dp"
-        android:layout_height="36dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

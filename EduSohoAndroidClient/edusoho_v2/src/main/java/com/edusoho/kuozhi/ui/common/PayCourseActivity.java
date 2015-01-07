@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Member;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.PayStatus;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -69,8 +70,41 @@ public class PayCourseActivity extends ActionBarBaseActivity
                 break;
             case PAY_EXIT:
                 Log.d(null, "pay->exit");
+                checkPayResult();
                 break;
         }
+    }
+
+    /**
+     * 更新课程会员信息
+     */
+    private void checkPayResult() {
+        RequestUrl url = app.bindUrl(Const.COURSE_MEMBER, true);
+        url.setParams(new String[]{
+                "courseId", String.valueOf(mCourseId)
+        });
+
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
+        ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                loadDialog.dismiss();
+                Member member = parseJsonValue(
+                        object, new TypeToken<Member>() {
+                        }
+                );
+
+                if (member == null) {
+                    mActivity.longToast("支付课程失败!");
+                    return;
+                }
+                longToast("支付完成");
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                setResult(CourseDetailsActivity.PAY_COURSE_SUCCESS);
+                finish();
+            }
+        });
     }
 
     @Override

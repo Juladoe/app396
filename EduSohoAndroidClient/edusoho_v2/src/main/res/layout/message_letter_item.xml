@@ -6,24 +6,33 @@
     android:background="@drawable/question_item_bg"
     android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+    <RelativeLayout
+        android:layout_width="@dimen/message_head_icon"
+        android:layout_height="@dimen/message_head_icon"
+        android:layout_margin="8dp">
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
             android:id="@+id/ci_send_pic"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/message_head_icon"
+            android:layout_height="@dimen/message_head_icon"
             android:scaleType="fitXY"
+            android:layout_margin="1dp"
             android:src="@drawable/myinfo_default_face" />
 
-    </LinearLayout>
+        <ImageView
+            android:layout_width="11dp"
+            android:layout_height="11dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/iv_unread_msg"
+            android:src="@drawable/update_bg"
+            android:scaleType="fitXY" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:layout_marginRight="16dp"
         android:orientation="vertical">
 

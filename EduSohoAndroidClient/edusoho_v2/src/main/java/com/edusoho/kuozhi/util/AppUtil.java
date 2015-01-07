@@ -326,6 +326,7 @@ public class AppUtil {
         if (TextUtils.isEmpty(sb)) {
             return "";
         }
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -337,6 +338,7 @@ public class AppUtil {
         if (TextUtils.isEmpty(sb)) {
             return "";
         }
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -631,15 +633,15 @@ public class AppUtil {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 
-        float density = context.getResources().getDisplayMetrics().density;
-        int bounding = Math.round(imageSize * density);
+        //float density = context.getResources().getDisplayMetrics().density;
+        int bounding = Math.round(imageSize);
 
         float xScale = ((float) bounding) / width;
         float yScale = ((float) bounding) / height;
         float scale = (xScale <= yScale) ? xScale : yScale;
 
         Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
+        matrix.postScale(xScale, xScale);
         matrix.postRotate((float) degree);
 
         Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
@@ -1028,6 +1030,20 @@ public class AppUtil {
         return i;
     }
 
+    public static float parseFloat(String value) {
+        float i = 0.0f;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Float.parseFloat(value);
+        } catch (Exception e) {
+            i = 0.0f;
+        }
+
+        return i;
+    }
+
     /**
      * 去掉'\n','\t'
      *
@@ -1068,5 +1084,19 @@ public class AppUtil {
         }
 
         return String.format("%.1f%s", (totalSize / (kb * kb * kb)), "G");
+    }
+
+    public static String timeFormat(int second){
+        int hh = second / 3600;
+        int mm = second % 3600 / 60;
+        int ss = second % 60;
+        String strTemp = "0";
+        if (0 != hh) {
+            strTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
+        } else {
+            strTemp = String.format("%02d:%02d", mm, ss);
+        }
+
+        return strTemp;
     }
 }

@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.model.Notify;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
+import com.edusoho.kuozhi.ui.fragment.AboutFragment;
 import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -131,9 +132,10 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
                 String param = typeMatcher.group(7);
                 String param_value = typeMatcher.group(8);
 
-                Log.d(null, "type-->" + type1);
+                Log.d(null, "url-->" + url);
                 if ("user".equalsIgnoreCase(type1)) {
                     showUser(AppUtil.parseInt(type1_value));
+                    return;
                 } else if ("course".equalsIgnoreCase(type1)) {
                     if ("thread".equalsIgnoreCase(type2)) {
                         showThread(
@@ -143,13 +145,30 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
                         return;
                     }
                     showCourse(AppUtil.parseInt(type1_value));
+                    return;
                 } else if ("test".equalsIgnoreCase(type1)) {
                     if ("result".equalsIgnoreCase(type2)) {
                         showTestPaperResult(AppUtil.parseInt(type1_value));
+                        return;
                     }
                 }
             }
+
+            if (!url.startsWith("http://")) {
+                url = EdusohoApp.app.host + url;
+            }
+            showUrlInWebView(url);
         }
+    }
+
+    private void showUrlInWebView(String url)
+    {
+        //webview打开
+        Bundle bundle = new Bundle();
+        bundle.putString(AboutFragment.URL, url);
+        bundle.putString(FragmentPageActivity.FRAGMENT, "AboutFragment");
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle(
+                "FragmentPageActivity", mContext, bundle);
     }
 
     private void showThread(int courseId, int threadId)
@@ -172,13 +191,9 @@ public class MessageListAdapter extends ListBaseAdapter<Notify>
 
     private void showCourse(final int courseId)
     {
-        EdusohoApp.app.mEngine.runNormalPlugin(
-                CourseDetailsActivity.TAG, mContext, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(Const.COURSE_ID, courseId);
-            }
-        });
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.COURSE_ID, courseId);
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mContext, bundle);
     }
 
     private void showUser(final int id)
