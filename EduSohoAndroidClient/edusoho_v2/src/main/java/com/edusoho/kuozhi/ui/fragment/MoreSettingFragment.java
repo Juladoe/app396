@@ -37,9 +37,6 @@ public class MoreSettingFragment extends BaseFragment {
     @ViewUtil("more_setting_qrsearch")
     private View mSearchBtn;
 
-    @ViewUtil("more_setting_message")
-    private View mMessageBtn;
-
     @ViewUtil("more_setting_offline")
     private View mOffLineBtn;
 
@@ -128,28 +125,6 @@ public class MoreSettingFragment extends BaseFragment {
                 app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
             }
         });
-
-        mMessageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (app.loginUser == null) {
-                    LoginActivity.start(mActivity);
-                    return;
-                }
-                PluginRunCallback callback = new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_DATA, new Bundle());
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_NAME, "MessageFragment");
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_LIST, Const.MESSAGE_FRAGMENT_LIST);
-                        startIntent.putExtra(MessageTabActivity.TAB_TITLES, Const.MESSAGE_TAB_TITLE);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "消息");
-                    }
-                };
-
-                app.mEngine.runNormalPlugin("MessageTabActivity", mActivity, callback);
-            }
-        });
     }
 
     @Override
@@ -186,7 +161,7 @@ public class MoreSettingFragment extends BaseFragment {
                 showProgress(false);
                 app.removeToken();
                 mLogoutBtn.setVisibility(View.GONE);
-                app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+                app.sendMsgToTarget(MineFragment.LOGOUT, null, MineFragment.class);
             }
         });
     }

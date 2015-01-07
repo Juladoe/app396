@@ -34,8 +34,6 @@ public class SettingFragment extends BaseFragment {
     @ViewUtil("setting_load_progress")
     private ProgressBar mLoadProgressBar;
 
-    @ViewUtil("setting_fix_btn")
-    private TextView mFixBtn;
 
     @ViewUtil("setting_check_version")
     private EduUpdateView mCheckView;
@@ -113,15 +111,6 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mFixBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString(FragmentPageActivity.FRAGMENT, "SuggestionFragment");
-                bundle.putString(Const.ACTIONBAR_TITLE, "意见反馈");
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
-            }
-        });
 
         mCheckView.setOnClickListener(new View.OnClickListener() {
             @Override

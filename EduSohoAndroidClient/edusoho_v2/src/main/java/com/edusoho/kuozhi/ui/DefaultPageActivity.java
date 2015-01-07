@@ -213,7 +213,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             showIcon = true;
         } else if (id == R.id.nav_me_btn) {
             //tag = "SchoolRoomFragment";
-            tag = "MyInfoFragment";
+            tag = "MineFragment";
         } else if (id == R.id.nav_more_btn) {
             tag = "MoreSettingFragment";
         } else {

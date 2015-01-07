@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_gray">
+
+    <RelativeLayout
+        android:clickable="true"
+        android:id="@+id/myinfo_user_layout"
+        android:background="@drawable/normal_layout_bg"
+        android:layout_width="match_parent"
+        android:layout_height="88dp">
+
+        <com.edusoho.kuozhi.view.plugin.CircularImageView
+            android:paddingTop="8dp"
+            android:layout_margin="16dp"
+            android:id="@+id/myinfo_logo"
+            android:layout_centerVertical="true"
+            android:src="@drawable/myinfo_default_face"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:text="名字"
+            android:textSize="@dimen/myinfo_name"
+            android:id="@+id/myinfo_name"
+            android:layout_toRightOf="@id/myinfo_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/myinfo_logo"/>
+
+        <com.edusoho.kuozhi.view.EduSohoIconView
+            android:visibility="gone"
+            android:id="@+id/vip_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/myinfo_name"
+            android:layout_alignTop="@id/myinfo_name"
+            android:textSize="@dimen/icon_vip"
+            android:text="@string/font_vip"
+            android:textColor="#fff000"
+            />
+
+        <com.edusoho.kuozhi.view.ESTextView
+            android:id="@+id/teacher_title"
+            android:text="教师职称"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/vip_icon"
+            android:layout_alignTop="@id/vip_icon"
+            android:paddingLeft="8dp"
+            />
+
+        <com.edusoho.kuozhi.view.ESTextView
+            app:es_alpha="0.54"
+            android:textColor="@android:color/black"
+            android:text="个性签名"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:id="@+id/myinfo_signature"
+            android:textSize="@dimen/small_font_size"
+            android:paddingTop="10dp"
+            android:layout_below="@id/myinfo_name"
+            android:layout_toRightOf="@id/myinfo_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:textSize="@dimen/small_font_size"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginTop="1dp"
+        android:padding="16dp"
+        android:id="@+id/self_introduction"
+        android:text="自我介绍"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:layout_below="@id/myinfo_user_layout"
+        android:background="@drawable/normal_layout_bg"/>
+
+    <RelativeLayout
+        android:background="@drawable/normal_layout_bg"
+        android:id="@+id/social_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="1dp"
+        android:layout_below="@id/self_introduction">
+
+        <LinearLayout
+            android:visibility="gone"
+
+            android:gravity="center_vertical"
+            android:id="@+id/concern"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            >
+
+            <TextView
+                android:textSize="@dimen/middle_font_size"
+                android:id="@+id/concern_num"
+                android:text="关注数"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.edusoho.kuozhi.view.ESTextView
+                android:layout_gravity="center"
+                android:textSize="@dimen/small_font_size"
+                android:text="关注"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+
+            android:gravity="center_vertical"
+            android:id="@+id/fans"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/concern"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:textSize="@dimen/middle_font_size"
+                android:id="@+id/fans_num"
+                android:text="粉丝数"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.edusoho.kuozhi.view.ESTextView
+                android:layout_gravity="center"
+                android:textSize="@dimen/small_font_size"
+                android:text="粉丝"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/message"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_toLeftOf="@+id/add_concern"
+
+            >
+            <com.edusoho.kuozhi.view.EduSohoIconView
+                android:textSize="16sp"
+                android:textColor="@color/base_color_normal"
+                android:text="@string/font_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:textSize="16sp"
+                android:textColor="@color/base_color_normal"
+                android:paddingRight="8dp"
+                android:gravity="center_vertical"
+                android:text="发私信"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:id="@+id/add_concern"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+
+            <com.edusoho.kuozhi.view.EduSohoIconView
+                android:textSize="16sp"
+                android:paddingLeft="8dp"
+                android:text="@string/font_add_fans"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:textSize="16sp"
+                android:paddingRight="8dp"
+                android:text="关注"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/description"
+        android:layout_marginTop="8dp"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/normal_layout_bg"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:textSize="@dimen/middle_font_size"
+        android:layout_below="@id/social_bar"
+        android:text="在学课程"/>
+
+
+    <TextView
+        android:id="@+id/notice"
+        android:gravity="center"
+        android:padding="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/normal_layout_bg"
+        android:textSize="@dimen/large_font_size"
+        android:layout_below="@id/description"
+        android:text="暂无在学课程"
+        android:visibility="gone"/>
+
+</RelativeLayout>
