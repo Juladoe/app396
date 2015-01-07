@@ -33,12 +33,14 @@ import java.util.regex.Pattern;
  * Created by onewoman on 2014/12/22.
  */
 public class QuestionReplyFragment extends BaseFragment{
+    private View mLoadLayoutView;
     private ReplyModel mReplyModel;
     private TextView mQuestionAnswerContent;
     private ListView mQuestionAnswerContentImage;
 
     private HashMap<String, String> mOneReplyParams = new HashMap<String, String>();
 
+    private OneReply mOneReply;
     private int mThreadId;
     @Override
     public String getTitle() {
@@ -82,12 +84,14 @@ public class QuestionReplyFragment extends BaseFragment{
         mOneReplyParams.put("courseId",String.valueOf(mReplyModel.courseId));
         mOneReplyParams.put("postId", String.valueOf(mReplyModel.id));
 
+        mLoadLayoutView = view.findViewById(R.id.load_layout);
         CircularImageView circularImageView = (CircularImageView)view.findViewById(R.id.question_answer_head_image);
         ImageLoader.getInstance().displayImage(mReplyModel.user.mediumAvatar,circularImageView);
         ((TextView)view.findViewById(R.id.question_answer_user_name)).setText(mReplyModel.user.nickname);
         ((TextView)view.findViewById(R.id.question_answer_time)).setText(AppUtil.getPostDays(mReplyModel.createdTime));
         mQuestionAnswerContent = ((TextView)view.findViewById(R.id.question_answer_content));
         mQuestionAnswerContentImage = (ListView) view.findViewById(R.id.question_answer_image_list);
+
         getQuestionOneReplyReponseData();
     }
 
@@ -99,18 +103,19 @@ public class QuestionReplyFragment extends BaseFragment{
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                OneReply oneReply = mActivity.parseJsonValue(object,new TypeToken<OneReply>(){});
-                setQuestionOneReplyData(oneReply);
+                mLoadLayoutView.setVisibility(View.GONE);
+                mOneReply = mActivity.parseJsonValue(object,new TypeToken<OneReply>(){});
+                setQuestionOneReplyData();
             }
         });
     }
 
-    public void setQuestionOneReplyData(OneReply oneReply){
-        mQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(oneReply.content)));
+    public void setQuestionOneReplyData(){
+        mQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(mOneReply.content)));
 
         QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext,R.layout.question_reply_inflate);
         mQuestionAnswerContentImage.setAdapter(questionReplyAdapter);
-        questionReplyAdapter.addItems(convertUrlStringList(oneReply.content));
+        questionReplyAdapter.addItems(convertUrlStringList(mOneReply.content));
     }
 
     private String fitlerImgTag(String content) {
@@ -123,6 +128,9 @@ public class QuestionReplyFragment extends BaseFragment{
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
+            if(strUrl.indexOf("http:") == -1) {
+                strUrl = app.defaultSchool.host + strUrl;
+            }
             urlLits.add(strUrl);
         }
         return urlLits;

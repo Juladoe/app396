@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:src="@drawable/question_answer_icon"
+        android:src="@drawable/question_head_icon"
         />
 
     <RelativeLayout

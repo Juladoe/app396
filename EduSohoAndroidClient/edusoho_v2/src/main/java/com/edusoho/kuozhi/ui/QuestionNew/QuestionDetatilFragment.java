@@ -57,7 +57,7 @@ public class QuestionDetatilFragment extends BaseFragment{
     private RefreshListWidget mQuestionDetatileAnswerList;
     private QuestionDetatilAnswerListAdapter mQuestionDetatilAnswerListAdapter;
     private View mQuestionDetailDescribe;
-    private View mQuestionDetatilDescribeLoadView;
+    private View mQuestionLoadView;
     private QuestionDetailModel mQuestionDetailModel;
     private int intentThreadId;
     private int intentCourseId;
@@ -187,7 +187,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         });
         //问题描述
         mQuestionDetailDescribe = mActivity.getLayoutInflater().inflate(R.layout.question_detatil_describe_inflate, null);
-        mQuestionDetatilDescribeLoadView = mQuestionDetailDescribe.findViewById(R.id.load_layout);
+        mQuestionLoadView = view.findViewById(R.id.load_layout);
         getQuestionDetatilDescribeReponseData();
 
         //问题回复
@@ -260,7 +260,7 @@ public class QuestionDetatilFragment extends BaseFragment{
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
-                mQuestionDetatilDescribeLoadView.setVisibility(View.GONE);
+                mQuestionLoadView.setVisibility(View.GONE);
                 mQuestionDetailModel = mActivity.parseJsonValue(object,new TypeToken<QuestionDetailModel>(){});
                 setQuestionDescribeData();
             }

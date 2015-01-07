@@ -7,7 +7,8 @@
                 android:paddingTop="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:paddingBottom="12dp">
+                android:paddingBottom="12dp"
+                android:background="@color/base_bg_color">
 
     <include layout="@layout/question_answer_user_head_fragment"
              android:id="@+id/question_user_head_framelayout"
