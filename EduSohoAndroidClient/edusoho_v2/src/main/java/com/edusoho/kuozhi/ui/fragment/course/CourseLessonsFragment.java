@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.fragment.course;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
+import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
@@ -24,6 +26,7 @@ import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
@@ -35,6 +38,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14/12/2.
@@ -49,6 +53,9 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
     private View mHeadView;
 
     private SparseArray<M3U8DbModle> mM3U8DbModles;
+    private ArrayList<LessonItem> mLessons;
+    private boolean mIsLoadLesson;
+
     @Override
     public EduSohoListView getListView() {
         return mListView;
@@ -75,7 +82,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         mAdapter = new CourseLessonAdapter(
                 mActivity, R.layout.course_details_learning_lesson_item);
 
-        mListView.setEmptyString(new String[] { "暂无课时" }, R.drawable.icon_course_empty);
+        mListView.setEmptyString(new String[]{"暂无课时"}, R.drawable.icon_course_empty);
         mHeadView = initHeadView();
         mAdapter.addHeadView(mHeadView);
         mListView.setAdapter(mAdapter);
@@ -87,8 +94,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         loadLessons(true);
     }
 
-    private View initHeadView()
-    {
+    private View initHeadView() {
         View view = LayoutInflater.from(mContext).inflate(
                 R.layout.course_lesson_list_headview, null);
 
@@ -97,28 +103,75 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         return view;
     }
 
-    private void loadLessons(boolean mIsAddToken)
+    private void updateLessonStatus() {
+        RequestUrl url = mActivity.app.bindUrl(Const.LEARN_STATUS, true);
+        url.setParams(new String[]{
+                Const.COURSE_ID, String.valueOf(mCourseId)
+        });
+
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                HashMap<Integer, LearnStatus> learnStatusHashMap = mActivity.parseJsonValue(
+                        object, new TypeToken<HashMap<Integer, LearnStatus>>() {
+                        }
+                );
+                if (learnStatusHashMap == null) {
+                    return;
+                }
+
+                mAdapter.updateLearnStatus(learnStatusHashMap);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void updateM3U8Modles()
     {
+        if (mLessons == null) {
+            return;
+        }
+        mM3U8DbModles = getLocalM3U8Models(mLessons);
+        mAdapter.updateM3U8Models(mM3U8DbModles);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mIsLoadLesson) {
+            return;
+        }
+
+        updateM3U8Modles();
+        updateLessonStatus();
+    }
+
+    private void loadLessons(boolean mIsAddToken) {
         mListView.setLoadAdapter();
+        mIsLoadLesson = true;
         RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, mIsAddToken);
         url.setParams(new String[]{
                 Const.COURSE_ID, String.valueOf(mCourseId)
         });
-        mActivity.ajaxPost(url, new ResultCallback(){
+
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mIsLoadLesson = false;
                 final LessonsResult lessonsResult = mActivity.parseJsonValue(
-                        object, new TypeToken<LessonsResult>(){});
+                        object, new TypeToken<LessonsResult>() {
+                });
                 if (lessonsResult == null) {
                     return;
                 }
 
+                mLessons = lessonsResult.lessons;
                 int lessonNum = 0;
                 long totalTime = 0;
 
                 DateFormat fullFormat = new SimpleDateFormat("HH:mm:ss");
                 DateFormat simpleFormat = new SimpleDateFormat("mm:ss");
-                DateFormat format;
+                DateFormat format = simpleFormat;
                 try {
                     for (LessonItem lessonItem : lessonsResult.lessons) {
                         CourseLessonType type = CourseLessonType.value(lessonItem.type);
@@ -132,7 +185,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                         }
 
                         if (LessonItem.ItemType.cover(lessonItem.itemType) == LessonItem.ItemType.LESSON) {
-                            lessonNum ++;
+                            lessonNum++;
                         }
                     }
                 } catch (Exception e) {
@@ -140,11 +193,10 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                 }
 
                 mLessonInfoView.setText(String.format(
-                        "共%d个课时,视频课时总时长为%s", lessonNum, fullFormat.format(new Date(totalTime))));
+                        "共%d个课时,视频课时总时长为%s", lessonNum, format.format(new Date(totalTime))));
 
-                mM3U8DbModles = getLocalM3U8Models(lessonsResult.lessons);
+                updateM3U8Modles();
                 mAdapter.updateLearnStatus(lessonsResult.learnStatuses);
-                mAdapter.updateM3U8Models(mM3U8DbModles);
                 mListView.pushData(lessonsResult.lessons);
                 mLessonDownloadBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -157,7 +209,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                         bundle.putString(FragmentPageActivity.FRAGMENT, "CourseDownloadingFragment");
                         bundle.putString(Const.ACTIONBAR_TITLE, "下载列表");
 
-                        CorusePaperActivity activity = (CorusePaperActivity)getActivity();
+                        CorusePaperActivity activity = (CorusePaperActivity) getActivity();
                         bundle.putString(
                                 CourseDownloadingFragment.COURSE_JSON, app.gson.toJson(activity.getCourse()));
                         bundle.putString(
@@ -169,18 +221,17 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                 mAdapter.setOnItemClick(new RecyclerViewListBaseAdapter.RecyclerItemClick() {
                     @Override
                     public void onItemClick(Object obj, int position) {
-                        showLesson((LessonItem)obj);
+                        showLesson((LessonItem) obj);
                     }
                 });
             }
         });
     }
 
-    private SparseArray<M3U8DbModle> getLocalM3U8Models(ArrayList<LessonItem> lessons)
-    {
+    private SparseArray<M3U8DbModle> getLocalM3U8Models(ArrayList<LessonItem> lessons) {
         int length = lessons.size();
         int[] ids = new int[length];
-        for (int i=0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             ids[i] = lessons.get(i).id;
         }
 
@@ -188,8 +239,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         return M3U8Uitl.getM3U8ModleList(mContext, ids, userId, app.domain, 1);
     }
 
-    private void showLesson(final LessonItem lesson)
-    {
+    private void showLesson(final LessonItem lesson) {
         CorusePaperActivity activity = (CorusePaperActivity) getActivity();
         final CourseDetailsResult courseDetailsResult = activity.getCourseResult();
 
@@ -214,7 +264,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
             return;
         }
 
-        if (lesson.free != LessonItem.FREE ) {
+        if (lesson.free != LessonItem.FREE) {
             if (mActivity.app.loginUser == null) {
                 mActivity.longToast("请登录后学习！");
                 LoginActivity.start(mActivity);
@@ -250,11 +300,11 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
                         startIntent.putExtra(LessonActivity.FROM_CACHE, mM3U8DbModles.indexOfKey(lesson.id) >= 0);
                     }
-                });
+                }
+        );
     }
 
-    private void showAlertDialog(String content)
-    {
+    private void showAlertDialog(String content) {
         PopupDialog popupDialog = PopupDialog.createMuilt(
                 mActivity,
                 "播放提示",
@@ -264,7 +314,9 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
                             ExitCoursePopupDialog.createNormal(
-                                    mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
+                                    mActivity,
+                                    "视频课时下载播放",
+                                    new ExitCoursePopupDialog.PopupClickListener() {
                                         @Override
                                         public void onClick(int button, int position, String selStr) {
                                             if (button == ExitCoursePopupDialog.CANCEL) {
@@ -274,10 +326,12 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                                             app.config.offlineType = position;
                                             app.saveConfig();
                                         }
-                                    }).show();
+                                    }
+                            ).show();
                         }
                     }
-                });
+                }
+        );
         popupDialog.setOkText("去设置");
         popupDialog.show();
     }

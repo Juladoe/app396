@@ -52,6 +52,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private ImageView mPlaybtn = null;
     private ImageView mBackbtn = null;
     private ImageView mForwardbtn = null;
+    private ImageView mReplayBtn = null;
     private CheckBox mFullBtn = null;
 
     private RelativeLayout mController = null;
@@ -81,6 +82,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private final int UI_EVENT_ERROR = 5;
     private final int UI_EVENT_PAUSE = 3;
     private final int UI_EVENT_PLAY = 4;
+    private final int UI_EVENT_FINISH = 6;
     private static final int HIDE = 2;
 
     protected PowerManager.WakeLock mWakeLock = null;
@@ -133,6 +135,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 case UI_EVENT_ERROR:
                     showErrorDialog();
                     break;
+                case UI_EVENT_FINISH:
+                    mReplayBtn.setVisibility(View.VISIBLE);
+                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    break;
                 case HIDE:
                     hideController();
                     break;
@@ -176,9 +182,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     mLastPos = 0;
                     break;
                 case EVENT_FINISH:
-                    mVV.seekTo(0);
-                    mVV.pause();
-                    mPlayerStatus = PLAYER_STATUS.PLAYER_PAUSE;
                     mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
                     Log.d(TAG, "EVENT_FINISH");
                     break;
@@ -309,7 +312,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private View.OnClickListener mNextListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // TODO Auto-generated method stub
             Log.v(TAG, "next btn clicked");
         }
     };
@@ -380,6 +382,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mBackbtn = (ImageView)view.findViewById(R.id.back_btn);
         mForwardbtn = (ImageView)view.findViewById(R.id.forward_btn);
         mFullBtn = (CheckBox)view.findViewById(R.id.full_btn);
+        mReplayBtn = (ImageView)view.findViewById(R.id.video_replay);
 
         mProgress = (SeekBar)view.findViewById(R.id.media_progress);
         mDuration = (TextView)view.findViewById(R.id.time_total);
@@ -388,7 +391,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         registerCallbackForControl();
         /**
          * 设置ak及sk的前16位
-         */
+        */
         BVideoView.setAKSK(AK, SK);
         if (mSoLibDir != null && ! BdPlayerManager.NORMAL_LIB_DIR.equals(mSoLibDir)) {
             BVideoView.setNativeLibsDirectory(mSoLibDir);
@@ -399,14 +402,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         */
         mVV = (BVideoView) view.findViewById(R.id.video_view);
         /*
-        mVVCtl = new BMediaController(this);
-        mViewHolder.addView(mVV);
-        mControllerHolder.addView(mVVCtl);
-         */
+            mVVCtl = new BMediaController(this);
+            mViewHolder.addView(mVV);
+            mControllerHolder.addView(mVVCtl);
+        */
         mController = (RelativeLayout) view.findViewById(R.id.video_controller);
         /**
-         * 注册listener
-         */
+            *注册listener
+        */
         mVV.setOnPreparedListener(this);
         mVV.setOnCompletionListener(this);
         mVV.setOnErrorListener(this);
@@ -428,15 +431,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         });
 
         /**
-         * 关联BMediaController
+         *关联BMediaController
         */
         //mVV.setMediaController(mVVCtl);
         /**
-         * 设置解码模式
+         *设置解码模式
         */
 
         mVV.setDecodeMode(mDecodeMode);
-
         mController.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -452,12 +454,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     @Override
     public void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         Log.v(TAG, "onPause");
         /**
-         * 在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
-         */
+            *在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
+        */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
             mLastPos = mVV.getCurrentPosition();
             mVV.pause();
@@ -465,7 +466,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
         }
     }
-
 
     @Override
     public void onResume() {
@@ -475,14 +475,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             mWakeLock.acquire();
         }
 
+        mReplayBtn.setVisibility(View.GONE);
         resumePlay();
     }
 
     protected void resumePlay()
     {
         /**
-         * 发起一次播放任务,当然您不一定要在这发起
-         */
+         *发起一次播放任务,当然您不一定要在这发起
+        */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
                 || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
             mEventHandler.sendEmptyMessage(EVENT_REPLAY);
@@ -502,7 +503,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         super.onDestroy();
         /**
          * 结束后台事件处理线程
-         */
+        */
         mHandlerThread.quit();
         Log.v(TAG, "onDestroy");
         if (mWakeLock != null) {
@@ -520,16 +521,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     @Override
     public boolean onInfo(int what, int extra) {
-        // TODO Auto-generated method stub
         switch(what){
             /**
              * 开始缓冲
-             */
+            */
             case BVideoView.MEDIA_INFO_BUFFERING_START:
                 break;
             /**
              * 结束缓冲
-             */
+            */
             case BVideoView.MEDIA_INFO_BUFFERING_END:
                 break;
             default:
@@ -540,19 +540,16 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 当前缓冲的百分比， 可以配合onInfo中的开始缓冲和结束缓冲来显示百分比到界面
-     */
+    */
     @Override
     public void onPlayingBufferCache(int percent) {
-        // TODO Auto-generated method stub
-
     }
 
     /**
      * 播放出错
-     */
+    */
     @Override
     public boolean onError(int what, int extra) {
-        // TODO Auto-generated method stub
         Log.v(TAG, "onError what:" + what + " extra:" + extra);
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
@@ -594,7 +591,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 为控件注册回调处理函数
-     */
+    */
     private void registerCallbackForControl(){
         mFullBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -611,21 +608,24 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
         mPlaybtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 if (mVV.isPlaying()) {
                     mIsPlayEnd = true;
                     mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
-                     */
+                    */
                     mVV.pause();
                 } else {
                     mIsPlayEnd = false;
                     mPlaybtn.setImageResource(R.drawable.video_pause);
+                    if (mPlayerStatus == PLAYER_STATUS.PLAYER_IDLE) {
+                        mReplayBtn.setVisibility(View.GONE);
+                        resumePlay();
+                        return;
+                    }
                     /**
                      * 继续播放
-                     */
+                    */
                     mVV.resume();
                 }
 
@@ -653,23 +653,18 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         SeekBar.OnSeekBarChangeListener osbc1 = new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                // TODO Auto-generated method stub
-                //Log.v(TAG, "progress: " + progress);
                 updateTextViewWithTimeFormat(mCurrPostion, progress);
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 /**
                  * SeekBar开始seek时停止更新
-                 */
+                */
                 mUIHandler.removeMessages(UI_EVENT_UPDATE_CURRPOSITION);
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 int iseekPos = seekBar.getProgress();
-
                 /**
                  * SeekBark完成seek时执行seekTo操作并更新界面
                  *
@@ -680,6 +675,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             }
         };
         mProgress.setOnSeekBarChangeListener(osbc1);
+
+        mReplayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mReplayBtn.setVisibility(View.GONE);
+                resumePlay();
+            }
+        });
     }
 
     private void updateTextViewWithTimeFormat(TextView view, int second){
@@ -697,10 +700,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 播放完成
-     */
+    */
     @Override
     public void onCompletion() {
-        // TODO Auto-generated method stub
         Log.v(TAG, "onCompletion");
 
         synchronized (SYNC_Playing) {
@@ -714,15 +716,16 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             mEventHandler.sendEmptyMessage(EVENT_START);
             return;
         }
+
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mUIHandler.sendEmptyMessage(UI_EVENT_FINISH);
     }
 
     /**
      * 播放准备就绪
-     */
+    */
     @Override
     public void onPrepared() {
-        // TODO Auto-generated method stub
         Log.v(TAG, "onPrepared" + mPlayerStatus);
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);

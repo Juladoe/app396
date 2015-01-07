@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -82,7 +83,6 @@ public class WebVideoLessonFragment extends BaseFragment {
             return;
         }
 
-        mActivity.setProgressBarIndeterminateVisibility(true);
         workHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -232,6 +232,7 @@ public class WebVideoLessonFragment extends BaseFragment {
         isFullScreen = true;
         app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
         mActivity.showActionBar();
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     private void hide()
@@ -239,6 +240,7 @@ public class WebVideoLessonFragment extends BaseFragment {
         isFullScreen = false;
         app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
         mActivity.hideActionBar();
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         if (mView == null) {
             return;
         }

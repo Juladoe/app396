@@ -38,7 +38,6 @@ public class LessonItem<T> {
 
     public UploadFile uploadFile;
 
-
     public static enum ItemType{
         LESSON, CHAPTER, UNIT, EMPTY;
 
