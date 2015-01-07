@@ -140,5 +140,10 @@ public class CacheServer extends Thread{
     {
         Log.d(TAG, "Cache exit");
         isLoop = false;
+        try {
+            mServerSocket.close();
+        } catch (Exception e) {
+            //nothing
+        }
     }
 }

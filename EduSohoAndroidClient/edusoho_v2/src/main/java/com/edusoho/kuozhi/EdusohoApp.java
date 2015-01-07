@@ -107,7 +107,7 @@ public class EdusohoApp extends Application {
         super.onCreate();
         Log.d(TAG, "create application");
         mWorkHandler = new android.os.Handler();
-        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 

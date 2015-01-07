@@ -84,7 +84,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
                             app.startUpdateWebView(result.updateUrl);
-                        } else {
                             app.removeNotify("app_update");
                         }
                     }

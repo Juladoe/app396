@@ -107,19 +107,19 @@ public class CourseDownloadingFragment extends BaseFragment {
                     return;
                 }
 
-                checkLesson(lessonItem.id, lessonItem.courseId);
+                checkLesson(lessonItem);
             }
         });
     }
 
-    private void checkLesson(int lessonId, int courseId) {
+    private void checkLesson(final LessonItem listItem) {
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.show();
 
         RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
         requestUrl.setParams(new String[]{
-                "courseId", courseId + "",
-                "lessonId", lessonId + ""
+                "courseId", String.valueOf(listItem.courseId),
+                "lessonId", String.valueOf(listItem.id)
         });
 
         mActivity.ajaxPost(requestUrl, new ResultCallback() {
@@ -132,10 +132,11 @@ public class CourseDownloadingFragment extends BaseFragment {
                     return;
                 }
 
-                if (lessonItem.mediaUri.startsWith(app.host)) {
+                if (listItem.uploadFile == null && lessonItem.mediaUri.startsWith(app.host)) {
                     mActivity.longToast("暂不支持本地视频下载!");
                     return;
                 }
+
                 saveCache(
                         mContext,
                         Const.CACHE_LESSON_TYPE,
