@@ -10,9 +10,17 @@
         android:layout_centerInParent="true">
 
         <com.baidu.cyberplayer.core.BVideoView
+            android:background="#dd000000"
             android:id="@+id/video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/video_replay"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_video_large_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </FrameLayout>
 
     <RelativeLayout

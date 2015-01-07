@@ -35,7 +35,6 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
     protected SqliteUtil mSqliteUtil;
     protected LocalCourseListAdapter mAdapter;
     protected DownLoadStatusReceiver mDownLoadStatusReceiver;
-
     protected String host;
 
     @Override
@@ -44,6 +43,7 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
         if (app.loginUser == null) {
             finish();
         }
+        app.startPlayCacheServer(mActivity);
     }
 
     @Override

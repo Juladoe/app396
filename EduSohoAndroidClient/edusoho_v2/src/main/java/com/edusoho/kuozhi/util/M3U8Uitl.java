@@ -339,16 +339,18 @@ public class M3U8Uitl {
      * 获取网络的m3u8 file
      * @param url
      * @return
-     */
+    */
     private M3U8File getM3U8FileFromUrl(String url)
     {
         M3U8File m3U8File = null;
+        /*
         if (url.startsWith("http://" + mTargetHost)) {
             m3U8File = new M3U8File();
             m3U8File.type = M3U8File.STREAM;
             m3U8File.content = url;
             return m3U8File;
         }
+        */
         int type = M3U8File.STREAM_LIST;
         while (type == M3U8File.STREAM_LIST) {
             if (m3U8File != null) {
@@ -377,10 +379,11 @@ public class M3U8Uitl {
 
         Log.d(TAG, "m3U8File " + m3U8File);
         if (m3U8File != null) {
-            initM3U8DataToDb(m3U8File);
             if (m3U8File.type == M3U8File.STREAM) {
+                ToastUtils.show(mContext, "视频格式不正确,不能下载!");
                 return;
             }
+            initM3U8DataToDb(m3U8File);
             downloadM3U8SourceFile(m3U8File);
         }
     }

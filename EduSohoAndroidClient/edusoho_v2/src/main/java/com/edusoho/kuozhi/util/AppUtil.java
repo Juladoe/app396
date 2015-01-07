@@ -1085,4 +1085,18 @@ public class AppUtil {
 
         return String.format("%.1f%s", (totalSize / (kb * kb * kb)), "G");
     }
+
+    public static String timeFormat(int second){
+        int hh = second / 3600;
+        int mm = second % 3600 / 60;
+        int ss = second % 60;
+        String strTemp = "0";
+        if (0 != hh) {
+            strTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
+        } else {
+            strTemp = String.format("%02d:%02d", mm, ss);
+        }
+
+        return strTemp;
+    }
 }
