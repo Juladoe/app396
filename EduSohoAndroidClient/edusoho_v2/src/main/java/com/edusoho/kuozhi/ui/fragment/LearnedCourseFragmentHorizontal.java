@@ -23,7 +23,7 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public String getTitle() {
-        return "在学课程";
+        return "已学完";
     }
 
     @Override
@@ -58,6 +58,11 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
     @Override
     public BaseAdapter getAdapter() {
         return new LearnedCourseAdapter(R.layout.learned_course_item, mContext);
+    }
+
+    @Override
+    public String getEmptyText() {
+        return "没有已学课程";
     }
 
     private void parseResponse(String object, int start) {

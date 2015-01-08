@@ -66,6 +66,11 @@ public class LeaenCourseFragment extends HorizontalCourseFragment {
         return new LessionListAdapter(R.layout.lessioning_item_inflate, mContext);
     }
 
+    @Override
+    public String getEmptyText() {
+        return "没有在学课程";
+    }
+
     private void parseResponse(String object, int start) {
         LearnCourseResult courseResult = mActivity.gson.fromJson(
                 object, new TypeToken<LearnCourseResult>() {
