@@ -34,6 +34,7 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
         super.initView(view);
         mLessioningList = (RefreshListWidget) view.findViewById(R.id.lession_listview);
         mLessioningList.setMode(PullToRefreshBase.Mode.BOTH);
+        mLessioningList.setEmptyText(new String[]{"没有在学课程"},R.drawable.course_details_menu_courseinfo);
         mLessionListAdapter = getAdapter();
         mLessioningList.setAdapter(mLessionListAdapter);
         mLessioningList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
