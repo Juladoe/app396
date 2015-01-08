@@ -67,7 +67,7 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
         tvQuestiongTitle.setText(questionListData.title);
         tvQuestionAnswerCount.setText(String.valueOf(questionListData.postNum));
         if(questionListData.latestPostContent != null){
-            tvQuestionAnswerContent.setText(Html.fromHtml(questionListData.latestPostContent));
+            tvQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(questionListData.latestPostContent)));
         }else{
             tvQuestionAnswerContent.setText("");
         }
@@ -75,5 +75,10 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
         tvQuestionCourseTitle.setText(questionListData.courseTitle);
 
         return view;
+    }
+
+    //过滤html标签里的img图片
+    private String fitlerImgTag(String content) {
+        return content.replaceAll("(<img src=\".*?\" .>)", "");
     }
 }
