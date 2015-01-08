@@ -45,6 +45,7 @@
     <dimen name="popup_input">17dp</dimen>
 
     <!--icon font -->
+    <dimen name="icon_vip">22dp</dimen>
     <dimen name="font_close">20dp</dimen>
     <dimen name="large_font_cancel">25dp</dimen>
 

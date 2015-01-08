@@ -4,6 +4,7 @@
     android:background="@color/myinfo_bg"
     android:layout_height="match_parent">
 
+
     <RelativeLayout
         android:clickable="true"
         android:id="@+id/myinfo_user_layout"

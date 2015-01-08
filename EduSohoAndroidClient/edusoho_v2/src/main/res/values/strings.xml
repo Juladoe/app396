@@ -77,6 +77,13 @@
     <string name="font_video"></string>
     <string name="font_audio"></string>
     <string name="font_other"></string>
+    <string name="font_vip">&#xe65d;</string>
+    <string name="font_download">&#xe690;</string>
+    <string name="font_collection">&#xe638;</string>
+    <string name="font_notification">&#xe65b;</string>
+    <string name="font_setting">&#xe68f;</string>
+    <string name="font_feedback">&#xe693;</string>
+    <string name="font_add_fans">&#xe69e;</string>
 
     <!--lesson tools -->
     <string name="learned_status">&#xe657;</string>

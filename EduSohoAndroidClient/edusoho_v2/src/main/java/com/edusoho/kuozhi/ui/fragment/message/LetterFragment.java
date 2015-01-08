@@ -13,7 +13,7 @@ import com.edusoho.kuozhi.adapter.MessageLetterSummaryAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
-import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
+import com.edusoho.kuozhi.ui.Message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;

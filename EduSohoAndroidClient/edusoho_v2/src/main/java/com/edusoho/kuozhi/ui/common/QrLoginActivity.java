@@ -9,6 +9,7 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.fragment.MineFragment;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -91,7 +92,7 @@ public class QrLoginActivity extends ActionBarBaseActivity {
                     } else {
                         app.saveToken(schoolResult);
                         app.sendMessage(Const.LOGING_SUCCESS, null);
-                        app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
+                        app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
                     }
 
                 }catch (Exception e) {
