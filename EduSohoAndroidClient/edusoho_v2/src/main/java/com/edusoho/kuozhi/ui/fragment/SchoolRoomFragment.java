@@ -11,22 +11,15 @@ import android.widget.AdapterView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.SchoolRoomAdapter;
-import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.model.Note.NoteInfo;
 import com.edusoho.kuozhi.model.Push.PushMsg;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomEnum;
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity;
-import com.edusoho.kuozhi.ui.Message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
-import com.edusoho.kuozhi.ui.note.NoteContentFragment;
-import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -34,7 +27,6 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import library.PullToRefreshBase;
@@ -103,11 +95,11 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 2:
                 //问答
-                goToQuestionDetailActivity("我的问答", "question");
+                goToQuestionDetailActivity("我的问答", "question","暂无提问");
                 break;
             case 3:
                 //讨论
-                goToQuestionDetailActivity("我的讨论", "discussion");
+                goToQuestionDetailActivity("我的讨论", "discussion","暂无讨论");
                 break;
             case 4:
                 //笔记
@@ -160,16 +152,17 @@ public class SchoolRoomFragment extends BaseFragment {
     /**
      * 跳转到问答详情界面(QuestionDetailActivity)
      */
-    private void goToQuestionDetailActivity(final String title, final String type) {
+    private void goToQuestionDetailActivity(final String title, final String type, final String empty) {
 
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
+                startIntent.putExtra("empty_text",empty);
             }
         };
-        app.mEngine.runNormalPlugin("QuestionActivity", mActivity, callback);
+        app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
 //        mActivity.app.mEngine.runNormalPlugin(QuestionDetailActivity.TAG, mContext, new PluginRunCallback() {
 //            @Override
 //            public void setIntentDate(Intent startIntent) {
