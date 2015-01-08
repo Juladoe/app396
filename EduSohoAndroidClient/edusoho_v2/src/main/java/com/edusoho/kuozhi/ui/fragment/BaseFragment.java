@@ -110,7 +110,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
                 }
             }
         } catch (Exception e) {
-            //nothing
+            e.printStackTrace();
         }
     }
 

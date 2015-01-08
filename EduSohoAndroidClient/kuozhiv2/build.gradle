@@ -15,6 +15,32 @@ android {
             applicationId "com.edusoho.kuozhi"
         }
     }
+
+    //链接选项 移除lint检查的error
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
+    //签名
+    signingConfigs {
+        releaseConfig{
+            storeFile file("../key/edusoho.kuozhi.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+    }
+
+    buildTypes{
+        release {
+            zipAlign true
+            runProguard true
+            proguardFile 'proguard-rules.txt'
+            signingConfig  signingConfigs.releaseConfig
+        }
+    }
 }
 
 dependencies {
