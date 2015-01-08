@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        lixianggongchang {
-            applicationId "com.lixianggongchang.kuozhi"
+        {package} {
+            applicationId "com.{package}.kuozhi"
         }
     }
 
     sourceSets {
-        lixianggongchang {
+        {package} {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/lixianggongchang/res']
+            res.srcDirs = ['src/{package}/res']
         }
     }
 
@@ -33,10 +33,10 @@ android {
     //签名
     signingConfigs {
         releaseConfig{
-            storeFile file("key/lixianggongchang.jks")
-            storePassword "10001000"
+            storeFile file("key/{package}.jks")
+            storePassword "{storePassword}"
             keyAlias "cn"
-            keyPassword "10001000"
+            keyPassword "{keyPassword}"
         }
     }
 
