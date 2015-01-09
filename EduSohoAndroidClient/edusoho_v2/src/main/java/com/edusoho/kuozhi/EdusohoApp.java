@@ -268,8 +268,9 @@ public class EdusohoApp extends Application {
 
         M3U8DownService m3U8DownService = M3U8DownService.getService();
         if (m3U8DownService != null) {
-                m3U8DownService.cancelAllDownloadTask();
-        };
+            m3U8DownService.cancelAllDownloadTask();
+        }
+        ;
 
         SqliteUtil.getUtil(this).close();
         System.exit(0);
@@ -286,8 +287,7 @@ public class EdusohoApp extends Application {
         initApp();
     }
 
-    private void initAquery()
-    {
+    private void initAquery() {
         query = new AQuery(this);
         AjaxCallback.setAgent("Android");
         AjaxCallback.setTimeout(1000 * 10);
@@ -734,8 +734,7 @@ public class EdusohoApp extends Application {
         notifyMap.remove(type);
     }
 
-    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity)
-    {
+    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity) {
         if (mResouceCacheServer == null) {
             mResouceCacheServer = new CacheServer(activity, Const.WEB_RES_PROT);
         }
@@ -745,11 +744,11 @@ public class EdusohoApp extends Application {
 
     /**
      * 启动播放器缓存server
+     *
      * @param activity
      * @return
      */
-    public CacheServer startPlayCacheServer(ActionBarBaseActivity activity)
-    {
+    public CacheServer startPlayCacheServer(ActionBarBaseActivity activity) {
         if (mPlayCacheServer == null) {
             mPlayCacheServer = new CacheServer(activity, Const.CACHE_PROT);
             mPlayCacheServer.start();

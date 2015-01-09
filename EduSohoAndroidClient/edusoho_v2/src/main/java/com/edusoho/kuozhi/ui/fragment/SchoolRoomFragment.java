@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
@@ -65,8 +66,21 @@ public class SchoolRoomFragment extends BaseFragment {
     private void initView() {
         mSchoolRoomListView = (RefreshListWidget) mView.findViewById(R.id.lv_schoolroom);
         mLoadView = mView.findViewById(R.id.load_layout);
-        mSchoolRoomListView.setMode(PullToRefreshBase.Mode.DISABLED);
+        mSchoolRoomListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mSchoolRoomListView.setEmptyText(new String[]{"您尚未登录"});
+        mSchoolRoomListView.setAdapter(new SchoolRoomAdapter(mContext,
+                R.layout.schoolroom_list_item));
+        mSchoolRoomListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
+            @Override
+            public void update(PullToRefreshBase<ListView> refreshView) {
+
+            }
+
+            @Override
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                loadSchoolRoomData();
+            }
+        });
         mSchoolRoomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -95,11 +109,11 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 2:
                 //问答
-                goToQuestionDetailActivity("问答", "question","暂无提问");
+                goToQuestionDetailActivity("问答", "question", "暂无提问");
                 break;
             case 3:
                 //讨论
-                goToQuestionDetailActivity("话题", "discussion","暂无讨论");
+                goToQuestionDetailActivity("话题", "discussion", "暂无讨论");
                 break;
             case 4:
                 //笔记
@@ -125,28 +139,6 @@ public class SchoolRoomFragment extends BaseFragment {
         } catch (Exception ex) {
             Log.d(TAG, ex.toString());
         }
-
-//        PluginRunCallback callback = new PluginRunCallback() {
-//            @Override
-//            public void setIntentDate(Intent startIntent) {
-//                startIntent.putExtra(CourseDetailsTabActivity.FRAGMENT_DATA, new Bundle());
-//                startIntent.putExtra(CourseDetailsTabActivity.LISTS, Const.MY_COURSE_FRAGMENT);
-//                startIntent.putExtra(CourseDetailsTabActivity.TITLES, Const.MY_COURSE_TITLE);
-//                startIntent.putExtra(Const.ACTIONBAR_TITLE, "我的课程");
-//                startIntent.putExtra(
-//                        CourseDetailsTabActivity.FRAGMENT, "");
-//            }
-//        };
-//        app.mEngine.runNormalPlugin("CourseDetailsTabActivity", mActivity, callback);
-//        mActivity.app.mEngine.runNormalPlugin(
-//                CourseDetailsActivity.TAG, mActivity, new PluginRunCallback() {
-//                    @Override
-//                    public void setIntentDate(Intent startIntent) {
-//                        startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(result.data.courseId));
-//                        startIntent.putExtra(Const.ACTIONBAR_TITLE, result.data.content);
-//                        startIntent.putExtra(CourseDetailsActivity.COURSE_PIC, result.data.lessonId);
-//                    }
-//                });
     }
 
     /**
@@ -159,17 +151,10 @@ public class SchoolRoomFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
-                startIntent.putExtra("empty_text",empty);
+                startIntent.putExtra("empty_text", empty);
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
-//        mActivity.app.mEngine.runNormalPlugin(QuestionDetailActivity.TAG, mContext, new PluginRunCallback() {
-//            @Override
-//            public void setIntentDate(Intent startIntent) {
-//                startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(result.data.courseId));
-//                startIntent.putExtra(Const.THREAD_ID, Integer.parseInt(result.data.id));
-//            }
-//        });
     }
 
     /**
@@ -184,31 +169,6 @@ public class SchoolRoomFragment extends BaseFragment {
 
             }
         });
-//        RequestUrl url = app.bindUrl(Const.ONE_NOTE, true);
-//        HashMap<String, String> params = new HashMap<String, String>();
-//        params.put("noteId", result.data.id);
-//        url.setParams(params);
-//        mActivity.ajaxPost(url, new ResultCallback() {
-//            @Override
-//            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-//                Bundle bundle = new Bundle();
-//                NoteInfo noteInfo = mActivity.parseJsonValue(object, new TypeToken<NoteInfo>() {
-//                });
-//                bundle.putString(Const.ACTIONBAR_TITLE, noteInfo.lessonTitle);
-//                bundle.putString(FragmentPageActivity.FRAGMENT, "NoteContentFragment");
-//                bundle.putString(NoteContentFragment.CONTENT, noteInfo.content);
-//                bundle.putInt(Const.LESSON_ID, noteInfo.lessonId);
-//                bundle.putInt(Const.COURSE_ID, noteInfo.coursesId);
-//                bundle.putString(Const.LESSON_NAME, noteInfo.lessonTitle);
-//                bundle.putString(Const.LEARN_STATUS, noteInfo.learnStatus);
-//                mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-//            }
-//
-//            @Override
-//            public void error(String url, AjaxStatus ajaxStatus) {
-//                super.error(url, ajaxStatus);
-//            }
-//        });
     }
 
     /**
@@ -219,15 +179,6 @@ public class SchoolRoomFragment extends BaseFragment {
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");
         app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-
-//        mActivity.app.mEngine.runNormalPlugin("LetterActivity", mContext, new PluginRunCallback() {
-//            @Override
-//            public void setIntentDate(Intent startIntent) {
-//                startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, Integer.parseInt(result.data.id));
-//                startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_NAME, "1");
-//                startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_ID, Integer.parseInt(result.data.courseId));
-//            }
-//        });
     }
 
     private void loadSchoolRoomData() {
@@ -236,15 +187,13 @@ public class SchoolRoomFragment extends BaseFragment {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
+                    mSchoolRoomListView.onRefreshComplete();
                     mLoadView.setVisibility(View.GONE);
-                    List<SchoolRoomResult> schoolRoomList = mActivity.parseJsonValue(
+                    ArrayList<SchoolRoomResult> schoolRoomList = mActivity.parseJsonValue(
                             object, new TypeToken<ArrayList<SchoolRoomResult>>() {
                             });
 
-                    SchoolRoomAdapter<SchoolRoomResult> schoolRoomAdapter = new SchoolRoomAdapter(mContext,
-                            R.layout.schoolroom_list_item, app.loginUser);
-                    schoolRoomAdapter.addItems(schoolRoomList);
-                    mSchoolRoomListView.setAdapter(schoolRoomAdapter);
+                    mSchoolRoomListView.pushData(schoolRoomList);
                 } catch (Exception ex) {
                     Log.d(TAG, ex.toString());
                 }
