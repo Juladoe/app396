@@ -194,7 +194,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         mQuestionDetatileAnswerList = (RefreshListWidget) view.findViewById(R.id.question_detail_answer_list);
         mQuestionDetatileAnswerList.getRefreshableView().addHeaderView(mQuestionDetailDescribe);
         mQuestionDetatileAnswerList.setMode(PullToRefreshBase.Mode.BOTH);
-        mQuestionDetatileAnswerList.setEmptyText(new String[]{"没有回答"},R.drawable.course_details_menu_courseinfo);
+        mQuestionDetatileAnswerList.setEmptyText(new String[]{"没有回答"},R.drawable.icon_question);
         mQuestionDetatilAnswerListAdapter = new QuestionDetatilAnswerListAdapter(mContext,R.layout.question_detatil_answer_list_item);
         mQuestionDetatileAnswerList.setAdapter(mQuestionDetatilAnswerListAdapter);
         getQuestionReplyListReponseData(0);
@@ -220,19 +220,20 @@ public class QuestionDetatilFragment extends BaseFragment{
         mQuestionDetatileAnswerList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                getQuestionReplyListReponseData(0);
+                getQuestionReplyListReponseData(mQuestionDetatileAnswerList.getStart());
                 getQuestionDetatilDescribeReponseData();
             }
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                getQuestionReplyListReponseData(mQuestionDetatileAnswerList.getStart());
+                getQuestionReplyListReponseData(0);
                 getQuestionDetatilDescribeReponseData();
             }
         });
     }
 
     public void getQuestionReplyListReponseData(final int start){
+        System.out.println("start:"+start);
         RequestUrl requestUrl = app.bindUrl(Const.NORMAL_REPLY, true);
         mParams.put("start",String.valueOf(start));
         requestUrl.setParams(mParams);
