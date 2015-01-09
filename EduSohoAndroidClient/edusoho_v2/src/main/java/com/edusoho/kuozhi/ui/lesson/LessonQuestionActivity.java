@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.LessonQuestionRefreshListWidget;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -79,14 +80,20 @@ public class LessonQuestionActivity extends ActionBarBaseActivity {
                 final String title = model.title;
                 final int courseId = model.courseId;
                 final int threadId = model.id;
-                app.mEngine.runNormalPlugin("QuestionDetailActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.QUESTION_TITLE, title);
-                        startIntent.putExtra(Const.COURSE_ID, courseId);
-                        startIntent.putExtra(Const.THREAD_ID, threadId);
-                    }
-                });
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.THREAD_ID,threadId);
+                bundle.putInt(Const.COURSE_ID,courseId);
+                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
+                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity",mActivity,bundle);
+
+//                app.mEngine.runNormalPlugin("QuestionDetailActivity", mActivity, new PluginRunCallback() {
+//                    @Override
+//                    public void setIntentDate(Intent startIntent) {
+//                        startIntent.putExtra(Const.QUESTION_TITLE, title);
+//                        startIntent.putExtra(Const.COURSE_ID, courseId);
+//                        startIntent.putExtra(Const.THREAD_ID, threadId);
+//                    }
+//                });
             }
         });
         loadQuestionDataFromSeek(0, false);

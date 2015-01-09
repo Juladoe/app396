@@ -34,7 +34,8 @@ public class LearningRoomActivity extends ActionBarBaseActivity {
 
     private final Handler mHandler = new Handler();
     private Drawable oldBackground = null;
-    private int currentColor = R.color.action_bar_title;
+    private int currentColor = R.color.action_bar_bg;
+
 
     public static final String TAB_TITLES = "title";
     public static final String FRAGMENT_LIST = "fragment_list";
