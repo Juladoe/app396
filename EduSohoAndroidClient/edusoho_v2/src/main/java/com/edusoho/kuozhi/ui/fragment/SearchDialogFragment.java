@@ -86,8 +86,8 @@ public class SearchDialogFragment extends DialogFragment {
         mClearBtn = view.findViewById(R.id.search_clear_btn);
 
         bindViewListener();
-        //tudo 服务器api在不支持标签 loadTags();
-        view.findViewById(R.id.rl_tags).setVisibility(View.GONE);
+        //tudo 服务器api在不支持标签
+        loadTags();
         return view;
     }
 
