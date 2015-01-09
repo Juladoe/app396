@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -10,6 +12,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.M3U8DownService;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
@@ -31,6 +34,9 @@ import java.util.Set;
  */
 public class SettingFragment extends BaseFragment {
 
+    @ViewUtil("setting_app_btn")
+    private View mAppView;
+
     @ViewUtil("setting_clear_btn")
     private View mClearCacheView;
 
@@ -45,7 +51,6 @@ public class SettingFragment extends BaseFragment {
 
     @ViewUtil("setting_load_progress")
     private ProgressBar mLoadProgressBar;
-
 
     @ViewUtil("setting_check_version")
     private EduUpdateView mCheckView;
@@ -205,6 +210,19 @@ public class SettingFragment extends BaseFragment {
                         }).show();
             }
         });
+
+        mAppView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "EduAppPluginFragment");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "应用中心");
+                    }
+                });
+            }
+        });
     }
 
     private void logout() {
@@ -233,6 +251,8 @@ public class SettingFragment extends BaseFragment {
         File dir = AQUtility.getCacheDir(mActivity);
         AQUtility.cleanCache(dir, 0, 0);
         mCacheView.setText(getCacheSize());
+        mContext.deleteDatabase("webview.db");
+        mContext.deleteDatabase("webviewCache.db");
     }
 
     private String getCacheSize() {

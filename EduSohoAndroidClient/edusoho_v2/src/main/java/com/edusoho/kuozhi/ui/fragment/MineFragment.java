@@ -5,6 +5,9 @@ import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -16,6 +19,7 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
@@ -79,7 +83,22 @@ public class MineFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         setContainerView(R.layout.mine_layout);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.me_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.me_menu_search) {
+            app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setStatusLoginLayout() {
@@ -252,18 +271,10 @@ public class MineFragment extends BaseFragment {
                     LoginActivity.start(mActivity);
                     return;
                 }
-                PluginRunCallback callback = new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_DATA, new Bundle());
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_NAME, "MessageFragment");
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_LIST, Const.MESSAGE_FRAGMENT_LIST);
-                        startIntent.putExtra(MessageTabActivity.TAB_TITLES, Const.MESSAGE_TAB_TITLE);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "消息");
-                    }
-                };
-
-                app.mEngine.runNormalPlugin("MessageTabActivity", mActivity, callback);
+                Bundle bundle = new Bundle();
+                bundle.putString(Const.ACTIONBAR_TITLE, "消息");
+                bundle.putString(FragmentPageActivity.FRAGMENT, "MessageFragment");
+                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
             }
         });
 

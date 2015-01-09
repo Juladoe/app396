@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -33,10 +34,13 @@ import java.util.concurrent.Executors;
 public class EduHtmlAppActivity extends ActionBarBaseActivity implements CordovaInterface {
 
     public static final String ASSET_RES = "local://";
+    public static final String APP_URL = "app_url";
+
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
     private CordovaWebView cordovaWebView;
     private Menu mMenu;
     private CacheServer mResouceCacheServer;
+    private String mUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,16 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
 
     protected void initView() {
         setBackMode(BACK, "标题", R.drawable.action_bar_close);
+
+        Intent intent = getIntent();
+        mUrl = intent.getStringExtra(APP_URL);
+        if (TextUtils.isEmpty(mUrl)) {
+            longToast("无效应用地址 ");
+            return;
+        }
+        if (!mUrl.startsWith("http://")) {
+            mUrl = app.schoolHost + mUrl;
+        }
         cordovaWebView = (CordovaWebView) findViewById(R.id.htmlapp_webView);
         cordovaWebView.setVerticalScrollBarEnabled(true);
         cordovaWebView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -97,7 +111,7 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
         mResouceCacheServer.addHandler("*", new WebResourceHandler("", this));
         mResouceCacheServer.start();
 
-        cordovaWebView.loadUrl("http://trymob.edusoho.cn/articleApp", 60000);
+        cordovaWebView.loadUrl(mUrl, 60000);
         cordovaWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {

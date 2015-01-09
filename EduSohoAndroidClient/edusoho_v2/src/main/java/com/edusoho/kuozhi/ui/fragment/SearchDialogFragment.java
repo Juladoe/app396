@@ -86,8 +86,8 @@ public class SearchDialogFragment extends DialogFragment {
         mClearBtn = view.findViewById(R.id.search_clear_btn);
 
         bindViewListener();
-        //tudo 服务器api在不支持标签 loadTags();
-        view.findViewById(R.id.rl_tags).setVisibility(View.GONE);
+        //tudo 服务器api在不支持标签
+        loadTags();
         return view;
     }
 
@@ -158,7 +158,7 @@ public class SearchDialogFragment extends DialogFragment {
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         int tagMargin = AppUtil.dip2px(mContext, 12);
         params.setMargins(tagMargin, tagMargin, tagMargin, tagMargin);
-        float curScreenWid = EdusohoApp.screenW - tagMargin;
+        float curScreenWid = EdusohoApp.screenW;
 
         for (TagModel tagModel : tagList) {
             ESTextView textView = new ESTextView(mContext);
@@ -170,18 +170,17 @@ public class SearchDialogFragment extends DialogFragment {
             textView.setBackgroundResource(R.drawable.search_tag_btn_bg);
             textView.measure(0, 0);
             float wid = textView.getMeasuredWidth();
-            if (curScreenWid > wid + tagMargin * 2) {
-
+            if (curScreenWid >= wid + tagMargin * 2) {
+                curScreenWid = curScreenWid - wid - tagMargin * 2;
+                textView.setOnClickListener(tagClickListener);
+                tmpLinearLayout.addView(textView, params);
             } else {
-                curScreenWid = EdusohoApp.screenW - tagMargin;
+                curScreenWid = EdusohoApp.screenW;
                 LinearLayout newLinearLayout = new LinearLayout(mContext);
                 tmpLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
                 linearLayout.addView(newLinearLayout, linearLayoutParams);
                 tmpLinearLayout = newLinearLayout;
             }
-            curScreenWid = curScreenWid - wid - tagMargin * 2;
-            textView.setOnClickListener(tagClickListener);
-            tmpLinearLayout.addView(textView, params);
         }
     }
 

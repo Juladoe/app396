@@ -30,11 +30,8 @@ import java.util.regex.Pattern;
  */
 public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
 
-    private User mUser;
-
-    public SchoolRoomAdapter(Context context, int resource, User user) {
+    public SchoolRoomAdapter(Context context, int resource) {
         super(context, resource);
-        mUser = user;
     }
 
     @Override
@@ -84,7 +81,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
         } else {
             holder.llInterval.setVisibility(View.GONE);
         }
-        if (mUser != null) {
+        if (EdusohoApp.app.loginUser != null) {
             SchoolRoomItem item = schoolRoomModel.data;
             if (item != null) {
                 holder.tvContent.setText(removeHtmlSpace(Html.fromHtml(removeImgTagFromString(item.content)).toString()));

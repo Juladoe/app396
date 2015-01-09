@@ -50,11 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/setting_fix_btn"
+            android:id="@+id/setting_app_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/more_setting_list_select2"
@@ -62,17 +61,13 @@
             android:paddingBottom="17dp"
             android:paddingLeft="20dp"
             android:paddingTop="18dp"
-            android:text="意见反馈"
+            android:text="应用中心"
+            android:layout_marginBottom="1dp"
             android:textColor="@color/system_light_text"
             android:textSize="@dimen/more_setting_text" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/more_setting_line"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp" />
 
         <LinearLayout
+            android:layout_marginBottom="1dp"
             android:gravity="center"
             android:background="@drawable/more_setting_list_select2"
             android:clickable="true"
@@ -101,13 +96,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/more_setting_line"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp" />
 
         <com.edusoho.kuozhi.view.EduUpdateView
             android:id="@+id/setting_check_version"
