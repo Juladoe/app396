@@ -194,7 +194,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         mQuestionDetatileAnswerList = (RefreshListWidget) view.findViewById(R.id.question_detail_answer_list);
         mQuestionDetatileAnswerList.getRefreshableView().addHeaderView(mQuestionDetailDescribe);
         mQuestionDetatileAnswerList.setMode(PullToRefreshBase.Mode.BOTH);
-        mQuestionDetatileAnswerList.setEmptyText(new String[]{"没有问题的回答"});
+        mQuestionDetatileAnswerList.setEmptyText(new String[]{"没有回答"},R.drawable.course_details_menu_courseinfo);
         mQuestionDetatilAnswerListAdapter = new QuestionDetatilAnswerListAdapter(mContext,R.layout.question_detatil_answer_list_item);
         mQuestionDetatileAnswerList.setAdapter(mQuestionDetatilAnswerListAdapter);
         getQuestionReplyListReponseData(0);

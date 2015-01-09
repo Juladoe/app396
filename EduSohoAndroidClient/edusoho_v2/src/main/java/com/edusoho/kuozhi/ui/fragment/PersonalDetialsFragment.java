@@ -48,13 +48,11 @@ public class PersonalDetialsFragment extends BaseFragment {
         mInfoList = (ListView) view.findViewById(R.id.info_list);
 
 
-        personalDetailAdapter = new PersonalDetailAdapter(mContext, R.layout.personal_detail_item_header,app.loginUser,mActivity);
-        mInfoList.setAdapter(personalDetailAdapter);
+        personalDetailAdapter = new PersonalDetailAdapter(mContext, R.layout.personal_detail_item_header, app.loginUser, mActivity);
 
-        if(isTeacher()){
+        if (isTeacher()) {
             loadTeachingCourse();
-        }
-        else{
+        } else {
             loadCourseList(0);
         }
 
@@ -68,15 +66,19 @@ public class PersonalDetialsFragment extends BaseFragment {
     }
 
 
-//    获取在学课程
-    public void loadCourseList(int start){
+    /**
+     * 获取在学课程
+     *
+     * @param start
+     */
+    public void loadCourseList(int start) {
         personalDetailAdapter.setListViewLayout(R.layout.personal_detail_item);
         RequestUrl url = app.bindUrl(Const.LEARNING, true);
         HashMap<String, String> params = url.getParams();
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 CourseResult courseResult = mActivity.gson.fromJson(
@@ -87,38 +89,40 @@ public class PersonalDetialsFragment extends BaseFragment {
                     return;
                 }
                 personalDetailAdapter.addItems(courseResult.data);
+                mInfoList.setAdapter(personalDetailAdapter);
             }
-
         });
     }
 
-//    获取在教课程
-    public void loadTeachingCourse(){
+    /**
+     * 获取在教课程
+     */
+    public void loadTeachingCourse() {
         personalDetailAdapter.setListViewLayout(R.layout.personal_detail_item);
         RequestUrl url = app.bindUrl(Const.TEACHER_COURSES, true);
         url.setParams(new String[]{
                 "userId", app.loginUser.id + ""
         });
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 ArrayList<Course> list = mActivity.parseJsonValue(
-                        object, new TypeToken<ArrayList<Course>>(){});
+                        object, new TypeToken<ArrayList<Course>>() {
+                        });
 
                 if (list == null) {
                     return;
                 }
                 personalDetailAdapter.addItems(list);
+                mInfoList.setAdapter(personalDetailAdapter);
             }
-
         });
     }
 
-    public boolean isTeacher(){
+    public boolean isTeacher() {
         for (UserRole role : app.loginUser.roles) {
-            if(role == UserRole.ROLE_TEACHER) {
-                loadTeachingCourse();
+            if (role == UserRole.ROLE_TEACHER) {
                 return true;
             }
         }

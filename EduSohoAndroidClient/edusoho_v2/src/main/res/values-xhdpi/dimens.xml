@@ -121,7 +121,7 @@
     <dimen name="course_notice_issue_time">13sp</dimen>
 
     <!--question_new-->
-    <dimen name="question_user_head_image_size">40dp</dimen>
+    <dimen name="question_user_head_image_size">48dp</dimen>
     <dimen name="question_reply_image_size">56dp</dimen>
 
     <dimen name="question_super_small_font_size">12dp</dimen>

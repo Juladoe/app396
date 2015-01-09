@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -68,13 +69,11 @@ public class SettingFragment extends BaseFragment {
         setContainerView(R.layout.setting_fragment);
     }
 
-    private void registNotify()
-    {
+    private void registNotify() {
         mCheckView.addNotifyType("app_update");
     }
 
-    private void checkNotify()
-    {
+    private void checkNotify() {
         Set<String> notifys = app.getNotifys();
         for (String type : notifys) {
             if (mCheckView == null) {
@@ -151,16 +150,16 @@ public class SettingFragment extends BaseFragment {
                                 mActivity,
                                 "版本更新",
                                 "更新内容\n" + result.updateInfo, new PopupDialog.PopupClickListener() {
-                            @Override
-                            public void onClick(int button) {
-                                if (button == PopupDialog.OK) {
-                                    app.startUpdateWebView(result.updateUrl);
-                                } else {
-                                    mCheckView.clearUpdateIcon();
-                                    app.removeNotify("app_update");
-                                }
-                            }
-                        });
+                                    @Override
+                                    public void onClick(int button) {
+                                        if (button == PopupDialog.OK) {
+                                            app.startUpdateWebView(result.updateUrl);
+                                        } else {
+                                            mCheckView.clearUpdateIcon();
+                                            app.removeNotify("app_update");
+                                        }
+                                    }
+                                });
 
                         popupDialog.setOkText("更新");
                         popupDialog.show();
@@ -190,7 +189,7 @@ public class SettingFragment extends BaseFragment {
                                 app.saveConfig();
                                 mOfflineSetView.setText(selStr);
                             }
-                }).show();
+                        }).show();
             }
         });
 
@@ -236,7 +235,7 @@ public class SettingFragment extends BaseFragment {
                 app.removeToken();
                 mLogoutBtn.setVisibility(View.GONE);
                 app.sendMsgToTarget(MineFragment.LOGOUT, null, MineFragment.class);
-//                app.sendMsgToTarget(SchoolRoomFragment.LOGOUT, null, SchoolRoomFragment.class);
+                app.sendMsgToTarget(SchoolRoomFragment.LOGOUT, null, SchoolRoomFragment.class);
                 //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
 
                 M3U8DownService service = M3U8DownService.getService();
@@ -248,16 +247,15 @@ public class SettingFragment extends BaseFragment {
     }
 
 
-
-    private void clearCache()
-    {
+    private void clearCache() {
         File dir = AQUtility.getCacheDir(mActivity);
         AQUtility.cleanCache(dir, 0, 0);
         mCacheView.setText(getCacheSize());
+        mContext.deleteDatabase("webview.db");
+        mContext.deleteDatabase("webviewCache.db");
     }
 
-    private String getCacheSize()
-    {
+    private String getCacheSize() {
         File dir = AQUtility.getCacheDir(mContext);
         long totalSize = 0;
         for (File file : dir.listFiles()) {

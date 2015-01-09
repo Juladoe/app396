@@ -53,7 +53,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
     private void initView() {
         mLoadView = this.findViewById(R.id.load_layout);
         mQuestionList = (RefreshListWidget) this.findViewById(R.id.question_list);
-        mQuestionList.setEmptyText(new String[]{mEmptyText});
+        mQuestionList.setEmptyText(new String[]{mEmptyText}, R.drawable.course_details_menu_courseinfo);
         mQuestionList.setMode(PullToRefreshBase.Mode.BOTH);
         mQuestionListAdapter = new QuestionListAdapter(this,R.layout.question_list_item_inflate);
         mQuestionList.setAdapter(mQuestionListAdapter);

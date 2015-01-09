@@ -95,11 +95,11 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 2:
                 //问答
-                goToQuestionDetailActivity("我的问答", "question","暂无提问");
+                goToQuestionDetailActivity("问答", "question","暂无提问");
                 break;
             case 3:
                 //讨论
-                goToQuestionDetailActivity("我的讨论", "discussion","暂无讨论");
+                goToQuestionDetailActivity("话题", "discussion","暂无讨论");
                 break;
             case 4:
                 //笔记
