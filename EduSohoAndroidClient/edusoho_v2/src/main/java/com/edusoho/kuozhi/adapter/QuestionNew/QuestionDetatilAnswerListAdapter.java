@@ -28,6 +28,9 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
 
     public void sortReplyModelData(){
         mReplyModelListData.clear();
+        if(!mReplyModelListData.isEmpty()){
+            return ;
+        }
         ArrayList<ReplyModel> teachReplyModelData = new ArrayList<ReplyModel>();
         ArrayList<ReplyModel> normalReplyModelData = new ArrayList<ReplyModel>();
 

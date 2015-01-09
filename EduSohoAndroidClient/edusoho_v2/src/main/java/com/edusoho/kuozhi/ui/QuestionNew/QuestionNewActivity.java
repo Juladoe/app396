@@ -31,6 +31,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
     private String mTitle;
     private String mquestionType;
     private String mEmptyText;
+    private int mEmptyIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +49,13 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
         mTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
         mquestionType = intent.getStringExtra(Const.QUESTION_TYPE);
         mEmptyText = intent.getStringExtra("empty_text");
+        mEmptyIcon = intent.getIntExtra("empty_icon",R.drawable.icon_question);
     }
 
     private void initView() {
         mLoadView = this.findViewById(R.id.load_layout);
         mQuestionList = (RefreshListWidget) this.findViewById(R.id.question_list);
-        mQuestionList.setEmptyText(new String[]{mEmptyText}, R.drawable.course_details_menu_courseinfo);
+        mQuestionList.setEmptyText(new String[]{mEmptyText}, mEmptyIcon);
         mQuestionList.setMode(PullToRefreshBase.Mode.BOTH);
         mQuestionListAdapter = new QuestionListAdapter(this,R.layout.question_list_item_inflate);
         mQuestionList.setAdapter(mQuestionListAdapter);
