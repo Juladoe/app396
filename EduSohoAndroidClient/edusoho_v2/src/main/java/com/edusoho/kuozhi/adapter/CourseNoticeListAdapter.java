@@ -24,16 +24,17 @@ import java.util.regex.Pattern;
 /**
  * Created by onewoman on 14-11-10.
  */
-public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
+public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice> {
     private static int mContentImageSize = 0;
     private static final float GRIDVIEW_CONTENT_PROPORTION = 0.65f;
     private static final int GRIDVIEW_SPACING = 10;
     private DisplayImageOptions mOptions;
 
-    public CourseNoticeListAdapter(Context context, int resource, boolean iscache){
-        super(context, resource,iscache);
+    public CourseNoticeListAdapter(Context context, int resource, boolean iscache) {
+        super(context, resource, iscache);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
+
     @Override
     public void addItems(ArrayList<CourseNotice> list) {
         mList.addAll(list);
@@ -46,12 +47,12 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
         TextView courseNoticeissueTime;
 
         view = getCacheView(position);
-        if(view != null){
+        if (view != null) {
             return view;
         }
 
-        if(view == null){
-            view = inflater.inflate(mResource,null);
+        if (view == null) {
+            view = inflater.inflate(mResource, null);
         }
 
         courseNoticeContent = (TextView) view.findViewById(R.id.course_notice_content);
@@ -69,7 +70,7 @@ public class CourseNoticeListAdapter extends ListBaseAdapter<CourseNotice>{
             ImageLoader.getInstance().displayImage(mUrlList.get(0), noticeImage);
         }
 
-        setCacheView(position,view);
+        setCacheView(position, view);
         return view;
     }
 
