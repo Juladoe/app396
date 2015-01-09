@@ -66,6 +66,8 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.THREAD_ID,questionDetailModel.id);
                 bundle.putInt(Const.COURSE_ID,questionDetailModel.courseId);
+                bundle.putString("empty_text",mEmptyText);
+                bundle.putInt("empty_icon",mEmptyIcon);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity",mActivity,bundle);
             }

@@ -352,6 +352,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 bundle.putString(Const.QUESTION_TITLE, "");
                 bundle.putString(QuestionReplyActivity.ACTION, "add");
                 bundle.putString(Const.QUESTION_CONTENT, "");
+                bundle.putString("empty_text","暂无提问");
+                bundle.putInt("empty_icon",R.drawable.icon_question);
 
                 app.mEngine.runNormalPluginForResult(
                         "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {

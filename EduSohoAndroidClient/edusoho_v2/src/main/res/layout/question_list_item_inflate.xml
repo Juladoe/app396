@@ -57,7 +57,7 @@
 
         <com.edusoho.kuozhi.view.ESTextView
             android:id="@+id/question_course_title"
-            android:layout_width="200dp"
+            android:layout_width="@dimen/question_course_title_width"
             android:layout_height="wrap_content"
             android:layout_marginRight="12dp"
             app:es_alpha="0.54"

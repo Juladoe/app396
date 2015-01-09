@@ -72,7 +72,7 @@ public class LessonQuestionActivity extends ActionBarBaseActivity {
                 loadQuestionDataFromSeek(0, true);
             }
         });
-        mLessonQuestionList.setEmptyText(new String[]{"暂无提问"});
+        mLessonQuestionList.setEmptyText(new String[]{"暂无提问"},R.drawable.icon_question);
         mLessonQuestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -83,6 +83,8 @@ public class LessonQuestionActivity extends ActionBarBaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.THREAD_ID,threadId);
                 bundle.putInt(Const.COURSE_ID,courseId);
+                bundle.putString("empty_text","暂无提问");
+                bundle.putInt("empty_icon",R.drawable.icon_question);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity",mActivity,bundle);
 

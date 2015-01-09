@@ -19,7 +19,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
             android:padding="13dp"
-            android:background="@drawable/question_more_icon_bk"
+            android:background="@drawable/question_answer_button_bg"
             android:src="@drawable/question_reply_icon"/>
     </RelativeLayout>
 </FrameLayout>

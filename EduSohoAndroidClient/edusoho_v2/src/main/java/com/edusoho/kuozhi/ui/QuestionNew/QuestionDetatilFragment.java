@@ -74,6 +74,8 @@ public class QuestionDetatilFragment extends BaseFragment{
 
     private HashMap<String,String> mParams = new HashMap<String, String>();
 
+    private String mEmptyText;
+    private int mEmptyIcon;
 
     @Override
     public String getTitle() {
@@ -161,6 +163,8 @@ public class QuestionDetatilFragment extends BaseFragment{
         Bundle bundle = getArguments();
         intentThreadId = bundle.getInt(Const.THREAD_ID);
         intentCourseId = bundle.getInt(Const.COURSE_ID);
+        mEmptyText = bundle.getString("empty_text");
+        mEmptyIcon = bundle.getInt("empty_icon");
         SHARE_QUESTION_URL.append("course/");
         SHARE_QUESTION_URL.append(String.valueOf(intentCourseId)+"/");
         SHARE_QUESTION_URL.append("thread/");
@@ -194,7 +198,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         mQuestionDetatileAnswerList = (RefreshListWidget) view.findViewById(R.id.question_detail_answer_list);
         mQuestionDetatileAnswerList.getRefreshableView().addHeaderView(mQuestionDetailDescribe);
         mQuestionDetatileAnswerList.setMode(PullToRefreshBase.Mode.BOTH);
-        mQuestionDetatileAnswerList.setEmptyText(new String[]{"没有回答"},R.drawable.icon_question);
+        mQuestionDetatileAnswerList.setEmptyText(new String[]{mEmptyText},mEmptyIcon);
         mQuestionDetatilAnswerListAdapter = new QuestionDetatilAnswerListAdapter(mContext,R.layout.question_detatil_answer_list_item);
         mQuestionDetatileAnswerList.setAdapter(mQuestionDetatilAnswerListAdapter);
         getQuestionReplyListReponseData(0);
@@ -233,7 +237,6 @@ public class QuestionDetatilFragment extends BaseFragment{
     }
 
     public void getQuestionReplyListReponseData(final int start){
-        System.out.println("start:"+start);
         RequestUrl requestUrl = app.bindUrl(Const.NORMAL_REPLY, true);
         mParams.put("start",String.valueOf(start));
         requestUrl.setParams(mParams);
