@@ -148,7 +148,7 @@
             android:launchMode="singleTop" />
 
         <activity
-            android:name="com.edusoho.kuozhi.ui.message.MessageTabActivity"
+            android:name="com.edusoho.kuozhi.ui.Message.MessageTabActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -160,7 +160,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.edusoho.kuozhi.ui.message.MessageLetterListActivity"
+            android:name="com.edusoho.kuozhi.ui.Message.MessageLetterListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
@@ -201,7 +201,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.edusoho.kuozhi.ui.message.LetterActivity"
+            android:name="com.edusoho.kuozhi.ui.Message.LetterActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 

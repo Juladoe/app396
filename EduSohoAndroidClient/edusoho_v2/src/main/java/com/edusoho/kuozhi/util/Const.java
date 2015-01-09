@@ -234,6 +234,7 @@ public class Const {
 
     //意见反馈
     public static final String SUGGESTION = "School/sendSuggestion";
+    public static final String SCHOOL_APP = "School/getSchoolApps";
 
     public static final Object[] QUICK_COMMENTS = {
             "不错", 2.0f,
