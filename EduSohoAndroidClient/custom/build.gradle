@@ -11,14 +11,38 @@ android {
     }
 
     productFlavors {
-        custom {
-            applicationId "com.edusoho_17mooc.kuozhi"
+        lixianggongchang {
+            applicationId "com.lixianggongchang.kuozhi"
         }
     }
 
     sourceSets {
-        custom {
-            res.srcDirs = ['src/edusoho_17mooc/res']
+        lixianggongchang {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['src/lixianggongchang/res']
+        }
+    }
+
+    //链接选项 移除lint检查的error
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
+    //签名
+    signingConfigs {
+        releaseConfig{
+            storeFile file("key/lixianggongchang.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+    }
+
+    buildTypes{
+        release {
+            signingConfig  signingConfigs.releaseConfig
         }
     }
 }

@@ -97,7 +97,7 @@ public class LoginFragment extends BaseFragment {
                             app.sendMessage(Const.LOGING_SUCCESS, null);
 
                             app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
-                            //app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
+                            app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
 
                             //app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
                             app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);

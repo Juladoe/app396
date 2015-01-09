@@ -18,8 +18,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/ll_interval">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_interval"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
         <com.edusoho.kuozhi.view.EduSohoTextBtn
             android:id="@+id/iv_logo"
@@ -40,6 +42,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_logo">
 
             <com.edusoho.kuozhi.view.ESTextView
@@ -47,7 +50,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginTop="8dp"
                 android:textSize="@dimen/middle_font_size"
                 android:text="在学课程"
                 android:id="@+id/tv_title"
@@ -61,8 +63,6 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/middle_font_size"
                 android:text="在学课程(居中)"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="18dp"
                 android:id="@+id/tv_title_center"
                 android:visibility="gone"
                 android:textColor="@android:color/black"
@@ -75,9 +75,10 @@
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/small_font_size"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
                 android:text="副标题"
                 android:id="@+id/tv_content"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColor="@android:color/black"
                 app:es_alpha="0.54" />
 

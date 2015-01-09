@@ -141,6 +141,7 @@ public class RegistFragment extends BaseFragment {
                 app.saveToken(tokenResult);
                 mActivity.finish();
                 app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
+                app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
             }
 
             @Override
