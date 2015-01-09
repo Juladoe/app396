@@ -40,7 +40,7 @@
             android:layout_height="32dp" />
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_logo">
@@ -72,9 +72,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_title"
+                android:layout_toLeftOf="@+id/tv_msg_sum"
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/small_font_size"
                 android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
                 android:text="副标题"
                 android:id="@+id/tv_content"
                 android:singleLine="true"
@@ -87,8 +89,8 @@
                 android:layout_height="wrap_content"
                 android:text="2014-12-22"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignBaseline="@id/tv_title"
+                android:layout_marginRight="8dp"
+                android:layout_alignParentTop="true"
                 android:id="@+id/tv_time"
                 android:textSize="@dimen/small_font_size"
                 android:textColor="@android:color/black"
@@ -104,7 +106,6 @@
                 android:text="1"
                 android:gravity="center"
                 android:textSize="@dimen/x_small_font_size"
-                android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:background="@drawable/new_msg_logo" />
 
