@@ -289,6 +289,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         }
     }
 
+    //过滤html标签里的img图片
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
     }

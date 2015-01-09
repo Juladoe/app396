@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        app:rlw_dividerColor="@color/load_bg"
-        app:rlw_dividerHeight="1px"></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
+        app:rlw_dividerHeight="1px"
+        app:rlw_dividerColor="@color/base_black_12"
+        ></com.edusoho.kuozhi.ui.widget.RefreshListWidget>
 </RelativeLayout>

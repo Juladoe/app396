@@ -11,8 +11,15 @@ android {
     }
 
     productFlavors {
-        edusoho {
-            applicationId "com.edusoho.kuozhi"
+        {package} {
+            applicationId "com.{package}.kuozhi"
+        }
+    }
+
+    sourceSets {
+        {package} {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['src/{package}/res']
         }
     }
 
@@ -26,18 +33,15 @@ android {
     //签名
     signingConfigs {
         releaseConfig{
-            storeFile file("../key/edusoho.kuozhi.jks")
-            storePassword "10001000"
+            storeFile file("key/{package}.jks")
+            storePassword "{storePassword}"
             keyAlias "cn"
-            keyPassword "10001000"
+            keyPassword "{keyPassword}"
         }
     }
 
     buildTypes{
         release {
-            zipAlign true
-            runProguard true
-            proguardFile 'proguard-rules.txt'
             signingConfig  signingConfigs.releaseConfig
         }
     }
