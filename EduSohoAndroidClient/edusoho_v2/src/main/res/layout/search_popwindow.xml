@@ -118,21 +118,20 @@
             android:layout_below="@+id/tv_interval_line">
 
             <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
 
-                <!--<com.edusoho.kuozhi.view.ESTextView-->
-                    <!--android:layout_width="160px"-->
-                    <!--android:layout_height="74px"-->
-                    <!--android:background="@drawable/search_tag_btn_bg"-->
-                    <!--android:text="香蕉"-->
-                    <!--android:id="@+id/tv_text"-->
-                    <!--android:tag="1"-->
-                    <!--android:textColor="@android:color/black"-->
-                    <!--app:es_alpha="0.87"-->
-                    <!--android:textSize="@dimen/middle_font_size"-->
-                    <!--android:layout_margin="12dp" />-->
-
+            <!--<com.edusoho.kuozhi.view.ESTextView-->
+            <!--android:layout_width="160px"-->
+            <!--android:layout_height="74px"-->
+            <!--android:background="@drawable/search_tag_btn_bg"-->
+            <!--android:text="香蕉"-->
+            <!--android:id="@+id/tv_text"-->
+            <!--android:tag="1"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--app:es_alpha="0.87"-->
+            <!--android:textSize="@dimen/middle_font_size"-->
+            <!--android:layout_margin="12dp" />-->
             <!--</LinearLayout>-->
         </LinearLayout>
     </RelativeLayout>
