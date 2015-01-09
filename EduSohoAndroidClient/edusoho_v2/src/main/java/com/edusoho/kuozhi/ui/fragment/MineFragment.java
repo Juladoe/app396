@@ -16,6 +16,7 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
+import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
@@ -252,18 +253,10 @@ public class MineFragment extends BaseFragment {
                     LoginActivity.start(mActivity);
                     return;
                 }
-                PluginRunCallback callback = new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_DATA, new Bundle());
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_NAME, "MessageFragment");
-                        startIntent.putExtra(MessageTabActivity.FRAGMENT_LIST, Const.MESSAGE_FRAGMENT_LIST);
-                        startIntent.putExtra(MessageTabActivity.TAB_TITLES, Const.MESSAGE_TAB_TITLE);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "消息");
-                    }
-                };
-
-                app.mEngine.runNormalPlugin("MessageTabActivity", mActivity, callback);
+                Bundle bundle = new Bundle();
+                bundle.putString(Const.ACTIONBAR_TITLE, "消息");
+                bundle.putString(FragmentPageActivity.FRAGMENT, "MessageFragment");
+                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
             }
         });
 
