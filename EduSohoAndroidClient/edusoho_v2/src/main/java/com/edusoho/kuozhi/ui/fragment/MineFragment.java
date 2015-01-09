@@ -93,11 +93,9 @@ public class MineFragment extends BaseFragment {
         super.invoke(message);
         switch (message.type.code) {
             case REFRESH:
-                Log.d(null, "REFRESH->");
                 setUserStatus();
                 break;
             case LOGINT_WITH_TOKEN:
-                Log.d(null, "LOGINT_WITH_TOKEN->");
                 setUserStatus();
                 break;
             case LOGOUT:
@@ -117,32 +115,28 @@ public class MineFragment extends BaseFragment {
         return messageTypes;
     }
 
-
     public void setUserStatus() {
         Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
             setStatusLoginLayout();
             mUserLogo.setImageResource(R.drawable.myinfo_default_face);
-            mUserLayout.setEnabled(true);
-            mUserLogo.setEnabled(false);
             mQuestionNum.setText("0");
             mDiscussionNum.setText("0");
             mNoteNum.setText("0");
             mTestpaperNum.setText("0");
-            mUserLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LoginActivity.startForResult(mActivity);
-                }
-            });
+            mUserLayout.setEnabled(true);
+            mUserLayout.setOnClickListener(mLoginListener);
+            mUserLogo.setOnClickListener(mLoginListener);
             return;
+        } else {
+            mUserLogo.setOnClickListener(mUserInfoClickListener);
         }
+
+        returnObjectFormUserdata();
         mStatusLayout.removeAllViews();
         mUserLayout.setEnabled(false);
-        mUserLogo.setEnabled(true);
 
-
-        if(app.loginUser.vip == null){
+        if (app.loginUser.vip == null) {
             mVip.setVisibility(View.GONE);
         }
         mUserName.setText(app.loginUser.nickname);
@@ -151,9 +145,28 @@ public class MineFragment extends BaseFragment {
         AQuery aQuery = new AQuery(mActivity);
         aQuery.id(mUserLogo).image(
                 app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
-
     }
 
+    private View.OnClickListener mLoginListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            LoginActivity.startForResult(mActivity);
+        }
+    };
+
+    private View.OnClickListener mUserInfoClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "PersonalDetialsFragment");
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "详细资料");
+                }
+            });
+        }
+    };
 
     @Override
     protected void initView(View view) {
@@ -164,13 +177,13 @@ public class MineFragment extends BaseFragment {
         mSignature = (TextView) view.findViewById(R.id.myinfo_signature);
         mVip = (TextView) view.findViewById(R.id.vip_icon);
         mUserLayout = view.findViewById(R.id.myinfo_user_layout);
-        mStatusLayout = (FrameLayout)view.findViewById(R.id.myinfo_status_layout);
+        mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
 
         mQuestion = (LinearLayout) view.findViewById(R.id.myinfo_question);
         mDiscussion = (LinearLayout) view.findViewById(R.id.myinfo_discusion);
         mNote = (LinearLayout) view.findViewById(R.id.myinfo_note);
         mTestpaper = (LinearLayout) view.findViewById(R.id.myInfo_testpaper);
-        mQuestionNum = (TextView)view.findViewById(R.id.myinfo_question_num);
+        mQuestionNum = (TextView) view.findViewById(R.id.myinfo_question_num);
         mDiscussionNum = (TextView) view.findViewById(R.id.myinfo_discusion_num);
         mNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
         mTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
@@ -181,20 +194,6 @@ public class MineFragment extends BaseFragment {
         mSetting = (RelativeLayout) view.findViewById(R.id.my_setting);
         mFeedback = (RelativeLayout) view.findViewById(R.id.my_feedback);
 
-        returnObjectFormUserdata();
-
-        mUserLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "PersonalDetialsFragment");
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "详细资料");
-                    }
-                });
-            }
-        });
         mQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,12 +279,13 @@ public class MineFragment extends BaseFragment {
 
     public void returnObjectFormUserdata() {
         RequestUrl url = app.bindUrl(Const.USER_DATA_NUMBER, true);
-        mActivity.ajaxPost(url, new ResultCallback(){
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mUserDataNum = mActivity.parseJsonValue(
-                        object, new TypeToken<UserDataNum>(){});
+                        object, new TypeToken<UserDataNum>() {
+                        });
                 mQuestionNum.setText(mUserDataNum.thread);
                 mDiscussionNum.setText(mUserDataNum.discussion);
                 mNoteNum.setText(mUserDataNum.note);
@@ -323,6 +323,7 @@ public class MineFragment extends BaseFragment {
         };
         app.mEngine.runNormalPlugin("NoteListActivity", mActivity, callback);
     }
+
     private void showMyQuestionOrDiscuss(final String title, final String type) {
         if (app.loginUser == null) {
             LoginActivity.start(mActivity);
@@ -338,7 +339,8 @@ public class MineFragment extends BaseFragment {
         app.mEngine.runNormalPlugin("QuestionActivity", mActivity, callback);
     }
 
-
     @Override
-     public String getTitle() {return mTitle;    }
+    public String getTitle() {
+        return mTitle;
+    }
 }

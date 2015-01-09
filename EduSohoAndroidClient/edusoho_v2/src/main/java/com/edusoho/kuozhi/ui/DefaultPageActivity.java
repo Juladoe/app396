@@ -209,7 +209,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             tag = "SchoolRoomFragment";
             //tag = "MyInfoFragment";
         } else if (id == R.id.nav_me_btn) {
-            //tag = "SchoolRoomFragment";
             tag = "MineFragment";
         } else {
             return;

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,17 +31,16 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
     private User mUser;
     private ActionBarBaseActivity mActivity;
     private int mListViewLayoutId;
-    private View mCacheHeader;
-    private View mCacheView;
-    public PersonalDetailAdapter(Context context, int resource,User user,ActionBarBaseActivity activity){
-        super(context, resource);
-        mUser=user;
+
+    public PersonalDetailAdapter(Context context, int resource, User user, ActionBarBaseActivity activity) {
+        super(context, resource, true);
+        mUser = user;
         mActivity = activity;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
-    public void setListViewLayout(int layoutId){
-        mListViewLayoutId=layoutId;
+    public void setListViewLayout(int layoutId) {
+        mListViewLayoutId = layoutId;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
 
     @Override
     public int getCount() {
-        return mList.size()+1;
+        return mList.size() + 1;
     }
 
     @Override
@@ -62,6 +63,7 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
         mList.add(item);
         notifyDataSetChanged();
     }
+
     @Override
     public void addItems(ArrayList<Course> list) {
         mList.addAll(list);
@@ -69,85 +71,65 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
     }
 
 
-
-
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Log.d(null, "getview--->");
-        ViewHolder holder;
-        HeaderHolder mHeaderHolder;
-
+        View v = null;
         if (i == 0) {
-            if (view == null) {
-                view = inflater.inflate(mResource, null);
+            HeaderHolder mHeaderHolder;
+            if (cacheArray.get(0) == null) {
+                v = inflater.inflate(mResource, null);
                 mHeaderHolder = new HeaderHolder();
-                mHeaderHolder.mUserLogo = (CircularImageView) view.findViewById(R.id.myinfo_logo);
-                mHeaderHolder.mUserName = (TextView) view.findViewById(R.id.myinfo_name);
-                mHeaderHolder.mSignature = (TextView) view.findViewById(R.id.myinfo_signature);
-                mHeaderHolder.mVip = (TextView) view.findViewById(R.id.vip_icon);
-                mHeaderHolder.mUserLayout = view.findViewById(R.id.myinfo_user_layout);
-                mHeaderHolder.mTeacherTitle = (TextView) view.findViewById(R.id.teacher_title);
-                mHeaderHolder.mSelfIntroduction = (TextView) view.findViewById(R.id.self_introduction);
+                mHeaderHolder.mUserLogo = (CircularImageView) v.findViewById(R.id.myinfo_logo);
+                mHeaderHolder.mUserName = (TextView) v.findViewById(R.id.myinfo_name);
+                mHeaderHolder.mSignature = (TextView) v.findViewById(R.id.myinfo_signature);
+                mHeaderHolder.mVip = (TextView) v.findViewById(R.id.vip_icon);
+                mHeaderHolder.mUserLayout = v.findViewById(R.id.myinfo_user_layout);
+                mHeaderHolder.mTeacherTitle = (TextView) v.findViewById(R.id.teacher_title);
+                mHeaderHolder.mSelfIntroduction = (ESTextView) v.findViewById(R.id.self_introduction);
+                mHeaderHolder.mConcern = (LinearLayout) v.findViewById(R.id.concern);
+                mHeaderHolder.mConcernNum = (TextView) v.findViewById(R.id.concern_num);
 
-                mHeaderHolder.mConcern = (LinearLayout) view.findViewById(R.id.concern);
-                mHeaderHolder.mConcernNum = (TextView) view.findViewById(R.id.concern_num);
-                mHeaderHolder.mFans = (LinearLayout) view.findViewById(R.id.fans);
-                mHeaderHolder.mFansNum = (TextView) view.findViewById(R.id.fans_num);
-                mHeaderHolder.mMessage = (LinearLayout) view.findViewById(R.id.message);
-                mHeaderHolder.mAddConcern = (LinearLayout) view.findViewById(R.id.add_concern);
-
-                mHeaderHolder.mNotice = (TextView) view.findViewById(R.id.notice);
-                mHeaderHolder.mDescription = (TextView) view.findViewById(R.id.description);
-
-                view.setTag(mHeaderHolder);
-                mCacheHeader=view;
+                mHeaderHolder.mMessage = (LinearLayout) v.findViewById(R.id.message);
+                mHeaderHolder.mAddConcern = (LinearLayout) v.findViewById(R.id.add_concern);
+                mHeaderHolder.mDescription = (TextView) v.findViewById(R.id.description);
+                setUserInfo(mHeaderHolder);
+                isTeacher(mHeaderHolder);
+                setCacheView(0, v);
             } else {
-                if(view.getTag() instanceof ViewHolder){
-                    view=mCacheHeader;
-                }
-                mHeaderHolder = (HeaderHolder) view.getTag();
-
+                v = getCacheView(0);
             }
-            setUserInfo(mHeaderHolder);
-            isTeacher(mHeaderHolder);
         } else {
-            if (view == null) {
-                view = inflater.inflate(mListViewLayoutId, null);
+            ViewHolder holder;
+            if (cacheArray.get(i) == null) {
+                v = inflater.inflate(mListViewLayoutId, null);
                 holder = new ViewHolder();
-                holder.mCourseImage = (ImageView) view.findViewById(R.id.course_image);
-                holder.mCourseTitle = (TextView) view.findViewById(R.id.course_title);
-                if(mCacheView==null){
-                    mCacheView=view;
-                }
-                view.setTag(holder);
+                holder.mCourseImage = (ImageView) v.findViewById(R.id.course_image);
+                holder.mCourseTitle = (TextView) v.findViewById(R.id.course_title);
+                Course course = mList.get(i - 1);
+                holder.mCourseTitle.setText(course.title);
+                ImageLoader.getInstance().displayImage(course.largePicture, holder.mCourseImage, mOptions);
+                setCacheView(i, v);
             } else {
-                if(view.getTag() instanceof HeaderHolder){
-                    view=mCacheView;
-                }
-                holder = (ViewHolder) view.getTag();
+                v = getCacheView(i);
             }
-            Course course = mList.get(i-1);
-            holder.mCourseTitle.setText(course.title);
-            ImageLoader.getInstance().displayImage(course.largePicture, holder.mCourseImage, mOptions);
-
         }
-        return view;
-
+        return v;
     }
 
-    public void isTeacher(HeaderHolder headerHolder){
+    public void isTeacher(HeaderHolder headerHolder) {
         //        判断是学生还是老师 设置相应信息
         for (UserRole role : mUser.roles) {
-            if(role == UserRole.ROLE_TEACHER){
+            if (role == UserRole.ROLE_TEACHER) {
                 headerHolder.mDescription.setText("在教课程");
                 return;
             }
         }
 
     }
-    public void setUserInfo(HeaderHolder headerHolder){
 
-        if(mUser.vip != null){
+    public void setUserInfo(HeaderHolder headerHolder) {
+
+        if (mUser.vip != null) {
             headerHolder.mVip.setVisibility(View.VISIBLE);
         }
         headerHolder.mUserName.setText(mUser.nickname);
@@ -162,15 +144,14 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
     }
 
 
-
-    protected class HeaderHolder{
+    protected class HeaderHolder {
         public CircularImageView mUserLogo;
         public TextView mUserName;
         public TextView mSignature;
         public TextView mVip;
         public TextView mTeacherTitle;
         public View mUserLayout;
-        public TextView mSelfIntroduction;
+        public ESTextView mSelfIntroduction;
 
         public LinearLayout mConcern;
         public TextView mConcernNum;
@@ -178,10 +159,9 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
         public TextView mFansNum;
         public LinearLayout mMessage;
         public LinearLayout mAddConcern;
-
-        public TextView mNotice;
         public TextView mDescription;
     }
+
     protected class ViewHolder {
         public TextView mCourseTitle;
         public ImageView mCourseImage;

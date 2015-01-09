@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.MineFragment;
 import com.edusoho.kuozhi.ui.fragment.MyInfoFragment;
+import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.plugin.qr.CaptureActivity;
@@ -34,8 +35,7 @@ public class QrLoginActivity extends ActionBarBaseActivity {
         startQrSearch();
     }
 
-    private void startQrSearch()
-    {
+    private void startQrSearch() {
         Intent qrIntent = new Intent();
         qrIntent.putExtra(Const.ACTIONBAR_TITLE, "扫描登录用户");
         qrIntent.setClass(mContext, CaptureActivity.class);
@@ -56,8 +56,7 @@ public class QrLoginActivity extends ActionBarBaseActivity {
         }
     }
 
-    private void showQrResultDlg(final String result)
-    {
+    private void showQrResultDlg(final String result) {
         if (!result.startsWith(app.host)) {
             longToast("请登录" + app.defaultSchool.name + "－网校！");
             exit();
@@ -66,7 +65,7 @@ public class QrLoginActivity extends ActionBarBaseActivity {
 
         final LoadDialog loading = LoadDialog.create(mContext);
         loading.show();
-        app.query.ajax(result, String.class, new AjaxCallback<String>(){
+        app.query.ajax(result, String.class, new AjaxCallback<String>() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {
                 loading.dismiss();
@@ -79,7 +78,7 @@ public class QrLoginActivity extends ActionBarBaseActivity {
                 try {
                     final TokenResult schoolResult = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
 
                     if (schoolResult == null) {
                         longToast("二维码信息错误!");
@@ -93,9 +92,10 @@ public class QrLoginActivity extends ActionBarBaseActivity {
                         app.saveToken(schoolResult);
                         app.sendMessage(Const.LOGING_SUCCESS, null);
                         app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
+                        app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
                     }
 
-                }catch (Exception e) {
+                } catch (Exception e) {
                     longToast("二维码信息错误!");
                 }
                 exit();
@@ -104,9 +104,8 @@ public class QrLoginActivity extends ActionBarBaseActivity {
 
     }
 
-    private void exit()
-    {
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+    private void exit() {
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
 }
