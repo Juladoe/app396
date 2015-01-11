@@ -117,6 +117,8 @@ public class Const {
      */
     public static final String QUESTION = "Course/getCourseThreads";
 
+    public static final String THREADS_BY_USER_COURSE_ID = "Course/getThreadsByUserCourseIds";
+
     public static final String TESTPAPER_RESULT = "Testpaper/getTestpaperResult";
     public static final String FAVORITE_QUESTION = "Testpaper/favoriteQuestion";
     public static final String FINISH_TESTPAPER = "Testpaper/finishTestpaper";

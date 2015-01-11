@@ -24,7 +24,7 @@ import library.PullToRefreshBase;
 /**
  * Created by onewoman on 2014/12/22.
  */
-public class QuestionNewActivity extends ActionBarBaseActivity{
+public class QuestionNewActivity extends ActionBarBaseActivity {
     private RefreshListWidget mQuestionList;
     private QuestionListAdapter mQuestionListAdapter;
     private View mLoadView;
@@ -32,6 +32,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
     private String mquestionType;
     private String mEmptyText;
     private int mEmptyIcon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,17 +40,17 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
         init();
     }
 
-    public void init(){
+    public void init() {
         initData();
         initView();
     }
 
-    public void initData(){
+    public void initData() {
         Intent intent = getIntent();
         mTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
         mquestionType = intent.getStringExtra(Const.QUESTION_TYPE);
         mEmptyText = intent.getStringExtra("empty_text");
-        mEmptyIcon = intent.getIntExtra("empty_icon",R.drawable.icon_question);
+        mEmptyIcon = intent.getIntExtra("empty_icon", R.drawable.icon_question);
     }
 
     private void initView() {
@@ -57,27 +58,27 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
         mQuestionList = (RefreshListWidget) this.findViewById(R.id.question_list);
         mQuestionList.setEmptyText(new String[]{mEmptyText}, mEmptyIcon);
         mQuestionList.setMode(PullToRefreshBase.Mode.BOTH);
-        mQuestionListAdapter = new QuestionListAdapter(this,R.layout.question_list_item_inflate);
+        mQuestionListAdapter = new QuestionListAdapter(this, R.layout.question_list_item_inflate);
         mQuestionList.setAdapter(mQuestionListAdapter);
         mQuestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 QuestionDetailModel questionDetailModel = (QuestionDetailModel) parent.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
-                bundle.putInt(Const.THREAD_ID,questionDetailModel.id);
-                bundle.putInt(Const.COURSE_ID,questionDetailModel.courseId);
-                bundle.putString("empty_text",mEmptyText);
-                bundle.putInt("empty_icon",mEmptyIcon);
+                bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
+                bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
+                bundle.putString("empty_text", mEmptyText);
+                bundle.putInt("empty_icon", mEmptyIcon);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
-                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity",mActivity,bundle);
+                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
             }
         });
-        setBackMode(BACK,mTitle);
+        setBackMode(BACK, mTitle);
         refushListener();
         getQuestionListReponseDatas(0);
     }
 
-    public void refushListener(){
+    public void refushListener() {
         mQuestionList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
@@ -92,23 +93,24 @@ public class QuestionNewActivity extends ActionBarBaseActivity{
     }
 
     //获取问答显示列表
-    public void getQuestionListReponseDatas(final int start){
-        RequestUrl requestUrl = app.bindUrl(Const.QUESTION, true);
+    public void getQuestionListReponseDatas(final int start) {
+        RequestUrl requestUrl = app.bindUrl(Const.THREADS_BY_USER_COURSE_ID, true);
         requestUrl.setParams(new String[]{
                 "strat", String.valueOf(start)
-                ,"limit",String.valueOf(Const.LIMIT)
-                ,"type",mquestionType
+                , "limit", String.valueOf(Const.LIMIT)
+                , "type", mquestionType
         });
-        ajaxPost(requestUrl,new ResultCallback(){
+        ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mQuestionList.onRefreshComplete();
                 mLoadView.setVisibility(View.GONE);
-                QuestionResult questionResult = parseJsonValue(object,new TypeToken<QuestionResult>(){});
+                QuestionResult questionResult = parseJsonValue(object, new TypeToken<QuestionResult>() {
+                });
 
                 mQuestionList.pushData(questionResult.threads);
-                mQuestionList.setStart(start,questionResult.total);
+                mQuestionList.setStart(start, questionResult.total);
             }
         });
     }
