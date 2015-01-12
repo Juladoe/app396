@@ -26,7 +26,7 @@ import java.util.HashMap;
 /**
  * Created by Melomelon on 2014/12/31.
  */
-public class PersonalDetialsFragment extends BaseFragment {
+public class PersonalDetailsFragment extends BaseFragment {
 
 
     public PersonalDetailAdapter personalDetailAdapter;
