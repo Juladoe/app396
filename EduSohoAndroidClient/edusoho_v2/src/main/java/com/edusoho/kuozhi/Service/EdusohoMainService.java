@@ -24,6 +24,8 @@ import com.google.gson.reflect.TypeToken;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import ch.boye.httpclientandroidlib.util.TextUtils;
+
 /**
  * Created by howzhi on 14-8-13.
  */
@@ -78,7 +80,8 @@ public class EdusohoMainService extends Service {
     }
 
     private void loginWithToken(final ActionBarBaseActivity activity) {
-        if ("".equals(app.token)) {
+        Log.d(null, "send loginwithtoken message1 " + app.token);
+        if (TextUtils.isEmpty(app.token)) {
             return;
         }
         synchronized (this) {
@@ -93,14 +96,14 @@ public class EdusohoMainService extends Service {
             Log.d(null, "send loginwithtoken message " + app.token);
             RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
 
-            AjaxCallback ajaxCallback = app.postUrl(false, url, new ResultCallback(){
+            AjaxCallback ajaxCallback = app.postUrl(false, url, new ResultCallback() {
                 @Override
                 public void callback(String url, String object, AjaxStatus ajaxStatus) {
                     Log.d(null, "callback loginWithToken->" + ajaxStatus.getCode());
                     mAjaxQueue.poll();
                     TokenResult result = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
                     Log.d(null, "callback loginWithToken result->" + result);
 
                     if (result != null) {
@@ -112,7 +115,6 @@ public class EdusohoMainService extends Service {
                     app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
 
                     //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
-                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
                 }
 
                 @Override
@@ -123,7 +125,8 @@ public class EdusohoMainService extends Service {
                         return;
                     }
                     TokenResult result = app.gson.fromJson(
-                            object, new TypeToken<TokenResult>() {}.getType());
+                            object, new TypeToken<TokenResult>() {
+                    }.getType());
                     if (result == null) {
                         if (mLoginUser != null) {
                             app.removeToken();

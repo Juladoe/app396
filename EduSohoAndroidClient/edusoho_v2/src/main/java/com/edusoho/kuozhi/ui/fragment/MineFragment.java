@@ -27,6 +27,8 @@ import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import ch.boye.httpclientandroidlib.util.TextUtils;
+
 /**
  * Created by Melomelon on 2014/12/26.
  */
@@ -269,7 +271,7 @@ public class MineFragment extends BaseFragment {
         });
 
 
-        if (app.loginUser == null && !"".equals(app.token)) {
+        if (app.loginUser == null && !TextUtils.isEmpty(app.token)) {
             Log.d(null, "checkout token->");
             mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
             return;
