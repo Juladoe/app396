@@ -23,7 +23,7 @@
         <com.edusoho.kuozhi.view.ESTextView
             android:text="名字"
             android:textSize="@dimen/large_font_size"
-            android:id="@+id/myinfo_name"
+            android:id="@+id/tv_nickname"
             android:layout_toRightOf="@id/myinfo_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,8 +36,8 @@
             android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/myinfo_name"
-            android:layout_alignTop="@id/myinfo_name"
+            android:layout_toRightOf="@id/tv_nickname"
+            android:layout_alignTop="@id/tv_nickname"
             android:textSize="@dimen/icon_vip"
             android:text="@string/font_vip"
             android:textColor="#fff000" />
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/small_font_size"
             android:layout_toRightOf="@+id/vip_icon"
-            android:layout_alignBaseline="@+id/myinfo_name" />
+            android:layout_alignBaseline="@+id/tv_nickname" />
 
         <com.edusoho.kuozhi.view.ESTextView
             app:es_alpha="0.54"
@@ -60,7 +60,7 @@
             android:id="@+id/myinfo_signature"
             android:textSize="@dimen/small_font_size"
             android:paddingTop="10dp"
-            android:layout_below="@id/myinfo_name"
+            android:layout_below="@id/tv_nickname"
             android:layout_toRightOf="@id/myinfo_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

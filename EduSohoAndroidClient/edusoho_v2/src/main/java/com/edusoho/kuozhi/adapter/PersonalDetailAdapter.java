@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -80,7 +78,7 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
                 v = inflater.inflate(mResource, null);
                 mHeaderHolder = new HeaderHolder();
                 mHeaderHolder.mUserLogo = (CircularImageView) v.findViewById(R.id.myinfo_logo);
-                mHeaderHolder.mUserName = (TextView) v.findViewById(R.id.myinfo_name);
+                mHeaderHolder.mUserName = (TextView) v.findViewById(R.id.tv_nickname);
                 mHeaderHolder.mSignature = (TextView) v.findViewById(R.id.myinfo_signature);
                 mHeaderHolder.mVip = (TextView) v.findViewById(R.id.vip_icon);
                 mHeaderHolder.mUserLayout = v.findViewById(R.id.myinfo_user_layout);

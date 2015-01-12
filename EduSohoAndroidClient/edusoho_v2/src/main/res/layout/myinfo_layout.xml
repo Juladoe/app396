@@ -28,7 +28,7 @@
         <TextView
             android:textStyle="bold"
             android:textSize="@dimen/myinfo_name"
-            android:id="@+id/myinfo_name"
+            android:id="@+id/tv_nickname"
             android:layout_toRightOf="@id/myinfo_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -36,7 +36,7 @@
         <TextView
             android:layout_marginTop="2dp"
             android:textSize="@dimen/myinfo_group"
-            android:layout_below="@id/myinfo_name"
+            android:layout_below="@id/tv_nickname"
             android:id="@+id/myinfo_group"
             android:layout_toRightOf="@id/myinfo_logo"
             android:layout_width="wrap_content"

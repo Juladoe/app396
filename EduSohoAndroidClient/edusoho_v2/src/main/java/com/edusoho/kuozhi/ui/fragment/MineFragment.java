@@ -1,16 +1,12 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,29 +15,17 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
-import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.model.TokenResult;
-import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserDataNum;
-import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.widget.MyInfoPluginListView;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
-import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
 
 /**
  * Created by Melomelon on 2014/12/26.
@@ -59,10 +43,10 @@ public class MineFragment extends BaseFragment {
 
     private CircularImageView mUserLogo;
     private TextView mUserName;
+    private TextView mlogout;
     private TextView mSignature;
     private TextView mVip;
     private View mUserLayout;
-    private FrameLayout mStatusLayout;
 
     private LinearLayout mQuestion;
     private LinearLayout mDiscussion;
@@ -78,6 +62,7 @@ public class MineFragment extends BaseFragment {
     private RelativeLayout mNotification;
     private RelativeLayout mSetting;
     private RelativeLayout mFeedback;
+    private AQuery mAQuery;
 
 
     @Override
@@ -99,12 +84,6 @@ public class MineFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setStatusLoginLayout() {
-        mStatusLayout.removeAllViews();
-        View view = LayoutInflater.from(mContext).inflate(R.layout.no_login_layout, null);
-        mStatusLayout.addView(view);
     }
 
     @Override
@@ -135,35 +114,45 @@ public class MineFragment extends BaseFragment {
     }
 
     public void setUserStatus() {
-        Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
-            setStatusLoginLayout();
+            //未登录状态
             mUserLogo.setImageResource(R.drawable.myinfo_default_face);
             mQuestionNum.setText("0");
             mDiscussionNum.setText("0");
             mNoteNum.setText("0");
             mTestpaperNum.setText("0");
-            mUserLayout.setEnabled(true);
+            mUserName.setVisibility(View.GONE);
+            mSignature.setVisibility(View.GONE);
+            mlogout.setVisibility(View.VISIBLE);
+            mSignature.setText("");
+
             mUserLayout.setOnClickListener(mLoginListener);
             mUserLogo.setOnClickListener(mLoginListener);
-            return;
+
+            mUserLayout.setEnabled(true);
         } else {
+            //登录状态
+            mUserName.setText(app.loginUser.nickname);
+            mSignature.setText(app.loginUser.signature);
+            returnObjectFormUserdata();
+            if (app.loginUser.vip == null) {
+                mVip.setVisibility(View.GONE);
+            } else {
+                mVip.setVisibility(View.VISIBLE);
+            }
+            mUserName.setVisibility(View.VISIBLE);
+            mSignature.setVisibility(View.VISIBLE);
+            mlogout.setVisibility(View.GONE);
+            if (mAQuery == null) {
+                mAQuery = new AQuery(mActivity);
+            }
+            mAQuery.id(mUserLogo).image(
+                    app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
+
             mUserLogo.setOnClickListener(mUserInfoClickListener);
+
+            mUserLayout.setEnabled(false);
         }
-
-        returnObjectFormUserdata();
-        mStatusLayout.removeAllViews();
-        mUserLayout.setEnabled(false);
-
-        if (app.loginUser.vip == null) {
-            mVip.setVisibility(View.GONE);
-        }
-        mUserName.setText(app.loginUser.nickname);
-        mSignature.setText(app.loginUser.signature);
-
-        AQuery aQuery = new AQuery(mActivity);
-        aQuery.id(mUserLogo).image(
-                app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
     }
 
     private View.OnClickListener mLoginListener = new View.OnClickListener() {
@@ -192,11 +181,12 @@ public class MineFragment extends BaseFragment {
         super.initView(view);
 
         mUserLogo = (CircularImageView) view.findViewById(R.id.myinfo_logo);
-        mUserName = (TextView) view.findViewById(R.id.myinfo_name);
+        mUserName = (TextView) view.findViewById(R.id.tv_nickname);
+        mlogout = (TextView) view.findViewById(R.id.tv_logout);
         mSignature = (TextView) view.findViewById(R.id.myinfo_signature);
         mVip = (TextView) view.findViewById(R.id.vip_icon);
         mUserLayout = view.findViewById(R.id.myinfo_user_layout);
-        mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
+        //mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
 
         mQuestion = (LinearLayout) view.findViewById(R.id.myinfo_question);
         mDiscussion = (LinearLayout) view.findViewById(R.id.myinfo_discusion);
@@ -216,14 +206,14 @@ public class MineFragment extends BaseFragment {
         mQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyQuestionOrDiscuss("我的问答", "question","暂无提问",R.drawable.icon_question);
+                showMyQuestionOrDiscuss("我的问答", "question", "暂无提问", R.drawable.icon_question);
             }
         });
 
         mDiscussion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyQuestionOrDiscuss("我的话题", "discussion","暂无讨论", R.drawable.icon_discussion);
+                showMyQuestionOrDiscuss("我的话题", "discussion", "暂无讨论", R.drawable.icon_discussion);
             }
         });
 
@@ -345,8 +335,8 @@ public class MineFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
-                startIntent.putExtra("empty_text",emptyText);
-                startIntent.putExtra("empty_icon",emptyIcon);
+                startIntent.putExtra("empty_text", emptyText);
+                startIntent.putExtra("empty_icon", emptyIcon);
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
