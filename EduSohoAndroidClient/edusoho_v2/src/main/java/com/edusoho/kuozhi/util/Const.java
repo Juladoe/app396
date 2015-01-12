@@ -117,6 +117,9 @@ public class Const {
      */
     public static final String QUESTION = "Course/getCourseThreads";
 
+    /**
+     * 获取用户所学课程下的所有问题或者讨论
+     */
     public static final String THREADS_BY_USER_COURSE_ID = "Course/getThreadsByUserCourseIds";
 
     public static final String TESTPAPER_RESULT = "Testpaper/getTestpaperResult";
