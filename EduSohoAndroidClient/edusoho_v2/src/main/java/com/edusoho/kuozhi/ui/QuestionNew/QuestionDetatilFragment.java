@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -58,6 +59,7 @@ public class QuestionDetatilFragment extends BaseFragment{
     private QuestionDetatilAnswerListAdapter mQuestionDetatilAnswerListAdapter;
     private View mQuestionDetailDescribe;
     private View mQuestionLoadView;
+    private RelativeLayout mQuestionMainLayout;
     private QuestionDetailModel mQuestionDetailModel;
     private int intentThreadId;
     private int intentCourseId;
@@ -66,7 +68,7 @@ public class QuestionDetatilFragment extends BaseFragment{
      * gridview内部间隙
      */
     private static final int GRIDVIEW_SPACING = 10;
-    private static final StringBuilder SHARE_QUESTION_URL = new StringBuilder("http://trymob.edusoho.cn/");
+    private static final StringBuilder SHARE_QUESTION_URL = new StringBuilder();
     private static final float GRIDVIEW_CONTENT_PROPORTION = 0.9f;
     private static int mContentImageSize = 0;
 
@@ -165,6 +167,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         intentCourseId = bundle.getInt(Const.COURSE_ID);
         mEmptyText = bundle.getString("empty_text");
         mEmptyIcon = bundle.getInt("empty_icon");
+        SHARE_QUESTION_URL.append(app.host);
         SHARE_QUESTION_URL.append("course/");
         SHARE_QUESTION_URL.append(String.valueOf(intentCourseId)+"/");
         SHARE_QUESTION_URL.append("thread/");
@@ -189,6 +192,7 @@ public class QuestionDetatilFragment extends BaseFragment{
                 startActivityWithBundleAndResult("QuestionReplyActivity", Const.REPLY, bundle);
             }
         });
+        mQuestionMainLayout = (RelativeLayout) view.findViewById(R.id.question_main_layout);
         //问题描述
         mQuestionDetailDescribe = mActivity.getLayoutInflater().inflate(R.layout.question_detatil_describe_inflate, null);
         mQuestionLoadView = view.findViewById(R.id.load_layout);
@@ -251,6 +255,7 @@ public class QuestionDetatilFragment extends BaseFragment{
                 for(int i=0;i<replyResult.data.length;i++){
                     arrayList.add(replyResult.data[i]);
                 }
+
                 mQuestionDetatileAnswerList.pushData(arrayList);
                 mQuestionDetatileAnswerList.setStart(start,replyResult.total);
             }

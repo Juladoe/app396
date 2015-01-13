@@ -96,4 +96,8 @@
 
     <dimen name="schoolroom_item_logo">12dp</dimen>
     <dimen name="message_head_icon">50dp</dimen>
+
+    <!--QuestionNew-->
+    <dimen name="question_course_title_width">200dp</dimen>
+
 </resources>
