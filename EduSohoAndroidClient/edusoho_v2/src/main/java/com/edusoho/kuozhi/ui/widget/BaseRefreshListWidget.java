@@ -35,9 +35,10 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
     protected int mMode;
     private ListBaseAdapter mAdapter;
     private ListBaseAdapter mLoadAdapter;
-    private ListBaseAdapter mEmptyAdapter;
+    private EmptyAdapter mEmptyAdapter;
     private Context mContext;
 
+    private int mEmptyParentHeight = EmptyAdapter.PARENT_HEIGHT;
     private int mEmptyIcon = R.drawable.course_empty_icon;
     private String[] mEmptyText = new String[]{"没有搜到相关课程，请换个关键词试试！"};
 
@@ -105,6 +106,12 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
         mEmptyIcon = icon;
     }
 
+    public void setEmptyText(String[] emptyText, int icon, int parentHeight) {
+        mEmptyText = emptyText;
+        mEmptyIcon = icon;
+        mEmptyParentHeight = parentHeight;
+    }
+
     public void pushData(ArrayList data) {
         if (mMode == REFRESH) {
             if (data == null || data.isEmpty()) {
@@ -146,10 +153,14 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
         return mStart;
     }
 
-    protected ListBaseAdapter getEmptyLayoutAdapter() {
-        EmptyAdapter<String> arrayAdapter = new EmptyAdapter<String>(
-                mContext, R.layout.course_empty_layout, mEmptyText, mEmptyIcon);
-        return arrayAdapter;
+    public EmptyAdapter getEmptyLayoutAdapter() {
+        if (mEmptyAdapter == null) {
+            mEmptyAdapter = new EmptyAdapter<String>(
+                    mContext, R.layout.course_empty_layout, mEmptyText, mEmptyIcon);
+            mEmptyAdapter.setParentHeight(mEmptyParentHeight);
+        }
+
+        return mEmptyAdapter;
     }
 
     public ListAdapter getAdapter() {
