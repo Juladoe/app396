@@ -117,6 +117,11 @@ public class Const {
      */
     public static final String QUESTION = "Course/getCourseThreads";
 
+    /**
+     * 获取用户所学课程下的所有问题或者讨论
+     */
+    public static final String THREADS_BY_USER_COURSE_ID = "Course/getThreadsByUserCourseIds";
+
     public static final String TESTPAPER_RESULT = "Testpaper/getTestpaperResult";
     public static final String FAVORITE_QUESTION = "Testpaper/favoriteQuestion";
     public static final String FINISH_TESTPAPER = "Testpaper/finishTestpaper";
@@ -177,6 +182,8 @@ public class Const {
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
+    public static final String FOLLOWING = "User/getFollowings";
+    public static final String FOLLOWER = "User/getFollowers";
 
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";

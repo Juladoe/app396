@@ -2,21 +2,16 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.PersonalDetailAdapter;
+import com.edusoho.kuozhi.adapter.ProfileAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,19 +21,19 @@ import java.util.HashMap;
 /**
  * Created by Melomelon on 2014/12/31.
  */
-public class PersonalDetialsFragment extends BaseFragment {
+public class ProfileFragment extends BaseFragment {
 
 
-    public PersonalDetailAdapter personalDetailAdapter;
+    public ProfileAdapter profileAdapter;
 
-    public ListView mInfoList;
+    private ListView mInfoList;
 
     public String mTitle = "详细资料";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.personal_detail_layout);
+        setContainerView(R.layout.profile_layout);
     }
 
     @Override
@@ -47,24 +42,14 @@ public class PersonalDetialsFragment extends BaseFragment {
 
         mInfoList = (ListView) view.findViewById(R.id.info_list);
 
-
-        personalDetailAdapter = new PersonalDetailAdapter(mContext, R.layout.personal_detail_item_header, app.loginUser, mActivity);
+        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, app.loginUser, mActivity);
 
         if (isTeacher()) {
             loadTeachingCourse();
         } else {
             loadCourseList(0);
         }
-
-
-//        mInfoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //跳转到课程 参考Notelist
-//            }
-//        });
     }
-
 
     /**
      * 获取在学课程
@@ -72,7 +57,7 @@ public class PersonalDetialsFragment extends BaseFragment {
      * @param start
      */
     public void loadCourseList(int start) {
-        personalDetailAdapter.setListViewLayout(R.layout.personal_detail_item);
+        profileAdapter.setListViewLayout(R.layout.profile_item);
         RequestUrl url = app.bindUrl(Const.LEARNING, true);
         HashMap<String, String> params = url.getParams();
         params.put("start", String.valueOf(start));
@@ -88,8 +73,8 @@ public class PersonalDetialsFragment extends BaseFragment {
                 if (courseResult == null) {
                     return;
                 }
-                personalDetailAdapter.addItems(courseResult.data);
-                mInfoList.setAdapter(personalDetailAdapter);
+                profileAdapter.addItems(courseResult.data);
+                mInfoList.setAdapter(profileAdapter);
             }
         });
     }
@@ -98,7 +83,7 @@ public class PersonalDetialsFragment extends BaseFragment {
      * 获取在教课程
      */
     public void loadTeachingCourse() {
-        personalDetailAdapter.setListViewLayout(R.layout.personal_detail_item);
+        profileAdapter.setListViewLayout(R.layout.profile_item);
         RequestUrl url = app.bindUrl(Const.TEACHER_COURSES, true);
         url.setParams(new String[]{
                 "userId", app.loginUser.id + ""
@@ -114,8 +99,8 @@ public class PersonalDetialsFragment extends BaseFragment {
                 if (list == null) {
                     return;
                 }
-                personalDetailAdapter.addItems(list);
-                mInfoList.setAdapter(personalDetailAdapter);
+                profileAdapter.addItems(list);
+                mInfoList.setAdapter(profileAdapter);
             }
         });
     }

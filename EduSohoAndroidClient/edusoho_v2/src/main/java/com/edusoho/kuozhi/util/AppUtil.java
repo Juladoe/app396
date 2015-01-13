@@ -61,6 +61,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -768,6 +770,35 @@ public class AppUtil {
         return spanned;
     }
 
+    /**
+     * 去掉所有<Img>标签
+     *
+     * @param content
+     * @return
+     */
+    public static String removeImgTagFromString(String content) {
+        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
+        new StringBuffer().append("1");
+        while (m.find()) {
+            content = content.replace(m.group(1), "");
+        }
+        return content;
+    }
+
+    /**
+     * 去掉字符串中的\n\t
+     *
+     * @param content
+     * @return
+     */
+    public static String removeHtmlSpace(String content) {
+        Matcher m = Pattern.compile("\\t|\\n").matcher(content);
+        while (m.find()) {
+            content = content.replace(m.group(0), "");
+        }
+        return content;
+    }
+
     public static int computeSampleSize(
             BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
         int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
@@ -1055,12 +1086,12 @@ public class AppUtil {
 
     /**
      * 旋转图片
+     *
      * @param view
      * @param start
      * @param end
      */
-    public static void rotation(View view, float start, float end)
-    {
+    public static void rotation(View view, float start, float end) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
         objectAnimator.setDuration(180);
         objectAnimator.start();
@@ -1068,11 +1099,11 @@ public class AppUtil {
 
     /**
      * 格式化容量
+     *
      * @param totalSize
      * @return
      */
-    public static String formatSize(long totalSize)
-    {
+    public static String formatSize(long totalSize) {
         Log.d(null, "totalSize->" + totalSize);
         float kb = 1024.0f;
         if (totalSize < (kb * kb)) {
@@ -1086,7 +1117,7 @@ public class AppUtil {
         return String.format("%.1f%s", (totalSize / (kb * kb * kb)), "G");
     }
 
-    public static String timeFormat(int second){
+    public static String timeFormat(int second) {
         int hh = second / 3600;
         int mm = second % 3600 / 60;
         int ss = second % 60;

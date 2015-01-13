@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.adapter.EmptyAdapter;
 import com.edusoho.kuozhi.adapter.Question.QuestionGridViewImageAdapter;
 import com.edusoho.kuozhi.adapter.QuestionNew.QuestionDetatilAnswerListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -31,6 +33,7 @@ import com.edusoho.kuozhi.shard.ShareHandler;
 import com.edusoho.kuozhi.shard.ShareUtil;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.ui.widget.BaseRefreshListWidget;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -54,7 +57,7 @@ import library.PullToRefreshBase;
 /**
  * Created by onewoman on 2014/12/22.
  */
-public class QuestionDetatilFragment extends BaseFragment{
+public class QuestionDetatilFragment extends BaseFragment {
     private RefreshListWidget mQuestionDetatileAnswerList;
     private QuestionDetatilAnswerListAdapter mQuestionDetatilAnswerListAdapter;
     private View mQuestionDetailDescribe;
@@ -74,7 +77,7 @@ public class QuestionDetatilFragment extends BaseFragment{
 
     private static final int REPLYRESULT = 4;
 
-    private HashMap<String,String> mParams = new HashMap<String, String>();
+    private HashMap<String, String> mParams = new HashMap<String, String>();
 
     private String mEmptyText;
     private int mEmptyIcon;
@@ -94,15 +97,15 @@ public class QuestionDetatilFragment extends BaseFragment{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.question_describe_menu,menu);
+        inflater.inflate(R.menu.question_describe_menu, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.question_describe_share){
+        if (id == R.id.question_describe_share) {
             shareQuestion();
-        }else if(id == R.id.question_describe_edit) {
+        } else if (id == R.id.question_describe_edit) {
             Bundle bundle = new Bundle();
             bundle.putInt(Const.REQUEST_CODE, Const.EDIT_QUESTION);
             bundle.putString(Const.THREAD_ID, String.valueOf(intentThreadId));
@@ -115,7 +118,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         return true;
     }
 
-    public void shareQuestion(){
+    public void shareQuestion() {
         ShareUtil shareUtil = new ShareUtil(mActivity);
         shareUtil.initShareParams(
                 R.drawable.icon,
@@ -161,7 +164,7 @@ public class QuestionDetatilFragment extends BaseFragment{
         return wxApi.sendReq(req);
     }
 
-    public void initData(){
+    public void initData() {
         Bundle bundle = getArguments();
         intentThreadId = bundle.getInt(Const.THREAD_ID);
         intentCourseId = bundle.getInt(Const.COURSE_ID);
@@ -169,13 +172,13 @@ public class QuestionDetatilFragment extends BaseFragment{
         mEmptyIcon = bundle.getInt("empty_icon");
         SHARE_QUESTION_URL.append(app.host);
         SHARE_QUESTION_URL.append("course/");
-        SHARE_QUESTION_URL.append(String.valueOf(intentCourseId)+"/");
+        SHARE_QUESTION_URL.append(String.valueOf(intentCourseId) + "/");
         SHARE_QUESTION_URL.append("thread/");
         SHARE_QUESTION_URL.append(String.valueOf(intentThreadId));
 
-        mParams.put("limit",String.valueOf(Const.LIMIT));
-        mParams.put("threadId",String.valueOf(intentThreadId));
-        mParams.put("courseId",String.valueOf(intentCourseId));
+        mParams.put("limit", String.valueOf(Const.LIMIT));
+        mParams.put("threadId", String.valueOf(intentThreadId));
+        mParams.put("courseId", String.valueOf(intentCourseId));
     }
 
     @Override
@@ -202,29 +205,29 @@ public class QuestionDetatilFragment extends BaseFragment{
         mQuestionDetatileAnswerList = (RefreshListWidget) view.findViewById(R.id.question_detail_answer_list);
         mQuestionDetatileAnswerList.getRefreshableView().addHeaderView(mQuestionDetailDescribe);
         mQuestionDetatileAnswerList.setMode(PullToRefreshBase.Mode.BOTH);
-        mQuestionDetatileAnswerList.setEmptyText(new String[]{mEmptyText},mEmptyIcon);
-        mQuestionDetatilAnswerListAdapter = new QuestionDetatilAnswerListAdapter(mContext,R.layout.question_detatil_answer_list_item);
+        mQuestionDetatileAnswerList.setEmptyText(new String[]{mEmptyText}, mEmptyIcon, EmptyAdapter.MATCH_PARENT);
+        mQuestionDetatilAnswerListAdapter = new QuestionDetatilAnswerListAdapter(mContext, R.layout.question_detatil_answer_list_item);
         mQuestionDetatileAnswerList.setAdapter(mQuestionDetatilAnswerListAdapter);
         getQuestionReplyListReponseData(0);
         mQuestionDetatileAnswerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(view.equals(mQuestionDetailDescribe)){
-                    return ;
+                if (view.equals(mQuestionDetailDescribe)) {
+                    return;
                 }
                 ReplyModel replyModel = (ReplyModel) parent.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(Const.QUESTION_CONTENT,replyModel);
+                bundle.putSerializable(Const.QUESTION_CONTENT, replyModel);
                 bundle.putString(Const.QUESTION_TITLE, mQuestionDetailModel.title);
-                bundle.putInt(Const.THREAD_ID,intentThreadId);
-                bundle.putString(FragmentPageActivity.FRAGMENT,"QuestionReplyFragment");
-                startActivityWithBundleAndResult("FragmentPageActivity",REPLYRESULT,bundle);
+                bundle.putInt(Const.THREAD_ID, intentThreadId);
+                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionReplyFragment");
+                startActivityWithBundleAndResult("FragmentPageActivity", REPLYRESULT, bundle);
             }
         });
         refushListener();
     }
 
-    public void refushListener(){
+    public void refushListener() {
         mQuestionDetatileAnswerList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
@@ -240,52 +243,54 @@ public class QuestionDetatilFragment extends BaseFragment{
         });
     }
 
-    public void getQuestionReplyListReponseData(final int start){
+    public void getQuestionReplyListReponseData(final int start) {
         RequestUrl requestUrl = app.bindUrl(Const.NORMAL_REPLY, true);
-        mParams.put("start",String.valueOf(start));
+        mParams.put("start", String.valueOf(start));
         requestUrl.setParams(mParams);
-        mActivity.ajaxPost(requestUrl,new ResultCallback(){
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mQuestionDetatileAnswerList.onRefreshComplete();
-                ReplyResult replyResult = mActivity.parseJsonValue(object,new TypeToken<ReplyResult>(){});
+                ReplyResult replyResult = mActivity.parseJsonValue(object, new TypeToken<ReplyResult>() {
+                });
 
                 ArrayList<ReplyModel> arrayList = new ArrayList<ReplyModel>();
-                for(int i=0;i<replyResult.data.length;i++){
+                for (int i = 0; i < replyResult.data.length; i++) {
                     arrayList.add(replyResult.data[i]);
                 }
 
                 mQuestionDetatileAnswerList.pushData(arrayList);
-                mQuestionDetatileAnswerList.setStart(start,replyResult.total);
+                mQuestionDetatileAnswerList.setStart(start, replyResult.total);
             }
         });
     }
 
-    public void getQuestionDetatilDescribeReponseData(){
+    public void getQuestionDetatilDescribeReponseData() {
         RequestUrl requestUrl = app.bindUrl(Const.QUESTION_INFO, true);
         requestUrl.setParams(mParams);
-        mActivity.ajaxPost(requestUrl,new ResultCallback(){
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mQuestionLoadView.setVisibility(View.GONE);
-                mQuestionDetailModel = mActivity.parseJsonValue(object,new TypeToken<QuestionDetailModel>(){});
+                mQuestionDetailModel = mActivity.parseJsonValue(object, new TypeToken<QuestionDetailModel>() {
+                });
                 setQuestionDescribeData();
             }
         });
     }
 
-    public void setQuestionDescribeData(){
+    public void setQuestionDescribeData() {
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_title)).setText(mQuestionDetailModel.title);
         ImageView questionDetailAnswerUserHeadImage = (ImageView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_user_head_image);
-        ImageLoader.getInstance().displayImage(mQuestionDetailModel.user.mediumAvatar,questionDetailAnswerUserHeadImage);
+        ImageLoader.getInstance().displayImage(mQuestionDetailModel.user.mediumAvatar, questionDetailAnswerUserHeadImage);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_uesr_name)).setText(mQuestionDetailModel.user.nickname);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatile_describe_time)).setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(fitlerImgTag(mQuestionDetailModel.content)));
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_course_title)).setText(mQuestionDetailModel.courseTitle);
-        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum+"");
-        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_browse_count)).setText(mQuestionDetailModel.hitNum+"");
+        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum + "");
+        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_browse_count)).setText(mQuestionDetailModel.hitNum + "");
 
         /*-----------------添加GridView图片显示控件------------------------*/
         ArrayList<String> mUrlList = convertUrlStringList(mQuestionDetailModel.content);
@@ -323,8 +328,8 @@ public class QuestionDetatilFragment extends BaseFragment{
         }
         int verticalSpacingNum = (int) Math.ceil(imageNum / 3.0) - 1;
 
-        int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2)*GRIDVIEW_CONTENT_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
-        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2)*GRIDVIEW_CONTENT_PROPORTION / 3+ verticalSpacingNum * GRIDVIEW_SPACING);
+        int gridviewWidth = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION + horizontalSpacingNum * GRIDVIEW_SPACING);
+        int gridviewHeight = (int) ((EdusohoApp.screenW - 15 * 2) * GRIDVIEW_CONTENT_PROPORTION / 3 + verticalSpacingNum * GRIDVIEW_SPACING);
 
         mContentImageSize = gridviewWidth / 3;
 
@@ -343,7 +348,7 @@ public class QuestionDetatilFragment extends BaseFragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode){
+        switch (requestCode) {
             case Const.EDIT_QUESTION:
                 getQuestionDetatilDescribeReponseData();
                 break;

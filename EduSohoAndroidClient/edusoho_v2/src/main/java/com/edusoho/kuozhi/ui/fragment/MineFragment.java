@@ -1,16 +1,12 @@
 package com.edusoho.kuozhi.ui.fragment;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,29 +15,19 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
-import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.MessageType;
-import com.edusoho.kuozhi.model.TokenResult;
-import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserDataNum;
-import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.model.WidgetMessage;
-import com.edusoho.kuozhi.ui.Message.MessageTabActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.widget.MyInfoPluginListView;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
-import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
+import ch.boye.httpclientandroidlib.util.TextUtils;
 
 /**
  * Created by Melomelon on 2014/12/26.
@@ -58,26 +44,27 @@ public class MineFragment extends BaseFragment {
     private UserDataNum mUserDataNum;
 
     private CircularImageView mUserLogo;
-    private TextView mUserName;
-    private TextView mSignature;
-    private TextView mVip;
+    private TextView tvUserName;
+    private TextView tvlogout;
+    private TextView tvSignature;
+    private TextView tvVip;
     private View mUserLayout;
-    private FrameLayout mStatusLayout;
 
     private LinearLayout mQuestion;
     private LinearLayout mDiscussion;
     private LinearLayout mNote;
     private LinearLayout mTestpaper;
-    private TextView mQuestionNum;
-    private TextView mDiscussionNum;
-    private TextView mNoteNum;
-    private TextView mTestpaperNum;
+    private TextView tvQuestionNum;
+    private TextView tvDiscussionNum;
+    private TextView tvNoteNum;
+    private TextView tvTestpaperNum;
 
     private RelativeLayout mDownloadedCourse;
     private RelativeLayout mCollect;
     private RelativeLayout mNotification;
     private RelativeLayout mSetting;
     private RelativeLayout mFeedback;
+    private AQuery mAQuery;
 
 
     @Override
@@ -99,12 +86,6 @@ public class MineFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setStatusLoginLayout() {
-        mStatusLayout.removeAllViews();
-        View view = LayoutInflater.from(mContext).inflate(R.layout.no_login_layout, null);
-        mStatusLayout.addView(view);
     }
 
     @Override
@@ -135,35 +116,49 @@ public class MineFragment extends BaseFragment {
     }
 
     public void setUserStatus() {
-        Log.d(null, "setUserStatus->");
         if (app.loginUser == null) {
-            setStatusLoginLayout();
+            //未登录状态
             mUserLogo.setImageResource(R.drawable.myinfo_default_face);
-            mQuestionNum.setText("0");
-            mDiscussionNum.setText("0");
-            mNoteNum.setText("0");
-            mTestpaperNum.setText("0");
-            mUserLayout.setEnabled(true);
+            tvQuestionNum.setText("0");
+            tvDiscussionNum.setText("0");
+            tvNoteNum.setText("0");
+            tvTestpaperNum.setText("0");
+            tvUserName.setVisibility(View.GONE);
+            tvSignature.setVisibility(View.GONE);
+            tvlogout.setVisibility(View.VISIBLE);
+            tvVip.setVisibility(View.GONE);
+            tvSignature.setText("");
+
             mUserLayout.setOnClickListener(mLoginListener);
             mUserLogo.setOnClickListener(mLoginListener);
-            return;
+
+            mUserLayout.setEnabled(true);
         } else {
+            //登录状态
+            tvUserName.setText(app.loginUser.nickname);
+            if (TextUtils.isEmpty(app.loginUser.signature)) {
+                tvSignature.setText("暂无个性签名");
+            }
+            tvSignature.setText(app.loginUser.signature);
+            returnObjectFormUserdata();
+            if (app.loginUser.vip == null) {
+                tvVip.setVisibility(View.GONE);
+            } else {
+                tvVip.setVisibility(View.VISIBLE);
+            }
+            tvUserName.setVisibility(View.VISIBLE);
+            tvSignature.setVisibility(View.VISIBLE);
+            tvlogout.setVisibility(View.GONE);
+            if (mAQuery == null) {
+                mAQuery = new AQuery(mActivity);
+            }
+            mAQuery.id(mUserLogo).image(
+                    app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
+
             mUserLogo.setOnClickListener(mUserInfoClickListener);
+
+            mUserLayout.setEnabled(false);
         }
-
-        returnObjectFormUserdata();
-        mStatusLayout.removeAllViews();
-        mUserLayout.setEnabled(false);
-
-        if (app.loginUser.vip == null) {
-            mVip.setVisibility(View.GONE);
-        }
-        mUserName.setText(app.loginUser.nickname);
-        mSignature.setText(app.loginUser.signature);
-
-        AQuery aQuery = new AQuery(mActivity);
-        aQuery.id(mUserLogo).image(
-                app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
     }
 
     private View.OnClickListener mLoginListener = new View.OnClickListener() {
@@ -192,20 +187,21 @@ public class MineFragment extends BaseFragment {
         super.initView(view);
 
         mUserLogo = (CircularImageView) view.findViewById(R.id.myinfo_logo);
-        mUserName = (TextView) view.findViewById(R.id.myinfo_name);
-        mSignature = (TextView) view.findViewById(R.id.myinfo_signature);
-        mVip = (TextView) view.findViewById(R.id.vip_icon);
+        tvUserName = (TextView) view.findViewById(R.id.tv_nickname);
+        tvlogout = (TextView) view.findViewById(R.id.tv_logout);
+        tvSignature = (TextView) view.findViewById(R.id.myinfo_signature);
+        tvVip = (TextView) view.findViewById(R.id.vip_icon);
         mUserLayout = view.findViewById(R.id.myinfo_user_layout);
-        mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
+        //mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
 
         mQuestion = (LinearLayout) view.findViewById(R.id.myinfo_question);
         mDiscussion = (LinearLayout) view.findViewById(R.id.myinfo_discusion);
         mNote = (LinearLayout) view.findViewById(R.id.myinfo_note);
         mTestpaper = (LinearLayout) view.findViewById(R.id.myInfo_testpaper);
-        mQuestionNum = (TextView) view.findViewById(R.id.myinfo_question_num);
-        mDiscussionNum = (TextView) view.findViewById(R.id.myinfo_discusion_num);
-        mNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
-        mTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
+        tvQuestionNum = (TextView) view.findViewById(R.id.myinfo_question_num);
+        tvDiscussionNum = (TextView) view.findViewById(R.id.myinfo_discusion_num);
+        tvNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
+        tvTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
 
         mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.my_downloaded_course);
         mCollect = (RelativeLayout) view.findViewById(R.id.my_collect);
@@ -216,14 +212,14 @@ public class MineFragment extends BaseFragment {
         mQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyQuestionOrDiscuss("我的问答", "question","暂无提问",R.drawable.icon_question);
+                showMyQuestionOrDiscuss("我的问答", "question", "暂无提问", R.drawable.icon_question);
             }
         });
 
         mDiscussion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyQuestionOrDiscuss("我的话题", "discussion","暂无讨论", R.drawable.icon_discussion);
+                showMyQuestionOrDiscuss("我的话题", "discussion", "暂无讨论", R.drawable.icon_discussion);
             }
         });
 
@@ -278,12 +274,12 @@ public class MineFragment extends BaseFragment {
             }
         });
 
-
-        if (app.loginUser == null && !"".equals(app.token)) {
+        if (app.loginUser == null && !TextUtils.isEmpty(app.token)) {
             Log.d(null, "checkout token->");
             mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
             return;
         }
+
 
         setUserStatus();
     }
@@ -297,10 +293,10 @@ public class MineFragment extends BaseFragment {
                 mUserDataNum = mActivity.parseJsonValue(
                         object, new TypeToken<UserDataNum>() {
                         });
-                mQuestionNum.setText(mUserDataNum.thread);
-                mDiscussionNum.setText(mUserDataNum.discussion);
-                mNoteNum.setText(mUserDataNum.note);
-                mTestpaperNum.setText(mUserDataNum.test);
+                tvQuestionNum.setText(mUserDataNum.thread);
+                tvDiscussionNum.setText(mUserDataNum.discussion);
+                tvNoteNum.setText(mUserDataNum.note);
+                tvTestpaperNum.setText(mUserDataNum.test);
             }
         });
     }
@@ -345,8 +341,8 @@ public class MineFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
-                startIntent.putExtra("empty_text",emptyText);
-                startIntent.putExtra("empty_icon",emptyIcon);
+                startIntent.putExtra("empty_text", emptyText);
+                startIntent.putExtra("empty_icon", emptyIcon);
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
