@@ -7,10 +7,8 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:paddingBottom="8dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/base_gray">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:clickable="true"
@@ -80,8 +78,7 @@
             android:layout_height="72dp"
             android:layout_below="@id/myinfo_user_layout"
             android:orientation="horizontal"
-            android:layout_marginTop="1dp"
-            android:background="@drawable/normal_layout_bg">
+            android:layout_marginTop="1dp">
 
             <LinearLayout
                 android:id="@+id/myinfo_question"

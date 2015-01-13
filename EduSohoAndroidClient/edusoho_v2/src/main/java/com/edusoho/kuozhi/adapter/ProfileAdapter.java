@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -23,14 +25,14 @@ import java.util.ArrayList;
 /**
  * Created by Melomelon on 2015/1/4.
  */
-public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
+public class ProfileAdapter extends ListBaseAdapter<Course> {
 
     private DisplayImageOptions mOptions;
     private User mUser;
     private ActionBarBaseActivity mActivity;
     private int mListViewLayoutId;
 
-    public PersonalDetailAdapter(Context context, int resource, User user, ActionBarBaseActivity activity) {
+    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity) {
         super(context, resource, true);
         mUser = user;
         mActivity = activity;
@@ -77,21 +79,24 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
             if (cacheArray.get(0) == null) {
                 v = inflater.inflate(mResource, null);
                 mHeaderHolder = new HeaderHolder();
+                mHeaderHolder.mHeader = v.findViewById(R.id.header);
                 mHeaderHolder.mUserLogo = (CircularImageView) v.findViewById(R.id.myinfo_logo);
                 mHeaderHolder.mUserName = (TextView) v.findViewById(R.id.tv_nickname);
                 mHeaderHolder.mSignature = (TextView) v.findViewById(R.id.myinfo_signature);
                 mHeaderHolder.mVip = (TextView) v.findViewById(R.id.vip_icon);
-                mHeaderHolder.mUserLayout = v.findViewById(R.id.myinfo_user_layout);
                 mHeaderHolder.mTeacherTitle = (TextView) v.findViewById(R.id.teacher_title);
                 mHeaderHolder.mSelfIntroduction = (ESTextView) v.findViewById(R.id.self_introduction);
-                mHeaderHolder.mConcern = (LinearLayout) v.findViewById(R.id.concern);
-                mHeaderHolder.mConcernNum = (TextView) v.findViewById(R.id.concern_num);
-
-                mHeaderHolder.mMessage = (LinearLayout) v.findViewById(R.id.message);
-                mHeaderHolder.mAddConcern = (LinearLayout) v.findViewById(R.id.add_concern);
+                mHeaderHolder.mFollowing = (ESTextView) v.findViewById(R.id.tv_follow_num);
+                mHeaderHolder.mFollower = (ESTextView) v.findViewById(R.id.tv_fans_num);
                 mHeaderHolder.mDescription = (TextView) v.findViewById(R.id.description);
+
                 setUserInfo(mHeaderHolder);
-                isTeacher(mHeaderHolder);
+                if (isTeacher()) {
+                    mHeaderHolder.mDescription.setText("在教课程");
+                } else {
+                    mHeaderHolder.mDescription.setText("在学课程");
+                }
+                mHeaderHolder.mHeader.setEnabled(false);
                 setCacheView(0, v);
             } else {
                 v = getCacheView(0);
@@ -114,49 +119,45 @@ public class PersonalDetailAdapter extends ListBaseAdapter<Course> {
         return v;
     }
 
-    public void isTeacher(HeaderHolder headerHolder) {
-        //        判断是学生还是老师 设置相应信息
+    public boolean isTeacher() {
         for (UserRole role : mUser.roles) {
             if (role == UserRole.ROLE_TEACHER) {
-                headerHolder.mDescription.setText("在教课程");
-                return;
+                return true;
             }
         }
-
+        return false;
     }
 
     public void setUserInfo(HeaderHolder headerHolder) {
-
         if (mUser.vip != null) {
             headerHolder.mVip.setVisibility(View.VISIBLE);
+        } else {
+            headerHolder.mVip.setVisibility(View.GONE);
         }
         headerHolder.mUserName.setText(mUser.nickname);
         headerHolder.mSignature.setText(mUser.signature);
-
+        headerHolder.mFollowing.setText(mUser.following);
+        headerHolder.mFollower.setText(mUser.follower);
 
         AQuery aQuery = new AQuery(mActivity);
         aQuery.id(headerHolder.mUserLogo).image(
                 mUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
-        headerHolder.mSelfIntroduction.setText(mUser.about);
+        headerHolder.mSelfIntroduction.setText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mUser.about)).toString()));
         headerHolder.mTeacherTitle.setText(mUser.title);
     }
 
 
     protected class HeaderHolder {
+        public View mHeader;
         public CircularImageView mUserLogo;
         public TextView mUserName;
         public TextView mSignature;
         public TextView mVip;
         public TextView mTeacherTitle;
-        public View mUserLayout;
         public ESTextView mSelfIntroduction;
 
-        public LinearLayout mConcern;
-        public TextView mConcernNum;
-        public LinearLayout mFans;
-        public TextView mFansNum;
-        public LinearLayout mMessage;
-        public LinearLayout mAddConcern;
+        public ESTextView mFollowing;
+        public ESTextView mFollower;
         public TextView mDescription;
     }
 

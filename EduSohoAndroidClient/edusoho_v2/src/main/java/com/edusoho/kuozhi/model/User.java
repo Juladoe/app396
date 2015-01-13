@@ -36,6 +36,14 @@ public class User implements Serializable {
     public String createdTime;
     public String about;
     public String signature;
+    /**
+     * 关注
+     */
+    public String following;
+    /**
+     * 粉丝
+     */
+    public String follower;
 
     public int dataType;
 

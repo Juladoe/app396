@@ -2,15 +2,17 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/header"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/base_list_background_color">
 
     <RelativeLayout
         android:id="@+id/myinfo_user_layout"
         android:layout_width="match_parent"
         android:background="@android:color/white"
         android:layout_marginBottom="1px"
-        android:layout_height="88dp">
+        android:layout_height="wrap_content">
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
             android:layout_margin="16dp"
@@ -87,9 +89,7 @@
         android:layout_below="@id/self_introduction">
 
         <LinearLayout
-            android:visibility="gone"
-
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:id="@+id/concern"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -97,26 +97,27 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <TextView
+            <com.edusoho.kuozhi.view.ESTextView
                 android:textSize="@dimen/middle_font_size"
-                android:id="@+id/concern_num"
+                android:id="@+id/tv_follow_num"
                 android:text="关注数"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.87"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <com.edusoho.kuozhi.view.ESTextView
-                android:layout_gravity="center"
                 android:textSize="@dimen/small_font_size"
                 android:text="关注"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
-
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:id="@+id/fans"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -125,17 +126,20 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <TextView
+            <com.edusoho.kuozhi.view.ESTextView
                 android:textSize="@dimen/middle_font_size"
-                android:id="@+id/fans_num"
+                android:id="@+id/tv_fans_num"
                 android:text="粉丝数"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.87"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <com.edusoho.kuozhi.view.ESTextView
-                android:layout_gravity="center"
                 android:textSize="@dimen/small_font_size"
                 android:text="粉丝"
+                android:textColor="@android:color/black"
+                app:es_alpha="0.54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

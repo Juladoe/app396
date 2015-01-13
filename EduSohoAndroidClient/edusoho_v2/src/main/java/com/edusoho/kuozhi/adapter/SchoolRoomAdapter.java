@@ -84,7 +84,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
         if (EdusohoApp.app.loginUser != null) {
             SchoolRoomItem item = schoolRoomModel.data;
             if (item != null) {
-                holder.tvContent.setText(removeHtmlSpace(Html.fromHtml(removeImgTagFromString(item.content)).toString()));
+                holder.tvContent.setText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(item.content)).toString()));
                 holder.tvTime.setText(AppUtil.getPostDays(item.time));
                 changeItemUI(holder, View.VISIBLE);
             } else {
@@ -169,32 +169,5 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
         public LinearLayout llInterval;
     }
 
-    /**
-     * 去掉所有<Img>标签
-     *
-     * @param content
-     * @return
-     */
-    private String removeImgTagFromString(String content) {
-        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
-        new StringBuffer().append("1");
-        while (m.find()) {
-            content = content.replace(m.group(1), "");
-        }
-        return content;
-    }
 
-    /**
-     * 去掉字符串中的\n\t
-     *
-     * @param content
-     * @return
-     */
-    private String removeHtmlSpace(String content) {
-        Matcher m = Pattern.compile("\\t|\\n").matcher(content);
-        while (m.find()) {
-            content = content.replace(m.group(0), "");
-        }
-        return content;
-    }
 }

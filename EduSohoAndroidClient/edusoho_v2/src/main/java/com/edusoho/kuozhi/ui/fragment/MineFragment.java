@@ -270,12 +270,12 @@ public class MineFragment extends BaseFragment {
             }
         });
 
-
         if (app.loginUser == null && !TextUtils.isEmpty(app.token)) {
             Log.d(null, "checkout token->");
             mActivity.getService().sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
             return;
         }
+
 
         setUserStatus();
     }

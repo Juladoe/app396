@@ -130,14 +130,17 @@ public class EdusohoMainService extends Service {
                     if (result == null) {
                         if (mLoginUser != null) {
                             app.removeToken();
-                            app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+                            app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
+                            app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
+                            //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
                         }
                         return;
                     }
                     mLoginUser = result.user;
                     app.saveToken(result);
-                    app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
-
+                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
+                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
+                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                 }
             });
 
