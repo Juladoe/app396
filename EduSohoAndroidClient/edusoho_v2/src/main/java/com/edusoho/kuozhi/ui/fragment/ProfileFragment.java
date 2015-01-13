@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -10,6 +11,7 @@ import com.edusoho.kuozhi.adapter.ProfileAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.CourseResult;
+import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -22,13 +24,14 @@ import java.util.HashMap;
  * Created by Melomelon on 2014/12/31.
  */
 public class ProfileFragment extends BaseFragment {
-
-
+    public static final String FOLLOW_USER = "follow_user";
+    private static final int LEARNCOURSE = 0;
     public ProfileAdapter profileAdapter;
 
     private ListView mInfoList;
 
     public String mTitle = "详细资料";
+    private User mUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,14 +44,31 @@ public class ProfileFragment extends BaseFragment {
         super.initView(view);
 
         mInfoList = (ListView) view.findViewById(R.id.info_list);
+        Bundle bundle = mActivity.getIntent().getExtras();
+        mUser = (User) bundle.getSerializable(FOLLOW_USER);
+        if (mUser == null) {
+            mUser = app.loginUser;
+        }
 
-        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, app.loginUser, mActivity);
+        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, mUser, mActivity);
 
         if (isTeacher()) {
             loadTeachingCourse();
         } else {
             loadCourseList(0);
         }
+        mInfoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    Course course = (Course) parent.getAdapter().getItem(position - 1);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Const.COURSE_ID, course.id);
+                    bundle.putString(Const.ACTIONBAR_TITLE, course.title);
+                    startActivityWithBundleAndResult("CorusePaperActivity", LEARNCOURSE, bundle);
+                }
+            }
+        });
     }
 
     /**
@@ -58,8 +78,9 @@ public class ProfileFragment extends BaseFragment {
      */
     public void loadCourseList(int start) {
         profileAdapter.setListViewLayout(R.layout.profile_item);
-        RequestUrl url = app.bindUrl(Const.LEARNING, true);
+        RequestUrl url = app.bindUrl(Const.LEARNING_WITHOUT_TOKEN, false);
         HashMap<String, String> params = url.getParams();
+        params.put("userId", mUser.id + "");
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(Const.LIMIT));
 
@@ -86,7 +107,7 @@ public class ProfileFragment extends BaseFragment {
         profileAdapter.setListViewLayout(R.layout.profile_item);
         RequestUrl url = app.bindUrl(Const.TEACHER_COURSES, true);
         url.setParams(new String[]{
-                "userId", app.loginUser.id + ""
+                "userId", mUser.id + ""
         });
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
@@ -106,7 +127,7 @@ public class ProfileFragment extends BaseFragment {
     }
 
     public boolean isTeacher() {
-        for (UserRole role : app.loginUser.roles) {
+        for (UserRole role : mUser.roles) {
             if (role == UserRole.ROLE_TEACHER) {
                 return true;
             }

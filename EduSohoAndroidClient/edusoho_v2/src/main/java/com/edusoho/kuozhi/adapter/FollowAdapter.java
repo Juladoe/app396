@@ -30,7 +30,10 @@ public class FollowAdapter<T> extends ListBaseAdapter<T> {
 
     @Override
     public int getCount() {
-        return super.getCount();
+        if (mList != null && mList.size() > 0) {
+            return mList.size();
+        }
+        return 0;
     }
 
     @Override

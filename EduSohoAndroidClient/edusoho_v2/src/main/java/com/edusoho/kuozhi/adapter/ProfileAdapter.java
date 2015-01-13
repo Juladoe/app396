@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.User;
@@ -20,7 +19,6 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -93,27 +91,35 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 mHeaderHolder.mDescription = (TextView) v.findViewById(R.id.description);
                 mHeaderHolder.mFollowingsLayout = v.findViewById(R.id.ll_followings);
                 mHeaderHolder.mFollowersLayout = v.findViewById(R.id.ll_followers);
+                mHeaderHolder.mSendMsgLayout = v.findViewById(R.id.ll_send_msg);
+                mHeaderHolder.mFollowLayout = v.findViewById(R.id.ll_follow);
 
                 setUserInfo(mHeaderHolder);
 
                 mHeaderHolder.mFollowingsLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.ACTIONBAR_TITLE, "关注");
-                        bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
-                        bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWING);
-                        mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        if (!mUser.following.equals("0")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Const.ACTIONBAR_TITLE, "关注");
+                            bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
+                            bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWING);
+                            bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
+                            mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        }
                     }
                 });
                 mHeaderHolder.mFollowersLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.ACTIONBAR_TITLE, "粉丝");
-                        bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
-                        bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWER);
-                        mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        if (!mUser.follower.equals("0")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Const.ACTIONBAR_TITLE, "粉丝");
+                            bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
+                            bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWER);
+                            bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
+                            mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        }
                     }
                 });
                 setCacheView(0, v);
@@ -153,6 +159,14 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         } else {
             headerHolder.mVip.setVisibility(View.GONE);
         }
+        if (mUser.id == mActivity.app.loginUser.id) {
+            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
+        } else {
+            headerHolder.mSendMsgLayout.setVisibility(View.VISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.VISIBLE);
+        }
+
         headerHolder.mUserName.setText(mUser.nickname);
 
         headerHolder.mFollowing.setText(mUser.following);
@@ -195,6 +209,9 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
         public View mFollowingsLayout;
         public View mFollowersLayout;
+
+        public View mSendMsgLayout;
+        public View mFollowLayout;
     }
 
     protected class ViewHolder {

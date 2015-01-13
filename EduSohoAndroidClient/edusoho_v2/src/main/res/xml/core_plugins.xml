@@ -49,7 +49,7 @@
     <plugin name="EdusohoMainService" package="com.edusoho.kuozhi.Service.EdusohoMainService" version="1.0"></plugin>
 
     <!-- fragment -->
-    <plugin name="PersonalDetialsFragment" package="com.edusoho.kuozhi.ui.fragment.ProfileFragment" version="1.0"></plugin>
+    <plugin name="ProfileFragment" package="com.edusoho.kuozhi.ui.fragment.ProfileFragment" version="1.0"></plugin>
     <plugin name="MineFragment" package="com.edusoho.kuozhi.ui.fragment.MineFragment" version="1.0"></plugin>
     <plugin name="MyInfoFragment" package="com.edusoho.kuozhi.ui.fragment.MyInfoFragment" version="1.0"></plugin>
     <plugin name="FoundFragment" package="com.edusoho.kuozhi.ui.fragment.FoundFragment" version="1.0"></plugin>
@@ -135,4 +135,5 @@
     <plugin name="LearningRoomActivity" version="1.0" package="com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity"></plugin>
     <plugin name="LearnedCourseFragmentHorizontal" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragmentHorizontal"></plugin>
     <plugin name="FollowFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FollowFragment"></plugin>
+
 </plugins>

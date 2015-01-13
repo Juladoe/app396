@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -9,6 +10,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.FollowAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -24,11 +26,13 @@ import library.PullToRefreshBase;
  */
 public class FollowFragment extends BaseFragment {
     private RefreshListWidget mFollowList;
+    public static final String FOLLOW_USER = "follow_user";
     public static final String FOLLOWING = "following";
     public static final String FOLLOWER = "follower";
     public static final String FOLLOW_TYPE = "follow_type";
     private static String mType;
     private int mStart = 0;
+    private User mFollowUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class FollowFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
         Bundle bundle = mActivity.getIntent().getExtras();
+        mFollowUser = (User) bundle.getSerializable(FOLLOW_USER);
         mType = bundle.getString(FOLLOW_TYPE);
         mFollowList = (RefreshListWidget) view.findViewById(R.id.lv_follow);
         mFollowList.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
@@ -55,6 +60,17 @@ public class FollowFragment extends BaseFragment {
 
             }
         });
+        mFollowList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User user = (User) parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
+                bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+                bundle.putSerializable(ProfileFragment.FOLLOW_USER, user);
+                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+            }
+        });
         loadFollows();
     }
 
@@ -65,8 +81,13 @@ public class FollowFragment extends BaseFragment {
         } else {
             url = Const.FOLLOWER;
         }
-        RequestUrl requestUrl = mActivity.app.bindUrl(url, true);
-        HashMap<String, String> params = new HashMap<String, String>();
+        RequestUrl requestUrl = mActivity.app.bindUrl(url, false);
+        HashMap<String, String> params = requestUrl.getParams();
+        if (mFollowUser != null) {
+            params.put("userId", mFollowUser.id + "");
+        } else {
+            params.put("userId", app.loginUser.id + "");
+        }
         params.put("start", mStart + "");
         params.put("limit", Const.LIMIT + "");
         mActivity.ajaxPost(requestUrl, new ResultCallback() {

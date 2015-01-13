@@ -109,11 +109,11 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 2:
                 //问答
-                goToQuestionDetailActivity("问答", "question","暂无提问",R.drawable.icon_question);
+                goToQuestionDetailActivity("问答", "question", "暂无提问", R.drawable.icon_question);
                 break;
             case 3:
                 //讨论
-                goToQuestionDetailActivity("话题", "discussion","暂无讨论",R.drawable.icon_discussion);
+                goToQuestionDetailActivity("话题", "discussion", "暂无讨论", R.drawable.icon_discussion);
                 break;
             case 4:
                 //笔记
@@ -144,15 +144,15 @@ public class SchoolRoomFragment extends BaseFragment {
     /**
      * 跳转到问答详情界面(QuestionDetailActivity)
      */
-    private void goToQuestionDetailActivity(final String title, final String type, final String emptyText,final int emptyIcon) {
+    private void goToQuestionDetailActivity(final String title, final String type, final String emptyText, final int emptyIcon) {
 
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, title);
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
-                startIntent.putExtra("empty_text",emptyText);
-                startIntent.putExtra("empty_icon",emptyIcon);
+                startIntent.putExtra("empty_text", emptyText);
+                startIntent.putExtra("empty_icon", emptyIcon);
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
