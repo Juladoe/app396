@@ -37,6 +37,7 @@ import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import java.util.HashMap;
 
@@ -57,6 +58,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     private TextView mTitleTextView;
     private View mTitleLayoutView;
     private ImageView mTitleIconView;
+    public DisplayImageOptions mOptions;
 
     protected EdusohoMainService mService;
 
@@ -69,8 +71,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         initActivity();
     }
 
-    public void setTitleClickListener(View.OnClickListener clickListener)
-    {
+    public void setTitleClickListener(View.OnClickListener clickListener) {
         mTitleLayoutView.setOnClickListener(clickListener);
     }
 
@@ -123,7 +124,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void log(String format, String... strs) {
         if (EdusohoApp.debug) {
-            System.out.println(String.format(format,strs));
+            System.out.println(String.format(format, strs));
         }
     }
 
@@ -172,8 +173,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         mActionBar.setHomeAsUpIndicator(icon);
     }
 
-    public void setBackMode(String backTitle, String title)
-    {
+    public void setBackMode(String backTitle, String title) {
         mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
         mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.action_bar_title);
         mTitleTextView.setText(title);
@@ -212,8 +212,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return url;
     }
 
-    public View getCustomView()
-    {
+    public View getCustomView() {
         return mTitleLayoutView;
     }
 
@@ -478,8 +477,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxPostWithAbort(RequestUrl url, final ResultCallback rcl)
-    {
+    public void ajaxPostWithAbort(RequestUrl url, final ResultCallback rcl) {
         app.postUrl(true, url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {

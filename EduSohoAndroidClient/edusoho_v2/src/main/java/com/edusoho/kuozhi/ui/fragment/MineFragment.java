@@ -44,20 +44,20 @@ public class MineFragment extends BaseFragment {
     private UserDataNum mUserDataNum;
 
     private CircularImageView mUserLogo;
-    private TextView mUserName;
-    private TextView mlogout;
-    private TextView mSignature;
-    private TextView mVip;
+    private TextView tvUserName;
+    private TextView tvlogout;
+    private TextView tvSignature;
+    private TextView tvVip;
     private View mUserLayout;
 
     private LinearLayout mQuestion;
     private LinearLayout mDiscussion;
     private LinearLayout mNote;
     private LinearLayout mTestpaper;
-    private TextView mQuestionNum;
-    private TextView mDiscussionNum;
-    private TextView mNoteNum;
-    private TextView mTestpaperNum;
+    private TextView tvQuestionNum;
+    private TextView tvDiscussionNum;
+    private TextView tvNoteNum;
+    private TextView tvTestpaperNum;
 
     private RelativeLayout mDownloadedCourse;
     private RelativeLayout mCollect;
@@ -119,14 +119,15 @@ public class MineFragment extends BaseFragment {
         if (app.loginUser == null) {
             //未登录状态
             mUserLogo.setImageResource(R.drawable.myinfo_default_face);
-            mQuestionNum.setText("0");
-            mDiscussionNum.setText("0");
-            mNoteNum.setText("0");
-            mTestpaperNum.setText("0");
-            mUserName.setVisibility(View.GONE);
-            mSignature.setVisibility(View.GONE);
-            mlogout.setVisibility(View.VISIBLE);
-            mSignature.setText("");
+            tvQuestionNum.setText("0");
+            tvDiscussionNum.setText("0");
+            tvNoteNum.setText("0");
+            tvTestpaperNum.setText("0");
+            tvUserName.setVisibility(View.GONE);
+            tvSignature.setVisibility(View.GONE);
+            tvlogout.setVisibility(View.VISIBLE);
+            tvVip.setVisibility(View.GONE);
+            tvSignature.setText("");
 
             mUserLayout.setOnClickListener(mLoginListener);
             mUserLogo.setOnClickListener(mLoginListener);
@@ -134,17 +135,20 @@ public class MineFragment extends BaseFragment {
             mUserLayout.setEnabled(true);
         } else {
             //登录状态
-            mUserName.setText(app.loginUser.nickname);
-            mSignature.setText(app.loginUser.signature);
+            tvUserName.setText(app.loginUser.nickname);
+            if (TextUtils.isEmpty(app.loginUser.signature)) {
+                tvSignature.setText("暂无个性签名");
+            }
+            tvSignature.setText(app.loginUser.signature);
             returnObjectFormUserdata();
             if (app.loginUser.vip == null) {
-                mVip.setVisibility(View.GONE);
+                tvVip.setVisibility(View.GONE);
             } else {
-                mVip.setVisibility(View.VISIBLE);
+                tvVip.setVisibility(View.VISIBLE);
             }
-            mUserName.setVisibility(View.VISIBLE);
-            mSignature.setVisibility(View.VISIBLE);
-            mlogout.setVisibility(View.GONE);
+            tvUserName.setVisibility(View.VISIBLE);
+            tvSignature.setVisibility(View.VISIBLE);
+            tvlogout.setVisibility(View.GONE);
             if (mAQuery == null) {
                 mAQuery = new AQuery(mActivity);
             }
@@ -183,10 +187,10 @@ public class MineFragment extends BaseFragment {
         super.initView(view);
 
         mUserLogo = (CircularImageView) view.findViewById(R.id.myinfo_logo);
-        mUserName = (TextView) view.findViewById(R.id.tv_nickname);
-        mlogout = (TextView) view.findViewById(R.id.tv_logout);
-        mSignature = (TextView) view.findViewById(R.id.myinfo_signature);
-        mVip = (TextView) view.findViewById(R.id.vip_icon);
+        tvUserName = (TextView) view.findViewById(R.id.tv_nickname);
+        tvlogout = (TextView) view.findViewById(R.id.tv_logout);
+        tvSignature = (TextView) view.findViewById(R.id.myinfo_signature);
+        tvVip = (TextView) view.findViewById(R.id.vip_icon);
         mUserLayout = view.findViewById(R.id.myinfo_user_layout);
         //mStatusLayout = (FrameLayout) view.findViewById(R.id.myinfo_status_layout);
 
@@ -194,10 +198,10 @@ public class MineFragment extends BaseFragment {
         mDiscussion = (LinearLayout) view.findViewById(R.id.myinfo_discusion);
         mNote = (LinearLayout) view.findViewById(R.id.myinfo_note);
         mTestpaper = (LinearLayout) view.findViewById(R.id.myInfo_testpaper);
-        mQuestionNum = (TextView) view.findViewById(R.id.myinfo_question_num);
-        mDiscussionNum = (TextView) view.findViewById(R.id.myinfo_discusion_num);
-        mNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
-        mTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
+        tvQuestionNum = (TextView) view.findViewById(R.id.myinfo_question_num);
+        tvDiscussionNum = (TextView) view.findViewById(R.id.myinfo_discusion_num);
+        tvNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
+        tvTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
 
         mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.my_downloaded_course);
         mCollect = (RelativeLayout) view.findViewById(R.id.my_collect);
@@ -289,10 +293,10 @@ public class MineFragment extends BaseFragment {
                 mUserDataNum = mActivity.parseJsonValue(
                         object, new TypeToken<UserDataNum>() {
                         });
-                mQuestionNum.setText(mUserDataNum.thread);
-                mDiscussionNum.setText(mUserDataNum.discussion);
-                mNoteNum.setText(mUserDataNum.note);
-                mTestpaperNum.setText(mUserDataNum.test);
+                tvQuestionNum.setText(mUserDataNum.thread);
+                tvDiscussionNum.setText(mUserDataNum.discussion);
+                tvNoteNum.setText(mUserDataNum.note);
+                tvTestpaperNum.setText(mUserDataNum.test);
             }
         });
     }

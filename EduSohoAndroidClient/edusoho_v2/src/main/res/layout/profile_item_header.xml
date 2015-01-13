@@ -2,7 +2,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/base_list_background_color">
@@ -74,7 +73,7 @@
         android:textSize="@dimen/middle_font_size"
         android:layout_marginBottom="1px"
         android:padding="16dp"
-        android:id="@+id/self_introduction"
+        android:id="@+id/tvIntroduction"
         android:text="自我介绍"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,11 +85,11 @@
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:background="@android:color/white"
-        android:layout_below="@id/self_introduction">
+        android:layout_below="@id/tvIntroduction">
 
         <LinearLayout
             android:gravity="center"
-            android:id="@+id/concern"
+            android:id="@+id/ll_followings"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -118,11 +117,11 @@
 
         <LinearLayout
             android:gravity="center"
-            android:id="@+id/fans"
+            android:id="@+id/ll_followers"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/concern"
+            android:layout_toRightOf="@id/ll_followings"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 

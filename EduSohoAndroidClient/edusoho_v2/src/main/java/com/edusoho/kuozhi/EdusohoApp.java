@@ -54,6 +54,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -97,6 +98,7 @@ public class EdusohoApp extends Application {
 
     private android.os.Handler mWorkHandler;
     private ImageLoaderConfiguration mImageLoaderConfiguration;
+    public DisplayImageOptions mOptions;
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;
@@ -318,6 +320,7 @@ public class EdusohoApp extends Application {
                 .diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
     public void startMainService() {

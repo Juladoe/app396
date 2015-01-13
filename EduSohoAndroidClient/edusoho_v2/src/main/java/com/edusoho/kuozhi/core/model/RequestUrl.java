@@ -22,8 +22,7 @@ public class RequestUrl {
         initHeads();
     }
 
-    private void initHeads()
-    {
+    private void initHeads() {
         heads.put("User-Agent", "Android");
     }
 
@@ -77,14 +76,12 @@ public class RequestUrl {
         return heads;
     }
 
-    public IdentityHashMap<String, Object> initKeysMap()
-    {
+    public IdentityHashMap<String, Object> initKeysMap() {
         muiltKeysMap = new IdentityHashMap<String, Object>();
         return muiltKeysMap;
     }
 
-    public IdentityHashMap<String, Object> getKeysMap()
-    {
+    public IdentityHashMap<String, Object> getKeysMap() {
         return muiltKeysMap;
     }
 }
