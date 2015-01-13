@@ -182,6 +182,8 @@ public class Const {
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
+    public static final String FOLLOWING = "User/getFollowings";
+    public static final String FOLLOWER = "User/getFollowers";
 
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";

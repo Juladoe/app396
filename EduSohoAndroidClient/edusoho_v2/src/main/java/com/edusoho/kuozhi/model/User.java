@@ -8,6 +8,9 @@ import java.io.Serializable;
 public class User implements Serializable {
     public String nickname;
     public String email;
+    public String password;
+    public String payPassword;
+    public String payPasswordSalt;
     public int id;
     public String smallAvatar;
     public UserRole[] roles;
@@ -25,6 +28,9 @@ public class User implements Serializable {
     public String promoted;
     public String promotedTime;
     public String locked;
+    public String lastPasswordFailTime;
+    public String lockDeadline;
+    public String consecutivePasswordErrorTimes;
     public String loginTime;
     public String loginIp;
     public String loginSessionId;
