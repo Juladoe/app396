@@ -187,6 +187,7 @@ public class Const {
     public static final String FOLLOWER = "User/getFollowers";
     public static final String FOLLOW = "User/follow";
     public static final String UNFOLLOW = "User/unfollow";
+    public static final String IS_FOLLOWED = "User/searchUserIsFollowed";
 
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";

@@ -30,6 +30,10 @@ public class FollowFragment extends BaseFragment {
     public static final String FOLLOWING = "following";
     public static final String FOLLOWER = "follower";
     public static final String FOLLOW_TYPE = "follow_type";
+
+    /**
+     * Previous页面类型
+     */
     private static String mType;
     private int mStart = 0;
     private User mFollowUser;
@@ -68,6 +72,7 @@ public class FollowFragment extends BaseFragment {
                 bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
                 bundle.putSerializable(ProfileFragment.FOLLOW_USER, user);
+                bundle.putString(FollowFragment.FOLLOW_TYPE, mType);
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
             }
         });

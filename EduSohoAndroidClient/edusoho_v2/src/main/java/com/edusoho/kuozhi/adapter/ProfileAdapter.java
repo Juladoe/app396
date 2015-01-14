@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
@@ -19,9 +21,11 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
+import com.edusoho.listener.ResultCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ch.boye.httpclientandroidlib.util.TextUtils;
 
@@ -33,11 +37,14 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
     private User mUser;
     private ActionBarBaseActivity mActivity;
     private int mListViewLayoutId;
+    private String mType = "";
+    private boolean bResult;
 
-    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity) {
+    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity, String type) {
         super(context, resource, true);
         mUser = user;
         mActivity = activity;
+        mType = (type == null ? "" : type);
     }
 
     public void setListViewLayout(int layoutId) {
@@ -93,8 +100,9 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 mHeaderHolder.mFollowersLayout = v.findViewById(R.id.ll_followers);
                 mHeaderHolder.mSendMsgLayout = v.findViewById(R.id.ll_send_msg);
                 mHeaderHolder.mFollowLayout = v.findViewById(R.id.ll_follow);
+                mHeaderHolder.tvFollow = (TextView) v.findViewById(R.id.tv_Follow);
 
-                setUserInfo(mHeaderHolder);
+                setHeaderInfo(mHeaderHolder);
 
                 mHeaderHolder.mFollowingsLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -120,6 +128,16 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                             bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
                             mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
                         }
+                    }
+                });
+                mHeaderHolder.mFollowLayout.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        RequestUrl url = mActivity.app.bindUrl(Const.FOLLOW, true);
+                        HashMap<String, String> params = url.getParams();
+                        params.put("toId", mUser.id + "");
+                        mActivity.ajaxPost(url, null);
                     }
                 });
                 setCacheView(0, v);
@@ -153,7 +171,31 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         return false;
     }
 
-    public void setUserInfo(HeaderHolder headerHolder) {
+    /**
+     * 粉丝列表中点击用户，设置关注按钮
+     *
+     * @return
+     */
+    private void isFollowed(final HeaderHolder headerHolder) {
+        RequestUrl url = mActivity.app.bindUrl(Const.IS_FOLLOWED, false);
+        HashMap<String, String> params = url.getParams();
+        params.put("userId", mActivity.app.loginUser.id + "");
+        params.put("toId", mUser.id + "");
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                if (object != null) {
+                    if (object.equals("true")) {
+                        headerHolder.tvFollow.setText("取消关注");
+                    } else {
+                        headerHolder.tvFollow.setText("关注");
+                    }
+                }
+            }
+        });
+    }
+
+    public void setHeaderInfo(HeaderHolder headerHolder) {
         if (mUser.vip != null) {
             headerHolder.mVip.setVisibility(View.VISIBLE);
         } else {
@@ -165,6 +207,11 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         } else {
             headerHolder.mSendMsgLayout.setVisibility(View.VISIBLE);
             headerHolder.mFollowLayout.setVisibility(View.VISIBLE);
+            if (mType.equals(FollowFragment.FOLLOWING)) {
+                headerHolder.tvFollow.setText("取消关注");
+            } else {
+                isFollowed(headerHolder);
+            }
         }
 
         headerHolder.mUserName.setText(mUser.nickname);
@@ -193,6 +240,12 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
         headerHolder.mTeacherTitle.setText(mUser.title);
     }
+//
+//    private boolean isFollowed() {
+//        RequestUrl requestUrl = mActivity.app.bindUrl(Const.FOLLOWING, false);
+//        HashMap<String, String> params = requestUrl.getParams();
+//        params.put("userId", app.loginUser.id + "");
+//    }
 
 
     protected class HeaderHolder {
@@ -206,6 +259,7 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         public ESTextView mFollowing;
         public ESTextView mFollower;
         public TextView mDescription;
+        public TextView tvFollow;
 
         public View mFollowingsLayout;
         public View mFollowersLayout;

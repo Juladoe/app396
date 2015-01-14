@@ -32,6 +32,7 @@ public class ProfileFragment extends BaseFragment {
 
     public String mTitle = "详细资料";
     private User mUser;
+    private String mType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,12 @@ public class ProfileFragment extends BaseFragment {
         mInfoList = (ListView) view.findViewById(R.id.info_list);
         Bundle bundle = mActivity.getIntent().getExtras();
         mUser = (User) bundle.getSerializable(FOLLOW_USER);
+        mType = bundle.getString(FollowFragment.FOLLOW_TYPE);
         if (mUser == null) {
             mUser = app.loginUser;
         }
 
-        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, mUser, mActivity);
+        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, mUser, mActivity, mType);
 
         if (isTeacher()) {
             loadTeachingCourse();
