@@ -31,7 +31,8 @@
             android:id="@+id/question_answer_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Joanie"/>
+            android:text="Joanie"
+            android:textColor="#2ec368"/>
 
         <TextView
             android:id="@+id/question_answer_time"
