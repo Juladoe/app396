@@ -28,7 +28,7 @@
             android:orientation="vertical"
             android:background="@color/register_text"
             app:fontColor="@android:color/white"
-            app:iconSizeScale="2.4"
+            app:iconSizeScale="3.6"
             android:layout_centerVertical="true"
             app:size="@dimen/schoolroom_item_logo"
             app:image="@string/lesson_next"
@@ -109,7 +109,6 @@
                 android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:background="@drawable/new_msg_logo" />
-
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

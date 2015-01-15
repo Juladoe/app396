@@ -65,7 +65,7 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
                 holder.tvSendName = (TextView) convertView.findViewById(R.id.tv_send_name);
                 holder.tvSendTime = (TextView) convertView.findViewById(R.id.tv_send_time);
                 holder.tvSendContent = (TextView) convertView.findViewById(R.id.tv_send_content);
-                holder.ivUnreadMsg = (ImageView) convertView.findViewById(R.id.iv_unread_msg);
+                holder.tvUnreadNum = (TextView) convertView.findViewById(R.id.tv_msg_sum);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -77,9 +77,10 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
             Log.d(TAG, holder.tvSendContent.getWidth() + "");
             holder.tvSendContent.setText(model.latestMessageContent);
             if (model.unreadNum > 0) {
-                holder.ivUnreadMsg.setVisibility(View.VISIBLE);
+                holder.tvUnreadNum.setVisibility(View.VISIBLE);
+                holder.tvUnreadNum.setText(model.unreadNum + "");
             } else {
-                holder.ivUnreadMsg.setVisibility(View.GONE);
+                holder.tvUnreadNum.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
@@ -92,7 +93,7 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
         public TextView tvSendName;
         public TextView tvSendContent;
         public TextView tvSendTime;
-        public ImageView ivUnreadMsg;
+        public TextView tvUnreadNum;
     }
 
     @Override
@@ -103,5 +104,13 @@ public class MessageLetterSummaryAdapter extends ListBaseAdapter<LetterSummaryMo
     @Override
     public void addItem(LetterSummaryModel item) {
         super.addItem(item);
+    }
+
+    public void setReadMsgNum(int position) {
+        LetterSummaryModel model = mList.get(position);
+        if (model.unreadNum != 0) {
+            model.unreadNum = 0;
+            notifyDataSetChanged();
+        }
     }
 }

@@ -82,7 +82,7 @@ public class ProfileFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("null", position + "");
                 if (position > 1) {
-                    Course course = (Course) parent.getAdapter().getItem(position - 1);
+                    Course course = (Course) parent.getItemAtPosition(position - 1);
                     Bundle bundle = new Bundle();
                     bundle.putInt(Const.COURSE_ID, course.id);
                     bundle.putString(Const.ACTIONBAR_TITLE, course.title);

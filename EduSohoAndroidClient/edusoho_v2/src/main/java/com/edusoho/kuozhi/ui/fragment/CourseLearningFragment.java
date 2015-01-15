@@ -318,7 +318,7 @@ public class CourseLearningFragment extends BaseFragment {
         mCommitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startAcitivity("FragmentPageActivity", new PluginRunCallback() {
+                startActivity("FragmentPageActivity", new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
@@ -333,10 +333,10 @@ public class CourseLearningFragment extends BaseFragment {
         mCourseNoticeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAcitivity("FragmentPageActivity",new PluginRunCallback() {
+                startActivity("FragmentPageActivity", new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.COURSE_ID,mCourseId);
+                        startIntent.putExtra(Const.COURSE_ID, mCourseId);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "CourseNoticeFragment");
                     }
                 });

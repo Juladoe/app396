@@ -262,7 +262,7 @@ public class MineFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "SuggestionFragment");
                 bundle.putString(Const.ACTIONBAR_TITLE, "意见反馈");
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
+                startActivityWithBundle("FragmentPageActivity", bundle);
             }
         });
 

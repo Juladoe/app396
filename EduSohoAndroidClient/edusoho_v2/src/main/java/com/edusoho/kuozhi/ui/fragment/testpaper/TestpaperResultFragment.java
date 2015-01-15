@@ -124,7 +124,7 @@ public class TestpaperResultFragment extends BaseFragment {
                         bundle.putInt(Const.LESSON_ID, 0);
                         bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
                         bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
-                        startAcitivityWithBundle("TestpaperParseActivity", bundle);
+                        startActivityWithBundle("TestpaperParseActivity", bundle);
                     }
                 });
             }

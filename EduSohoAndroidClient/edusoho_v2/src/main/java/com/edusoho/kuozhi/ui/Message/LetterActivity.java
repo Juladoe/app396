@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
+import cn.trinea.android.common.util.ToastUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -110,5 +111,4 @@ public class LetterActivity extends ActionBarBaseActivity {
         };
         mActivity.ajaxPost(requestUrl, callback);
     }
-
 }

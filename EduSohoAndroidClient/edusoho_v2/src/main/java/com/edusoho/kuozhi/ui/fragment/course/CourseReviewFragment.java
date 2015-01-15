@@ -26,7 +26,6 @@ import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
-import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -175,7 +174,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
         bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
         bundle.putString(Const.ACTIONBAR_TITLE, "评价课程");
         bundle.putInt(Const.COURSE_ID, mCourseId);
-        startAcitivityWithBundle("FragmentPageActivity", bundle);
+        startActivityWithBundle("FragmentPageActivity", bundle);
     }
 
     private View initHeadView()
@@ -249,7 +248,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
                 bundle.putInt(Const.COURSE_ID, mCourseId);
                 bundle.putDouble(CourseReviewFragment.RATING, mRating);
                 bundle.putString(CourseReviewFragment.RATING_NUM, mRatingNum);
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
+                startActivityWithBundle("FragmentPageActivity", bundle);
             }
         });
 

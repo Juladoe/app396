@@ -103,7 +103,7 @@ public class CoreEngine {
         return engine;
     }
 
-    public void runPlubinFromFragmentFroResult(
+    public void runPluginFromFragmentFroResult(
             String pluginName, Fragment fragment, int requestCode, Bundle bundle)
     {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);

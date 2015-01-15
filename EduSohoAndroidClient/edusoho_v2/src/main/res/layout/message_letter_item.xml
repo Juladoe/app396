@@ -16,17 +16,29 @@
             android:layout_width="@dimen/message_head_icon"
             android:layout_height="@dimen/message_head_icon"
             android:scaleType="fitXY"
-            android:layout_margin="1dp"
+            android:layout_margin="2dp"
             android:src="@drawable/myinfo_default_face" />
 
-        <ImageView
-            android:layout_width="11dp"
-            android:layout_height="11dp"
+        <!--<ImageView-->
+        <!--android:layout_width="11dp"-->
+        <!--android:layout_height="11dp"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:id="@+id/iv_unread_msg"-->
+        <!--android:src="@drawable/update_bg"-->
+        <!--android:scaleType="fitXY" />-->
+
+        <TextView
+            android:id="@+id/tv_msg_sum"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:id="@+id/iv_unread_msg"
-            android:src="@drawable/update_bg"
-            android:scaleType="fitXY" />
+            android:text="1"
+            android:gravity="center"
+            android:textSize="@dimen/xxx_small_font_size"
+            android:textColor="@android:color/white"
+            android:background="@drawable/new_msg_logo" />
 
     </RelativeLayout>
 

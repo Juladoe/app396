@@ -145,7 +145,7 @@ public class TestpaperLessonFragment extends BaseFragment {
         bundle.putInt(Const.TESTPAPER_DO_TYPE, type);
         bundle.putStringArray(CourseDetailsTabActivity.TITLES, getTestpaperQSeq());
         bundle.putStringArray(CourseDetailsTabActivity.LISTS, getTestpaperFragments());
-        startAcitivityWithBundle("TestpaperActivity", bundle);
+        startActivityWithBundle("TestpaperActivity", bundle);
         mActivity.finish();
     }
 
