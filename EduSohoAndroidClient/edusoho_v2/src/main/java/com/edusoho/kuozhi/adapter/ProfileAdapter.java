@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.apache.cordova.App;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +110,7 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
     public View getView(int i, View view, ViewGroup viewGroup) {
         View v = null;
         if (i == 0) {
-            HeaderHolder mHeaderHolder;
+            final HeaderHolder mHeaderHolder;
             if (cacheArray.get(0) == null) {
                 v = inflater.inflate(mResource, null);
                 mHeaderHolder = new HeaderHolder();
@@ -163,10 +166,74 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
                 @Override
                 public void onClick(View v) {
-                    RequestUrl url = mActivity.app.bindUrl(Const.FOLLOW, true);
-                    HashMap<String, String> params = url.getParams();
+                    mHeaderHolder.mFollowLayout.setEnabled(false);
+                    mHeaderHolder.tvFollow.setEnabled(false);
+                    String url;
+                    final String changeText;
+                    if (mHeaderHolder.tvFollow.getText().equals("关注")) {
+                        url = Const.FOLLOW;
+                        changeText = "取消关注";
+                    } else {
+                        url = Const.UNFOLLOW;
+                        changeText = "关注";
+                    }
+                    RequestUrl requestUrl = mActivity.app.bindUrl(url, true);
+                    HashMap<String, String> params = requestUrl.getParams();
                     params.put("toId", mUser.id + "");
-                    mActivity.ajaxPost(url, null);
+                    mActivity.ajaxPost(requestUrl, new ResultCallback() {
+                        @Override
+                        public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                            mHeaderHolder.mFollowLayout.setEnabled(true);
+                            mHeaderHolder.tvFollow.setEnabled(true);
+                            if (object != null) {
+                                mHeaderHolder.tvFollow.setText(changeText);
+                            }
+                        }
+
+                        @Override
+                        public void error(String url, AjaxStatus ajaxStatus) {
+                            mHeaderHolder.mFollowLayout.setEnabled(true);
+                            mHeaderHolder.tvFollow.setEnabled(true);
+                        }
+                    });
+
+//                    if (mHeaderHolder.tvFollow.getText().equals("关注")) {
+//                        RequestUrl url = mActivity.app.bindUrl(Const.FOLLOW, true);
+//                        HashMap<String, String> params = url.getParams();
+//                        params.put("toId", mUser.id + "");
+//                        mActivity.ajaxPost(url, new ResultCallback() {
+//                            @Override
+//                            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+//                                mHeaderHolder.mFollowLayout.setEnabled(true);
+//                                if (object != null) {
+//                                    mHeaderHolder.tvFollow.setText("取消关注");
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void error(String url, AjaxStatus ajaxStatus) {
+//                                mHeaderHolder.mFollowLayout.setEnabled(true);
+//                            }
+//                        });
+//                    } else {
+//                        RequestUrl url = mActivity.app.bindUrl(Const.UNFOLLOW, true);
+//                        HashMap<String, String> params = url.getParams();
+//                        params.put("toId", mUser.id + "");
+//                        mActivity.ajaxPost(url, new ResultCallback() {
+//                            @Override
+//                            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+//                                mHeaderHolder.mFollowLayout.setEnabled(true);
+//                                if (object != null) {
+//                                    mHeaderHolder.tvFollow.setText("关注");
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void error(String url, AjaxStatus ajaxStatus) {
+//                                mHeaderHolder.mFollowLayout.setEnabled(true);
+//                            }
+//                        });
+//                    }
                 }
             });
             mHeaderHolder.mSendMsgLayout.setOnClickListener(new View.OnClickListener() {

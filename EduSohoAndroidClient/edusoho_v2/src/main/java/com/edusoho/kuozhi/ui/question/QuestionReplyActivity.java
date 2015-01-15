@@ -46,7 +46,7 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
                 ? intent.getStringExtra(Const.ACTIONBAR_TITLE) : "添加回复");
         initViews();
 
-        initProgressDialog();
+        mProgressDialog = AppUtil.initProgressDialog(mContext, "提交中...");
     }
 
     private void initViews() {
@@ -207,15 +207,5 @@ public class QuestionReplyActivity extends ActionBarBaseActivity {
             }
         });
 
-    }
-
-    /**
-     * 初始化对话框
-     */
-    private void initProgressDialog() {
-        mProgressDialog = new ProgressDialog(mActivity);
-        mProgressDialog.setMessage("提交中...");
-        mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setCancelable(false);
     }
 }

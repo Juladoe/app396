@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.util;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -1129,5 +1130,16 @@ public class AppUtil {
         }
 
         return strTemp;
+    }
+
+    /**
+     * 初始化对话框
+     */
+    public static ProgressDialog initProgressDialog(Context context, String msg) {
+        ProgressDialog mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage(msg);
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setCancelable(false);
+        return mProgressDialog;
     }
 }
