@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.model.Push;
 import android.content.ContextWrapper;
 import android.content.Intent;
 
-import com.edusoho.kuozhi.ui.Message.MessageLetterListActivity;
+import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.Const;
 

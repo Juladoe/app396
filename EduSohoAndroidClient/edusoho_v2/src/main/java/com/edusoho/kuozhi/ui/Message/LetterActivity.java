@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.Message;
+package com.edusoho.kuozhi.ui.message;
 
 import android.content.Intent;
 import android.os.Bundle;

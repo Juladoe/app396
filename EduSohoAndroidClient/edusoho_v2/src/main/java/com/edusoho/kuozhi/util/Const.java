@@ -132,6 +132,7 @@ public class Const {
     public static final String MESSAGE_LETTER_SUMMARY = "User/getUserMessages";
     public static final String MESSAGE_LIST = "User/getMessageList";
     public static final String SEND_LETTER = "User/sendMessage";
+    public static final String GET_CONVERSATION = "User/getConversationIdByFromIdAndToId";
 
     /**
      * 获取所有回答
