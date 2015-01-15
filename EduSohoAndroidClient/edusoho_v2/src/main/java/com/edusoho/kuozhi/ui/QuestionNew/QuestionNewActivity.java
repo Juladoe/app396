@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import ch.boye.httpclientandroidlib.util.TextUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -32,6 +33,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
     private String mquestionType;
     private String mEmptyText;
     private int mEmptyIcon;
+    private String mUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
         mquestionType = intent.getStringExtra(Const.QUESTION_TYPE);
         mEmptyText = intent.getStringExtra("empty_text");
         mEmptyIcon = intent.getIntExtra("empty_icon", R.drawable.icon_question);
+        mUrl = intent.getStringExtra(Const.QUESTION_URL);
     }
 
     private void initView() {
@@ -67,6 +70,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
                 bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
+                bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
                 bundle.putString("empty_text", mEmptyText);
                 bundle.putInt("empty_icon", mEmptyIcon);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
@@ -94,7 +98,10 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
 
     //获取问答显示列表
     public void getQuestionListReponseDatas(final int start) {
-        RequestUrl requestUrl = app.bindUrl(Const.THREADS_BY_USER_COURSE_ID, true);
+        if (TextUtils.isEmpty(mUrl)) {
+            return;
+        }
+        RequestUrl requestUrl = app.bindUrl(mUrl, true);
         requestUrl.setParams(new String[]{
                 "strat", String.valueOf(start)
                 , "limit", String.valueOf(Const.LIMIT)

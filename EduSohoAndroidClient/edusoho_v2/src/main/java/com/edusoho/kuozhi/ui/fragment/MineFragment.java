@@ -349,6 +349,7 @@ public class MineFragment extends BaseFragment {
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
                 startIntent.putExtra("empty_text", emptyText);
                 startIntent.putExtra("empty_icon", emptyIcon);
+                startIntent.putExtra(Const.QUESTION_URL, Const.QUESTION);
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
