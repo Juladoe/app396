@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_nickname"
             android:layout_alignTop="@id/tv_nickname"
+            android:layout_marginLeft="8dp"
             android:textSize="@dimen/icon_vip"
             android:text="@string/font_vip"
             android:textColor="#fff000" />
@@ -49,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/small_font_size"
+            android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/vip_icon"
             android:layout_alignBaseline="@+id/tv_nickname" />
 
@@ -145,13 +147,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/message"
+            android:id="@+id/ll_send_msg"
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_marginRight="16dp"
-            android:layout_toLeftOf="@+id/add_concern">
+            android:layout_toLeftOf="@+id/ll_follow">
 
             <com.edusoho.kuozhi.view.EduSohoIconView
                 android:textSize="24sp"
@@ -174,7 +176,7 @@
         <LinearLayout
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"
-            android:id="@+id/add_concern"
+            android:id="@+id/ll_follow"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="16dp"
@@ -189,7 +191,8 @@
 
             <TextView
                 android:textSize="@dimen/middle_font_size"
-                android:text="关注"
+                android:text=""
+                android:id="@+id/tv_Follow"
                 android:gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />

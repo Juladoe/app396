@@ -132,6 +132,7 @@ public class Const {
     public static final String MESSAGE_LETTER_SUMMARY = "User/getUserMessages";
     public static final String MESSAGE_LIST = "User/getMessageList";
     public static final String SEND_LETTER = "User/sendMessage";
+    public static final String GET_CONVERSATION = "User/getConversationIdByFromIdAndToId";
 
     /**
      * 获取所有回答
@@ -174,6 +175,7 @@ public class Const {
     public static final String ADDCOMMENT = "Course/commitCourse";
     public static final String ABOUT = "School/getSchoolInfo";
     public static final String LEARNING = "Course/getLearningCourse";
+    public static final String LEARNING_WITHOUT_TOKEN = "Course/getLearningCourseWithoutToken";
     public static final String LEARNED = "Course/getLearnedCourse";
     public static final String FAVORITES = "Course/getFavoriteCoruse";
     public static final String PAYCOURSE = "Order/payCourse";
@@ -184,6 +186,9 @@ public class Const {
     public static final String LOGOUT = "User/logout";
     public static final String FOLLOWING = "User/getFollowings";
     public static final String FOLLOWER = "User/getFollowers";
+    public static final String FOLLOW = "User/follow";
+    public static final String UNFOLLOW = "User/unfollow";
+    public static final String IS_FOLLOWED = "User/searchUserIsFollowed";
 
     public static final String SCHOOL_BANNER = "School/getSchoolBanner";
     public static final String SCHOOL_Announcement = "School/getSchoolAnnouncement";

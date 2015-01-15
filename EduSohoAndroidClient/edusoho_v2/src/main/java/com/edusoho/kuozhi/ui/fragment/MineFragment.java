@@ -138,8 +138,9 @@ public class MineFragment extends BaseFragment {
             tvUserName.setText(app.loginUser.nickname);
             if (TextUtils.isEmpty(app.loginUser.signature)) {
                 tvSignature.setText("暂无个性签名");
+            } else {
+                tvSignature.setText(app.loginUser.signature);
             }
-            tvSignature.setText(app.loginUser.signature);
             returnObjectFormUserdata();
             if (app.loginUser.vip == null) {
                 tvVip.setVisibility(View.GONE);
@@ -172,13 +173,18 @@ public class MineFragment extends BaseFragment {
     private View.OnClickListener mUserInfoClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "PersonalDetialsFragment");
-                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "详细资料");
-                }
-            });
+            Bundle bundle = new Bundle();
+            bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+            bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
+            app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+
+//            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+//                @Override
+//                public void setIntentDate(Intent startIntent) {
+//                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+//                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "详细资料");
+//                }
+//            });
         }
     };
 

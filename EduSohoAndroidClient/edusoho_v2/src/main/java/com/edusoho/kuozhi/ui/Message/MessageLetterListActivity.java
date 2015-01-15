@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.Message;
+package com.edusoho.kuozhi.ui.message;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -77,40 +77,42 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
     }
 
     private void LoadLetterListData(final int start, final boolean isPullToBottom) {
-        RequestUrl url = app.bindUrl(Const.MESSAGE_LIST, true);
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("limit", String.valueOf(Const.LIMIT));
-        params.put("start", String.valueOf(start));
-        params.put("conversationId", String.valueOf(mConversationId));
-        url.setParams(params);
-        ResultCallback callback = new ResultCallback() {
-            @Override
-            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                mLetterList.onRefreshComplete();
-                ArrayList<LetterModel> result = gson.fromJson(object, new TypeToken<ArrayList<LetterModel>>() {
-                }.getType());
+        if (mConversationId != 0) {
+            RequestUrl url = app.bindUrl(Const.MESSAGE_LIST, true);
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("limit", String.valueOf(Const.LIMIT));
+            params.put("start", String.valueOf(start));
+            params.put("conversationId", String.valueOf(mConversationId));
+            url.setParams(params);
+            ResultCallback callback = new ResultCallback() {
+                @Override
+                public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                    mLetterList.onRefreshComplete();
+                    ArrayList<LetterModel> result = gson.fromJson(object, new TypeToken<ArrayList<LetterModel>>() {
+                    }.getType());
 
-                if (result == null) {
-                    return;
-                }
-                if (result.size() != 0) {
-                    LetterListAdapter adapter = (LetterListAdapter) mLetterList.getAdapter();
-                    adapter.addItemsToBottom(result);
-                    if (isPullToBottom) {
-                        mLetterList.setSelection(result.size());
+                    if (result == null) {
+                        return;
                     }
+                    if (result.size() != 0) {
+                        LetterListAdapter adapter = (LetterListAdapter) mLetterList.getAdapter();
+                        adapter.addItemsToBottom(result);
+                        if (isPullToBottom) {
+                            mLetterList.setSelection(result.size());
+                        }
 
-                    mStart = start + mLetterList.getAdapter().getCount();
+                        mStart = start + mLetterList.getAdapter().getCount();
+                    }
                 }
-            }
 
-            @Override
-            public void error(String url, AjaxStatus ajaxStatus) {
-                super.error(url, ajaxStatus);
-            }
-        };
+                @Override
+                public void error(String url, AjaxStatus ajaxStatus) {
+                    super.error(url, ajaxStatus);
+                }
+            };
 
-        this.ajaxPost(url, callback);
+            this.ajaxPost(url, callback);
+        }
     }
 
     @Override

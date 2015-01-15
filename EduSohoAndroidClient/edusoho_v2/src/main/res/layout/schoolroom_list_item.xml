@@ -36,8 +36,8 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="8dp"
-            android:layout_width="32dp"
-            android:layout_height="32dp" />
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"

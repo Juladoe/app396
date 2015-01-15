@@ -1,29 +1,38 @@
 package com.edusoho.kuozhi.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
+import com.edusoho.kuozhi.model.Message.ConversationModel;
+import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.FollowFragment;
+import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ch.boye.httpclientandroidlib.util.TextUtils;
 
@@ -35,11 +44,31 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
     private User mUser;
     private ActionBarBaseActivity mActivity;
     private int mListViewLayoutId;
+    private String mType = "";
+    private boolean bResult;
 
-    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity) {
+    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity, String type) {
         super(context, resource, true);
         mUser = user;
         mActivity = activity;
+        mType = (type == null ? "" : type);
+    }
+
+    public void updateUserInfo() {
+        RequestUrl url = mActivity.app.bindUrl(Const.USERINFO, false);
+        HashMap<String, String> params = url.getParams();
+        params.put("userId", mUser.id + "");
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                if (object != null) {
+                    mUser = mActivity.parseJsonValue(object, new TypeToken<User>() {
+                    });
+                    notifyDataSetChanged();
+                }
+            }
+        });
+
     }
 
     public void setListViewLayout(int layoutId) {
@@ -93,33 +122,80 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 mHeaderHolder.mDescription = (TextView) v.findViewById(R.id.description);
                 mHeaderHolder.mFollowingsLayout = v.findViewById(R.id.ll_followings);
                 mHeaderHolder.mFollowersLayout = v.findViewById(R.id.ll_followers);
+                mHeaderHolder.mSendMsgLayout = v.findViewById(R.id.ll_send_msg);
+                mHeaderHolder.mFollowLayout = v.findViewById(R.id.ll_follow);
+                mHeaderHolder.tvFollow = (TextView) v.findViewById(R.id.tv_Follow);
+                v.setTag(mHeaderHolder);
+                setCacheView(0, v);
+            } else {
+                v = getCacheView(0);
+                mHeaderHolder = (HeaderHolder) v.getTag();
+            }
+            setHeaderInfo(mHeaderHolder);
 
-                setUserInfo(mHeaderHolder);
-
-                mHeaderHolder.mFollowingsLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            mHeaderHolder.mFollowingsLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mUser.following.equals("0")) {
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.ACTIONBAR_TITLE, "关注");
                         bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
                         bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWING);
+                        bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
                         mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
                     }
-                });
-                mHeaderHolder.mFollowersLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                }
+            });
+            mHeaderHolder.mFollowersLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mUser.follower.equals("0")) {
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.ACTIONBAR_TITLE, "粉丝");
                         bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
                         bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWER);
+                        bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
                         mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
                     }
-                });
-                setCacheView(0, v);
-            } else {
-                v = getCacheView(0);
-            }
+                }
+            });
+            mHeaderHolder.mFollowLayout.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    RequestUrl url = mActivity.app.bindUrl(Const.FOLLOW, true);
+                    HashMap<String, String> params = url.getParams();
+                    params.put("toId", mUser.id + "");
+                    mActivity.ajaxPost(url, null);
+                }
+            });
+            mHeaderHolder.mSendMsgLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RequestUrl url = mActivity.app.bindUrl(Const.GET_CONVERSATION, true);
+                    HashMap<String, String> params = url.getParams();
+                    params.put("fromId", mUser.id + "");
+                    params.put("toId", mActivity.app.loginUser.id + "");
+                    mActivity.ajaxPost(url, new ResultCallback() {
+                        @Override
+                        public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                            final ConversationModel model = mActivity.parseJsonValue(object, new TypeToken<ConversationModel>() {
+                            });
+                            PluginRunCallback pluginRunCallback = new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    if (model != null) {
+                                        startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, model.id);
+                                    }
+                                    startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_NAME, mUser.nickname);
+                                    startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_ID, mUser.id);
+                                }
+                            };
+                            mActivity.app.mEngine.runNormalPlugin("MessageLetterListActivity", mActivity, pluginRunCallback);
+                        }
+                    });
+                }
+            });
         } else {
             ViewHolder holder;
             if (cacheArray.get(i) == null) {
@@ -127,13 +203,15 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 holder = new ViewHolder();
                 holder.mCourseImage = (ImageView) v.findViewById(R.id.course_image);
                 holder.mCourseTitle = (TextView) v.findViewById(R.id.course_title);
-                Course course = mList.get(i - 1);
-                holder.mCourseTitle.setText(course.title);
-                ImageLoader.getInstance().displayImage(course.largePicture, holder.mCourseImage, mActivity.app.mOptions);
+                v.setTag(holder);
                 setCacheView(i, v);
             } else {
                 v = getCacheView(i);
+                holder = (ViewHolder) v.getTag();
             }
+            Course course = mList.get(i - 1);
+            holder.mCourseTitle.setText(course.title);
+            ImageLoader.getInstance().displayImage(course.largePicture, holder.mCourseImage, mActivity.app.mOptions);
         }
         return v;
     }
@@ -147,12 +225,49 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         return false;
     }
 
-    public void setUserInfo(HeaderHolder headerHolder) {
+    /**
+     * 粉丝列表中点击用户，设置关注按钮
+     *
+     * @return
+     */
+    private void isFollowed(final HeaderHolder headerHolder) {
+        RequestUrl url = mActivity.app.bindUrl(Const.IS_FOLLOWED, false);
+        HashMap<String, String> params = url.getParams();
+        params.put("userId", mActivity.app.loginUser.id + "");
+        params.put("toId", mUser.id + "");
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                if (object != null) {
+                    if (object.equals("true")) {
+                        headerHolder.tvFollow.setText("取消关注");
+                    } else {
+                        headerHolder.tvFollow.setText("关注");
+                    }
+                }
+            }
+        });
+    }
+
+    public void setHeaderInfo(HeaderHolder headerHolder) {
         if (mUser.vip != null) {
             headerHolder.mVip.setVisibility(View.VISIBLE);
         } else {
             headerHolder.mVip.setVisibility(View.GONE);
         }
+        if (mUser.id == mActivity.app.loginUser.id) {
+            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
+        } else {
+            headerHolder.mSendMsgLayout.setVisibility(View.VISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.VISIBLE);
+            if (mType.equals(FollowFragment.FOLLOWING)) {
+                headerHolder.tvFollow.setText("取消关注");
+            } else {
+                isFollowed(headerHolder);
+            }
+        }
+
         headerHolder.mUserName.setText(mUser.nickname);
 
         headerHolder.mFollowing.setText(mUser.following);
@@ -179,6 +294,12 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
         headerHolder.mTeacherTitle.setText(mUser.title);
     }
+//
+//    private boolean isFollowed() {
+//        RequestUrl requestUrl = mActivity.app.bindUrl(Const.FOLLOWING, false);
+//        HashMap<String, String> params = requestUrl.getParams();
+//        params.put("userId", app.loginUser.id + "");
+//    }
 
 
     protected class HeaderHolder {
@@ -192,9 +313,13 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         public ESTextView mFollowing;
         public ESTextView mFollower;
         public TextView mDescription;
+        public TextView tvFollow;
 
         public View mFollowingsLayout;
         public View mFollowersLayout;
+
+        public View mSendMsgLayout;
+        public View mFollowLayout;
     }
 
     protected class ViewHolder {
