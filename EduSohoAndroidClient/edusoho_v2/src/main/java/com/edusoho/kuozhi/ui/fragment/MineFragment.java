@@ -60,7 +60,7 @@ public class MineFragment extends BaseFragment {
     private TextView tvTestpaperNum;
 
     private RelativeLayout mDownloadedCourse;
-    private RelativeLayout mCollect;
+    private RelativeLayout mMyFavorite;
     private RelativeLayout mNotification;
     private RelativeLayout mSetting;
     private RelativeLayout mFeedback;
@@ -210,7 +210,7 @@ public class MineFragment extends BaseFragment {
         tvTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
 
         mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.my_downloaded_course);
-        mCollect = (RelativeLayout) view.findViewById(R.id.my_collect);
+        mMyFavorite = (RelativeLayout) view.findViewById(R.id.my_favorite);
         mNotification = (RelativeLayout) view.findViewById(R.id.my_notification);
         mSetting = (RelativeLayout) view.findViewById(R.id.my_setting);
         mFeedback = (RelativeLayout) view.findViewById(R.id.my_feedback);
@@ -251,6 +251,19 @@ public class MineFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "SettingFragment");
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, "设置");
+                    }
+                });
+            }
+        });
+
+        mMyFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "FavoriteCourseFragmentHorizontal");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "收藏");
                     }
                 });
             }

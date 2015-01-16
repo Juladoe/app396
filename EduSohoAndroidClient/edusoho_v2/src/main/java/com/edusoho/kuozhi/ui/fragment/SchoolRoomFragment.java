@@ -113,7 +113,7 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 3:
                 //讨论
-                goToQuestionDetailActivity("话题", "discussion", "暂无讨论", R.drawable.icon_discussion);
+                goToQuestionDetailActivity("讨论", "discussion", "暂无讨论", R.drawable.icon_discussion);
                 break;
             case 4:
                 //笔记

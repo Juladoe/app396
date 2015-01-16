@@ -196,44 +196,6 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                             mHeaderHolder.tvFollow.setEnabled(true);
                         }
                     });
-
-//                    if (mHeaderHolder.tvFollow.getText().equals("关注")) {
-//                        RequestUrl url = mActivity.app.bindUrl(Const.FOLLOW, true);
-//                        HashMap<String, String> params = url.getParams();
-//                        params.put("toId", mUser.id + "");
-//                        mActivity.ajaxPost(url, new ResultCallback() {
-//                            @Override
-//                            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-//                                mHeaderHolder.mFollowLayout.setEnabled(true);
-//                                if (object != null) {
-//                                    mHeaderHolder.tvFollow.setText("取消关注");
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void error(String url, AjaxStatus ajaxStatus) {
-//                                mHeaderHolder.mFollowLayout.setEnabled(true);
-//                            }
-//                        });
-//                    } else {
-//                        RequestUrl url = mActivity.app.bindUrl(Const.UNFOLLOW, true);
-//                        HashMap<String, String> params = url.getParams();
-//                        params.put("toId", mUser.id + "");
-//                        mActivity.ajaxPost(url, new ResultCallback() {
-//                            @Override
-//                            public void callback(String url, String object, AjaxStatus ajaxStatus) {
-//                                mHeaderHolder.mFollowLayout.setEnabled(true);
-//                                if (object != null) {
-//                                    mHeaderHolder.tvFollow.setText("关注");
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void error(String url, AjaxStatus ajaxStatus) {
-//                                mHeaderHolder.mFollowLayout.setEnabled(true);
-//                            }
-//                        });
-//                    }
                 }
             });
             mHeaderHolder.mSendMsgLayout.setOnClickListener(new View.OnClickListener() {

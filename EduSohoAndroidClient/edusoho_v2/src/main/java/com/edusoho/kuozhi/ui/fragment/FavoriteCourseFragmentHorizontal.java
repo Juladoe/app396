@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,20 +9,20 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LearnedCourseAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.LearnCourseResult;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Created by JesseHuang on 15/1/7.
- * 在学课程中的已学课程
+ * Created by JesseHuang on 15/1/16.
  */
-public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
+public class FavoriteCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public String getTitle() {
-        return "已学完";
+        return "已收藏";
     }
 
     @Override
@@ -32,8 +31,13 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
     }
 
     @Override
+    protected void initView(View view) {
+        super.initView(view);
+    }
+
+    @Override
     public void getCourseResponseDatas(final int start) {
-        RequestUrl url = app.bindUrl(Const.LEARNED, true);
+        RequestUrl url = app.bindUrl(Const.FAVORITES, true);
         url.setParams(new String[]{
                 "start", start + "",
                 "limit", Const.LIMIT + ""
@@ -55,16 +59,6 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
         });
     }
 
-    @Override
-    public BaseAdapter getAdapter() {
-        return new LearnedCourseAdapter(R.layout.learned_course_item, mContext);
-    }
-
-    @Override
-    public String getEmptyText() {
-        return "没有已学课程";
-    }
-
     private void parseResponse(String object, int start) {
         LearnCourseResult courseResult = mActivity.gson.fromJson(
                 object, new TypeToken<LearnCourseResult>() {
@@ -80,10 +74,12 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LEARNCOURSE) {
-            getCourseResponseDatas(0);
-        }
+    public BaseAdapter getAdapter() {
+        return new LearnedCourseAdapter(R.layout.learned_course_item, mContext);
+    }
+
+    @Override
+    public String getEmptyText() {
+        return "没有收藏课程";
     }
 }

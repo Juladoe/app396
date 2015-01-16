@@ -239,7 +239,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/my_collect"
+            android:id="@+id/my_favorite"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@id/my_downloaded_course"
@@ -272,7 +272,7 @@
             android:id="@+id/my_notification"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_below="@id/my_collect"
+            android:layout_below="@id/my_favorite"
             android:background="@drawable/normal_layout_bg"
             android:layout_marginTop="16dp">
 
