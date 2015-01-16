@@ -209,7 +209,7 @@ public class MineFragment extends BaseFragment {
         tvNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
         tvTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
 
-        mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.my_downloaded_course);
+        mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.course_downloaded);
         mMyFavorite = (RelativeLayout) view.findViewById(R.id.my_favorite);
         mNotification = (RelativeLayout) view.findViewById(R.id.my_notification);
         mSetting = (RelativeLayout) view.findViewById(R.id.my_setting);
@@ -290,6 +290,14 @@ public class MineFragment extends BaseFragment {
                 bundle.putString(Const.ACTIONBAR_TITLE, "消息");
                 bundle.putString(FragmentPageActivity.FRAGMENT, "MessageFragment");
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+            }
+        });
+
+        mDownloadedCourse.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("LocalCoruseActivity", mContext, null);
             }
         });
 

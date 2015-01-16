@@ -209,7 +209,7 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/my_downloaded_course"
+            android:id="@+id/course_downloaded"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@id/myinfo_data_bar"
@@ -242,7 +242,7 @@
             android:id="@+id/my_favorite"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_below="@id/my_downloaded_course"
+            android:layout_below="@id/course_downloaded"
             android:background="@drawable/normal_layout_bg"
             android:layout_marginTop="16dp">
 

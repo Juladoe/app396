@@ -48,8 +48,8 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
 
     @Override
     protected void initIntentData() {
-        titles = new String[]{ "已下载" , "正在下载"};
-        fragmentArrayList = new String[]{ "LessonDownedFragment","LessonDowningFragment" };
+        titles = new String[]{"已下载", "正在下载"};
+        fragmentArrayList = new String[]{"LessonDownedFragment", "LessonDowningFragment"};
 
         Intent data = getIntent();
         data.putExtra(FRAGMENT_DATA, new Bundle());
@@ -81,7 +81,8 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
             public ArrayList<LessonItem> parse(Cursor cursor) {
                 String value = cursor.getString(cursor.getColumnIndex("value"));
                 LessonItem item = mActivity.parseJsonValue(
-                        value, new TypeToken<LessonItem>(){}
+                        value, new TypeToken<LessonItem>() {
+                }
                 );
                 lessonItems.add(item);
                 return lessonItems;
@@ -135,8 +136,7 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
         return model;
     }
 
-    private boolean filterCourseId(int courseId, int[] courseIds)
-    {
+    private boolean filterCourseId(int courseId, int[] courseIds) {
         for (int id : courseIds) {
             if (courseId == id) {
                 return true;
@@ -146,8 +146,7 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
         return false;
     }
 
-    private int[] getLessonIds(ArrayList<LessonItem> lessons)
-    {
+    private int[] getLessonIds(ArrayList<LessonItem> lessons) {
         int index = 0;
         int[] ids = new int[lessons.size()];
         for (LessonItem lessonItem : lessons) {
@@ -158,8 +157,7 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
     }
 
     private void filterLessons(
-            int isFinish, ArrayList<LessonItem> lessonItems, SparseArray<M3U8DbModle> m3U8Models)
-    {
+            int isFinish, ArrayList<LessonItem> lessonItems, SparseArray<M3U8DbModle> m3U8Models) {
         Iterator<LessonItem> iterator = lessonItems.iterator();
         while (iterator.hasNext()) {
             LessonItem item = iterator.next();
@@ -231,14 +229,12 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
         }
     };
 
-    public class LocalCourseModel
-    {
+    public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
         public SparseArray<M3U8DbModle> m3U8DbModles;
         public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
 
-        public LocalCourseModel()
-        {
+        public LocalCourseModel() {
             mLocalCourses = new ArrayList<Course>();
             mLocalLessons = new HashMap<Integer, ArrayList<LessonItem>>();
         }
