@@ -57,6 +57,7 @@ public class SearchDialogFragment extends DialogFragment {
     private EdusohoApp mApp;
     private ActionBarBaseActivity mActivity;
     private View view;
+    private View mLoadView;
 
     private static final int SEARCH = 0;
     private static final int CANCEL = 1;
@@ -80,6 +81,8 @@ public class SearchDialogFragment extends DialogFragment {
         view = inflater.inflate(R.layout.search_popwindow, container, false);
 
         mSearchEdt = (EditText) view.findViewById(R.id.search_popwindow_edt);
+        mLoadView = view.findViewById(R.id.load_layout);
+
         mSearchEdt.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_CLASS_TEXT);
 
         mCancelBtn = (TextView) view.findViewById(R.id.search_popwindow_cancel_btn);
@@ -100,6 +103,7 @@ public class SearchDialogFragment extends DialogFragment {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 try {
+                    mLoadView.setVisibility(View.GONE);
                     ArrayList<TagModel> tagModels = mActivity.parseJsonValue(object, new TypeToken<ArrayList<TagModel>>() {
                     });
                     if (tagModels == null) {
@@ -107,13 +111,13 @@ public class SearchDialogFragment extends DialogFragment {
                     }
                     initTagsView(tagModels);
                 } catch (Exception ex) {
-
+                    mLoadView.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
-                super.error(url, ajaxStatus);
+                mLoadView.setVisibility(View.GONE);
             }
         };
         mActivity.ajaxPost(url, callback);

@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tv_send_time"
+            android:gravity="right|center_vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
 
