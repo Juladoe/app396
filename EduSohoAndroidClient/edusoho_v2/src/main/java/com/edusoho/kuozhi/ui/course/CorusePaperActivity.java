@@ -82,6 +82,7 @@ import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import cn.trinea.android.common.util.ToastUtils;
 import extensions.PagerSlidingTabStrip;
 
 /**
@@ -318,7 +319,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                 }
                 Member member = parseJsonValue(
                         object, new TypeToken<Member>() {
-                }
+                        }
                 );
 
                 Log.d(null, "Member->" + member);
@@ -911,6 +912,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                 if (result) {
                     mCourseDetailsResult.userFavorited = true;
                     item.setIcon(R.drawable.course_favorited_icon);
+                    ToastUtils.show(mContext, "收藏成功");
                 }
             }
         });
@@ -933,6 +935,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                 if (result) {
                     mCourseDetailsResult.userFavorited = false;
                     item.setIcon(R.drawable.course_favorite_icon);
+                    ToastUtils.show(mContext, "取消收藏");
                 }
             }
         });
