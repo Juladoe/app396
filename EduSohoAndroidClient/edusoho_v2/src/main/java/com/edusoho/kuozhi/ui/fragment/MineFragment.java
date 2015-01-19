@@ -132,7 +132,6 @@ public class MineFragment extends BaseFragment {
             mUserLayout.setOnClickListener(mLoginListener);
             mUserLogo.setOnClickListener(mLoginListener);
 
-            mUserLayout.setEnabled(true);
         } else {
             //登录状态
             tvUserName.setText(app.loginUser.nickname);
@@ -157,8 +156,8 @@ public class MineFragment extends BaseFragment {
                     app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
 
             mUserLogo.setOnClickListener(mUserInfoClickListener);
+            mUserLayout.setOnClickListener(mUserInfoClickListener);
 
-            mUserLayout.setEnabled(false);
         }
     }
 
@@ -177,14 +176,6 @@ public class MineFragment extends BaseFragment {
             bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
             bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
             app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-
-//            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-//                @Override
-//                public void setIntentDate(Intent startIntent) {
-//                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
-//                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "详细资料");
-//                }
-//            });
         }
     };
 
