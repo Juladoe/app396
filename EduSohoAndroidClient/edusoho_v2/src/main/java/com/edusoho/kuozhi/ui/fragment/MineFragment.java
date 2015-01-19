@@ -176,6 +176,7 @@ public class MineFragment extends BaseFragment {
             bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
             bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
             app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+            //app.mEngine.runNormalPlugin("TestActivity", mActivity, null);
         }
     };
 

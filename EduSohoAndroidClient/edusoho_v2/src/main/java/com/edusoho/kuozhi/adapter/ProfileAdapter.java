@@ -1,11 +1,9 @@
 package com.edusoho.kuozhi.adapter;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,7 +15,6 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Message.ConversationModel;
-import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -26,13 +23,12 @@ import com.edusoho.kuozhi.ui.fragment.FollowFragment;
 import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.ESExpandableTextView;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.apache.cordova.App;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,7 +115,7 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 mHeaderHolder.mSignature = (TextView) v.findViewById(R.id.myinfo_signature);
                 mHeaderHolder.mVip = (TextView) v.findViewById(R.id.vip_icon);
                 mHeaderHolder.mTeacherTitle = (TextView) v.findViewById(R.id.teacher_title);
-                mHeaderHolder.mSelfIntroduction = (ESTextView) v.findViewById(R.id.tvIntroduction);
+                mHeaderHolder.expandableTextView = (ESExpandableTextView) v.findViewById(R.id.expand_text_view);
                 mHeaderHolder.mFollowing = (ESTextView) v.findViewById(R.id.tv_follow_num);
                 mHeaderHolder.mFollower = (ESTextView) v.findViewById(R.id.tv_fans_num);
                 mHeaderHolder.mDescription = (TextView) v.findViewById(R.id.description);
@@ -304,9 +300,9 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
         ImageLoader.getInstance().displayImage(mUser.mediumAvatar, headerHolder.mUserLogo, mActivity.app.mOptions);
         if (TextUtils.isEmpty(mUser.about)) {
-            headerHolder.mSelfIntroduction.setText("这家伙很懒，什么都没有留下");
+            headerHolder.expandableTextView.setMyText("这家伙很懒，什么都没有留下");
         } else {
-            headerHolder.mSelfIntroduction.setText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mUser.about)).toString()));
+            headerHolder.expandableTextView.setMyText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mUser.about)).toString()));
         }
 
         if (TextUtils.isEmpty(mUser.signature)) {
@@ -337,7 +333,8 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         public TextView mSignature;
         public TextView mVip;
         public TextView mTeacherTitle;
-        public ESTextView mSelfIntroduction;
+
+        public ESExpandableTextView expandableTextView;
 
         public ESTextView mFollowing;
         public ESTextView mFollower;
