@@ -30,6 +30,9 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
+        <meta-data
+            android:value="a9188584e4960b4ed3b18fb5f1757164"
+            android:name="BUG_HD_SDK_GENERAL_KEY"></meta-data>
     </application>
 
 </manifest>
