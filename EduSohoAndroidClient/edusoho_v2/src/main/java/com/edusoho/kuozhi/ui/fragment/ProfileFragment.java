@@ -122,6 +122,7 @@ public class ProfileFragment extends BaseFragment {
                 if (courseResult == null) {
                     return;
                 }
+                profileAdapter.clear();
                 profileAdapter.addItems(courseResult.data);
                 //mInfoList.setAdapter(profileAdapter);
             }
@@ -149,6 +150,7 @@ public class ProfileFragment extends BaseFragment {
                 if (list == null) {
                     return;
                 }
+                profileAdapter.clear();
                 profileAdapter.addItems(list);
                 //mInfoList.setAdapter(profileAdapter);
             }
