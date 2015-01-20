@@ -111,7 +111,7 @@ public class QuestionReplyFragment extends BaseFragment{
     }
 
     public void setQuestionOneReplyData(){
-        mQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(mOneReply.content)));
+        mQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(mOneReply.content))));
 
         QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext,R.layout.question_reply_inflate);
         mQuestionAnswerContentImage.setAdapter(questionReplyAdapter);
@@ -120,6 +120,10 @@ public class QuestionReplyFragment extends BaseFragment{
 
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
+    }
+
+    private String filtlerBlank(String content){
+        return content.replaceAll("<p[^>]*>|</p>|<br />","");
     }
 
     private ArrayList<String> convertUrlStringList(String content) {

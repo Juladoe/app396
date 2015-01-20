@@ -171,6 +171,7 @@ public class QuestionDetatilFragment extends BaseFragment {
 
     public void initData() {
         Bundle bundle = getArguments();
+        changeTitle(bundle.getString(Const.QUESTION_TITLE));
         intentThreadId = bundle.getInt(Const.THREAD_ID);
         intentCourseId = bundle.getInt(Const.COURSE_ID);
         mQuestionUserId = bundle.getInt(Const.QUESTION_USER_ID);
@@ -293,7 +294,7 @@ public class QuestionDetatilFragment extends BaseFragment {
         ImageLoader.getInstance().displayImage(mQuestionDetailModel.user.mediumAvatar, questionDetailAnswerUserHeadImage);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_uesr_name)).setText(mQuestionDetailModel.user.nickname);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatile_describe_time)).setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
-        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(fitlerImgTag(mQuestionDetailModel.content)));
+        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(filtlerBlank(fitlerImgTag(mQuestionDetailModel.content))));
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_course_title)).setText(mQuestionDetailModel.courseTitle);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum + "");
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_browse_count)).setText(mQuestionDetailModel.hitNum + "");
@@ -312,6 +313,10 @@ public class QuestionDetatilFragment extends BaseFragment {
     //过滤html标签里的img图片
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
+    }
+
+    private String filtlerBlank(String content){
+        return content.replaceAll("<p[^>]*>|</p>|<br />","");
     }
 
     private ArrayList<String> convertUrlStringList(String content) {

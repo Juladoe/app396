@@ -217,7 +217,7 @@ public class MineFragment extends BaseFragment {
         mDiscussion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyQuestionOrDiscuss("我的话题", "discussion", "暂无讨论", R.drawable.icon_discussion);
+                showMyQuestionOrDiscuss("我的讨论", "discussion", "暂无讨论", R.drawable.icon_discussion);
             }
         });
 

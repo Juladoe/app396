@@ -95,12 +95,16 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
         ImageLoader.getInstance().displayImage(replyModel.user.mediumAvatar,holder.questionDetailAnswerUserHeadImage);
         holder.tvQuestionDetatilListUserName.setText(replyModel.user.nickname);
         holder.tvQuestionDetatilListTime.setText(AppUtil.getPostDays(replyModel.createdTime));
-        holder.tvQuestionDetatilListAnswer.setText(Html.fromHtml(fitlerImgTag(replyModel.content)));
+        holder.tvQuestionDetatilListAnswer.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(replyModel.content))));
         return view;
     }
 
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
+    }
+
+    private String filtlerBlank(String content){
+        return content.replaceAll("<p[^>]*>|</p>|<br />","");
     }
 
     public class ViewHolder {

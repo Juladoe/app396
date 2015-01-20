@@ -5,12 +5,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/question_item_bg"
-                android:padding="16dp">
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp">
 
     <TextView
         android:id="@+id/question_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:text="我是问题的题目"
         android:textColor="#2ec368"
         android:textSize="14sp"/>
@@ -20,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/question_title"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:ellipsize="end"
         android:maxLines="3"
         android:text="我是问题的答案"
@@ -32,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/question_answer_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:layout_marginLeft="6dp"
         android:text="(5条回答)"
         app:es_alpha="0.54"
