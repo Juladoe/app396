@@ -276,6 +276,7 @@ public class MineFragment extends BaseFragment {
             public void onClick(View v) {
                 if (app.loginUser == null) {
                     LoginActivity.start(mActivity);
+
                     return;
                 }
                 Bundle bundle = new Bundle();
