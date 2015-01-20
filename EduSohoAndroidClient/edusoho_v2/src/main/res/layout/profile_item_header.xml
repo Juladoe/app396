@@ -102,24 +102,39 @@
         android:layout_below="@id/myinfo_user_layout"
         android:layout_marginBottom="1px"
         android:background="@android:color/white"
-        app:maxCollapsedLines="4">
+        app:maxCollapsedLines="4"
+        app:expandText="全文"
+        app:collapseText="收起">
 
         <TextView
             android:background="@android:color/white"
             android:textSize="@dimen/middle_font_size"
-            android:padding="16dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
             android:id="@+id/expandable_text"
             android:text="自我介绍"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <ImageButton
+        <!--<ImageButton-->
+        <!--android:id="@id/expand_collapse"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_gravity="right|bottom"-->
+        <!--android:background="@android:color/transparent" />-->
+
+        <TextView
             android:id="@id/expand_collapse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_gravity="right|bottom"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="left|bottom"
+            android:textColor="@color/base_color_normal"
             android:background="@android:color/transparent" />
     </com.edusoho.kuozhi.view.ESExpandableTextView>
 

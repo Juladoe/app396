@@ -55,7 +55,7 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
 
     protected TextView mTv;
 
-    protected ImageButton mButton; // Button to expand/collapse
+    protected TextView mTextView; // Button to expand/collapse
 
     private boolean mRelayout;
 
@@ -70,6 +70,10 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
     private int mMarginBetweenTxtAndBottom;
 
     private Drawable mExpandDrawable;
+
+    private String mExpandText;
+
+    private String mCollapseText;
 
     private Drawable mCollapseDrawable;
 
@@ -100,12 +104,13 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (mButton.getVisibility() != View.VISIBLE) {
+        if (mTextView.getVisibility() != View.VISIBLE) {
             return;
         }
 
         mCollapsed = !mCollapsed;
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        //mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        mTextView.setText(mCollapsed ? mExpandText : mCollapseText);
 
         if (mCollapsedStatus != null) {
             mCollapsedStatus.put(mPosition, mCollapsed);
@@ -169,7 +174,8 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
 
         // Setup with optimistic case
         // i.e. Everything fits. No button needed
-        mButton.setVisibility(View.GONE);
+        //mButton.setVisibility(View.GONE);
+        mTextView.setVisibility(View.GONE);
         mTv.setMaxLines(Integer.MAX_VALUE);
 
         // Measure
@@ -188,8 +194,8 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
         if (mCollapsed) {
             mTv.setMaxLines(mMaxCollapsedLines);
         }
-        mButton.setVisibility(View.VISIBLE);
-
+        //mButton.setVisibility(View.VISIBLE);
+        mTextView.setVisibility(View.VISIBLE);
         // Re-measure with new setup
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -211,15 +217,25 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
         mMaxCollapsedLines = typedArray.getInt(R.styleable.ESExpandableTextView_maxCollapsedLines, MAX_COLLAPSED_LINES);
         mAnimationDuration = typedArray.getInt(R.styleable.ESExpandableTextView_animDuration, DEFAULT_ANIM_DURATION);
         mAnimAlphaStart = typedArray.getFloat(R.styleable.ESExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
-        mExpandDrawable = typedArray.getDrawable(R.styleable.ESExpandableTextView_expandDrawable);
-        mCollapseDrawable = typedArray.getDrawable(R.styleable.ESExpandableTextView_collapseDrawable);
+        mExpandText = typedArray.getString(R.styleable.ESExpandableTextView_expandText);
+        mCollapseText = typedArray.getString(R.styleable.ESExpandableTextView_collapseText);
+        if (TextUtils.isEmpty(mExpandText)) {
+            mExpandText = "全文";
+        }
+        if (TextUtils.isEmpty(mCollapseText)) {
+            mCollapseText = "收起";
+        }
 
-        if (mExpandDrawable == null) {
-            mExpandDrawable = getResources().getDrawable(R.drawable.ic_expand_small_holo_light);
-        }
-        if (mCollapseDrawable == null) {
-            mCollapseDrawable = getResources().getDrawable(R.drawable.ic_collapse_small_holo_light);
-        }
+//        mExpandDrawable = typedArray.getDrawable(R.styleable.ESExpandableTextView_expandDrawable);
+//        mCollapseDrawable = typedArray.getDrawable(R.styleable.ESExpandableTextView_collapseDrawable);
+//
+//        if (mExpandDrawable == null) {
+//            mExpandDrawable = getResources().getDrawable(R.drawable.ic_expand_small_holo_light);
+//
+//        }
+//        if (mCollapseDrawable == null) {
+//            mCollapseDrawable = getResources().getDrawable(R.drawable.ic_collapse_small_holo_light);
+//        }
 
         typedArray.recycle();
     }
@@ -231,9 +247,12 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
     private void findViews() {
         mTv = (TextView) findViewById(R.id.expandable_text);
         mTv.setOnClickListener(this);
-        mButton = (ImageButton) findViewById(R.id.expand_collapse);
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        mButton.setOnClickListener(this);
+//        mButton = (ImageButton) findViewById(R.id.expand_collapse);
+//        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+//        mButton.setOnClickListener(this);
+        mTextView = (TextView) findViewById(R.id.expand_collapse);
+        mTextView.setText(mCollapsed ? mExpandText : mCollapseText);
+        mTextView.setOnClickListener(this);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -269,7 +288,8 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
         boolean isCollapsed = collapsedStatus.get(position, true);
         clearAnimation();
         mCollapsed = isCollapsed;
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        //mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        mTextView.setText(mCollapsed ? mExpandText : mCollapseText);
         setText(text);
         getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         requestLayout();
