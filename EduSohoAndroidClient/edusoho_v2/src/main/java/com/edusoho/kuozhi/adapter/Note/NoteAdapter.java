@@ -96,7 +96,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
         }
         holder.noteImage.getLayoutParams().height = EdusohoApp.screenH / 7;
         holder.noteLessonTitle.setText(noteInfo.lessonTitle);
-        holder.noteContent.setText(Html.fromHtml(removeImgTagFromString(noteInfo.content)));
+        holder.noteContent.setText(Html.fromHtml(filtlerBlank(removeImgTagFromString(noteInfo.content))));
         holder.noteLastUpdateTime.setText(String.valueOf(AppUtil.getPostDays(noteInfo.noteLastUpdateTime)));
         return convertView;
     }
@@ -137,5 +137,10 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
             break;
         }
         return content;
+    }
+
+    //去除空行
+    private String filtlerBlank(String content){
+        return content.replaceAll("<p[^>]*>|</p>|<br />","");
     }
 }

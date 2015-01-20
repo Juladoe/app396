@@ -72,9 +72,11 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
         tvQuestiongTitle.setText(questionListData.title);
         tvQuestionAnswerCount.setText(String.valueOf(questionListData.postNum));
         if(questionListData.latestPostContent != null){
-            tvQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(questionListData.latestPostContent)));
+            tvQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(questionListData.latestPostContent))));
+            tvQuestionAnswerContent.setMaxLines(3);
         }else{
             tvQuestionAnswerContent.setText("");
+            tvQuestionAnswerContent.setMaxLines(0);
         }
         tvQuestionAnswerTime.setText(AppUtil.getPostDays(questionListData.latestPostTime));
 
@@ -91,5 +93,9 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
     //过滤html标签里的img图片
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
+    }
+
+    private String filtlerBlank(String content){
+        return content.replaceAll("<p[^>]*>|</p>|<br />","");
     }
 }
