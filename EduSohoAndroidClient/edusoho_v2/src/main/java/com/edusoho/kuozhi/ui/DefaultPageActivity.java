@@ -149,7 +149,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         if (app.token == null || "".equals(app.token)) {
             mSelectBtn = R.id.nav_recommend_btn;
         } else {
-            mSelectBtn = R.id.nav_schoolroom_btn;
+            mSelectBtn = R.id.nav_me_btn;
         }
 
         selectNavBtn(mSelectBtn);

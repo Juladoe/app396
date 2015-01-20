@@ -16,6 +16,8 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.fragment.MineFragment;
+import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.PushUtil;
@@ -91,7 +93,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 String result = bundle.getString("result");
-                Log.d(null, "qr->" + result + "&version=2");
+                Log.d("qr:", "qr->" + result + "&version=2");
                 showQrResultDlg(result + "&version=2");
             }
         }
@@ -123,7 +125,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         return;
                     }
 
-                    Log.d(null, "token---->"+ schoolResult.token);
+                    Log.d(null, "token---->" + schoolResult.token);
                     School site = schoolResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
@@ -134,6 +136,9 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     } else {
                         app.saveToken(schoolResult);
                     }
+                    app.sendMessage(Const.LOGING_SUCCESS, null);
+                    app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
+                    app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
                     app.setCurrentSchool(site);
 
                     showSchSplash(site.name, site.splashs);
