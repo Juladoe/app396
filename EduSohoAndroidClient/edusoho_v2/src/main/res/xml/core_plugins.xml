@@ -134,6 +134,7 @@
     <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment"></plugin>
     <plugin name="LearningRoomActivity" version="1.0" package="com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity"></plugin>
     <plugin name="LearnedCourseFragmentHorizontal" version="1.0" package="com.edusoho.kuozhi.ui.fragment.LearnedCourseFragmentHorizontal"></plugin>
+    <plugin name="FavoriteCourseFragmentHorizontal" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FavoriteCourseFragmentHorizontal"></plugin>
     <plugin name="FollowFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FollowFragment"></plugin>
 
 </plugins>

@@ -29,9 +29,11 @@ import library.PullToRefreshBase;
  */
 public class LetterFragment extends BaseFragment {
     private static final String TAG = "LetterFragment";
-    private static final int RETURN_REFRESH = 0;
+    private static final int RETURN_REFRESH = 0x01;
     private RefreshListWidget mLetterSummaryList;
     private View mLoadingView;
+    private int mClickPosition;
+    private MessageLetterSummaryAdapter mAdapter;
 
     @Override
     public String getTitle() {
@@ -51,8 +53,8 @@ public class LetterFragment extends BaseFragment {
         mLoadingView = view.findViewById(R.id.load_layout);
         mLetterSummaryList.setMode(PullToRefreshBase.Mode.BOTH);
         mLetterSummaryList.setEmptyText(new String[]{"暂无私信"}, R.drawable.icon_discussion);
-        mLetterSummaryList.setAdapter(new MessageLetterSummaryAdapter(
-                mContext, R.layout.message_letter_item));
+        mAdapter = new MessageLetterSummaryAdapter(mContext, R.layout.message_letter_item);
+        mLetterSummaryList.setAdapter(mAdapter);
         mLetterSummaryList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
@@ -67,19 +69,18 @@ public class LetterFragment extends BaseFragment {
         mLetterSummaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
-                mActivity.app.mEngine.runNormalPluginForResult("MessageLetterListActivity", mActivity, RETURN_REFRESH, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        LetterSummaryModel model = (LetterSummaryModel) parent.getItemAtPosition(position);
-                        if (model != null) {
-                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_ID, model.id);
-                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_NAME, model.user.nickname);
-                            startIntent.putExtra(MessageLetterListActivity.CONVERSATION_FROM_ID, model.fromId);
-                        }
-                    }
-                });
+                LetterSummaryModel model = (LetterSummaryModel) parent.getItemAtPosition(position);
+                Bundle bundle = new Bundle();
+                if (model != null) {
+                    mClickPosition = position;
+                    bundle.putInt(MessageLetterListActivity.CONVERSATION_ID, model.id);
+                    bundle.putString(MessageLetterListActivity.CONVERSATION_FROM_NAME, model.user.nickname);
+                    bundle.putInt(MessageLetterListActivity.CONVERSATION_FROM_ID, model.fromId);
+                }
+                startActivityWithBundleAndResult("MessageLetterListActivity", RETURN_REFRESH, bundle);
             }
         });
+
         loadLetterSummary(0);
     }
 
@@ -118,10 +119,8 @@ public class LetterFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            MessageLetterSummaryAdapter adapter = (MessageLetterSummaryAdapter) mLetterSummaryList.getAdapter();
-            adapter.clear();
-            mLetterSummaryList.setRefreshing();
+        if (requestCode == RETURN_REFRESH) {
+            mAdapter.setReadMsgNum(mClickPosition - 1);
         }
     }
 }

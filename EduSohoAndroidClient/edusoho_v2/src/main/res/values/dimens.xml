@@ -16,6 +16,9 @@
     <!--小一/二字-->
     <dimen name="x_small_font_size">12sp</dimen>
     <!--超小字-->
+    <dimen name="xx_small_font_size">10sp</dimen>
+    <dimen name="xxx_small_font_size">8sp</dimen>
+
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

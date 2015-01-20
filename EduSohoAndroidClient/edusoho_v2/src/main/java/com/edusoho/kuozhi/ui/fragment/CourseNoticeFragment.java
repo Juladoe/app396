@@ -73,7 +73,7 @@ public class CourseNoticeFragment extends BaseFragment {
                 bundle.putString(AboutFragment.CONTENT, filterContent(courseNotice.content));
                 bundle.putString(Const.ACTIONBAR_TITLE, "公告");
                 bundle.putString(FragmentPageActivity.FRAGMENT, "AboutFragment");
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
+                startActivityWithBundle("FragmentPageActivity", bundle);
             }
         });
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,7 +15,6 @@ import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Course;
 import com.edusoho.kuozhi.model.Message.ConversationModel;
-import com.edusoho.kuozhi.model.Message.LetterSummaryModel;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -25,6 +23,7 @@ import com.edusoho.kuozhi.ui.fragment.FollowFragment;
 import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.ESExpandableTextView;
 import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
 import com.edusoho.listener.ResultCallback;
@@ -107,7 +106,7 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
     public View getView(int i, View view, ViewGroup viewGroup) {
         View v = null;
         if (i == 0) {
-            HeaderHolder mHeaderHolder;
+            final HeaderHolder mHeaderHolder;
             if (cacheArray.get(0) == null) {
                 v = inflater.inflate(mResource, null);
                 mHeaderHolder = new HeaderHolder();
@@ -116,7 +115,7 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 mHeaderHolder.mSignature = (TextView) v.findViewById(R.id.myinfo_signature);
                 mHeaderHolder.mVip = (TextView) v.findViewById(R.id.vip_icon);
                 mHeaderHolder.mTeacherTitle = (TextView) v.findViewById(R.id.teacher_title);
-                mHeaderHolder.mSelfIntroduction = (ESTextView) v.findViewById(R.id.tvIntroduction);
+                mHeaderHolder.expandableTextView = (ESExpandableTextView) v.findViewById(R.id.expand_text_view);
                 mHeaderHolder.mFollowing = (ESTextView) v.findViewById(R.id.tv_follow_num);
                 mHeaderHolder.mFollower = (ESTextView) v.findViewById(R.id.tv_fans_num);
                 mHeaderHolder.mDescription = (TextView) v.findViewById(R.id.description);
@@ -163,10 +162,36 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
                 @Override
                 public void onClick(View v) {
-                    RequestUrl url = mActivity.app.bindUrl(Const.FOLLOW, true);
-                    HashMap<String, String> params = url.getParams();
+                    mHeaderHolder.mFollowLayout.setEnabled(false);
+                    mHeaderHolder.tvFollow.setEnabled(false);
+                    String url;
+                    final String changeText;
+                    if (mHeaderHolder.tvFollow.getText().equals("关注")) {
+                        url = Const.FOLLOW;
+                        changeText = "取消关注";
+                    } else {
+                        url = Const.UNFOLLOW;
+                        changeText = "关注";
+                    }
+                    RequestUrl requestUrl = mActivity.app.bindUrl(url, true);
+                    HashMap<String, String> params = requestUrl.getParams();
                     params.put("toId", mUser.id + "");
-                    mActivity.ajaxPost(url, null);
+                    mActivity.ajaxPost(requestUrl, new ResultCallback() {
+                        @Override
+                        public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                            mHeaderHolder.mFollowLayout.setEnabled(true);
+                            mHeaderHolder.tvFollow.setEnabled(true);
+                            if (object != null) {
+                                mHeaderHolder.tvFollow.setText(changeText);
+                            }
+                        }
+
+                        @Override
+                        public void error(String url, AjaxStatus ajaxStatus) {
+                            mHeaderHolder.mFollowLayout.setEnabled(true);
+                            mHeaderHolder.tvFollow.setEnabled(true);
+                        }
+                    });
                 }
             });
             mHeaderHolder.mSendMsgLayout.setOnClickListener(new View.OnClickListener() {
@@ -275,9 +300,9 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 
         ImageLoader.getInstance().displayImage(mUser.mediumAvatar, headerHolder.mUserLogo, mActivity.app.mOptions);
         if (TextUtils.isEmpty(mUser.about)) {
-            headerHolder.mSelfIntroduction.setText("这家伙很懒，什么都没有留下");
+            headerHolder.expandableTextView.setMyText("这家伙很懒，什么都没有留下");
         } else {
-            headerHolder.mSelfIntroduction.setText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mUser.about)).toString()));
+            headerHolder.expandableTextView.setMyText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mUser.about)).toString()));
         }
 
         if (TextUtils.isEmpty(mUser.signature)) {
@@ -308,7 +333,8 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         public TextView mSignature;
         public TextView mVip;
         public TextView mTeacherTitle;
-        public ESTextView mSelfIntroduction;
+
+        public ESExpandableTextView expandableTextView;
 
         public ESTextView mFollowing;
         public ESTextView mFollower;

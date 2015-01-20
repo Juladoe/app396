@@ -7,7 +7,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.LessionListAdapter;
 import com.edusoho.kuozhi.model.LearnCourse;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -51,16 +50,16 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
         mLessioningList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                getLeaenCourseReponseDatas(mLessioningList.getStart());
+                getCourseResponseDatas(mLessioningList.getStart());
             }
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                getLeaenCourseReponseDatas(0);
+                getCourseResponseDatas(0);
             }
         });
         mLoadView = view.findViewById(R.id.load_layout);
-        getLeaenCourseReponseDatas(0);
+        getCourseResponseDatas(0);
     }
 
     @Override
@@ -68,7 +67,7 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
         return null;
     }
 
-    public abstract void getLeaenCourseReponseDatas(final int start);
+    public abstract void getCourseResponseDatas(final int start);
 
     public abstract BaseAdapter getAdapter();
 

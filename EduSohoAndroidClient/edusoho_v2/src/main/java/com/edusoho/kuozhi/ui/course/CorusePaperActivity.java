@@ -82,13 +82,14 @@ import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import cn.trinea.android.common.util.ToastUtils;
 import extensions.PagerSlidingTabStrip;
 
 /**
  * Created by howzhi on 14/12/2.
  */
 public class CorusePaperActivity extends ActionBarBaseActivity
-            implements MessageEngine.MessageCallback{
+        implements MessageEngine.MessageCallback {
 
     public static final int PAY_COURSE_SUCCESS = 0005;
     public static final int PAY_COURSE_REQUEST = 0006;
@@ -218,6 +219,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
         mFragmentPager = (FixHeightViewPager) findViewById(R.id.course_info_column_pager);
 
         //mTabs.setAlpha(0.87f);
+        mPayBtn.setAlpha(0.8f);
         mPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -302,7 +304,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
 
     /**
      * 更新课程会员信息
-    */
+     */
     private void loadCouseMember(final LoadDialog loadDialog) {
         RequestUrl url = app.bindUrl(Const.COURSE_MEMBER, true);
         url.setParams(new String[]{
@@ -316,7 +318,8 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                     loadDialog.dismiss();
                 }
                 Member member = parseJsonValue(
-                        object, new TypeToken<Member>(){}
+                        object, new TypeToken<Member>() {
+                        }
                 );
 
                 Log.d(null, "Member->" + member);
@@ -616,8 +619,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
         });
     }
 
-    private void loadCourse(final NormalCallback<String> callback)
-    {
+    private void loadCourse(final NormalCallback<String> callback) {
         RequestUrl url = app.bindUrl(Const.COURSE, true);
         url.setParams(new String[]{
                 "courseId", mCourseId + ""
@@ -710,8 +712,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
         }
     }
 
-    public CourseDetailsResult getCourseResult()
-    {
+    public CourseDetailsResult getCourseResult() {
         return mCourseDetailsResult;
     }
 
@@ -911,6 +912,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                 if (result) {
                     mCourseDetailsResult.userFavorited = true;
                     item.setIcon(R.drawable.course_favorited_icon);
+                    ToastUtils.show(mContext, "收藏成功");
                 }
             }
         });
@@ -933,6 +935,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                 if (result) {
                     mCourseDetailsResult.userFavorited = false;
                     item.setIcon(R.drawable.course_favorite_icon);
+                    ToastUtils.show(mContext, "取消收藏");
                 }
             }
         });

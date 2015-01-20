@@ -123,4 +123,6 @@
     <string name="edit_content">编辑</string>
     <string name="note_content">笔记内容</string>
 
+    <string name="bugly_appid">900001729</string>
+
 </resources>

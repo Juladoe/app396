@@ -24,7 +24,7 @@
 
     <item type="id" name="tag_first"></item>
     <item type="id" name="tag_second"></item>
-    
+
     <item type="xml" name="plugins"></item>
 
     <!-- setting ui id -->
@@ -42,4 +42,8 @@
     <item type="id" name="button_widget_progress"></item>
     <item type="id" name="question_stem"></item>
     <item type="id" name="list_view"></item>
+
+
+    <item type="id" name="expandable_text" />
+    <item type="id" name="expand_collapse" />
 </resources>

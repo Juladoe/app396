@@ -22,7 +22,7 @@
         android:padding="8dp"
         android:clickable="true"
         android:textColor="@color/base_black_normal"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_weight="0"
         android:textSize="@dimen/found_search_text_icon"
         android:id="@+id/category_list_item_expand"

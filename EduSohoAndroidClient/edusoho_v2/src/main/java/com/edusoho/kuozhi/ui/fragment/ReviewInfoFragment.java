@@ -91,7 +91,7 @@ public class ReviewInfoFragment extends BaseFragment {
                 bundle.putString(FragmentPageActivity.FRAGMENT, "RecommendCourseFragment");
                 bundle.putString(Const.ACTIONBAR_TITLE, "评价课程");
                 bundle.putInt(Const.COURSE_ID, mCourseId);
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
+                startActivityWithBundle("FragmentPageActivity", bundle);
             }
         });
 

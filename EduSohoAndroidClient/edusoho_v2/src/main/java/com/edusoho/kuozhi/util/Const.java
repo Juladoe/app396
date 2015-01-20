@@ -276,7 +276,9 @@ public class Const {
     public static final String DEFAULT_SCHOOL = "defaultSchool";
     public static final String PUBLISHED = "published";
 
+    public static final String QUESTION_URL = "question_url";
     public static final String COURSE_ID = "courseId";
+    public static final String QUESTION_USER_ID = "question_user_id";
     public static final String TESTPAPER_DO_TYPE = "do_type";
     public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";

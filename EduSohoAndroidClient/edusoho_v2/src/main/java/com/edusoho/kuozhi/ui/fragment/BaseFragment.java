@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -55,29 +54,24 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         app = mActivity.app;
     }
 
-    protected void changeTitle(String title)
-    {
+    protected void changeTitle(String title) {
         mTitle = title;
         mActivity.setTitle(title);
     }
 
-    protected void startAcitivityWithBundle(String activityName, Bundle bundle)
-    {
+    protected void startActivityWithBundle(String activityName, Bundle bundle) {
         app.mEngine.runNormalPluginWithBundle(activityName, mActivity, bundle);
     }
 
-    protected void startActivityWithBundleAndResult(String activityName, int request, final Bundle bundle)
-    {
-        app.mEngine.runPlubinFromFragmentFroResult(activityName, this, request, bundle);
+    protected void startActivityWithBundleAndResult(String activityName, int request, final Bundle bundle) {
+        app.mEngine.runPluginFromFragmentFroResult(activityName, this, request, bundle);
     }
 
-    protected void startAcitivity(String activityName, PluginRunCallback callback)
-    {
+    protected void startActivity(String activityName, PluginRunCallback callback) {
         app.mEngine.runNormalPlugin(activityName, mActivity, callback);
     }
 
-    protected void viewBind(ViewGroup contentView)
-    {
+    protected void viewBind(ViewGroup contentView) {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
@@ -96,8 +90,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         }
     }
 
-    protected void viewInject(View contentView)
-    {
+    protected void viewInject(View contentView) {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
@@ -114,7 +107,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         }
     }
 
-    protected void registMsgSrc(){
+    protected void registMsgSrc() {
         app.registMsgSource(this);
     }
 
@@ -139,13 +132,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         }
     }
 
-    protected void showProgress(boolean isShow)
-    {
+    protected void showProgress(boolean isShow) {
         mActivity.setProgressBarIndeterminateVisibility(isShow);
     }
 
-    protected void showBtnLayout(View view)
-    {
+    protected void showBtnLayout(View view) {
         view.measure(0, 0);
         int height = view.getMeasuredHeight();
         AppUtil.animForHeight(new EdusohoAnimWrap(view), 0, height, 240);
@@ -157,13 +148,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     public abstract String getTitle();
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.mTitle = title;
     }
 
-    protected void setContainerView(int viewId)
-    {
+    protected void setContainerView(int viewId) {
         mViewId = viewId;
     }
 
@@ -182,9 +171,9 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         return mContainerView;
     }
 
-    protected void saveViewState(Bundle savedInstanceState){
+    protected void saveViewState(Bundle savedInstanceState) {
     }
 
-    protected void initView(View view){
+    protected void initView(View view) {
     }
 }

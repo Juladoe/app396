@@ -60,7 +60,7 @@ public class MineFragment extends BaseFragment {
     private TextView tvTestpaperNum;
 
     private RelativeLayout mDownloadedCourse;
-    private RelativeLayout mCollect;
+    private RelativeLayout mMyFavorite;
     private RelativeLayout mNotification;
     private RelativeLayout mSetting;
     private RelativeLayout mFeedback;
@@ -132,7 +132,6 @@ public class MineFragment extends BaseFragment {
             mUserLayout.setOnClickListener(mLoginListener);
             mUserLogo.setOnClickListener(mLoginListener);
 
-            mUserLayout.setEnabled(true);
         } else {
             //登录状态
             tvUserName.setText(app.loginUser.nickname);
@@ -157,8 +156,8 @@ public class MineFragment extends BaseFragment {
                     app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
 
             mUserLogo.setOnClickListener(mUserInfoClickListener);
+            mUserLayout.setOnClickListener(mUserInfoClickListener);
 
-            mUserLayout.setEnabled(false);
         }
     }
 
@@ -177,14 +176,7 @@ public class MineFragment extends BaseFragment {
             bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
             bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
             app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-
-//            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-//                @Override
-//                public void setIntentDate(Intent startIntent) {
-//                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
-//                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "详细资料");
-//                }
-//            });
+            //app.mEngine.runNormalPlugin("TestActivity", mActivity, null);
         }
     };
 
@@ -209,8 +201,8 @@ public class MineFragment extends BaseFragment {
         tvNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
         tvTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
 
-        mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.my_downloaded_course);
-        mCollect = (RelativeLayout) view.findViewById(R.id.my_collect);
+        mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.course_downloaded);
+        mMyFavorite = (RelativeLayout) view.findViewById(R.id.my_favorite);
         mNotification = (RelativeLayout) view.findViewById(R.id.my_notification);
         mSetting = (RelativeLayout) view.findViewById(R.id.my_setting);
         mFeedback = (RelativeLayout) view.findViewById(R.id.my_feedback);
@@ -256,13 +248,26 @@ public class MineFragment extends BaseFragment {
             }
         });
 
+        mMyFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "FavoriteCourseFragmentHorizontal");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "收藏");
+                    }
+                });
+            }
+        });
+
         mFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "SuggestionFragment");
                 bundle.putString(Const.ACTIONBAR_TITLE, "意见反馈");
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
+                startActivityWithBundle("FragmentPageActivity", bundle);
             }
         });
 
@@ -277,6 +282,14 @@ public class MineFragment extends BaseFragment {
                 bundle.putString(Const.ACTIONBAR_TITLE, "消息");
                 bundle.putString(FragmentPageActivity.FRAGMENT, "MessageFragment");
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+            }
+        });
+
+        mDownloadedCourse.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("LocalCoruseActivity", mContext, null);
             }
         });
 
@@ -349,6 +362,7 @@ public class MineFragment extends BaseFragment {
                 startIntent.putExtra(Const.QUESTION_TYPE, type);
                 startIntent.putExtra("empty_text", emptyText);
                 startIntent.putExtra("empty_icon", emptyIcon);
+                startIntent.putExtra(Const.QUESTION_URL, Const.QUESTION);
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);

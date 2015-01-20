@@ -38,8 +38,7 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
             Context context,
             ArrayList<Category> list,
             int resource,
-            ExpandableListView expandableListView)
-    {
+            ExpandableListView expandableListView) {
         mList = new ArrayList<Category>();
         mContext = context;
         mResouce = resource;
@@ -53,8 +52,7 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
     }
 
     //转换list
-    private void coverList(ArrayList<Category> list)
-    {
+    private void coverList(ArrayList<Category> list) {
         ArrayList<Category> tempList = null;
         for (Category category : list) {
             if (0 == category.parentId) {
@@ -83,8 +81,7 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         categoryStack.clear();
     }
 
-    public void setItems(ArrayList<Category> categories)
-    {
+    public void setItems(ArrayList<Category> categories) {
         mList.clear();
         coverList(categories);
         notifyDataSetChanged();
@@ -183,7 +180,7 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
                 }
             });
         } else {
-            holder.mExpandView.setVisibility(View.GONE);
+            holder.mExpandView.setVisibility(View.INVISIBLE);
         }
         if (category.id == 0) {
             holder.mTitle.setText("全部");
@@ -194,15 +191,13 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         return currentView;
     }
 
-    private void rotation(View view, float start, float end)
-    {
+    private void rotation(View view, float start, float end) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
         objectAnimator.setDuration(180);
         objectAnimator.start();
     }
 
-    private void moveView(View view, int left, int id)
-    {
+    private void moveView(View view, int left, int id) {
         Boolean isViewTag = mViewTagMap.get(id);
         if (isViewTag != null) {
             view.setPadding(left, 0, 0, 0);
@@ -213,8 +208,7 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         startMoveAnim(animWrap);
     }
 
-    private void startMoveAnim(final AnimWrap animWrap)
-    {
+    private void startMoveAnim(final AnimWrap animWrap) {
         ObjectAnimator objectAnimator = (ObjectAnimator) AnimatorInflater.loadAnimator(
                 mContext, R.anim.category_item_move);
 
@@ -231,22 +225,19 @@ public class FoundCategoryListAdapter extends BaseExpandableListAdapter {
         objectAnimator.start();
     }
 
-    private class AnimWrap
-    {
+    private class AnimWrap {
         public View view;
         public int moveX;
         public int id;
 
-        public AnimWrap(View view, int moveX, int id)
-        {
+        public AnimWrap(View view, int moveX, int id) {
             this.id = id;
             this.view = view;
             this.moveX = moveX;
         }
     }
 
-    private class ViewHolder
-    {
+    private class ViewHolder {
         public TextView mTitle;
         public View mExpandView;
     }

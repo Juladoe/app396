@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.ui.fragment.course;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
-import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
@@ -214,7 +212,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                                 CourseDownloadingFragment.COURSE_JSON, app.gson.toJson(activity.getCourse()));
                         bundle.putString(
                                 CourseDownloadingFragment.LIST_JSON, app.gson.toJson(lessonsResult.lessons));
-                        startAcitivityWithBundle("FragmentPageActivity", bundle);
+                        startActivityWithBundle("FragmentPageActivity", bundle);
                     }
                 });
 

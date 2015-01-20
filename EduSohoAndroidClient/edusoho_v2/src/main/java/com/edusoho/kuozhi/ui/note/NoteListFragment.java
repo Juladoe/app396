@@ -79,7 +79,7 @@ public class NoteListFragment extends BaseFragment {
                 bundle.putInt(Const.COURSE_ID, note.courseId);
                 bundle.putInt(Const.LESSON_ID, note.lessonId);
 
-                startAcitivityWithBundle("FragmentPageActivity", bundle);
+                startActivityWithBundle("FragmentPageActivity", bundle);
             }
         });
         mListView.setUpdateListener(new RefreshListWidget.UpdateListener() {

@@ -18,11 +18,7 @@ import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.broadcast.AlarmReceiver;
 import com.edusoho.kuozhi.model.Push.PushMsg;
-import com.edusoho.kuozhi.model.User;
-import com.edusoho.kuozhi.ui.StartActivity;
 import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
-import com.edusoho.kuozhi.ui.question.QuestionActivity;
-import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.PushUtil;
 

@@ -66,6 +66,7 @@ public class QuestionDetatilFragment extends BaseFragment {
     private QuestionDetailModel mQuestionDetailModel;
     private int intentThreadId;
     private int intentCourseId;
+    private int mQuestionUserId;
 
     /**
      * gridview内部间隙
@@ -97,7 +98,11 @@ public class QuestionDetatilFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.question_describe_menu, menu);
+        if (mQuestionUserId == mActivity.app.loginUser.id) {
+            inflater.inflate(R.menu.question_describe_menu, menu);
+        } else {
+            inflater.inflate(R.menu.question_describe_menu_without_edit, menu);
+        }
     }
 
     @Override
@@ -169,6 +174,7 @@ public class QuestionDetatilFragment extends BaseFragment {
         changeTitle(bundle.getString(Const.QUESTION_TITLE));
         intentThreadId = bundle.getInt(Const.THREAD_ID);
         intentCourseId = bundle.getInt(Const.COURSE_ID);
+        mQuestionUserId = bundle.getInt(Const.QUESTION_USER_ID);
         mEmptyText = bundle.getString("empty_text");
         mEmptyIcon = bundle.getInt("empty_icon");
         SHARE_QUESTION_URL.append(app.host);

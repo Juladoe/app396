@@ -53,7 +53,7 @@ public class EduAppPluginFragment extends BaseFragment {
                 AppPlugin appPlugin = (AppPlugin) obj;
                 Bundle bundle = new Bundle();
                 bundle.putString(EduHtmlAppActivity.APP_URL, appPlugin.url);
-                startAcitivityWithBundle("EduHtmlAppActivity", bundle);
+                startActivityWithBundle("EduHtmlAppActivity", bundle);
             }
         });
         mAppListView.setAdapter(adapter);
