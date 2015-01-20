@@ -212,8 +212,7 @@ public class EdusohoButton extends FrameLayout {
         return null;
     }
 
-    private ProgressBar setupProgressBar()
-    {
+    private ProgressBar setupProgressBar() {
         ProgressBar progressBar = new ProgressBar(mContext);
         progressBar.setIndeterminateDrawable(getResources().getDrawable(R.drawable.action_bar_load));
 
@@ -412,8 +411,7 @@ public class EdusohoButton extends FrameLayout {
 
     }
 
-    public void setStatus(int status)
-    {
+    public void setStatus(int status) {
         switch (status) {
             case PROGRESS:
                 mProgressBar.setVisibility(VISIBLE);
