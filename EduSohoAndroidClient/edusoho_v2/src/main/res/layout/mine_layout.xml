@@ -56,7 +56,7 @@
                 android:layout_alignBaseline="@+id/tv_nickname"
                 android:text="@string/font_vip"
                 android:visibility="gone"
-                android:textColor="#fff000" />
+                android:textColor="@color/accent_color" />
 
             <TextView
                 android:textColor="@color/base_black_54"

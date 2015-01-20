@@ -172,6 +172,10 @@
     <color name="regist_btn_gradient">#ffffff</color>
     <color name="regist_btn_gradient_pressed">#fff7f7f7</color>
 
+    <color name="accent_color">#ffc501</color>
+    <color name="standby_accent_color_hint">#ffd740</color>
+    <color name="standby_accent_color_middle">#ffac01</color>
+    <color name="standby_accent_color_deep">#ff5822</color>
     <color name="standby_stress_color">#ff5822</color>
     <color name="logout_btn_stroke">#aaa</color>
     <color name="logout_btn_gradient">#ddff5d47</color>

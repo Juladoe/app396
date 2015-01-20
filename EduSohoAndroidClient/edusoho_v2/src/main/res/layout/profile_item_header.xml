@@ -61,7 +61,7 @@
                     android:layout_marginLeft="8dp"
                     android:textSize="@dimen/icon_vip"
                     android:text="@string/font_vip"
-                    android:textColor="#fff000" />
+                    android:textColor="@color/accent_color" />
 
                 <com.edusoho.kuozhi.view.ESTextView
                     android:id="@+id/teacher_title"
