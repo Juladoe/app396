@@ -58,7 +58,6 @@
                     android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:textSize="@dimen/icon_vip"
                     android:text="@string/font_vip"
                     android:textColor="@color/accent_color" />

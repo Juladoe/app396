@@ -163,7 +163,7 @@ public class EdusohoButton extends FrameLayout {
             textView.setText(mText);
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(mDefaultTextColor);
-            mDefaultTextSize = AppUtil.px2sp(mContext,mDefaultTextSize);
+            mDefaultTextSize = AppUtil.px2sp(mContext, mDefaultTextSize);
             textView.setTextSize(mDefaultTextSize);
 
             textView.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1f));
