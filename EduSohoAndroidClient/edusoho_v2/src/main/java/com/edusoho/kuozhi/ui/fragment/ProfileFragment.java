@@ -54,6 +54,7 @@ public class ProfileFragment extends BaseFragment {
         mType = bundle.getString(FollowFragment.FOLLOW_TYPE);
         if (mUser == null) {
             mUser = app.loginUser;
+            Log.d("ProfileFragment", mUser.nickname);
         }
 
         mInfoList = (RefreshListWidget) view.findViewById(R.id.info_list);

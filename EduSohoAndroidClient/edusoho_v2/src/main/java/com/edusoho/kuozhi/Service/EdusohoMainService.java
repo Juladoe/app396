@@ -35,7 +35,7 @@ public class EdusohoMainService extends Service {
     public static final String TAG = "EdusohoMainService";
     private static EdusohoMainService mService;
     private Handler workHandler;
-    private User mLoginUser;
+    //private User mLoginUser;
     private Queue<AjaxCallback> mAjaxQueue;
 
     public static final int LOGIN_WITH_TOKEN = 0001;
@@ -55,7 +55,7 @@ public class EdusohoMainService extends Service {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case EXIT_USER:
-                        mLoginUser = null;
+                        app.loginUser = null;
                         break;
                     case LOGIN_WITH_TOKEN:
                         loginWithToken((ActionBarBaseActivity) msg.obj);
@@ -85,8 +85,11 @@ public class EdusohoMainService extends Service {
             return;
         }
         synchronized (this) {
-            if (mLoginUser != null) {
-                app.loginUser = mLoginUser;
+//            if (mLoginUser != null) {
+//                app.loginUser = mLoginUser;
+//                return;
+//            }
+            if (app.loginUser != null) {
                 return;
             }
             if (!mAjaxQueue.isEmpty()) {
@@ -107,7 +110,7 @@ public class EdusohoMainService extends Service {
                     Log.d(null, "callback loginWithToken result->" + result);
 
                     if (result != null) {
-                        mLoginUser = result.user;
+                        //mLoginUser = result.user;
                         app.saveToken(result);
                     }
 
@@ -126,9 +129,9 @@ public class EdusohoMainService extends Service {
                     }
                     TokenResult result = app.gson.fromJson(
                             object, new TypeToken<TokenResult>() {
-                    }.getType());
+                            }.getType());
                     if (result == null) {
-                        if (mLoginUser != null) {
+                        if (app.loginUser != null) {
                             app.removeToken();
                             app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
                             app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
@@ -136,7 +139,7 @@ public class EdusohoMainService extends Service {
                         }
                         return;
                     }
-                    mLoginUser = result.user;
+                    app.loginUser = result.user;
                     app.saveToken(result);
                     app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
                     app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
