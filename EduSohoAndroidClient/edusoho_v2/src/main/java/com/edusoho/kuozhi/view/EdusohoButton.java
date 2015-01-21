@@ -163,6 +163,7 @@ public class EdusohoButton extends FrameLayout {
             textView.setText(mText);
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(mDefaultTextColor);
+            mDefaultTextSize = px2sp(mContext,mDefaultTextSize);
             textView.setTextSize(mDefaultTextSize);
 
             textView.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1f));
@@ -512,6 +513,14 @@ public class EdusohoButton extends FrameLayout {
         } else {
             mFontIconView.setTypeface(mIconTypeFace);
         }
+    }
+
+    /**
+     * 将px值转换为sp值，保证文字大小不变
+     */
+    public static int px2sp(Context context, float pxValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
     }
 
 }
