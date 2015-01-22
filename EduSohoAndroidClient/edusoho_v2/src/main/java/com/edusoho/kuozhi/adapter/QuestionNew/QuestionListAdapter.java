@@ -14,6 +14,8 @@ import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.util.AppUtil;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by onewoman on 2014/12/22.
@@ -72,7 +74,7 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
         tvQuestiongTitle.setText(questionListData.title);
         tvQuestionAnswerCount.setText(String.valueOf(questionListData.postNum));
         if(questionListData.latestPostContent != null){
-            tvQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(questionListData.latestPostContent))));
+            tvQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(questionListData.latestPostContent), "<br />")));
             tvQuestionAnswerContent.setMaxLines(3);
         }else{
             tvQuestionAnswerContent.setText("");
@@ -95,7 +97,36 @@ public class QuestionListAdapter extends ListBaseAdapter<QuestionDetailModel>{
         return content.replaceAll("(<img src=\".*?\" .>)", "");
     }
 
-    private String filtlerBlank(String content){
-        return content.replaceAll("<p[^>]*>|</p>|<br />","");
+    private String filtlerBlank(String content ,String filterStr){
+        int secPoint = 0;
+        int point = content.indexOf(filterStr, 0);
+        String contentTemp = "";
+
+        if(-1 == point){
+            return content.replaceAll("<p[^>]*>|</p>","");
+        }
+
+        contentTemp += content.substring(0, point);
+        while((secPoint = content.indexOf(filterStr, point + filterStr.length())) != -1){
+            contentTemp = strCat(content.substring(point + filterStr.length(), secPoint), contentTemp);
+            point = secPoint;
+        }
+
+        if(secPoint == -1){
+            contentTemp = strCat(content.substring(point + filterStr.length()), contentTemp);
+        }
+        return contentTemp.replaceAll("<p[^>]*>|</p>","");
+    }
+
+    public String strCat(String subContent, String contentTemp){
+        Matcher matcher = Pattern.compile("[^\\s]*").matcher(subContent);
+
+        if(!matcher.find()){
+            return contentTemp;
+        }
+        if(matcher.group(0).length() > 0 && "<".equals(String.valueOf(matcher.group(0).charAt(0)))){
+            return contentTemp;
+        }
+        return (contentTemp + "<br />" + subContent);
     }
 }

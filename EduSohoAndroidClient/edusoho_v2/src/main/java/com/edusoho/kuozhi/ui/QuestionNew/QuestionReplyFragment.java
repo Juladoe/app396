@@ -111,7 +111,7 @@ public class QuestionReplyFragment extends BaseFragment{
     }
 
     public void setQuestionOneReplyData(){
-        mQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(mOneReply.content))));
+        mQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(mOneReply.content), "<br />")));
 
         QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext,R.layout.question_reply_inflate);
         mQuestionAnswerContentImage.setAdapter(questionReplyAdapter);
@@ -122,8 +122,37 @@ public class QuestionReplyFragment extends BaseFragment{
         return content.replaceAll("(<img src=\".*?\" .>)", "");
     }
 
-    private String filtlerBlank(String content){
-        return content.replaceAll("<p[^>]*>|</p>|<br />","");
+    private String filtlerBlank(String content ,String filterStr){
+        int secPoint = 0;
+        int point = content.indexOf(filterStr, 0);
+        String contentTemp = "";
+
+        if(-1 == point){
+            return content.replaceAll("<p[^>]*>|</p>","");
+        }
+
+        contentTemp += content.substring(0, point);
+        while((secPoint = content.indexOf(filterStr, point + filterStr.length())) != -1){
+            contentTemp = strCat(content.substring(point + filterStr.length(), secPoint), contentTemp);
+            point = secPoint;
+        }
+
+        if(secPoint == -1){
+            contentTemp = strCat(content.substring(point + filterStr.length()), contentTemp);
+        }
+        return contentTemp.replaceAll("<p[^>]*>|</p>","");
+    }
+
+    public String strCat(String subContent, String contentTemp){
+        Matcher matcher = Pattern.compile("[^\\s]*").matcher(subContent);
+
+        if(!matcher.find()){
+            return contentTemp;
+        }
+        if(matcher.group(0).length() > 0 && "<".equals(String.valueOf(matcher.group(0).charAt(0)))){
+            return contentTemp;
+        }
+        return (contentTemp + "<br />" + subContent);
     }
 
     private ArrayList<String> convertUrlStringList(String content) {
