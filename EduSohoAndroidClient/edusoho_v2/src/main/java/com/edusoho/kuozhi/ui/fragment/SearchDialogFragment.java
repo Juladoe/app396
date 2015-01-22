@@ -41,8 +41,6 @@ import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 /**
@@ -170,7 +168,7 @@ public class SearchDialogFragment extends DialogFragment {
             textView.setText(tagModel.name);
             textView.setTag(tagModel.id);
             textView.setTextColor(Color.BLACK);
-            textView.setTextSize(AppUtil.px2sp(mContext, getResources().getDimension(R.dimen.middle_font_size)));
+            textView.setTextSize(AppUtil.px2sp(mContext, getResources().getDimension(R.dimen.medium_font_size)));
             textView.setBackgroundResource(R.drawable.search_tag_btn_bg);
             textView.measure(0, 0);
             float wid = textView.getMeasuredWidth();

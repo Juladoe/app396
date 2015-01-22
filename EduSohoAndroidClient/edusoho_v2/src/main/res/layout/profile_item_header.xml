@@ -107,7 +107,7 @@
 
         <TextView
             android:background="@android:color/white"
-            android:textSize="@dimen/middle_font_size"
+            android:textSize="@dimen/medium_font_size"
             android:paddingRight="16dp"
             android:paddingLeft="16dp"
             android:paddingTop="16dp"
@@ -155,7 +155,7 @@
             android:paddingRight="16dp">
 
             <com.edusoho.kuozhi.view.ESTextView
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_follow_num"
                 android:text="关注数"
                 android:textColor="@android:color/black"
@@ -184,7 +184,7 @@
             android:paddingRight="16dp">
 
             <com.edusoho.kuozhi.view.ESTextView
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_fans_num"
                 android:text="粉丝数"
                 android:textColor="@android:color/black"
@@ -220,7 +220,7 @@
                 android:layout_height="match_parent" />
 
             <TextView
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:textColor="@color/base_color_normal"
                 android:gravity="center_vertical"
                 android:text="发私信"
@@ -246,7 +246,7 @@
                 android:layout_height="match_parent" />
 
             <TextView
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:text=""
                 android:id="@+id/tv_Follow"
                 android:gravity="center_vertical"
@@ -262,7 +262,7 @@
         android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/middle_font_size"
+        android:textSize="@dimen/medium_font_size"
         android:layout_below="@id/social_bar"
         android:background="@android:color/white"
         android:textColor="@android:color/black"

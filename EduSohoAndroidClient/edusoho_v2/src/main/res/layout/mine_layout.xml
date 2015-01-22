@@ -27,7 +27,7 @@
 
             <TextView
                 android:text="未登录"
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_nickname"
                 android:layout_toRightOf="@id/myinfo_logo"
                 android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
 
             <TextView
                 android:text="未登录"
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_logout"
                 android:layout_toRightOf="@id/myinfo_logo"
                 android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
 
                 <TextView
                     android:id="@+id/myinfo_question_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -121,7 +121,7 @@
 
                 <TextView
                     android:id="@+id/myinfo_discusion_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -152,7 +152,7 @@
 
                 <TextView
                     android:id="@+id/myinfo_note_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -184,7 +184,7 @@
 
                 <TextView
                     android:id="@+id/myInfo_testpaper_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -225,7 +225,7 @@
                 android:background="#31d06e"
                 android:text="@string/font_download"
                 android:textSize="28sp"
-                android:padding="2dp" />
+                android:paddingBottom="3dp" />
 
             <com.edusoho.kuozhi.view.ESTextView
                 android:textColor="@android:color/black"
@@ -255,7 +255,7 @@
                 android:background="#fa3636"
                 android:text="@string/font_collection"
                 android:textSize="28sp"
-                android:padding="2dp" />
+                android:paddingBottom="2dp" />
 
             <com.edusoho.kuozhi.view.ESTextView
                 android:textColor="@android:color/black"
@@ -284,7 +284,7 @@
                 android:text="@string/font_notification"
                 android:textColor="@android:color/white"
                 android:textSize="28sp"
-                android:padding="2dp"
+                android:paddingBottom="3dp"
                 android:background="#17ceef" />
 
             <com.edusoho.kuozhi.view.ESTextView
@@ -313,7 +313,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/font_setting"
                 android:textSize="28sp"
-                android:padding="2dp"
+                android:paddingBottom="3dp"
                 android:background="#ffb400"
                 android:textColor="@android:color/white" />
 
@@ -343,7 +343,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/font_feedback"
                 android:textSize="28sp"
-                android:padding="2dp"
+                android:paddingBottom="3dp"
                 android:background="#178cef"
                 android:textColor="@android:color/white" />
 
