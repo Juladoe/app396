@@ -136,10 +136,11 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     } else {
                         app.saveToken(schoolResult);
                     }
+                    app.setCurrentSchool(site);
                     app.sendMessage(Const.LOGING_SUCCESS, null);
                     app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
                     app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
-                    app.setCurrentSchool(site);
+
 
                     showSchSplash(site.name, site.splashs);
 

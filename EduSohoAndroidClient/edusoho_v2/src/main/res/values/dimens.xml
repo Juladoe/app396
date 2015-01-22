@@ -10,7 +10,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="large_font_size">20sp</dimen>
     <!--大字-->
-    <dimen name="middle_font_size">16sp</dimen>
+    <dimen name="medium_font_size">16sp</dimen>
     <!--中字-->
     <dimen name="small_font_size">14sp</dimen>
     <!--小一/二字-->

@@ -52,7 +52,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"
                 android:textColor="@color/base_black_normal"
-                android:textSize="@dimen/middle_font_size" />
+                android:textSize="@dimen/medium_font_size" />
 
         </RelativeLayout>
     </RelativeLayout>

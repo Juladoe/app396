@@ -27,7 +27,7 @@
 
             <TextView
                 android:text="未登录"
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_nickname"
                 android:layout_toRightOf="@id/myinfo_logo"
                 android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
 
             <TextView
                 android:text="未登录"
-                android:textSize="@dimen/middle_font_size"
+                android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_logout"
                 android:layout_toRightOf="@id/myinfo_logo"
                 android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
 
                 <TextView
                     android:id="@+id/myinfo_question_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -121,7 +121,7 @@
 
                 <TextView
                     android:id="@+id/myinfo_discusion_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -152,7 +152,7 @@
 
                 <TextView
                     android:id="@+id/myinfo_note_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -184,7 +184,7 @@
 
                 <TextView
                     android:id="@+id/myInfo_testpaper_num"
-                    android:textSize="@dimen/middle_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="0"
                     android:gravity="center"
                     android:layout_width="match_parent"
