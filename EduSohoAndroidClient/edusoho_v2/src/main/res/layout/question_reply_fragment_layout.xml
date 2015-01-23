@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="2014-12-16"/>
+            android:text=""/>
     </LinearLayout>
 
     <com.edusoho.kuozhi.view.ESImageView
@@ -59,7 +59,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:textSize="14sp"
-        android:text="我是回复的内容"/>
+        android:text=""/>
 
     <ListView
         android:id="@+id/question_answer_image_list"
