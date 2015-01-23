@@ -18,7 +18,7 @@
         app:defaultColor="@color/lesson_resouce_btn_normal"
         app:focusColor="@color/lesson_resouce_btn_pressed"
         app:iconPosition="right"
-        app:textSize="@dimen/small_btn"
+        app:textSize="@dimen/medium_font_size"
         app:radius="3dp"
         app:textStr="提交"
         app:textColor="#FFFFFF"

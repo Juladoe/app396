@@ -71,6 +71,7 @@
                 android:layout_height="wrap_content" />
         </RelativeLayout>
     </ScrollView>
+
     <com.edusoho.kuozhi.view.EdusohoButton
         android:layout_alignParentBottom="true"
         android:id="@+id/recommend_course_commitbtn"
@@ -79,7 +80,7 @@
         app:defaultColor="@color/lesson_learn_btn_normal"
         app:focusColor="@color/lesson_learn_btn_pressed"
         app:iconPosition="right"
-        app:textSize="@dimen/small_btn"
+        app:textSize="@dimen/medium_font_size"
         app:radius="2dp"
         app:textStr="评论"
         app:textColor="#FFFFFF"
