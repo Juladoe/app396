@@ -211,7 +211,7 @@ public class Const {
     public static final String UNLEARN_LESSON = "Lesson/unLearnLesson";
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
-    public static final String USER_DATA_NUMBER = "Course/getUserNum";
+    public static final String USER_DATA_NUMBER = "User/getUserNum";
 
     /**
      * 获取课程状态（是否包含资料，学习状态）
@@ -306,7 +306,7 @@ public class Const {
 
     public static final String REQUEST_CODE = "reply_type";
 
-    public static final String SCHOOL_ROOM = "Course/getSchoolRoom";
+    public static final String SCHOOL_ROOM = "User/getSchoolRoom";
 
     /**
      * 普通回复
