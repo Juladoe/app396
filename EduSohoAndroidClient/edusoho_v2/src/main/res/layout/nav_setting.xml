@@ -18,7 +18,7 @@
         app:fontColor="@color/nav_btn_sel"
         app:text="学堂"
         app:size="@dimen/nav_layout_btn"
-        app:image="@string/font_me"
+        app:image="@string/schoolroom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
