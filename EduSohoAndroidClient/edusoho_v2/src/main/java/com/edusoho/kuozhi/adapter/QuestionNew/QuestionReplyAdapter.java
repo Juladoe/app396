@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
@@ -30,6 +31,7 @@ public class QuestionReplyAdapter extends ListBaseAdapter<String>{
         mDisplayImageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                 .build();
     }
 

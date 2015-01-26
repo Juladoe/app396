@@ -47,7 +47,6 @@
         android:maxLines="4"
         android:ellipsize="end"
         android:textSize="@dimen/question_small_font_size"
-        android:text="我是回复的内容"
         />
 
 </RelativeLayout>

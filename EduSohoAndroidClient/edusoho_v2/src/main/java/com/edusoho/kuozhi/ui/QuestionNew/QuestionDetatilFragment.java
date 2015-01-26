@@ -227,6 +227,7 @@ public class QuestionDetatilFragment extends BaseFragment {
                 bundle.putSerializable(Const.QUESTION_CONTENT, replyModel);
                 bundle.putString(Const.QUESTION_TITLE, mQuestionDetailModel.title);
                 bundle.putInt(Const.THREAD_ID, intentThreadId);
+                bundle.putInt(Const.USER_ID, mQuestionDetailModel.user.id);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionReplyFragment");
                 startActivityWithBundleAndResult("FragmentPageActivity", REPLYRESULT, bundle);
             }
@@ -294,7 +295,7 @@ public class QuestionDetatilFragment extends BaseFragment {
         ImageLoader.getInstance().displayImage(mQuestionDetailModel.user.mediumAvatar, questionDetailAnswerUserHeadImage);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_uesr_name)).setText(mQuestionDetailModel.user.nickname);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatile_describe_time)).setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
-        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(filtlerBlank(filtlerBlank(fitlerImgTag(mQuestionDetailModel.content), "<br />"), "\n")));
+        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(fitlerImgTag(mQuestionDetailModel.content)));
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_course_title)).setText(mQuestionDetailModel.courseTitle);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum + "");
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_browse_count)).setText(mQuestionDetailModel.hitNum + "");
@@ -313,39 +314,6 @@ public class QuestionDetatilFragment extends BaseFragment {
     //过滤html标签里的img图片
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
-    }
-
-    private String filtlerBlank(String content ,String filterStr){
-        int secPoint = 0;
-        int point = content.indexOf(filterStr, 0);
-        String contentTemp = "";
-
-        if(-1 == point){
-            return content.replaceAll("<p[^>]*>|</p>","");
-        }
-
-        contentTemp += content.substring(0, point);
-        while((secPoint = content.indexOf(filterStr, point + filterStr.length())) != -1){
-            contentTemp = strCat(content.substring(point + filterStr.length(), secPoint), contentTemp);
-            point = secPoint;
-        }
-
-        if(secPoint == -1){
-            contentTemp = strCat(content.substring(point + filterStr.length()), contentTemp);
-        }
-        return contentTemp.replaceAll("<p[^>]*>|</p>","");
-    }
-
-    public String strCat(String subContent, String contentTemp){
-        Matcher matcher = Pattern.compile("[^\\s]*").matcher(subContent);
-
-        if(!matcher.find()){
-            return contentTemp;
-        }
-        if(matcher.group(0).length() > 0 && "<".equals(String.valueOf(matcher.group(0).charAt(0)))){
-            return contentTemp;
-        }
-        return (contentTemp + "<br />" + subContent);
     }
 
     private ArrayList<String> convertUrlStringList(String content) {
