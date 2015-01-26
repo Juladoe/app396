@@ -74,12 +74,13 @@
         app:defaultColor="@color/lesson_learn_btn_normal"
         app:focusColor="@color/lesson_learn_btn_pressed"
         app:iconPosition="right"
-        app:textSize="@dimen/small_btn"
+        app:textSize="@dimen/medium_font_size"
         app:radius="3dp"
         app:textStr="查看解析"
         app:textColor="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <TextView
         android:padding="10dp"
         android:layout_above="@id/testpaper_result_show"

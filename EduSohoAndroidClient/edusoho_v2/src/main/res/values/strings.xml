@@ -4,7 +4,7 @@
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
     <string name="api_version">2.1.0</string>
-    <string name="apk_version">2.3.4</string>
+    <string name="apk_version">2.5.0</string>
     <string name="apk_code">11</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0.3</string>
@@ -66,9 +66,14 @@
     <string name="unpublished_text">未发布</string>
     <string name="font_list"></string>
 
+    <string name="schoolroom">&#xe6ba;</string>
+    <string name="schoolroom_press">&#xe6b9;</string>
     <string name="font_me">&#xe636;</string>
+    <string name="font_me_press">&#xe637;</string>
     <string name="font_recommend">&#xe634;</string>
+    <string name="font_recommend_press">&#xe635;</string>
     <string name="font_found">&#xe632;</string>
+    <string name="font_found_press">&#xe633;</string>
     <string name="font_clear">&#xe63d;</string>
     <string name="font_right"></string>
     <string name="font_ppt"></string>
@@ -82,7 +87,7 @@
     <string name="font_collection">&#xe638;</string>
     <string name="font_notification">&#xe65b;</string>
     <string name="font_setting">&#xe68f;</string>
-    <string name="font_feedback">&#xe693;</string>
+    <string name="font_feedback">&#xe6b3;</string>
     <string name="font_add_fans">&#xe69e;</string>
 
     <!--lesson tools -->
@@ -108,9 +113,9 @@
 
     <!-- schoolroom -->
     <string name="schoolroom_course">&#xe645;</string>
-    <string name="schoolroom_question">&#xe647;</string>
+    <string name="schoolroom_question">&#xe6ae;</string>
     <string name="schoolroom_discussion">&#xe646;</string>
-    <string name="schoolroom_note">&#xe644;</string>
+    <string name="schoolroom_note">&#xe6ad;</string>
     <string name="schoolroom_letter">&#xe693;</string>
 
     <!-- 网校提示字符 -->

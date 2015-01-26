@@ -9,7 +9,7 @@ public class KuozhiActivity extends StartActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        CrashReport.initCrashReport(getApplicationContext(), getString(R.string.bugly_appid), true);
+        CrashReport.initCrashReport(getApplicationContext(), getString(R.string.bugly_appid), false);
         super.onCreate(savedInstanceState);
     }
 }

@@ -44,6 +44,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private String mCurrentTag;
     private int mSelectBtn;
 
+    private EduSohoTextBtn mSchoolRoomBtn;
+    private EduSohoTextBtn mRecommendBtn;
+    private EduSohoTextBtn mFoundBtn;
+    private EduSohoTextBtn mMySelfBtn;
+
     private EduSohoTextBtn moreBtn;
 
     @Override
@@ -228,6 +233,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mCurrentTag = tag;
         setTitle(fragment.getTitle(), showIcon);
         changeNavBtn(id);
+        changeBtnIcon(id);
     }
 
     private void hideFragment(String tag) {
@@ -265,6 +271,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         }
     }
 
+    private void changeBtnIcon(int id) {
+        mSchoolRoomBtn.setIcon(R.string.schoolroom);
+        mRecommendBtn.setIcon(R.string.font_recommend);
+        mFoundBtn.setIcon(R.string.font_found);
+        mMySelfBtn.setIcon(R.string.font_me);
+        if (id == R.id.nav_schoolroom_btn) {
+            mSchoolRoomBtn.setIcon(R.string.schoolroom_press);
+        } else if (id == R.id.nav_recommend_btn) {
+            mRecommendBtn.setIcon(R.string.font_recommend_press);
+        } else if (id == R.id.nav_found_btn) {
+            mFoundBtn.setIcon(R.string.font_found_press);
+        } else if (id == R.id.nav_me_btn) {
+            mMySelfBtn.setIcon(R.string.font_me_press);
+        }
+    }
+
     private class NavBtnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -275,6 +297,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
     private void bindNavOnClick() {
         mNavBtnLayout = (ViewGroup) findViewById(R.id.nav_bottom_layout);
+        mSchoolRoomBtn = (EduSohoTextBtn) findViewById(R.id.nav_schoolroom_btn);
+        mRecommendBtn = (EduSohoTextBtn) findViewById(R.id.nav_recommend_btn);
+        mFoundBtn = (EduSohoTextBtn) findViewById(R.id.nav_found_btn);
+        mMySelfBtn = (EduSohoTextBtn) findViewById(R.id.nav_me_btn);
         int count = mNavBtnLayout.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mNavBtnLayout.getChildAt(i);
