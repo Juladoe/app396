@@ -50,6 +50,8 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
         initViews();
     }
 
+
+
     private void initData() {
         mConversationId = getIntent().getIntExtra(CONVERSATION_ID, 0);
         mConversationName = getIntent().getStringExtra(CONVERSATION_FROM_NAME);

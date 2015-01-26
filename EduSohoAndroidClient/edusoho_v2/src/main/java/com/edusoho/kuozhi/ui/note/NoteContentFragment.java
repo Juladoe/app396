@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -72,6 +73,7 @@ public class NoteContentFragment extends BaseFragment {
         mCourseId = bundle.getInt(Const.COURSE_ID);
         mLessonTitle = bundle.getString(Const.LESSON_NAME);
         mLearnStatus = bundle.getString(Const.LEARN_STATUS);
+        Log.d("NoteContentFragment", mTitle);
     }
 
     @Override
