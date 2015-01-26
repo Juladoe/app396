@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="我是问题的题目"
         android:textColor="#2ec368"
         android:textSize="14sp" />
 
@@ -39,7 +38,6 @@
         android:layout_below="@id/question_answer_content"
         android:layout_marginTop="6dp"
         android:layout_marginLeft="6dp"
-        android:text="(5条回答)"
         app:es_alpha="0.54"
         android:textSize="14sp" />
 

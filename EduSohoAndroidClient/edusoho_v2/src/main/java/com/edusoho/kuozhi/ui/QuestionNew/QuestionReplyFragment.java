@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.questionnew;
+package com.edusoho.kuozhi.ui.QuestionNew;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +42,8 @@ public class QuestionReplyFragment extends BaseFragment {
 
     private OneReply mOneReply;
     private int mThreadId;
+    private int mUseId;
+    private String mContent;
 
     @Override
     public String getTitle() {
@@ -57,7 +59,10 @@ public class QuestionReplyFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.question_reply_new_menu, menu);
+        if (mUseId == mReplyModel.userId) {
+            //ToDo
+            inflater.inflate(R.menu.question_reply_new_menu, menu);
+        }
     }
 
     @Override
@@ -68,7 +73,7 @@ public class QuestionReplyFragment extends BaseFragment {
             bundle.putString(Const.THREAD_ID, String.valueOf(mThreadId));
             bundle.putString(Const.COURSE_ID, String.valueOf(mReplyModel.courseId));
             bundle.putString(Const.POST_ID, String.valueOf(mReplyModel.id));
-            bundle.putString(Const.NORMAL_CONTENT, AppUtil.filterSpace(mReplyModel.content));
+            bundle.putString(Const.NORMAL_CONTENT, AppUtil.filterSpace(mContent));
             startActivityWithBundleAndResult("QuestionReplyActivity", Const.EDIT_REPLY, bundle);
         }
         return true;
@@ -81,6 +86,8 @@ public class QuestionReplyFragment extends BaseFragment {
         mReplyModel = (ReplyModel) bundle.getSerializable(Const.QUESTION_CONTENT);
         changeTitle(bundle.getString(Const.QUESTION_TITLE));
         mThreadId = bundle.getInt(Const.THREAD_ID);
+        mContent = mReplyModel.content;
+        mUseId = bundle.getInt(Const.USER_ID);
 
         mOneReplyParams.put("courseId", String.valueOf(mReplyModel.courseId));
         mOneReplyParams.put("postId", String.valueOf(mReplyModel.id));
@@ -113,7 +120,9 @@ public class QuestionReplyFragment extends BaseFragment {
     }
 
     public void setQuestionOneReplyData() {
-        mQuestionAnswerContent.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(mOneReply.content), "<br />")));
+        mQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(mOneReply.content)));
+        mContent = mOneReply.content;
+        mContent = removeImgPath(mContent).toString();
 
         QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext, R.layout.question_reply_inflate);
         mQuestionAnswerContentImage.setAdapter(questionReplyAdapter);
@@ -122,39 +131,6 @@ public class QuestionReplyFragment extends BaseFragment {
 
     private String fitlerImgTag(String content) {
         return content.replaceAll("(<img src=\".*?\" .>)", "");
-    }
-
-    private String filtlerBlank(String content, String filterStr) {
-        int secPoint = 0;
-        int point = content.indexOf(filterStr, 0);
-        String contentTemp = "";
-
-        if (-1 == point) {
-            return content.replaceAll("<p[^>]*>|</p>", "");
-        }
-
-        contentTemp += content.substring(0, point);
-        while ((secPoint = content.indexOf(filterStr, point + filterStr.length())) != -1) {
-            contentTemp = strCat(content.substring(point + filterStr.length(), secPoint), contentTemp);
-            point = secPoint;
-        }
-
-        if (secPoint == -1) {
-            contentTemp = strCat(content.substring(point + filterStr.length()), contentTemp);
-        }
-        return contentTemp.replaceAll("<p[^>]*>|</p>", "");
-    }
-
-    public String strCat(String subContent, String contentTemp) {
-        Matcher matcher = Pattern.compile("[^\\s]*").matcher(subContent);
-
-        if (!matcher.find()) {
-            return contentTemp;
-        }
-        if (matcher.group(0).length() > 0 && "<".equals(String.valueOf(matcher.group(0).charAt(0)))) {
-            return contentTemp;
-        }
-        return (contentTemp + "<br />" + subContent);
     }
 
     private ArrayList<String> convertUrlStringList(String content) {
@@ -169,6 +145,21 @@ public class QuestionReplyFragment extends BaseFragment {
             urlLits.add(strUrl);
         }
         return urlLits;
+    }
+
+    public StringBuffer removeImgPath(String content) {
+        StringBuffer result = new StringBuffer();
+        Matcher m = Pattern.compile("(img src=\".*?\")").matcher(content);
+        while (m.find()) {
+            String[] s = m.group(1).split("src=");
+            String strUrl = s[1].toString().substring(1, s[1].length() - 1);
+            if (strUrl.indexOf("http:") == -1) {
+                strUrl = "img src=\"" + app.defaultSchool.host + strUrl;
+                m.appendReplacement(result, strUrl);
+            }
+        }
+        m.appendTail(result);
+        return result;
     }
 
     @Override
