@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.QuestionNew;
+package com.edusoho.kuozhi.ui.questionnew;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -60,7 +60,6 @@ public class QuestionReplyFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (mUseId == mReplyModel.userId) {
-            //ToDo
             inflater.inflate(R.menu.question_reply_new_menu, menu);
         }
     }
