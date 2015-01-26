@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
 
         <com.edusoho.kuozhi.view.ESTextView
-            app:es_alpha="0.54"
+            app:es_alpha="0.26"
             android:id="@+id/tv_send_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,8 +17,8 @@
             android:text="9-4 18:45"
             android:background="@drawable/letter_time_bg"
             android:layout_marginTop="8dp"
-            android:textColor="#000000"
-            android:textSize="12sp"
+            android:textColor="@color/base_black_normal"
+            android:textSize="@dimen/x_small_font_size"
             android:visibility="visible" />
 
         <RelativeLayout

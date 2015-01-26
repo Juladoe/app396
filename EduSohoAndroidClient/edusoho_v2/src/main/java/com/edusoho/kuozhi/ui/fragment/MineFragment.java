@@ -53,11 +53,11 @@ public class MineFragment extends BaseFragment {
     private LinearLayout mQuestion;
     private LinearLayout mDiscussion;
     private LinearLayout mNote;
-    private LinearLayout mTestpaper;
+    private LinearLayout mTestPaper;
     private TextView tvQuestionNum;
     private TextView tvDiscussionNum;
     private TextView tvNoteNum;
-    private TextView tvTestpaperNum;
+    private TextView tvTestPaperNum;
 
     private RelativeLayout mDownloadedCourse;
     private RelativeLayout mMyFavorite;
@@ -122,7 +122,7 @@ public class MineFragment extends BaseFragment {
             tvQuestionNum.setText("0");
             tvDiscussionNum.setText("0");
             tvNoteNum.setText("0");
-            tvTestpaperNum.setText("0");
+            tvTestPaperNum.setText("0");
             tvUserName.setVisibility(View.GONE);
             tvSignature.setVisibility(View.GONE);
             tvlogout.setVisibility(View.VISIBLE);
@@ -195,11 +195,11 @@ public class MineFragment extends BaseFragment {
         mQuestion = (LinearLayout) view.findViewById(R.id.myinfo_question);
         mDiscussion = (LinearLayout) view.findViewById(R.id.myinfo_discusion);
         mNote = (LinearLayout) view.findViewById(R.id.myinfo_note);
-        mTestpaper = (LinearLayout) view.findViewById(R.id.myInfo_testpaper);
+        mTestPaper = (LinearLayout) view.findViewById(R.id.myInfo_testpaper);
         tvQuestionNum = (TextView) view.findViewById(R.id.myinfo_question_num);
         tvDiscussionNum = (TextView) view.findViewById(R.id.myinfo_discusion_num);
         tvNoteNum = (TextView) view.findViewById(R.id.myinfo_note_num);
-        tvTestpaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
+        tvTestPaperNum = (TextView) view.findViewById(R.id.myInfo_testpaper_num);
 
         mDownloadedCourse = (RelativeLayout) view.findViewById(R.id.course_downloaded);
         mMyFavorite = (RelativeLayout) view.findViewById(R.id.my_favorite);
@@ -228,7 +228,7 @@ public class MineFragment extends BaseFragment {
             }
         });
 
-        mTestpaper.setOnClickListener(new View.OnClickListener() {
+        mTestPaper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showMyTestpaper();
@@ -316,7 +316,7 @@ public class MineFragment extends BaseFragment {
                 tvQuestionNum.setText(mUserDataNum.thread);
                 tvDiscussionNum.setText(mUserDataNum.discussion);
                 tvNoteNum.setText(mUserDataNum.note);
-                tvTestpaperNum.setText(mUserDataNum.test);
+                tvTestPaperNum.setText(mUserDataNum.test);
             }
         });
     }

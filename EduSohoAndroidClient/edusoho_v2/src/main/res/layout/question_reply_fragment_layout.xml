@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/base_bg_color">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_bg_color">
 
-    <include layout="@layout/loading_layout"/>
+    <include layout="@layout/loading_layout" />
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/question_answer_head_image"
@@ -16,30 +16,31 @@
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/question_head_icon"
-        />
+        android:src="@drawable/question_head_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/question_answer_head_image"
         android:layout_alignBottom="@id/question_answer_head_image"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/question_answer_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Joanie"
-            android:textColor="#2ec368"/>
+            android:textColor="#2ec368" />
 
-        <TextView
+        <com.edusoho.kuozhi.view.ESTextView
             android:id="@+id/question_answer_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text=""/>
+            android:textColor="@color/base_black_26"
+            android:textSize="@dimen/x_small_font_size"
+            app:es_alpha="0.26"
+            android:text="" />
     </LinearLayout>
 
     <com.edusoho.kuozhi.view.ESImageView
@@ -48,7 +49,7 @@
         android:layout_height="2dp"
         android:layout_below="@id/question_answer_head_image"
         android:background="#000"
-        app:es_alpha="0.12"/>
+        app:es_alpha="0.12" />
 
     <TextView
         android:id="@+id/question_answer_content"
@@ -59,7 +60,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:textSize="14sp"
-        android:text=""/>
+        android:text="" />
 
     <ListView
         android:id="@+id/question_answer_image_list"

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/question_detatil_describe_inflate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/base_bg_color">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/question_detatil_describe_inflate"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/base_bg_color">
 
     <RelativeLayout
         android:id="@+id/question_detatil_describe"
@@ -13,111 +13,111 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-    <TextView
-        android:id="@+id/question_detail_describe_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/question_middle_font_size"/>
+        <TextView
+            android:id="@+id/question_detail_describe_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/question_middle_font_size" />
 
-    <com.edusoho.kuozhi.view.plugin.CircularImageView
-        android:id="@+id/question_detatil_describe_user_head_image"
-        android:layout_width="@dimen/question_user_head_image_size"
-        android:layout_height="@dimen/question_user_head_image_size"
-        android:layout_below="@id/question_detail_describe_title"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="8dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/question_head_icon"/>
+        <com.edusoho.kuozhi.view.plugin.CircularImageView
+            android:id="@+id/question_detatil_describe_user_head_image"
+            android:layout_width="@dimen/question_user_head_image_size"
+            android:layout_height="@dimen/question_user_head_image_size"
+            android:layout_below="@id/question_detail_describe_title"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/question_head_icon" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/question_detatil_describe_user_head_image"
-        android:layout_toRightOf="@id/question_detatil_describe_user_head_image"
-        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/question_detatil_describe_user_head_image"
+            android:layout_toRightOf="@id/question_detatil_describe_user_head_image"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/question_detatil_describe_uesr_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/question_small_font_size"
+                android:textColor="#2ec368" />
+
+            <com.edusoho.kuozhi.view.ESTextView
+                android:id="@+id/question_detatile_describe_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:es_alpha="0.26"
+                android:textSize="@dimen/x_small_font_size" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/question_detatil_describe_uesr_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/question_detatil_describe_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/question_small_font_size"
-            android:textColor="#2ec368"/>
+            android:layout_below="@id/question_detatil_describe_user_head_image"
+            android:layout_marginTop="16dp"
+            android:textSize="@dimen/question_small_font_size" />
+
+        <LinearLayout
+            android:id="@+id/question_describe_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/question_detatil_describe_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"></LinearLayout>
 
         <com.edusoho.kuozhi.view.ESTextView
-            android:id="@+id/question_detatile_describe_time"
+            android:id="@+id/question_detail_describe_answer_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/question_describe_image"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="5dp"
             app:es_alpha="0.54"
-            android:textSize="@dimen/question_small_font_size"/>
-    </LinearLayout>
+            android:textSize="@dimen/question_small_font_size" />
 
-    <TextView
-        android:id="@+id/question_detatil_describe_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/question_detatil_describe_user_head_image"
-        android:layout_marginTop="16dp"
-        android:textSize="@dimen/question_small_font_size"/>
+        <ImageView
+            android:id="@+id/question_detail_describe_answer_count_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/question_detail_describe_answer_count"
+            android:layout_marginLeft="8dp"
+            android:layout_toLeftOf="@id/question_detail_describe_answer_count"
+            android:src="@drawable/question_answer_icon" />
 
-    <LinearLayout
-        android:id="@+id/question_describe_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/question_detatil_describe_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"></LinearLayout>
+        <com.edusoho.kuozhi.view.ESTextView
+            android:id="@+id/question_detail_describe_browse_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/question_detail_describe_answer_count"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@id/question_detail_describe_answer_count_icon"
+            app:es_alpha="0.54"
+            android:textSize="@dimen/question_small_font_size" />
 
-    <com.edusoho.kuozhi.view.ESTextView
-        android:id="@+id/question_detail_describe_answer_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/question_describe_image"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="5dp"
-        app:es_alpha="0.54"
-        android:textSize="@dimen/question_small_font_size"/>
+        <ImageView
+            android:id="@+id/question_detail_describe_browse_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/question_detail_describe_browse_count"
+            android:layout_marginLeft="100dp"
+            android:layout_toLeftOf="@id/question_detail_describe_browse_count"
+            android:src="@drawable/question_browse_icon" />
 
-    <ImageView
-        android:id="@+id/question_detail_describe_answer_count_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/question_detail_describe_answer_count"
-        android:layout_marginLeft="8dp"
-        android:layout_toLeftOf="@id/question_detail_describe_answer_count"
-        android:src="@drawable/question_answer_icon"/>
-
-    <com.edusoho.kuozhi.view.ESTextView
-        android:id="@+id/question_detail_describe_browse_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/question_detail_describe_answer_count"
-        android:layout_marginLeft="5dp"
-        android:layout_toLeftOf="@id/question_detail_describe_answer_count_icon"
-        app:es_alpha="0.54"
-        android:textSize="@dimen/question_small_font_size"/>
-
-    <ImageView
-        android:id="@+id/question_detail_describe_browse_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/question_detail_describe_browse_count"
-        android:layout_marginLeft="100dp"
-        android:layout_toLeftOf="@id/question_detail_describe_browse_count"
-        android:src="@drawable/question_browse_icon"/>
-
-    <TextView
-        android:id="@+id/question_detail_course_title"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/question_detail_describe_answer_count"
-        android:layout_alignLeft="@id/question_describe_image"
-        android:layout_toLeftOf="@id/question_detail_describe_browse_icon"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textSize="@dimen/question_small_font_size"
-        android:textColor="#2ec368"/>
+        <TextView
+            android:id="@+id/question_detail_course_title"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/question_detail_describe_answer_count"
+            android:layout_alignLeft="@id/question_describe_image"
+            android:layout_toLeftOf="@id/question_detail_describe_browse_icon"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="@dimen/question_small_font_size"
+            android:textColor="#2ec368" />
 
     </RelativeLayout>
 
@@ -127,5 +127,5 @@
         android:layout_height="8dp"
         android:layout_below="@id/question_detatil_describe"
         android:background="#000"
-        app:es_alpha="0.12"/>
+        app:es_alpha="0.12" />
 </RelativeLayout>

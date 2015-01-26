@@ -533,7 +533,7 @@ public class AppUtil {
             return sdf.parse(tDate).getTime();
 
         } catch (Exception ex) {
-            Log.d("AppUtil.getPostDays", ex.toString());
+            Log.d("AppUtil.convertMilliSec", ex.toString());
         }
         return returnTime;
     }

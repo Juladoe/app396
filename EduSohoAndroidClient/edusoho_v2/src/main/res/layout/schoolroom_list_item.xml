@@ -92,9 +92,9 @@
                 android:layout_marginRight="8dp"
                 android:layout_alignParentTop="true"
                 android:id="@+id/tv_time"
-                android:textSize="@dimen/small_font_size"
+                android:textSize="@dimen/x_small_font_size"
                 android:textColor="@android:color/black"
-                app:es_alpha="0.54" />
+                app:es_alpha="0.26" />
 
             <TextView
                 android:id="@+id/tv_msg_sum"
