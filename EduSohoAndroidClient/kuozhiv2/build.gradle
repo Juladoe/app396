@@ -25,7 +25,7 @@ android {
 
     //签名
     signingConfigs {
-        releaseConfig{
+        releaseConfig {
             storeFile file("../key/edusoho.kuozhi.jks")
             storePassword "10001000"
             keyAlias "cn"
@@ -33,12 +33,12 @@ android {
         }
     }
 
-    buildTypes{
+    buildTypes {
         release {
             zipAlign true
-            runProguard true
+            runProguard false
             proguardFile 'proguard-rules.txt'
-            signingConfig  signingConfigs.releaseConfig
+            signingConfig signingConfigs.releaseConfig
         }
     }
 }

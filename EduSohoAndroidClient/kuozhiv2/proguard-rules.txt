@@ -74,7 +74,7 @@
 -dontwarn com.cyberplayer.**
 -keep class com.cyberplayer.**{*;}
 
--keep class com.edusoho.kuozhi.ui.fragment.**{*;}
+-keep class com.edusoho.kuozhi.ui.**{*;}
 
 -keep class com.edusoho.kuozhi.model.**{*;}
 -keep class com.edusoho.kuozhi.entity.**{*;}
