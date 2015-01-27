@@ -15,25 +15,26 @@
             android:id="@+id/myinfo_user_layout"
             android:background="@drawable/normal_layout_bg"
             android:layout_width="match_parent"
-            android:layout_height="88dp">
+            android:layout_height="wrap_content">
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
                 android:layout_margin="16dp"
                 android:id="@+id/myinfo_logo"
                 android:layout_centerVertical="true"
                 android:src="@drawable/myinfo_default_face"
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
+                android:layout_width="@dimen/head_icon"
+                android:layout_height="@dimen/head_icon" />
 
             <TextView
                 android:text="未登录"
                 android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_nickname"
-                android:layout_toRightOf="@id/myinfo_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/base_black_87"
-                android:layout_alignTop="@id/myinfo_logo" />
+                android:layout_alignTop="@+id/myinfo_logo"
+                android:layout_toRightOf="@+id/myinfo_logo"
+                android:layout_toEndOf="@+id/myinfo_logo" />
 
             <TextView
                 android:text="未登录"
@@ -63,12 +64,13 @@
                 android:text="个性签名"
                 android:singleLine="true"
                 android:id="@+id/myinfo_signature"
-                android:textSize="@dimen/myinfo_content"
-                android:paddingTop="10dp"
-                android:layout_below="@id/tv_nickname"
-                android:layout_toRightOf="@id/myinfo_logo"
+                android:textSize="@dimen/small_font_size"
+                android:paddingTop="4dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/myinfo_logo"
+                android:layout_below="@+id/tv_nickname"
+                android:layout_toRightOf="@+id/myinfo_logo" />
 
         </RelativeLayout>
 

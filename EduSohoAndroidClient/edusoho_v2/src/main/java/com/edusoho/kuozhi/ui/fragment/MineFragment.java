@@ -80,107 +80,6 @@ public class MineFragment extends BaseFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.me_menu_search) {
-            app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void invoke(WidgetMessage message) {
-        super.invoke(message);
-        switch (message.type.code) {
-            case REFRESH:
-                setUserStatus();
-                break;
-            case LOGINT_WITH_TOKEN:
-                setUserStatus();
-                break;
-            case LOGOUT:
-                setUserStatus();
-                break;
-        }
-    }
-
-    @Override
-    public MessageType[] getMsgTypes() {
-        String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{
-                new MessageType(REFRESH, source),
-                new MessageType(LOGOUT, source),
-                new MessageType(LOGINT_WITH_TOKEN, source)
-        };
-        return messageTypes;
-    }
-
-    public void setUserStatus() {
-        if (app.loginUser == null) {
-            //未登录状态
-            mUserLogo.setImageResource(R.drawable.myinfo_default_face);
-            tvQuestionNum.setText("0");
-            tvDiscussionNum.setText("0");
-            tvNoteNum.setText("0");
-            tvTestPaperNum.setText("0");
-            tvUserName.setVisibility(View.GONE);
-            tvSignature.setVisibility(View.GONE);
-            tvlogout.setVisibility(View.VISIBLE);
-            tvVip.setVisibility(View.GONE);
-            tvSignature.setText("");
-
-            mUserLayout.setOnClickListener(mLoginListener);
-            mUserLogo.setOnClickListener(mLoginListener);
-
-        } else {
-            //登录状态
-            tvUserName.setText(app.loginUser.nickname);
-            if (TextUtils.isEmpty(app.loginUser.signature)) {
-                tvSignature.setText("暂无个性签名");
-            } else {
-                tvSignature.setText(app.loginUser.signature);
-            }
-            returnObjectFormUserdata();
-            if (app.loginUser.vip == null) {
-                tvVip.setVisibility(View.GONE);
-            } else {
-                tvVip.setVisibility(View.VISIBLE);
-            }
-            tvUserName.setVisibility(View.VISIBLE);
-            tvSignature.setVisibility(View.VISIBLE);
-            tvlogout.setVisibility(View.GONE);
-            if (mAQuery == null) {
-                mAQuery = new AQuery(mActivity);
-            }
-            mAQuery.id(mUserLogo).image(
-                    app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
-
-            mUserLogo.setOnClickListener(mUserInfoClickListener);
-            mUserLayout.setOnClickListener(mUserInfoClickListener);
-
-        }
-    }
-
-    private View.OnClickListener mLoginListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            LoginActivity.startForResult(mActivity);
-        }
-    };
-
-    private View.OnClickListener mUserInfoClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
-            bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
-            app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-            //app.mEngine.runNormalPlugin("TestActivity", mActivity, null);
-        }
-    };
-
-    @Override
     protected void initView(View view) {
         super.initView(view);
 
@@ -303,6 +202,108 @@ public class MineFragment extends BaseFragment {
 
         setUserStatus();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.me_menu_search) {
+            app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        switch (message.type.code) {
+            case REFRESH:
+                setUserStatus();
+                break;
+            case LOGINT_WITH_TOKEN:
+                setUserStatus();
+                break;
+            case LOGOUT:
+                setUserStatus();
+                break;
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(REFRESH, source),
+                new MessageType(LOGOUT, source),
+                new MessageType(LOGINT_WITH_TOKEN, source)
+        };
+        return messageTypes;
+    }
+
+    public void setUserStatus() {
+        if (app.loginUser == null) {
+            //未登录状态
+            mUserLogo.setImageResource(R.drawable.myinfo_default_face);
+            tvQuestionNum.setText("0");
+            tvDiscussionNum.setText("0");
+            tvNoteNum.setText("0");
+            tvTestPaperNum.setText("0");
+            tvUserName.setVisibility(View.GONE);
+            tvSignature.setVisibility(View.GONE);
+            tvlogout.setVisibility(View.VISIBLE);
+            tvVip.setVisibility(View.GONE);
+            tvSignature.setText("");
+
+            mUserLayout.setOnClickListener(mLoginListener);
+            mUserLogo.setOnClickListener(mLoginListener);
+
+        } else {
+            //登录状态
+            tvUserName.setText(app.loginUser.nickname);
+            if (TextUtils.isEmpty(app.loginUser.signature)) {
+                tvSignature.setText("暂无个性签名");
+            } else {
+                tvSignature.setText(app.loginUser.signature);
+            }
+            returnObjectFormUserdata();
+            if (app.loginUser.vip == null) {
+                tvVip.setVisibility(View.GONE);
+            } else {
+                tvVip.setVisibility(View.VISIBLE);
+            }
+            tvUserName.setVisibility(View.VISIBLE);
+            tvSignature.setVisibility(View.VISIBLE);
+            tvlogout.setVisibility(View.GONE);
+            if (mAQuery == null) {
+                mAQuery = new AQuery(mActivity);
+            }
+            mAQuery.id(mUserLogo).image(
+                    app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
+
+            mUserLogo.setOnClickListener(mUserInfoClickListener);
+            mUserLayout.setOnClickListener(mUserInfoClickListener);
+
+        }
+    }
+
+    private View.OnClickListener mLoginListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            LoginActivity.startForResult(mActivity);
+        }
+    };
+
+    private View.OnClickListener mUserInfoClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+            bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
+            app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+            //app.mEngine.runNormalPlugin("TestActivity", mActivity, null);
+        }
+    };
+
 
     public void returnObjectFormUserdata() {
         RequestUrl url = app.bindUrl(Const.USER_DATA_NUMBER, true);

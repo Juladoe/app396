@@ -32,10 +32,10 @@
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
                 android:id="@+id/ci_send_pic"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/head_icon_32"
+                android:layout_height="@dimen/head_icon_32"
                 android:layout_alignParentLeft="true"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/myinfo_default_face" />
 

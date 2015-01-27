@@ -7,23 +7,25 @@
 
     <RelativeLayout
         android:background="@color/base_bg_color"
-        android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
             android:id="@+id/review_user_face"
             android:src="@drawable/myinfo_default_face"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_width="@dimen/head_icon_40"
+            android:layout_height="@dimen/head_icon_40" />
 
         <com.edusoho.kuozhi.view.ESTextView
             app:es_alpha="0.87"
             android:singleLine="true"
             android:textStyle="bold"
             android:textColor="@color/base_black_normal"
-            android:textSize="@dimen/base_small_size"
+            android:textSize="@dimen/small_font_size"
             android:id="@+id/review_user_nickname"
             android:layout_toRightOf="@id/review_user_face"
             android:text="昵称"
@@ -54,7 +56,7 @@
         <com.edusoho.kuozhi.view.ESTextView
             app:es_alpha="0.87"
             android:id="@+id/course_userinfo_message"
-            android:textSize="@dimen/base_size"
+            android:textSize="@dimen/small_font_size"
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/review_user_face"
             android:textColor="@color/base_black_normal"

@@ -21,8 +21,8 @@
 
         <com.edusoho.kuozhi.view.plugin.CircularImageView
             android:id="@+id/question_detatil_describe_user_head_image"
-            android:layout_width="@dimen/question_user_head_image_size"
-            android:layout_height="@dimen/question_user_head_image_size"
+            android:layout_width="@dimen/head_icon_32"
+            android:layout_height="@dimen/head_icon_32"
             android:layout_below="@id/question_detail_describe_title"
             android:layout_marginTop="10dp"
             android:layout_marginRight="8dp"
@@ -30,24 +30,26 @@
             android:src="@drawable/question_head_icon" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/question_detatil_describe_user_head_image"
-            android:layout_toRightOf="@id/question_detatil_describe_user_head_image"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_alignTop="@+id/question_detatil_describe_user_head_image"
+            android:layout_toRightOf="@+id/question_detatil_describe_user_head_image">
 
             <TextView
                 android:id="@+id/question_detatil_describe_uesr_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/question_small_font_size"
+                android:text="nickname"
                 android:textColor="#2ec368" />
 
             <com.edusoho.kuozhi.view.ESTextView
                 android:id="@+id/question_detatile_describe_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="4dp"
+                android:text="2012-12-12"
                 app:es_alpha="0.26"
                 android:textSize="@dimen/x_small_font_size" />
         </LinearLayout>

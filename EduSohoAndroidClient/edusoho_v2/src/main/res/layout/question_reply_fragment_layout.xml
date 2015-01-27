@@ -10,19 +10,19 @@
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/question_answer_head_image"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="@dimen/head_icon_32"
+        android:layout_height="@dimen/head_icon_32"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/question_head_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/question_answer_head_image"
-        android:layout_alignBottom="@id/question_answer_head_image"
+        android:layout_alignTop="@id/question_answer_head_image"
         android:orientation="vertical">
 
         <TextView
@@ -36,11 +36,11 @@
             android:id="@+id/question_answer_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/base_black_26"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/base_black_normal"
             android:textSize="@dimen/x_small_font_size"
-            app:es_alpha="0.26"
-            android:text="" />
+            android:text="2012-12-12"
+            app:es_alpha="0.26" />
     </LinearLayout>
 
     <com.edusoho.kuozhi.view.ESImageView
