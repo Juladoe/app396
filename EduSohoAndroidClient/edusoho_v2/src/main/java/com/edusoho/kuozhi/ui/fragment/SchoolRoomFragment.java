@@ -30,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.trinea.android.common.util.ToastUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -203,7 +204,18 @@ public class SchoolRoomFragment extends BaseFragment {
 
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
-                super.error(url, ajaxStatus);
+                try {
+                    mLoadView.setVisibility(View.GONE);
+                    ArrayList<SchoolRoomResult> schoolRoomList = new ArrayList<SchoolRoomResult>();
+                    schoolRoomList.add(new SchoolRoomResult("在学课程", null));
+                    schoolRoomList.add(new SchoolRoomResult("问答", null));
+                    schoolRoomList.add(new SchoolRoomResult("讨论", null));
+                    schoolRoomList.add(new SchoolRoomResult("笔记", null));
+                    schoolRoomList.add(new SchoolRoomResult("私信", null));
+                    mSchoolRoomListView.pushData(schoolRoomList);
+                } catch (Exception ex) {
+                    Log.d(TAG, ex.toString());
+                }
             }
         };
         mActivity.ajaxPost(url, callback);

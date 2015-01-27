@@ -50,7 +50,6 @@ public class LeaenCourseFragment extends HorizontalCourseFragment {
             @Override
             public void error(String url, AjaxStatus ajaxStatus) {
                 mLessioningList.onRefreshComplete();
-                mLoadView.setVisibility(View.GONE);
             }
         });
     }

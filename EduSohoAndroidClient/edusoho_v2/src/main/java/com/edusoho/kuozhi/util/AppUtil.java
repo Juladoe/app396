@@ -778,6 +778,9 @@ public class AppUtil {
      * @return
      */
     public static String removeImgTagFromString(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return "";
+        }
         Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
         new StringBuffer().append("1");
         while (m.find()) {
@@ -793,6 +796,9 @@ public class AppUtil {
      * @return
      */
     public static String removeHtmlSpace(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return "";
+        }
         Matcher m = Pattern.compile("\\t|\\n").matcher(content);
         while (m.find()) {
             content = content.replace(m.group(0), "");
