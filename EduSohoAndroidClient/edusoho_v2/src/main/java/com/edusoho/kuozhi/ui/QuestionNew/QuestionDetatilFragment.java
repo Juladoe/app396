@@ -62,6 +62,7 @@ public class QuestionDetatilFragment extends BaseFragment {
     private QuestionDetatilAnswerListAdapter mQuestionDetatilAnswerListAdapter;
     private View mQuestionDetailDescribe;
     private View mQuestionLoadView;
+    private TextView mDetailCourseTitle;
     private RelativeLayout mQuestionMainLayout;
     private QuestionDetailModel mQuestionDetailModel;
     private int intentThreadId;
@@ -296,7 +297,18 @@ public class QuestionDetatilFragment extends BaseFragment {
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_uesr_name)).setText(mQuestionDetailModel.user.nickname);
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatile_describe_time)).setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(fitlerImgTag(mQuestionDetailModel.content)));
-        ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_course_title)).setText(mQuestionDetailModel.courseTitle);
+
+        mDetailCourseTitle = ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_course_title));
+        mDetailCourseTitle.setText(mQuestionDetailModel.courseTitle);
+        mDetailCourseTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, intentCourseId);
+                bundle.putString(Const.ACTIONBAR_TITLE, mQuestionDetailModel.courseTitle);
+                startActivityWithBundle("CorusePaperActivity",bundle);
+            }
+        });
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum + "");
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_browse_count)).setText(mQuestionDetailModel.hitNum + "");
 
