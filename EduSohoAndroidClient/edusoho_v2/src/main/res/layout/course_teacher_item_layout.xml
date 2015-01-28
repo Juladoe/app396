@@ -18,7 +18,6 @@
             android:padding="8dp">
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
-                android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:scaleType="fitCenter"
                 android:id="@+id/teacher_face"
