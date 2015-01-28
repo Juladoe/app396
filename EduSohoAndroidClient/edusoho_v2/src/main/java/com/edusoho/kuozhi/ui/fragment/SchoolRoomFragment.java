@@ -85,10 +85,10 @@ public class SchoolRoomFragment extends BaseFragment {
         mSchoolRoomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (app.loginUser == null) {
-                    LoginActivity.start(mActivity);
-                    return;
-                }
+//                if (app.loginUser == null) {
+//                    LoginActivity.start(mActivity);
+//                    return;
+//                }
                 SchoolRoomResult schoolRoomResult = (SchoolRoomResult) parent.getItemAtPosition(position);
                 int schoolRoomType = SchoolRoomEnum.getIndex(schoolRoomResult.title);
                 showItemActivity(schoolRoomType, schoolRoomResult);

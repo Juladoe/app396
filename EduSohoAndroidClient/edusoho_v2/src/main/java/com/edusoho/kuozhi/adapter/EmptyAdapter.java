@@ -16,34 +16,30 @@ import java.util.List;
 /**
  * Created by howzhi on 14-9-16.
  */
-public class EmptyAdapter<T> extends ListBaseAdapter<T>
-{
+public class EmptyAdapter<T> extends ListBaseAdapter<T> {
     public static final int PARENT_HEIGHT = 0001;
     public static final int MATCH_PARENT = 0002;
-    private int mEmptyIcon;
-    private int mParentHeight;
+    protected int mEmptyIcon;
+    protected int mParentHeight;
+    protected boolean mIsLogin;
 
-    public EmptyAdapter(Context context, int resource)
-    {
+    public EmptyAdapter(Context context, int resource) {
         super(context, resource);
     }
 
-    public EmptyAdapter(Context context, int resource, T[] array)
-    {
+    public EmptyAdapter(Context context, int resource, T[] array) {
         super(context, resource);
         for (T text : array) {
             mList.add(text);
         }
     }
 
-    public EmptyAdapter(Context context, int resource, T[] array, int icon)
-    {
+    public EmptyAdapter(Context context, int resource, T[] array, int icon) {
         this(context, resource, array);
         this.mEmptyIcon = icon;
     }
 
-    public void setParentHeight(int parentHeight)
-    {
+    public void setParentHeight(int parentHeight) {
         this.mParentHeight = parentHeight;
     }
 
@@ -60,14 +56,14 @@ public class EmptyAdapter<T> extends ListBaseAdapter<T>
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView  = inflater.inflate(mResource, null);
+            convertView = inflater.inflate(mResource, null);
         }
 
         TextView textView = (TextView) convertView.findViewById(R.id.list_empty_text);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.list_empty_icon);
 
         imageView.setImageResource(mEmptyIcon);
-        textView.setText((String)mList.get(position));
+        textView.setText((String) mList.get(position));
 
         AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(
                 AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT);
@@ -76,5 +72,9 @@ public class EmptyAdapter<T> extends ListBaseAdapter<T>
         }
         convertView.setLayoutParams(layoutParams);
         return convertView;
+    }
+
+    public void setLoginStatus(boolean isLogin) {
+        mIsLogin = isLogin;
     }
 }

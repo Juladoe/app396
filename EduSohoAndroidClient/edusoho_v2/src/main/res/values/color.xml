@@ -14,6 +14,7 @@
     <color name="base_black_12">#1e000000</color>
     <color name="base_black_low">#f2f2f2</color>
     <color name="base_gray">#ececec</color>
+    <color name="base_btn_pressed">#DFDFDF</color>
     <color name="base_color_normal">#2ec368</color>
     <color name="base_list_background_color">#e5e5e5</color>
 
