@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Note.NoteInfo;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.kuozhi.view.ESTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -55,7 +56,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
             holder.noteImage = (ImageView) convertView.findViewById(R.id.note_image);
             holder.noteLessonTitle = (TextView) convertView.findViewById(R.id.note_lesson_title);
             holder.noteContent = (TextView) convertView.findViewById(R.id.note_content);
-            holder.noteLastUpdateTime = (TextView) convertView.findViewById(R.id.last_update_time);
+            holder.noteLastUpdateTime = (ESTextView) convertView.findViewById(R.id.last_update_time);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -105,7 +106,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
         ImageView noteImage;
         TextView noteLessonTitle;
         TextView noteContent;
-        TextView noteLastUpdateTime;
+        ESTextView noteLastUpdateTime;
     }
 
     /**
@@ -140,7 +141,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
     }
 
     //去除空行
-    private String filtlerBlank(String content){
-        return content.replaceAll("<p[^>]*>|</p>|<br />","");
+    private String filtlerBlank(String content) {
+        return content.replaceAll("<p[^>]*>|</p>|<br />", "");
     }
 }

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="@dimen/question_user_head_image_size"
-             android:layout_height="@dimen/question_user_head_image_size"
-             android:layout_marginRight="8dp">
+    android:layout_width="@dimen/head_icon_32"
+    android:layout_height="@dimen/head_icon_32"
+    android:layout_marginRight="8dp">
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/question_detail_answer_user_head_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="fitCenter"
-        android:src="@drawable/question_head_icon"
-        />
+        android:src="@drawable/question_head_icon" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,7 +27,7 @@
             android:visibility="gone"
             android:text="教师"
             android:textColor="#fff"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
     </RelativeLayout>
 
 </FrameLayout>

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.QuestionNew;
+package com.edusoho.kuozhi.ui.questionnew;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 /**
  * Created by onewoman on 2014/12/22.
  */
-public class QuestionReplyFragment extends BaseFragment{
+public class QuestionReplyFragment extends BaseFragment {
     private View mLoadLayoutView;
     private ReplyModel mReplyModel;
     private TextView mQuestionAnswerContent;
@@ -44,6 +44,7 @@ public class QuestionReplyFragment extends BaseFragment{
     private int mThreadId;
     private int mUseId;
     private String mContent;
+
     @Override
     public String getTitle() {
         return null;
@@ -58,15 +59,14 @@ public class QuestionReplyFragment extends BaseFragment{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(mUseId == mReplyModel.userId){
-            //ToDo
-            inflater.inflate(R.menu.question_reply_new_menu,menu);
+        if (mUseId == mReplyModel.userId) {
+            inflater.inflate(R.menu.question_reply_new_menu, menu);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.question_reply_edit){
+        if (item.getItemId() == R.id.question_reply_edit) {
             Bundle bundle = new Bundle();
             bundle.putInt(Const.REQUEST_CODE, Const.EDIT_REPLY);
             bundle.putString(Const.THREAD_ID, String.valueOf(mThreadId));
@@ -88,41 +88,42 @@ public class QuestionReplyFragment extends BaseFragment{
         mContent = mReplyModel.content;
         mUseId = bundle.getInt(Const.USER_ID);
 
-        mOneReplyParams.put("courseId",String.valueOf(mReplyModel.courseId));
+        mOneReplyParams.put("courseId", String.valueOf(mReplyModel.courseId));
         mOneReplyParams.put("postId", String.valueOf(mReplyModel.id));
 
         mLoadLayoutView = view.findViewById(R.id.load_layout);
-        CircularImageView circularImageView = (CircularImageView)view.findViewById(R.id.question_answer_head_image);
-        ImageLoader.getInstance().displayImage(mReplyModel.user.mediumAvatar,circularImageView);
-        ((TextView)view.findViewById(R.id.question_answer_user_name)).setText(mReplyModel.user.nickname);
-        ((TextView)view.findViewById(R.id.question_answer_time)).setText(AppUtil.getPostDays(mReplyModel.createdTime));
-        mQuestionAnswerContent = ((TextView)view.findViewById(R.id.question_answer_content));
+        CircularImageView circularImageView = (CircularImageView) view.findViewById(R.id.question_answer_head_image);
+        ImageLoader.getInstance().displayImage(mReplyModel.user.mediumAvatar, circularImageView);
+        ((TextView) view.findViewById(R.id.question_answer_user_name)).setText(mReplyModel.user.nickname);
+        ((TextView) view.findViewById(R.id.question_answer_time)).setText(AppUtil.getPostDays(mReplyModel.createdTime));
+        mQuestionAnswerContent = ((TextView) view.findViewById(R.id.question_answer_content));
         mQuestionAnswerContentImage = (ListView) view.findViewById(R.id.question_answer_image_list);
 
         getQuestionOneReplyReponseData();
     }
 
-    public void getQuestionOneReplyReponseData(){
+    public void getQuestionOneReplyReponseData() {
         RequestUrl requestUrl = app.bindUrl(Const.ONE_REPLY, true);
         requestUrl.setParams(mOneReplyParams);
 
-        mActivity.ajaxPost(requestUrl,new ResultCallback(){
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mLoadLayoutView.setVisibility(View.GONE);
-                mOneReply = mActivity.parseJsonValue(object,new TypeToken<OneReply>(){});
+                mOneReply = mActivity.parseJsonValue(object, new TypeToken<OneReply>() {
+                });
                 setQuestionOneReplyData();
             }
         });
     }
 
-    public void setQuestionOneReplyData(){
+    public void setQuestionOneReplyData() {
         mQuestionAnswerContent.setText(Html.fromHtml(fitlerImgTag(mOneReply.content)));
         mContent = mOneReply.content;
         mContent = removeImgPath(mContent).toString();
 
-        QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext,R.layout.question_reply_inflate);
+        QuestionReplyAdapter questionReplyAdapter = new QuestionReplyAdapter(mContext, R.layout.question_reply_inflate);
         mQuestionAnswerContentImage.setAdapter(questionReplyAdapter);
         questionReplyAdapter.addItems(convertUrlStringList(mOneReply.content));
     }
@@ -137,7 +138,7 @@ public class QuestionReplyFragment extends BaseFragment{
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
-            if(strUrl.indexOf("http:") == -1) {
+            if (strUrl.indexOf("http:") == -1) {
                 strUrl = app.defaultSchool.host + strUrl;
             }
             urlLits.add(strUrl);
@@ -145,13 +146,13 @@ public class QuestionReplyFragment extends BaseFragment{
         return urlLits;
     }
 
-    public StringBuffer removeImgPath(String content){
+    public StringBuffer removeImgPath(String content) {
         StringBuffer result = new StringBuffer();
         Matcher m = Pattern.compile("(img src=\".*?\")").matcher(content);
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
-            if(strUrl.indexOf("http:") == -1) {
+            if (strUrl.indexOf("http:") == -1) {
                 strUrl = "img src=\"" + app.defaultSchool.host + strUrl;
                 m.appendReplacement(result, strUrl);
             }
@@ -162,7 +163,7 @@ public class QuestionReplyFragment extends BaseFragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == Const.EDIT_REPLY){
+        if (requestCode == Const.EDIT_REPLY) {
             getQuestionOneReplyReponseData();
         }
     }

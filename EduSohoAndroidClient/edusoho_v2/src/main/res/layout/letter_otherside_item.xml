@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
 
         <com.edusoho.kuozhi.view.ESTextView
-            app:es_alpha="0.54"
+            app:es_alpha="0.26"
             android:id="@+id/tv_send_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,8 +17,8 @@
             android:text="9-4 18:45"
             android:background="@drawable/letter_time_bg"
             android:layout_marginTop="8dp"
-            android:textColor="#000000"
-            android:textSize="12sp"
+            android:textColor="@color/base_black_normal"
+            android:textSize="@dimen/x_small_font_size"
             android:visibility="visible" />
 
         <RelativeLayout
@@ -32,10 +32,10 @@
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
                 android:id="@+id/ci_send_pic"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/head_icon_32"
+                android:layout_height="@dimen/head_icon_32"
                 android:layout_alignParentLeft="true"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/myinfo_default_face" />
 

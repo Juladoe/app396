@@ -406,6 +406,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         }
 
         if (!app.getNetIsConnect()) {
+            longToast("无网络,请检查网络和手机设置!");
             rcl.error(url, status);
             return true;
         }

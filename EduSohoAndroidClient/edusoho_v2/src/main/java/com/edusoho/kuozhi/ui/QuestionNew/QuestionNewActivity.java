@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.QuestionNew;
+package com.edusoho.kuozhi.ui.questionnew;
 
 import android.content.Intent;
 import android.os.Bundle;
