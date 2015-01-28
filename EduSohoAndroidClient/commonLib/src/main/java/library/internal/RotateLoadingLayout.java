@@ -110,6 +110,7 @@ public class RotateLoadingLayout extends LoadingLayout {
 
     @Override
     protected void refreshSucceedImp() {
+        mHeaderImage.clearAnimation();
     }
 
     @Override
