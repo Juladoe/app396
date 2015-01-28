@@ -109,7 +109,12 @@ public class FlipLoadingLayout extends LoadingLayout {
 		mHeaderImage.startAnimation(mRotateAnimation);
 	}
 
-	@Override
+    @Override
+    protected void refreshSucceedImp() {
+
+    }
+
+    @Override
 	protected void resetImpl() {
 		mHeaderImage.clearAnimation();
 		mHeaderProgress.setVisibility(View.GONE);
@@ -118,7 +123,7 @@ public class FlipLoadingLayout extends LoadingLayout {
 
 	@Override
 	protected int getDefaultDrawableResId() {
-		return R.drawable.default_ptr_flip;
+		return R.drawable.refresh_loading;
 	}
 
 	private float getDrawableRotationAngle() {

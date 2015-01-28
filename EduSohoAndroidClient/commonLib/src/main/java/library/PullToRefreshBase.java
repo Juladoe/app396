@@ -21,7 +21,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -79,7 +81,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     private boolean mIsBeingDragged = false;
     private State mState = State.RESET;
     private Mode mMode = Mode.getDefault();
-    private Mode mOriginalMode = Mode.getDefault();;
+    private Mode mOriginalMode = Mode.getDefault();
 
     private Mode mCurrentMode;
     T mRefreshableView;
@@ -90,6 +92,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     private boolean mFilterTouchEvents = true;
     private boolean mOverScrollEnabled = true;
     private boolean mLayoutVisibilityChangesEnabled = true;
+    private boolean mFlag = false;
 
     private Interpolator mScrollAnimationInterpolator;
     private AnimationStyle mLoadingAnimationStyle = AnimationStyle.getDefault();
@@ -404,6 +407,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * {@link #getLoadingLayoutProxy()}.
      */
     public void setLoadingDrawable(Drawable drawable) {
+        Log.i(null,"loading" + drawable);
         getLoadingLayoutProxy().setLoadingDrawable(drawable);
     }
 
@@ -796,7 +800,26 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         mIsBeingDragged = false;
         mLayoutVisibilityChangesEnabled = true;
 
+        if(mFlag && mCurrentMode == Mode.PULL_FROM_START) {
+            mHeaderLayout.refreshSucceed();
+            mHeaderLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_succeed));
+
+            Handler handler = new Handler();
+            handler.postAtTime(new Runnable() {
+                @Override
+                public void run() {
+                    mHeaderLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_loading));
+                    mFlag = false;
+                    Log.i(null, "PullToRefreshBase complete");
+                    mHeaderLayout.reset();
+                    mFooterLayout.reset();
+                    smoothScrollTo(0);
+                }
+            }, SystemClock.uptimeMillis() + 500);
+            return ;
+        }
         // Always reset both layouts, just in case...
+
         mHeaderLayout.reset();
         mFooterLayout.reset();
 
@@ -1072,6 +1095,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         } else if (null != mOnRefreshListener2) {
             if (mCurrentMode == Mode.PULL_FROM_START) {
                 mOnRefreshListener2.onPullDownToRefresh(this);
+                mFlag = true;
             } else if (mCurrentMode == Mode.PULL_FROM_END) {
                 mOnRefreshListener2.onPullUpToRefresh(this);
             }
@@ -1200,7 +1224,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
         setHeaderScroll(newScrollValue);
 
-        if (newScrollValue != 0 && !isRefreshing()) {
+        if (newScrollValue != 0 && !isRefreshing() && !mFlag) {
             float scale = Math.abs(newScrollValue) / (float) itemDimension;
             switch (mCurrentMode) {
                 case PULL_FROM_END:
@@ -1337,6 +1361,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
                 case FLIP:
                     return new FlipLoadingLayout(context, mode, scrollDirection, attrs);
             }
+
         }
     }
 

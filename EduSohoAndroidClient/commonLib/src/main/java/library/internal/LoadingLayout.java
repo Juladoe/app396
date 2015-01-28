@@ -64,6 +64,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	private CharSequence mPullLabel;
 	private CharSequence mRefreshingLabel;
 	private CharSequence mReleaseLabel;
+    private CharSequence mRefreshSucceedLabel;
 
 	public LoadingLayout(Context context, final PullToRefreshBase.Mode mode, final PullToRefreshBase.Orientation scrollDirection, TypedArray attrs) {
 		super(context);
@@ -106,6 +107,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 				mPullLabel = context.getString(R.string.pull_to_refresh_pull_label);
 				mRefreshingLabel = context.getString(R.string.pull_to_refresh_refreshing_label);
 				mReleaseLabel = context.getString(R.string.pull_to_refresh_release_label);
+                mRefreshSucceedLabel =context.getString(R.string.pull_to_refresh_succeed_label);
 				break;
 		}
 
@@ -233,6 +235,14 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		pullToRefreshImpl();
 	}
 
+    public final void refreshSucceed(){
+        if (null != mHeaderText) {
+            mHeaderText.setText(mRefreshSucceedLabel);
+        }
+        // Now call the callback
+        refreshSucceedImp();
+    }
+
 	public final void refreshing() {
 		if (null != mHeaderText) {
 			mHeaderText.setText(mRefreshingLabel);
@@ -342,6 +352,8 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	protected abstract void refreshingImpl();
 
 	protected abstract void releaseToRefreshImpl();
+
+    protected abstract void refreshSucceedImp();
 
 	protected abstract void resetImpl();
 

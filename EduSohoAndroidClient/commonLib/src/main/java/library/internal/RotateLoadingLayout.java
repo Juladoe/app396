@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView.ScaleType;
@@ -72,13 +73,16 @@ public class RotateLoadingLayout extends LoadingLayout {
 			angle = Math.max(0f, Math.min(180f, scaleOfLayout * 360f - 180f));
 		}
 
-		mHeaderImageMatrix.setRotate(angle, mRotationPivotX, mRotationPivotY);
+        mHeaderImageMatrix.setRotate(angle, mRotationPivotX, mRotationPivotY);
 		mHeaderImage.setImageMatrix(mHeaderImageMatrix);
 	}
 
 	@Override
 	protected void refreshingImpl() {
 		mHeaderImage.startAnimation(mRotateAnimation);
+        resetImageRotation();
+        mHeaderImageMatrix.setRotate(0, mRotationPivotX, mRotationPivotY);
+        mHeaderImage.setImageMatrix(mHeaderImageMatrix);
 	}
 
 	@Override
@@ -104,9 +108,13 @@ public class RotateLoadingLayout extends LoadingLayout {
 		// NO-OP
 	}
 
-	@Override
+    @Override
+    protected void refreshSucceedImp() {
+    }
+
+    @Override
 	protected int getDefaultDrawableResId() {
-		return R.drawable.default_ptr_rotate;
+		return R.drawable.refresh_loading;
 	}
 
 }
