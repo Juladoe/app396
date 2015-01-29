@@ -76,7 +76,7 @@ public class MessageFragment extends BaseFragment {
         mLoadLayout = view.findViewById(R.id.load_layout);
         mMessageList = (RefreshListWidget) view.findViewById(R.id.message_list);
         mMessageList.setMode(PullToRefreshBase.Mode.BOTH);
-        mMessageList.getRefreshableView().setDividerHeight(20);
+        mMessageList.getRefreshableView().setDividerHeight(1);
         mMessageList.setAdapter(new MessageListAdapter(mContext, R.layout.message_list_item));
         mMessageList.setEmptyText(new String[] { "暂无通知" }, R.drawable.icon_notify);
 
