@@ -12,6 +12,8 @@
         android:background="@android:color/white"
         android:layout_marginBottom="1px"
         android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -20,12 +22,13 @@
             android:gravity="center">
 
             <com.edusoho.kuozhi.view.plugin.CircularImageView
-                android:layout_margin="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:id="@+id/myinfo_logo"
                 android:layout_centerVertical="true"
                 android:src="@drawable/myinfo_default_face"
-                android:layout_width="@dimen/head_icon"
-                android:layout_height="@dimen/head_icon" />
+                android:layout_width="@dimen/head_icon_40"
+                android:layout_height="@dimen/head_icon_40" />
         </LinearLayout>
 
 
@@ -39,7 +42,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:gravity="bottom"
-                android:paddingBottom="5dp"
                 android:layout_weight="1">
 
                 <TextView
@@ -56,7 +58,8 @@
                     android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/icon_vip"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="@dimen/medium_font_size"
                     android:text="@string/font_vip"
                     android:textColor="@color/accent_color" />
 
@@ -74,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
-                android:paddingTop="5dp"
+                android:paddingTop="4dp"
                 android:layout_weight="1">
 
                 <TextView
