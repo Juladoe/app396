@@ -41,13 +41,14 @@
 
         <com.edusoho.kuozhi.view.ESTextView
             app:es_alpha="0.26"
+            android:maxLines="2"
             android:textColor="@color/base_black_normal"
             android:textSize="@dimen/x_small_font_size"
-            android:layout_alignBottom="@id/review_user_face"
+            android:layout_below="@id/review_user_nickname"
+            android:layout_marginTop="4dp"
             android:id="@+id/review_user_time"
             android:layout_toRightOf="@id/review_user_face"
-            android:layout_marginTop="4dp"
-            android:text="2013-2-1"
+            android:text="评论时间"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -58,7 +59,7 @@
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/review_user_face"
             android:textColor="@color/base_black_normal"
-            android:layout_below="@id/review_user_face"
+            android:layout_below="@id/review_user_time"
             android:text="评论内容"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
