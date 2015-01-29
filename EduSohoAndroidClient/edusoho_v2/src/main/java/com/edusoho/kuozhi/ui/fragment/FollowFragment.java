@@ -31,6 +31,7 @@ public class FollowFragment extends BaseFragment {
     public static final String FOLLOW_USER = "follow_user";
     public static final String FOLLOWING = "following";
     public static final String FOLLOWER = "follower";
+    public static final String OTHER = "other";
     public static final String FOLLOW_TYPE = "follow_type";
     public FollowAdapter<User> mFollowAdapter;
 
