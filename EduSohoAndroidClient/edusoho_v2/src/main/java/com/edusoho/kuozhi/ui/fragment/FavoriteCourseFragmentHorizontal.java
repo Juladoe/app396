@@ -100,7 +100,7 @@ public class FavoriteCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public String[] getLogoutText() {
-        return new String[]{"尚未登录", ""};
+        return new String[]{"去收藏一些课程吧~", ""};
     }
 
     @Override

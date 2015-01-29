@@ -15,30 +15,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
+import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Notify;
+import com.edusoho.kuozhi.model.Question.QuestionResult;
+import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
-import com.edusoho.kuozhi.ui.course.CourseDetailsActivity;
 import com.edusoho.kuozhi.ui.fragment.AboutFragment;
+import com.edusoho.kuozhi.ui.fragment.FollowFragment;
+import com.edusoho.kuozhi.ui.fragment.ProfileFragment;
 import com.edusoho.kuozhi.ui.fragment.TeacherInfoFragment;
 import com.edusoho.kuozhi.ui.fragment.testpaper.TestpaperResultFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.ESTextView;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 /**
  * Created by howzhi on 14-9-16.
  */
 public class MessageListAdapter extends ListBaseAdapter<Notify> {
+    private ActionBarBaseActivity mActivity;
+
     public MessageListAdapter(
-            Context context, int resource) {
+            Context context, ActionBarBaseActivity activity, int resource) {
         super(context, resource);
+        mActivity = activity;
     }
 
     @Override
@@ -197,15 +210,34 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
         EdusohoApp.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mContext, bundle);
     }
 
-    private void showUser(final int id) {
-        EdusohoApp.app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
+    private void showUser(final int userId) {
+        RequestUrl url = mActivity.app.bindUrl(Const.USERINFO, true);
+        url.setParams(new String[]{
+                "userId", userId + ""
+        });
+
+        mActivity.ajaxPost(url, new ResultCallback() {
             @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TeacherInfoFragment");
-                startIntent.putExtra(Const.ACTIONBAR_TITLE, "用户信息");
-                startIntent.putExtra(TeacherInfoFragment.TEACHER_ID, new int[]{id});
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                final User user = mActivity.gson.fromJson(object, new TypeToken<User>() {
+                }.getType());
+                if (user == null) {
+                    ToastUtils.show(mContext, "获取不到该用户信息");
+                    return;
+                }
+                EdusohoApp.app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, user.nickname);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+                        startIntent.putExtra(ProfileFragment.FOLLOW_USER, user);
+                        startIntent.putExtra(FollowFragment.FOLLOW_TYPE, FollowFragment.OTHER);
+                    }
+                });
             }
         });
+
+
     }
 
     public static Pattern TYPE_PAT = Pattern.compile(
