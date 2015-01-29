@@ -20,6 +20,8 @@ import com.edusoho.kuozhi.core.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
 
+import java.util.List;
+
 import extensions.PagerSlidingTabStrip;
 
 /**
@@ -171,7 +173,9 @@ public class LearningRoomActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Fragment fragment = getSupportFragmentManager().getFragments().get(1);
-        fragment.onActivityResult(requestCode, resultCode, data);
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment subFragment : fragments) {
+            subFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

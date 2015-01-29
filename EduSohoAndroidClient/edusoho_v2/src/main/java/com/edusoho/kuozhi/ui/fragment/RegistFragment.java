@@ -33,6 +33,7 @@ public class RegistFragment extends BaseFragment {
     private EditText mPass2Edt;
     private ButtonWidget mRegistBtn;
     private View mRegistInfoBtn;
+    public static final int OK = 001;
 
     @Override
     public String getTitle() {
@@ -139,6 +140,7 @@ public class RegistFragment extends BaseFragment {
                 }
 
                 app.saveToken(tokenResult);
+                mActivity.setResult(RegistFragment.OK);
                 mActivity.finish();
                 app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
                 app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);

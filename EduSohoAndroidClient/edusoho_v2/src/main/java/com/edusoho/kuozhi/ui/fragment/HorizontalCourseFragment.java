@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -8,6 +9,7 @@ import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.LearnCourse;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 
@@ -33,7 +35,8 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
         super.initView(view);
         mLessioningList = (RefreshListWidget) view.findViewById(R.id.lession_listview);
         mLessioningList.setMode(PullToRefreshBase.Mode.BOTH);
-        mLessioningList.setEmptyText(new String[]{getEmptyText()}, R.drawable.course_details_menu_courseinfo);
+        mLessioningList.setEmptyText(mActivity, R.layout.empty_page_layout, getLogoutText(),
+                getLoginText(), R.drawable.empty_logout, R.drawable.empty_no_data);
         mLessionListAdapter = getAdapter();
         mLessioningList.setAdapter(mLessionListAdapter);
         mLessioningList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -63,6 +66,14 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, requestCode, data);
+        if (resultCode == LoginActivity.OK || resultCode == RegistFragment.OK) {
+            getCourseResponseDatas(0);
+        }
+    }
+
+    @Override
     public String getTitle() {
         return null;
     }
@@ -72,4 +83,8 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
     public abstract BaseAdapter getAdapter();
 
     public abstract String getEmptyText();
+
+    public abstract String[] getLogoutText();
+
+    public abstract String[] getLoginText();
 }

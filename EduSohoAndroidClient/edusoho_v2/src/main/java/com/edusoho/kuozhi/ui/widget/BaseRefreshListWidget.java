@@ -35,8 +35,9 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
     protected int mMode;
     private ListBaseAdapter mAdapter;
     private ListBaseAdapter mLoadAdapter;
-    private EmptyAdapter mEmptyAdapter;
-    private Context mContext;
+    protected EmptyAdapter mEmptyAdapter;
+    protected Context mContext;
+    protected boolean mIsLogin;
 
     private int mEmptyParentHeight = EmptyAdapter.PARENT_HEIGHT;
     private int mEmptyIcon = R.drawable.course_empty_icon;
@@ -176,6 +177,10 @@ public class BaseRefreshListWidget<T extends ListView> extends PullToRefreshList
             return;
         }
         mAdapter = (ListBaseAdapter) adapter;
+    }
+
+    public void setLoginStatus(boolean isLogin) {
+
     }
 
 }

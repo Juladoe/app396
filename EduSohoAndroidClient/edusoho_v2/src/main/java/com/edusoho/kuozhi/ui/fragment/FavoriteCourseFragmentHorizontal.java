@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,9 +12,12 @@ import com.edusoho.kuozhi.adapter.LearnedCourseAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.LearnCourseResult;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+
+import library.PullToRefreshBase;
 
 /**
  * Created by JesseHuang on 15/1/16.
@@ -37,6 +41,17 @@ public class FavoriteCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public void getCourseResponseDatas(final int start) {
+        if (app.loginUser == null) {
+            mLessioningList.setLoginStatus(false);
+            mLessioningList.pushData(null);
+            mLoadView.setVisibility(View.GONE);
+            mLessioningList.setMode(PullToRefreshBase.Mode.DISABLED);
+            return;
+        } else {
+            mLessioningList.setMode(PullToRefreshBase.Mode.BOTH);
+            mLessioningList.setLoginStatus(true);
+        }
+
         RequestUrl url = app.bindUrl(Const.FAVORITES, true);
         url.setParams(new String[]{
                 "start", start + "",
@@ -81,5 +96,22 @@ public class FavoriteCourseFragmentHorizontal extends HorizontalCourseFragment {
     @Override
     public String getEmptyText() {
         return "没有收藏课程";
+    }
+
+    @Override
+    public String[] getLogoutText() {
+        return new String[]{"尚未登录", ""};
+    }
+
+    @Override
+    public String[] getLoginText() {
+        return new String[]{"收藏一些课程，再来这里看看吧~", ""};
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == LoginActivity.OK || resultCode == RegistFragment.OK) {
+            getCourseResponseDatas(0);
+        }
     }
 }

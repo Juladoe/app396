@@ -14,6 +14,9 @@ import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
+import com.edusoho.kuozhi.ui.fragment.LoginFragment;
+import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -30,8 +33,8 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
     private QuestionListAdapter mQuestionListAdapter;
     private View mLoadView;
     private String mTitle;
-    private String mquestionType;
-    private String mEmptyText;
+    private String mQuestionType;
+    private String mSecondHeaderText;
     private int mEmptyIcon;
     private String mUrl;
 
@@ -50,17 +53,24 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
     public void initData() {
         Intent intent = getIntent();
         mTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
-        mquestionType = intent.getStringExtra(Const.QUESTION_TYPE);
-        mEmptyText = intent.getStringExtra("empty_text");
-        mEmptyIcon = intent.getIntExtra("empty_icon", R.drawable.icon_question);
+        mQuestionType = intent.getStringExtra(Const.QUESTION_TYPE);
+        if (mQuestionType.equals("question")) {
+            mEmptyIcon = R.drawable.empty_no_question;
+            mSecondHeaderText = "所学课程内暂无问答记录";
+        } else {
+            mEmptyIcon = R.drawable.empty_no_discussion;
+            mSecondHeaderText = "所学课程内暂无讨论记录";
+        }
+        //mSecondHeaderText = intent.getStringExtra("empty_text");
+        //mEmptyIcon = intent.getIntExtra("empty_icon", R.drawable.icon_question);
         mUrl = intent.getStringExtra(Const.QUESTION_URL);
     }
 
     private void initView() {
         mLoadView = this.findViewById(R.id.load_layout);
         mQuestionList = (RefreshListWidget) this.findViewById(R.id.question_list);
-        mQuestionList.setEmptyText(new String[]{mEmptyText}, mEmptyIcon);
-        mQuestionList.setMode(PullToRefreshBase.Mode.BOTH);
+        mQuestionList.setEmptyText(mActivity, R.layout.empty_page_layout, new String[]{"去课程中发起一些问题吧", ""},
+                new String[]{"去课程中发起一些问题吧", mSecondHeaderText}, R.drawable.empty_logout, mEmptyIcon);
         mQuestionListAdapter = new QuestionListAdapter(this, R.layout.question_list_item_inflate);
         mQuestionList.setAdapter(mQuestionListAdapter);
         mQuestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,7 +81,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
                 bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
                 bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
                 bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
-                bundle.putString("empty_text", mEmptyText);
+                bundle.putString("empty_text", mSecondHeaderText);
                 bundle.putInt("empty_icon", mEmptyIcon);
                 bundle.putString(Const.QUESTION_TITLE, questionDetailModel.title);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
@@ -102,11 +112,21 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
         if (TextUtils.isEmpty(mUrl)) {
             return;
         }
+        if (app.loginUser == null) {
+            mQuestionList.setLoginStatus(false);
+            mLoadView.setVisibility(View.GONE);
+            mQuestionList.pushData(null);
+            mQuestionList.setMode(PullToRefreshBase.Mode.DISABLED);
+            return;
+        } else {
+            mQuestionList.setMode(PullToRefreshBase.Mode.BOTH);
+            mQuestionList.setLoginStatus(true);
+        }
         RequestUrl requestUrl = app.bindUrl(mUrl, true);
         requestUrl.setParams(new String[]{
                 "strat", String.valueOf(start)
                 , "limit", String.valueOf(Const.LIMIT)
-                , "type", mquestionType
+                , "type", mQuestionType
         });
         ajaxPost(requestUrl, new ResultCallback() {
             @Override
@@ -123,4 +143,10 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == LoginActivity.OK || resultCode == RegistFragment.OK) {
+            getQuestionListReponseDatas(0);
+        }
+    }
 }

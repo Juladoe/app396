@@ -11,9 +11,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LearnedCourseAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.LearnCourseResult;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
+
+import library.PullToRefreshBase;
 
 /**
  * Created by JesseHuang on 15/1/7.
@@ -33,6 +36,16 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public void getCourseResponseDatas(final int start) {
+        if (app.loginUser == null) {
+            mLessioningList.setLoginStatus(false);
+            mLessioningList.pushData(null);
+            mLoadView.setVisibility(View.GONE);
+            mLessioningList.setMode(PullToRefreshBase.Mode.DISABLED);
+            return;
+        } else {
+            mLessioningList.setMode(PullToRefreshBase.Mode.BOTH);
+            mLessioningList.setLoginStatus(true);
+        }
         RequestUrl url = app.bindUrl(Const.LEARNED, true);
         url.setParams(new String[]{
                 "start", start + "",
@@ -64,6 +77,16 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
         return "没有已学课程";
     }
 
+    @Override
+    public String[] getLogoutText() {
+        return new String[]{"加入一些课程，再来这里看看吧~", ""};
+    }
+
+    @Override
+    public String[] getLoginText() {
+        return new String[]{"革命尚未成功，同志仍需努力", "还未有在学的课程"};
+    }
+
     private void parseResponse(String object, int start) {
         LearnCourseResult courseResult = mActivity.gson.fromJson(
                 object, new TypeToken<LearnCourseResult>() {
@@ -80,8 +103,7 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LEARNCOURSE) {
+        if (requestCode == LEARNCOURSE || resultCode == LoginActivity.OK || resultCode == RegistFragment.OK) {
             getCourseResponseDatas(0);
         }
     }

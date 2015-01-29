@@ -50,6 +50,9 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(FRAGMENT, "onActivityResult");
+        if (getSupportFragmentManager().getFragments().size() > 0) {
+            getSupportFragmentManager().getFragments().get(0).onActivityResult(requestCode, resultCode, data);
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
