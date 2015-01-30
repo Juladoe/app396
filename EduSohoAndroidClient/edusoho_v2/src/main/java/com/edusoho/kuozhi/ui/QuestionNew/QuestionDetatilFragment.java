@@ -200,6 +200,7 @@ public class QuestionDetatilFragment extends BaseFragment {
                 startActivityWithBundleAndResult("QuestionReplyActivity", Const.REPLY, bundle);
             }
         });
+        UpdateHitThread();
         mQuestionMainLayout = (RelativeLayout) view.findViewById(R.id.question_main_layout);
         //问题描述
         mQuestionDetailDescribe = mActivity.getLayoutInflater().inflate(R.layout.question_detatil_describe_inflate, null);
@@ -243,6 +244,7 @@ public class QuestionDetatilFragment extends BaseFragment {
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
+                UpdateHitThread();
                 getQuestionReplyListReponseData(0);
                 getQuestionDetatilDescribeReponseData();
             }
@@ -381,5 +383,12 @@ public class QuestionDetatilFragment extends BaseFragment {
                 getQuestionReplyListReponseData(0);
                 break;
         }
+    }
+
+    public void UpdateHitThread(){
+        RequestUrl url = app.bindUrl(Const.HitThread, true);
+        url.setParams(new String[]{"courseId", String.valueOf(intentCourseId),
+            "threadId", String.valueOf(intentThreadId)});
+        mActivity.ajaxPost(url, new ResultCallback());
     }
 }

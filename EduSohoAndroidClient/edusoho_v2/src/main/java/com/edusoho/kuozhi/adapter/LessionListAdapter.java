@@ -48,8 +48,13 @@ public class LessionListAdapter extends ListBaseAdapter<LearnCourse>{
         if(learnCourse.lastLessonTitle != null) {
             String lastLessonTitle = String.format("学习到课时%d:%s",learnCourse.memberLearnedNum,learnCourse.lastLessonTitle);
             viewHolder.tvItemLasslessionTitle.setText(lastLessonTitle);
+        }else{
+            viewHolder.tvItemLasslessionTitle.setText("没有开始学习课时");
         }
 
+        if(0 == learnCourse.lessonNum){
+            viewHolder.tvItemLasslessionTitle.setText("暂无课时");
+        }
         String progress = Math.round((learnCourse.memberLearnedNum/ (learnCourse.lessonNum * 1.0)) * 100) + "%";
         viewHolder.tvItemProgress.setText(progress);
         viewHolder.itemProgress.setMax(learnCourse.lessonNum);

@@ -354,4 +354,8 @@ public class Const {
      */
     public static final String ONE_REPLY = "Course/getOneThreadPost";
 
+    /**
+     * 更新问答浏览次数
+     */
+    public static final String HitThread = "Course/hitThread";
 }
