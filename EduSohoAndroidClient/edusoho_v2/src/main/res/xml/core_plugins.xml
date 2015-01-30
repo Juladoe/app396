@@ -137,4 +137,6 @@
     <plugin name="FavoriteCourseFragmentHorizontal" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FavoriteCourseFragmentHorizontal"></plugin>
     <plugin name="FollowFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FollowFragment"></plugin>
 
+    <!--直播课程-->
+    <plugin name="liveingCourseActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.liveingCourseActivity"></plugin>
 </plugins>
