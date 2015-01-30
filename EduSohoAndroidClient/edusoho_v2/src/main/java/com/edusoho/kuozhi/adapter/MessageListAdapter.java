@@ -91,7 +91,8 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
         String notifyTime = notifyStrs[notifyStrs.length - 1];
 
         tvTime.setText(notifyTime);
-        textView.setText(coverSpanned(removeTime(notify.message)));
+        SpannableStringBuilder end = coverSpanned(removeTime(notify.message));
+        textView.setText(end.delete(end.length()-4,end.length()));
         textView.setClickable(true);
 
         textView.setMovementMethod(LinkMovementMethod.getInstance());
