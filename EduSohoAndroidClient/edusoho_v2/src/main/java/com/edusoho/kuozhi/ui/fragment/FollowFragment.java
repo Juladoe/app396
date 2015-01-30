@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,6 +10,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ErrorAdapter;
 import com.edusoho.kuozhi.adapter.FollowAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
@@ -33,6 +35,7 @@ public class FollowFragment extends BaseFragment {
     public static final String FOLLOWER = "follower";
     public static final String OTHER = "other";
     public static final String FOLLOW_TYPE = "follow_type";
+    public static final int FOLLOW_REFRESH = 0x01;
     public FollowAdapter<User> mFollowAdapter;
 
     /**
@@ -78,13 +81,21 @@ public class FollowFragment extends BaseFragment {
         mFollowList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User user = (User) parent.getAdapter().getItem(position);
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
-                bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
-                bundle.putSerializable(ProfileFragment.FOLLOW_USER, user);
-                bundle.putString(FollowFragment.FOLLOW_TYPE, mType);
-                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                final User user = (User) parent.getAdapter().getItem(position);
+//                final Bundle bundle = new Bundle();
+//                bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
+//                bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+//                bundle.putSerializable(ProfileFragment.FOLLOW_USER, user);
+//                bundle.putString(FollowFragment.FOLLOW_TYPE, mType);
+                app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, FOLLOW_REFRESH, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, user.nickname);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
+                        startIntent.putExtra(ProfileFragment.FOLLOW_USER, user);
+                        startIntent.putExtra(FollowFragment.FOLLOW_TYPE, mType);
+                    }
+                });
             }
         });
         loadFollows(0, false);
@@ -142,6 +153,11 @@ public class FollowFragment extends BaseFragment {
             }
         });
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        loadFollows(0, false);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.model.UserRole;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.FollowFragment;
+import com.edusoho.kuozhi.ui.fragment.ProfileFragment;
 import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -136,12 +137,15 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 @Override
                 public void onClick(View v) {
                     if (!mUser.following.equals("0")) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.ACTIONBAR_TITLE, "关注");
-                        bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
-                        bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWING);
-                        bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
-                        mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        mActivity.app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, ProfileFragment.PROFILEFRAGMENT_REFRESH, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, "关注");
+                                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "FollowFragment");
+                                startIntent.putExtra(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWING);
+                                startIntent.putExtra(FollowFragment.FOLLOW_USER, mUser);
+                            }
+                        });
                     }
                 }
             });
@@ -149,12 +153,15 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 @Override
                 public void onClick(View v) {
                     if (!mUser.follower.equals("0")) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.ACTIONBAR_TITLE, "粉丝");
-                        bundle.putString(FragmentPageActivity.FRAGMENT, "FollowFragment");
-                        bundle.putString(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWER);
-                        bundle.putSerializable(FollowFragment.FOLLOW_USER, mUser);
-                        mActivity.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        mActivity.app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, ProfileFragment.PROFILEFRAGMENT_REFRESH, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, "粉丝");
+                                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "FollowFragment");
+                                startIntent.putExtra(FollowFragment.FOLLOW_TYPE, FollowFragment.FOLLOWER);
+                                startIntent.putExtra(FollowFragment.FOLLOW_USER, mUser);
+                            }
+                        });
                     }
                 }
             });

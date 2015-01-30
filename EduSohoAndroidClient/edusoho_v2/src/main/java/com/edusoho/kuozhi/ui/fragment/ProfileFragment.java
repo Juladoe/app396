@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ import library.PullToRefreshBase;
  */
 public class ProfileFragment extends BaseFragment {
     public static final String FOLLOW_USER = "follow_user";
+    public static final int PROFILEFRAGMENT_REFRESH = 0x001;
     private static final int LEARNCOURSE = 0;
     public ProfileAdapter profileAdapter;
 
@@ -165,6 +167,11 @@ public class ProfileFragment extends BaseFragment {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mInfoList.setRefreshing();
     }
 
     @Override
