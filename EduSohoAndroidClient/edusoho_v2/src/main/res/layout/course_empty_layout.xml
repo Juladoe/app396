@@ -15,8 +15,8 @@
         android:layout_height="100dp" />
 
     <com.edusoho.kuozhi.view.ESTextView
-        app:es_alpha="0.54"
-        android:layout_marginTop="18dp"
+        app:es_alpha="0.26"
+        android:layout_marginTop="16dp"
         android:textSize="@dimen/base_size"
         android:layout_centerVertical="true"
         android:id="@+id/list_empty_text"

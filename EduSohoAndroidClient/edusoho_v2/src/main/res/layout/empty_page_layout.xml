@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_login"
-                android:text="未登录"
+                android:text="登录"
                 android:textSize="@dimen/medium_font_size"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"

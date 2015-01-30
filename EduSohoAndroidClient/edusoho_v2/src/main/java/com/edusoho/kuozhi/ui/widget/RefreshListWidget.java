@@ -62,6 +62,15 @@ public class RefreshListWidget extends BaseRefreshListWidget<ListView> {
         });
     }
 
+    /**
+     * 空数据显示
+     * @param activity
+     * @param layoutId
+     * @param logoutText
+     * @param loginText
+     * @param logoutIcon
+     * @param noDataIcon
+     */
     public void setEmptyText(ActionBarBaseActivity activity, int layoutId, String[] logoutText, String[] loginText, int logoutIcon, int noDataIcon) {
         mActivity = activity;
         mRecourseId = layoutId;

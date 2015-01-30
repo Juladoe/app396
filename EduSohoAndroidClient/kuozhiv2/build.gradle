@@ -45,6 +45,5 @@ android {
 
 dependencies {
     compile project(':edusoho_v2')
-    compile files('libs/bugly_1.1.2_release.jar')
-    compile files('libs/Bughd_android_sdk_v1.1.2.jar')
+    compile files('libs/bugly.jar')
 }

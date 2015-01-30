@@ -70,7 +70,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
         mLoadView = this.findViewById(R.id.load_layout);
         mQuestionList = (RefreshListWidget) this.findViewById(R.id.question_list);
         mQuestionList.setEmptyText(mActivity, R.layout.empty_page_layout, new String[]{"去课程中发起一些问题吧", ""},
-                new String[]{"去课程中发起一些问题吧", mSecondHeaderText}, R.drawable.empty_logout, mEmptyIcon);
+                new String[]{"去课程中发起一些讨论吧", mSecondHeaderText}, R.drawable.empty_logout, mEmptyIcon);
         mQuestionListAdapter = new QuestionListAdapter(this, R.layout.question_list_item_inflate);
         mQuestionList.setAdapter(mQuestionListAdapter);
         mQuestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,7 +82,7 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
                 bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
                 bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
                 bundle.putString("empty_text", mSecondHeaderText);
-                bundle.putInt("empty_icon", mEmptyIcon);
+                bundle.putInt("empty_icon", 0);
                 bundle.putString(Const.QUESTION_TITLE, questionDetailModel.title);
                 bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);

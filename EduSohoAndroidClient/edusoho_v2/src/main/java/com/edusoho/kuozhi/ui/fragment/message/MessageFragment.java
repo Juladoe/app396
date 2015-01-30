@@ -76,9 +76,9 @@ public class MessageFragment extends BaseFragment {
         mLoadLayout = view.findViewById(R.id.load_layout);
         mMessageList = (RefreshListWidget) view.findViewById(R.id.message_list);
         mMessageList.setMode(PullToRefreshBase.Mode.BOTH);
-        mMessageList.getRefreshableView().setDividerHeight(20);
-        mMessageList.setAdapter(new MessageListAdapter(mContext, R.layout.message_list_item));
-        mMessageList.setEmptyText(new String[] { "暂无通知" }, R.drawable.icon_notify);
+        mMessageList.getRefreshableView().setDividerHeight(1);
+        mMessageList.setAdapter(new MessageListAdapter(mContext, mActivity, R.layout.message_list_item));
+        mMessageList.setEmptyText(new String[]{"暂无通知"}, R.drawable.icon_notify);
 
         mMessageList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
@@ -104,10 +104,9 @@ public class MessageFragment extends BaseFragment {
         loadMessage(0, false);
     }
 
-    private void loadMessage(int start, final boolean isAppend)
-    {
+    private void loadMessage(int start, final boolean isAppend) {
         RequestUrl requestUrl = app.bindUrl(Const.NOTIFICATION, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "start", start + "",
                 "limit", Const.LIMIT + ""
         });
@@ -118,7 +117,7 @@ public class MessageFragment extends BaseFragment {
                 mMessageList.onRefreshComplete();
                 BaseResult<ArrayList<Notify>> notifyBaseResult = mActivity.parseJsonValue(
                         object, new TypeToken<BaseResult<ArrayList<Notify>>>() {
-                });
+                        });
                 if (notifyBaseResult == null) {
                     return;
                 }

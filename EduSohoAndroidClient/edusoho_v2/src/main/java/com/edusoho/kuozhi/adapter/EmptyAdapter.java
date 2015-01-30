@@ -62,7 +62,12 @@ public class EmptyAdapter<T> extends ListBaseAdapter<T> {
         TextView textView = (TextView) convertView.findViewById(R.id.list_empty_text);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.list_empty_icon);
 
-        imageView.setImageResource(mEmptyIcon);
+
+        if (mEmptyIcon == 0) {
+            imageView.setVisibility(View.GONE);
+        } else {
+            imageView.setImageResource(mEmptyIcon);
+        }
         textView.setText((String) mList.get(position));
 
         AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(

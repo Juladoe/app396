@@ -174,6 +174,7 @@ public class LearningRoomActivity extends ActionBarBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        //登录界面处理
         for (Fragment subFragment : fragments) {
             subFragment.onActivityResult(requestCode, resultCode, data);
         }
