@@ -171,7 +171,7 @@ public class ProfileFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mInfoList.setRefreshing();
+        profileAdapter.updateUserInfo();
     }
 
     @Override

@@ -293,11 +293,12 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         } else {
             headerHolder.mSendMsgLayout.setVisibility(View.VISIBLE);
             headerHolder.mFollowLayout.setVisibility(View.VISIBLE);
-            if (mType.equals(FollowFragment.FOLLOWING)) {
-                headerHolder.tvFollow.setText("取消关注");
-            } else {
-                isFollowed(headerHolder);
-            }
+//            if (mType.equals(FollowFragment.FOLLOWING)) {
+//                headerHolder.tvFollow.setText("取消关注");
+//            } else {
+//                isFollowed(headerHolder);
+//            }
+            isFollowed(headerHolder);
         }
 
         headerHolder.mUserName.setText(mUser.nickname);
