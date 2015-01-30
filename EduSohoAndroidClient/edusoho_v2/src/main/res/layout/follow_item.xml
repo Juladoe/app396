@@ -8,8 +8,8 @@
 
     <com.edusoho.kuozhi.view.plugin.CircularImageView
         android:id="@+id/ci_follow_pic"
-        android:layout_width="@dimen/message_head_icon"
-        android:layout_height="@dimen/message_head_icon"
+        android:layout_width="@dimen/head_icon_40"
+        android:layout_height="@dimen/head_icon_40"
         android:scaleType="fitXY"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
