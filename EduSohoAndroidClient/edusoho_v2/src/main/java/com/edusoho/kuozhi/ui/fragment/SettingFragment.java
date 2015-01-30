@@ -58,6 +58,9 @@ public class SettingFragment extends BaseFragment {
     @ViewUtil("setting_logout_btn")
     private Button mLogoutBtn;
 
+    @ViewUtil("more_setting_about")
+    private View mSettingAbout;
+
     @Override
     public String getTitle() {
         return "设置";
@@ -190,6 +193,21 @@ public class SettingFragment extends BaseFragment {
                                 mOfflineSetView.setText(selStr);
                             }
                         }).show();
+            }
+        });
+
+        mSettingAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String url = app.schoolHost + Const.ABOUT;
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(AboutFragment.URL, url);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AboutFragment");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, getResources().getString(R.string.school_about));
+                    }
+                });
             }
         });
 

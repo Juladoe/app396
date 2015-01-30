@@ -112,6 +112,21 @@
             android:text="版本更新"
             android:textColor="@color/system_light_text"
             android:textSize="@dimen/more_setting_text" />
+
+        <TextView
+            android:id="@+id/more_setting_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/more_setting_list_select2"
+            android:clickable="true"
+            android:drawableRight="@drawable/more_setting_right"
+            android:paddingBottom="16dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="16dp"
+            android:text="@string/school_about"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/medium_font_size" />
     </LinearLayout>
 
     <Button
