@@ -11,8 +11,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:gravity="center"
         android:singleLine="true"
+        android:layout_gravity="center"
         android:textColor="@color/action_bar_title"
         android:textSize="@dimen/app_bar_title"></TextView>
+
+    <!--<com.edusoho.kuozhi.view.plugin.EduSohoCompoundButton-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:id="@+id/ec_btn"-->
+    <!--android:visibility="gone"-->
+    <!--android:checkedButton="@+id/btn_video">-->
+
+    <!--<RadioButton-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/btn_video"-->
+    <!--android:text="点播"-->
+    <!--android:button="@null"-->
+    <!--android:background="@drawable/empty_page_btn"-->
+    <!--android:gravity="center" />-->
+
+    <!--<RadioButton-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/btn_live"-->
+    <!--android:text="直播"-->
+    <!--android:button="@null"-->
+    <!--android:background="@drawable/empty_page_btn"-->
+    <!--android:gravity="center" />-->
+    <!--</com.edusoho.kuozhi.view.plugin.EduSohoCompoundButton>-->
 </LinearLayout>

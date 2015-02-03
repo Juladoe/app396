@@ -171,7 +171,9 @@ public class ProfileFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        profileAdapter.updateUserInfo();
+        if (requestCode == FollowFragment.FOLLOW_REFRESH) {
+            profileAdapter.updateUserInfo();
+        }
     }
 
     @Override

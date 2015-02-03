@@ -3,10 +3,12 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -105,27 +107,34 @@ public class SchoolRoomFragment extends BaseFragment {
     private void showItemActivity(int type, final SchoolRoomResult result) {
         switch (type) {
             case 1:
+                //在学直播课
+                goToLiveCourseDetailsActivity();
+            case 2:
                 //在学课程
                 goToCourseDetailsActivity(result);
                 break;
-            case 2:
+            case 3:
                 //问答
                 goToQuestionDetailActivity("问答", "question", "暂无提问", R.drawable.icon_question);
                 break;
-            case 3:
+            case 4:
                 //讨论
                 goToQuestionDetailActivity("讨论", "discussion", "暂无讨论", R.drawable.icon_discussion);
                 break;
-            case 4:
+            case 5:
                 //笔记
                 goToNoteContentFragment(result);
                 break;
-            case 5:
+            case 6:
                 //私信
                 goToMessageLetterListActivity(result);
                 break;
 
         }
+    }
+
+    private void goToLiveCourseDetailsActivity() {
+
     }
 
     /**
@@ -207,6 +216,7 @@ public class SchoolRoomFragment extends BaseFragment {
                 try {
                     mLoadView.setVisibility(View.GONE);
                     ArrayList<SchoolRoomResult> schoolRoomList = new ArrayList<SchoolRoomResult>();
+                    schoolRoomList.add(new SchoolRoomResult("在学直播", null));
                     schoolRoomList.add(new SchoolRoomResult("在学课程", null));
                     schoolRoomList.add(new SchoolRoomResult("问答", null));
                     schoolRoomList.add(new SchoolRoomResult("讨论", null));

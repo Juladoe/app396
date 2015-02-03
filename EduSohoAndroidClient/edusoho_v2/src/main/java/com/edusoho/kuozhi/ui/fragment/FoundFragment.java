@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.FoundCourseListAdapter;
@@ -29,6 +31,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.HashMap;
 
+import cn.trinea.android.common.util.ToastUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -44,12 +47,15 @@ public class FoundFragment extends BaseFragment {
     private RefreshListWidget mCourseListView;
 
     public static final int HIDE_ACTION_BAR_CODE = 0001;
+    private boolean mIsLive = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mSelectIconView = mActivity.addTitleViewIcon(R.drawable.found_select_icon);
+        //mSelectIconView = mActivity.addTitleViewIcon(R.drawable.found_select_icon);
+        mSelectIconView = mActivity.getTitleIcon();
+        //mActivity.addCompoundButton();
         setContainerView(R.layout.found_layout);
         Log.d(null, "onCreate");
     }
@@ -97,24 +103,34 @@ public class FoundFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
+        mTitle = "全部";
         return mTitle;
     }
 
     @Override
     protected void initView(View view) {
+        mActivity.setCompoundButtonClickListener(mRadioGroupOnCheckedChangeListener);
         mCategoryListView = (CategoryListView) view.findViewById(R.id.found_category_list);
         mCourseListView = (RefreshListWidget) view.findViewById(R.id.found_category_course_list);
-        mCourseListView.setEmptyText(new String[] { "没有搜到相关课程" }, R.drawable.icon_course_empty);
+        mCourseListView.setEmptyText(new String[]{"没有搜到相关课程"}, R.drawable.icon_course_empty);
         mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                loadCourseList(mCurrentCategoryId, mCourseListView.getStart());
+                if (mIsLive) {
+                    loadLiveAllCourseList(mCourseListView.getStart());
+                } else {
+                    loadCourseList(mCurrentCategoryId, mCourseListView.getStart());
+                }
             }
 
             @Override
             public void refresh(PullToRefreshBase<ListView> refreshView) {
-                loadCourseList(mCurrentCategoryId, 0);
+                if (mIsLive) {
+                    loadLiveAllCourseList(0);
+                } else {
+                    loadCourseList(mCurrentCategoryId, 0);
+                }
             }
         });
 
@@ -144,6 +160,7 @@ public class FoundFragment extends BaseFragment {
                 mCourseListView.setLoadAdapter();
                 loadCourseList(category.id, 0);
                 hideCategoryList();
+                //mActivity.adjustCompoundButton();
             }
         });
     }
@@ -154,15 +171,13 @@ public class FoundFragment extends BaseFragment {
         objectAnimator.start();
     }
 
-    private void hideCategoryList()
-    {
+    private void hideCategoryList() {
         mCategoryHeight = mCourseListView.getHeight();
         AppUtil.animForHeight(new EdusohoAnimWrap(mCategoryListView), mCategoryHeight, 0, 240);
         rotation(mSelectIconView, -180, 0);
     }
 
-    private void showCategoryList()
-    {
+    private void showCategoryList() {
         mCategoryHeight = mCourseListView.getHeight();
         AppUtil.animForHeight(new EdusohoAnimWrap(mCategoryListView), 0, mCategoryHeight, 180);
         mCategoryListView.scrollToTop();
@@ -192,8 +207,53 @@ public class FoundFragment extends BaseFragment {
 
                 mCourseListView.pushData(courseResult.data);
                 mCourseListView.setStart(courseResult.start, courseResult.total);
+                mIsLive = false;
             }
         });
+    }
+
+    private void loadLiveAllCourseList(int start) {
+        RequestUrl url = app.bindUrl(Const.LIVE_COURSES, false);
+        HashMap<String, String> params = url.getParams();
+        params.put("start", String.valueOf(start));
+        params.put("limit", String.valueOf(Const.LIMIT));
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mCourseListView.onRefreshComplete();
+                CourseResult courseResult = mActivity.gson.fromJson(
+                        object, new TypeToken<CourseResult>() {
+                        }.getType());
+
+                if (courseResult == null) {
+                    return;
+                }
+
+                mCourseListView.pushData(courseResult.data);
+                mCourseListView.setStart(courseResult.start, courseResult.total);
+                mIsLive = true;
+            }
+        });
+    }
+
+    RadioGroup.OnCheckedChangeListener mRadioGroupOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            if (checkedId == R.id.btn_video) {
+                mActivity.setLiveControlVisibility(View.VISIBLE);
+                mIsLive = false;
+                mCourseListView.setRefreshing();
+            } else if (checkedId == R.id.btn_live) {
+                mActivity.setLiveControlVisibility(View.INVISIBLE);
+                mIsLive = true;
+                mCourseListView.setRefreshing();
+            }
+        }
+    };
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
     }
 
     @Override
