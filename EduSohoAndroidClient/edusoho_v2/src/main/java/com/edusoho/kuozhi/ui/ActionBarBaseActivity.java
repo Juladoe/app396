@@ -160,8 +160,10 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void setTitle(String title) {
-        mTitleTextView.setText(title == null ? "" : title);
-        mTitleLiveTextView.setText(title == null ? "" : title);
+        if (mTitleTextView != null)
+            mTitleTextView.setText(title == null ? "" : title);
+        if (mTitleLiveTextView != null)
+            mTitleLiveTextView.setText(title == null ? "" : title);
     }
 
     public void setTitle(String title, boolean showIcon) {

@@ -35,6 +35,8 @@ public class LessonItem<T> {
     public int userId;
     public String createdTime;
     public String itemType;
+    public String startTime;
+    public String endTime;
 
     public UploadFile uploadFile;
 
