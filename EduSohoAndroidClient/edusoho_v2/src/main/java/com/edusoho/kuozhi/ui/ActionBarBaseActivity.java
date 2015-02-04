@@ -160,7 +160,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void setTitle(String title) {
-        //mTitleTextView.setText(title == null ? "" : title);
+        mTitleTextView.setText(title == null ? "" : title);
         mTitleLiveTextView.setText(title == null ? "" : title);
     }
 
@@ -172,13 +172,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void setTitle(String title, String fragmentName, boolean showIcon) {
-
-        if (mTitleIconView != null) {
-            mTitleIconView.setVisibility(showIcon ? View.VISIBLE : View.GONE);
-        }
         if (fragmentName.equals("FoundFragment")) {
             initLiveActionBar(title);
         } else {
+            if (mTitleIconView != null) {
+                mTitleIconView.setVisibility(showIcon ? View.VISIBLE : View.GONE);
+            }
             mTitleTextView.setText(title == null ? "" : title);
             //setCompoundButtonVisibility(View.GONE);
             ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
@@ -191,44 +190,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public void setNormalActionBack(String title) {
         mActionBar.setDisplayShowCustomEnabled(false);
         mActionBar.setTitle(title);
-    }
-
-    public ImageView addTitleViewIcon(int icon) {
-        ViewGroup titleView = (ViewGroup) mActionBar.getCustomView();
-        mTitleIconView = new ImageView(mContext);
-        mTitleIconView.setImageResource(icon);
-        titleView.addView(mTitleIconView);
-
-        return mTitleIconView;
-    }
-
-    public void addCompoundButton() {
-        mCompoundButton = (EduSohoCompoundButton) getLayoutInflater().inflate(R.layout.compound_button_layout, null);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.LEFT;
-        ((LinearLayout) mTitleLayoutView).addView(mCompoundButton);
-        LinearLayout.LayoutParams gvLayout = (LinearLayout.LayoutParams) mCompoundButton.getLayoutParams();
-        mCompoundButton.measure(0, 0);
-        mTitleIconView.measure(0, 0);
-        mTitleTextView.measure(0, 0);
-        int leftMargin = ((LinearLayout.LayoutParams) mTitleTextView.getLayoutParams()).leftMargin;
-        gvLayout.setMargins(mActivity.app.screenW / 2 - mCompoundButton.getMeasuredWidth() / 2 -
-                mTitleTextView.getMeasuredWidth() - mTitleIconView.getMeasuredWidth() - leftMargin, 0, 0, 0);
-        setCompoundButtonVisibility(View.VISIBLE);
-        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
-    }
-
-    public void adjustCompoundButton() {
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.LEFT;
-        LinearLayout.LayoutParams gvLayout = (LinearLayout.LayoutParams) mCompoundButton.getLayoutParams();
-        int leftMargin = ((LinearLayout.LayoutParams) mTitleTextView.getLayoutParams()).leftMargin;
-        gvLayout.setMargins(mActivity.app.screenW / 2 - mCompoundButton.getMeasuredWidth() -
-                mTitleTextView.getMeasuredWidth() - mTitleIconView.getMeasuredWidth() - leftMargin, 0, 0, 0);
-        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
-        mTitleLayoutView.requestLayout();
     }
 
     public ImageView getTitleIcon() {
@@ -247,10 +208,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
             mCompoundButton = (EduSohoCompoundButton) mTitleLiveLayoutView.findViewById(R.id.ec_btn);
         }
         mTitleLiveTextView.setText(title);
-        RelativeLayout.LayoutParams layoutParams =
-                (RelativeLayout.LayoutParams) mTitleLiveTextView.getLayoutParams();
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        mTitleLiveTextView.setLayoutParams(layoutParams);
         ActionBar.LayoutParams actionBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.MATCH_PARENT);
         actionBarLayoutParams.gravity = Gravity.CENTER;
