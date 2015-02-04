@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -14,8 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +37,7 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.view.plugin.EduSohoCompoundButton;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.Gson;
@@ -55,9 +60,12 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     protected CoreEngine mCoreEngine;
     public Gson gson;
     protected FragmentManager mFragmentManager;
-    private TextView mTitleTextView;
+    protected TextView mTitleTextView;
+    protected TextView mTitleLiveTextView;
     private View mTitleLayoutView;
+    private View mTitleLiveLayoutView;
     private ImageView mTitleIconView;
+    private EduSohoCompoundButton mCompoundButton;
     public DisplayImageOptions mOptions;
 
     protected EdusohoMainService mService;
@@ -72,7 +80,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void setTitleClickListener(View.OnClickListener clickListener) {
-        mTitleLayoutView.setOnClickListener(clickListener);
+        mTitleLiveTextView.setOnClickListener(clickListener);
+        mTitleIconView.setOnClickListener(clickListener);
+        //mTitleLayoutView.setOnClickListener(clickListener);
     }
 
     private void initActivity() {
@@ -86,6 +96,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         setProgressBarIndeterminateVisibility(false);
         app.mActivity = mActivity;
         app.mContext = mContext;
+
+    }
+
+    public void setCompoundButtonClickListener(RadioGroup.OnCheckedChangeListener onClickListener) {
+        mCompoundButton.setOnCheckedChangeListener(onClickListener);
     }
 
     @Override
@@ -146,6 +161,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
 
     public void setTitle(String title) {
         mTitleTextView.setText(title == null ? "" : title);
+        mTitleLiveTextView.setText(title == null ? "" : title);
     }
 
     public void setTitle(String title, boolean showIcon) {
@@ -155,18 +171,57 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         }
     }
 
+    public void setTitle(String title, String fragmentName, boolean showIcon) {
+        if (fragmentName.equals("FoundFragment")) {
+            initLiveActionBar(title);
+            setLiveControlVisibility(mCompoundButton.getCheckedRadioButtonId() == R.id.btn_video ? View.VISIBLE : View.INVISIBLE);
+        } else {
+            if (mTitleIconView != null) {
+                mTitleIconView.setVisibility(showIcon ? View.VISIBLE : View.GONE);
+            }
+            mTitleTextView.setText(title == null ? "" : title);
+            //setCompoundButtonVisibility(View.GONE);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                    ActionBar.LayoutParams.MATCH_PARENT);
+            layoutParams.gravity = Gravity.CENTER;
+            mActionBar.setCustomView(mTitleLayoutView, layoutParams);
+        }
+    }
+
     public void setNormalActionBack(String title) {
         mActionBar.setDisplayShowCustomEnabled(false);
         mActionBar.setTitle(title);
     }
 
-    public ImageView addTitleViewIcon(int icon) {
-        ViewGroup titleView = (ViewGroup) mActionBar.getCustomView();
-        mTitleIconView = new ImageView(mContext);
-        mTitleIconView.setImageResource(icon);
-        titleView.addView(mTitleIconView);
-
+    public ImageView getTitleIcon() {
+        mTitleIconView = (ImageView) mTitleLiveLayoutView.findViewById(R.id.iv_icon);
         return mTitleIconView;
+    }
+
+    private void initLiveActionBar(String title) {
+        if (mTitleLiveLayoutView == null) {
+            mTitleLiveLayoutView = getLayoutInflater().inflate(R.layout.actionbar_live_title, null);
+            mCompoundButton = (EduSohoCompoundButton) mTitleLiveLayoutView.findViewById(R.id.ec_btn);
+            mTitleLiveTextView = (TextView) mTitleLiveLayoutView.findViewById(R.id.action_bar_title);
+        }
+        mTitleLiveTextView.setText(title);
+        ActionBar.LayoutParams actionBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT);
+        actionBarLayoutParams.gravity = Gravity.CENTER;
+        mActionBar.setCustomView(mTitleLiveLayoutView, actionBarLayoutParams);
+    }
+
+    public void setCompoundButtonVisibility(int visibilityId) {
+        if (mCompoundButton != null) {
+            mCompoundButton.setVisibility(visibilityId);
+        }
+    }
+
+    public void setLiveControlVisibility(int visibilityId) {
+        if (mTitleIconView != null) {
+            mTitleIconView.setVisibility(visibilityId);
+        }
+        mTitleLiveTextView.setVisibility(visibilityId);
     }
 
     public void setBackIcon(int icon) {
@@ -181,7 +236,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 ActionBar.LayoutParams.MATCH_PARENT);
         //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
-
+        setCompoundButtonVisibility(View.GONE);
         mActionBar.setCustomView(mTitleLayoutView, layoutParams);
 
         if (backTitle != null) {

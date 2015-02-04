@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Course;
@@ -16,14 +17,16 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
+import ch.boye.httpclientandroidlib.util.TextUtils;
+
 /**
  * Created by howzhi on 14/11/20.
  */
 public class FoundCourseListAdapter extends ListBaseAdapter<Course> {
 
     private DisplayImageOptions mOptions;
-    public FoundCourseListAdapter(Context context, int resource)
-    {
+
+    public FoundCourseListAdapter(Context context, int resource) {
         super(context, resource);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
@@ -69,7 +72,9 @@ public class FoundCourseListAdapter extends ListBaseAdapter<Course> {
             holder.mCourseTeacher.setText(String.valueOf(teachers[0].nickname));
         }
 
-        ImageLoader.getInstance().displayImage(course.largePicture, holder.mCoursePic, mOptions);
+        if (!TextUtils.isEmpty(course.largePicture)) {
+            ImageLoader.getInstance().displayImage(course.largePicture, holder.mCoursePic, mOptions);
+        }
         return view;
     }
 
