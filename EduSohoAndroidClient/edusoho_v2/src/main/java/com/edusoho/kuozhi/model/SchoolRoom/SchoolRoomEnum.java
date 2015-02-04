@@ -4,7 +4,8 @@ package com.edusoho.kuozhi.model.SchoolRoom;
  * Created by JesseHuang on 14/12/24.
  */
 public enum SchoolRoomEnum {
-    COURSE("在学课程", 1), QUESTION("问答", 2), DISCUSSION("讨论", 3), NOTE("笔记", 4), LETTER("私信", 5);
+    LIVE_COURSE("在学直播", 1), COURSE("在学课程", 2), QUESTION("问答", 3), DISCUSSION("讨论", 4), NOTE("笔记", 5),
+    LETTER("私信", 6);
 
     private String name;
     private int index;

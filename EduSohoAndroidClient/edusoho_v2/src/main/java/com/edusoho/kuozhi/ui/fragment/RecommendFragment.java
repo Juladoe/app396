@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -56,8 +57,7 @@ public class RecommendFragment extends BaseFragment {
     }
 
     @Override
-    protected void initView(View view)
-    {
+    protected void initView(View view) {
         mRootView = (PullToRefreshScrollView) view;
         mWeekCourse = (EduSohoListView) view.findViewById(R.id.recommend_week_course);
         mSchoolAnnouncement = (TextView) view.findViewById(R.id.recommend_sch_announcement);
@@ -89,15 +89,13 @@ public class RecommendFragment extends BaseFragment {
         initFragment(false);
     }
 
-    private void initFragment(boolean isUpdate)
-    {
+    private void initFragment(boolean isUpdate) {
         initSchoolBanner(isUpdate);
         initSchoolAnnouncement();
         initWeekCourse(isUpdate);
     }
 
-    private void initWeekCourse(boolean isUpdate)
-    {
+    private void initWeekCourse(boolean isUpdate) {
         RequestUrl url = app.bindUrl(Const.WEEK_COURSES, false);
         url.setParams(new String[]{
                 "start", "0",
@@ -127,14 +125,14 @@ public class RecommendFragment extends BaseFragment {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 CourseResult courseResult = mActivity.parseJsonValue(
-                        object, new TypeToken<CourseResult>(){});
+                        object, new TypeToken<CourseResult>() {
+                });
                 mWeekCourse.pushData(courseResult.data);
             }
         });
     }
 
-    private void initSchoolBanner(final boolean isUpdate)
-    {
+    private void initSchoolBanner(final boolean isUpdate) {
         RequestUrl url = app.bindUrl(Const.SCHOOL_BANNER, false);
 
         mActivity.ajaxPost(url, new ResultCallback() {
@@ -143,7 +141,7 @@ public class RecommendFragment extends BaseFragment {
                 Log.d(null, "object ->" + object);
                 ArrayList<SchoolBanner> schoolBanners = app.gson.fromJson(
                         object, new TypeToken<ArrayList<SchoolBanner>>() {
-                }.getType());
+                        }.getType());
 
                 if (schoolBanners == null || schoolBanners.isEmpty()) {
                     schoolBanners = new ArrayList<SchoolBanner>();
@@ -163,8 +161,7 @@ public class RecommendFragment extends BaseFragment {
         });
     }
 
-    private void initSchoolAnnouncement()
-    {
+    private void initSchoolAnnouncement() {
         RequestUrl url = app.bindUrl(Const.SCHOOL_Announcement, false);
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
@@ -172,7 +169,7 @@ public class RecommendFragment extends BaseFragment {
                 super.callback(url, object, ajaxStatus);
                 SchoolAnnouncement schoolAnnouncement = app.gson.fromJson(
                         object, new TypeToken<SchoolAnnouncement>() {
-                }.getType());
+                        }.getType());
 
                 if (schoolAnnouncement == null) {
                     mSchoolAnnouncement.setText("暂无网校公告");

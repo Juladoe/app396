@@ -94,11 +94,7 @@
         <attr name="isFirstPadding" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ChoiceRadioButton">
-        <attr name="button" format="reference" />
-        <attr name="btnText" format="string" />
-        <attr name="btnContent" format="string" />
-        <attr name="btnSize" format="dimension" />
-        <attr name="btnColor" format="color" />
+    <declare-styleable name="CompoundButton">
+        <attr name="android:button" />
     </declare-styleable>
 </resources>
