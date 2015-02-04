@@ -358,4 +358,11 @@ public class Const {
      * 更新问答浏览次数
      */
     public static final String HitThread = "Course/hitThread";
+
+    /**
+     * 在学直播课程
+     */
+    public static final String LIVING_COURSE = "Course/getLiveCourses";
+
+    public static final String LIVE_COURSE = "Course/getLiveCourse";
 }

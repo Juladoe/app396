@@ -1,13 +1,20 @@
 package com.edusoho.kuozhi.ui.liveCourse;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LiveingCourseListAdapter;
+import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.LiveingCourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
+import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.ResultCallback;
+import com.google.gson.reflect.TypeToken;
 
 import library.PullToRefreshBase;
 
@@ -19,13 +26,14 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
     private View mLoading;
     private LiveingCourseListAdapter mLiveingCourseListAdapter;
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.liveing_course_list_layout);
         init();
     }
 
     public void init(){
+        setBackMode(BACK, "在学直播课程");
         mLiveingCourseRefreshList = (RefreshListWidget) this.findViewById(R.id.liveing_course_refresh_list);
         mLoading = this.findViewById(R.id.load_layout);
 
@@ -34,7 +42,50 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
         mLiveingCourseListAdapter = new LiveingCourseListAdapter(mActivity, R.layout.liveing_course_list_inflate);
         mLiveingCourseRefreshList.setAdapter(mLiveingCourseListAdapter);
+        //todo 做个测试
+        mLiveingCourseRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        getLiveingCourseRequest(0);
+        refreshListener();
     }
 
+    public void refreshListener(){
+        mLiveingCourseRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {
+            @Override
+            public void update(PullToRefreshBase<ListView> refreshView) {
+                getLiveingCourseRequest(mLiveingCourseRefreshList.getStart());
+            }
 
+            @Override
+            public void refresh(PullToRefreshBase<ListView> refreshView) {
+                getLiveingCourseRequest(0);
+            }
+        });
+    }
+
+    public void getLiveingCourseRequest(final int start){
+        RequestUrl url = app.bindUrl(Const.LIVING_COURSE, true);
+        url.setParams(new String[]{
+            "start", String.valueOf(start),
+            "limit", String.valueOf(Const.LIMIT)
+        });
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                super.callback(url, object, ajaxStatus);
+                mLoading.setVisibility(View.GONE);
+                mLiveingCourseRefreshList.onRefreshComplete();
+                LiveingCourseResult liveingCourseResult = parseJsonValue(object, new TypeToken<LiveingCourseResult>(){});
+                mLiveingCourseRefreshList.pushData(liveingCourseResult.data);
+                mLiveingCourseRefreshList.setStart(start);
+                if(liveingCourseResult.data.size() < Const.LIMIT){
+                    mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                }
+            }
+        });
+    }
 }

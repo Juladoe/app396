@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.question;
+package com.edusoho.kuozhi.ui.questionDeprecated;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -109,7 +109,8 @@ public class MineFragment extends BaseFragment {
         mQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyQuestionOrDiscuss("我的问答", "question", "暂无提问", R.drawable.icon_question);
+//                showMyQuestionOrDiscuss("我的问答", "question", "暂无提问", R.drawable.icon_question);
+                showLiveingCoure();
             }
         });
 
@@ -368,6 +369,20 @@ public class MineFragment extends BaseFragment {
             }
         };
         app.mEngine.runNormalPlugin("QuestionNewActivity", mActivity, callback);
+    }
+
+    private void showLiveingCoure() {
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+
+            }
+        };
+        app.mEngine.runNormalPlugin("liveingCourseActivity", mActivity, callback);
     }
 
     @Override

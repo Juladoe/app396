@@ -38,7 +38,7 @@ import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.CourseLearningFragment;
 import com.edusoho.kuozhi.ui.fragment.TestpaperLessonFragment;
 import com.edusoho.kuozhi.ui.note.NoteReplyActivity;
-import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
+import com.edusoho.kuozhi.ui.questionDeprecated.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;

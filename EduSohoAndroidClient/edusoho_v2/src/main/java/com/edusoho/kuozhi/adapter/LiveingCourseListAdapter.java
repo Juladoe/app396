@@ -38,10 +38,10 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHost viewHost = new ViewHost();
         if(view == null){
-            ViewGroup inflate = (ViewGroup) inflater.inflate(mResource,null);
-            viewHost.liveingCourseImage = (ImageView) inflate.findViewById(R.id.liveing_course_icon);
-            viewHost.tvLiveingCourseTitle = (TextView) inflate.findViewById(R.id.liveing_course_title);
-            viewHost.tvLiveingCourseTime = (TextView) inflate.findViewById(R.id.liveing_course_time);
+            view = inflater.inflate(mResource,null);
+            viewHost.liveingCourseImage = (ImageView) view.findViewById(R.id.liveing_course_icon);
+            viewHost.tvLiveingCourseTitle = (TextView) view.findViewById(R.id.liveing_course_title);
+            viewHost.tvLiveingCourseTime = (TextView) view.findViewById(R.id.liveing_course_time);
             view.setTag(viewHost);
         }else{
             viewHost = (ViewHost) view.getTag();
@@ -53,11 +53,28 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
         viewHost.tvLiveingCourseTitle.setText(liveingCourseData.title);
         if("".equals(liveingCourseData.liveLessonTitle)){
             viewHost.tvLiveingCourseTime.setText("暂时没有要开始的直播");
-//            String liveingCourseTime = String.format("距离直播%s开始还有%d", liveingCourseData.liveLessonTitle)
         }else{
             //todo
+            long nowTime = System.currentTimeMillis();
+            String liveingCourseTime;
+            if(Integer.valueOf(liveingCourseData.liveStartTime) > nowTime){
+                liveingCourseTime = String.format("距离直播%s开始还有", liveingCourseData.liveLessonTitle);
+                long diffTime = Integer.valueOf(liveingCourseData.liveStartTime) - nowTime;
+                if(diffTime < 60 && diffTime > 0){
+                    liveingCourseTime = liveingCourseTime + diffTime + "秒";
+                }else if(diffTime < 60 * 60){
+                    liveingCourseTime = liveingCourseTime + diffTime / 60 + "分钟";
+                }else if(diffTime < 60 * 60 * 24){
+                    liveingCourseTime = liveingCourseTime +  diffTime / (60 * 60) + "小时";
+                }else{
+                    liveingCourseTime = liveingCourseTime +  diffTime / (60 * 60 * 24) + "天";
+                }
+            }else{
+                liveingCourseTime = String.format("正在直播:%s", liveingCourseData.liveLessonTitle);
+            }
+            viewHost.tvLiveingCourseTime.setText(liveingCourseTime);
         }
-        return super.getView(i, view, viewGroup);
+        return view;
     }
 
     private class ViewHost{
