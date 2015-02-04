@@ -10,6 +10,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.QuestionNew.QuestionListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
@@ -74,20 +75,15 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
         mQuestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                QuestionDetailModel questionDetailModel = (QuestionDetailModel) parent.getItemAtPosition(position);
-//                Bundle bundle = new Bundle();
-//                bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
-//                bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
-//                bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
-//                bundle.putString("empty_text", mSecondHeaderText);
-//                bundle.putInt("empty_icon", 0);
-//                bundle.putString(Const.QUESTION_TITLE, questionDetailModel.title);
-//                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
-//                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-
-                //todo test
+                QuestionDetailModel questionDetailModel = (QuestionDetailModel) parent.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
-                bundle.putString(FragmentPageActivity.FRAGMENT, "liveLessonFragment");
+                bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
+                bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
+                bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
+                bundle.putString("empty_text", mSecondHeaderText);
+                bundle.putInt("empty_icon", 0);
+                bundle.putString(Const.QUESTION_TITLE, questionDetailModel.title);
+                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
                 app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
             }
         });

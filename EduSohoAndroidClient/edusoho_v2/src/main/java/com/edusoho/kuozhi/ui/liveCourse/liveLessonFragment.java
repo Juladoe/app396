@@ -43,9 +43,12 @@ public class liveLessonFragment extends BaseFragment {
     private long mLiveEndTime;
     private long mLiveStartTimeDiff;
     private String mLiveIntroduction;
-//    private String mLiveCountDown;
 
     private static final int COUNTDOWN = 0;
+
+    private static final String STARTTIME = "startTime";
+    private static final String ENDTIME = "endTime";
+    private static final String SUMMARY = "summary";
 
     @Override
     public String getTitle() {
@@ -76,33 +79,39 @@ public class liveLessonFragment extends BaseFragment {
         mTvLiveCountDown = (TextView) view.findViewById(R.id.live_count_down);
         mLiveCourseClick = (Button) view.findViewById(R.id.live_course_click);
 
-        //todo 到时候可以直接用读到的时间，但是下面要转成秒数来计算
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String liveStartDate = simpleDateFormat.format(new Date(mLiveStartTime));
         String liveEndDate = simpleDateFormat.format(new Date(mLiveEndTime));
 
         mTvLiveTime.setText(String.format("%s ~ %s", liveStartDate, liveEndDate));
-        mTvLiveIntroduction.setText("直播说明");
+        mTvLiveIntroduction.setText(mLiveIntroduction);
+        mLiveCourseClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO 跳转到直播课时
+            }
+        });
         showLiveCountDown();
     }
 
     public void initDate(){
         mNowTime = new Date().getTime();
-        //TODO 测试数据
-        mLiveStartTime = new Date().getTime() + 3600 * 1000;
-        mLiveEndTime = mLiveStartTime + 3600 * 1000;
+        Bundle IntentData = getArguments();
 
-        //mCourseId
-        mCourseId = 48;
-        mLessonId = 189;
+        mLiveStartTime = IntentData.getLong(STARTTIME);
+        mLiveEndTime = IntentData.getLong(ENDTIME);
+
+        mCourseId = IntentData.getInt(Const.COURSE_ID);
+        mLessonId = IntentData.getInt(Const.LESSON_ID);
+
+        mLiveIntroduction = IntentData.getString(SUMMARY);
     }
 
     public void showLiveCountDown() {
         if (liveEnd()) {
             mTvLiveCountDown.setText("直播已经结束");
             mLiveCourseClick.setVisibility(View.GONE);
-//        } else if((mLiveStartTimeDiff = liveStart()) > 0){
-        } else if(false){
+        } else if((mLiveStartTimeDiff = liveStart()) > 0){
             mLiveStartTimeDiff = mLiveStartTimeDiff / 1000;
             getLiveCountDownTime();
             Timer timer = new Timer();

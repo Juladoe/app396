@@ -104,6 +104,10 @@ public class SchoolRoomFragment extends BaseFragment {
      */
     private void showItemActivity(int type, final SchoolRoomResult result) {
         switch (type) {
+            case 0:
+                //在学直播
+                showLiveingCoure();
+                break;
             case 1:
                 //在学课程
                 goToCourseDetailsActivity(result);
@@ -182,6 +186,22 @@ public class SchoolRoomFragment extends BaseFragment {
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");
         app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+    }
+
+    /**
+     * 跳转到在学直播课程
+     */
+    private void showLiveingCoure() {
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+            }
+        };
+        app.mEngine.runNormalPlugin("liveingCourseActivity", mActivity, callback);
     }
 
     private void loadSchoolRoomData() {
