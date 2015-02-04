@@ -611,6 +611,36 @@ public class AppUtil {
     }
 
     /**
+     * 计算多久之后开始直播时间 格式为13位毫秒单位
+     */
+    public static String getLiveTime(long startTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分");
+        long l = 1;
+        try {
+            Date date = new Date();
+            l = (startTime-date.getTime())/(1000L);
+
+            //如果大于7返回天数
+            if (l > 7 * 24 * 60 * 60) {
+                return sdf.format(new Date(startTime));
+            } else if (l > 24 * 60 * 60) {
+                l = l / (24 * 60 * 60);
+                return String.valueOf(l) + "天后";
+            } else if (l > 60 * 60) {
+                l = l / (60 * 60);
+                return String.valueOf(l) + "小时后";
+            } else if (l > 60) {
+                l = l / (60);
+                return String.valueOf(l) + "分钟后";
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getLiveTime", ex.toString());
+        }
+
+        return String.valueOf(l) + "秒后";
+    }
+
+    /**
      * 去掉末尾产生的"\n"
      */
     public static String removeHtml(String strHtml) {
