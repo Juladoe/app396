@@ -242,6 +242,7 @@ public class FoundFragment extends BaseFragment {
             if (checkedId == R.id.btn_video) {
                 mActivity.setLiveControlVisibility(View.VISIBLE);
                 mIsLive = false;
+                mCurrentCategoryId = 0;
                 mCourseListView.setRefreshing();
             } else if (checkedId == R.id.btn_live) {
                 mActivity.setLiveControlVisibility(View.INVISIBLE);

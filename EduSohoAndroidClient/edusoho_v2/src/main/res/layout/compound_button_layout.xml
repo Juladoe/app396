@@ -17,7 +17,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:button="@null"
-        android:background="@drawable/empty_page_btn"
+        android:background="@drawable/found_video_btn"
         android:gravity="center" />
 
     <RadioButton
@@ -30,6 +30,6 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:button="@null"
-        android:background="@drawable/empty_page_btn"
+        android:background="@drawable/found_video_btn"
         android:gravity="center" />
 </com.edusoho.kuozhi.view.plugin.EduSohoCompoundButton>

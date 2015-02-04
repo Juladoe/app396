@@ -160,7 +160,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void setTitle(String title) {
-        mTitleTextView.setText(title == null ? "" : title);
+        //mTitleTextView.setText(title == null ? "" : title);
+        mTitleLiveTextView.setText(title == null ? "" : title);
     }
 
     public void setTitle(String title, boolean showIcon) {
@@ -175,12 +176,13 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         if (mTitleIconView != null) {
             mTitleIconView.setVisibility(showIcon ? View.VISIBLE : View.GONE);
         }
-        ActionBar.LayoutParams layoutParams = (ActionBar.LayoutParams) mActionBar.getCustomView().getLayoutParams();
         if (fragmentName.equals("FoundFragment")) {
             initLiveActionBar(title);
         } else {
             mTitleTextView.setText(title == null ? "" : title);
             //setCompoundButtonVisibility(View.GONE);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                    ActionBar.LayoutParams.MATCH_PARENT);
             layoutParams.gravity = Gravity.CENTER;
             mActionBar.setCustomView(mTitleLayoutView, layoutParams);
         }
@@ -280,9 +282,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 ActionBar.LayoutParams.MATCH_PARENT);
         //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
-
         setCompoundButtonVisibility(View.GONE);
-
         mActionBar.setCustomView(mTitleLayoutView, layoutParams);
 
         if (backTitle != null) {

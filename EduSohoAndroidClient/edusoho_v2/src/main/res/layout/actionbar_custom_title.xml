@@ -30,7 +30,7 @@
     <!--android:id="@+id/btn_video"-->
     <!--android:text="点播"-->
     <!--android:button="@null"-->
-    <!--android:background="@drawable/empty_page_btn"-->
+    <!--android:background="@drawable/found_video_btn"-->
     <!--android:gravity="center" />-->
 
     <!--<RadioButton-->
@@ -39,7 +39,7 @@
     <!--android:id="@+id/btn_live"-->
     <!--android:text="直播"-->
     <!--android:button="@null"-->
-    <!--android:background="@drawable/empty_page_btn"-->
+    <!--android:background="@drawable/found_video_btn"-->
     <!--android:gravity="center" />-->
     <!--</com.edusoho.kuozhi.view.plugin.EduSohoCompoundButton>-->
 </LinearLayout>
