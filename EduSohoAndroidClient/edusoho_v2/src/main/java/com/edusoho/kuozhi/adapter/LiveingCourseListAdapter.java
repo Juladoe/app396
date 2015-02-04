@@ -12,7 +12,10 @@ import com.edusoho.kuozhi.model.LiveingCourseResult;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.zip.Inflater;
 
 /**
@@ -56,10 +59,12 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
         }else{
             //todo
             long nowTime = System.currentTimeMillis();
+            long paraseStartTime = parseTime(liveingCourseData.liveStartTime);
             String liveingCourseTime;
-            if(Integer.valueOf(liveingCourseData.liveStartTime) > nowTime){
+            if(paraseStartTime > nowTime){
                 liveingCourseTime = String.format("距离直播%s开始还有", liveingCourseData.liveLessonTitle);
-                long diffTime = Integer.valueOf(liveingCourseData.liveStartTime) - nowTime;
+                long diffTime = paraseStartTime - nowTime;
+                diffTime = diffTime / 1000;
                 if(diffTime < 60 && diffTime > 0){
                     liveingCourseTime = liveingCourseTime + diffTime + "秒";
                 }else if(diffTime < 60 * 60){
@@ -75,6 +80,17 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
             viewHost.tvLiveingCourseTime.setText(liveingCourseTime);
         }
         return view;
+    }
+
+    public long parseTime(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            String tDate = date.split("[+]")[0].replace('T', ' ');
+            return  sdf.parse(tDate).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0L;
     }
 
     private class ViewHost{

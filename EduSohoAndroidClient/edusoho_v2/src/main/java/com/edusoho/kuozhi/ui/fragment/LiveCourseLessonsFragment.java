@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.fragment.course.CourseDownloadingFragment;
 import com.edusoho.kuozhi.ui.fragment.course.ViewPagerBaseFragment;
+import com.edusoho.kuozhi.ui.liveCourse.liveLessonFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
@@ -207,20 +208,30 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
             }
         }
 
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.ACTIONBAR_TITLE, lessonItem.title);
+        bundle.putLong(liveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
+        bundle.putLong(liveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
+        bundle.putInt(Const.COURSE_ID, lessonItem.courseId);
+        bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        bundle.putString(liveLessonFragment.SUMMARY, lessonItem.summary);
+        bundle.putString(FragmentPageActivity.FRAGMENT, "liveLessonFragment");
+        startActivityWithBundle("FragmentPageActivity", bundle);
 
-        mActivity.getCoreEngine().runNormalPlugin(
-                LessonActivity.TAG, mActivity, new PluginRunCallback() {//TODO 把普通课时页面换成直播课时页面
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
-                        startIntent.putExtra(Const.IS_LEARN, courseDetailsResult.member != null);
-                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
-//                        startIntent.putExtra(LessonActivity.FROM_CACHE, mM3U8DbModles.indexOfKey(lesson.id) >= 0);
-                    }
-                }
-        );
+//        mActivity.getCoreEngine().runNormalPlugin(
+//                "liveLessonFragment" , mActivity, new PluginRunCallback() {
+//                //TODO 把普通课时页面换成直播课时页面
+//                    @Override
+//                    public void setIntentDate(Intent startIntent) {
+//                        startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
+//                        startIntent.putExtra(Const.IS_LEARN, courseDetailsResult.member != null);
+//                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+//                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+//                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
+////                        startIntent.putExtra(LessonActivity.FROM_CACHE, mM3U8DbModles.indexOfKey(lesson.id) >= 0);
+//                    }
+//                }
+//        );
     }
 
 }

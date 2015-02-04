@@ -106,30 +106,30 @@ public class SchoolRoomFragment extends BaseFragment {
      */
     private void showItemActivity(int type, final SchoolRoomResult result) {
         switch (type) {
-            case 0:
+            case 1:
                 //在学直播
                 showLiveingCoure();
                 break;
-            case 1:
+            case 2:
                 //在学直播课
                 goToLiveCourseDetailsActivity();
-            case 2:
+            case 3:
                 //在学课程
                 goToCourseDetailsActivity(result);
                 break;
-            case 3:
+            case 4:
                 //问答
                 goToQuestionDetailActivity("问答", "question", "暂无提问", R.drawable.icon_question);
                 break;
-            case 4:
+            case 5:
                 //讨论
                 goToQuestionDetailActivity("讨论", "discussion", "暂无讨论", R.drawable.icon_discussion);
                 break;
-            case 5:
+            case 6:
                 //笔记
                 goToNoteContentFragment(result);
                 break;
-            case 6:
+            case 7:
                 //私信
                 goToMessageLetterListActivity(result);
                 break;

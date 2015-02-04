@@ -43,12 +43,13 @@ public class liveLessonFragment extends BaseFragment {
     private long mLiveEndTime;
     private long mLiveStartTimeDiff;
     private String mLiveIntroduction;
+    private String mTitle;
 
     private static final int COUNTDOWN = 0;
 
-    private static final String STARTTIME = "startTime";
-    private static final String ENDTIME = "endTime";
-    private static final String SUMMARY = "summary";
+    public static final String STARTTIME = "startTime";
+    public static final String ENDTIME = "endTime";
+    public static final String SUMMARY = "summary";
 
     @Override
     public String getTitle() {
@@ -74,6 +75,7 @@ public class liveLessonFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
         initDate();
+        changeTitle(mTitle);
         mTvLiveTime = (TextView) view.findViewById(R.id.live_time);
         mTvLiveIntroduction = (TextView) view.findViewById(R.id.live_introduction);
         mTvLiveCountDown = (TextView) view.findViewById(R.id.live_count_down);
@@ -97,6 +99,7 @@ public class liveLessonFragment extends BaseFragment {
     public void initDate(){
         mNowTime = new Date().getTime();
         Bundle IntentData = getArguments();
+        mTitle = IntentData.getString(Const.ACTIONBAR_TITLE);
 
         mLiveStartTime = IntentData.getLong(STARTTIME);
         mLiveEndTime = IntentData.getLong(ENDTIME);
@@ -147,12 +150,13 @@ public class liveLessonFragment extends BaseFragment {
             mLiveStartSec = (int) (mLiveStartTimeDiff % 60);
         } else if (mLiveStartTimeDiff < 60 * 60 * 24) {
             mLiveStartHour = (int) (mLiveStartTimeDiff / (60 * 60));
-            mLiveStartMin = (int) (mLiveStartTimeDiff % (60 * 60));
+//            mLiveStartMin = (int) (mLiveStartTimeDiff % (60 * 60));
+            mLiveStartMin = (int) (mLiveStartTimeDiff / 60 % 60);
             mLiveStartSec = (int) (mLiveStartTimeDiff % 60);
         } else {
             mLiveStartDay = (int) (mLiveStartTimeDiff / (60 * 60 * 24));
-            mLiveStartHour = (int) (mLiveStartTimeDiff % (60 * 60 * 24));
-            mLiveStartMin = (int) (mLiveStartTimeDiff % (60 * 60));
+            mLiveStartHour = (int) (mLiveStartTimeDiff / (60 * 60) % 24);
+            mLiveStartMin = (int) (mLiveStartTimeDiff / 60 % 60);
             mLiveStartSec = (int) (mLiveStartTimeDiff % 60);
         }
     }

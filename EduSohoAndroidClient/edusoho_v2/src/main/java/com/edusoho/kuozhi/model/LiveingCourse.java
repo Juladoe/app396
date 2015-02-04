@@ -4,7 +4,7 @@ package com.edusoho.kuozhi.model;
  * Created by onewoman on 2015/2/3.
  */
 public class LiveingCourse {
-    public String id;
+    public int id;
     public String title;
     public String subtitle;
     public String status;

@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.liveCourse;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -8,7 +9,9 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LiveingCourseListAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
+import com.edusoho.kuozhi.model.LiveingCourse;
 import com.edusoho.kuozhi.model.LiveingCourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
@@ -25,6 +28,8 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
     private RefreshListWidget mLiveingCourseRefreshList;
     private View mLoading;
     private LiveingCourseListAdapter mLiveingCourseListAdapter;
+    private static final int LIVINGCOURSE = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +51,15 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         mLiveingCourseRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                final LiveingCourse liveingCourse = (LiveingCourse) parent.getItemAtPosition(position);
+                PluginRunCallback runCallback = new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.COURSE_ID, liveingCourse.id);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, liveingCourse.title);
+                    }
+                };
+                app.mEngine.runNormalPluginForResult("CorusePaperActivity", mActivity, LIVINGCOURSE, runCallback);
             }
         });
         getLiveingCourseRequest(0);
@@ -88,4 +101,6 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
             }
         });
     }
+
+
 }
