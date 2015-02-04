@@ -174,6 +174,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public void setTitle(String title, String fragmentName, boolean showIcon) {
         if (fragmentName.equals("FoundFragment")) {
             initLiveActionBar(title);
+            setLiveControlVisibility(mCompoundButton.getCheckedRadioButtonId() == R.id.btn_video ? View.VISIBLE : View.INVISIBLE);
         } else {
             if (mTitleIconView != null) {
                 mTitleIconView.setVisibility(showIcon ? View.VISIBLE : View.GONE);
@@ -200,12 +201,8 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     private void initLiveActionBar(String title) {
         if (mTitleLiveLayoutView == null) {
             mTitleLiveLayoutView = getLayoutInflater().inflate(R.layout.actionbar_live_title, null);
-        }
-        if (mTitleLiveTextView == null) {
-            mTitleLiveTextView = (TextView) mTitleLiveLayoutView.findViewById(R.id.action_bar_title);
-        }
-        if (mCompoundButton == null) {
             mCompoundButton = (EduSohoCompoundButton) mTitleLiveLayoutView.findViewById(R.id.ec_btn);
+            mTitleLiveTextView = (TextView) mTitleLiveLayoutView.findViewById(R.id.action_bar_title);
         }
         mTitleLiveTextView.setText(title);
         ActionBar.LayoutParams actionBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
