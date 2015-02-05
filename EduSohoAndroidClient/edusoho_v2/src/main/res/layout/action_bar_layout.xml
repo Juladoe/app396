@@ -44,8 +44,7 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/actionbar_menu">
-    </LinearLayout>
+        android:id="@+id/actionbar_menu"></LinearLayout>
 
     <TextView
         android:textColor="@color/action_bar_title"

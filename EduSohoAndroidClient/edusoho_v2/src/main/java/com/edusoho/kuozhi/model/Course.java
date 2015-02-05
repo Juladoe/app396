@@ -39,4 +39,5 @@ public class Course implements Serializable{
     public int vipLevelId;
     public String createdTime;
     public Teacher[] teachers;
+    public String type;
 }

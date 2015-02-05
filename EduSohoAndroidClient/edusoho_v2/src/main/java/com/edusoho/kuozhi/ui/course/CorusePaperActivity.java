@@ -140,11 +140,11 @@ public class CorusePaperActivity extends ActionBarBaseActivity
         setActionBarBackground();
         setContentView(R.layout.course_page_layout);
 
-        titles = new String[]{"简介", "教师", "课程列表", "评价"};
-        fragmentArrayList = new String[]{
-                "CourseIntroductionFragment", "CourseTeacherInfoFragment",
-                "CourseLessonsFragment", "CourseReviewFragment"
-        };
+        titles = new String[]{"简介", "教师", "课时列表", "评价"};
+//        fragmentArrayList = new String[]{
+//                "CourseIntroductionFragment", "CourseTeacherInfoFragment",
+//                "CourseLessonsFragment", "CourseReviewFragment"
+//        };
 
         initIntentData();
         initFragmentPaper();
@@ -664,9 +664,21 @@ public class CorusePaperActivity extends ActionBarBaseActivity
             setTitle(mTitle);
         }
 
+        if(mCourseDetailsResult.course.type.equals("live")){
+            fragmentArrayList = new String[]{
+                    "CourseIntroductionFragment", "CourseTeacherInfoFragment",
+                    "LiveCourseLessonsFragment", "CourseReviewFragment"
+            };
+        }
+        else{
+            fragmentArrayList = new String[]{
+                    "CourseIntroductionFragment", "CourseTeacherInfoFragment",
+                    "CourseLessonsFragment", "CourseReviewFragment"
+            };
+        }
+
         fragmentAdapter = new MyPagerAdapter(
                 mActivity.getSupportFragmentManager(), fragmentArrayList, titles);
-
         mTabs.setIndicatorColorResource(R.color.action_bar_bg);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
@@ -800,6 +812,8 @@ public class CorusePaperActivity extends ActionBarBaseActivity
                     course.about
             });
         } else if (fragmentName.equals("CourseLessonsFragment")) {
+            bundle.putInt(Const.COURSE_ID, course.id);
+        } else if (fragmentName.equals("LiveCourseLessonsFragment")){
             bundle.putInt(Const.COURSE_ID, course.id);
         } else if (fragmentName.equals("CourseReviewFragment")) {
             bundle.putInt(Const.COURSE_ID, course.id);

@@ -12,7 +12,10 @@ import com.edusoho.kuozhi.model.LiveingCourseResult;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.zip.Inflater;
 
 /**
@@ -38,10 +41,10 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHost viewHost = new ViewHost();
         if(view == null){
-            ViewGroup inflate = (ViewGroup) inflater.inflate(mResource,null);
-            viewHost.liveingCourseImage = (ImageView) inflate.findViewById(R.id.liveing_course_icon);
-            viewHost.tvLiveingCourseTitle = (TextView) inflate.findViewById(R.id.liveing_course_title);
-            viewHost.tvLiveingCourseTime = (TextView) inflate.findViewById(R.id.liveing_course_time);
+            view = inflater.inflate(mResource,null);
+            viewHost.liveingCourseImage = (ImageView) view.findViewById(R.id.liveing_course_icon);
+            viewHost.tvLiveingCourseTitle = (TextView) view.findViewById(R.id.liveing_course_title);
+            viewHost.tvLiveingCourseTime = (TextView) view.findViewById(R.id.liveing_course_time);
             view.setTag(viewHost);
         }else{
             viewHost = (ViewHost) view.getTag();
@@ -53,11 +56,41 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
         viewHost.tvLiveingCourseTitle.setText(liveingCourseData.title);
         if("".equals(liveingCourseData.liveLessonTitle)){
             viewHost.tvLiveingCourseTime.setText("暂时没有要开始的直播");
-//            String liveingCourseTime = String.format("距离直播%s开始还有%d", liveingCourseData.liveLessonTitle)
         }else{
             //todo
+            long nowTime = System.currentTimeMillis();
+            long paraseStartTime = parseTime(liveingCourseData.liveStartTime);
+            String liveingCourseTime;
+            if(paraseStartTime > nowTime){
+                liveingCourseTime = String.format("距离直播%s开始还有", liveingCourseData.liveLessonTitle);
+                long diffTime = paraseStartTime - nowTime;
+                diffTime = diffTime / 1000;
+                if(diffTime < 60 && diffTime > 0){
+                    liveingCourseTime = liveingCourseTime + diffTime + "秒";
+                }else if(diffTime < 60 * 60){
+                    liveingCourseTime = liveingCourseTime + diffTime / 60 + "分钟";
+                }else if(diffTime < 60 * 60 * 24){
+                    liveingCourseTime = liveingCourseTime +  diffTime / (60 * 60) + "小时";
+                }else{
+                    liveingCourseTime = liveingCourseTime +  diffTime / (60 * 60 * 24) + "天";
+                }
+            }else{
+                liveingCourseTime = String.format("正在直播:%s", liveingCourseData.liveLessonTitle);
+            }
+            viewHost.tvLiveingCourseTime.setText(liveingCourseTime);
         }
-        return super.getView(i, view, viewGroup);
+        return view;
+    }
+
+    public long parseTime(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            String tDate = date.split("[+]")[0].replace('T', ' ');
+            return  sdf.parse(tDate).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0L;
     }
 
     private class ViewHost{

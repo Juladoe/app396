@@ -3,11 +3,13 @@ package com.edusoho.kuozhi.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.URLSpan;
 import android.util.Log;
@@ -36,6 +38,8 @@ import com.edusoho.kuozhi.view.ESTextView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
+import org.xml.sax.XMLReader;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +51,8 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class MessageListAdapter extends ListBaseAdapter<Notify> {
     private ActionBarBaseActivity mActivity;
+    private int mFontStartIndex = 0;
+    private int mFontEndIndex = 0;
 
     public MessageListAdapter(
             Context context, ActionBarBaseActivity activity, int resource) {
@@ -82,7 +88,6 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
         }
 
         TextView textView = (TextView) view.findViewById(R.id.message_content);
-        ESTextView tvTime = (ESTextView) view.findViewById(R.id.notify_time);
         Notify notify = mList.get(index);
 
         SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(notify.message);
@@ -90,9 +95,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
         String content = notifyStrs[0];
         String notifyTime = notifyStrs[notifyStrs.length - 1];
 
-        tvTime.setText(notifyTime);
-        SpannableStringBuilder end = coverSpanned(removeTime(notify.message));
-        textView.setText(end.delete(end.length()-4,end.length()));
+        textView.setText(coverSpanned(notify.message));
         textView.setClickable(true);
 
         textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -100,7 +103,22 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
     }
 
     private SpannableStringBuilder coverSpanned(String text) {
-        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text);
+        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text, null, new Html.TagHandler() {
+            @Override
+            public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
+                if (tag.equalsIgnoreCase("fontsize")) {
+                    if (opening) {
+                        mFontStartIndex = output.length();
+                    } else {
+                        mFontEndIndex = output.length();
+                        output.setSpan(new AbsoluteSizeSpan(12, true),
+                                mFontStartIndex,
+                                mFontEndIndex,
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+        });
         CharacterStyle[] styleSpans = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
         for (CharacterStyle styleSpan : styleSpans) {
             if (styleSpan instanceof URLSpan) {
@@ -244,14 +262,4 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
             "/([a-zA-Z]+)/(\\w+)/?(([a-zA-Z]+)/?(\\w*))?(#(\\w+)-(\\w+))?",
             Pattern.DOTALL
     );
-
-    private String removeTime(String content) {
-        Matcher m = Pattern.compile("<div class=\"notification-footer\">\\s*.*\\s*</div>").matcher(content);
-        while (m.find()) {
-            content = content.replace(m.group(0), "");
-        }
-        return content;
-    }
-
-
 }

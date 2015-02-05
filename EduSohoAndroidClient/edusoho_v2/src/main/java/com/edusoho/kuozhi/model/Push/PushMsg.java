@@ -4,7 +4,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 
 import com.edusoho.kuozhi.ui.message.MessageLetterListActivity;
-import com.edusoho.kuozhi.ui.question.QuestionDetailActivity;
+import com.edusoho.kuozhi.ui.questionDeprecated.QuestionDetailActivity;
 import com.edusoho.kuozhi.util.Const;
 
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.question;
+package com.edusoho.kuozhi.ui.questionDeprecated;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

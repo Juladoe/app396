@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,7 +25,7 @@ import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
 import com.edusoho.kuozhi.model.Question.ReplyResult;
 import com.edusoho.kuozhi.model.User;
-import com.edusoho.kuozhi.ui.question.QuestionReplyActivity;
+import com.edusoho.kuozhi.ui.questionDeprecated.QuestionReplyActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.html.EduTagHandler;

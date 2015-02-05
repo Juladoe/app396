@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.ui.questionnew;
+package com.edusoho.kuozhi.ui.question;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.fragment.LoginFragment;
 import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 public class LiveingCourseResult {
     public int start;
-    public int total;
     public int limit;
     public ArrayList<LiveingCourse> data;
 }

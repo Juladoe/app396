@@ -82,11 +82,6 @@ public class FollowFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final User user = (User) parent.getAdapter().getItem(position);
-//                final Bundle bundle = new Bundle();
-//                bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
-//                bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
-//                bundle.putSerializable(ProfileFragment.FOLLOW_USER, user);
-//                bundle.putString(FollowFragment.FOLLOW_TYPE, mType);
                 app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, FOLLOW_REFRESH, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -157,7 +152,9 @@ public class FollowFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        loadFollows(0, false);
+        if (requestCode == FollowFragment.FOLLOW_REFRESH) {
+            loadFollows(0, false);
+        }
     }
 
     @Override

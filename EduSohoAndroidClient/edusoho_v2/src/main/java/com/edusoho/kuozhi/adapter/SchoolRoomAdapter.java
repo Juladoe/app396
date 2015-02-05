@@ -103,26 +103,31 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
         if (index != 0) {
             switch (index) {
                 case 1:
-                    //在学课程
+                    //直播课程
                     btn.setIcon(R.string.schoolroom_course);
                     btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_course));
                     break;
                 case 2:
+                    //在学课程
+                    btn.setIcon(R.string.schoolroom_course);
+                    btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_course));
+                    break;
+                case 3:
                     //问答
                     btn.setIcon(R.string.schoolroom_question);
                     btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_question));
                     break;
-                case 3:
+                case 4:
                     //讨论
                     btn.setIcon(R.string.schoolroom_discussion);
                     btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_discussion));
                     break;
-                case 4:
+                case 5:
                     //笔记
                     btn.setIcon(R.string.schoolroom_note);
                     btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_note));
                     break;
-                case 5:
+                case 6:
                     //私信
                     btn.setIcon(R.string.schoolroom_letter);
                     btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_letter));

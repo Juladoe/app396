@@ -229,9 +229,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
 
+
         fragmentTransaction.commit();
         mCurrentTag = tag;
-        setTitle(fragment.getTitle(), showIcon);
+        setTitle(fragment.getTitle(), tag, showIcon);
         changeNavBtn(id);
         changeBtnIcon(id);
     }

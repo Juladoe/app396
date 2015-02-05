@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="直播时间:"
+        android:textColor="@color/base_color_normal"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingLeft="20dp"
+        android:id="@+id/live_time"
+        android:text="2014-01-15 20:40~21:40"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp"
+        android:text="直播说明:"
+        android:textColor="@color/base_color_normal"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingLeft="20dp"
+        android:id="@+id/live_introduction"
+        android:text="直播说明。。。"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:id="@+id/live_introduction_click"
+        android:text="收起"
+        android:textColor="@color/base_color_normal"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="10px"
+        android:paddingTop="16dp"
+        android:src="@drawable/list_divider_color"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:layout_gravity="center"
+        android:id="@+id/live_count_down"
+        android:textSize="20sp"
+        android:textColor="@color/base_light_red"/>
+
+    <Button
+        android:layout_width="232dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:id="@+id/live_course_click"
+        android:text="进入直播教室"
+        android:textSize="20sp"
+        android:textColor="#fff"
+        android:background="#2ec368"/>
+
+</LinearLayout>

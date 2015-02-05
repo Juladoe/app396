@@ -97,6 +97,7 @@ public class Const {
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
+    public static final String LIVE_COURSES="Course/getAllLiveCourse";
     public static final String COURSE_MEMBER = "Course/getCourseMember";
     public static final String FLASH_APK = "School/getFlashApk";
     public static final String MY_TESTPAPER = "Testpaper/myTestpaper";
@@ -358,4 +359,11 @@ public class Const {
      * 更新问答浏览次数
      */
     public static final String HitThread = "Course/hitThread";
+
+    /**
+     * 在学直播课程
+     */
+    public static final String LIVING_COURSE = "Course/getLiveCourses";
+
+    public static final String LIVE_COURSE = "Course/getLiveCourse";
 }
