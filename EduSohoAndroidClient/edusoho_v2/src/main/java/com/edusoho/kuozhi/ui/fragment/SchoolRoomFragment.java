@@ -66,7 +66,7 @@ public class SchoolRoomFragment extends BaseFragment {
         mSchoolRoomListView = (RefreshListWidget) mView.findViewById(R.id.lv_schoolroom);
         mLoadView = mView.findViewById(R.id.load_layout);
         mSchoolRoomListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        mSchoolRoomListView.setEmptyText(new String[]{"您尚未登录"});
+        mSchoolRoomListView.setEmptyText(new String[]{"数据访问出错"});
         mSchoolRoomListView.setAdapter(new SchoolRoomAdapter(mContext,
                 R.layout.schoolroom_list_item));
         mSchoolRoomListView.setUpdateListener(new RefreshListWidget.UpdateListener() {

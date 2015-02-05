@@ -104,7 +104,7 @@ public class SchoolRoomAdapter<T> extends ListBaseAdapter<T> {
             switch (index) {
                 case 1:
                     //直播课程
-                    btn.setIcon(R.string.schoolroom_course);
+                    btn.setIcon(R.string.schoolroom_live);
                     btn.setBackgroundColor(mContext.getResources().getColor(R.color.schoolroom_course));
                     break;
                 case 2:
