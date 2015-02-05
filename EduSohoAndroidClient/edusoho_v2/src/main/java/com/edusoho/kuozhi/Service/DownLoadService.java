@@ -59,6 +59,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import ch.boye.httpclientandroidlib.androidextra.Base64;
+import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -202,7 +203,7 @@ public class DownLoadService extends Service {
         }, 0, 100);
     }
 
-    private LessonResource queryDownTask(int materialId)
+    public static LessonResource queryDownTask(EdusohoApp app, int materialId)
     {
         SqliteUtil.QueryPaser<LessonResource> queryPaser = new SqliteUtil.QueryPaser<LessonResource>() {
             @Override
@@ -218,6 +219,7 @@ public class DownLoadService extends Service {
             }
         };
 
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(app);
         return sqliteUtil.query(
                 queryPaser,
                 "select * from lesson_resource where materialId=? and userId=? and host=?",
@@ -251,7 +253,7 @@ public class DownLoadService extends Service {
 
     public void startDownTask(final LessonMaterial lessonMaterial)
     {
-        LessonResource lessonResource = queryDownTask(lessonMaterial.id);
+        LessonResource lessonResource = queryDownTask(app, lessonMaterial.id);
         if (lessonResource == null) {
             addLessonResource(lessonMaterial);
         }
@@ -291,6 +293,13 @@ public class DownLoadService extends Service {
         return list;
     }
 
+    public static String getLocalResourceFileName(String name)
+    {
+        StringBuilder stringBuilder = new StringBuilder(DigestUtils.md5(name));
+        String fileExt = AppUtil.getFileExt(name);
+        return stringBuilder.append(fileExt).toString();
+    }
+
     private void downLoadFileByClient(final LessonMaterial lessonMaterial)
     {
         File resourceFile = null;
@@ -298,8 +307,9 @@ public class DownLoadService extends Service {
         try {
             Log.d(null, "start download -> " + lessonMaterial.title);
             File dir = getLocalResourceDir(mContext);
-            resourceFile = new File(dir, lessonMaterial.title);
-            long offset = resourceFile.length() > 0 ? resourceFile.length() - 1 : 0;
+
+            resourceFile = new File(dir, getLocalResourceFileName(lessonMaterial.title));
+            final long offset = resourceFile.length() > 0 ? resourceFile.length() - 1 : 0;
             httpGet.addHeader("Range", "bytes=" + offset + "-");
             Log.d(null, "download Range-> " + offset);
             HttpResponse response = mHttpClient.execute(httpGet);
@@ -312,6 +322,7 @@ public class DownLoadService extends Service {
                     //发送下载广播
                     Intent intent = new Intent(ResourceDownStatusReceiver.ACTION);
                     intent.putExtra("materialId", lessonMaterial.id);
+                    intent.putExtra("download", offsets[0]);
                     intent.putExtra(Const.ACTIONBAR_TITLE, lessonMaterial.title);
                     mContext.sendBroadcast(intent);
                 }
