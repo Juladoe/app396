@@ -7,17 +7,19 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.androidquery.callback.AjaxStatus;
-import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.adapter.LessonMaterialAdapter;
+import com.edusoho.kuozhi.broadcast.ResourceDownStatusReceiver;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.BaseResult;
+import com.edusoho.kuozhi.model.Lesson.LessonResource;
 import com.edusoho.kuozhi.model.LessonMaterial;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -40,6 +42,7 @@ public class LessonResourceActivity extends ActionBarBaseActivity
 
     private ListWidget mResourceListView;
     private ArrayList<LessonMaterial> mLessonMaterials;
+    private ResourceDownStatusReceiver mResourceDownStatusReceiver;
 
     private int mCourseId;
     private int mLessonId;
@@ -64,8 +67,9 @@ public class LessonResourceActivity extends ActionBarBaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app.registMsgSource(this);
-        cacheDir = AQUtility.getCacheDir(mContext);
+        cacheDir = DownLoadService.getLocalResourceDir(mContext);
         setContentView(R.layout.lesson_resource_layout);
+        mResourceDownStatusReceiver = new ResourceDownStatusReceiver();
         initView();
     }
 
@@ -91,7 +95,6 @@ public class LessonResourceActivity extends ActionBarBaseActivity
 
     private void initView() {
         setBackMode(BACK, "课时资料");
-
         mResourceListView = (ListWidget) findViewById(R.id.lesson_resource_list);
 
         Intent data = getIntent();
@@ -106,20 +109,18 @@ public class LessonResourceActivity extends ActionBarBaseActivity
         }
 
         loadResources();
-
         mResourceListView.setOnItemClick(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 LessonMaterial lessonMaterial = (LessonMaterial) adapterView.getItemAtPosition(i);
-                ArrayList<LessonMaterialAdapter.MaterialCKStatus> checkList = mAdapter.getCheckList();
-                LessonMaterialAdapter.MaterialCKStatus status = checkList.get(i - 1);
+                LessonMaterialAdapter.MaterialCKStatus status = mAdapter.getItemCheckStatus(lessonMaterial);
                 if (status == LessonMaterialAdapter.MaterialCKStatus.UN_DOWNLOAD) {
                     boolean sdCardExist = Environment.getExternalStorageState()
                             .equals(android.os.Environment.MEDIA_MOUNTED);
                     if (!sdCardExist) {
                         longToast("设备没有内存卡！下载资料保存可能会失败");
                     }
-                    downLoadRes(lessonMaterial);
+                    mAdapter.downLoadRes(lessonMaterial);
                     return;
                 }
                 File file = new File(cacheDir, lessonMaterial.title);
@@ -143,7 +144,7 @@ public class LessonResourceActivity extends ActionBarBaseActivity
                 app.token
         );
         lessonMaterial.fileUri = url;
-        DownLoadService.startDown(mContext, lessonMaterial, url);
+        DownLoadService.startDown(mContext, lessonMaterial);
     }
 
     private void initDownloadStatus()
@@ -156,13 +157,9 @@ public class LessonResourceActivity extends ActionBarBaseActivity
             return;
         }
 
-        ArrayList<Boolean> downloadStatus = new ArrayList<Boolean>();
-        for (LessonMaterial material : mLessonMaterials) {
-            File file = new File(cacheDir, material.title);
-            Log.d(null, "file->" + file + "  " + file.exists());
-            downloadStatus.add(file.exists());
-        }
-        mAdapter.initDownloadStatus(downloadStatus);
+        SparseArray<LessonResource> downloadStatus;
+        downloadStatus = DownLoadService.queryAllDownloadStatus(app, mLessonId);
+        mAdapter.setDownloadStatus(downloadStatus);
     }
 
     private void loadResources() {
@@ -186,8 +183,8 @@ public class LessonResourceActivity extends ActionBarBaseActivity
                 mLessonMaterials = lessonMaterialBaseResult.data;
                 mAdapter = new LessonMaterialAdapter(
                         mContext, lessonMaterialBaseResult.data, R.layout.lesson_material_item);
-                mResourceListView.setAdapter(mAdapter);
                 initDownloadStatus();
+                mResourceListView.setAdapter(mAdapter);
             }
         });
     }

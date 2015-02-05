@@ -81,9 +81,7 @@ public class LocalCoruseActivity extends CourseDetailsTabActivity {
             public ArrayList<LessonItem> parse(Cursor cursor) {
                 String value = cursor.getString(cursor.getColumnIndex("value"));
                 LessonItem item = mActivity.parseJsonValue(
-                        value, new TypeToken<LessonItem>() {
-                }
-                );
+                        value, new TypeToken<LessonItem>() {});
                 lessonItems.add(item);
                 return lessonItems;
             }

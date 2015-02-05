@@ -51,8 +51,12 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -1147,5 +1151,45 @@ public class AppUtil {
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.setCancelable(false);
         return mProgressDialog;
+    }
+
+    public static String getFileExt(String fileName)
+    {
+        int pos = fileName.lastIndexOf(".");
+        if (pos != -1) {
+            return fileName.substring(pos);
+        }
+        return null;
+    }
+
+    public static boolean writeRandomFile(
+            File file, InputStream stream, String mode, NormalCallback callback) {
+        RandomAccessFile o = null;
+        try {
+            o = new RandomAccessFile(file, "rw");
+            o.seek(file.length());
+            byte data[] = new byte[1024];
+            int length = -1;
+            while ((length = stream.read(data)) != -1) {
+                o.write(data, 0, length);
+                Log.d(null, "writeRandomFile " + o.length());
+                callback.success(new long[] { o.length()});
+            }
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (o != null) {
+                try {
+                    o.close();
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
     }
 }

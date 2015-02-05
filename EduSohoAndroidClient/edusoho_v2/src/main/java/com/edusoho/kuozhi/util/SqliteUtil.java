@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -22,10 +23,12 @@ import java.util.ArrayList;
 public class SqliteUtil extends SQLiteOpenHelper{
 
     private Context mContext;
-    private static final int dbVersion = 9;
-    private static final int oldVersion = 8;
+    private static final int dbVersion = 10;
+    private static final int oldVersion = 9;
 
     private static SqliteUtil instance;
+
+    private static String[] INIT_SQLS = { "db_init_m3u8.sql", "db_init_lesson_resource.sql"};
 
 	public SqliteUtil(Context context, String name, CursorFactory factory) {
 		super(context, Const.DB_NAME, null, dbVersion);
@@ -87,11 +90,25 @@ public class SqliteUtil extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(null, String.format("create db_init_m3u8 db newVersion %d ov %d", newVersion, oldVersion));
-        ArrayList<String> sqlList = getInitSql("db_init_m3u8.sql");
+        SharedPreferences sp = mContext.getSharedPreferences("db_preference", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        for (String initSql : INIT_SQLS) {
+            if (!sp.contains(initSql)) {
+                initDbSql(initSql, db);
+                editor.putBoolean(initSql, true);
+            }
+        }
+        editor.commit();
+	}
+
+    private void initDbSql(String name, SQLiteDatabase db)
+    {
+        Log.d(null, "initDbSql->" + name);
+        ArrayList<String> sqlList = getInitSql(name);
         for (String sql : sqlList) {
             db.execSQL(sql);
         }
-	}
+    }
 
     public Cache query(String selection, String... selectionArgs)
     {

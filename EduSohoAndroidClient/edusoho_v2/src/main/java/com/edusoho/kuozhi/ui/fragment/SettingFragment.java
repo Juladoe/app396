@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.util.annotations.ViewUtil;
 import com.edusoho.kuozhi.view.EduUpdateView;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
@@ -264,13 +265,14 @@ public class SettingFragment extends BaseFragment {
         });
     }
 
-
     private void clearCache() {
         File dir = AQUtility.getCacheDir(mActivity);
         AQUtility.cleanCache(dir, 0, 0);
         mCacheView.setText(getCacheSize());
         mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
+
+        SqliteUtil.getUtil(mContext).delete("lesson_resource", "", null);
     }
 
     private String getCacheSize() {
