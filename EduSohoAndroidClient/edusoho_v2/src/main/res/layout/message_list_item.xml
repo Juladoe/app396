@@ -14,14 +14,4 @@
         android:layout_height="wrap_content"
         android:isScrollContainer="false" />
 
-    <com.edusoho.kuozhi.view.ESTextView
-        android:id="@+id/notify_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/base_black_normal"
-        android:text="2012-1-13 12:00:00"
-        android:padding="8dp"
-        app:es_alpha="0.26"
-        android:textSize="@dimen/x_small_font_size" />
-
 </LinearLayout>
