@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="title">#FFC24F05</color>
+    <color name="text">#FF3A3A3A</color>
+    <color name="dark">#FF292929</color>
+    <color name="desc">#FF454545</color>
+    <color name="article">#FFE5E5E5</color>
+    <color name="gray">#FF505050</color>
+    <color name="red">#ffff0033</color>
+    <color name="login_background">#EFEFEF</color>
+    <color name="login_text">#8d9389</color>
+    <color name="pad_detail_text">#8b93a3</color>
+    <color name="half_round">#FFA6A8A9</color>
+    <color name="pad_rec_text">#9ca4b7</color>
+    <color name="pad_main_layout_back">#AA000000</color>
+    <color name="history_splitter">#00262626</color>
+    <color name="green">#090</color>
+    <color name="blue">#009</color>
+
+
+
+    <color name="transparent_gray">#6e232526</color>
+    <color name="transparent_red">#6eff0033</color>
+    <color name="transparent_white">#6eFFFFFF</color>
+    <color name="transparent_black">#a0000000</color>
+    <color name="transparent_small_black">#50000000</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="top_normal_color">#e3ebf5</color>
+
+    <color name="text1_normal_color">#bacee6</color>
+    <color name="text2_normal_color">#a4a4a4</color>
+    <!-- 三级标题颜色 -->
+    <color name="text3_normal_color">#646464</color>
+
+
+    <color name="eplayer_title_bg">#3b82c4</color>
+    <color name="eplayer_activity_bg">#e8e8e8</color>
+    <color name="eplayer_face_unselect">#dddddd</color>
+
+    <color name="eplayer_list_item_separator">#a0b4b5b5</color>
+
+    <color name="eplayer_pad_title_bg">#3FB558</color><!--绿-->
+    <color name="eplayer_pad_title_bg2">#3B82C4</color><!--蓝-->
+
+
+    <color name="grid_line_bg">#b4b5b5</color>
+    <color name="playercontroller_bg_color">#cc3c4650</color>
+
+    <color name="playercontroller_bar_text_color">#848484</color>
+
+    <color name="pad_teacher_area_bg_color">#f3f3f3</color>
+    <color name="pad_teacher_area_diver_color">#ccbebebe</color>
+
+    <color name="pad_teacher_area_tv_color">#9a9a9a</color>
+
+    <color name="vote_select_bt_bg">#5591ca</color>
+</resources>
