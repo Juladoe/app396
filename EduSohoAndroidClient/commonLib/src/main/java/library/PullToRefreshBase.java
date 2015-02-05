@@ -92,7 +92,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     private boolean mFilterTouchEvents = true;
     private boolean mOverScrollEnabled = true;
     private boolean mLayoutVisibilityChangesEnabled = true;
-    private boolean mFlag = false;
+    protected boolean mFlag = false;
+    protected boolean isSetRefreshIng = false;
 
     private Interpolator mScrollAnimationInterpolator;
     private AnimationStyle mLoadingAnimationStyle = AnimationStyle.getDefault();
@@ -355,6 +356,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
                     if (mState == State.RELEASE_TO_REFRESH
                             && (null != mOnRefreshListener || null != mOnRefreshListener2)) {
+//                        isSetRefreshIng = false;
                         setState(State.REFRESHING, true);
                         return true;
                     }
@@ -554,6 +556,9 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
             Log.d(LOG_TAG, "State: " + mState.name());
         }
 
+        if(mState == state.MANUAL_REFRESHING){
+            isSetRefreshIng = true;
+        }
         switch (mState) {
             case RESET:
                 onReset();
@@ -650,6 +655,10 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     protected final LoadingLayout getHeaderLayout() {
         return mHeaderLayout;
     }
+
+//    protected LoadingLayout getMyHeaderLayout(){
+//        return mHeaderLayout;
+//    }
 
     protected final int getHeaderSize() {
         return mHeaderLayout.getContentSize();
@@ -800,9 +809,11 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         mIsBeingDragged = false;
         mLayoutVisibilityChangesEnabled = true;
 
-        if(mFlag && mCurrentMode == Mode.PULL_FROM_START) {
+        if(mFlag && mCurrentMode == Mode.PULL_FROM_START && !isSetRefreshIng) {
             mHeaderLayout.refreshSucceed();
             mHeaderLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_succeed));
+//            getMyHeaderLayout().refreshSucceed();
+//            getMyHeaderLayout().setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_succeed));
 
             Handler handler = new Handler();
             handler.postAtTime(new Runnable() {
@@ -810,7 +821,6 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
                 public void run() {
                     mHeaderLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_loading));
                     mFlag = false;
-                    Log.i(null, "PullToRefreshBase complete");
                     mHeaderLayout.reset();
                     mFooterLayout.reset();
                     smoothScrollTo(0);

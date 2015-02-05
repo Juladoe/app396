@@ -24,7 +24,6 @@ import android.os.Build.VERSION_CODES;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +40,8 @@ public class PullToRefreshListView<T extends ListView> extends PullToRefreshAdap
 
     private LoadingLayout mHeaderLoadingView;
     private LoadingLayout mFooterLoadingView;
+
+//    private LoadingLayout mListViewLoadingLayout;
 
     private FrameLayout mLvFooterLoadingFrame;
 
@@ -161,27 +162,48 @@ public class PullToRefreshListView<T extends ListView> extends PullToRefreshAdap
                 scrollToHeight = -getHeaderSize();
                 selection = 0;
                 scrollLvToEdge = Math.abs(mRefreshableView.getFirstVisiblePosition() - selection) <= 1;
+                if(mFlag && isSetRefreshIng){
+                    listViewLoadingLayout.refreshSucceed();
+                    listViewLoadingLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_succeed));
+
+                    if (listViewLoadingLayout.getVisibility() == View.VISIBLE) {
+                        originalLoadingLayout.showInvisibleViews();
+
+                        Handler handler = new Handler();
+                        handler.postAtTime(new Runnable() {
+                            @Override
+                            public void run() {
+                                listViewLoadingLayout.setVisibility(View.GONE);
+                                listViewLoadingLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_loading));
+                                mFlag = false;
+                                isSetRefreshIng = false;
+
+                                /**
+                                 * Scroll so the View is at the same Y as the ListView
+                                 * header/footer, but only scroll if: we've pulled to refresh, it's
+                                 * positioned correctly
+                                 */
+                                if (scrollLvToEdge && getState() == State.MANUAL_REFRESHING) {
+                                    mRefreshableView.setSelection(selection);
+                                    setHeaderScroll(scrollToHeight);
+                                }
+                            }
+                        }, SystemClock.uptimeMillis() + 500);
+                        return ;
+                    }
+                }
                 break;
         }
 
-        listViewLoadingLayout.refreshSucceed();
-        listViewLoadingLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_succeed));
-
-        Handler handler = new Handler();
-        handler.postAtTime(new Runnable() {
-            @Override
-            public void run() {
                 // If the ListView header loading layout is showing, then we need to
                 // flip so that the original one is showing instead
                 if (listViewLoadingLayout.getVisibility() == View.VISIBLE) {
 
                     // Set our Original View to Visible
                     originalLoadingLayout.showInvisibleViews();
-
                     // Hide the ListView Header/Footer
                     listViewLoadingLayout.setVisibility(View.GONE);
 
-                    listViewLoadingLayout.setLoadingDrawable(getResources().getDrawable(R.drawable.refresh_loading));
                     /**
                      * Scroll so the View is at the same Y as the ListView
                      * header/footer, but only scroll if: we've pulled to refresh, it's
@@ -192,12 +214,14 @@ public class PullToRefreshListView<T extends ListView> extends PullToRefreshAdap
                         setHeaderScroll(scrollToHeight);
                     }
                 }
-            }
-        }, SystemClock.uptimeMillis() + 500);
 
         // Finally, call up to super
         super.onReset();
     }
+//    @Override
+//    protected LoadingLayout getMyHeaderLayout() {
+//        return mListViewLoadingLayout;
+//    }
 
     @Override
     protected LoadingLayoutProxy createLoadingLayoutProxy(final boolean includeStart, final boolean includeEnd) {

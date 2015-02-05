@@ -73,14 +73,12 @@ public class RotateLoadingLayout extends LoadingLayout {
 			angle = Math.max(0f, Math.min(180f, scaleOfLayout * 360f - 180f));
 		}
 
-        System.out.println("onPullImpl:0");
         mHeaderImageMatrix.setRotate(angle, mRotationPivotX, mRotationPivotY);
 		mHeaderImage.setImageMatrix(mHeaderImageMatrix);
 	}
 
 	@Override
 	protected void refreshingImpl() {
-        System.out.println("refreshingImpl:3");
 		mHeaderImage.startAnimation(mRotateAnimation);
         resetImageRotation();
         mHeaderImageMatrix.setRotate(0, mRotationPivotX, mRotationPivotY);
@@ -89,7 +87,6 @@ public class RotateLoadingLayout extends LoadingLayout {
 
 	@Override
 	protected void resetImpl() {
-        System.out.println("resetImpl:5");
 		mHeaderImage.clearAnimation();
 		resetImageRotation();
 	}
@@ -103,19 +100,16 @@ public class RotateLoadingLayout extends LoadingLayout {
 
 	@Override
 	protected void pullToRefreshImpl() {
-        System.out.println("pullToRefreshImpl:1");
 		// NO-OP
 	}
 
 	@Override
 	protected void releaseToRefreshImpl() {
-        System.out.println("releaseToRefreshImpl:2");
 		// NO-OP
 	}
 
     @Override
     protected void refreshSucceedImp() {
-        System.out.println("refreshSucceedImp:4");
         mHeaderImage.clearAnimation();
     }
 
