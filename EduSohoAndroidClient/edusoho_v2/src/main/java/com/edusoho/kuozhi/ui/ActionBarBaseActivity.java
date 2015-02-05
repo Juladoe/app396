@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -211,6 +212,11 @@ public class ActionBarBaseActivity extends ActionBarActivity {
                 ActionBar.LayoutParams.MATCH_PARENT);
         actionBarLayoutParams.gravity = Gravity.CENTER;
         mActionBar.setCustomView(mTitleLiveLayoutView, actionBarLayoutParams);
+        ((Toolbar) mTitleLiveLayoutView.getParent()).getChildAt(0).measure(0, 0);
+        int menuWidth = ((Toolbar) mTitleLiveLayoutView.getParent()).getChildAt(0).getMeasuredWidth();
+        mCompoundButton.measure(0, 0);
+        RelativeLayout.LayoutParams relativeLayout = (RelativeLayout.LayoutParams) mCompoundButton.getLayoutParams();
+        relativeLayout.setMargins(0, 0, mActivity.app.screenW / 2 - mCompoundButton.getMeasuredWidth() / 2 - menuWidth, 0);
     }
 
     public void setCompoundButtonVisibility(int visibilityId) {

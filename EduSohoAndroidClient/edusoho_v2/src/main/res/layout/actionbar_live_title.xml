@@ -29,7 +29,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/ec_btn"
-        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:checkedButton="@+id/btn_video">
 
         <RadioButton
