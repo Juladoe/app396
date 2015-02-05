@@ -17,6 +17,7 @@ dependencies {
     compile project(':commonUtils')
     compile project(':bdvideoplayer')
     compile project(':shard')
+    compile project(':liveEplayer')
     compile project(':commonLib')
     compile files('libs/libammsdk.jar')
     compile files('libs/universal-image-loader-1.9.3.jar')

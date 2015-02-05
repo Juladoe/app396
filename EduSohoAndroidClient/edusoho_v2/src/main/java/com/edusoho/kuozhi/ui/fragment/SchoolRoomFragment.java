@@ -3,12 +3,10 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
@@ -30,9 +28,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import cn.trinea.android.common.util.ToastUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -107,38 +103,43 @@ public class SchoolRoomFragment extends BaseFragment {
     private void showItemActivity(int type, final SchoolRoomResult result) {
         switch (type) {
             case 1:
-                //在学直播
-                showLiveingCoure();
-                break;
-            case 2:
                 //在学直播课
                 goToLiveCourseDetailsActivity();
-            case 3:
+                break;
+            case 2:
                 //在学课程
                 goToCourseDetailsActivity(result);
                 break;
-            case 4:
+            case 3:
                 //问答
                 goToQuestionDetailActivity("问答", "question", "暂无提问", R.drawable.icon_question);
                 break;
-            case 5:
+            case 4:
                 //讨论
                 goToQuestionDetailActivity("讨论", "discussion", "暂无讨论", R.drawable.icon_discussion);
                 break;
-            case 6:
+            case 5:
                 //笔记
                 goToNoteContentFragment(result);
                 break;
-            case 7:
+            case 6:
                 //私信
                 goToMessageLetterListActivity(result);
                 break;
-
         }
     }
 
     private void goToLiveCourseDetailsActivity() {
-
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
+        PluginRunCallback callback = new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+            }
+        };
+        app.mEngine.runNormalPlugin("liveingCourseActivity", mActivity, callback);
     }
 
     /**
@@ -195,22 +196,6 @@ public class SchoolRoomFragment extends BaseFragment {
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");
         app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-    }
-
-    /**
-     * 跳转到在学直播课程
-     */
-    private void showLiveingCoure() {
-        if (app.loginUser == null) {
-            LoginActivity.start(mActivity);
-            return;
-        }
-        PluginRunCallback callback = new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-            }
-        };
-        app.mEngine.runNormalPlugin("liveingCourseActivity", mActivity, callback);
     }
 
     private void loadSchoolRoomData() {

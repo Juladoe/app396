@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +80,7 @@ public class ListWidget extends FrameLayout {
         mEmptyView = initEmptyView();
         mResourceListView = new RefreshListWidget(mContext);
         mResourceListView.setMode(mPullMode);
+        mResourceListView.getRefreshableView().setDivider(new ColorDrawable(Color.LTGRAY));
         mResourceListView.getRefreshableView().setDividerHeight(1);
 
         addView(mResourceListView);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ACTIVITY_ENTRY_NAME</string>
+    <string name="liveClassroomId_username_userpwd">房间ID、用户名、密码不能为空</string>
+
+
+    <string name="edit_hint_speak">我要发言</string>
+    <string name="edit_hint_question">我要提问</string>
+
+    <string name="bt_speak">发送</string>
+    <string name="bt_question">提问</string>
+
+    <string name="textview_hint_speak">讨论</string>
+    <string name="textview_hint_question">提问</string>
+
+    <string name="pad_get_livelist_error">获取直播列表信息失败</string>
+
+    <string name="vote_countenmame_hint">共%1$s人作答</string>
+    <string name="vote_pad_countenmame_hint">统计结果：共%1$s人作答</string>
+</resources>

@@ -10,8 +10,8 @@
         android:background="@color/white"
         app:pullMode="DISABLED"
         app:emptyStr="暂无资料"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:id="@+id/lesson_resource_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="top_textsize">22sp</dimen>
+    <dimen name="title1_textsize">20sp</dimen>
+    <dimen name="title2_textsize">18sp</dimen>
+    <dimen name="title3_textsize">16sp</dimen>
+    <dimen name="title4_textsize">14sp</dimen>
+
+    <dimen name="title5_textsize">10sp</dimen>
+    <dimen name="title6_textsize">8sp</dimen>
+
+    <dimen name="top_title_textsize">22sp</dimen>
+    <dimen name="top_title_small_textsize">18sp</dimen>
+
+    <dimen name="vote_button_textsize">25sp</dimen>
+    <dimen name="vote_big_button_textsize">20sp</dimen>
+
+    <dimen name="title_margin_left_right">20dp</dimen>
+    <dimen name="video_margin_left_right">10dp</dimen>
+
+    <dimen name="list_item_padding_left_right">10dp</dimen>
+
+    <dimen name="eplyaer_edittext_left_right">10dp</dimen>
+
+    <dimen name="list_item_top_bottom_margin">3dp</dimen>
+
+    <dimen name="pad_space_margin">32px</dimen>
+
+    <dimen name="pad_top_title_height">74px</dimen>
+    <dimen name="pad_li_bottom_speak_height">98px</dimen>
+    <dimen name="pad_et_bottom_speak_height">80px</dimen>
+    <dimen name="pad_bt_bottom_speak_width">140px</dimen>
+
+
+    <dimen name="pad_li_speak_li_width">180px</dimen>
+    <dimen name="pad_li_speak_li_img_width">49px</dimen>
+    <dimen name="pad_li_speak_li_img_height">56px</dimen>
+
+    <!--ppt的宽高-->
+    <dimen name="pad_li_drawpaddview_width">1370px</dimen>
+    <dimen name="pad_li_drawpaddview_height">770px</dimen>
+
+    <dimen name="pad_li_line_line_num_height">64px</dimen>
+
+
+    <!--视频区域的宽高-->
+    <dimen name="pad_fl_video_width">580px</dimen>
+    <dimen name="pad_fl_video_height">435px</dimen>
+
+    <dimen name="pad_li_teacher_area_margin_top">477px</dimen>
+    <dimen name="pad_li_teacher_area_height">293px</dimen>
+
+    <dimen name="pad_li_teacher_area_title_height">168px</dimen>
+    <dimen name="pad_li_teacher_area_title_margin_left">34px</dimen>
+
+    <dimen name="pad_li_chat_title_height">78px</dimen>
+
+    <dimen name="pad_tv_top_title_left_width">23px</dimen>
+    <dimen name="pad_tv_top_title_left_height">43px</dimen>
+
+    <dimen name="img_teacher_area_title_height">124px</dimen>
+
+    <dimen name="img_video_logo_width">136px</dimen>
+    <dimen name="img_video_logo_height">102px</dimen>
+
+
+    <dimen name="gridview_item_fl_width">242px</dimen>
+    <dimen name="gridview_item_fl_height">137px</dimen>
+    <dimen name="gridview_item_tv_height">40px</dimen>
+
+    <dimen name="phone_seekbar_left_padding">11px</dimen>
+    <dimen name="pad_seekbar_left_padding">20px</dimen>
+
+
+
+    <dimen name="chatview_zhan_width">42dp</dimen>
+    <dimen name="chatview_zhan_height">39dp</dimen>
+    <dimen name="chatview_face_width_height">37dp</dimen>
+
+    <dimen name="vote_button_height">48dp</dimen>
+    <dimen name="vote_pad_button_height">60dp</dimen>
+    <dimen name="vote_pad_info_width">70dp</dimen>
+    <dimen name="vote_big_button_height">95dp</dimen>
+    <dimen name="vote_pad_big_button_height">120dp</dimen>
+
+    <dimen name="vote_button_space">20dp</dimen>
+    <dimen name="vote_button_doublespace">30dp</dimen>
+
+    <dimen name="vote_pad_button_space">30dp</dimen>
+    <dimen name="vote_pad_button_doublespace">45dp</dimen>
+
+    <dimen name="vote_phone_button_margin">10dp</dimen>
+    <dimen name="vote_pad_button_margin">20dp</dimen>
+</resources>

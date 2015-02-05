@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.model;
 
+import java.io.Serializable;
+
 /**
  * Created by howzhi on 14-9-17.
  */
-public class LessonMaterial{
+public class LessonMaterial implements Serializable{
     public int id;
     public int courseId;
     public int lessonId;
