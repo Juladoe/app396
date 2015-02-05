@@ -47,7 +47,6 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
         mLiveingCourseListAdapter = new LiveingCourseListAdapter(mActivity, R.layout.liveing_course_list_inflate);
         mLiveingCourseRefreshList.setAdapter(mLiveingCourseListAdapter);
-        //todo 做个测试
         mLiveingCourseRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

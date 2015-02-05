@@ -81,7 +81,7 @@ public class liveLessonFragment extends BaseFragment {
         mTvLiveCountDown = (TextView) view.findViewById(R.id.live_count_down);
         mLiveCourseClick = (Button) view.findViewById(R.id.live_course_click);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String liveStartDate = simpleDateFormat.format(new Date(mLiveStartTime));
         String liveEndDate = simpleDateFormat.format(new Date(mLiveEndTime));
 
