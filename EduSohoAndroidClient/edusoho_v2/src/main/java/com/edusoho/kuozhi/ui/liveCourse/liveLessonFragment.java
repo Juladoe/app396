@@ -1,9 +1,13 @@
 package com.edusoho.kuozhi.ui.liveCourse;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +18,9 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.LiveLesson;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.view.ESExpandableTextView;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.soooner.EplayerPluginLibary.EplayerPluginActivity;
@@ -27,14 +33,18 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.trinea.android.common.util.SystemUtils;
+
 /**
  * Created by onewoman on 2015/2/2.
  */
 public class liveLessonFragment extends BaseFragment {
     private TextView mTvLiveTime;
-    private TextView mTvLiveIntroduction;
+    private ESExpandableTextView mTvLiveIntroduction;
     private TextView mTvLiveCountDown;
     private Button mLiveCourseClick;
+    private ProgressDialog mProgressDialog;
+//    private View mLoading;
 
     private int mLiveStartDay;
     private int mLiveStartHour;
@@ -50,13 +60,18 @@ public class liveLessonFragment extends BaseFragment {
     private long mLiveStartTimeDiff;
     private String mLiveIntroduction;
     private String mTitle;
+    private String mReplayStatus;
 
     private static final int COUNTDOWN = 0;
+
+//    public static final int LIVERESULT = 1;
+//    public static final int REPLAYRESULT = 2;
+//    public static final int REQUEST = 65537;
 
     public static final String STARTTIME = "startTime";
     public static final String ENDTIME = "endTime";
     public static final String SUMMARY = "summary";
-
+    public static final String REPLAYSTATUS = "replayStatus";
     @Override
     public String getTitle() {
         return null;
@@ -81,28 +96,43 @@ public class liveLessonFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
+//        mLoading = view.findViewById(R.id.load_layout);
         initDate();
         changeTitle(mTitle);
+
         mTvLiveTime = (TextView) view.findViewById(R.id.live_time);
-        mTvLiveIntroduction = (TextView) view.findViewById(R.id.live_introduction);
+        mTvLiveIntroduction = (ESExpandableTextView) view.findViewById(R.id.live_introduction);
         mTvLiveCountDown = (TextView) view.findViewById(R.id.live_count_down);
         mLiveCourseClick = (Button) view.findViewById(R.id.live_course_click);
+        mProgressDialog = AppUtil.initProgressDialog(mActivity, "正在直播中");
+        mProgressDialog.setCancelable(true);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        String liveStartDate = simpleDateFormat.format(new Date(mLiveStartTime));
-        String liveEndDate = simpleDateFormat.format(new Date(mLiveEndTime));
+        SimpleDateFormat startDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String liveStartDate = startDateFormat.format(new Date(mLiveStartTime));
+        SimpleDateFormat endDateFormat = new SimpleDateFormat("HH:mm");
+        String liveEndDate = endDateFormat.format(new Date(mLiveEndTime));
 
         mTvLiveTime.setText(String.format("%s ~ %s", liveStartDate, liveEndDate));
-        mTvLiveIntroduction.setText(mLiveIntroduction);
-        mLiveCourseClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //跳转到直播课时
-                getLiveCourseRequest();
-            }
-        });
+        mTvLiveIntroduction.setMyText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mLiveIntroduction)).toString()));
+        mLiveCourseClick.setOnClickListener(liveOnClickListener);
         showLiveCountDown();
     }
+
+    private View.OnClickListener liveOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            //跳转到直播课时
+            getLiveCourseRequest(false, false);
+        }
+    };
+
+    private View.OnClickListener replayOnclickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            //跳转到回看
+            getLiveCourseRequest(true, false);
+        }
+    };
 
     public void initDate() {
         mNowTime = new Date().getTime();
@@ -116,9 +146,16 @@ public class liveLessonFragment extends BaseFragment {
         mLessonId = IntentData.getInt(Const.LESSON_ID);
 
         mLiveIntroduction = IntentData.getString(SUMMARY);
+        mReplayStatus = IntentData.getString(REPLAYSTATUS);
     }
 
     public void showLiveCountDown() {
+        if("generated".equals(mReplayStatus)){
+//            getLiveCourseRequest(true, false);
+            mLiveCourseClick.setText("点击回看");
+            mLiveCourseClick.setOnClickListener(replayOnclickListener);
+            return ;
+        }
         if (liveEnd()) {
             mTvLiveCountDown.setText("直播已经结束");
             mLiveCourseClick.setVisibility(View.GONE);
@@ -129,7 +166,7 @@ public class liveLessonFragment extends BaseFragment {
             timer.schedule(new CountDownTimeTask(), 1000, 1000);
         } else {
             //直播已经开始，自动进入教室
-            getLiveCourseRequest();
+            getLiveCourseRequest(false, true);
         }
     }
 
@@ -142,7 +179,15 @@ public class liveLessonFragment extends BaseFragment {
     }
 
     public void setLiveCountDownTimeText(int day, int hour, int min, int sec) {
-        mTvLiveCountDown.setText(String.format("倒计时:%d天%d小时%d分钟%d秒", day, hour, min, sec));
+        if(day != 0){
+            mTvLiveCountDown.setText(String.format("倒计时:%d天%d小时%d分钟%d秒", day, hour, min, sec));
+        }else if(hour != 0){
+            mTvLiveCountDown.setText(String.format("倒计时:%d小时%d分钟%d秒", hour, min, sec));
+        }else if(min != 0){
+            mTvLiveCountDown.setText(String.format("倒计时:%d分钟%d秒", min, sec));
+        }else{
+            mTvLiveCountDown.setText(String.format("倒计时:%d秒", sec));
+        }
     }
 
     public void getLiveCountDownTime() {
@@ -180,7 +225,7 @@ public class liveLessonFragment extends BaseFragment {
         }
     }
 
-    public void getLiveCourseRequest() {
+    public void getLiveCourseRequest(final boolean replayState, final boolean autoLive) {
         RequestUrl url = app.bindUrl(Const.LIVE_COURSE, true);
         url.setParams(new String[]{
                 "courseId", String.valueOf(mCourseId),
@@ -190,6 +235,18 @@ public class liveLessonFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                if(autoLive){
+                    mProgressDialog.show();
+                    Handler handler1 = new Handler();
+                    handler1.postAtTime(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressDialog.cancel();
+                        }
+                    }, SystemClock.uptimeMillis() + 500);
+                }
+//                mProgressDialog.cancel();
+//                mLiveCourseClick.setOnClickListener(onClickListener);
                 LiveLesson liveLesson = mActivity.parseJsonValue(object, new TypeToken<LiveLesson>() {
                 });
                 String param[] = liveLesson.data.result.url.split("&");
@@ -200,17 +257,20 @@ public class liveLessonFragment extends BaseFragment {
                 String exStr = param[param.length - 1].substring(exStrPoint + "exStr=".length());
                 Log.d(null, "liveClassroomId " + liveClassroomId);
 
-                startLiveActivity(liveClassroomId, exStr);
+                startLiveActivity(liveClassroomId, exStr, replayState);
             }
         });
     }
 
-    private void startLiveActivity(String liveClassroomId, String exStr)
+    private void startLiveActivity(String liveClassroomId, String exStr, boolean replayState)
     {
         Bundle bundle = new Bundle();
         bundle.putString(EplayerPluginActivity.EPLAY_EXSTR, exStr);
         bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID, liveClassroomId);
         bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER, "edusoho");
+        if(replayState) {
+            bundle.putString(EplayerPluginActivity.EPLAY_PID, null);
+        }
 
         Intent intent = null;
         if(DeviceUtil.getDeviceType(mContext)== DeviceUtil.DEVICE_TYPE_PHONE){
@@ -221,5 +281,17 @@ public class liveLessonFragment extends BaseFragment {
 
         intent.putExtras(bundle);
         startActivity(intent);
+
     }
+
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(requestCode == REQUEST){
+//            if(resultCode == LIVERESULT){
+//                mLiveCourseClick.setOnClickListener(liveOnClickListener);
+//            }else if(resultCode == REPLAYRESULT){
+//                mLiveCourseClick.setOnClickListener(replayOnclickListener);
+//            }else{}
+//        }
+//    }
 }

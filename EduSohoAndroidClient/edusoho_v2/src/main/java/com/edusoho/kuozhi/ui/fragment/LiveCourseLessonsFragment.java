@@ -49,13 +49,9 @@ import java.util.HashMap;
 public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
 
     private EduSohoListView mListView;
-//    private TextView mLessonInfoView;
     private int mCourseId;
     private LiveCourseLessonAdapter mAdapter;
-//    private View mLessonDownloadBtn;
-//    private View mHeadView;
 
-//    private SparseArray<M3U8DbModle> mM3U8DbModles;
     private ArrayList<LessonItem> mLessons;
     private boolean mIsLoadLesson;
 
@@ -149,8 +145,6 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
                 }
 
                 mLessons = lessonsResult.lessons;
-                int lessonNum = 0;
-                long totalTime = 0;
 
                 DateFormat fullFormat = new SimpleDateFormat("HH:mm:ss");
                 DateFormat simpleFormat = new SimpleDateFormat("mm:ss");
@@ -215,23 +209,10 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
         bundle.putInt(Const.COURSE_ID, lessonItem.courseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         bundle.putString(liveLessonFragment.SUMMARY, lessonItem.summary);
+        bundle.putString(liveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
         bundle.putString(FragmentPageActivity.FRAGMENT, "liveLessonFragment");
         startActivityWithBundle("FragmentPageActivity", bundle);
 
-//        mActivity.getCoreEngine().runNormalPlugin(
-//                "liveLessonFragment" , mActivity, new PluginRunCallback() {
-//                //TODO 把普通课时页面换成直播课时页面
-//                    @Override
-//                    public void setIntentDate(Intent startIntent) {
-//                        startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
-//                        startIntent.putExtra(Const.IS_LEARN, courseDetailsResult.member != null);
-//                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-//                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-//                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
-////                        startIntent.putExtra(LessonActivity.FROM_CACHE, mM3U8DbModles.indexOfKey(lesson.id) >= 0);
-//                    }
-//                }
-//        );
     }
 
 }
