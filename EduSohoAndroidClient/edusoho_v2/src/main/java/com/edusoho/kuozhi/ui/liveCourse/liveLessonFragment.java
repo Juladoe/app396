@@ -107,9 +107,10 @@ public class liveLessonFragment extends BaseFragment {
         mProgressDialog = AppUtil.initProgressDialog(mActivity, "正在直播中");
         mProgressDialog.setCancelable(true);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String liveStartDate = simpleDateFormat.format(new Date(mLiveStartTime));
-        String liveEndDate = simpleDateFormat.format(new Date(mLiveEndTime));
+        SimpleDateFormat startDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String liveStartDate = startDateFormat.format(new Date(mLiveStartTime));
+        SimpleDateFormat endDateFormat = new SimpleDateFormat("HH:mm");
+        String liveEndDate = endDateFormat.format(new Date(mLiveEndTime));
 
         mTvLiveTime.setText(String.format("%s ~ %s", liveStartDate, liveEndDate));
         mTvLiveIntroduction.setMyText(AppUtil.removeHtmlSpace(Html.fromHtml(AppUtil.removeImgTagFromString(mLiveIntroduction)).toString()));
@@ -165,19 +166,6 @@ public class liveLessonFragment extends BaseFragment {
             timer.schedule(new CountDownTimeTask(), 1000, 1000);
         } else {
             //直播已经开始，自动进入教室
-//            mLiveCourseClick.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mProgressDialog.show();
-//                    Handler handler1 = new Handler();
-//                    handler1.postAtTime(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            mProgressDialog.cancel();
-//                        }
-//                    }, SystemClock.uptimeMillis() + 500);
-//                }
-//            });
             getLiveCourseRequest(false, true);
         }
     }
@@ -191,7 +179,15 @@ public class liveLessonFragment extends BaseFragment {
     }
 
     public void setLiveCountDownTimeText(int day, int hour, int min, int sec) {
-        mTvLiveCountDown.setText(String.format("倒计时:%d天%d小时%d分钟%d秒", day, hour, min, sec));
+        if(day != 0){
+            mTvLiveCountDown.setText(String.format("倒计时:%d天%d小时%d分钟%d秒", day, hour, min, sec));
+        }else if(hour != 0){
+            mTvLiveCountDown.setText(String.format("倒计时:%d小时%d分钟%d秒", hour, min, sec));
+        }else if(min != 0){
+            mTvLiveCountDown.setText(String.format("倒计时:%d分钟%d秒", min, sec));
+        }else{
+            mTvLiveCountDown.setText(String.format("倒计时:%d秒", sec));
+        }
     }
 
     public void getLiveCountDownTime() {
@@ -241,6 +237,13 @@ public class liveLessonFragment extends BaseFragment {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 if(autoLive){
                     mProgressDialog.show();
+                    Handler handler1 = new Handler();
+                    handler1.postAtTime(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressDialog.cancel();
+                        }
+                    }, SystemClock.uptimeMillis() + 500);
                 }
 //                mProgressDialog.cancel();
 //                mLiveCourseClick.setOnClickListener(onClickListener);
