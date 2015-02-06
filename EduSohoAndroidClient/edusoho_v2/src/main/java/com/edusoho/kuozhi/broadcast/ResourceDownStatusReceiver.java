@@ -35,8 +35,5 @@ public class ResourceDownStatusReceiver extends BroadcastReceiver {
             mStatusCallback.invoke(intent);
             return;
         }
-        if (ACTION.equals(intent.getAction())) {
-        }
-
     }
 }

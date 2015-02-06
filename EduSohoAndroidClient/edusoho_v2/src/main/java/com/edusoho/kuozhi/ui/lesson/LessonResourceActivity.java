@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.lesson;
 
 import android.content.Intent;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.adapter.LessonMaterialAdapter;
 import com.edusoho.kuozhi.broadcast.ResourceDownStatusReceiver;
+import com.edusoho.kuozhi.broadcast.callback.StatusCallback;
 import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.BaseResult;
@@ -25,6 +27,7 @@ import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 
+import com.edusoho.kuozhi.ui.fragment.lesson.LessonDownloadingFragment;
 import com.edusoho.kuozhi.ui.widget.ListWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
@@ -61,6 +64,14 @@ public class LessonResourceActivity extends ActionBarBaseActivity
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mResourceDownStatusReceiver != null) {
+            unregisterReceiver(mResourceDownStatusReceiver);
+        }
+    }
+
     public static final int INIT_STATUS = 0001;
 
     @Override
@@ -69,9 +80,19 @@ public class LessonResourceActivity extends ActionBarBaseActivity
         app.registMsgSource(this);
         cacheDir = DownLoadService.getLocalResourceDir(mContext);
         setContentView(R.layout.lesson_resource_layout);
-        mResourceDownStatusReceiver = new ResourceDownStatusReceiver();
+        mResourceDownStatusReceiver = new ResourceDownStatusReceiver(mStatusCallback);
+        registerReceiver(mResourceDownStatusReceiver, new IntentFilter(ResourceDownStatusReceiver.ACTION));
         initView();
     }
+
+    private StatusCallback mStatusCallback = new StatusCallback() {
+        @Override
+        public void invoke(Intent intent) {
+            int materialId = intent.getIntExtra("materialId", 0);
+            long download = intent.getLongExtra("download", 0);
+            mAdapter.updateItemDownloadSize(materialId, download);
+        }
+    };
 
     @Override
     public void invoke(WidgetMessage message) {
@@ -123,7 +144,10 @@ public class LessonResourceActivity extends ActionBarBaseActivity
                     mAdapter.downLoadRes(lessonMaterial);
                     return;
                 }
-                File file = new File(cacheDir, lessonMaterial.title);
+                File file = new File(
+                        cacheDir,
+                        DownLoadService.getLocalResourceFileName(lessonMaterial.title)
+                );
                 Intent intent = AppUtil.getViewFileIntent(file);
                 Log.d(null, "view file->" + intent);
                 try {
