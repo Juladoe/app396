@@ -128,11 +128,11 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 5:
                 //笔记
-                goToNoteContentFragment(result);
+                goToNoteContentFragment();
                 break;
             case 6:
                 //私信
-                goToMessageLetterListActivity(result);
+                goToMessageLetterListActivity();
                 break;
         }
     }
@@ -184,22 +184,24 @@ public class SchoolRoomFragment extends BaseFragment {
 
     /**
      * 跳转到笔记详情界面(NoteContentFragment)
-     *
-     * @param result
      */
-    private void goToNoteContentFragment(final SchoolRoomResult result) {
-        app.mEngine.runNormalPlugin("NoteListActivity", mActivity, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
+    private void goToNoteContentFragment() {
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
 
-            }
-        });
+        app.mEngine.runNormalPlugin("NoteListActivity", mActivity, null);
     }
 
     /**
      * 跳转到私信详情界面(NoteContentFragment)
      */
-    private void goToMessageLetterListActivity(final SchoolRoomResult result) {
+    private void goToMessageLetterListActivity() {
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");
