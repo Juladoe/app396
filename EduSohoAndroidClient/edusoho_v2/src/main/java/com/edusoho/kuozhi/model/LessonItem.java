@@ -37,6 +37,7 @@ public class LessonItem<T> {
     public String itemType;
     public String startTime;
     public String endTime;
+    public String replayStatus;
 
     public UploadFile uploadFile;
 

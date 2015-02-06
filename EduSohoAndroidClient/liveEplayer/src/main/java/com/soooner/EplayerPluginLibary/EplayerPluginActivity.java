@@ -1236,13 +1236,14 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
         key_customer=StringUtils.getStringResFormBundle(bd, EPLAY_CUSTOMER);
 
-        if (EplayerSetting.isPlayback){
-//            EplayerSetting.isPlayback = true;
+//        if (EplayerSetting.isPlayback){
+        if (StringUtils.containsKeyFormBundle(bd, EPLAY_PID)){
+            EplayerSetting.isPlayback = true;
 
             playbackEngin =  new PlaybackEngin();
             playbackEngin.setListener(this);
         }else{
-//            EplayerSetting.isPlayback = false;
+            EplayerSetting.isPlayback = false;
         }
         key_pid=StringUtils.getStringResFormBundle(bd, EPLAY_PID);
 
