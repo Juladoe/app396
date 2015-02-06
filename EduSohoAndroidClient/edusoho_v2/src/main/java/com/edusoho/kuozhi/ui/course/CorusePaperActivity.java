@@ -110,6 +110,7 @@ public class CorusePaperActivity extends ActionBarBaseActivity
     private TextView mCourseStudentNumView;
     private TextView mCourseStarView;
     private TextView mCoursePriceView;
+    private TextView mLiveFlag;
     private View mPayBtn;
 
     private final Handler handler = new Handler();
@@ -461,9 +462,15 @@ public class CorusePaperActivity extends ActionBarBaseActivity
         mCourseStudentNumView = (TextView) findViewById(R.id.course_student_num);
         mCourseStarView = (TextView) findViewById(R.id.course_student_star);
         mCoursePriceView = (TextView) findViewById(R.id.course_student_price);
+        mLiveFlag = (TextView) findViewById(R.id.live_flag);
 
         Course course = mCourseDetailsResult.course;
         mCourseTitleView.setText(course.title);
+        if(course.type.equals("live")){
+            mLiveFlag.setVisibility(View.VISIBLE);
+        }else{
+            mLiveFlag.setVisibility(View.GONE);
+        }
         if (!"opened".equals(course.showStudentNumType)) {
             mCourseStudentNumView.setVisibility(View.GONE);
         }
