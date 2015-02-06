@@ -65,6 +65,7 @@
             android:id="@+id/course_details_lesson_progress"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:padding="2dp"
             android:layout_centerVertical="true"
             android:src="@drawable/learn_status_normal" />
 
