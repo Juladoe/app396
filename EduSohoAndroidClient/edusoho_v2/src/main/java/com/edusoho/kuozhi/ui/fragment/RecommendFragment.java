@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -49,6 +51,12 @@ public class RecommendFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.recommend_layout);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.empty_menu, menu);
     }
 
     @Override
@@ -126,7 +134,7 @@ public class RecommendFragment extends BaseFragment {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 CourseResult courseResult = mActivity.parseJsonValue(
                         object, new TypeToken<CourseResult>() {
-                });
+                        });
                 mWeekCourse.pushData(courseResult.data);
             }
         });

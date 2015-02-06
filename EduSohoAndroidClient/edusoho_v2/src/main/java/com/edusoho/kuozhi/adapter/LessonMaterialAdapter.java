@@ -114,6 +114,24 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
         int visible = lessonResource == null || lessonResource.finish == 0
                 ? View.VISIBLE : View.GONE;
         holder.materialCK.setVisibility(visible);
+        if (lessonResource == null) {
+            holder.materialCK.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (lessonResource.finish == 0) {
+            if (lessonResource.download >= material.fileSize) {
+                holder.materialCK.setText("");
+                holder.materialCK.setVisibility(View.GONE);
+                lessonResource = DownLoadService.queryDownTask(EdusohoApp.app, material.id);
+                mDownloadStatus.put(material.id, lessonResource);
+                return;
+            }
+            int percent = (int)((float) lessonResource.download / material.fileSize * 100);
+            holder.materialCK.setText(percent + "%");
+            holder.materialCK.setVisibility(View.VISIBLE);
+        } else {
+            holder.materialCK.setVisibility(View.GONE);
+        }
     }
 
     private int getMimeIcon(MaterialType materialType)
@@ -144,6 +162,18 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
         return icon;
     }
 
+    public void updateItemDownloadSize(int materialId, long size)
+    {
+        LessonResource lessonResource = this.mDownloadStatus.get(materialId);
+        if (lessonResource == null) {
+            lessonResource = DownLoadService.queryDownTask(EdusohoApp.app, materialId);
+        }
+
+        lessonResource.download = (int) size;
+        this.mDownloadStatus.put(materialId, lessonResource);
+        notifyDataSetChanged();
+    }
+
     public void setDownloadStatus(SparseArray<LessonResource> downloadStatus)
     {
         this.mDownloadStatus = downloadStatus;
@@ -164,7 +194,6 @@ public class LessonMaterialAdapter extends EdusohoBaseAdapter {
             if (checked) {
                 downLoadRes(material);
             } else {
-                compoundButton.setText("");
                 cacelDownRes(material);
             }
         }

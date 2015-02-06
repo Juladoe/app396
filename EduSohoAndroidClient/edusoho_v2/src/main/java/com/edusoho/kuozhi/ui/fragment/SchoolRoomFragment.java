@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -57,16 +59,22 @@ public class SchoolRoomFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.school_room_layout, container, false);
+        setHasOptionsMenu(true);
         initView();
         loadSchoolRoomData();
         return mView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.empty_menu, menu);
     }
 
     private void initView() {
         mSchoolRoomListView = (RefreshListWidget) mView.findViewById(R.id.lv_schoolroom);
         mLoadView = mView.findViewById(R.id.load_layout);
         mSchoolRoomListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        mSchoolRoomListView.setEmptyText(new String[]{"您尚未登录"});
+        mSchoolRoomListView.setEmptyText(new String[]{"数据访问出错"});
         mSchoolRoomListView.setAdapter(new SchoolRoomAdapter(mContext,
                 R.layout.schoolroom_list_item));
         mSchoolRoomListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
@@ -120,11 +128,11 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 5:
                 //笔记
-                goToNoteContentFragment(result);
+                goToNoteContentFragment();
                 break;
             case 6:
                 //私信
-                goToMessageLetterListActivity(result);
+                goToMessageLetterListActivity();
                 break;
         }
     }
@@ -176,22 +184,24 @@ public class SchoolRoomFragment extends BaseFragment {
 
     /**
      * 跳转到笔记详情界面(NoteContentFragment)
-     *
-     * @param result
      */
-    private void goToNoteContentFragment(final SchoolRoomResult result) {
-        app.mEngine.runNormalPlugin("NoteListActivity", mActivity, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
+    private void goToNoteContentFragment() {
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
 
-            }
-        });
+        app.mEngine.runNormalPlugin("NoteListActivity", mActivity, null);
     }
 
     /**
      * 跳转到私信详情界面(NoteContentFragment)
      */
-    private void goToMessageLetterListActivity(final SchoolRoomResult result) {
+    private void goToMessageLetterListActivity() {
+        if (app.loginUser == null) {
+            LoginActivity.start(mActivity);
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");

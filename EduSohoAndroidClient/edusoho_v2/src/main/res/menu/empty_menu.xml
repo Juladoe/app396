@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/me_menu_search"
+        android:orderInCategory="100"
+        yourapp:showAsAction="always"
+        android:visible="true"
+        android:enabled="false"
+        android:icon="@drawable/actionbar_empty_menu"
+        android:title=""></item>
+</menu>

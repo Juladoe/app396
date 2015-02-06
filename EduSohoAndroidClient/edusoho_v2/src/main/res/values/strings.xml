@@ -112,6 +112,7 @@
     <string name="app_id">wx91c11946311906a3</string>
 
     <!-- schoolroom -->
+    <string name="schoolroom_live">&#xe6bc;</string>
     <string name="schoolroom_course">&#xe645;</string>
     <string name="schoolroom_question">&#xe6ae;</string>
     <string name="schoolroom_discussion">&#xe646;</string>

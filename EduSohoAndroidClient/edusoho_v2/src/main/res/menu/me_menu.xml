@@ -5,7 +5,7 @@
         android:id="@+id/me_menu_search"
         android:orderInCategory="100"
         yourapp:showAsAction="ifRoom"
+        android:visible="true"
         android:icon="@drawable/icon_menu_me_search"
-        android:title="扫一扫">
-    </item>
+        android:title="扫一扫"></item>
 </menu>
