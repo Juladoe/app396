@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.ui.note;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Note.NoteAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Note.NoteInfo;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -35,6 +37,8 @@ public class NoteListActivity extends ActionBarBaseActivity {
     private View mLoadView;
     private NoteAdapter noteAdapter;
 
+    private static final int NOTERESULT = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,16 +58,20 @@ public class NoteListActivity extends ActionBarBaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 try {
-                    NoteInfo noteInfo = (NoteInfo) adapterView.getItemAtPosition(i);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.ACTIONBAR_TITLE, noteInfo.lessonTitle);
-                    bundle.putString(FragmentPageActivity.FRAGMENT, "NoteContentFragment");
-                    bundle.putString(NoteContentFragment.CONTENT, noteInfo.content);
-                    bundle.putInt(Const.LESSON_ID, noteInfo.lessonId);
-                    bundle.putInt(Const.COURSE_ID, noteInfo.coursesId);
-                    bundle.putString(Const.LESSON_NAME, noteInfo.lessonTitle);
-                    bundle.putString(Const.LEARN_STATUS, noteInfo.learnStatus);
-                    app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                    final NoteInfo noteInfo = (NoteInfo) adapterView.getItemAtPosition(i);
+
+                    app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, NOTERESULT, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, noteInfo.lessonTitle);
+                            startIntent.putExtra(FragmentPageActivity.FRAGMENT, "NoteContentFragment");
+                            startIntent.putExtra(NoteContentFragment.CONTENT, noteInfo.content);
+                            startIntent.putExtra(Const.LESSON_ID, noteInfo.lessonId);
+                            startIntent.putExtra(Const.COURSE_ID, noteInfo.coursesId);
+                            startIntent.putExtra(Const.LESSON_NAME, noteInfo.lessonTitle);
+                            startIntent.putExtra(Const.LEARN_STATUS, noteInfo.learnStatus);
+                        }
+                    });
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
                 }
@@ -111,5 +119,12 @@ public class NoteListActivity extends ActionBarBaseActivity {
         }
         mNoteListView.pushData(noteInfos);
         mNoteListView.setStart(start + Const.LIMIT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == NOTERESULT){
+            mNoteListView.setRefreshing();
+        }
     }
 }
