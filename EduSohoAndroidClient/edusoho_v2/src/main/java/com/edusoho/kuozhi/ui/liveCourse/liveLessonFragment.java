@@ -64,10 +64,6 @@ public class liveLessonFragment extends BaseFragment {
 
     private static final int COUNTDOWN = 0;
 
-//    public static final int LIVERESULT = 1;
-//    public static final int REPLAYRESULT = 2;
-//    public static final int REQUEST = 65537;
-
     public static final String STARTTIME = "startTime";
     public static final String ENDTIME = "endTime";
     public static final String SUMMARY = "summary";
@@ -96,7 +92,6 @@ public class liveLessonFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-//        mLoading = view.findViewById(R.id.load_layout);
         initDate();
         changeTitle(mTitle);
 
@@ -151,7 +146,6 @@ public class liveLessonFragment extends BaseFragment {
 
     public void showLiveCountDown() {
         if("generated".equals(mReplayStatus)){
-//            getLiveCourseRequest(true, false);
             mLiveCourseClick.setText("点击回看");
             mLiveCourseClick.setOnClickListener(replayOnclickListener);
             return ;
@@ -202,7 +196,6 @@ public class liveLessonFragment extends BaseFragment {
             mLiveStartSec = (int) (mLiveStartTimeDiff % 60);
         } else if (mLiveStartTimeDiff < 60 * 60 * 24) {
             mLiveStartHour = (int) (mLiveStartTimeDiff / (60 * 60));
-//            mLiveStartMin = (int) (mLiveStartTimeDiff % (60 * 60));
             mLiveStartMin = (int) (mLiveStartTimeDiff / 60 % 60);
             mLiveStartSec = (int) (mLiveStartTimeDiff % 60);
         } else {
@@ -245,8 +238,7 @@ public class liveLessonFragment extends BaseFragment {
                         }
                     }, SystemClock.uptimeMillis() + 500);
                 }
-//                mProgressDialog.cancel();
-//                mLiveCourseClick.setOnClickListener(onClickListener);
+
                 LiveLesson liveLesson = mActivity.parseJsonValue(object, new TypeToken<LiveLesson>() {
                 });
                 String param[] = liveLesson.data.result.url.split("&");
@@ -283,15 +275,4 @@ public class liveLessonFragment extends BaseFragment {
         startActivity(intent);
 
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if(requestCode == REQUEST){
-//            if(resultCode == LIVERESULT){
-//                mLiveCourseClick.setOnClickListener(liveOnClickListener);
-//            }else if(resultCode == REPLAYRESULT){
-//                mLiveCourseClick.setOnClickListener(replayOnclickListener);
-//            }else{}
-//        }
-//    }
 }
