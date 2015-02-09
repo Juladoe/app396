@@ -39,6 +39,21 @@
 
                 <com.edusoho.kuozhi.view.ESTextView
                     android:drawablePadding="5dp"
+                    android:id="@+id/live_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:es_alpha="0.87"
+                    android:textSize="@dimen/base_large_size"
+                    android:text="直播"
+                    android:textColor="@color/white"
+                    android:background="@color/base_light"
+                    android:layout_toRightOf="@id/course_title"
+                    android:layout_marginLeft="4dp"
+                    android:visibility="gone"/>
+
+                <com.edusoho.kuozhi.view.ESTextView
+                    android:drawablePadding="5dp"
                     android:textSize="@dimen/base_small_size"
                     android:id="@+id/course_student_num"
                     android:layout_width="wrap_content"
