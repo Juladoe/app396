@@ -30,7 +30,7 @@ public class CircularImageView extends CircleImageView {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.BLACK);
-        canvas.drawCircle(width /2, height /2, width /2, paint);
+        canvas.drawCircle(width / 2, height / 2, width / 2, paint);
         return bitmap;
     }
 
@@ -38,4 +38,6 @@ public class CircularImageView extends CircleImageView {
     public Bitmap getBitmap() {
         return getBitmap(getWidth(), getHeight());
     }
+
+
 }

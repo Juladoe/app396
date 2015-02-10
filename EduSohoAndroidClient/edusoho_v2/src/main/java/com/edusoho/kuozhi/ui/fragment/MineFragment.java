@@ -305,7 +305,6 @@ public class MineFragment extends BaseFragment {
         }
     };
 
-
     public void returnObjectFormUserdata() {
         RequestUrl url = app.bindUrl(Const.USER_DATA_NUMBER, true);
         mActivity.ajaxPost(url, new ResultCallback() {
@@ -322,7 +321,6 @@ public class MineFragment extends BaseFragment {
             }
         });
     }
-
 
     private void showMyTestpaper() {
         if (app.loginUser == null) {

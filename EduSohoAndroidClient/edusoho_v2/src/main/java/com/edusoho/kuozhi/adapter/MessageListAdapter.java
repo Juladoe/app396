@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Notify;
+import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.QuestionResult;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
@@ -174,10 +175,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
                     return;
                 } else if ("course".equalsIgnoreCase(type1)) {
                     if ("thread".equalsIgnoreCase(type2)) {
-                        showThread(
-                                AppUtil.parseInt(type1_value),
-                                AppUtil.parseInt(type2_value)
-                        );
+                        showThread(AppUtil.parseInt(type1_value), AppUtil.parseInt(type2_value), this.mTitle.toString());
                         return;
                     }
                     showCourse(AppUtil.parseInt(type1_value));
@@ -206,12 +204,20 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
                 "FragmentPageActivity", mContext, bundle);
     }
 
-    private void showThread(int courseId, int threadId) {
+    private void showThread(int courseId, int threadId, String title) {
         Bundle bundle = new Bundle();
-        bundle.putInt(Const.COURSE_ID, courseId);
         bundle.putInt(Const.THREAD_ID, threadId);
-        bundle.putString(Const.QUESTION_TITLE, "问答标题");
-        EdusohoApp.app.mEngine.runNormalPluginWithBundle("QuestionDetailActivity", mContext, bundle);
+        bundle.putInt(Const.COURSE_ID, courseId);
+        bundle.putInt(Const.QUESTION_USER_ID, EdusohoApp.app.loginUser.id);
+        bundle.putString(Const.QUESTION_TITLE, title);
+        bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(Const.COURSE_ID, courseId);
+//        bundle.putInt(Const.THREAD_ID, threadId);
+//        bundle.putString(Const.QUESTION_TITLE, "问答标题");
+//        EdusohoApp.app.mEngine.runNormalPluginWithBundle("QuestionDetailActivity", mContext, bundle);
     }
 
     private void showTestPaperResult(int testResultId) {
