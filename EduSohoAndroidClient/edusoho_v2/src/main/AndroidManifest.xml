@@ -95,6 +95,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.edusoho.kuozhi.ui.schoolroom.TeacherListHtmlActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.edusoho.kuozhi.ui.lesson.LessonResourceActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

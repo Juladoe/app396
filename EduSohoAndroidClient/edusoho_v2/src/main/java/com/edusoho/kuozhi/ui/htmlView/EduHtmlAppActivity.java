@@ -36,11 +36,11 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
     public static final String ASSET_RES = "local://";
     public static final String APP_URL = "app_url";
 
-    private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    private CordovaWebView cordovaWebView;
-    private Menu mMenu;
-    private CacheServer mResouceCacheServer;
-    private String mUrl;
+    protected final ExecutorService threadPool = Executors.newCachedThreadPool();
+    protected CordovaWebView cordovaWebView;
+    protected Menu mMenu;
+    protected CacheServer mResouceCacheServer;
+    protected String mUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,8 +85,7 @@ public class EduHtmlAppActivity extends ActionBarBaseActivity implements Cordova
         return super.onOptionsItemSelected(item);
     }
 
-    public void setMenu(Menu menu)
-    {
+    public void setMenu(Menu menu) {
         this.mMenu = menu;
     }
 

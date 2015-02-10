@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
+import com.edusoho.kuozhi.ui.htmlView.EduHtmlAppActivity;
 import com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -206,6 +207,9 @@ public class SchoolRoomFragment extends BaseFragment {
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");
         app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(EduHtmlAppActivity.APP_URL, "teacherApp");
+//        app.mEngine.runNormalPluginWithBundle("TeacherListHtmlActivity", mActivity, bundle);
     }
 
     private void loadSchoolRoomData() {

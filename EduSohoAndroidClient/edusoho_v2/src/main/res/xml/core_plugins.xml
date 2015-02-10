@@ -106,6 +106,7 @@
 
     <!--htmlapp -->
     <plugin name="EduHtmlAppActivity" version="1.0" package="com.edusoho.kuozhi.ui.htmlView.EduHtmlAppActivity"></plugin>
+    <plugin name="TeacherListHtmlActivity" version="1.0" package="com.edusoho.kuozhi.ui.schoolroom.TeacherListHtmlActivity"></plugin>
     <plugin name="EduAppPluginFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.appPlugin.EduAppPluginFragment"></plugin>
 
     <plugin name="CourseNoticeFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.CourseNoticeFragment"></plugin>
