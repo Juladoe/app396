@@ -212,12 +212,6 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
         bundle.putString(Const.QUESTION_TITLE, title);
         bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
         EdusohoApp.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(Const.COURSE_ID, courseId);
-//        bundle.putInt(Const.THREAD_ID, threadId);
-//        bundle.putString(Const.QUESTION_TITLE, "问答标题");
-//        EdusohoApp.app.mEngine.runNormalPluginWithBundle("QuestionDetailActivity", mContext, bundle);
     }
 
     private void showTestPaperResult(int testResultId) {
