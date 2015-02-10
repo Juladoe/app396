@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
 import com.edusoho.kuozhi.model.Review;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
+import com.edusoho.listener.IconClickListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -29,8 +30,7 @@ public class CourseReviewAdapter
     private View mFooterView;
     private DisplayImageOptions mOptions;
 
-    public CourseReviewAdapter(ActionBarBaseActivity activity, int resource)
-    {
+    public CourseReviewAdapter(ActionBarBaseActivity activity, int resource) {
         super(activity, resource);
         this.mActivity = activity;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
@@ -47,13 +47,11 @@ public class CourseReviewAdapter
         }
     }
 
-    public void addFooterView(View footerView)
-    {
+    public void addFooterView(View footerView) {
         mFooterView = footerView;
     }
 
-    public void setFooterVisible(int visible)
-    {
+    public void setFooterVisible(int visible) {
         mFooterView.setVisibility(visible);
     }
 
@@ -105,25 +103,25 @@ public class CourseReviewAdapter
         viewHolder.mCommitTime.setText(AppUtil.coverTime(review.createdTime));
         viewHolder.mNickname.setText(review.user.nickname);
         viewHolder.mUserMessage.setText(review.content);
-        viewHolder.mRating.setRating((float)review.rating);
-        ImageLoader.getInstance().displayImage(review.user.avatar, viewHolder.mUserAvatar, mOptions);
+        viewHolder.mRating.setRating((float) review.rating);
+        ImageLoader.getInstance().displayImage(review.user.smallAvatar, viewHolder.mUserAvatar, mOptions);
+        viewHolder.mUserAvatar.setOnClickListener(new IconClickListener(mActivity, review.user));
     }
 
-    public class BaseViewHolder extends RecyclerView.ViewHolder
-    {
+    public class BaseViewHolder extends RecyclerView.ViewHolder {
         public BaseViewHolder(View view) {
             super(view);
         }
     }
 
-    public class ViewHolder extends BaseViewHolder
-    {
+    public class ViewHolder extends BaseViewHolder {
         public TextView mUserMessage;
         public TextView mCommitTime;
         public TextView mNickname;
         public RatingBar mRating;
         public ImageView mUserAvatar;
-        public ViewHolder(View view){
+
+        public ViewHolder(View view) {
             super(view);
 
             mRating = (RatingBar) view.findViewById(R.id.review_user_rating);
@@ -134,8 +132,7 @@ public class CourseReviewAdapter
         }
     }
 
-    public class HeadViewHolder extends BaseViewHolder
-    {
+    public class HeadViewHolder extends BaseViewHolder {
         public HeadViewHolder(View view) {
             super(view);
         }

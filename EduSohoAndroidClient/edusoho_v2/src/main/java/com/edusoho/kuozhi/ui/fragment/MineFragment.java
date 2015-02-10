@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
@@ -25,6 +26,7 @@ import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
+import com.edusoho.listener.IconClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -67,6 +69,8 @@ public class MineFragment extends BaseFragment {
     private RelativeLayout mFeedback;
     private AQuery mAQuery;
 
+    private IconClickListener mIconClickListener;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,10 @@ public class MineFragment extends BaseFragment {
         mNotification = (RelativeLayout) view.findViewById(R.id.my_notification);
         mSetting = (RelativeLayout) view.findViewById(R.id.my_setting);
         mFeedback = (RelativeLayout) view.findViewById(R.id.my_feedback);
+
+        if (mIconClickListener == null) {
+            mIconClickListener = new IconClickListener(mActivity);
+        }
 
         mQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,9 +288,8 @@ public class MineFragment extends BaseFragment {
             mAQuery.id(mUserLogo).image(
                     app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
 
-            mUserLogo.setOnClickListener(mUserInfoClickListener);
-            mUserLayout.setOnClickListener(mUserInfoClickListener);
-
+            mUserLogo.setOnClickListener(mIconClickListener);
+            mUserLayout.setOnClickListener(mIconClickListener);
         }
     }
 
@@ -291,17 +298,6 @@ public class MineFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             LoginActivity.startForResult(mActivity);
-        }
-    };
-
-    private View.OnClickListener mUserInfoClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString(FragmentPageActivity.FRAGMENT, "ProfileFragment");
-            bundle.putString(Const.ACTIONBAR_TITLE, "详细资料");
-            app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-            //app.mEngine.runNormalPlugin("TestActivity", mActivity, null);
         }
     };
 

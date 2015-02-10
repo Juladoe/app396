@@ -88,7 +88,6 @@ public class FollowFragment extends BaseFragment {
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, user.nickname);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
                         startIntent.putExtra(ProfileFragment.FOLLOW_USER, user);
-                        startIntent.putExtra(FollowFragment.FOLLOW_TYPE, mType);
                     }
                 });
             }

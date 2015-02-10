@@ -23,8 +23,9 @@ import java.util.zip.Inflater;
 /**
  * Created by onewoman on 2014/12/30.
  */
-public class QuestionReplyAdapter extends ListBaseAdapter<String>{
+public class QuestionReplyAdapter extends ListBaseAdapter<String> {
     private DisplayImageOptions mDisplayImageOptions;
+
     public QuestionReplyAdapter(Context context, int resource) {
         super(context, resource);
         //test
@@ -45,15 +46,16 @@ public class QuestionReplyAdapter extends ListBaseAdapter<String>{
     public View getView(int postion, View view, ViewGroup viewGroup) {
         View mQuestionReplyLoadView;
         final ImageView imageView;
-        if(view == null) {
+        if (view == null) {
             view = inflater.inflate(mResource, null);
         }
         imageView = (ImageView) view.findViewById(R.id.question_answer_content_image);
         mQuestionReplyLoadView = view.findViewById(R.id.load_layout);
 
         String imgUrl = mList.get(postion);
-        ImageLoader.getInstance().displayImage(imgUrl,imageView, mDisplayImageOptions);
-        imageView.setOnClickListener(new ImageClickListener(postion, mList){});
+        ImageLoader.getInstance().displayImage(imgUrl, imageView, mDisplayImageOptions);
+        imageView.setOnClickListener(new ImageClickListener(postion, mList) {
+        });
         mQuestionReplyLoadView.setVisibility(View.GONE);
         return view;
     }

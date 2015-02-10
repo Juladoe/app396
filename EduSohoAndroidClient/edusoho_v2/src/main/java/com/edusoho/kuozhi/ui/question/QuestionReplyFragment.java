@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
+import com.edusoho.listener.IconClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -98,6 +99,8 @@ public class QuestionReplyFragment extends BaseFragment {
         ((TextView) view.findViewById(R.id.question_answer_time)).setText(AppUtil.getPostDays(mReplyModel.createdTime));
         mQuestionAnswerContent = ((TextView) view.findViewById(R.id.question_answer_content));
         mQuestionAnswerContentImage = (ListView) view.findViewById(R.id.question_answer_image_list);
+
+        circularImageView.setOnClickListener(new IconClickListener(mActivity, mReplyModel.user));
 
         getQuestionOneReplyReponseData();
     }

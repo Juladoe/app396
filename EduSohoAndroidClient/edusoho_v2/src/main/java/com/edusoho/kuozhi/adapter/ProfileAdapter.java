@@ -44,14 +44,11 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
     private User mUser;
     private ActionBarBaseActivity mActivity;
     private int mListViewLayoutId;
-    private String mType = "";
-    private boolean bResult;
 
-    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity, String type) {
+    public ProfileAdapter(Context context, int resource, User user, ActionBarBaseActivity activity) {
         super(context, resource, true);
         mUser = user;
         mActivity = activity;
-        mType = (type == null ? "" : type);
     }
 
     public void updateUserInfo() {

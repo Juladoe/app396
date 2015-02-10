@@ -39,7 +39,6 @@ public class ProfileFragment extends BaseFragment {
 
     public String mTitle = "详细资料";
     private User mUser;
-    private String mType;
     private boolean mIsTeacher;
 
     @Override
@@ -53,16 +52,14 @@ public class ProfileFragment extends BaseFragment {
         super.initView(view);
         Bundle bundle = mActivity.getIntent().getExtras();
         mUser = (User) bundle.getSerializable(FOLLOW_USER);
-        mType = bundle.getString(FollowFragment.FOLLOW_TYPE);
         if (mUser == null) {
             mUser = app.loginUser;
-            Log.d("ProfileFragment", mUser.nickname);
         }
 
         mInfoList = (RefreshListWidget) view.findViewById(R.id.info_list);
         mLoadView = view.findViewById(R.id.load_layout);
         mInfoList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, mUser, mActivity, mType);
+        profileAdapter = new ProfileAdapter(mContext, R.layout.profile_item_header, mUser, mActivity);
         mInfoList.setAdapter(profileAdapter);
         mInfoList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override

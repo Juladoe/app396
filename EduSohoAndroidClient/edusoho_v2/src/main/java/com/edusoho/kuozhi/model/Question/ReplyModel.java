@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.model.Question;
 
+import com.edusoho.kuozhi.model.User;
+
 import java.io.Serializable;
 
 /**
@@ -15,6 +17,8 @@ public class ReplyModel implements Serializable {
     public int isElite;
     public String content;
     public String createdTime;
-    public ReplyUser user;
+    public User user;
+    public String following;
+    public String follower;
 
 }

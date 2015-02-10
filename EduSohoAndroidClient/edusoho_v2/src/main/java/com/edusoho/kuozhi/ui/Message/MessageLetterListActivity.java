@@ -51,7 +51,6 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
     }
 
 
-
     private void initData() {
         mConversationId = getIntent().getIntExtra(CONVERSATION_ID, 0);
         mConversationName = getIntent().getStringExtra(CONVERSATION_FROM_NAME);
@@ -64,7 +63,7 @@ public class MessageLetterListActivity extends ActionBarBaseActivity implements 
         btnSendLetter = findViewById(R.id.btn_send_letter);
         etSendContent = (EditText) findViewById(R.id.et_send_content);
         mLetterList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        mLetterList.setAdapter(new LetterListAdapter(mContext, app.loginUser));
+        mLetterList.setAdapter(new LetterListAdapter(mContext, mActivity, app.loginUser));
         mLetterList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {

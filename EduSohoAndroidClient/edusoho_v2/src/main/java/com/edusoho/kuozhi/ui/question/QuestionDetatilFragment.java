@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.listener.IconClickListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -292,6 +293,7 @@ public class QuestionDetatilFragment extends BaseFragment {
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatile_describe_time)).setText(AppUtil.getPostDays(mQuestionDetailModel.createdTime));
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detatil_describe_content)).setText(Html.fromHtml(fitlerImgTag(mQuestionDetailModel.content)));
 
+        questionDetailAnswerUserHeadImage.setOnClickListener(new IconClickListener(mActivity, mQuestionDetailModel.user));
         mDetailCourseTitle = ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_course_title));
         mDetailCourseTitle.setText(mQuestionDetailModel.courseTitle);
         mDetailCourseTitle.setOnClickListener(new View.OnClickListener() {
@@ -300,7 +302,7 @@ public class QuestionDetatilFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, intentCourseId);
                 bundle.putString(Const.ACTIONBAR_TITLE, mQuestionDetailModel.courseTitle);
-                startActivityWithBundle("CorusePaperActivity",bundle);
+                startActivityWithBundle("CorusePaperActivity", bundle);
             }
         });
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum + "");
@@ -380,10 +382,10 @@ public class QuestionDetatilFragment extends BaseFragment {
         }
     }
 
-    public void UpdateHitThread(){
+    public void UpdateHitThread() {
         RequestUrl url = app.bindUrl(Const.HitThread, true);
         url.setParams(new String[]{"courseId", String.valueOf(intentCourseId),
-            "threadId", String.valueOf(intentThreadId)});
+                "threadId", String.valueOf(intentThreadId)});
         mActivity.ajaxPost(url, new ResultCallback());
     }
 }

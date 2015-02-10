@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.model;
  */
 public class Review {
     public int id;
-    public Teacher user;
+    public User user;
     public String courseId;
     public String title;
     public String content;

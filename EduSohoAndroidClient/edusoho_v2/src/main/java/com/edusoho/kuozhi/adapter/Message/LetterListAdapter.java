@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.adapter.Message;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -10,8 +11,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.edusoho.kuozhi.model.Message.LetterModel;
 import com.edusoho.kuozhi.model.User;
+import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.plugin.CircularImageView;
+import com.edusoho.listener.IconClickListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -26,20 +29,18 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
     private static final int TYPE_ITEMS = 2, TYPE_ME = 0, TYPE_OTHER_SIDE = 1;
     private User mLoginUser;
     private static long TIME_INTERVAL = 1000 * 60 * 5;
+    private ActionBarBaseActivity mActivity;
 
 
-    public LetterListAdapter(Context context, int resource) {
+    public LetterListAdapter(Context context, ActionBarBaseActivity activity, int resource) {
         super(context, resource);
+        mActivity = activity;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
-    public LetterListAdapter(Context context, User user) {
-        super(context, 0);
+    public LetterListAdapter(Context context, ActionBarBaseActivity activity, User user) {
+        this(context, activity, 0);
         mLoginUser = user;
-    }
-
-    public LetterListAdapter(Context context, int resource, boolean isCache) {
-        super(context, resource, isCache);
     }
 
     @Override
@@ -112,6 +113,7 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
                 }
             }
             holder.tvSendContent.setText(model.content);
+            holder.ciPic.setOnClickListener(new IconClickListener(mActivity, model.createdUser));
             ImageLoader.getInstance().displayImage(model.createdUser.mediumAvatar, holder.ciPic, mOptions);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());

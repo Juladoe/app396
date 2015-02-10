@@ -254,8 +254,6 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
                 });
             }
         });
-
-
     }
 
     public static Pattern TYPE_PAT = Pattern.compile(

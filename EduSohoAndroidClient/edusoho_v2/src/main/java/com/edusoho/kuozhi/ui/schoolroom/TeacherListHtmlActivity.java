@@ -56,7 +56,6 @@ public class TeacherListHtmlActivity extends EduHtmlAppActivity {
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, user.nickname);
                         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ProfileFragment");
                         startIntent.putExtra(ProfileFragment.FOLLOW_USER, user);
-                        startIntent.putExtra(FollowFragment.FOLLOW_TYPE, FollowFragment.OTHER);
                     }
                 });
             }

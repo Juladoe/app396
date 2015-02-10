@@ -248,7 +248,7 @@
 
             <TextView
                 android:textSize="@dimen/medium_font_size"
-                android:text="关注"
+                android:text="加载中"
                 android:id="@+id/tv_Follow"
                 android:gravity="center_vertical"
                 android:layout_width="wrap_content"
