@@ -25,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:background="@drawable/lesson_list_item_bg">
 
         <LinearLayout
             android:layout_alignParentLeft="true"
@@ -33,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            android:background="@drawable/course_details_lesson_title_bg"
+            android:background="@drawable/lesson_list_item_bg"
             android:orientation="vertical"
             android:paddingBottom="7dp"
             android:paddingLeft="24dp"

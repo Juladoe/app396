@@ -43,7 +43,7 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         mLoading = this.findViewById(R.id.load_layout);
 
         mLiveingCourseRefreshList.setEmptyText(mActivity, R.layout.empty_page_layout, new String[]{"加入一些课程，再来这里看看吧~", ""},
-                new String[]{"革命尚未成功，同志仍需努力", "还未有学完的课程"}, R.drawable.empty_logout, R.drawable.empty_no_data);
+                new String[]{"革命尚未成功，同志仍需努力", "还未有在学的课程"}, R.drawable.empty_logout, R.drawable.empty_no_data);
         mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
         mLiveingCourseListAdapter = new LiveingCourseListAdapter(mActivity, R.layout.liveing_course_list_inflate);
         mLiveingCourseRefreshList.setAdapter(mLiveingCourseListAdapter);
@@ -80,6 +80,13 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
     }
 
     public void getLiveingCourseRequest(final int start){
+        if(app.loginUser == null){
+            mLiveingCourseRefreshList.setLoginStatus(false);
+            mLoading.setVisibility(View.GONE);
+            return ;
+        }else{
+            mLiveingCourseRefreshList.setLoginStatus(true);
+        }
         RequestUrl url = app.bindUrl(Const.LIVING_COURSE, true);
         url.setParams(new String[]{
             "start", String.valueOf(start),

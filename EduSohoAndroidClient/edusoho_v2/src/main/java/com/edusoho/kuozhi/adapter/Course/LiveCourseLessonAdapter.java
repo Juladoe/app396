@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.adapter.Course;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -125,6 +126,12 @@ public class LiveCourseLessonAdapter
 
         // 判断直播状态
         String liveStatus = getLiveStatus(lessonItem);
+        Drawable drawable = null;
+        if("generated".equals(lessonItem.replayStatus)){
+            drawable = mContext.getResources().getDrawable(R.drawable.replay);
+        }
+        viewHolder.mLessonType.setCompoundDrawablesWithIntrinsicBounds(
+                drawable, null, null, null);
         viewHolder.mLessonType.setText(liveStatus);
 
         if (!"published".equals(lessonItem.status)) {
@@ -224,6 +231,7 @@ public class LiveCourseLessonAdapter
         public View mLessonLayout;
         public ImageView mLessonProgress;
         public View mDownloadStatusBtn;
+        public ImageView mReplayIcon;
 
         public ViewHolder(View view) {
             super(view);

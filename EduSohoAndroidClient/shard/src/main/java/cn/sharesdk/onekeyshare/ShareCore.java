@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 
+import cn.sharesdk.framework.CustomPlatform;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.Platform.ShareParams;
 import cn.sharesdk.framework.ShareSDK;
@@ -70,12 +71,6 @@ public class ShareCore {
 			customizeCallback.onShare(plat, sp);
 		}
 
-		String[] flags = new String[] {
-				"OnekeyShare",
-				plat.getContext().getPackageName(),
-				String.valueOf(ShareSDK.getSDKVersionCode())
-		};
-		sp.setCustomFlag(flags);
 		plat.share(sp);
 		return true;
 	}
@@ -91,6 +86,7 @@ public class ShareCore {
 				|| "Mingdao".equals(platform) || "Line".equals(platform)
 				|| "KakaoStory".equals(platform) || "KakaoTalk".equals(platform)
 				|| "Bluetooth".equals(platform) || "WhatsApp".equals(platform)
+				|| "BaiduTieba".equals(platform)
 				) {
 			return true;
 		} else if ("Evernote".equals(platform)) {
@@ -114,32 +110,31 @@ public class ShareCore {
 
 	/** 判断指定平台是否可以用来授权 */
 	public static boolean canAuthorize(Context context, String platform) {
-		if ("WechatMoments".equals(platform)
+		return !("WechatMoments".equals(platform)
 				|| "WechatFavorite".equals(platform) || "ShortMessage".equals(platform)
-				|| "Email".equals(platform) || "GooglePlus".equals(platform)
+				|| "Email".equals(platform)
 				|| "Pinterest".equals(platform) || "Yixin".equals(platform)
 				|| "YixinMoments".equals(platform) || "Line".equals(platform)
 				|| "KakaoStory".equals(platform) || "KakaoTalk".equals(platform)
 				|| "Bluetooth".equals(platform) || "WhatsApp".equals(platform)
-				) {
-			return false;
-		}
-		return true;
+				|| "BaiduTieba".equals(platform));
 	}
 
 
 	/** 判断指定平台是否可以用来获取用户资料 */
 	public static boolean canGetUserInfo(Context context, String platform) {
-		if ("WechatMoments".equals(platform)
+		return !("WechatMoments".equals(platform)
 				|| "WechatFavorite".equals(platform) || "ShortMessage".equals(platform)
-				|| "Email".equals(platform) || "GooglePlus".equals(platform)
+				|| "Email".equals(platform)
 				|| "Pinterest".equals(platform) || "Yixin".equals(platform)
 				|| "YixinMoments".equals(platform) || "Line".equals(platform)
 				|| "KakaoStory".equals(platform) || "KakaoTalk".equals(platform)
 				|| "Bluetooth".equals(platform) || "WhatsApp".equals(platform)
-				|| "Pocket".equals(platform)) {
-			return false;
-		}
-		return true;
+				|| "Pocket".equals(platform) || "BaiduTieba".equals(platform));
+	}
+
+	/** 判断是否直接分享 */
+	public static boolean isDirectShare(Platform platform) {
+		return platform instanceof CustomPlatform || isUseClientToShare(platform.getName());
 	}
 }

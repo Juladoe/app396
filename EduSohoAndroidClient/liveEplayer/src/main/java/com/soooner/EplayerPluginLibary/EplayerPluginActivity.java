@@ -1302,9 +1302,6 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                 @Override
                 public void pausePlayback() {
                     EplayerPluginActivity.this.playerStartPlay= false;
-
-
-
                     fl_myvideoview.pause();
                     playbackEngin.pausePlayback();
                     playerControllerView.changePlayerState(PlayerControllerView.PlayerState.PLAYERSTATE_PLAY);
