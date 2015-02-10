@@ -16,11 +16,13 @@ public class EduSohoCompoundButton extends RadioGroup {
 
     public EduSohoCompoundButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setBackground(getResources().getDrawable(R.drawable.found_compound_btn));
         changeButtonsImages();
     }
 

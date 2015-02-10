@@ -18,6 +18,8 @@
     <color name="base_color_normal">#2ec368</color>
     <color name="base_list_background_color">#e5e5e5</color>
 
+    <color name="found_title_btn_color">#66ffffff</color>
+
     <color name="lesson_item_bg_pressed">#E5E5E5</color>
     <color name="lesson_item_bg">#ffffff</color>
     <color name="header_bg">#ffffff</color>
