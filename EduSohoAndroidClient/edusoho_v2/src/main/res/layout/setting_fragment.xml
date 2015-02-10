@@ -99,6 +99,7 @@
         </LinearLayout>
 
         <com.edusoho.kuozhi.view.EduUpdateView
+            android:layout_marginBottom="1dp"
             android:id="@+id/setting_check_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
