@@ -123,7 +123,7 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
                 Toast.makeText(mActivity, "内容不能为空", Toast.LENGTH_LONG).show();
                 return true;
             } else {
-                RequestUrl url = app.bindUrl(Const.NOTE_CONTENT, true);
+                RequestUrl url = app.bindUrl(Const.ADD_NOTE, true);
                 HashMap<String, String> params = url.params;
                 params.put(Const.COURSE_ID, String.valueOf(mCourseId));
                 params.put(Const.LESSON_ID, String.valueOf(mLessonId));

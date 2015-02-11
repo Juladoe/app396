@@ -126,7 +126,7 @@
 
     <!--问答-->
     <plugin name="QuestionNewActivity" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionNewActivity"></plugin>
-    <plugin name="QuestionDetatilFragment" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionDetatilFragment"></plugin>
+    <plugin name="QuestionDetatilFragment" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionDetailFragment"></plugin>
     <plugin name="QuestionReplyFragment" version="1.0" package="com.edusoho.kuozhi.ui.question.QuestionReplyFragment"></plugin>
 
 

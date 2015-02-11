@@ -55,7 +55,7 @@ import library.PullToRefreshBase;
 /**
  * Created by onewoman on 2014/12/22.
  */
-public class QuestionDetatilFragment extends BaseFragment {
+public class QuestionDetailFragment extends BaseFragment {
     private RefreshListWidget mQuestionDetatileAnswerList;
     private QuestionDetatilAnswerListAdapter mQuestionDetatilAnswerListAdapter;
     private View mQuestionDetailDescribe;
