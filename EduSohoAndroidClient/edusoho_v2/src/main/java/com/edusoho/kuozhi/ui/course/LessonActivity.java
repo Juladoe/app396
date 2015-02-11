@@ -287,6 +287,19 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void goToAnotherLesson(LessonItem lessonItem) {
+        CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
+        if (courseLessonType == CourseLessonType.VIDEO) {
+            int offlineType = app.config.offlineType;
+            Log.d(null, "offlineType-> " + offlineType);
+            if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
+                AppUtil.showAlertDialog(
+                        mActivity,
+                        "当前设置视频课时观看、下载为wifi模式!\n模式可以在设置里修改。"
+                );
+                return;
+            }
+        }
+
         mLessonId = lessonItem.id;
         mLessonType = lessonItem.type;
         initLessonResult();

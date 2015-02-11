@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -48,7 +49,7 @@ public class SettingFragment extends BaseFragment {
     private TextView mCacheView;
 
     @ViewUtil("setting_offline_set_value")
-    private TextView mOfflineSetView;
+    private CheckBox mOfflineSetView;
 
     @ViewUtil("setting_load_progress")
     private ProgressBar mLoadProgressBar;
@@ -110,8 +111,7 @@ public class SettingFragment extends BaseFragment {
         viewInject(view);
         registNotify();
         //设置缓存模式
-        String[] array = getResources().getStringArray(R.array.offline_array);
-        mOfflineSetView.setText(array[app.config.offlineType]);
+        mOfflineSetView.setChecked(app.config.offlineType == 1);
 
         mCacheView.setText(getCacheSize());
         mCheckView.setText(AppUtil.getColorTextAfter(
@@ -181,19 +181,9 @@ public class SettingFragment extends BaseFragment {
         mOfflineSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ExitCoursePopupDialog.createNormal(
-                        mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
-                            @Override
-                            public void onClick(int button, int position, String selStr) {
-                                if (button == ExitCoursePopupDialog.CANCEL) {
-                                    return;
-                                }
-
-                                app.config.offlineType = position;
-                                app.saveConfig();
-                                mOfflineSetView.setText(selStr);
-                            }
-                        }).show();
+                mOfflineSetView.setChecked(!mOfflineSetView.isChecked());
+                app.config.offlineType = mOfflineSetView.isChecked() ? 1 : 0;
+                app.saveConfig();
             }
         });
 

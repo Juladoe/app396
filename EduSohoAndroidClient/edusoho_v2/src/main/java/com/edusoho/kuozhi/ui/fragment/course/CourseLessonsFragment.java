@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.fragment.course;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
+import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
@@ -278,11 +280,8 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
 
         if (courseLessonType == CourseLessonType.VIDEO) {
             int offlineType = app.config.offlineType;
-            if (offlineType == Const.NET_NONE) {
-                showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
-                return;
-            } else if (offlineType == Const.NET_WIFI && !app.getNetIsConnect()) {
-                showAlertDialog("当前设置视频课时观看、下载为wifi模式!\n模式可以在设置里修改。");
+            if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
+                AppUtil.showAlertDialog(mActivity, "当前设置视频课时观看、下载为wifi模式!\n模式可以在设置里修改。");
                 return;
             }
         }
@@ -302,35 +301,4 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         );
     }
 
-    private void showAlertDialog(String content) {
-        PopupDialog popupDialog = PopupDialog.createMuilt(
-                mActivity,
-                "播放提示",
-                content,
-                new PopupDialog.PopupClickListener() {
-                    @Override
-                    public void onClick(int button) {
-                        if (button == PopupDialog.OK) {
-                            ExitCoursePopupDialog.createNormal(
-                                    mActivity,
-                                    "视频课时下载播放",
-                                    new ExitCoursePopupDialog.PopupClickListener() {
-                                        @Override
-                                        public void onClick(int button, int position, String selStr) {
-                                            if (button == ExitCoursePopupDialog.CANCEL) {
-                                                return;
-                                            }
-
-                                            app.config.offlineType = position;
-                                            app.saveConfig();
-                                        }
-                                    }
-                            ).show();
-                        }
-                    }
-                }
-        );
-        popupDialog.setOkText("去设置");
-        popupDialog.show();
-    }
 }

@@ -85,11 +85,15 @@
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="视频课时下载播放"
+                android:text="非WiFi下视频可以播放/下载"
                 android:textColor="@color/system_light_text"
                 android:textSize="@dimen/more_setting_text" />
 
-            <TextView
+            <CheckBox
+                android:clickable="false"
+                android:focusable="false"
+                android:button="@null"
+                android:background="@drawable/set_check_normal_sel"
                 android:layout_margin="8dp"
                 android:id="@+id/setting_offline_set_value"
                 android:textColor="@color/system_gray_text"

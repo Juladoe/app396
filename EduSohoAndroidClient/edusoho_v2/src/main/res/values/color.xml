@@ -203,11 +203,11 @@
     <color name="search_history_bg_gradient">#55cccccc</color>
     <color name="search_history_bg_gradient_pressed">#99cccccc</color>
 
-    <color name="set_check_bg_stroke">#A6A6A6</color>
-    <color name="set_check_bg_sel_gradient">#A6A6A6</color>
+    <color name="set_check_bg_stroke">#cccccc</color>
+    <color name="set_check_bg_sel_gradient">#cccccc</color>
     <color name="set_check_bg_gradient">#ffffff</color>
-    <color name="set_check_bg_stroke_pressed">#87CEEB</color>
-    <color name="set_check_bg_sel_gradient_pressed">#87CEEB</color>
+    <color name="set_check_bg_stroke_pressed">@color/base_color_normal</color>
+    <color name="set_check_bg_sel_gradient_pressed">@color/base_color_normal</color>
     <color name="set_check_bg_gradient_pressed">#ffffff</color>
 
     <color name="set_check_ovel_bg_stroke">#A6A6A6</color>
