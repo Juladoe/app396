@@ -290,7 +290,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         if (courseLessonType == CourseLessonType.VIDEO) {
             int offlineType = app.config.offlineType;
-            Log.d(null, "offlineType-> " + offlineType);
             if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
                 AppUtil.showAlertDialog(
                         mActivity,
