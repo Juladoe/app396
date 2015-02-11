@@ -37,10 +37,14 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.Teacher;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
+import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
+import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.listener.StatusCallback;
@@ -1221,5 +1225,29 @@ public class AppUtil {
             }
         }
         return false;
+    }
+
+    public static void showAlertDialog(final ActionBarBaseActivity activity, String content) {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                activity,
+                "播放提示",
+                content,
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            activity.app.mEngine.runNormalPlugin("FragmentPageActivity", activity, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "SettingFragment");
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "设置");
+                                }
+                            });
+                        }
+                    }
+                }
+        );
+        popupDialog.setOkText("去设置");
+        popupDialog.show();
     }
 }
