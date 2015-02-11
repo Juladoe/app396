@@ -160,7 +160,6 @@ public class FoundFragment extends BaseFragment {
                 mCourseListView.setLoadAdapter();
                 loadCourseList(category.id, 0);
                 hideCategoryList();
-                //mActivity.adjustCompoundButton();
             }
         });
     }
@@ -245,6 +244,9 @@ public class FoundFragment extends BaseFragment {
                 mCurrentCategoryId = 0;
                 mCourseListView.setRefreshing();
             } else if (checkedId == R.id.btn_live) {
+                if (mCategoryListView.getHeight() > 0) {
+                    hideCategoryList();
+                }
                 mActivity.setLiveControlVisibility(View.INVISIBLE);
                 mIsLive = true;
                 mCourseListView.setRefreshing();
