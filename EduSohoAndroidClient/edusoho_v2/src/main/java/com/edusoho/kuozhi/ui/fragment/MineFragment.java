@@ -111,9 +111,9 @@ public class MineFragment extends BaseFragment {
         mSetting = (RelativeLayout) view.findViewById(R.id.my_setting);
         mFeedback = (RelativeLayout) view.findViewById(R.id.my_feedback);
 
-        if (mIconClickListener == null) {
-            mIconClickListener = new IconClickListener(mActivity);
-        }
+//        if (mIconClickListener == null) {
+//            mIconClickListener = new IconClickListener(mActivity);
+//        }
 
         mQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,6 +288,7 @@ public class MineFragment extends BaseFragment {
             mAQuery.id(mUserLogo).image(
                     app.loginUser.mediumAvatar, false, true, 200, R.drawable.myinfo_default_face);
 
+            mIconClickListener = new IconClickListener(mActivity, null);
             mUserLogo.setOnClickListener(mIconClickListener);
             mUserLayout.setOnClickListener(mIconClickListener);
         }
