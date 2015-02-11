@@ -242,7 +242,7 @@ public class Const {
     public static final String ONE_NOTE = "Course/getOneNote";
 
     //笔记编辑
-    public static final String NOTE_CONTENT = "Course/AddNote";
+    public static final String ADD_NOTE = "Course/AddNote";
     public static final String GET_LESSON_NOTE = "Course/getLessonNote";
 
     //意见反馈
