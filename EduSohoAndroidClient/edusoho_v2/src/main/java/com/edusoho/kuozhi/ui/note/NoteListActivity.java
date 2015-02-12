@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.ui.note;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -51,7 +52,7 @@ public class NoteListActivity extends ActionBarBaseActivity {
         mLoadView = findViewById(R.id.load_layout);
         mNoteListView = (RefreshListWidget) this.findViewById(R.id.note_list_view);
         mNoteListView.setMode(PullToRefreshBase.Mode.BOTH);
-        mNoteListView.setEmptyText(new String[]{ "暂无笔记" }, R.drawable.icon_note);
+        mNoteListView.setEmptyText(new String[]{"暂无笔记"}, R.drawable.icon_note);
         noteAdapter = new NoteAdapter(mContext, R.layout.note_list_item);
         mNoteListView.setAdapter(noteAdapter);
         mNoteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,7 +124,7 @@ public class NoteListActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == NOTERESULT){
+        if (requestCode == NOTERESULT) {
             mNoteListView.setRefreshing();
         }
     }

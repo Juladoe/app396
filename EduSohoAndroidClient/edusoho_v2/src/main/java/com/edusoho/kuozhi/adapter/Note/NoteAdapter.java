@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.adapter.Note;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Html;
 import android.util.Log;
@@ -22,8 +21,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import org.apache.cordova.App;
-
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +34,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
 
     public NoteAdapter(Context context, int resource) {
         super(context, resource);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(false).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageOnFail(R.drawable.defaultpic).build();
     }
 
     @Override
@@ -49,7 +46,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
 
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(mResource, null);
             holder = new ViewHolder();
@@ -62,7 +59,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        NoteInfo noteInfo = mList.get(position);
+        final NoteInfo noteInfo = mList.get(position);
         String url = getFirstImage(noteInfo.content);
         if (url != noteInfo.content) {
             ImageLoader.getInstance().displayImage(url, holder.noteImage, mOptions, new ImageLoadingListener() {
@@ -76,8 +73,11 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
                     ad.start();
                 }
 
+
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    Log.d(noteInfo.lessonTitle, imageUri);
+                    ad.stop();
                 }
 
                 @Override
