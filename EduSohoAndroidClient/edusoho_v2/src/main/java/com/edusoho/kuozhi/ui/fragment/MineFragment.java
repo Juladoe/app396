@@ -349,10 +349,10 @@ public class MineFragment extends BaseFragment {
     }
 
     private void showMyQuestionOrDiscuss(final String title, final String type, final String emptyText, final int emptyIcon) {
-        if (app.loginUser == null) {
-            LoginActivity.start(mActivity);
-            return;
-        }
+//        if (app.loginUser == null) {
+//            LoginActivity.start(mActivity);
+//            return;
+//        }
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {

@@ -9,6 +9,7 @@ import android.widget.ListView;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.QuestionNew.QuestionListAdapter;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;
 import com.edusoho.kuozhi.model.Question.QuestionResult;
@@ -36,6 +37,8 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
     private String mSecondHeaderText;
     private int mEmptyIcon;
     private String mUrl;
+
+    private final static int QUESTIONRESULT = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +78,24 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
         mQuestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QuestionDetailModel questionDetailModel = (QuestionDetailModel) parent.getItemAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
-                bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
-                bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
-                bundle.putString(Const.QUESTION_TITLE, questionDetailModel.title);
-                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
-                app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                final QuestionDetailModel questionDetailModel = (QuestionDetailModel) parent.getItemAtPosition(position);
+//                Bundle bundle = new Bundle();
+//                bundle.putInt(Const.THREAD_ID, questionDetailModel.id);
+//                bundle.putInt(Const.COURSE_ID, questionDetailModel.courseId);
+//                bundle.putInt(Const.QUESTION_USER_ID, questionDetailModel.user.id);
+//                bundle.putString(Const.QUESTION_TITLE, questionDetailModel.title);
+//                bundle.putString(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
+
+                app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, QUESTIONRESULT, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.THREAD_ID, questionDetailModel.id);
+                        startIntent.putExtra(Const.COURSE_ID, questionDetailModel.courseId);
+                        startIntent.putExtra(Const.QUESTION_USER_ID, questionDetailModel.user.id);
+                        startIntent.putExtra(Const.QUESTION_TITLE, questionDetailModel.title);
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "QuestionDetatilFragment");
+                    }
+                });
             }
         });
         setBackMode(BACK, mTitle);
@@ -142,8 +155,9 @@ public class QuestionNewActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == LoginActivity.OK || resultCode == RegistFragment.OK) {
-            getQuestionListReponseDatas(0);
+        if (resultCode == LoginActivity.OK || resultCode == RegistFragment.OK || resultCode == QUESTIONRESULT) {
+//            getQuestionListReponseDatas(0);
+            mQuestionList.setRefreshing();
         }
     }
 }
