@@ -37,7 +37,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
 
     public NoteAdapter(Context context, int resource) {
         super(context, resource);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(false).build();
     }
 
     @Override
@@ -92,6 +92,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
 
                 }
             });
+            holder.noteImage.setVisibility(View.VISIBLE);
         } else {
             holder.noteImage.setVisibility(View.GONE);
         }
