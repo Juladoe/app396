@@ -232,6 +232,7 @@ public class AppUtil {
             builder.append("&").append(map.get(key));
         }
 
+        builder.append("&token=").append(requestUrl.heads.get("token"));
         return DigestUtils.md5(builder.toString());
     }
 

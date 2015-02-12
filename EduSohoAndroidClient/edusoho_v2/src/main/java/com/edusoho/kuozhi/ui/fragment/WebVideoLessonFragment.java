@@ -120,7 +120,8 @@ public class WebVideoLessonFragment extends BaseFragment {
             webSettings.setUseWideViewPort(true);
             webSettings.setLoadWithOverviewMode(true);
         }
-        // 4.1以下
+
+        //4.1以下
         if (Build.VERSION.SDK_INT < 16) {
             webSettings.setUserAgentString(USER_AGENT);
             if (!checkInstallFlash()) {

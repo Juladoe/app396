@@ -13,9 +13,7 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.SqliteUtil;
 
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 14-9-10.
@@ -77,6 +75,23 @@ public class AppDbCache implements AppCache{
         return false;
     }
 
+    private String buildRequestRealPath(RequestUrl requestUrl)
+    {
+        String url = requestUrl.url;
+        StringBuilder stringBuilder = new StringBuilder(url);
+        stringBuilder.append("?");
+        HashMap<String, Object> params = requestUrl.getAllParams();
+        for (String key : params.keySet()) {
+            String value = params.get(key).toString();
+            stringBuilder.append(key)
+                         .append("=")
+                         .append(value)
+                         .append("&");
+        }
+
+        return stringBuilder.toString();
+    }
+
     @Override
     public Cache getCache(RequestUrl requestUrl)
     {
@@ -119,12 +134,10 @@ public class AppDbCache implements AppCache{
     }
 
     @Override
-    public void delCache(RequestUrl key)
-    {
+    public void delCache(RequestUrl key){
     }
 
     @Override
-    public void clear()
-    {
+    public void clear(){
     }
 }
