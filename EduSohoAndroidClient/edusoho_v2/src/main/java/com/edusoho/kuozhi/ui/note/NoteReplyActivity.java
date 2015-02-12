@@ -115,7 +115,6 @@ public class NoteReplyActivity extends ActionBarBaseActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reply_submit) {
