@@ -65,7 +65,6 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 }
             }
         });
-
     }
 
     public void setListViewLayout(int layoutId) {
