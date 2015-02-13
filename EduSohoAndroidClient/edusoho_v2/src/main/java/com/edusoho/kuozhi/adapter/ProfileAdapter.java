@@ -65,7 +65,6 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
                 }
             }
         });
-
     }
 
     public void setListViewLayout(int layoutId) {
@@ -284,18 +283,19 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         } else {
             headerHolder.mVip.setVisibility(View.GONE);
         }
-        if (mUser.id == mActivity.app.loginUser.id) {
-            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
-            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
-        } else {
+//        if (mActivity.app.loginUser != null || (mUser.id == mActivity.app.loginUser.id)) {
+//
+//        } else {
+//
+//        }
+
+        if (mActivity.app.loginUser != null && mUser.id == mActivity.app.loginUser.id) {
             headerHolder.mSendMsgLayout.setVisibility(View.VISIBLE);
             headerHolder.mFollowLayout.setVisibility(View.VISIBLE);
-//            if (mType.equals(FollowFragment.FOLLOWING)) {
-//                headerHolder.tvFollow.setText("取消关注");
-//            } else {
-//                isFollowed(headerHolder);
-//            }
             isFollowed(headerHolder);
+        } else {
+            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
         }
 
         headerHolder.mUserName.setText(mUser.nickname);
