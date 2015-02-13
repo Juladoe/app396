@@ -126,7 +126,7 @@ public class QuestionDetailFragment extends BaseFragment {
                 mQuestionDetailModel.title,
                 SHARE_QUESTION_URL.toString(),
                 AppUtil.coverCourseAbout(mQuestionDetailModel.content),
-                AQUtility.getCacheFile(AQUtility.getCacheDir(mActivity), mQuestionDetailModel.coursePicture).getAbsolutePath(),
+                AQUtility.getCacheFile(AQUtility.getCacheDir(mActivity), mQuestionDetailModel.coursePicture),
                 app.host
         );
         shareUtil.show(new ShareHandler() {

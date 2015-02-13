@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,14 +41,19 @@ public class ShareUtil {
     }
 
     public ShareUtil initShareParams(
-            int icon, String shareTextTitle,String shareTitleUrl, String shareText, String localImagePath, String ShareSite
+            int icon, String shareTextTitle,String shareTitleUrl, String shareText, File imageFile, String ShareSite
     )
     {
         mNotification_icon = icon;
         mShareTextTitle = shareTextTitle;
         mShareTitleUrl = shareTitleUrl;
         mShareText = shareText;
-        mLocalImagePath = localImagePath;
+        if(imageFile.exists()){
+            mLocalImagePath = imageFile.getAbsolutePath();
+            mOneKeyShare.setImagePath(mLocalImagePath);
+        }else{
+
+        }
         mShareSite = ShareSite;
 
         initOneKeyShare();
@@ -123,11 +129,11 @@ public class ShareUtil {
         mOneKeyShare.setTitleUrl(mShareTitleUrl);
         // text是分享文本，所有平台都需要这个字段
         mOneKeyShare.setText(mShareText);
-        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-        mOneKeyShare.setImagePath(mLocalImagePath);
-        // imageUrl是图片的网络路径，新浪微博、人人网、QQ空间、
-        // 微信的两个平台、Linked-In支持此字段
-        //mOneKeyShare.setImageUrl(mLocalImagePath);
+//        imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+//        mOneKeyShare.setImagePath(mLocalImagePath);
+//        imageUrl是图片的网络路径，新浪微博、人人网、QQ空间、
+//        微信的两个平台、Linked-In支持此字段
+//        mOneKeyShare.setImageUrl(mLocalImagePath);
         // url仅在微信（包括好友和朋友圈）中使用
         //oks.setUrl("http://sharesdk.cn");
         // site是分享此内容的网站名称，仅在QQ空间使用

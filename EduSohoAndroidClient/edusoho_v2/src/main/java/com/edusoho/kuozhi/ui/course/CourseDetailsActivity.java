@@ -289,7 +289,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 course.title,
                 stringBuilder.toString(),
                 AppUtil.coverCourseAbout(course.about),
-                AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture).getAbsolutePath(),
+                AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture),
                 app.host
         );
         shareUtil.show(new ShareHandler() {
