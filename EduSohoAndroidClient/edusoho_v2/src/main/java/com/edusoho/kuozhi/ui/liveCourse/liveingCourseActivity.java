@@ -83,8 +83,11 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         if(app.loginUser == null){
             mLiveingCourseRefreshList.setLoginStatus(false);
             mLoading.setVisibility(View.GONE);
+            mLiveingCourseRefreshList.pushData(null);
+            mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.DISABLED);
             return ;
         }else{
+            mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
             mLiveingCourseRefreshList.setLoginStatus(true);
         }
         RequestUrl url = app.bindUrl(Const.LIVING_COURSE, true);

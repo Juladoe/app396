@@ -139,10 +139,10 @@ public class SchoolRoomFragment extends BaseFragment {
     }
 
     private void goToLiveCourseDetailsActivity() {
-        if (app.loginUser == null) {
-            LoginActivity.start(mActivity);
-            return;
-        }
+//        if (app.loginUser == null) {
+//            LoginActivity.start(mActivity);
+//            return;
+//        }
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
