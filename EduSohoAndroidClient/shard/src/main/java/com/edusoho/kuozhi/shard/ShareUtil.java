@@ -8,6 +8,8 @@ import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import cn.sharesdk.framework.Platform;
@@ -51,16 +53,15 @@ public class ShareUtil {
         if(imageFile.exists()){
             mLocalImagePath = imageFile.getAbsolutePath();
             mOneKeyShare.setImagePath(mLocalImagePath);
-        }else{
+        }else{}
 
-        }
         mShareSite = ShareSite;
 
         initOneKeyShare();
         return this;
     }
 
-    private List<ListData> addWechatPlat(List<ListData> list)
+    private ArrayList<ListData> addWechatPlat(ArrayList<ListData> list)
     {
         list.add(new ListData(
                 mContext.getResources().getDrawable(R.drawable.logo_wechat), "Wechat", mContext));
@@ -73,7 +74,7 @@ public class ShareUtil {
 
     public void initDialog(){
         Platform[] platforms = ShareSDK.getPlatformList();
-        List<ListData> list = new ArrayList<ListData>();
+        ArrayList<ListData> list = new ArrayList<ListData>();
         for (int i=0;i<platforms.length;i++){
             String name = platforms[i].getName();
             String resName = "logo_" + name;
@@ -83,6 +84,12 @@ public class ShareUtil {
         }
 
         list = addWechatPlat(list);
+        Collections.sort(list, new Comparator<ListData>() {
+            @Override
+            public int compare(ListData lhs, ListData rhs) {
+                return rhs.type.compareToIgnoreCase(lhs.type);
+            }
+        });
         ListView listView = new ListView(mContext);
         ShardListAdapter adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
         listView.setAdapter(adapter);
