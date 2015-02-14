@@ -71,6 +71,7 @@
     <plugin name="BDVideoLessonFragment" package="com.edusoho.plugin.video.CustomVideoFragment" version="1.0"></plugin>
     <plugin name="EduVideoViewFragment" package="com.edusoho.kuozhi.ui.fragment.video.EduVideoViewFragment" version="1.0"></plugin>
     <plugin name="CoursePageFragment" package="com.edusoho.kuozhi.ui.fragment.course.CoursePageFragment" version="1.0"></plugin>
+    <plugin name="DocumentLessonFragment" package="com.edusoho.kuozhi.ui.fragment.DocumentLessonFragment" version="1.0"></plugin>
 
     <plugin name="AudioLessonFragment" package="com.edusoho.kuozhi.ui.fragment.AudioLessonFragment" version="1.0"></plugin>
     <plugin name="PptLessonFragment" package="com.edusoho.kuozhi.ui.fragment.PptLessonFragment" version="1.0"></plugin>

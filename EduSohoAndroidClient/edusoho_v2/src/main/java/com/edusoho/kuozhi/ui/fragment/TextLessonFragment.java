@@ -19,10 +19,10 @@ import com.edusoho.kuozhi.ui.course.LessonActivity;
  */
 public class TextLessonFragment extends BaseFragment {
 
-    private WebView mLessonWebview;
-    private String mContent;
+    protected WebView mLessonWebview;
+    protected String mContent;
 
-    private Handler webViewHandler;
+    protected Handler webViewHandler;
     private static final int SHOW_IMAGES = 0002;
 
     @Override
@@ -34,6 +34,11 @@ public class TextLessonFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.text_fragment_layout);
+        initWorkHandler();
+    }
+
+    protected void initWorkHandler()
+    {
         webViewHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -61,14 +66,13 @@ public class TextLessonFragment extends BaseFragment {
         super.initView(view);
 
         mLessonWebview = (WebView) view.findViewById(R.id.lesson_webview);
-        initWebViewSetting();
-        showProgress(true);
-        mLessonWebview.loadDataWithBaseURL("file:///android_asset/consult.html", mContent, "text/html", "utf-8", null);
+        initWebViewSetting(mLessonWebview);
+        mLessonWebview.loadDataWithBaseURL(app.host, mContent, "text/html", "utf-8", null);
     }
 
-    private void initWebViewSetting()
+    protected void initWebViewSetting(WebView webView)
     {
-        WebSettings webSettings = mLessonWebview.getSettings();
+        WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setSupportMultipleWindows(true);
@@ -77,10 +81,10 @@ public class TextLessonFragment extends BaseFragment {
         webSettings.setAllowFileAccess(true);
         webSettings.setDefaultTextEncodingName("utf-8");
 
-        mLessonWebview.addJavascriptInterface(new JavaScriptObj(), "jsobj");
-        mLessonWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webView.addJavascriptInterface(getJsObj(), "jsobj");
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
-        mLessonWebview.setWebChromeClient(new WebChromeClient(){
+        webView.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == 100) {
@@ -89,7 +93,7 @@ public class TextLessonFragment extends BaseFragment {
             }
         });
 
-        mLessonWebview.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("imageindexnurls")) {
@@ -98,6 +102,11 @@ public class TextLessonFragment extends BaseFragment {
                 return true;
             }
         });
+    }
+
+    protected Object getJsObj()
+    {
+        return new JavaScriptObj();
     }
 
     /**

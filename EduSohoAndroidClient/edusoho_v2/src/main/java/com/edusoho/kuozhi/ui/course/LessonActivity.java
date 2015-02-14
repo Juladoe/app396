@@ -597,6 +597,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             case VIDEO:
             case AUDIO:
             case TEXT:
+            default:
                 normalLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<String>>() {
                         });
@@ -616,7 +617,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
                 return normalLesson;
         }
-        return null;
     }
 
     /**
