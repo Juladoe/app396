@@ -107,12 +107,6 @@ public class CourseLessonAdapter
                 setChapterInfo(viewHolder, lessonItem);
                 break;
         }
-
-        /*
-        if (lessonItem.id == mCurrentLessonId) {
-            viewHolder.itemView.setEnabled(false);
-        }
-        */
         setLessonProgress(lessonItem.id, viewHolder.mLessonProgress);
 
         viewHolder.mTitle.setText(lessonItem.title);
@@ -140,9 +134,10 @@ public class CourseLessonAdapter
             case AUDIO:
                 typeDrawable = R.drawable.lesson_item_sound;
                 break;
-            case TEXT:
-                typeDrawable = R.drawable.lesson_item_image;
+            case DOCUMENT:
+                typeDrawable = R.drawable.lesson_item_document;
                 break;
+            case TEXT:
             default:
                 typeDrawable = R.drawable.lesson_item_image;
         }
