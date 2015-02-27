@@ -290,12 +290,12 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
 //        }
 
         if (mActivity.app.loginUser != null && mUser.id == mActivity.app.loginUser.id) {
+            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
+        } else {
             headerHolder.mSendMsgLayout.setVisibility(View.VISIBLE);
             headerHolder.mFollowLayout.setVisibility(View.VISIBLE);
             isFollowed(headerHolder);
-        } else {
-            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
-            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
         }
 
         headerHolder.mUserName.setText(mUser.nickname);
