@@ -99,5 +99,4 @@
 
     <!--QuestionNew-->
     <dimen name="question_course_title_width">200dp</dimen>
-
 </resources>

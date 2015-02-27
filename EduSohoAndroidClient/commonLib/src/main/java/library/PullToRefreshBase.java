@@ -771,6 +771,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
                         break;
                     default:
                     case PULL_FROM_START:
+                        mFlag = true;
                         smoothScrollTo(-getHeaderSize(), listener);
                         break;
                 }
