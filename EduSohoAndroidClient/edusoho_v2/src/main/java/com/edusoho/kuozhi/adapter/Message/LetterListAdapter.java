@@ -111,6 +111,9 @@ public class LetterListAdapter extends ListBaseAdapter<LetterModel> {
                     holder.tvSendTime.setVisibility(View.VISIBLE);
                     holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
                 }
+            } else {
+                holder.tvSendTime.setVisibility(View.VISIBLE);
+                holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
             }
             holder.tvSendContent.setText(model.content);
             holder.ciPic.setOnClickListener(new IconClickListener(mActivity, model.createdUser));

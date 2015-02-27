@@ -23,7 +23,8 @@ public class SuggestionFragment extends BaseFragment {
     private RadioGroup mFixRadioGroup;
     private View mSubmitBtn;
 
-    private static final String[] TYPES = { "bug", "fix"};
+    private static final String[] TYPES = {"bug", "fix"};
+
     @Override
     public String getTitle() {
         return "设置";
@@ -60,10 +61,9 @@ public class SuggestionFragment extends BaseFragment {
         });
     }
 
-    private int getCheckIndex()
-    {
+    private int getCheckIndex() {
         int count = mFixRadioGroup.getChildCount();
-        for (int i=0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             RadioButton radioButton = (RadioButton) mFixRadioGroup.getChildAt(i);
             if (radioButton.isChecked()) {
                 return i;
@@ -73,10 +73,9 @@ public class SuggestionFragment extends BaseFragment {
     }
 
     private void sendSuggesion(
-            String info, String type, String contact)
-    {
+            String info, String type, String contact) {
         RequestUrl requestUrl = app.bindUrl(Const.SUGGESTION, false);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "info", info,
                 "type", type,
                 "contact", contact
@@ -84,12 +83,13 @@ public class SuggestionFragment extends BaseFragment {
 
         requestUrl.params.putAll(app.getPlatformInfo());
 
-        mActivity.ajaxPost(requestUrl, new ResultCallback(){
+        mActivity.ajaxPost(requestUrl, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 showProgress(false);
                 mSubmitBtn.setEnabled(true);
                 mInfoEdt.setText("");
+                mContactEdt.setText("");
                 mActivity.longToast("提交成功！感谢反馈!");
             }
 
