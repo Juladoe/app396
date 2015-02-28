@@ -60,7 +60,7 @@ public class QuestionReplyFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (mUseId == mActivity.app.loginUser.id) {
+        if (mReplyModel.user.id == mActivity.app.loginUser.id) {
             inflater.inflate(R.menu.question_reply_new_menu, menu);
         }
     }
