@@ -46,7 +46,7 @@ public class LessionListAdapter extends ListBaseAdapter<LearnCourse>{
         viewHolder.tvItemTitle.setText(learnCourse.title);
 
         if(learnCourse.lastLessonTitle != null) {
-            String lastLessonTitle = String.format("学习到课时%d:%s",learnCourse.memberLearnedNum,learnCourse.lastLessonTitle);
+            String lastLessonTitle = String.format("学习到课时:%s",learnCourse.lastLessonTitle);
             viewHolder.tvItemLasslessionTitle.setText(lastLessonTitle);
         }else{
             viewHolder.tvItemLasslessionTitle.setText("没有开始学习课时");
