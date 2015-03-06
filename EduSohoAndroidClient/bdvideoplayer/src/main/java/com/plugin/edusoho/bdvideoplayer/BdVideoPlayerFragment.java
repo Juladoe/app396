@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
 import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
@@ -36,8 +37,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         OnCompletionListener,
         OnErrorListener,
         OnInfoListener,
-        OnPlayingBufferCacheListener
-{
+        OnPlayingBufferCacheListener {
     protected final String TAG = "BdVideoPlayerFragment";
 
     private String AK = "6ZB2kShzunG7baVCPLWe7Ebc";
@@ -91,11 +91,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     /**
      * 播放状态
      */
-    protected  enum PLAYER_STATUS {
-        PLAYER_IDLE, PLAYER_PREPARING, PLAYER_PREPARED,PLAYER_PAUSE;
+    protected enum PLAYER_STATUS {
+        PLAYER_IDLE, PLAYER_PREPARING, PLAYER_PREPARED, PLAYER_PAUSE;
     }
 
-    protected  enum PLAYER_HEAD_STATUS {
+    protected enum PLAYER_HEAD_STATUS {
         PLAYER_START, PLAYER_END, PLAYER_IDLE;
     }
 
@@ -166,7 +166,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 case EVENT_START:
                     Log.d(TAG, "EVENT_START");
                     if (mVideoHead == null
-                            ||mPlayHeadStatus == PLAYER_HEAD_STATUS.PLAYER_END) {
+                            || mPlayHeadStatus == PLAYER_HEAD_STATUS.PLAYER_END) {
                         playVideo();
                     } else {
                         playHeadUrl();
@@ -191,8 +191,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
     }
 
-    private void playVideo()
-    {
+    private void playVideo() {
         Log.v(TAG, "playVideo " + mVideoSource);
         /**
          * 如果已经播放了，等待上一次播放结束
@@ -235,8 +234,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
     }
 
-    private void playHeadUrl()
-    {
+    private void playHeadUrl() {
         Log.v(TAG, "playHeadUrl " + mVideoHead);
         mVV.setVideoPath(mVideoHead);
         /**
@@ -272,14 +270,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private boolean mIsShowController = true;
     private int mIsShowControllerCount;
 
-    private void hideController()
-    {
+    private void hideController() {
         mIsShowController = false;
         mController.setVisibility(View.GONE);
     }
 
-    private void showController()
-    {
+    private void showController() {
         mIsShowController = true;
         mController.setVisibility(View.VISIBLE);
     }
@@ -296,14 +292,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             /**
              * 如果已经播放，先停止播放
              */
-            if(mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE){
+            if (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE) {
                 mVV.stopPlayback();
             }
 
             /**
              * 发起一次新的播放任务
-            */
-            if(mEventHandler.hasMessages(EVENT_START))
+             */
+            if (mEventHandler.hasMessages(EVENT_START))
                 mEventHandler.removeMessages(EVENT_START);
             mEventHandler.sendEmptyMessage(EVENT_START);
         }
@@ -355,8 +351,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
     }
 
-    private String getUrlPath(String uriPath)
-    {
+    private String getUrlPath(String uriPath) {
         String playUrl = null;
         if (uriPath == null) {
             return null;
@@ -378,28 +373,28 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 初始化界面
      */
     private void initUI(View view) {
-        mPlaybtn = (ImageView)view.findViewById(R.id.play_btn);
-        mBackbtn = (ImageView)view.findViewById(R.id.back_btn);
-        mForwardbtn = (ImageView)view.findViewById(R.id.forward_btn);
-        mFullBtn = (CheckBox)view.findViewById(R.id.full_btn);
-        mReplayBtn = (ImageView)view.findViewById(R.id.video_replay);
+        mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
+        mBackbtn = (ImageView) view.findViewById(R.id.back_btn);
+        mForwardbtn = (ImageView) view.findViewById(R.id.forward_btn);
+        mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
+        mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
 
-        mProgress = (SeekBar)view.findViewById(R.id.media_progress);
-        mDuration = (TextView)view.findViewById(R.id.time_total);
-        mCurrPostion = (TextView)view.findViewById(R.id.time_current);
+        mProgress = (SeekBar) view.findViewById(R.id.media_progress);
+        mDuration = (TextView) view.findViewById(R.id.time_total);
+        mCurrPostion = (TextView) view.findViewById(R.id.time_current);
 
         registerCallbackForControl();
         /**
          * 设置ak及sk的前16位
-        */
+         */
         BVideoView.setAKSK(AK, SK);
-        if (mSoLibDir != null && ! BdPlayerManager.NORMAL_LIB_DIR.equals(mSoLibDir)) {
+        if (mSoLibDir != null && !BdPlayerManager.NORMAL_LIB_DIR.equals(mSoLibDir)) {
             BVideoView.setNativeLibsDirectory(mSoLibDir);
         }
 
         /**
          *创建BVideoView和BMediaController
-        */
+         */
         mVV = (BVideoView) view.findViewById(R.id.video_view);
         /*
             mVVCtl = new BMediaController(this);
@@ -408,8 +403,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         */
         mController = (RelativeLayout) view.findViewById(R.id.video_controller);
         /**
-            *注册listener
-        */
+         *注册listener
+         */
         mVV.setOnPreparedListener(this);
         mVV.setOnCompletionListener(this);
         mVV.setOnErrorListener(this);
@@ -432,11 +427,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
         /**
          *关联BMediaController
-        */
+         */
         //mVV.setMediaController(mVVCtl);
         /**
          *设置解码模式
-        */
+         */
 
         mVV.setDecodeMode(mDecodeMode);
         mController.setOnTouchListener(new View.OnTouchListener() {
@@ -457,8 +452,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         super.onPause();
         Log.v(TAG, "onPause");
         /**
-            *在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
-        */
+         *在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
+         */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
             mLastPos = mVV.getCurrentPosition();
             mVV.pause();
@@ -479,11 +474,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         resumePlay();
     }
 
-    protected void resumePlay()
-    {
+    protected void resumePlay() {
         /**
          *发起一次播放任务,当然您不一定要在这发起
-        */
+         */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
                 || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
             mEventHandler.sendEmptyMessage(EVENT_REPLAY);
@@ -493,17 +487,17 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
         Log.v(TAG, "onStop");
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         /**
          * 结束后台事件处理线程
-        */
+         */
         mHandlerThread.quit();
         Log.v(TAG, "onDestroy");
         if (mWakeLock != null) {
@@ -521,15 +515,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     @Override
     public boolean onInfo(int what, int extra) {
-        switch(what){
+        switch (what) {
             /**
              * 开始缓冲
-            */
+             */
             case BVideoView.MEDIA_INFO_BUFFERING_START:
                 break;
             /**
              * 结束缓冲
-            */
+             */
             case BVideoView.MEDIA_INFO_BUFFERING_END:
                 break;
             default:
@@ -540,14 +534,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 当前缓冲的百分比， 可以配合onInfo中的开始缓冲和结束缓冲来显示百分比到界面
-    */
+     */
     @Override
     public void onPlayingBufferCache(int percent) {
     }
 
     /**
      * 播放出错
-    */
+     */
     @Override
     public boolean onError(int what, int extra) {
         Log.v(TAG, "onError what:" + what + " extra:" + extra);
@@ -561,16 +555,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         return true;
     }
 
-    private void changeDecodeMode()
-    {
+    private void changeDecodeMode() {
         mDecodeMode = BVideoView.DECODE_HW;
         mVV.setDecodeMode(mDecodeMode);
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
         mEventHandler.sendEmptyMessage(EVENT_START);
     }
 
-    private void showErrorDialog()
-    {
+    private void showErrorDialog() {
         Activity activity = getActivity();
         if (activity == null) {
             return;
@@ -591,8 +583,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 为控件注册回调处理函数
-    */
-    private void registerCallbackForControl(){
+     */
+    private void registerCallbackForControl() {
         mFullBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -613,7 +605,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     mPlaybtn.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
-                    */
+                     */
                     mVV.pause();
                 } else {
                     mIsPlayEnd = false;
@@ -625,7 +617,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     }
                     /**
                      * 继续播放
-                    */
+                     */
                     mVV.resume();
                 }
 
@@ -659,7 +651,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             public void onStartTrackingTouch(SeekBar seekBar) {
                 /**
                  * SeekBar开始seek时停止更新
-                */
+                 */
                 mUIHandler.removeMessages(UI_EVENT_UPDATE_CURRPOSITION);
             }
 
@@ -685,7 +677,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         });
     }
 
-    private void updateTextViewWithTimeFormat(TextView view, int second){
+    private void updateTextViewWithTimeFormat(TextView view, int second) {
         int hh = second / 3600;
         int mm = second % 3600 / 60;
         int ss = second % 60;
@@ -700,7 +692,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 播放完成
-    */
+     */
     @Override
     public void onCompletion() {
         Log.v(TAG, "onCompletion");
@@ -723,7 +715,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     /**
      * 播放准备就绪
-    */
+     */
     @Override
     public void onPrepared() {
         Log.v(TAG, "onPrepared" + mPlayerStatus);
