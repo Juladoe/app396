@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.ui.liveCourse;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -24,7 +25,7 @@ import library.PullToRefreshBase;
 /**
  * Created by onewoman on 2015/1/30.
  */
-public class liveingCourseActivity extends ActionBarBaseActivity{
+public class liveingCourseActivity extends ActionBarBaseActivity {
     private RefreshListWidget mLiveingCourseRefreshList;
     private View mLoading;
     private LiveingCourseListAdapter mLiveingCourseListAdapter;
@@ -37,7 +38,7 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         init();
     }
 
-    public void init(){
+    public void init() {
         setBackMode(BACK, "在学直播课程");
         mLiveingCourseRefreshList = (RefreshListWidget) this.findViewById(R.id.liveing_course_refresh_list);
         mLoading = this.findViewById(R.id.load_layout);
@@ -65,7 +66,7 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         refreshListener();
     }
 
-    public void refreshListener(){
+    public void refreshListener() {
         mLiveingCourseRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
@@ -79,21 +80,21 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
         });
     }
 
-    public void getLiveingCourseRequest(final int start){
-        if(app.loginUser == null){
+    public void getLiveingCourseRequest(final int start) {
+        if (app.loginUser == null) {
             mLiveingCourseRefreshList.setLoginStatus(false);
             mLoading.setVisibility(View.GONE);
             mLiveingCourseRefreshList.pushData(null);
             mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.DISABLED);
-            return ;
-        }else{
+            return;
+        } else {
             mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
             mLiveingCourseRefreshList.setLoginStatus(true);
         }
         RequestUrl url = app.bindUrl(Const.LIVING_COURSE, true);
         url.setParams(new String[]{
-            "start", String.valueOf(start),
-            "limit", String.valueOf(Const.LIMIT)
+                "start", String.valueOf(start),
+                "limit", String.valueOf(Const.LIMIT)
         });
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
@@ -101,10 +102,11 @@ public class liveingCourseActivity extends ActionBarBaseActivity{
                 super.callback(url, object, ajaxStatus);
                 mLoading.setVisibility(View.GONE);
                 mLiveingCourseRefreshList.onRefreshComplete();
-                LiveingCourseResult liveingCourseResult = parseJsonValue(object, new TypeToken<LiveingCourseResult>(){});
+                LiveingCourseResult liveingCourseResult = parseJsonValue(object, new TypeToken<LiveingCourseResult>() {
+                });
                 mLiveingCourseRefreshList.pushData(liveingCourseResult.data);
                 mLiveingCourseRefreshList.setStart(start);
-                if(liveingCourseResult.data.size() < Const.LIMIT){
+                if (liveingCourseResult.data.size() < Const.LIMIT) {
                     mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
             }

@@ -314,6 +314,7 @@ public class DownLoadService extends Service {
             Log.d(null, "download Range-> " + offset);
             HttpResponse response = mHttpClient.execute(httpGet);
             mResourceDownloadTask.put(lessonMaterial.id, httpGet);
+            Log.d(null, "lessonMaterial.fileUri-> " + lessonMaterial.fileUri);
             InputStream inputStream = response.getEntity().getContent();
 
             NormalCallback<long[]> callback = new NormalCallback<long[]>() {
@@ -332,7 +333,7 @@ public class DownLoadService extends Service {
                 updateLessonResource(lessonMaterial.id, resourceFile.length(), 1);
             }
         } catch (Exception e) {
-            Log.d(null, e.toString());
+            e.printStackTrace();
             if (resourceFile != null) {
                 Log.d(null, "end update offset -> " + lessonMaterial.id);
                 updateLessonResource(lessonMaterial.id, resourceFile.length(), 0);
