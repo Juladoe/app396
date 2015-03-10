@@ -22,7 +22,7 @@ import library.PullToRefreshBase;
  * Created by onewoman on 2014/12/3.
  * 在学课程
  */
-public class LeaenCourseFragment extends HorizontalCourseFragment {
+public class LearnCourseFragment extends HorizontalCourseFragment {
 
     @Override
     public String getTitle() {

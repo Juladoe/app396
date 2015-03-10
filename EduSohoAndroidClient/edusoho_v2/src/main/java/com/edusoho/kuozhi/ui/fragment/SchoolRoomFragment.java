@@ -139,10 +139,6 @@ public class SchoolRoomFragment extends BaseFragment {
     }
 
     private void goToLiveCourseDetailsActivity() {
-//        if (app.loginUser == null) {
-//            LoginActivity.start(mActivity);
-//            return;
-//        }
         PluginRunCallback callback = new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
@@ -207,9 +203,6 @@ public class SchoolRoomFragment extends BaseFragment {
         bundle.putString(Const.ACTIONBAR_TITLE, "私信");
         bundle.putString(FragmentPageActivity.FRAGMENT, "LetterFragment");
         app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(EduHtmlAppActivity.APP_URL, "teacherApp");
-//        app.mEngine.runNormalPluginWithBundle("TeacherListHtmlActivity", mActivity, bundle);
     }
 
     private void loadSchoolRoomData() {

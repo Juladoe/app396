@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.ui.liveCourse;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,6 +14,8 @@ import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.LiveingCourse;
 import com.edusoho.kuozhi.model.LiveingCourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
+import com.edusoho.kuozhi.ui.common.LoginActivity;
+import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -113,5 +114,10 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
         });
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == LoginActivity.LOGIN && resultCode == LoginActivity.OK) {
+            getLiveingCourseRequest(0);
+        }
+    }
 }

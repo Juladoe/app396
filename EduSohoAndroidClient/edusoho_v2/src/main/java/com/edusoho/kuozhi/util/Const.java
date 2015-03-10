@@ -47,13 +47,13 @@ public class Const {
     };
 
     public static final String[] MY_COURSE_FRAGMENT = {
-            "LeaenCourseFragment",
+            "LearnCourseFragment",
             "FavoriteCourseFragment",
             "LearnedCourseFragment"
     };
 
     public static final String[] SCHOOLROOM_COURSE_FRAGMENT = {
-            "LeaenCourseFragment",
+            "LearnCourseFragment",
             "LearnedCourseFragmentHorizontal",
     };
 
