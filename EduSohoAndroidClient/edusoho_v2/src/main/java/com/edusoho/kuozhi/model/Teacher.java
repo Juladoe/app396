@@ -9,5 +9,7 @@ public class Teacher implements Serializable{
     public int id;
     public String nickname;
     public String title;
+    public int following;
+    public int follower;
     public String avatar;
 }
