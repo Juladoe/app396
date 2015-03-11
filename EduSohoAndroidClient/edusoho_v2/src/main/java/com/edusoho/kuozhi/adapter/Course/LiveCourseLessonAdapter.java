@@ -1,14 +1,11 @@
 package com.edusoho.kuozhi.adapter.Course;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,21 +15,16 @@ import android.widget.TextView;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
-import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.LessonItem;
-import com.edusoho.kuozhi.model.LiveingCourse;
-import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.view.ESTextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by Melomelon on 2015/2/2.

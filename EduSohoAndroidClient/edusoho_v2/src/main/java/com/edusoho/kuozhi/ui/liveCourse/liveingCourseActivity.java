@@ -11,11 +11,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.LiveingCourseListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.LiveingCourse;
-import com.edusoho.kuozhi.model.LiveingCourseResult;
+import com.edusoho.kuozhi.model.LivingCourse;
+import com.edusoho.kuozhi.model.LivingCourseResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -52,7 +51,7 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
         mLiveingCourseRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final LiveingCourse liveingCourse = (LiveingCourse) parent.getItemAtPosition(position);
+                final LivingCourse liveingCourse = (LivingCourse) parent.getItemAtPosition(position);
                 PluginRunCallback runCallback = new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -103,11 +102,11 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
                 super.callback(url, object, ajaxStatus);
                 mLoading.setVisibility(View.GONE);
                 mLiveingCourseRefreshList.onRefreshComplete();
-                LiveingCourseResult liveingCourseResult = parseJsonValue(object, new TypeToken<LiveingCourseResult>() {
+                LivingCourseResult livingCourseResult = parseJsonValue(object, new TypeToken<LivingCourseResult>() {
                 });
-                mLiveingCourseRefreshList.pushData(liveingCourseResult.data);
+                mLiveingCourseRefreshList.pushData(livingCourseResult.data);
                 mLiveingCourseRefreshList.setStart(start);
-                if (liveingCourseResult.data.size() < Const.LIMIT) {
+                if (livingCourseResult.data.size() < Const.LIMIT) {
                     mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
             }

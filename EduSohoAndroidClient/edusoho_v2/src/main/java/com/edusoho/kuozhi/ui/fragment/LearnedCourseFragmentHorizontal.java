@@ -84,7 +84,7 @@ public class LearnedCourseFragmentHorizontal extends HorizontalCourseFragment {
 
     @Override
     public String[] getLoginText() {
-        return new String[]{"革命尚未成功，同志仍需努力", "还未有在学的课程"};
+        return new String[]{"革命尚未成功，同志仍需努力", "暂无已学课程"};
     }
 
     private void parseResponse(String object, int start) {

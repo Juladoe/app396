@@ -1,46 +1,32 @@
 package com.edusoho.kuozhi.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.Course.CourseLessonAdapter;
 import com.edusoho.kuozhi.adapter.Course.LiveCourseLessonAdapter;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
-import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.entity.CourseLessonType;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.LearnStatus;
 import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.LessonsResult;
-import com.edusoho.kuozhi.model.LiveingCourse;
-import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
-import com.edusoho.kuozhi.ui.course.LessonActivity;
-import com.edusoho.kuozhi.ui.fragment.course.CourseDownloadingFragment;
 import com.edusoho.kuozhi.ui.fragment.course.ViewPagerBaseFragment;
 import com.edusoho.kuozhi.ui.liveCourse.liveLessonFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.M3U8Uitl;
-import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 /**

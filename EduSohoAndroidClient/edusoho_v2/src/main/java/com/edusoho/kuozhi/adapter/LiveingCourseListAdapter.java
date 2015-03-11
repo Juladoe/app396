@@ -7,21 +7,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.model.LiveingCourse;
-import com.edusoho.kuozhi.model.LiveingCourseResult;
+import com.edusoho.kuozhi.model.LivingCourse;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.zip.Inflater;
 
 /**
  * Created by onewoman on 2015/1/30.
  */
-public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
+public class LiveingCourseListAdapter extends ListBaseAdapter<LivingCourse>{
     private DisplayImageOptions mDisplayImageOptions;
     public LiveingCourseListAdapter(Context context, int resource) {
         super(context, resource);
@@ -32,7 +29,7 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
     }
 
     @Override
-    public void addItems(ArrayList<LiveingCourse> list) {
+    public void addItems(ArrayList<LivingCourse> list) {
         mList.addAll(list);
         notifyDataSetChanged();
     }
@@ -49,7 +46,7 @@ public class LiveingCourseListAdapter extends ListBaseAdapter<LiveingCourse>{
         }else{
             viewHost = (ViewHost) view.getTag();
         }
-        LiveingCourse liveingCourseData = mList.get(i);
+        LivingCourse liveingCourseData = mList.get(i);
         ImageLoader.getInstance().displayImage(liveingCourseData.largePicture, viewHost.liveingCourseImage,
                 mDisplayImageOptions);
 
