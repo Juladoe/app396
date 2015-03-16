@@ -27,7 +27,7 @@ public final class OpenCameraManager extends PlatformSupportManager<OpenCameraIn
 
   public OpenCameraManager() {
     super(OpenCameraInterface.class, new DefaultOpenCameraInterface());
-    addImplementationClass(9, "com.google.zxing.client.android.camera.open.GingerbreadOpenCameraInterface");
+    addImplementationClass(9, "com.edusoho.plugin.qr.common.executor.GingerbreadOpenCameraInterface");
   }
 
 }
