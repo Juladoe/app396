@@ -2,12 +2,14 @@ package com.edusoho.kuozhi.shard;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -72,11 +74,26 @@ public class ShareUtil {
         return list;
     }
 
+    private boolean filterPlat(String name)
+    {
+        String[] filters = mContext.getResources().getStringArray(R.array.shard_filter);
+        for (String filter : filters) {
+            if (filter.equals(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void initDialog(){
         Platform[] platforms = ShareSDK.getPlatformList();
         ArrayList<ListData> list = new ArrayList<ListData>();
         for (int i=0;i<platforms.length;i++){
             String name = platforms[i].getName();
+            if (filterPlat(name)) {
+                continue;
+            }
             String resName = "logo_" + name;
             int resId = getBitmapRes(mContext, resName);
             ListData data = new ListData(mContext.getResources().getDrawable(resId),name,mContext);

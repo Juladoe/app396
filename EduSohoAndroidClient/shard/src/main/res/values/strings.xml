@@ -9,4 +9,8 @@
     <string name="WechatFavorite">微信收藏</string>
     <string name="QQ">QQ</string>
 
+    <string-array
+        name="shard_filter"
+        >
+    </string-array>
 </resources>
