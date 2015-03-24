@@ -30,9 +30,38 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
+
         <meta-data
-            android:value="a9188584e4960b4ed3b18fb5f1757164"
-            android:name="BUG_HD_SDK_GENERAL_KEY"></meta-data>
+            android:name="BaiduMobAd_CHANNEL"
+            android:value="baidu" />
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="8f1996ac26" />
+        <!-- 是否开启错误日志统计，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_EXCEPTION_LOG"
+            android:value="true" />
+        <!-- 日志发送策略，可选值：APP_START、ONCE_A_DAY、SET_TIME_INTERVAL，默认为APP_START -->
+        <meta-data
+            android:name="BaiduMobAd_SEND_STRATEGY"
+            android:value="APP_START" />
+        <!-- 日志仅在wifi网络下发送，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_ONLY_WIFI"
+            android:value="false" />
+        <!-- 是否获取基站位置信息 ,默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_CELL_LOCATION"
+            android:value="true" />
+        <!-- 是否获取GPS位置信息，默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_GPS_LOCATION"
+            android:value="true" />
+        <!-- 是否获取WIFI位置信息，默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_WIFI_LOCATION"
+            android:value="true" />
+
     </application>
 
 </manifest>
