@@ -32,7 +32,7 @@ android {
 
     //签名
     signingConfigs {
-        releaseConfig{
+        releaseConfig {
             storeFile file("key/mycloudedu.jks")
             storePassword "10001000"
             keyAlias "ce"
@@ -40,13 +40,14 @@ android {
         }
     }
 
-    buildTypes{
+    buildTypes {
         release {
-            signingConfig  signingConfigs.releaseConfig
+            signingConfig signingConfigs.releaseConfig
         }
     }
 }
 
 dependencies {
     compile project(':edusoho_v2')
+    compile files('libs/android_api_3.6.jar')
 }

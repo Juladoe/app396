@@ -1,7 +1,11 @@
 package com.edusoho.kuozhi;
 
 
+import android.os.Bundle;
+
 import com.androidquery.callback.AjaxStatus;
+import com.baidu.mobstat.SendStrategyEnum;
+import com.baidu.mobstat.StatService;
 import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
@@ -15,12 +19,17 @@ import com.google.gson.reflect.TypeToken;
 public class KuozhiActivity extends StartActivity {
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initChannel();
+    }
+
+    @Override
     protected void initApp() {
         if (!app.getNetIsConnect()) {
             longToast("没有网络服务！请检查网络设置。");
             return;
         }
-
         String host = getResources().getString(R.string.app_host);
         checkSchoolApiVersion(host);
     }
@@ -33,7 +42,7 @@ public class KuozhiActivity extends StartActivity {
                 super.callback(url, object, ajaxStatus);
                 SchoolResult schoolResult = app.gson.fromJson(
                         object, new TypeToken<SchoolResult>() {
-                }.getType());
+                        }.getType());
 
                 if (schoolResult == null) {
                     showSchoolErrorDlg();
@@ -52,8 +61,7 @@ public class KuozhiActivity extends StartActivity {
     }
 
     @Override
-    protected void showSchoolErrorDlg()
-    {
+    protected void showSchoolErrorDlg() {
         PopupDialog.createNormal(
                 mContext,
                 "提示信息",
@@ -69,5 +77,17 @@ public class KuozhiActivity extends StartActivity {
             finish();
             return;
         }
+    }
+
+    private void initChannel() {
+        //AppKey不用改
+        StatService.setAppKey("8f1996ac26");
+        //定制项目，app_name就是渠道号
+        StatService.setAppChannel(this, getString(R.string.channel_name), true);
+        StatService.setSessionTimeOut(30);
+        StatService.setOn(this, StatService.EXCEPTION_LOG);
+        StatService.setLogSenderDelayed(0);
+        StatService.setSendLogStrategy(this, SendStrategyEnum.APP_START, 0);
+        StatService.setDebugOn(false);
     }
 }

@@ -4,6 +4,7 @@
     <string name="app_host">http://college.lixianggongchang.com</string>
     <string name="school_about">关于理想职播</string>
     <string name="app_code">lixianggongchang</string>
+    <string name="channel_name">lixianggongchang</string>
     <string name="splash_num">3</string>
     <string name="splash_padding">0</string>
 

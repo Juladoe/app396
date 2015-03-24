@@ -4,12 +4,11 @@
     <string name="app_host">http://www.17mooc.cn</string>
     <string name="school_about">关于一起慕课</string>
     <string name="app_code">17mooc</string>
+    <string name="channel_name">17mooc</string>
     <string name="splash_num">4</string>
     <string name="splash_padding">0</string>
 
-    <string-array
-        name="shard_filter"
-        >
+    <string-array name="shard_filter">
         <item>SinaWeibo</item>
         <item>TencentWeibo</item>
         <item>QZone</item>

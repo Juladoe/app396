@@ -4,6 +4,7 @@
     <string name="app_host"></string>
     <string name="school_about"></string>
     <string name="app_code"></string>
+    <string name="channel_name">baidu</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
 </resources>
