@@ -225,7 +225,7 @@ public class MessageListAdapter extends ListBaseAdapter<Notify> {
     private void showCourse(final int courseId) {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, courseId);
-        EdusohoApp.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mContext, bundle);
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle("CoursePaperActivity", mContext, bundle);
     }
 
     private void showUser(final int userId) {

@@ -130,5 +130,6 @@
     <string name="note_content">笔记内容</string>
 
     <string name="bugly_appid">900001729</string>
+    <string name="channel_name">baidu</string>
 
 </resources>

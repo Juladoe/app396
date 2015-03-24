@@ -46,7 +46,7 @@ public abstract class HorizontalCourseFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, learnCourse.id);
                 bundle.putString(Const.ACTIONBAR_TITLE, learnCourse.title);
-                startActivityWithBundleAndResult("CorusePaperActivity", LEARNCOURSE, bundle);
+                startActivityWithBundleAndResult("CoursePaperActivity", LEARNCOURSE, bundle);
             }
         });
 

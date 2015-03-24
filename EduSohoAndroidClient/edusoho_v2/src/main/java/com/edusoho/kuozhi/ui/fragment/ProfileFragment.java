@@ -85,7 +85,7 @@ public class ProfileFragment extends BaseFragment {
                     Bundle bundle = new Bundle();
                     bundle.putInt(Const.COURSE_ID, course.id);
                     bundle.putString(Const.ACTIONBAR_TITLE, course.title);
-                    startActivityWithBundleAndResult("CorusePaperActivity", LEARNCOURSE, bundle);
+                    startActivityWithBundleAndResult("CoursePaperActivity", LEARNCOURSE, bundle);
                 }
             }
         });

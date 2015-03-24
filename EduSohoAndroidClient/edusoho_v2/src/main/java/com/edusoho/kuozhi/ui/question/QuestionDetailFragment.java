@@ -302,7 +302,7 @@ public class QuestionDetailFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, intentCourseId);
                 bundle.putString(Const.ACTIONBAR_TITLE, mQuestionDetailModel.courseTitle);
-                startActivityWithBundle("CorusePaperActivity", bundle);
+                startActivityWithBundle("CoursePaperActivity", bundle);
             }
         });
         ((TextView) mQuestionDetailDescribe.findViewById(R.id.question_detail_describe_answer_count)).setText(mQuestionDetailModel.postNum + "");

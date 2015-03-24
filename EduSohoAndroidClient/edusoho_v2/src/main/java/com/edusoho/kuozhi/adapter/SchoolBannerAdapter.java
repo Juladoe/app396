@@ -85,7 +85,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
                 } else if ("course".equals(banner.action)) {
                     Bundle bundle = new Bundle();
                     bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(banner.params));
-                    mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
+                    mActivity.app.mEngine.runNormalPluginWithBundle("CoursePaperActivity", mActivity, bundle);
                 }
             }
         });

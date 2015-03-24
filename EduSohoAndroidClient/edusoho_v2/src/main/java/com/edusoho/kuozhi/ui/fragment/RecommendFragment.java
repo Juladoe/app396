@@ -122,7 +122,7 @@ public class RecommendFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, course.id);
                 bundle.putString(Const.ACTIONBAR_TITLE, course.title);
-                mActivity.app.mEngine.runNormalPluginWithBundle("CorusePaperActivity", mActivity, bundle);
+                mActivity.app.mEngine.runNormalPluginWithBundle("CoursePaperActivity", mActivity, bundle);
             }
         });
 
