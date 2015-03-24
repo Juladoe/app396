@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        mycloudedu {
-            applicationId "com.mycloudedu.kuozhi"
+        lixianggongchang {
+            applicationId "com.lixianggongchang.kuozhi"
         }
     }
 
     sourceSets {
-        mycloudedu {
+        lixianggongchang {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/mycloudedu/res']
+            res.srcDirs = ['src/lixianggongchang/res']
         }
     }
 
@@ -33,10 +33,10 @@ android {
     //签名
     signingConfigs {
         releaseConfig{
-            storeFile file("key/mycloudedu.jks")
+            storeFile file("key/lixianggongchang.jks")
             storePassword "10001000"
-            keyAlias "ce"
-            keyPassword "100000"
+            keyAlias "cn"
+            keyPassword "10001000"
         }
     }
 
