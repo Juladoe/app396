@@ -38,7 +38,7 @@ import cn.trinea.android.common.util.SystemUtils;
 /**
  * Created by onewoman on 2015/2/2.
  */
-public class liveLessonFragment extends BaseFragment {
+public class LiveLessonFragment extends BaseFragment {
     private TextView mTvLiveTime;
     private ESExpandableTextView mTvLiveIntroduction;
     private TextView mTvLiveCountDown;

@@ -19,6 +19,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
@@ -29,8 +31,6 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:hardwareAccelerated="true"
@@ -125,7 +125,7 @@
 
         <activity
             android:theme="@style/EdusohoTranslucentActionBar"
-            android:name="com.edusoho.kuozhi.ui.course.CorusePaperActivity"
+            android:name=".ui.course.CoursePaperActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
 
@@ -187,10 +187,6 @@
         <service android:name="com.edusoho.kuozhi.Service.DownLoadService" />
         <service android:name="com.edusoho.kuozhi.Service.M3U8DownService" />
 
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
-
         <activity
             android:name="com.edusoho.kuozhi.ui.note.NoteActivity"
             android:configChanges="keyboard|orientation"
@@ -221,7 +217,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.liveCourse.liveingCourseActivity"
+            android:name=".ui.liveCourse.LivingCourseActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />

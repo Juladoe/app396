@@ -25,10 +25,10 @@ import library.PullToRefreshBase;
 /**
  * Created by onewoman on 2015/1/30.
  */
-public class liveingCourseActivity extends ActionBarBaseActivity {
-    private RefreshListWidget mLiveingCourseRefreshList;
+public class LivingCourseActivity extends ActionBarBaseActivity {
+    private RefreshListWidget mLivingCourseRefreshList;
     private View mLoading;
-    private LiveingCourseListAdapter mLiveingCourseListAdapter;
+    private LiveingCourseListAdapter mLivingCourseListAdapter;
     private static final int LIVINGCOURSE = 0;
 
     @Override
@@ -40,26 +40,26 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
 
     public void init() {
         setBackMode(BACK, "在学直播课程");
-        mLiveingCourseRefreshList = (RefreshListWidget) this.findViewById(R.id.liveing_course_refresh_list);
+        mLivingCourseRefreshList = (RefreshListWidget) this.findViewById(R.id.liveing_course_refresh_list);
         mLoading = this.findViewById(R.id.load_layout);
 
-        mLiveingCourseRefreshList.setEmptyText(mActivity, R.layout.empty_page_layout, new String[]{"加入一些课程，再来这里看看吧~", ""},
-                new String[]{"革命尚未成功，同志仍需努力", "还未有在学的课程"}, R.drawable.empty_logout, R.drawable.empty_no_data);
-        mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
-        mLiveingCourseListAdapter = new LiveingCourseListAdapter(mActivity, R.layout.liveing_course_list_inflate);
-        mLiveingCourseRefreshList.setAdapter(mLiveingCourseListAdapter);
-        mLiveingCourseRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mLivingCourseRefreshList.setEmptyText(mActivity, R.layout.empty_page_layout, new String[]{"加入一些课程，再来这里看看吧~", ""},
+                new String[]{"革命尚未成功，同志仍需努力", "暂无在学直播的课程"}, R.drawable.empty_logout, R.drawable.empty_no_data);
+        mLivingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
+        mLivingCourseListAdapter = new LiveingCourseListAdapter(mActivity, R.layout.living_course_list_inflate);
+        mLivingCourseRefreshList.setAdapter(mLivingCourseListAdapter);
+        mLivingCourseRefreshList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final LivingCourse liveingCourse = (LivingCourse) parent.getItemAtPosition(position);
+                final LivingCourse livingCourse = (LivingCourse) parent.getItemAtPosition(position);
                 PluginRunCallback runCallback = new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.COURSE_ID, liveingCourse.id);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, liveingCourse.title);
+                        startIntent.putExtra(Const.COURSE_ID, livingCourse.id);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, livingCourse.title);
                     }
                 };
-                app.mEngine.runNormalPluginForResult("CorusePaperActivity", mActivity, LIVINGCOURSE, runCallback);
+                app.mEngine.runNormalPluginForResult("CoursePaperActivity", mActivity, LIVINGCOURSE, runCallback);
             }
         });
         getLiveingCourseRequest(0);
@@ -67,10 +67,10 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
     }
 
     public void refreshListener() {
-        mLiveingCourseRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {
+        mLivingCourseRefreshList.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
             public void update(PullToRefreshBase<ListView> refreshView) {
-                getLiveingCourseRequest(mLiveingCourseRefreshList.getStart());
+                getLiveingCourseRequest(mLivingCourseRefreshList.getStart());
             }
 
             @Override
@@ -82,14 +82,14 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
 
     public void getLiveingCourseRequest(final int start) {
         if (app.loginUser == null) {
-            mLiveingCourseRefreshList.setLoginStatus(false);
+            mLivingCourseRefreshList.setLoginStatus(false);
             mLoading.setVisibility(View.GONE);
-            mLiveingCourseRefreshList.pushData(null);
-            mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.DISABLED);
+            mLivingCourseRefreshList.pushData(null);
+            mLivingCourseRefreshList.setMode(PullToRefreshBase.Mode.DISABLED);
             return;
         } else {
-            mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
-            mLiveingCourseRefreshList.setLoginStatus(true);
+            mLivingCourseRefreshList.setMode(PullToRefreshBase.Mode.BOTH);
+            mLivingCourseRefreshList.setLoginStatus(true);
         }
         RequestUrl url = app.bindUrl(Const.LIVING_COURSE, true);
         url.setParams(new String[]{
@@ -101,13 +101,13 @@ public class liveingCourseActivity extends ActionBarBaseActivity {
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
                 mLoading.setVisibility(View.GONE);
-                mLiveingCourseRefreshList.onRefreshComplete();
+                mLivingCourseRefreshList.onRefreshComplete();
                 LivingCourseResult livingCourseResult = parseJsonValue(object, new TypeToken<LivingCourseResult>() {
                 });
-                mLiveingCourseRefreshList.pushData(livingCourseResult.data);
-                mLiveingCourseRefreshList.setStart(start);
+                mLivingCourseRefreshList.pushData(livingCourseResult.data);
+                mLivingCourseRefreshList.setStart(start);
                 if (livingCourseResult.data.size() < Const.LIMIT) {
-                    mLiveingCourseRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                    mLivingCourseRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 }
             }
         });

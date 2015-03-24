@@ -16,9 +16,9 @@ import com.edusoho.kuozhi.model.LessonItem;
 import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
+import com.edusoho.kuozhi.ui.course.CoursePaperActivity;
 import com.edusoho.kuozhi.ui.fragment.course.ViewPagerBaseFragment;
-import com.edusoho.kuozhi.ui.liveCourse.liveLessonFragment;
+import com.edusoho.kuozhi.ui.liveCourse.LiveLessonFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.listener.ResultCallback;
@@ -150,7 +150,7 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
 
 
     private void showLesson(final LessonItem lessonItem) {
-        CorusePaperActivity activity = (CorusePaperActivity) getActivity();
+        CoursePaperActivity activity = (CoursePaperActivity) getActivity();
         final CourseDetailsResult courseDetailsResult = activity.getCourseResult();
 
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
@@ -190,12 +190,12 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
 
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAR_TITLE, lessonItem.title);
-        bundle.putLong(liveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
-        bundle.putLong(liveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
+        bundle.putLong(LiveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
+        bundle.putLong(LiveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
         bundle.putInt(Const.COURSE_ID, lessonItem.courseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
-        bundle.putString(liveLessonFragment.SUMMARY, lessonItem.summary);
-        bundle.putString(liveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
+        bundle.putString(LiveLessonFragment.SUMMARY, lessonItem.summary);
+        bundle.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
         bundle.putString(FragmentPageActivity.FRAGMENT, "liveLessonFragment");
         startActivityWithBundle("FragmentPageActivity", bundle);
 

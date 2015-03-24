@@ -21,7 +21,7 @@
 
     <!--course -->
     <plugin name="CourseListActivity" package="com.edusoho.kuozhi.ui.course.CourseListActivity" version="1.0"></plugin>
-    <plugin name="CorusePaperActivity" package="com.edusoho.kuozhi.ui.course.CorusePaperActivity" version="1.0"></plugin>
+    <plugin name="CoursePaperActivity" package="com.edusoho.kuozhi.ui.course.CoursePaperActivity" version="1.0"></plugin>
     <plugin name="CourseDetailsActivity" package="com.edusoho.kuozhi.ui.course.CourseDetailsActivity" version="1.0"></plugin>
     <plugin name="CourseDetailsTabActivity" package="com.edusoho.kuozhi.ui.course.CourseDetailsTabActivity" version="1.0"></plugin>
     <plugin name="TestpaperActivity" package="com.edusoho.kuozhi.ui.lesson.TestpaperActivity" version="1.0"></plugin>
@@ -141,8 +141,8 @@
     <plugin name="FollowFragment" version="1.0" package="com.edusoho.kuozhi.ui.fragment.FollowFragment"></plugin>
 
     <!--直播课程-->
-    <plugin name="liveingCourseActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.liveingCourseActivity"></plugin>
-    <plugin name="liveLessonFragment" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.liveLessonFragment"></plugin>
+    <plugin name="LivingCourseActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.LivingCourseActivity"></plugin>
+    <plugin name="LiveLessonFragment" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.LiveLessonFragment"></plugin>
 
 
 </plugins>

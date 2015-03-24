@@ -23,7 +23,6 @@ import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.htmlView.EduHtmlAppActivity;
 import com.edusoho.kuozhi.ui.schoolroom.LearningRoomActivity;
 import com.edusoho.kuozhi.ui.widget.RefreshListWidget;
 import com.edusoho.kuozhi.util.Const;
@@ -144,7 +143,7 @@ public class SchoolRoomFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
             }
         };
-        app.mEngine.runNormalPlugin("liveingCourseActivity", mActivity, callback);
+        app.mEngine.runNormalPlugin("LivingCourseActivity", mActivity, callback);
     }
 
     /**

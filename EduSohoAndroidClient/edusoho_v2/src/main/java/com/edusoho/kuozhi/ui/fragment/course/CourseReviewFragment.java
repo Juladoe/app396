@@ -25,7 +25,7 @@ import com.edusoho.kuozhi.model.ReviewResult;
 import com.edusoho.kuozhi.model.WidgetMessage;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
+import com.edusoho.kuozhi.ui.course.CoursePaperActivity;
 import com.edusoho.kuozhi.ui.fragment.ReviewInfoFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.AppUtil;
@@ -47,7 +47,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
     private TextView mRatingView;
     private View mReviewBtn;
     private CourseReviewAdapter mAdapter;
-    private CorusePaperActivity mCorusePaperActivity;
+    private CoursePaperActivity mCoursePaperActivity;
 
     private View mHeadView;
     private EduSohoListView mListView;
@@ -89,7 +89,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
         String messageType = message.type.type;
         if (Const.REFRESH_REVIEWS.equals(messageType)) {
             reloadData();
-            app.sendMsgToTarget(CorusePaperActivity.RELOAD_REVIEW_INFO, null, CorusePaperActivity.class);
+            app.sendMsgToTarget(CoursePaperActivity.RELOAD_REVIEW_INFO, null, CoursePaperActivity.class);
         }
     }
 
@@ -114,7 +114,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCorusePaperActivity = (CorusePaperActivity) activity;
+        mCoursePaperActivity = (CoursePaperActivity) activity;
     }
 
     @Override
@@ -165,7 +165,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
             return;
         }
 
-        CourseDetailsResult result = mCorusePaperActivity.getCourseResult();
+        CourseDetailsResult result = mCoursePaperActivity.getCourseResult();
         if (result.member == null) {
             mActivity.longToast("请加入学习");
             return;
@@ -240,7 +240,7 @@ public class CourseReviewFragment extends ViewPagerBaseFragment {
         reviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CourseDetailsResult result = mCorusePaperActivity.getCourseResult();
+                CourseDetailsResult result = mCoursePaperActivity.getCourseResult();
                 Bundle bundle = new Bundle();
                 bundle.putString(FragmentPageActivity.FRAGMENT, "ReviewInfoFragment");
                 bundle.putBoolean(ReviewInfoFragment.IS_STUDENT, result.member != null);

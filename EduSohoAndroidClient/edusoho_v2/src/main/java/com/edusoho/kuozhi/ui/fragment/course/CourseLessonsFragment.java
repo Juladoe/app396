@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.ui.fragment.course;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +22,12 @@ import com.edusoho.kuozhi.model.LessonsResult;
 import com.edusoho.kuozhi.model.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
-import com.edusoho.kuozhi.ui.course.CorusePaperActivity;
+import com.edusoho.kuozhi.ui.course.CoursePaperActivity;
 import com.edusoho.kuozhi.ui.course.LessonActivity;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.M3U8Uitl;
-import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
-import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
@@ -209,7 +206,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                         bundle.putString(FragmentPageActivity.FRAGMENT, "CourseDownloadingFragment");
                         bundle.putString(Const.ACTIONBAR_TITLE, "下载列表");
 
-                        CorusePaperActivity activity = (CorusePaperActivity) getActivity();
+                        CoursePaperActivity activity = (CoursePaperActivity) getActivity();
                         bundle.putString(
                                 CourseDownloadingFragment.COURSE_JSON, app.gson.toJson(activity.getCourse()));
                         bundle.putString(
@@ -240,7 +237,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
     }
 
     private void showLesson(final LessonItem lesson) {
-        CorusePaperActivity activity = (CorusePaperActivity) getActivity();
+        CoursePaperActivity activity = (CoursePaperActivity) getActivity();
         final CourseDetailsResult courseDetailsResult = activity.getCourseResult();
 
         CourseLessonType courseLessonType = CourseLessonType.value(lesson.type);

@@ -88,7 +88,7 @@ import extensions.PagerSlidingTabStrip;
 /**
  * Created by howzhi on 14/12/2.
  */
-public class CorusePaperActivity extends ActionBarBaseActivity
+public class CoursePaperActivity extends ActionBarBaseActivity
         implements MessageEngine.MessageCallback {
 
     public static final int PAY_COURSE_SUCCESS = 0005;
