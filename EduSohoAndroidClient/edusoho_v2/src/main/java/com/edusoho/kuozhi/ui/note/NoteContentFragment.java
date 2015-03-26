@@ -73,7 +73,6 @@ public class NoteContentFragment extends BaseFragment {
         mCourseId = bundle.getInt(Const.COURSE_ID);
         mLessonTitle = bundle.getString(Const.LESSON_NAME);
         mLearnStatus = bundle.getString(Const.LEARN_STATUS);
-        Log.d("NoteContentFragment", mTitle);
     }
 
     @Override
@@ -83,7 +82,11 @@ public class NoteContentFragment extends BaseFragment {
 
         mNoteContentView = (TextView) view.findViewById(R.id.note_content);
         mNoteTitleView = (TextView) view.findViewById(R.id.note_lesson_title);
-        mNoteTitleView.setText(mLessonTitle);
+        if(mLessonTitle == null){
+            mNoteTitleView.setText("该课时已被删除");
+        }else{
+            mNoteTitleView.setText(mLessonTitle);
+        }
 
         /**
          * 跳转到课时页面
