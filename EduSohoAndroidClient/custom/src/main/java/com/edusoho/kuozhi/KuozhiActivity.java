@@ -2,7 +2,6 @@ package com.edusoho.kuozhi;
 
 
 import android.os.Bundle;
-
 import com.androidquery.callback.AjaxStatus;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
@@ -10,7 +9,6 @@ import com.edusoho.kuozhi.model.School;
 import com.edusoho.kuozhi.model.SchoolResult;
 import com.edusoho.kuozhi.model.SystemInfo;
 import com.edusoho.kuozhi.ui.StartActivity;
-import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;

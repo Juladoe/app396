@@ -1,9 +1,9 @@
 package com.edusoho.kuozhi.entity;
 
 public enum CourseLessonType {
-	
+
 	DOCUMENT, VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY, CHAPTER, UNIT,LIVE;
-	
+
 	public static CourseLessonType value(String typeName)
 	{
 		CourseLessonType type;
