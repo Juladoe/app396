@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
@@ -25,12 +24,10 @@ import com.google.gson.reflect.TypeToken;
 import com.soooner.EplayerPluginLibary.EplayerPluginActivity;
 import com.soooner.EplayerPluginLibary.EplayerPluginPadActivity;
 import com.soooner.source.common.util.DeviceUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
 
 /**
  * Created by onewoman on 2015/2/2.
