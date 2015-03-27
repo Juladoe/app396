@@ -19,7 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".kuozhi.CustomDefaultPageActivity"
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".kuozhi.KuozhiSplashActivity"
             android:configChanges="keyboardHidden|orientation"

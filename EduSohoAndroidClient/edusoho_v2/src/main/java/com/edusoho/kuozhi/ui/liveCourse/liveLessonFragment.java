@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.ui.liveCourse;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.soooner.EplayerPluginLibary.EplayerPluginActivity;
 import com.soooner.EplayerPluginLibary.EplayerPluginPadActivity;
-import com.soooner.EplayerPluginLibary.util.ActivityUtil;
 import com.soooner.source.common.util.DeviceUtil;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +31,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cn.trinea.android.common.util.SystemUtils;
 
 /**
  * Created by onewoman on 2015/2/2.

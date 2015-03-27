@@ -12,14 +12,14 @@ android {
 
     productFlavors {
         mycloudedu {
-            applicationId "com.mycloudedu.kuozhi"
+            applicationId "com.edusoho_edianshang.kuozhi"
         }
     }
 
     sourceSets {
         mycloudedu {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/mycloudedu/res']
+            res.srcDirs = ['src/edusoho_edianshang/res']
         }
     }
 
@@ -33,10 +33,10 @@ android {
     //签名
     signingConfigs {
         releaseConfig {
-            storeFile file("key/mycloudedu.jks")
-            storePassword "10001000"
-            keyAlias "ce"
-            keyPassword "100000"
+            storeFile file("key/edusoho_edianshang.jks")
+            storePassword "edianshang"
+            keyAlias "cn"
+            keyPassword "10001000"
         }
     }
 

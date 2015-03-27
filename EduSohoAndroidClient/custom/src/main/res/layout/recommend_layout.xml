@@ -1,0 +1,87 @@
+<library.PullToRefreshScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto" android:id="@+id/recommend_layout"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/base_gray" android:scrollbars="none">
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
+        android:focusable="true" android:focusableInTouchMode="true">
+
+        <com.edusoho.kuozhi.view.EdusohoViewPager android:id="@+id/school_banner"
+            android:layout_width="match_parent" android:layout_height="185dp"
+            android:background="@color/recommend_label_bg" />
+
+        <LinearLayout android:id="@+id/recommend_announcement_layout"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_below="@id/school_banner" android:background="@drawable/normal_layout_bg"
+            android:gravity="center" android:padding="8dp">
+
+            <TextView android:id="@+id/recommend_sch_announcement"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/recommend_announcement_icon"
+                android:drawablePadding="16dp" android:ellipsize="end"
+                android:gravity="center_vertical" android:singleLine="true" android:text="网校公告栏"
+                android:textColor="@color/recommend_announcement"
+                android:textSize="@dimen/recommend_announcement" android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:tag="http://wap.edianshang.com/news"
+                    android:onClick="customBtnClick"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/base_small_size"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/recommend_arcitle"
+                    android:text="看资讯" />
+                <TextView
+                    android:tag="http://fuwu.edianshang.com/wap"
+                    android:onClick="customBtnClick"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/base_small_size"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/recommend_service"
+                    android:text="找服务" />
+                <TextView
+                    android:tag="http://fuwu.edianshang.com/wap/?moduleid=16"
+                    android:onClick="customBtnClick"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/base_small_size"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/recommend_tools"
+                    android:text="找工具" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_below="@id/recommend_announcement_layout" android:layout_marginTop="16dp"
+            android:background="@color/base_white_normal" android:orientation="vertical">
+
+            <com.edusoho.kuozhi.view.ESTextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp" android:gravity="center_vertical" android:text="每周精选"
+                android:textColor="@color/base_black_normal"
+                android:textSize="@dimen/base_large_size" card_view:es_alpha="0.87" />
+
+            <com.edusoho.kuozhi.ui.widget.EduSohoListView android:id="@+id/recommend_week_course"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:scrollbars="none" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</library.PullToRefreshScrollView>

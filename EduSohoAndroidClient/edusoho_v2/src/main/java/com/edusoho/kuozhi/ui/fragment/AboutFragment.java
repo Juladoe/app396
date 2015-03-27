@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.util.Const;
@@ -22,7 +24,7 @@ public class AboutFragment extends BaseFragment {
     public static final int FROM_URL = 0010;
     public static final int FROM_STR = 0020;
 
-    private WebView about_content;
+    private WebView mAboutWebView;
     private String mUrl;
     private int mType;
     private String mContent;
@@ -56,12 +58,18 @@ public class AboutFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
-        about_content = (WebView) view.findViewById(R.id.about_content);
-        about_content.getSettings().setJavaScriptEnabled(true);
-        about_content.getSettings().setDefaultTextEncodingName("UTF-8");
-        about_content.getSettings().setUseWideViewPort(true);
+        mAboutWebView = (WebView) view.findViewById(R.id.about_content);
+        mAboutWebView.getSettings().setJavaScriptEnabled(true);
+        mAboutWebView.getSettings().setDefaultTextEncodingName("UTF-8");
+        mAboutWebView.getSettings().setUseWideViewPort(true);
 
-        about_content.setWebChromeClient(new WebChromeClient(){
+        initWebViewConfig();
+        loadContent();
+    }
+
+    private void initWebViewConfig()
+    {
+        mAboutWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -76,20 +84,38 @@ public class AboutFragment extends BaseFragment {
                 if (TextUtils.isEmpty(mTitle)) {
                     changeTitle(title);
                 }
-                Log.d(null, "title->" + title);
             }
         });
-        loadContent();
+
+        mAboutWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+
+        mAboutWebView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() != KeyEvent.ACTION_DOWN) {
+                    return false;
+                }
+                if (keyCode == KeyEvent.KEYCODE_BACK && mAboutWebView.canGoBack()) {
+                    mAboutWebView.goBack();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void loadContent()
     {
-        showProgress(true);
         if (mType == FROM_URL) {
-            about_content.loadUrl(mUrl);
+            mAboutWebView.loadUrl(mUrl);
         } else {
-            Log.d(null, "mContent->" + mContent);
-            about_content.loadDataWithBaseURL(null, mContent, "text/html", "utf-8", null);
+            mAboutWebView.loadDataWithBaseURL(null, mContent, "text/html", "utf-8", null);
         }
     }
 }
