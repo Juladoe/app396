@@ -2,4 +2,6 @@
 <plugins>
     <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.KuozhiSplashActivity"></plugin>
     <plugin name="QrSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.QrLoginActivity"></plugin>
+    <!-- fragemnt -->
+    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.CustomDefaultPageActivity"></plugin>
 </plugins>

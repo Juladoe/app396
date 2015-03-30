@@ -19,7 +19,7 @@ public class KuozhiActivity extends StartActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initChannel();
+        //initChannel();
     }
 
     @Override
