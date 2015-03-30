@@ -14,7 +14,7 @@ public class KuozhiActivity extends StartActivity {
         CrashReport.initCrashReport(getApplicationContext(), getString(R.string.bugly_appid), false);
         super.onCreate(savedInstanceState);
         StatService.setAppKey("8f1996ac26");
-        StatService.setAppChannel(this, "baidu", true);
+        StatService.setAppChannel(this, "Edusoho", true);
         StatService.setSessionTimeOut(30);
         StatService.setOn(this, StatService.EXCEPTION_LOG);
         StatService.setLogSenderDelayed(0);
