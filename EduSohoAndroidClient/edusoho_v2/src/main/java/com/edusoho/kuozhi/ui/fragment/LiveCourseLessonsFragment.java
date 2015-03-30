@@ -196,7 +196,7 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         bundle.putString(LiveLessonFragment.SUMMARY, lessonItem.summary);
         bundle.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
-        bundle.putString(FragmentPageActivity.FRAGMENT, "liveLessonFragment");
+        bundle.putString(FragmentPageActivity.FRAGMENT, "LiveLessonFragment");
         startActivityWithBundle("FragmentPageActivity", bundle);
 
     }
