@@ -204,17 +204,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         String tag = null;
         boolean showIcon = false;
         BaseFragment fragment = null;
+        String title = "";
 
         if (id == R.id.nav_recommend_btn) {
             tag = "RecommendFragment";
+            title = getString(R.string.title_recommend);
         } else if (id == R.id.nav_found_btn) {
             tag = "FoundFragment";
+            title = getString(R.string.title_found);
             showIcon = true;
         } else if (id == R.id.nav_schoolroom_btn) {
             tag = "SchoolRoomFragment";
+            title = getString(R.string.title_school);
             //tag = "MyInfoFragment";
         } else if (id == R.id.nav_me_btn) {
             tag = "MineFragment";
+            title = getString(R.string.title_me);
         } else {
             return;
         }
@@ -231,7 +236,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
         fragmentTransaction.commit();
         mCurrentTag = tag;
-        setTitle(fragment.getTitle(), tag, showIcon);
+        setTitle(title, tag, showIcon);
         changeNavBtn(id);
         changeBtnIcon(id);
     }

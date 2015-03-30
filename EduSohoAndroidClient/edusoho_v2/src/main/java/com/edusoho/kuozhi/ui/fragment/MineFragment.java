@@ -38,7 +38,6 @@ import ch.boye.httpclientandroidlib.util.TextUtils;
 public class MineFragment extends BaseFragment {
 
     public static final String TAG = "MineFragment";
-    public String mTitle = "我";
 
     public static final int REFRESH = 0010;
     public static final int LOGINT_WITH_TOKEN = 0020;
@@ -75,6 +74,7 @@ public class MineFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTitle = "我";
         setHasOptionsMenu(true);
         setContainerView(R.layout.mine_layout);
     }

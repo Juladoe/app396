@@ -31,7 +31,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.HashMap;
 
-import cn.trinea.android.common.util.ToastUtils;
 import library.PullToRefreshBase;
 
 /**
@@ -52,6 +51,7 @@ public class FoundFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTitle = "全部";
         setHasOptionsMenu(true);
         //mSelectIconView = mActivity.addTitleViewIcon(R.drawable.found_select_icon);
         mSelectIconView = mActivity.getTitleIcon();
@@ -103,7 +103,6 @@ public class FoundFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        mTitle = "全部";
         return mTitle;
     }
 

@@ -30,6 +30,7 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import library.PullToRefreshBase;
 
@@ -37,7 +38,6 @@ import library.PullToRefreshBase;
  * Created by JesseHuang on 14/12/23.
  */
 public class SchoolRoomFragment extends BaseFragment {
-    private String mTitle = "学堂";
     private static final String TAG = "SchoolRoomFragment";
 
     private View mView;
@@ -59,6 +59,7 @@ public class SchoolRoomFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.school_room_layout, container, false);
+        mTitle = "学堂";
         setHasOptionsMenu(true);
         initView();
         loadSchoolRoomData();
@@ -215,7 +216,7 @@ public class SchoolRoomFragment extends BaseFragment {
                     ArrayList<SchoolRoomResult> schoolRoomList = mActivity.parseJsonValue(
                             object, new TypeToken<ArrayList<SchoolRoomResult>>() {
                             });
-
+                    filterSchoolRoomDatas(schoolRoomList);
                     mSchoolRoomListView.pushData(schoolRoomList);
                 } catch (Exception ex) {
                     Log.d(TAG, ex.toString());
@@ -233,6 +234,7 @@ public class SchoolRoomFragment extends BaseFragment {
                     schoolRoomList.add(new SchoolRoomResult("讨论", null));
                     schoolRoomList.add(new SchoolRoomResult("笔记", null));
                     schoolRoomList.add(new SchoolRoomResult("私信", null));
+                    filterSchoolRoomDatas(schoolRoomList);
                     mSchoolRoomListView.pushData(schoolRoomList);
                 } catch (Exception ex) {
                     Log.d(TAG, ex.toString());
@@ -287,5 +289,21 @@ public class SchoolRoomFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
+    }
+
+    /**
+     * 云大学App隐藏直播item
+     *
+     * @param list
+     */
+    private void filterSchoolRoomDatas(List<SchoolRoomResult> list) {
+        if (getString(R.string.show_live_in_school_room).equals("1")) {
+            for (SchoolRoomResult item : list) {
+                if (item.title.equals("在学直播")) {
+                    list.remove(item);
+                    break;
+                }
+            }
+        }
     }
 }

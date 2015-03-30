@@ -23,6 +23,16 @@
     <string name="testpaper_menu_card">答题卡</string>
     <string name="found_menu">搜索</string>
     <string name="reply_submit">提交</string>
+    <string name="found_live">直播</string>
+    <string name="found_video">点播</string>
+    <string name="down_tab_school">学堂</string>
+    <string name="down_tab_recommend">推荐</string>
+    <string name="down_tab_found">发现</string>
+    <string name="down_tab_me">我</string>
+    <string name="title_school">学堂</string>
+    <string name="title_me">我</string>
+    <string name="title_found">全部</string>
+    <string name="title_recommend">推荐</string>
 
     <string-array name="exitcourse_array">
         <item>老师服务态度不好</item>
@@ -124,6 +134,8 @@
     <string name="course_no_teacher">该课程尚未设置教师</string>
     <string name="course_no_review">还没有评价哦~</string>
     <string name="app_code">edusoho</string>
+
+    <string name="show_live_in_school_room">0</string>
 
     <!-- note -->
     <string name="edit_content">编辑</string>
