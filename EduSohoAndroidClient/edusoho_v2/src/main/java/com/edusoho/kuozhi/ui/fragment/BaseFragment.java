@@ -61,6 +61,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         mActivity.setTitle(title);
     }
 
+    protected void changeLiveTitle(String title) {
+        mTitle = title;
+        mActivity.setLiveTitle(title);
+    }
+
     protected void startActivityWithBundle(String activityName, Bundle bundle) {
         app.mEngine.runNormalPluginWithBundle(activityName, mActivity, bundle);
     }

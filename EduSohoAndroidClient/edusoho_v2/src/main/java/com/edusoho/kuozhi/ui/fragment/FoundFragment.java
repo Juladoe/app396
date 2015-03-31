@@ -145,7 +145,7 @@ public class FoundFragment extends BaseFragment {
         });
 
         mCourseListView.setLoadAdapter();
-        changeTitle("全部");
+        changeLiveTitle("全部");
         loadCourseList(0, 0);
         mCourseListView.setOnItemClickListener(new CourseListScrollListener(mActivity));
 
@@ -155,7 +155,7 @@ public class FoundFragment extends BaseFragment {
         mCategoryListView.setItemClick(new CategoryListView.ItemClickListener() {
             @Override
             public void click(final Category category) {
-                changeTitle(category.id == 0 ? "全部" : category.name);
+                changeLiveTitle(category.id == 0 ? "全部" : category.name);
                 mCourseListView.setLoadAdapter();
                 loadCourseList(category.id, 0);
                 hideCategoryList();

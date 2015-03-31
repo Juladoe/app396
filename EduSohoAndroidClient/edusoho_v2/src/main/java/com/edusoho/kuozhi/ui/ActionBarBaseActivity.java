@@ -163,6 +163,9 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public void setTitle(String title) {
         if (mTitleTextView != null)
             mTitleTextView.setText(title == null ? "" : title);
+    }
+
+    public void setLiveTitle(String title) {
         if (mTitleLiveTextView != null)
             mTitleLiveTextView.setText(title == null ? "" : title);
     }
@@ -201,13 +204,16 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         return mTitleIconView;
     }
 
+    //init FoundFragment title
     private void initLiveActionBar(String title) {
         if (mTitleLiveLayoutView == null) {
             mTitleLiveLayoutView = getLayoutInflater().inflate(R.layout.actionbar_live_title, null);
             mCompoundButton = (EduSohoCompoundButton) mTitleLiveLayoutView.findViewById(R.id.ec_btn);
             mTitleLiveTextView = (TextView) mTitleLiveLayoutView.findViewById(R.id.action_bar_title);
         }
-        mTitleLiveTextView.setText(title);
+        if (mTitleLiveTextView.getText().toString().equals("")) {
+            mTitleLiveTextView.setText(title);
+        }
         ActionBar.LayoutParams actionBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.MATCH_PARENT);
         actionBarLayoutParams.gravity = Gravity.CENTER;
