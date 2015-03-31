@@ -55,8 +55,8 @@
 #share sdk
 -keep class android.net.http.SslError
 -keep class android.webkit.**{*;}
--keep class cn.sharesdk.**{*;}
--keep class com.sina.**{*;}
+-dontwarn cn.sharesdk.**
+-keep class cn.sharesdk.** { *;}
 -keep class m.framework.**{*;}
 
 #gson
@@ -67,6 +67,15 @@
 -keep class com.google.gson.** { *; }
 -keep public class * implements java.lang.reflect.Type
 -keep class sun.misc.** { *; }
+
+-dontwarn com.tencent.bugly.**
+-keep class com.tencent.bugly.**{*;}
+
+-dontwarn com.tencent.mm.sdk.**
+-keep class com.tencent.mm.sdk.**{*;}
+
+-dontwarn com.baidu.mobstat.**
+-keep class com.baidu.mobstat.**{*;}
 
 -dontwarn com.androidquery.**
 -keep class com.androidquery.**{*;}
