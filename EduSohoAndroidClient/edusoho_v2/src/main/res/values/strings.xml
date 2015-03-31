@@ -4,8 +4,8 @@
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
     <string name="api_version">2.1.0</string>
-    <string name="apk_version">2.6.0</string>
-    <string name="apk_code">12</string>
+    <string name="apk_version">2.6.1</string>
+    <string name="apk_code">13</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0.3</string>
 
