@@ -283,13 +283,11 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         } else {
             headerHolder.mVip.setVisibility(View.GONE);
         }
-//        if (mActivity.app.loginUser != null || (mUser.id == mActivity.app.loginUser.id)) {
-//
-//        } else {
-//
-//        }
 
-        if (mActivity.app.loginUser != null && mUser.id == mActivity.app.loginUser.id) {
+        if (mActivity.app.loginUser == null) {
+            headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
+            headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
+        } else if (mActivity.app.loginUser != null && mUser.id == mActivity.app.loginUser.id) {
             headerHolder.mSendMsgLayout.setVisibility(View.INVISIBLE);
             headerHolder.mFollowLayout.setVisibility(View.INVISIBLE);
         } else {
@@ -299,7 +297,6 @@ public class ProfileAdapter extends ListBaseAdapter<Course> {
         }
 
         headerHolder.mUserName.setText(mUser.nickname);
-
         headerHolder.mFollowing.setText(mUser.following);
         headerHolder.mFollower.setText(mUser.follower);
 
