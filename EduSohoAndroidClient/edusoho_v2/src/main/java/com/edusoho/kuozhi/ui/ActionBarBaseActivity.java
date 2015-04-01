@@ -573,8 +573,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxPost(
-            RequestUrl url, final ResultCallback rcl) {
+    public void ajaxPost(RequestUrl url, final ResultCallback rcl) {
         app.postUrl(false, url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus status) {

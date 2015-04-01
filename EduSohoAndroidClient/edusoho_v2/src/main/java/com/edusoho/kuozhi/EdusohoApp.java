@@ -169,10 +169,7 @@ public class EdusohoApp extends Application {
         return ajaxCallback;
     }
 
-    public AjaxCallback postUrl(
-            boolean isAbort,
-            final RequestUrl requestUrl,
-            final AjaxResultCallback ajaxResultCallback) {
+    public AjaxCallback postUrl(boolean isAbort, final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
         Cache cache = mEngine.appCache.getCache(requestUrl);
         CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
             @Override

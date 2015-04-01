@@ -42,8 +42,7 @@ public class CategoryListView extends FrameLayout {
         initView(attrs);
     }
 
-    private void initView(android.util.AttributeSet attrs)
-    {
+    private void initView(android.util.AttributeSet attrs) {
         mCategoryListView = new ExpandableListView(mContext);
         mCategoryListView.setStackFromBottom(true);
         mCategoryListView.setTranscriptMode(ExpandableListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -62,13 +61,11 @@ public class CategoryListView extends FrameLayout {
         addView(mLoadView);
     }
 
-    public void scrollToTop()
-    {
+    public void scrollToTop() {
         mCategoryListView.scrollTo(0, 0);
     }
 
-    public void setItemClick(final ItemClickListener itemClick)
-    {
+    public void setItemClick(final ItemClickListener itemClick) {
         mCategoryListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
@@ -85,23 +82,20 @@ public class CategoryListView extends FrameLayout {
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 Log.d(null, "mCategoryListView click-> group->" + groupPosition);
                 ExpandableListAdapter adapter = expandableListView.getExpandableListAdapter();
-                Category category = (Category)adapter.getGroup(groupPosition);
+                Category category = (Category) adapter.getGroup(groupPosition);
                 itemClick.click(category);
                 return true;
             }
         });
     }
 
-    private View initLoadView()
-    {
+    private View initLoadView() {
         View loadView = LayoutInflater.from(mContext).inflate(R.layout.loading_layout, null);
         loadView.findViewById(R.id.load_text).setVisibility(View.GONE);
         return loadView;
     }
 
-    public void initialise(
-            final ActionBarBaseActivity mActivity, RequestUrl url)
-    {
+    public void initialise(final ActionBarBaseActivity mActivity, RequestUrl url) {
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
@@ -118,11 +112,10 @@ public class CategoryListView extends FrameLayout {
         });
     }
 
-    private void parseRequeseData(ActionBarBaseActivity mActivity, String object)
-    {
+    private void parseRequeseData(ActionBarBaseActivity mActivity, String object) {
         ArrayList<Category> categories = mActivity.gson.fromJson(
                 object, new TypeToken<ArrayList<Category>>() {
-        }.getType());
+                }.getType());
 
         if (categories == null || categories.isEmpty()) {
             return;
@@ -133,11 +126,10 @@ public class CategoryListView extends FrameLayout {
         mCategoryListView.setAdapter(adapter);
     }
 
-    private void updateRequeseData(ActionBarBaseActivity mActivity, String object)
-    {
+    private void updateRequeseData(ActionBarBaseActivity mActivity, String object) {
         ArrayList<Category> categories = mActivity.gson.fromJson(
                 object, new TypeToken<ArrayList<Category>>() {
-        }.getType());
+                }.getType());
 
         if (categories == null || categories.isEmpty()) {
             return;
@@ -148,15 +140,13 @@ public class CategoryListView extends FrameLayout {
         adapter.setItems(categories);
     }
 
-    public static class ListExpandClickListener implements OnClickListener
-    {
+    public static class ListExpandClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
         }
     }
 
-    public static interface ItemClickListener
-    {
+    public static interface ItemClickListener {
         public void click(Category category);
     }
 }
