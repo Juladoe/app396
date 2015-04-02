@@ -17,7 +17,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.CourseReviewAdapter;
 import com.edusoho.kuozhi.adapter.RecyclerViewListBaseAdapter;
-import com.edusoho.kuozhi.adapter.Review.ReviewEmptyAdapter;
+import com.edusoho.kuozhi.adapter.review.ReviewEmptyAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.CourseDetailsResult;
 import com.edusoho.kuozhi.model.MessageType;

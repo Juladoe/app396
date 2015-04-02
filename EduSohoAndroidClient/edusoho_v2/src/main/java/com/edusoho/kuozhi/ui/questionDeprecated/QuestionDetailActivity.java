@@ -11,7 +11,7 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
-import com.edusoho.kuozhi.adapter.Question.QuestionReplyListAdapter;
+import com.edusoho.kuozhi.adapter.question.QuestionReplyListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;

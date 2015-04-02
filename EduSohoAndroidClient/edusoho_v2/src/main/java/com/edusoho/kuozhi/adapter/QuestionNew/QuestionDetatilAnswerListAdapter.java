@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.adapter.QuestionNew;
+package com.edusoho.kuozhi.adapter.questionnew;
 
 import android.content.Context;
 import android.text.Html;
@@ -21,25 +21,26 @@ import java.util.regex.Pattern;
 /**
  * Created by onewoman on 2014/12/22.
  */
-public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel>{
+public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel> {
     private ArrayList<ReplyModel> mReplyModelListData;
+
     public QuestionDetatilAnswerListAdapter(Context context, int resource) {
         super(context, resource);
         mReplyModelListData = new ArrayList<ReplyModel>();
     }
 
-    public void sortReplyModelData(){
+    public void sortReplyModelData() {
         mReplyModelListData.clear();
-        if(!mReplyModelListData.isEmpty()){
-            return ;
+        if (!mReplyModelListData.isEmpty()) {
+            return;
         }
         ArrayList<ReplyModel> teachReplyModelData = new ArrayList<ReplyModel>();
         ArrayList<ReplyModel> normalReplyModelData = new ArrayList<ReplyModel>();
 
-        for(ReplyModel replyModel : mList){
-            if(replyModel.isElite == 1){
+        for (ReplyModel replyModel : mList) {
+            if (replyModel.isElite == 1) {
                 teachReplyModelData.add(replyModel);
-            }else{
+            } else {
                 normalReplyModelData.add(replyModel);
             }
         }
@@ -57,7 +58,7 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
 
     @Override
     public int getCount() {
-        if(mReplyModelListData != null && mReplyModelListData.size() > 0){
+        if (mReplyModelListData != null && mReplyModelListData.size() > 0) {
             return mReplyModelListData.size();
         }
         return 0;
@@ -77,7 +78,7 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
-            view = inflater.from(mContext).inflate(mResource,null);
+            view = inflater.from(mContext).inflate(mResource, null);
             holder = new ViewHolder();
             holder.tvQuestionDetatilListUserName = (TextView) view.findViewById(R.id.question_detail_answer_user_name);
             holder.tvQuestionDetatilListTime = (TextView) view.findViewById(R.id.question_detail_answer_time);
@@ -92,10 +93,10 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
         holder.tvQuestionDetailAnswerUserRole.setVisibility(View.GONE);
         ReplyModel replyModel = mReplyModelListData.get(i);
 
-        if(1 == replyModel.isElite){
+        if (1 == replyModel.isElite) {
             holder.tvQuestionDetailAnswerUserRole.setVisibility(View.VISIBLE);
         }
-        ImageLoader.getInstance().displayImage(replyModel.user.mediumAvatar,holder.questionDetailAnswerUserHeadImage);
+        ImageLoader.getInstance().displayImage(replyModel.user.mediumAvatar, holder.questionDetailAnswerUserHeadImage);
         holder.tvQuestionDetatilListUserName.setText(replyModel.user.nickname);
         holder.tvQuestionDetatilListTime.setText(AppUtil.getPostDays(replyModel.createdTime));
         holder.tvQuestionDetatilListAnswer.setText(Html.fromHtml(filtlerBlank(fitlerImgTag(replyModel.content), "<br />")));
@@ -106,7 +107,7 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
         return content.replaceAll("(<img src=\".*?\" .>)", "");
     }
 
-    public class ViewHolder {
+    public static class ViewHolder {
         TextView tvQuestionDetatilListUserName;
         TextView tvQuestionDetatilListTime;
         TextView tvQuestionDetatilListAnswer;
@@ -115,34 +116,34 @@ public class QuestionDetatilAnswerListAdapter extends ListBaseAdapter<ReplyModel
         AQuery aQuery;
     }
 
-    private String filtlerBlank(String content ,String filterStr){
+    private String filtlerBlank(String content, String filterStr) {
         int secPoint = 0;
         int point = content.indexOf(filterStr, 0);
         String contentTemp = "";
 
-        if(-1 == point){
-            return content.replaceAll("<p[^>]*>|</p>","");
+        if (-1 == point) {
+            return content.replaceAll("<p[^>]*>|</p>", "");
         }
 
         contentTemp += content.substring(0, point);
-        while((secPoint = content.indexOf(filterStr, point + filterStr.length())) != -1){
+        while ((secPoint = content.indexOf(filterStr, point + filterStr.length())) != -1) {
             contentTemp = strCat(content.substring(point + filterStr.length(), secPoint), contentTemp);
             point = secPoint;
         }
 
-        if(secPoint == -1){
+        if (secPoint == -1) {
             contentTemp = strCat(content.substring(point + filterStr.length()), contentTemp);
         }
-        return contentTemp.replaceAll("<p[^>]*>|</p>","");
+        return contentTemp.replaceAll("<p[^>]*>|</p>", "");
     }
 
-    public String strCat(String subContent, String contentTemp){
+    public String strCat(String subContent, String contentTemp) {
         Matcher matcher = Pattern.compile("[^\\s]*").matcher(subContent);
 
-        if(!matcher.find()){
+        if (!matcher.find()) {
             return contentTemp;
         }
-        if(matcher.group(0).length() > 0 && "<".equals(String.valueOf(matcher.group(0).charAt(0)))){
+        if (matcher.group(0).length() > 0 && "<".equals(String.valueOf(matcher.group(0).charAt(0)))) {
             return contentTemp;
         }
         return (contentTemp + "<br />" + subContent);

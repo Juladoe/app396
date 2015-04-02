@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.QuestionNew.QuestionReplyAdapter;
+import com.edusoho.kuozhi.adapter.questionnew.QuestionReplyAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.OneReply;
 import com.edusoho.kuozhi.model.Question.ReplyModel;
@@ -141,7 +141,7 @@ public class QuestionReplyFragment extends BaseFragment {
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
-            if (strUrl.indexOf("http:") == -1) {
+            if (!strUrl.contains("http:")) {
                 strUrl = app.defaultSchool.host + strUrl;
             }
             urlLits.add(strUrl);
@@ -155,7 +155,7 @@ public class QuestionReplyFragment extends BaseFragment {
         while (m.find()) {
             String[] s = m.group(1).split("src=");
             String strUrl = s[1].toString().substring(1, s[1].length() - 1);
-            if (strUrl.indexOf("http:") == -1) {
+            if (!strUrl.contains("http:")) {
                 strUrl = "img src=\"" + app.defaultSchool.host + strUrl;
                 m.appendReplacement(result, strUrl);
             }

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListAdapter;
 
-import com.edusoho.kuozhi.adapter.Question.QuestionReplyListAdapter;
+import com.edusoho.kuozhi.adapter.question.QuestionReplyListAdapter;
 
 /**
  * Created by hby on 14-9-18.

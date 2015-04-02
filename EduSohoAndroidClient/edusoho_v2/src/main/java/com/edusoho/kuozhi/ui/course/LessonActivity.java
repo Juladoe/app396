@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -48,8 +49,10 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.RichTextBox.RichTextBoxFragment;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.util.ArrayList;
+
 import menudrawer.MenuDrawer;
 
 /**
@@ -142,8 +145,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return mCourseId;
     }
 
-    public LessonItem getLessonItem()
-    {
+    public LessonItem getLessonItem() {
         return mLessonItem;
     }
 
@@ -251,7 +253,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
      * 去掉mLessonListJson中不是lesson的item
      *
      * @return
-    */
+     */
     private void clearLessonResult() {
         LessonsResult result = mActivity.parseJsonValue(
                 mLessonListJson, new TypeToken<LessonsResult>() {
@@ -364,8 +366,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 bundle.putString(Const.QUESTION_TITLE, "");
                 bundle.putString(QuestionReplyActivity.ACTION, "add");
                 bundle.putString(Const.QUESTION_CONTENT, "");
-                bundle.putString("empty_text","暂无提问");
-                bundle.putInt("empty_icon",R.drawable.icon_question);
+                bundle.putString("empty_text", "暂无提问");
+                bundle.putInt("empty_icon", R.drawable.icon_question);
 
                 app.mEngine.runNormalPluginForResult(
                         "QuestionReplyActivity", mActivity, REQUEST_QUESTION, new PluginRunCallback() {
@@ -379,7 +381,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         PopupWindow popupWindow = new PopupWindow(
                 contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth((int)(parent.getWidth() * 1.5f));
+        popupWindow.setWidth((int) (parent.getWidth() * 1.5f));
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(0));
@@ -509,8 +511,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void loadLesson(int lessonId)
-    {
+    private void loadLesson(int lessonId) {
         int userId = app.loginUser == null ? 0 : app.loginUser.id;
         M3U8DbModle m3U8DbModle = M3U8Uitl.queryM3U8Modle(
                 mContext, userId, lessonId, app.domain, M3U8Uitl.FINISH);
@@ -621,11 +622,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     /**
      * 获取本地视频列表
+     *
      * @param lessonId
      * @return
      */
-    private File getLocalLesson(int lessonId)
-    {
+    private File getLocalLesson(int lessonId) {
         File workSpace = EdusohoApp.getWorkSpace();
         if (workSpace == null) {
             return null;

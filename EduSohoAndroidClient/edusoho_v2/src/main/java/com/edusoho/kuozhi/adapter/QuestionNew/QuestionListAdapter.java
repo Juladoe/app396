@@ -1,10 +1,9 @@
-package com.edusoho.kuozhi.adapter.QuestionNew;
+package com.edusoho.kuozhi.adapter.questionnew;
 
 import android.content.Context;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ActionMenuView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 

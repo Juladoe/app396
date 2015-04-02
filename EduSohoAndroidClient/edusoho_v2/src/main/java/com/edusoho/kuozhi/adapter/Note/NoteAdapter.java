@@ -97,9 +97,9 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
             holder.noteImage.setVisibility(View.GONE);
         }
         holder.noteImage.getLayoutParams().height = EdusohoApp.screenH / 7;
-        if(noteInfo.lessonTitle == null){
+        if (noteInfo.lessonTitle == null) {
             holder.noteLessonTitle.setText("该课时已被删除");
-        }else{
+        } else {
             holder.noteLessonTitle.setText(noteInfo.lessonTitle);
         }
         holder.noteContent.setText(Html.fromHtml(filtlerBlank(removeImgTagFromString(noteInfo.content))));
@@ -107,7 +107,7 @@ public class NoteAdapter extends ListBaseAdapter<NoteInfo> {
         return convertView;
     }
 
-    public class ViewHolder {
+    public static class ViewHolder {
         ImageView noteImage;
         TextView noteLessonTitle;
         TextView noteContent;

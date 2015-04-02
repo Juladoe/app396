@@ -33,7 +33,7 @@ public class ShareUtil {
     private AlertDialog mAlertDialog;
     private ShareHandler mShareHandler;
 
-    public ShareUtil(Context context){
+    public ShareUtil(Context context) {
         //添加应用信息
         ShareSDK.initSDK(context);
         mOneKeyShare = new OnekeyShare();
@@ -42,17 +42,17 @@ public class ShareUtil {
     }
 
     public ShareUtil initShareParams(
-            int icon, String shareTextTitle,String shareTitleUrl, String shareText, File imageFile, String ShareSite
-    )
-    {
+            int icon, String shareTextTitle, String shareTitleUrl, String shareText, File imageFile, String ShareSite
+    ) {
         mNotification_icon = icon;
         mShareTextTitle = shareTextTitle;
         mShareTitleUrl = shareTitleUrl;
         mShareText = shareText;
-        if(imageFile.exists()){
+        if (imageFile.exists()) {
             mLocalImagePath = imageFile.getAbsolutePath();
             mOneKeyShare.setImagePath(mLocalImagePath);
-        }else{}
+        } else {
+        }
 
         mShareSite = ShareSite;
 
@@ -60,8 +60,7 @@ public class ShareUtil {
         return this;
     }
 
-    private ArrayList<ListData> addWechatPlat(ArrayList<ListData> list)
-    {
+    private ArrayList<ListData> addWechatPlat(ArrayList<ListData> list) {
         list.add(new ListData(
                 mContext.getResources().getDrawable(R.drawable.logo_wechat), "Wechat", mContext));
         list.add(new ListData(
@@ -71,8 +70,7 @@ public class ShareUtil {
         return list;
     }
 
-    private boolean filterPlat(String name)
-    {
+    private boolean filterPlat(String name) {
         String[] filters = mContext.getResources().getStringArray(R.array.shard_filter);
         for (String filter : filters) {
             if (filter.equals(name)) {
@@ -83,17 +81,17 @@ public class ShareUtil {
         return false;
     }
 
-    public void initDialog(){
+    public void initDialog() {
         Platform[] platforms = ShareSDK.getPlatformList();
         ArrayList<ListData> list = new ArrayList<ListData>();
-        for (int i=0;i<platforms.length;i++){
-            String name = platforms[i].getName();
+        for (Platform platform : platforms) {
+            String name = platform.getName();
             if (filterPlat(name)) {
                 continue;
             }
             String resName = "logo_" + name;
             int resId = getBitmapRes(mContext, resName);
-            ListData data = new ListData(mContext.getResources().getDrawable(resId),name,mContext);
+            ListData data = new ListData(mContext.getResources().getDrawable(resId), name, mContext);
             list.add(data);
         }
 
@@ -132,8 +130,7 @@ public class ShareUtil {
         });
     }
 
-    public void show(ShareHandler shareHandler)
-    {
+    public void show(ShareHandler shareHandler) {
         this.mShareHandler = shareHandler;
         mAlertDialog.show();
     }

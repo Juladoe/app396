@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.adapter.Question;
+package com.edusoho.kuozhi.adapter.question;
 
 import android.app.Activity;
 import android.content.Context;

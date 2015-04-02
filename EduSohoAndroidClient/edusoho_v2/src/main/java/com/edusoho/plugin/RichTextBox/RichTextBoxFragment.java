@@ -758,9 +758,9 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private AbsoluteSizeSpan getFontSizeStyle() {
         mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
                 CharacterStyle.class);
-        for (int i = 0; i < mCurrentStyle.length; i++) {
-            if (mCurrentStyle[i] instanceof AbsoluteSizeSpan) {
-                return (AbsoluteSizeSpan) mCurrentStyle[i];
+        for (CharacterStyle aMCurrentStyle : mCurrentStyle) {
+            if (aMCurrentStyle instanceof AbsoluteSizeSpan) {
+                return (AbsoluteSizeSpan) aMCurrentStyle;
             }
         }
         return null;
@@ -769,11 +769,12 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
     private ForegroundColorSpan getForeColorStyle() {
         mCurrentStyle = etContent.getText().getSpans(etContent.getSelectionStart(), etContent.getSelectionEnd(),
                 CharacterStyle.class);
-        for (int i = 0; i < mCurrentStyle.length; i++) {
-            if (mCurrentStyle[i] instanceof ForegroundColorSpan) {
-                return (ForegroundColorSpan) mCurrentStyle[i];
+        for (CharacterStyle aMCurrentStyle : mCurrentStyle) {
+            if (aMCurrentStyle instanceof ForegroundColorSpan) {
+                return (ForegroundColorSpan) aMCurrentStyle;
             }
         }
+
         return null;
     }
 

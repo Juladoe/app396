@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.Message.LetterListAdapter;
+import com.edusoho.kuozhi.adapter.message.LetterListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Message.LetterModel;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;

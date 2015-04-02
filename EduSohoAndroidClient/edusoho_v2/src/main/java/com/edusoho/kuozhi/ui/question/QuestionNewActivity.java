@@ -2,14 +2,13 @@ package com.edusoho.kuozhi.ui.question;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.adapter.QuestionNew.QuestionListAdapter;
+import com.edusoho.kuozhi.adapter.questionnew.QuestionListAdapter;
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Question.QuestionDetailModel;

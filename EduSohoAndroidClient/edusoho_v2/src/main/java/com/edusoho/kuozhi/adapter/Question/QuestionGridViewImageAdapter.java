@@ -1,10 +1,9 @@
-package com.edusoho.kuozhi.adapter.Question;
+package com.edusoho.kuozhi.adapter.question;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

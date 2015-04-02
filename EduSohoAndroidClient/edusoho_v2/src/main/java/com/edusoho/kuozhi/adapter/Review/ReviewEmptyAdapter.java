@@ -1,8 +1,7 @@
-package com.edusoho.kuozhi.adapter.Review;
+package com.edusoho.kuozhi.adapter.review;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.RecyclerEmptyAdapter;

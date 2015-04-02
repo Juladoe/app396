@@ -1,12 +1,10 @@
-package com.edusoho.kuozhi.adapter.QuestionNew;
+package com.edusoho.kuozhi.adapter.questionnew;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
@@ -14,11 +12,8 @@ import com.edusoho.kuozhi.adapter.ListBaseAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 /**
  * Created by onewoman on 2014/12/30.
