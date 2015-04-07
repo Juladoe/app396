@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.androidquery.callback.AjaxStatus;
+import com.edusoho.kuozhi.LiveUtil;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.LiveLesson;
@@ -23,7 +24,6 @@ import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.soooner.EplayerPluginLibary.EplayerPluginActivity;
 import com.soooner.EplayerPluginLibary.EplayerPluginPadActivity;
-import com.soooner.source.common.util.DeviceUtil;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -243,30 +243,8 @@ public class LiveLessonFragment extends BaseFragment {
                 String exStr = param[param.length - 1].substring(exStrPoint + "exStr=".length());
                 Log.d(null, "liveClassroomId " + liveClassroomId);
 
-                startLiveActivity(liveClassroomId, exStr, replayState);
+                new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
             }
         });
-    }
-
-    private void startLiveActivity(String liveClassroomId, String exStr, boolean replayState)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(EplayerPluginActivity.EPLAY_EXSTR, exStr);
-        bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID, liveClassroomId);
-        bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER, "edusoho");
-        if(replayState) {
-            bundle.putString(EplayerPluginActivity.EPLAY_PID, null);
-        }
-
-        Intent intent = null;
-        if(DeviceUtil.getDeviceType(mContext)== DeviceUtil.DEVICE_TYPE_PHONE){
-            intent = new Intent(mContext, EplayerPluginActivity.class);
-        }else{
-            intent = new Intent(mContext, EplayerPluginPadActivity.class);
-        }
-
-        intent.putExtras(bundle);
-        startActivity(intent);
-
     }
 }
