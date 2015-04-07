@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 
+import org.apache.cordova.LOG;
+
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,18 +47,39 @@ public class WebVideoLessonFragment extends BaseFragment {
     private NormalCallback mNormalCallback;
     private WebVideoWebChromClient mWebVideoWebChromClient;
     private WebView mWebView;
-    public static final String MESSAGE_ID = "WebVideoActivity";
-    public static final String AUTO_SCREEN = "auto_screen";
+    private static final String ADD_FULLSCREEN_CLICK = "javascript:var divs = document.getElementsByTagName('b');" +
+            "for(var i=0; i < divs.length; i++){" +
+            "if (divs[i].className == 'x-zoomin'){" +
+            "window.obj.addFullScreenEvent();" +
+            "divs[i].addEventListener('click', function(event){window.obj.toggleFullScreen(), false});}}";
 
     public static final int HIDE = 0001;
     public static final int FULL_SCREEN = 0002;
-    public static final int CHECK_HTML_PLAYER = 0011;
+    public static final int CHECK_YOUKU_SCREEN = 0011;
+    private static final String TAG = "WebVideoLessonFragment";
 
-    private Handler workHandler;
     private boolean isAddFullScreenEvent;
     private LessonItem.MediaSourceType mMediaSourceType;
     private String mUri;
-    private static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36";
+    private static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36";
+
+    private Handler workHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case CHECK_YOUKU_SCREEN:
+                    mWebView.loadUrl(ADD_FULLSCREEN_CLICK);
+                    break;
+                case HIDE:
+                    normalScreen();
+                    break;
+                case FULL_SCREEN:
+                    fullScreen();
+                    break;
+            }
+        }
+    };
 
     @Override
     public String getTitle() {
@@ -66,45 +90,9 @@ public class WebVideoLessonFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.webvideo_fragment);
-        fullScreen();
     }
 
-    @Override
-    protected void initView(View view) {
-        super.initView(view);
-        mWebView = (WebView) view.findViewById(R.id.webvideo_webview);
-
-        Bundle bundle = getArguments();
-        mUri = bundle.getString(Const.MEDIA_URL);
-        mMediaSourceType = LessonItem.MediaSourceType.cover(
-                bundle.getString(Const.MEDIA_SOURCE));
-        if (mUri == null || "".equals(mUri)) {
-            Toast.makeText(mActivity, "该课程无法播放!(无效播放网址)", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        workHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case CHECK_HTML_PLAYER:
-                        mWebView.loadUrl("javascript:var divs = document.getElementsByTagName('b');" +
-                                "for(var i=0; i < divs.length; i++){" +
-                                "if (divs[i].className == 'x-zoomin'){" +
-                                "window.obj.addFullScreenEvent();" +
-                                "divs[i].addEventListener('click', function(event){window.obj.toggleFullScreen(), false});}}");
-                        break;
-                    case HIDE:
-                        hide();
-                        break;
-                    case FULL_SCREEN:
-                        fullScreen();
-                        break;
-                }
-            }
-        };
-
-        Log.i(null, "WebVideoActivity url->" + mUri);
+    private void initWebViewSeting() {
         if (Build.VERSION.SDK_INT >= 11) {
             mWebView.setLayerType(View.LAYER_TYPE_NONE, null);
         }
@@ -116,57 +104,76 @@ public class WebVideoLessonFragment extends BaseFragment {
         webSettings.setAllowFileAccess(true);
         mWebView.addJavascriptInterface(new JavaScriptObj(), "obj");
 
+        mWebVideoWebChromClient = new WebVideoWebChromClient();
+        mWebView.setWebChromeClient(mWebVideoWebChromClient);
+        mWebView.setWebViewClient(new WebVideoWebViewClient());
         if (isAutoScreen) {
             webSettings.setUseWideViewPort(true);
             webSettings.setLoadWithOverviewMode(true);
         }
+    }
 
-        //4.1以下
-        if (Build.VERSION.SDK_INT < 16) {
-            webSettings.setUserAgentString(USER_AGENT);
-            if (!checkInstallFlash()) {
-                PopupDialog.createMuilt(
-                        mActivity,
-                        "播放提示",
-                        "系统尚未安装播放器组件，是否下载安装？",
-                        new PopupDialog.PopupClickListener() {
-                            @Override
-                            public void onClick(int button) {
-                                if (button == PopupDialog.OK) {
-                                    app.startUpdateWebView(String.format(
+    private PopupDialog getInstallFlashDlg()
+    {
+        return PopupDialog.createMuilt(
+                mActivity,
+                "播放提示",
+                "系统尚未安装播放器组件，是否下载安装？",
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            app.startUpdateWebView(String.format(
                                             "%s%s?version=%d",
                                             app.schoolHost,
                                             Const.FLASH_APK,
                                             Build.VERSION.SDK_INT)
-                                    );
+                            );
 
-                                    mActivity.finish();
-                                }
-                            }
-                        }).show();
+                            mActivity.finish();
+                        }
+                    }
+                }
+        );
+    }
+
+    private void loadContent()
+    {
+        //4.1以下
+        if (Build.VERSION.SDK_INT < 16) {
+            mWebView.getSettings().setUserAgentString(USER_AGENT);
+            if (!checkInstallFlash()) {
+                getInstallFlashDlg().show();
                 return;
             }
         }
 
-        mWebVideoWebChromClient = new WebVideoWebChromClient();
-        mWebView.setWebChromeClient(mWebVideoWebChromClient);
-        mWebView.setWebViewClient(new WebVideoWebViewClient());
-
-        if (isAutoScreen) {
-            mWebView.loadUrl(mUri);
-        } else {
-            switch (mMediaSourceType) {
-                case YOUKU:
-                    mWebView.loadUrl(mUri);
-                    if (Build.VERSION.SDK_INT >= 19) {
-                        checkHtmlPlayer();
-                    }
-                    break;
-                default:
-                    mUri = "<iframe id='esIframe' height='99%' width='100%' src='" + mUri + "' frameborder=0 allowfullscreen></iframe>";
-                    mWebView.loadDataWithBaseURL(null, mUri, "text/html", "utf-8", null);
-            }
+        mWebView.loadUrl(mUri);
+        switch (mMediaSourceType) {
+            case YOUKU:
+                if (Build.VERSION.SDK_INT >= 19) {
+                    checkYoukuPlayerClick();
+                }
         }
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        mWebView = (WebView) view.findViewById(R.id.webvideo_webview);
+
+        Bundle bundle = getArguments();
+        mUri = bundle.getString(Const.MEDIA_URL);
+        isAutoScreen = bundle.getBoolean("AutoScreen", false);
+        mMediaSourceType = LessonItem.MediaSourceType.cover(
+                bundle.getString(Const.MEDIA_SOURCE));
+        if (mUri == null || "".equals(mUri)) {
+            Toast.makeText(mActivity, "该课程无法播放!(无效播放网址)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        initWebViewSeting();
+        loadContent();
     }
 
     private boolean checkInstallFlash() {
@@ -183,8 +190,8 @@ public class WebVideoLessonFragment extends BaseFragment {
 
 
     private Timer workTimer;
-    private void checkHtmlPlayer()
-    {
+
+    private void checkYoukuPlayerClick() {
         workTimer = new Timer();
         workTimer.schedule(new TimerTask() {
             @Override
@@ -194,7 +201,7 @@ public class WebVideoLessonFragment extends BaseFragment {
                         workTimer.cancel();
                         return;
                     }
-                    workHandler.obtainMessage(CHECK_HTML_PLAYER).sendToTarget();
+                    workHandler.obtainMessage(CHECK_YOUKU_SCREEN).sendToTarget();
                 }
             }
         }, 0, 1000);
@@ -203,23 +210,19 @@ public class WebVideoLessonFragment extends BaseFragment {
     /**
      * js注入对象
      */
-    public class JavaScriptObj
-    {
+    public class JavaScriptObj {
         @JavascriptInterface
-        public void show(String html)
-        {
+        public void show(String html) {
             Log.i(null, "html->" + html);
         }
 
         @JavascriptInterface
-        public void addFullScreenEvent()
-        {
+        public void addFullScreenEvent() {
             isAddFullScreenEvent = true;
         }
 
         @JavascriptInterface
-        public void toggleFullScreen()
-        {
+        public void toggleFullScreen() {
             if (isFullScreen) {
                 workHandler.obtainMessage(HIDE).sendToTarget();
                 return;
@@ -228,20 +231,18 @@ public class WebVideoLessonFragment extends BaseFragment {
         }
     }
 
-    private void fullScreen()
-    {
+    private void fullScreen() {
         isFullScreen = true;
-        app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
-        mActivity.showActionBar();
-        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-    private void hide()
-    {
-        isFullScreen = false;
         app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
         mActivity.hideActionBar();
         mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private void normalScreen() {
+        isFullScreen = false;
+        app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
+        mActivity.showActionBar();
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if (mView == null) {
             return;
         }
@@ -261,8 +262,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     private View mView;
     private WebChromeClient.CustomViewCallback mCustomViewCallback;
 
-    private class WebVideoWebViewClient extends WebViewClient
-    {
+    private class WebVideoWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
@@ -281,7 +281,6 @@ public class WebVideoLessonFragment extends BaseFragment {
 
         @Override
         public void onPageFinished(WebView view, final String url) {
-            Log.d(null, "WebVideoActivity onPageFinished->" + url);
             if (url.endsWith("javascript:;")) {
                 if (mNormalCallback != null) {
                     mNormalCallback.success(null);
@@ -313,18 +312,15 @@ public class WebVideoLessonFragment extends BaseFragment {
                 mWebView.loadUrl(mUri);
                 return;
             }
+            Log.d(TAG, "onPageFinished->" + url);
             super.onPageFinished(view, url);
         }
     }
 
-    private class WebVideoWebChromClient extends WebChromeClient
-    {
+    private class WebVideoWebChromClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
-            if (newProgress == 100) {
-                mActivity.setProgressBarIndeterminateVisibility(false);
-            }
         }
 
         @Override
@@ -334,7 +330,7 @@ public class WebVideoLessonFragment extends BaseFragment {
 
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
-            fullScreen();
+            LOG.d(TAG, "onShowCustomView");
             if (mCustomViewCallback != null) {
                 mCustomViewCallback.onCustomViewHidden();
                 mCustomViewCallback = null;
@@ -344,6 +340,7 @@ public class WebVideoLessonFragment extends BaseFragment {
             fullScreen();
             ViewGroup viewGroup = (ViewGroup) mWebView.getParent();
             viewGroup.removeView(mWebView);
+            view.setBackgroundColor(Color.BLACK);
             view.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             viewGroup.addView(view);
@@ -354,14 +351,13 @@ public class WebVideoLessonFragment extends BaseFragment {
 
         @Override
         public void onHideCustomView() {
-            hide();
-            System.out.println("onHide->");
+            normalScreen();
+            Log.d(TAG, "onHideCustomView");
         }
     }
 
-    private void webViewStop()
-    {
-        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+    private void webViewStop() {
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(
                 new AudioManager.OnAudioFocusChangeListener() {
                     @Override
@@ -370,7 +366,8 @@ public class WebVideoLessonFragment extends BaseFragment {
                     }
                 },
                 AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+        );
 
         Log.i(null, "WebVideoActivity webview stop");
         try {
@@ -378,7 +375,7 @@ public class WebVideoLessonFragment extends BaseFragment {
                     .getMethod("onPause", (Class[]) null)
                     .invoke(mWebView, (Object[]) null);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
