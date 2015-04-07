@@ -46,7 +46,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     private boolean isAutoScreen;
     private NormalCallback mNormalCallback;
     private WebVideoWebChromClient mWebVideoWebChromClient;
-    private WebView mWebView;
+    protected WebView mWebView;
     private static final String ADD_FULLSCREEN_CLICK = "javascript:var divs = document.getElementsByTagName('b');" +
             "for(var i=0; i < divs.length; i++){" +
             "if (divs[i].className == 'x-zoomin'){" +
@@ -60,7 +60,7 @@ public class WebVideoLessonFragment extends BaseFragment {
 
     private boolean isAddFullScreenEvent;
     private LessonItem.MediaSourceType mMediaSourceType;
-    private String mUri;
+    protected String mUri;
     private static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36";
 
@@ -137,7 +137,7 @@ public class WebVideoLessonFragment extends BaseFragment {
         );
     }
 
-    private void loadContent()
+    protected void loadContent()
     {
         //4.1以下
         if (Build.VERSION.SDK_INT < 16) {
