@@ -2,14 +2,12 @@ package com.edusoho.kuozhi.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.nineoldandroids.view.ViewHelper;
 
 /**
  * 解决低版本兼容的TextView
@@ -46,10 +44,10 @@ public class ESTextView extends TextView {
                 if (mOnClickListener == null) {
                     return super.onTouchEvent(event);
                 }
-                changeAlpha(mDefautAlpha - 0.33f);
+                setTextViewAlpha(mDefautAlpha);
                 break;
             default:
-                changeAlpha(mDefautAlpha);
+                setTextViewAlpha(mDefautAlpha);
         }
         return super.onTouchEvent(event);
     }
@@ -63,19 +61,15 @@ public class ESTextView extends TextView {
     private void initView(AttributeSet attrs) {
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.ESTextView);
         mDefautAlpha = ta.getFloat(R.styleable.ESTextView_es_alpha, 1.0f);
-        changeAlpha(mDefautAlpha);
+        setTextViewAlpha(mDefautAlpha);
     }
 
     public void setDefaultAlpha(float alpha) {
         mDefautAlpha = alpha;
     }
 
-    public void changeAlpha(float alpha)
-    {
-        if (Build.VERSION.SDK_INT < 11) {
-            ViewHelper.setAlpha(this, alpha);
-        } else {
-            setAlpha(alpha);
-        }
+    public void setTextViewAlpha(float alpha) {
+        int alphaTextColor = (int) (0xFF * alpha) << 24 | getCurrentTextColor() & 0xFFFFFF;
+        this.setTextColor(alphaTextColor);
     }
 }
