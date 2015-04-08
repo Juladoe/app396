@@ -30,11 +30,11 @@ import java.util.List;
  * Created by Melomelon on 2015/2/2.
  */
 public class LiveCourseLessonAdapter
-        extends RecyclerViewListBaseAdapter<LessonItem,LiveCourseLessonAdapter.BaseViewHolder> {
+        extends RecyclerViewListBaseAdapter<LessonItem, LiveCourseLessonAdapter.BaseViewHolder> {
 
 
     private ActionBarBaseActivity mActivity;
-//    private View mHeadView;
+    //    private View mHeadView;
     private HashMap<Integer, LearnStatus> mUserLearns;
 //    SparseArray<M3U8DbModle> mM3U8DbModles;
 
@@ -49,8 +49,7 @@ public class LiveCourseLessonAdapter
         notifyDataSetChanged();
     }
 
-    public void updateLearnStatus(HashMap<Integer, LearnStatus> userLearns)
-    {
+    public void updateLearnStatus(HashMap<Integer, LearnStatus> userLearns) {
         this.mUserLearns = userLearns;
     }
 
@@ -110,8 +109,7 @@ public class LiveCourseLessonAdapter
     }
 
     private void setLessonInfo(
-            ViewHolder viewHolder, LessonItem lessonItem)
-    {
+            ViewHolder viewHolder, LessonItem lessonItem) {
         viewHolder.mChapter.setVisibility(View.GONE);
         viewHolder.mLessonLayout.setVisibility(View.VISIBLE);
         viewHolder.mTitle.setText(lessonItem.title);
@@ -119,7 +117,7 @@ public class LiveCourseLessonAdapter
         // 判断直播状态
         String liveStatus = getLiveStatus(lessonItem);
         Drawable drawable = null;
-        if("generated".equals(lessonItem.replayStatus)){
+        if ("generated".equals(lessonItem.replayStatus)) {
             drawable = mContext.getResources().getDrawable(R.drawable.replay);
         }
         viewHolder.mLessonType.setCompoundDrawablesWithIntrinsicBounds(
@@ -136,24 +134,24 @@ public class LiveCourseLessonAdapter
                 mContext.getResources().getColor(R.color.lesson_item_lesson_bg));
     }
 
-    private String getLiveStatus(LessonItem lessonItem){
+    private String getLiveStatus(LessonItem lessonItem) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         int st = Integer.parseInt(lessonItem.startTime);
         int et = Integer.parseInt(lessonItem.endTime);
         String s = "";
 
-        String endTime = sdf.format(new Date(et*1000L));
-        String startTime = sdf.format(new Date(st*1000L));
+        String endTime = sdf.format(new Date(et * 1000L));
+        String startTime = sdf.format(new Date(st * 1000L));
         String currentTime = sdf.format(new Date());
         int status1 = startTime.compareTo(currentTime);
         int status2 = endTime.compareTo(currentTime);
 
-        if(status1>0){
-            s = AppUtil.getLiveTime(st*1000L);
-            s ="直播将于" + s + "开始";
-        }else if(status1<=0 && status2>0){
+        if (status1 > 0) {
+            s = AppUtil.getLiveTime(st * 1000L);
+            s = "直播将于" + s + "开始";
+        } else if (status1 <= 0 && status2 > 0) {
             s = "正在直播";
-        }else if(status2<=0){
+        } else if (status2 <= 0) {
             s = "直播已结束";
         }
 
@@ -178,17 +176,16 @@ public class LiveCourseLessonAdapter
     }
 
     private void setChapterInfo(
-            ViewHolder viewHolder, LessonItem lessonItem)
-    {
+            ViewHolder viewHolder, LessonItem lessonItem) {
         viewHolder.mLessonLayout.setVisibility(View.GONE);
         viewHolder.mChapter.setVisibility(View.VISIBLE);
         if ("unit".equals(lessonItem.type)) {
             viewHolder.mChapter.setPadding(AQUtility.dip2pixel(mContext, 44), 0, 0, 0);
-            viewHolder.mChapter.changeAlpha(0.54f);
+            viewHolder.mChapter.setTextViewAlpha(0.54f);
             viewHolder.mChapter.setText("第" + lessonItem.number + "节 " + lessonItem.title);
             viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_unit_bg));
         } else {
-            viewHolder.mChapter.changeAlpha(0.87f);
+            viewHolder.mChapter.setTextViewAlpha(0.87f);
             viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_chapter_bg));
             viewHolder.mChapter.setText("第" + lessonItem.number + "章 " + lessonItem.title);
         }
@@ -208,15 +205,13 @@ public class LiveCourseLessonAdapter
         textView.setText(spannable);
     }
 
-    public class BaseViewHolder extends RecyclerView.ViewHolder
-    {
+    public class BaseViewHolder extends RecyclerView.ViewHolder {
         public BaseViewHolder(View view) {
             super(view);
         }
     }
 
-    public class ViewHolder extends BaseViewHolder
-    {
+    public class ViewHolder extends BaseViewHolder {
         public TextView mLessonType;
         public ESTextView mChapter;
         public TextView mTitle;

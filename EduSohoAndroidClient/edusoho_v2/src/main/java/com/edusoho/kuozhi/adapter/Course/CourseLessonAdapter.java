@@ -49,18 +49,15 @@ public class CourseLessonAdapter
         notifyItemInserted(mList.size() - 1);
     }
 
-    public void updateM3U8Models(SparseArray<M3U8DbModle> m3U8DbModles)
-    {
+    public void updateM3U8Models(SparseArray<M3U8DbModle> m3U8DbModles) {
         this.mM3U8DbModles = m3U8DbModles;
     }
 
-    public void updateLearnStatus(HashMap<Integer, LearnStatus> userLearns)
-    {
+    public void updateLearnStatus(HashMap<Integer, LearnStatus> userLearns) {
         this.mUserLearns = userLearns;
     }
 
-    public void addHeadView(View headView)
-    {
+    public void addHeadView(View headView) {
         mHeadView = headView;
         mList.add(0, null);
     }
@@ -113,8 +110,7 @@ public class CourseLessonAdapter
     }
 
     private void setLessonInfo(
-            ViewHolder viewHolder, LessonItem lesson)
-    {
+            ViewHolder viewHolder, LessonItem lesson) {
         viewHolder.mChapter.setVisibility(View.GONE);
         viewHolder.mLessonLayout.setVisibility(View.VISIBLE);
         viewHolder.mTitle.setText(lesson.title);
@@ -178,17 +174,16 @@ public class CourseLessonAdapter
     }
 
     private void setChapterInfo(
-            ViewHolder viewHolder, LessonItem lesson)
-    {
+            ViewHolder viewHolder, LessonItem lesson) {
         viewHolder.mLessonLayout.setVisibility(View.GONE);
         viewHolder.mChapter.setVisibility(View.VISIBLE);
         if ("unit".equals(lesson.type)) {
             viewHolder.mChapter.setPadding(AQUtility.dip2pixel(mContext, 44), 0, 0, 0);
-            viewHolder.mChapter.changeAlpha(0.54f);
+            viewHolder.mChapter.setTextViewAlpha(0.54f);
             viewHolder.mChapter.setText("第" + lesson.number + "节 " + lesson.title);
             viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_unit_bg));
         } else {
-            viewHolder.mChapter.changeAlpha(0.87f);
+            viewHolder.mChapter.setTextViewAlpha(0.87f);
             viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.lesson_item_chapter_bg));
             viewHolder.mChapter.setText("第" + lesson.number + "章 " + lesson.title);
         }
@@ -208,15 +203,13 @@ public class CourseLessonAdapter
         textView.setText(spannable);
     }
 
-    public class BaseViewHolder extends RecyclerView.ViewHolder
-    {
+    public class BaseViewHolder extends RecyclerView.ViewHolder {
         public BaseViewHolder(View view) {
             super(view);
         }
     }
 
-    public class ViewHolder extends BaseViewHolder
-    {
+    public class ViewHolder extends BaseViewHolder {
         public TextView mLessonType;
         public ESTextView mChapter;
         public TextView mTitle;
@@ -236,9 +229,8 @@ public class CourseLessonAdapter
         }
     }
 
-    public class HeadViewHolder extends BaseViewHolder
-    {
-        public HeadViewHolder(View view){
+    public class HeadViewHolder extends BaseViewHolder {
+        public HeadViewHolder(View view) {
             super(view);
         }
     }
