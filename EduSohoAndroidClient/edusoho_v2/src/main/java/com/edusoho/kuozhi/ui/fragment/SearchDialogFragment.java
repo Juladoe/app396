@@ -164,7 +164,7 @@ public class SearchDialogFragment extends DialogFragment {
 
         for (TagModel tagModel : tagList) {
             ESTextView textView = new ESTextView(mContext);
-            textView.changeAlpha(0.87f);
+            textView.setTextViewAlpha(0.87f);
             textView.setText(tagModel.name);
             textView.setTag(tagModel.id);
             textView.setTextColor(Color.BLACK);
