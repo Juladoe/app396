@@ -665,7 +665,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
 
         if (lessonType == CourseLessonType.VIDEO
-                && AppUtil.inArray(lessonItem.mediaSource, new String[]{"youku", "tudou"})) {
+                && !"self".equals(lessonItem.mediaSource)) {
             loadLessonFragment("WebVideoLessonFragment");
             return;
         }

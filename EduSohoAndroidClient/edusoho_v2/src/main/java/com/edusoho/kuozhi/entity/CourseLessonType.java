@@ -2,7 +2,7 @@ package com.edusoho.kuozhi.entity;
 
 public enum CourseLessonType {
 
-	DOCUMENT, VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY, CHAPTER, UNIT,LIVE;
+	DOCUMENT, VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY, CHAPTER, UNIT,LIVE, DEFAULT;
 
 	public static CourseLessonType value(String typeName)
 	{
@@ -10,7 +10,7 @@ public enum CourseLessonType {
 		try {
 			type =  valueOf(typeName.toUpperCase());
 		}catch (Exception e) {
-			type = EMPTY;
+			type = DEFAULT;
 		}
 		return type;
 	}
