@@ -98,7 +98,7 @@ public class SchoolRoomFragment extends BaseFragment {
 //                }
                 SchoolRoomResult schoolRoomResult = (SchoolRoomResult) parent.getItemAtPosition(position);
                 int schoolRoomType = SchoolRoomEnum.getIndex(schoolRoomResult.title);
-                showItemActivity(schoolRoomType, schoolRoomResult);
+                showItemActivity(schoolRoomType);
             }
         });
     }
@@ -106,10 +106,9 @@ public class SchoolRoomFragment extends BaseFragment {
     /**
      * item跳转
      *
-     * @param type
-     * @param result
+     * @param type item类型
      */
-    private void showItemActivity(int type, final SchoolRoomResult result) {
+    private void showItemActivity(int type) {
         switch (type) {
             case 1:
                 //在学直播课
@@ -117,7 +116,7 @@ public class SchoolRoomFragment extends BaseFragment {
                 break;
             case 2:
                 //在学课程
-                goToCourseDetailsActivity(result);
+                goToCourseDetailsActivity();
                 break;
             case 3:
                 //问答
@@ -150,7 +149,7 @@ public class SchoolRoomFragment extends BaseFragment {
     /**
      * 跳转到课程界面（CourseDetailsActivity）
      */
-    private void goToCourseDetailsActivity(final SchoolRoomResult result) {
+    private void goToCourseDetailsActivity() {
         try {
             Bundle bundle = new Bundle();
             bundle.putString(Const.ACTIONBAR_TITLE, "在学课程");
