@@ -1,12 +1,10 @@
 apply plugin: 'com.android.library'
 
 android {
-    useOldManifestMerger true
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
 
     defaultConfig {
-        applicationId "com.edusoho.kuozhi.commonlib"
         minSdkVersion 9
         targetSdkVersion 21
     }

@@ -1,12 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    useOldManifestMerger true
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
 
     defaultConfig {
-        applicationId "com.plugin.edusoho.bdvideoplayer"
+//        applicationId "com.plugin.edusoho.bdvideoplayer"
         minSdkVersion 9
         targetSdkVersion 21
     }
@@ -15,7 +14,7 @@ android {
 task copyNativeLibs(type: Copy) {
     from fileTree(dir: 'libs', include: 'armeabi/*.so') into 'build/lib'
 }
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn copyNativeLibs
 }
 clean.dependsOn 'cleanCopyNativeLibs'

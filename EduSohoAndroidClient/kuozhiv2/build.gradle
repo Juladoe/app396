@@ -35,8 +35,8 @@ android {
 
     buildTypes {
         release {
-            zipAlign true
-            runProguard true
+            zipAlignEnabled true
+            minifyEnabled true
             proguardFiles 'proguard-rules.txt'
             signingConfig signingConfigs.releaseConfig
         }

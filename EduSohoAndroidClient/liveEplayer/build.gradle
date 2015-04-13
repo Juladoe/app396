@@ -5,7 +5,6 @@ android {
     buildToolsVersion '21.1.1'
 
     defaultConfig {
-        applicationId "com.soooner.EplayerPluginLibary"
         minSdkVersion 9
         targetSdkVersion 21
     }
@@ -14,7 +13,7 @@ android {
 task copyNativeLibs(type: Copy) {
     from fileTree(dir: 'libs', include: 'armeabi/*.so') into 'build/lib'
 }
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn copyNativeLibs
 }
 clean.dependsOn 'cleanCopyNativeLibs'

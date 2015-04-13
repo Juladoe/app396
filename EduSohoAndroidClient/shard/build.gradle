@@ -6,7 +6,6 @@ android {
     buildToolsVersion '21.1.1'
 
     defaultConfig {
-        applicationId "com.edusoho.kuozhi.shard"
         minSdkVersion 9
         targetSdkVersion 21
     }
