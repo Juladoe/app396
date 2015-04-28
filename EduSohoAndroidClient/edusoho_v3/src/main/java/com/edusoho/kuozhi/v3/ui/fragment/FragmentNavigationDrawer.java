@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -26,6 +27,14 @@ public class FragmentNavigationDrawer extends BaseFragment {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private final int mRadioIds[] = {
+            R.id.radio0,
+            R.id.radio1,
+            R.id.radio2,
+            R.id.radio3,
+    };
+
+    private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     }
 
     public void initDrawer(DrawerLayout drawerLayout, int fragmentDrawerId) {
+        initView();
         mDrawerFragment = mActivity.findViewById(fragmentDrawerId);
         mTitle = mDrawerTitle = mActivity.getTitle();
         ActionBar actionBar = mActivity.getSupportActionBar();
@@ -79,11 +89,31 @@ public class FragmentNavigationDrawer extends BaseFragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    private void initView() {
+        for (int i = 0; i < mRadioButtons.length; i++) {
+            mRadioButtons[i] = (RadioButton) getView().findViewById(mRadioIds[i]);
+            mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
+        }
+    }
+
+    View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            for (int i = 0; i < mRadioButtons.length; i++) {
+                if (v.equals(mRadioButtons[i])) {
+                    selectItem(i);
+                } else {
+                    mRadioButtons[i].setChecked(false);
+                }
+            }
+        }
+    };
+
     private void selectItem(int position) {
         if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mDrawerLayout);
+            mDrawerLayout.closeDrawer(mDrawerFragment);
         }
-        CommonUtil.longToast(mActivity, String.valueOf(position));
+        CommonUtil.longToast(mActivity, mRadioButtons[position].getText().toString());
     }
 
     public boolean isDrawerOpen() {

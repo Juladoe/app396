@@ -159,7 +159,7 @@
                 android:background="@color/lesson_menu_border" />
 
             <RadioButton
-                android:id="@+id/radio4"
+                android:id="@+id/radio3"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/drawer_selector_bg"
@@ -174,7 +174,7 @@
                 android:textSize="17sp" />
 
             <Button
-                android:id="@+id/buttonFeedback"
+                android:id="@+id/radio4"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/drawer_selector_bg"

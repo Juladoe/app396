@@ -50,7 +50,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_default);
 
         initView();
-        initDrawer();
         mExitTimer = new Timer();
         app.addTask("DefaultPageActivity", this);
 
@@ -77,35 +76,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         }
 
         selectDownTab(mSelectBtn);
-    }
 
-    private void initDrawer() {
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
-
-//        mDrawerToggle = new ActionBarDrawerToggle(
-//                this,                  /* host Activity */
-//                mDrawerLayout,         /* DrawerLayout object */
-//                R.string.drawer_open,  /* "open drawer" description for accessibility */
-//                R.string.drawer_close  /* "close drawer" description for accessibility */
-//        ) {
-//            @Override
-//            public void onDrawerClosed(View view) {
-//                getSupportActionBar().setTitle(mTitle);
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//                getSupportActionBar().setTitle(mDrawerTitle);
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//        };
-//
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
-//        mDrawerToggle.syncState();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
