@@ -46,8 +46,7 @@ public class EduSohoTextBtn extends LinearLayout {
         initView(attrs);
     }
 
-    private void initView(android.util.AttributeSet attrs)
-    {
+    private void initView(android.util.AttributeSet attrs) {
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.EduSohoTextBtn);
         text = ta.getString(R.styleable.EduSohoTextBtn_text);
         icon = ta.getString(R.styleable.EduSohoTextBtn_image);
@@ -89,40 +88,33 @@ public class EduSohoTextBtn extends LinearLayout {
         notifyTypes = new HashMap<String, Object>();
     }
 
-    public void setText(String text)
-    {
+    public void setText(String text) {
         mText.setText(text);
     }
 
-    public void setText(int resId)
-    {
+    public void setText(int resId) {
         mText.setText(resId);
     }
 
-    public void setText(String text, int iconId)
-    {
+    public void setText(String text, int iconId) {
         mText.setText(text);
         mIcon.setText(iconId);
     }
 
-    public void setTextColor(int color)
-    {
+    public void setTextColor(int color) {
         mText.setTextColor(color);
         mIcon.setTextColor(color);
     }
 
-    public void setIcon(String icon)
-    {
+    public void setIcon(String icon) {
         mIcon.setText(icon);
     }
 
-    public void setIcon(int iconId)
-    {
+    public void setIcon(int iconId) {
         mIcon.setText(iconId);
     }
 
-    public void setUpdateIcon()
-    {
+    public void setUpdateIcon() {
         mIsUpdate = true;
         mUpdateIcon = new ImageView(mContext);
         mUpdateIcon.setImageResource(R.drawable.update_bg);
@@ -134,14 +126,12 @@ public class EduSohoTextBtn extends LinearLayout {
         mIconLayout.addView(mUpdateIcon);
     }
 
-    public void clearUpdateIcon()
-    {
+    public void clearUpdateIcon() {
         mIsUpdate = false;
         mIconLayout.removeView(mUpdateIcon);
     }
 
-    public boolean getUpdateMode()
-    {
+    public boolean getUpdateMode() {
         return mIsUpdate;
     }
 
@@ -152,19 +142,17 @@ public class EduSohoTextBtn extends LinearLayout {
         mText.setEnabled(enabled);
     }
 
-    public void addNotifyType(String type)
-    {
+    public void addNotifyType(String type) {
         notifyTypes.put(type, null);
     }
 
-    public void addNotifyTypes(String[] types)
-    {
+    public void addNotifyTypes(String[] types) {
         for (String type : types) {
             addNotifyType(type);
         }
     }
 
-    public boolean hasNotify(String type){
+    public boolean hasNotify(String type) {
         return notifyTypes.containsKey(type);
     }
 }

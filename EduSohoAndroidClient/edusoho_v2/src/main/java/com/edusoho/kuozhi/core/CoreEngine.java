@@ -57,14 +57,12 @@ public class CoreEngine {
     private ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>> mMessageMap;
     private HashMap<String, PluginModel> mPluginModelHashMap;
 
-    private CoreEngine(Context context)
-    {
+    private CoreEngine(Context context) {
         mContext = context;
         init();
     }
 
-    public void receiveMsg(String msgId, CoreEngineMsgCallback callback)
-    {
+    public void receiveMsg(String msgId, CoreEngineMsgCallback callback) {
         ArrayList<CoreEngineMsgCallback> callbackList = mMessageMap.get(msgId);
         if (callbackList == null) {
             callbackList = new ArrayList<CoreEngineMsgCallback>();
@@ -73,18 +71,15 @@ public class CoreEngine {
         mMessageMap.put(msgId, callbackList);
     }
 
-    public MessageEngine getMessageEngine()
-    {
+    public MessageEngine getMessageEngine() {
         return messageEngine;
     }
 
-    public void removeMsg(String msgId)
-    {
+    public void removeMsg(String msgId) {
         mMessageMap.remove(msgId);
     }
 
-    public void sendMsg(String msgId, MessageModel messageModel)
-    {
+    public void sendMsg(String msgId, MessageModel messageModel) {
         ArrayList<CoreEngineMsgCallback> callbackList = mMessageMap.get(msgId);
         if (callbackList != null) {
             for (CoreEngineMsgCallback callback : callbackList) {
@@ -93,8 +88,7 @@ public class CoreEngine {
         }
     }
 
-    public static CoreEngine create(Context context)
-    {
+    public static CoreEngine create(Context context) {
         synchronized (CoreEngine.class) {
             if (engine == null) {
                 engine = new CoreEngine(context);
@@ -104,8 +98,7 @@ public class CoreEngine {
     }
 
     public void runPluginFromFragmentFroResult(
-            String pluginName, Fragment fragment, int requestCode, Bundle bundle)
-    {
+            String pluginName, Fragment fragment, int requestCode, Bundle bundle) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -118,8 +111,7 @@ public class CoreEngine {
     }
 
     public void runNormalPluginForResult(
-            String pluginName, Activity serverActivity, int requestCode, PluginRunCallback callback)
-    {
+            String pluginName, Activity serverActivity, int requestCode, PluginRunCallback callback) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -133,8 +125,7 @@ public class CoreEngine {
     }
 
     public void runService(
-            String serviceName, Context serverActivity, PluginRunCallback callback)
-    {
+            String serviceName, Context serverActivity, PluginRunCallback callback) {
         PluginModel pluginModel = mPluginModelHashMap.get(serviceName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -148,8 +139,7 @@ public class CoreEngine {
     }
 
     public Fragment runPluginWithFragmentByBundle(
-            String pluginName, Activity activity, Bundle bundle)
-    {
+            String pluginName, Activity activity, Bundle bundle) {
         Fragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
@@ -162,8 +152,7 @@ public class CoreEngine {
     }
 
     public Fragment runPluginWithFragment(
-            String pluginName, Activity activity, PluginFragmentCallback callback)
-    {
+            String pluginName, Activity activity, PluginFragmentCallback callback) {
         Fragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
@@ -181,8 +170,7 @@ public class CoreEngine {
 
     public View runNormalPluginInGroup(
             String pluginName, ActivityGroup serverActivity, PluginRunCallback callback
-    )
-    {
+    ) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -198,8 +186,7 @@ public class CoreEngine {
     }
 
     public void runNormalPlugin(
-            String pluginName, Context serverActivity, PluginRunCallback callback)
-    {
+            String pluginName, Context serverActivity, PluginRunCallback callback) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -214,8 +201,7 @@ public class CoreEngine {
     }
 
     public void runNormalPluginWithBundle(
-            String pluginName, Context serverActivity, Bundle bundle)
-    {
+            String pluginName, Context serverActivity, Bundle bundle) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -229,13 +215,11 @@ public class CoreEngine {
         }
     }
 
-    public File getPluginFile(String pluginName)
-    {
+    public File getPluginFile(String pluginName) {
         return new File(mContext.getFilesDir(), pluginName);
     }
 
-    public void runApkPlugin(String pluginName, Activity proxyActivity)
-    {
+    public void runApkPlugin(String pluginName, Activity proxyActivity) {
         File pluginDir = new File(mContext.getFilesDir(), PLUGIN);
         File pluginFile = new File(pluginDir, pluginName + ".apk");
         if (!pluginFile.exists()) {
@@ -257,12 +241,12 @@ public class CoreEngine {
             Object pluginInstance = pluginConstructor.newInstance(new Object[]{});
 
             invokeMethod(
-                    pluginInstance, pluginClass, "setActivity", new Class[]{ Activity.class }, new Object[]{ proxyActivity });
+                    pluginInstance, pluginClass, "setActivity", new Class[]{Activity.class}, new Object[]{proxyActivity});
 
             Bundle bundle = new Bundle();
             bundle.putBoolean("isProxy", true);
             invokeMethod(
-                    pluginInstance, pluginClass, "onCreate", new Class[]{ Bundle.class }, new Object[]{ bundle });
+                    pluginInstance, pluginClass, "onCreate", new Class[]{Bundle.class}, new Object[]{bundle});
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -272,36 +256,31 @@ public class CoreEngine {
 
     private void invokeMethod(
             Object instance, Class pluginClass, String methodName, Class[] methodParams, Object[] params)
-            throws Exception
-    {
+            throws Exception {
         Method method = pluginClass.getDeclaredMethod(methodName, methodParams);
         method.setAccessible(true);
         method.invoke(instance, params);
     }
 
-    public void registMsgSrc(MessageEngine.MessageCallback source)
-    {
+    public void registMsgSrc(MessageEngine.MessageCallback source) {
         messageEngine.registMessageSource(source);
     }
 
-    public void unRegistMessageSource(MessageEngine.MessageCallback source)
-    {
+    public void unRegistMessageSource(MessageEngine.MessageCallback source) {
         messageEngine.unRegistMessageSource(source);
     }
 
-    public void unRegistPubMessage(MessageType messageType, MessageEngine.MessageCallback source)
-    {
+    public void unRegistPubMessage(MessageType messageType, MessageEngine.MessageCallback source) {
         messageEngine.unRegistPubMessage(messageType, source);
     }
 
-    private void init()
-    {
+    private void init() {
         appCache = AppDbCache.getInstance(mContext);
         messageEngine = MessageEngine.init();
         mMessageMap = new ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>>();
         initPluginFromXml();
 
-        try{
+        try {
             PackageManager packageManager = mContext.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(mContext.getPackageName(), 1);
             ActivityInfo[] activities = packageInfo.activities;
@@ -315,8 +294,7 @@ public class CoreEngine {
         }
     }
 
-    public void installApkPlugin()
-    {
+    public void installApkPlugin() {
         try {
             copyPluginFromAsset(getAssetPlugins(PLUGIN));
             copyInstallApkFromAsset(getAssetPlugins(INSTALL));
@@ -325,8 +303,7 @@ public class CoreEngine {
         }
     }
 
-    private HashMap<String, PluginModel> parsePluginXml(XmlResourceParser parser)
-    {
+    private HashMap<String, PluginModel> parsePluginXml(XmlResourceParser parser) {
         PluginModel pluginModel = null;
         HashMap<String, PluginModel> pluginModels = null;
         try {
@@ -362,39 +339,34 @@ public class CoreEngine {
         return pluginModels;
     }
 
-    private void initPluginFromXml()
-    {
+    private void initPluginFromXml() {
         XmlResourceParser parser = mContext.getResources().getXml(R.xml.core_plugins);
         mPluginModelHashMap = parsePluginXml(parser);
     }
 
-    public String[] getAssetPlugins(String dirName) throws IOException
-    {
+    public String[] getAssetPlugins(String dirName) throws IOException {
         AssetManager assetManager = mContext.getAssets();
         return assetManager.list(dirName);
     }
 
-    public void copyPluginFromAsset(String[] dirPath) throws Exception
-    {
+    public void copyPluginFromAsset(String[] dirPath) throws Exception {
         AssetManager assetManager = mContext.getAssets();
         File pluginDir = getPluginDir();
         for (String path : dirPath) {
             OutputStream target = new FileOutputStream(new File(pluginDir, path));
-            copyFile(assetManager.open(PLUGIN + "/" +path), target);
+            copyFile(assetManager.open(PLUGIN + "/" + path), target);
         }
     }
 
-    private void copyInstallApkFromAsset(String[] dirPath) throws Exception
-    {
+    private void copyInstallApkFromAsset(String[] dirPath) throws Exception {
         AssetManager assetManager = mContext.getAssets();
         for (String path : dirPath) {
             OutputStream target = mContext.openFileOutput(path, mContext.MODE_WORLD_READABLE);
-            copyFile(assetManager.open(INSTALL + "/" +path), target);
+            copyFile(assetManager.open(INSTALL + "/" + path), target);
         }
     }
 
-    private File getPluginDir()
-    {
+    private File getPluginDir() {
         File pluginDir = new File(mContext.getFilesDir(), PLUGIN);
         if (!pluginDir.exists()) {
             pluginDir.mkdir();
@@ -402,12 +374,11 @@ public class CoreEngine {
         return pluginDir;
     }
 
-    private void copyFile(InputStream src, OutputStream target)
-    {
+    private void copyFile(InputStream src, OutputStream target) {
         int len = -1;
         byte[] buffer = new byte[1024];
         try {
-            while ( (len = src.read(buffer)) != -1) {
+            while ((len = src.read(buffer)) != -1) {
                 target.write(buffer, 0, len);
             }
         } catch (Exception e) {
