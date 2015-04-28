@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.readystatesoftware.viewbadger.BadgeView;
 
 /**
  * Created by JesseHuang on 15/4/27.
@@ -35,6 +36,14 @@ public class FragmentNavigationDrawer extends BaseFragment {
     };
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
+
+    private final int mBadgeIds[] = {
+            R.id.badge0,
+            R.id.badge1,
+            R.id.badge2,
+    };
+
+    private final BadgeView[] mBadges = new BadgeView[mBadgeIds.length];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,23 +69,23 @@ public class FragmentNavigationDrawer extends BaseFragment {
         actionBar.setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(
-                mActivity,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
+                mActivity,
+                mDrawerLayout,
+                R.string.drawer_open,
+                R.string.drawer_close
         ) {
             @Override
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 mActivity.setTitle(mTitle);
-                mActivity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                mActivity.invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 mActivity.setTitle(mDrawerTitle);
-                mActivity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                mActivity.invalidateOptionsMenu();
             }
         };
 
@@ -93,6 +102,10 @@ public class FragmentNavigationDrawer extends BaseFragment {
         for (int i = 0; i < mRadioButtons.length; i++) {
             mRadioButtons[i] = (RadioButton) getView().findViewById(mRadioIds[i]);
             mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
+        }
+        for (int i = 0; i < mBadges.length; i++) {
+            mBadges[i] = (BadgeView) getView().findViewById(mBadgeIds[i]);
+            mBadges[i].setText("1");
         }
     }
 
