@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f8ffffff"
+    tools:context="com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_home_bg" />
+
+            <RelativeLayout
+                android:id="@+id/circleLayout"
+                android:layout_width="53dp"
+                android:layout_height="53dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/navigation_user_sharow">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/circleIcon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_default_user" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/circleLayout"
+                android:text="Jesse"
+                android:textColor="#ffffff"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/radio0"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/drawer_selector_bg"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/drawer_selector_0"
+                    android:drawablePadding="15dp"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="0dp"
+                    android:text="@string/drawer_items_learn"
+                    android:textColor="@drawable/drawer_selector_font"
+                    android:textSize="17sp" />
+
+                <com.readystatesoftware.viewbadger.BadgeView
+                    android:id="@+id/badge0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/ic_notify_no_edge"
+                    android:gravity="center"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/radio1"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/drawer_selector_bg"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/drawer_selector_1"
+                    android:drawablePadding="15dp"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="0dp"
+                    android:text="@string/drawer_items_collection"
+                    android:textColor="@drawable/drawer_selector_font"
+                    android:textSize="17sp" />
+
+                <com.readystatesoftware.viewbadger.BadgeView
+                    android:id="@+id/badge1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/ic_notify_no_edge"
+                    android:gravity="center"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/radio2"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/drawer_selector_bg"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/drawer_selector_2"
+                    android:drawablePadding="15dp"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="0dp"
+                    android:text="@string/drawer_items_message"
+                    android:textColor="@drawable/drawer_selector_font"
+                    android:textSize="17sp" />
+
+
+                <com.readystatesoftware.viewbadger.BadgeView
+                    android:id="@+id/badge2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/ic_notify_no_edge"
+                    android:gravity="center"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lesson_menu_border" />
+
+            <RadioButton
+                android:id="@+id/radio4"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/drawer_selector_bg"
+                android:button="@null"
+                android:drawableLeft="@drawable/drawer_selector_4"
+                android:drawablePadding="15dp"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="17dp"
+                android:paddingRight="0dp"
+                android:text="设置"
+                android:textColor="@drawable/drawer_selector_font"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/buttonFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/drawer_selector_bg"
+                android:button="@null"
+                android:drawableLeft="@drawable/navigation_icon_feedback"
+                android:drawablePadding="15dp"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="17dp"
+                android:paddingRight="0dp"
+                android:text="意见反馈"
+                android:textColor="@drawable/drawer_selector_font"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>

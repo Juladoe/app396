@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugins>
+    <plugin
+        name="DefaultPageActivity"
+        package="com.edusoho.kuozhi.v3.ui.DefaultPageActivity"
+        version="1.0" />
+
+    <plugin
+        name="NewsFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.NewsFragment"
+        version="1.0" />
+
+    <plugin
+        name="FriendFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FriendFragment"
+        version="1.0" />
+
+    <plugin
+        name="FindFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
+        version="1.0" />
+
+</plugins>

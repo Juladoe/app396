@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EduSohoTextBtn">
+        <attr name="text" format="string" />
+        <attr name="image" format="string" />
+        <attr name="size" format="dimension" />
+        <attr name="fontColor" format="color" />
+        <attr name="iconSizeScale" format="float" />
+    </declare-styleable>
+</resources>

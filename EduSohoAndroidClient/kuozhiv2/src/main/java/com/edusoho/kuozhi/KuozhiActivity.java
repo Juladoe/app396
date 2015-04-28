@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
+import com.edusoho.kuozhi.v3.ui.StartActivity;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.edusoho.kuozhi.ui.StartActivity;
 
 public class KuozhiActivity extends StartActivity {
 
