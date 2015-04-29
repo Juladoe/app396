@@ -2,18 +2,19 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.SchoolResult;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -26,12 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class StartActivity extends ActionBarBaseActivity {
+public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
+
+    public static final String INIT_APP = "init_app";
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        app.registMsgSource(this);
         startSplash();
         registDevice();
     }
@@ -43,7 +48,7 @@ public class StartActivity extends ActionBarBaseActivity {
             app.saveConfig();
             return;
         }
-        initApp();
+        app.sendMessage(INIT_APP, null);
     }
 
     protected void initApp() {
@@ -58,6 +63,25 @@ public class StartActivity extends ActionBarBaseActivity {
         }
 
         checkSchoolApiVersion();
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        if (message.type.type == INIT_APP) {
+            initApp();
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = {new MessageType(MessageType.NONE, INIT_APP)};
+        return messageTypes;
+    }
+
+    @Override
+    protected void onDestroy() {
+        app.unRegistMsgSource(this);
+        super.onDestroy();
     }
 
     /**

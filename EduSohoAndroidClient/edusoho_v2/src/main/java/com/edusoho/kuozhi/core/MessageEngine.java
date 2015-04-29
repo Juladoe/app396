@@ -23,19 +23,16 @@ public class MessageEngine {
 
     private static MessageEngine messageEngine;
 
-    private MessageEngine()
-    {
+    private MessageEngine() {
         pubMsgMap = new ConcurrentHashMap<String, ArrayList<String>>();
         sourceMap = new ConcurrentHashMap<String, MessageCallback>();
     }
 
-    public ConcurrentHashMap<String, MessageCallback> getSourceMap()
-    {
+    public ConcurrentHashMap<String, MessageCallback> getSourceMap() {
         return sourceMap;
     }
 
-    public static MessageEngine init()
-    {
+    public static MessageEngine init() {
         synchronized (synchronizedObj) {
             if (messageEngine == null) {
                 messageEngine = new MessageEngine();
@@ -45,8 +42,7 @@ public class MessageEngine {
         return messageEngine;
     }
 
-    public void sendMsgToTaget(int msgType, Bundle body, Class target)
-    {
+    public void sendMsgToTaget(int msgType, Bundle body, Class target) {
         String targetName = target.getSimpleName();
         MessageType messageType = new MessageType(msgType, targetName);
 
@@ -58,8 +54,7 @@ public class MessageEngine {
     }
 
     public void sendMsgToTagetForCallback(
-            int msgType, Bundle body, Class target, NormalCallback callback)
-    {
+            int msgType, Bundle body, Class target, NormalCallback callback) {
         String targetName = target.getSimpleName();
         MessageType messageType = new MessageType(msgType, targetName);
 
@@ -70,15 +65,14 @@ public class MessageEngine {
         messageCallback.invoke(new WidgetMessage(messageType, body, callback));
     }
 
-    public void sendMsg(String msgType, Bundle body)
-    {
+    public void sendMsg(String msgType, Bundle body) {
         ArrayList<String> msgList = pubMsgMap.get(msgType);
         if (msgList == null) {
             return;
         }
         MessageType messageType = new MessageType(msgType);
         int size = msgList.size();
-        for (int i=0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             String name = msgList.get(i);
             MessageCallback messageCallback = sourceMap.get(name);
             Log.d(null, "callback->" + messageCallback);
@@ -90,8 +84,7 @@ public class MessageEngine {
         }
     }
 
-    public void unRegistMessageSource(MessageCallback source)
-    {
+    public void unRegistMessageSource(MessageCallback source) {
         if (source == null) {
             return;
         }
@@ -99,8 +92,7 @@ public class MessageEngine {
         sourceMap.remove(targetName);
     }
 
-    public void unRegistPubMessage(MessageType type, MessageCallback source)
-    {
+    public void unRegistPubMessage(MessageType type, MessageCallback source) {
         if (source == null) {
             return;
         }
@@ -109,8 +101,7 @@ public class MessageEngine {
         list.remove(targetName);
     }
 
-    public void registMessageSource(MessageCallback source)
-    {
+    public void registMessageSource(MessageCallback source) {
         if (source == null) {
             return;
         }
@@ -139,9 +130,9 @@ public class MessageEngine {
         }
     }
 
-    public static interface MessageCallback
-    {
+    public static interface MessageCallback {
         public void invoke(WidgetMessage message);
+
         public MessageType[] getMsgTypes();
     }
 }
