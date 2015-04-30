@@ -37,7 +37,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_default_user" />
+                    android:src="@drawable/avatar" />
 
             </RelativeLayout>
 
@@ -87,6 +87,7 @@
                     android:layout_marginRight="12dp"
                     android:background="@drawable/ic_notify_no_edge"
                     android:gravity="center"
+                    android:text="3"
                     android:visibility="invisible" />
             </RelativeLayout>
 
@@ -118,6 +119,7 @@
                     android:layout_marginRight="12dp"
                     android:background="@drawable/ic_notify_no_edge"
                     android:gravity="center"
+                    android:text="1"
                     android:visibility="invisible" />
             </RelativeLayout>
 
@@ -150,6 +152,7 @@
                     android:layout_marginRight="12dp"
                     android:background="@drawable/ic_notify_no_edge"
                     android:gravity="center"
+                    android:text="5"
                     android:visibility="invisible" />
             </RelativeLayout>
 
