@@ -23,7 +23,7 @@ public class FriendFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_webview);
-        mActivity.setBackMode("", getString(R.string.title_friends));
+        mActivity.setTitle(getString(R.string.title_friends));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class FriendFragment extends BaseFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            mActivity.setBackMode("", getString(R.string.title_friends));
+            mActivity.setTitle(getString(R.string.title_friends));
         }
         super.onHiddenChanged(hidden);
     }

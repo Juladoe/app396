@@ -6,17 +6,25 @@
     android:layout_height="match_parent"
     tools:context="com.edusoho.kuozhi.v3.ui.DefaultPageActivity">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:layout_alignParentTop="true" />
 
         <FrameLayout
             android:background="@color/system_normal_bg"
             android:layout_above="@+id/nav_bottom_layout"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></FrameLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"></FrameLayout>
 
         <include layout="@layout/nav_setting" />
     </RelativeLayout>

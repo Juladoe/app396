@@ -24,7 +24,7 @@ public class NewsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_webview);
-        mActivity.setBackMode("", getString(R.string.title_news));
+        mActivity.setTitle(getString(R.string.title_news));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            mActivity.setBackMode("", getString(R.string.title_news));
+            mActivity.setTitle(getString(R.string.title_news));
         }
         super.onHiddenChanged(hidden);
     }

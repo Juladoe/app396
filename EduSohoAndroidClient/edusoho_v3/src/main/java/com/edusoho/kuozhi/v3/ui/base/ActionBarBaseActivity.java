@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -15,9 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.ResultCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
@@ -62,18 +59,18 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void setBackMode(String backTitle, String title) {
-        mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
-        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.action_bar_title);
-        mTitleTextView.setText(title);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.MATCH_PARENT);
-        //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
-        layoutParams.gravity = Gravity.CENTER;
-        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
-
-        if (backTitle != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-        }
+//        mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+//        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.action_bar_title);
+//        mTitleTextView.setText(title);
+//        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+//                ActionBar.LayoutParams.MATCH_PARENT);
+//        //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
+//        layoutParams.gravity = Gravity.CENTER;
+//        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
+//
+//        if (backTitle != null) {
+//            mActionBar.setDisplayHomeAsUpEnabled(true);
+//        }
     }
 
     public void ajaxPost(final RequestUrl requestUrl, ResultCallback resultCallback) {

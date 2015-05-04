@@ -77,15 +77,15 @@ public class FragmentNavigationDrawer extends BaseFragment {
             @Override
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                mActivity.setTitle(mTitle);
-                mActivity.invalidateOptionsMenu();
+//                mActivity.setTitle(mTitle);
+//                mActivity.invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                mActivity.setTitle(mDrawerTitle);
-                mActivity.invalidateOptionsMenu();
+//                mActivity.setTitle(mDrawerTitle);
+//                mActivity.invalidateOptionsMenu();
             }
         };
 

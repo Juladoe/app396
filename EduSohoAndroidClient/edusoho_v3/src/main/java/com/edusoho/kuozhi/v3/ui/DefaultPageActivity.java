@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -36,6 +37,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private EduSohoTextBtn mDownTabNews;
     private EduSohoTextBtn mDownTabFind;
     private EduSohoTextBtn mDownTabFriends;
+    private Toolbar mToolBar;
     private NavDownTabClickListener mNavDownTabClickListener;
 
     private DrawerLayout mDrawerLayout;
@@ -63,7 +65,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mDownTabNews = (EduSohoTextBtn) findViewById(R.id.nav_tab_news);
         mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
         mDownTabFriends = (EduSohoTextBtn) findViewById(R.id.nav_tab_friends);
+        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavDownTabClickListener = new NavDownTabClickListener();
+
+        setSupportActionBar(mToolBar);
         int count = mNavLayout.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mNavLayout.getChildAt(i);
@@ -187,13 +193,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mCurrentTag.equals("FindFragment") || TextUtils.isEmpty(mCurrentTag)) {
-            boolean drawerOpen = mFragmentNavigationDrawer.isDrawerOpen();
-            menu.findItem(R.id.find_search).setVisible(!drawerOpen);
-        } else if (mCurrentTag.equals("FriendFragment")) {
-            boolean drawerOpen = mFragmentNavigationDrawer.isDrawerOpen();
-            menu.findItem(R.id.friends_search).setVisible(!drawerOpen);
-        }
+//        if (mCurrentTag.equals("FindFragment") || TextUtils.isEmpty(mCurrentTag)) {
+//            boolean drawerOpen = mFragmentNavigationDrawer.isDrawerOpen();
+//            menu.findItem(R.id.find_search).setVisible(!drawerOpen);
+//        } else if (mCurrentTag.equals("FriendFragment")) {
+//            boolean drawerOpen = mFragmentNavigationDrawer.isDrawerOpen();
+//            menu.findItem(R.id.friends_search).setVisible(!drawerOpen);
+//        }
         return super.onPrepareOptionsMenu(menu);
     }
 
