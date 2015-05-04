@@ -9,17 +9,21 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivityWithCordova;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
+
+import org.apache.cordova.Config;
+import org.apache.cordova.CordovaWebView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,7 +31,7 @@ import java.util.TimerTask;
 /**
  * Created by JesseHuang on 15/4/24.
  */
-public class DefaultPageActivity extends ActionBarBaseActivity {
+public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
 
     private String mCurrentTag;
     private boolean mIsExit;
@@ -47,14 +51,30 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
-
         initView();
+        initCordovaWebView();
         mExitTimer = new Timer();
         app.addTask("DefaultPageActivity", this);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+            //selectItem(0);
         }
+
+        setTitle(R.string.title_find);
+    }
+
+    @Override
+    public void initCordovaWebView() {
+        webView = (CordovaWebView) findViewById(R.id.webView);
+        Config.init(this);
+        webView.loadUrl("http://www.baidu.com", 5000);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
     }
 
     private void initView() {
@@ -114,34 +134,34 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     }
 
     private void selectDownTab(int id) {
-        String tag;
-        String title = "";
-        BaseFragment fragment;
-
-        if (id == R.id.nav_tab_news) {
-            tag = "NewsFragment";
-            title = getString(R.string.title_news);
-        } else if (id == R.id.nav_tab_find) {
-            tag = "FindFragment";
-            title = getString(R.string.title_find);
-        } else if (id == R.id.nav_tab_friends) {
-            tag = "FriendFragment";
-            title = getString(R.string.title_friends);
-        } else return;
-
-        hideFragment(mCurrentTag);
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
-        if (fragment != null) {
-            fragmentTransaction.show(fragment);
-        } else {
-            fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
-            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
-        }
-
-        fragmentTransaction.commit();
-
-        mCurrentTag = tag;
+//        String tag;
+//        String title = "";
+//        BaseFragment fragment;
+//
+//        if (id == R.id.nav_tab_news) {
+//            tag = "NewsFragment";
+//            title = getString(R.string.title_news);
+//        } else if (id == R.id.nav_tab_find) {
+//            tag = "FindFragment";
+//            title = getString(R.string.title_find);
+//        } else if (id == R.id.nav_tab_friends) {
+//            tag = "FriendFragment";
+//            title = getString(R.string.title_friends);
+//        } else return;
+//
+//        hideFragment(mCurrentTag);
+//        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+//        fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
+//        if (fragment != null) {
+//            fragmentTransaction.show(fragment);
+//        } else {
+//            fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
+//            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
+//        }
+//
+//        fragmentTransaction.commit();
+//
+//        mCurrentTag = tag;
 
         changeNavBtn(id);
         changeBtnIcon(id);
@@ -174,10 +194,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mDownTabFind.setIcon(R.string.font_find);
         mDownTabFriends.setIcon(R.string.font_friends);
         if (id == R.id.nav_tab_news) {
+            setTitle(R.string.title_news);
             mDownTabNews.setIcon(R.string.font_news_press);
         } else if (id == R.id.nav_tab_find) {
+            setTitle(R.string.title_find);
             mDownTabFind.setIcon(R.string.font_find_press);
         } else if (id == R.id.nav_tab_friends) {
+            setTitle(R.string.title_friends);
             mDownTabFriends.setIcon(R.string.font_friends_press);
         }
     }

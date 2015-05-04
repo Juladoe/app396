@@ -204,7 +204,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     protected void startApp() {
 
-        app.mEngine.runNormalPlugin("MainActivity", this, null);
+        app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
         return;

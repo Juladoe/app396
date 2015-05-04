@@ -18,13 +18,20 @@
             android:background="?attr/colorPrimary"
             android:layout_alignParentTop="true" />
 
-        <FrameLayout
-            android:background="@color/system_normal_bg"
+        <org.apache.cordova.CordovaWebView
+            android:id="@+id/webView"
             android:layout_above="@+id/nav_bottom_layout"
-            android:id="@+id/fragment_container"
+            android:layout_below="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"></FrameLayout>
+            android:layout_height="match_parent" />
+
+        <!--<FrameLayout-->
+        <!--android:background="@color/system_normal_bg"-->
+        <!--android:layout_above="@+id/nav_bottom_layout"-->
+        <!--android:id="@+id/fragment_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_below="@+id/toolbar"></FrameLayout>-->
 
         <include layout="@layout/nav_setting" />
     </RelativeLayout>
