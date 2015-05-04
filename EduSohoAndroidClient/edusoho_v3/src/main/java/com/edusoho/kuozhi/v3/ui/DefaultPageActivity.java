@@ -165,6 +165,8 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
 
         changeNavBtn(id);
         changeBtnIcon(id);
+        mSelectBtn = id;
+        this.invalidateOptionsMenu();
     }
 
     private void hideFragment(String tag) {
@@ -212,13 +214,13 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-//        if (mCurrentTag.equals("FindFragment") || TextUtils.isEmpty(mCurrentTag)) {
-//            boolean drawerOpen = mFragmentNavigationDrawer.isDrawerOpen();
-//            menu.findItem(R.id.find_search).setVisible(!drawerOpen);
-//        } else if (mCurrentTag.equals("FriendFragment")) {
-//            boolean drawerOpen = mFragmentNavigationDrawer.isDrawerOpen();
-//            menu.findItem(R.id.friends_search).setVisible(!drawerOpen);
-//        }
+        if (mSelectBtn == R.id.nav_tab_find) {
+            getMenuInflater().inflate(R.menu.find_menu, menu);
+        } else if (mSelectBtn == R.id.nav_tab_friends) {
+            getMenuInflater().inflate(R.menu.friends_menu, menu);
+        } else {
+            this.closeOptionsMenu();
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
