@@ -43,9 +43,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private DrawerLayout mDrawerLayout;
     private FragmentNavigationDrawer mFragmentNavigationDrawer;
 
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +80,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
         selectDownTab(mSelectBtn);
 
-        mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
