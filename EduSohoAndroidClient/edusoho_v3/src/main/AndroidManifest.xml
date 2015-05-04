@@ -42,7 +42,7 @@
             android:theme="@style/startTheme" />
 
         <activity
-            android:name=".v3.ui.DefaultPageActivity"
+            android:name=".v3.ui.MainActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

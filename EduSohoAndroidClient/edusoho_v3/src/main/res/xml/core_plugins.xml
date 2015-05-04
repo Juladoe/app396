@@ -6,6 +6,11 @@
         version="1.0" />
 
     <plugin
+        name="MainActivity"
+        package="com.edusoho.kuozhi.v3.ui.MainActivity"
+        version="1.0" />
+
+    <plugin
         name="NewsFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.NewsFragment"
         version="1.0" />
