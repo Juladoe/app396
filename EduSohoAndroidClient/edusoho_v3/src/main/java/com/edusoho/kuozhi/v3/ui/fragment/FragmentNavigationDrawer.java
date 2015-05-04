@@ -103,10 +103,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
             mRadioButtons[i] = (RadioButton) getView().findViewById(mRadioIds[i]);
             mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
         }
-//        for (int i = 0; i < mBadges.length; i++) {
-//            mBadges[i] = (BadgeView) getView().findViewById(mBadgeIds[i]);
-//
-//        }
     }
 
     View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
