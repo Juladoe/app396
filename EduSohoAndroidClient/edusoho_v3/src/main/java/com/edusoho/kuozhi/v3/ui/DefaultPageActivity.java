@@ -50,7 +50,6 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
         initView();
-        initCordovaWebView();
         mExitTimer = new Timer();
         app.addTask("DefaultPageActivity", this);
 

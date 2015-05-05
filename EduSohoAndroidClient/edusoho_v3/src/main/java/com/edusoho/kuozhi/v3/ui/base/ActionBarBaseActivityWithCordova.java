@@ -25,6 +25,12 @@ public abstract class ActionBarBaseActivityWithCordova extends ActionBarBaseActi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        initCordovaWebView();
+    }
+
+    @Override
     public void startActivityForResult(CordovaPlugin cordovaPlugin, Intent intent, int i) {
 
     }
