@@ -6,5 +6,6 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:visible="true"
-        android:icon="@drawable/icon_menu_me_search"></item>
+        android:title="@null"
+        android:icon="@drawable/icon_menu_me_search" />
 </menu>

@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -59,8 +57,6 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
         if (savedInstanceState == null) {
             //selectItem(0);
         }
-
-        setTitle(R.string.title_find);
     }
 
     @Override
@@ -134,49 +130,10 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
     }
 
     private void selectDownTab(int id) {
-//        String tag;
-//        String title = "";
-//        BaseFragment fragment;
-//
-//        if (id == R.id.nav_tab_news) {
-//            tag = "NewsFragment";
-//            title = getString(R.string.title_news);
-//        } else if (id == R.id.nav_tab_find) {
-//            tag = "FindFragment";
-//            title = getString(R.string.title_find);
-//        } else if (id == R.id.nav_tab_friends) {
-//            tag = "FriendFragment";
-//            title = getString(R.string.title_friends);
-//        } else return;
-//
-//        hideFragment(mCurrentTag);
-//        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-//        fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
-//        if (fragment != null) {
-//            fragmentTransaction.show(fragment);
-//        } else {
-//            fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
-//            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
-//        }
-//
-//        fragmentTransaction.commit();
-//
-//        mCurrentTag = tag;
-
         changeNavBtn(id);
         changeBtnIcon(id);
         mSelectBtn = id;
         this.invalidateOptionsMenu();
-    }
-
-    private void hideFragment(String tag) {
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
-        if (fragment == null) {
-            return;
-        }
-        fragmentTransaction.hide(fragment);
-        fragmentTransaction.commit();
     }
 
     private void changeNavBtn(int id) {

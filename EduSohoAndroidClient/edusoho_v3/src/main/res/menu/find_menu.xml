@@ -6,6 +6,7 @@
         android:id="@+id/find_search"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/found_menu_search"></item>
+        android:title="@null"
+        android:icon="@drawable/found_menu_search" />
 
 </menu>
