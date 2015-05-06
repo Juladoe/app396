@@ -20,4 +20,9 @@
         package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
         version="1.0" />
 
+    <plugin
+        name="QrSchoolActivity"
+        package="com.edusoho.kuozhi.v3.ui.QrSchoolActivity"
+        version="1.0" />
+
 </plugins>

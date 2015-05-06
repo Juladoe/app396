@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by JesseHuang on 15/5/4.
  */
-public abstract class ActionBarBaseActivityWithCordova extends ActionBarBaseActivity implements CordovaInterface {
+public abstract class BaseActivityWithCordova extends BaseActivity implements CordovaInterface {
 
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
     protected CordovaWebView webView;
@@ -32,8 +32,10 @@ public abstract class ActionBarBaseActivityWithCordova extends ActionBarBaseActi
 
     @Override
     protected void onDestroy() {
+        if (webView != null) {
+            webView.handleDestroy();
+        }
         super.onDestroy();
-        webView.handleDestroy();
     }
 
     @Override
@@ -62,4 +64,6 @@ public abstract class ActionBarBaseActivityWithCordova extends ActionBarBaseActi
     }
 
     public abstract void initCordovaWebView();
+
+
 }

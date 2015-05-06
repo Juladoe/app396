@@ -23,7 +23,7 @@ import java.lang.reflect.Field;
  */
 public abstract class BaseFragment extends Fragment {
 
-    protected ActionBarBaseActivity mActivity;
+    protected BaseActivity mActivity;
     protected EdusohoApp app;
     protected int mViewId;
     protected View mContainerView;
@@ -33,7 +33,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = (ActionBarBaseActivity) activity;
+        mActivity = (BaseActivity) activity;
         mContext = mActivity.getBaseContext();
         app = mActivity.app;
     }

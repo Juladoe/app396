@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 
 import com.edusoho.kuozhi.R;
@@ -32,8 +33,9 @@ public class FragmentNavigationDrawer extends BaseFragment {
             R.id.radio0,
             R.id.radio1,
             R.id.radio2,
-            R.id.radio3,
     };
+
+    private Button btnSetting;
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
@@ -103,7 +105,20 @@ public class FragmentNavigationDrawer extends BaseFragment {
             mRadioButtons[i] = (RadioButton) getView().findViewById(mRadioIds[i]);
             mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
         }
+
+        btnSetting = (Button) mActivity.findViewById(R.id.btnSetting);
+        btnSetting.setOnClickListener(mSettingClickListener);
     }
+
+    View.OnClickListener mSettingClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mDrawerLayout != null) {
+                mDrawerLayout.closeDrawer(mDrawerFragment);
+            }
+            mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mContext, null);
+        }
+    };
 
     View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
         @Override

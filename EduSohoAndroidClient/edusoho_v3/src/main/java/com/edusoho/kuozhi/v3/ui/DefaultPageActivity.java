@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -13,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivityWithCordova;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
@@ -29,7 +30,8 @@ import java.util.TimerTask;
 /**
  * Created by JesseHuang on 15/4/24.
  */
-public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
+public class DefaultPageActivity extends BaseActivityWithCordova {
+    public static final String TAG = "DefaultPageActivity";
 
     private String mCurrentTag;
     private boolean mIsExit;
@@ -44,6 +46,7 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
 
     private DrawerLayout mDrawerLayout;
     private FragmentNavigationDrawer mFragmentNavigationDrawer;
+    private final byte[] mLock = new byte[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
     public void initCordovaWebView() {
         webView = (CordovaWebView) findViewById(R.id.webView);
         Config.init(this);
-        webView.loadUrl("http://www.baidu.com", 5000);
+        webView.loadUrl("http://m.baidu.com", 5000);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -187,7 +190,11 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            synchronized (mContext) {
+            if (webView.canGoBack()) {
+                webView.goBack();
+                return true;
+            }
+            synchronized (mLock) {
                 if (mIsExit) {
                     mIsExit = false;
                     app.exit();
@@ -201,8 +208,10 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
                     }
                 }, 2000);
             }
+            Log.d(TAG, "goback1");
             return true;
         }
+        Log.d(TAG, "goback2");
         return super.onKeyDown(keyCode, event);
     }
 

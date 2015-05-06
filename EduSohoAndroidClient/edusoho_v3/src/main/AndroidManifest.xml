@@ -43,10 +43,16 @@
 
         <activity
             android:name=".v3.ui.DefaultPageActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
+
+        <activity
+            android:name=".v3.ui.QrSchoolActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
 
     </application>
 

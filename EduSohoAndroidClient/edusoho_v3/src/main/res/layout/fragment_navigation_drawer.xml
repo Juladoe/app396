@@ -161,12 +161,12 @@
                 android:layout_height="1dp"
                 android:background="@color/lesson_menu_border" />
 
-            <RadioButton
-                android:id="@+id/radio3"
+            <Button
+                android:id="@+id/btnSetting"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@drawable/drawer_selector_bg"
                 android:button="@null"
+                android:background="@drawable/drawer_selector_bg"
                 android:drawableLeft="@drawable/drawer_selector_4"
                 android:drawablePadding="15dp"
                 android:gravity="center_vertical|left"
@@ -177,7 +177,7 @@
                 android:textSize="17sp" />
 
             <Button
-                android:id="@+id/radio4"
+                android:id="@+id/btnFeedBack"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/drawer_selector_bg"
