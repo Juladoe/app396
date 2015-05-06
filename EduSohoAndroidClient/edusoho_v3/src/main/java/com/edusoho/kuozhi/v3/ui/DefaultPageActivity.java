@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -19,6 +18,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.v3.view.EduToolBar;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaWebView;
@@ -39,7 +39,7 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
     private EduSohoTextBtn mDownTabNews;
     private EduSohoTextBtn mDownTabFind;
     private EduSohoTextBtn mDownTabFriends;
-    private Toolbar mToolBar;
+    private EduToolBar mToolBar;
     private NavDownTabClickListener mNavDownTabClickListener;
 
     private DrawerLayout mDrawerLayout;
@@ -77,7 +77,7 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
         mDownTabNews = (EduSohoTextBtn) findViewById(R.id.nav_tab_news);
         mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
         mDownTabFriends = (EduSohoTextBtn) findViewById(R.id.nav_tab_friends);
-        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        mToolBar = (EduToolBar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavDownTabClickListener = new NavDownTabClickListener();
 
@@ -154,11 +154,14 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
         if (id == R.id.nav_tab_news) {
             setTitle(R.string.title_news);
             mDownTabNews.setIcon(R.string.font_news_press);
+            mToolBar.setTitlesetVisibility(View.GONE);
         } else if (id == R.id.nav_tab_find) {
             setTitle(R.string.title_find);
+            mToolBar.setTitlesetVisibility(View.VISIBLE);
             mDownTabFind.setIcon(R.string.font_find_press);
         } else if (id == R.id.nav_tab_friends) {
             setTitle(R.string.title_friends);
+            mToolBar.setTitlesetVisibility(View.GONE);
             mDownTabFriends.setIcon(R.string.font_friends_press);
         }
     }
@@ -175,6 +178,7 @@ public class DefaultPageActivity extends ActionBarBaseActivityWithCordova {
         } else if (mSelectBtn == R.id.nav_tab_friends) {
             getMenuInflater().inflate(R.menu.friends_menu, menu);
         } else {
+            getMenuInflater().inflate(R.menu.news_menu, menu);
             this.closeOptionsMenu();
         }
         return super.onPrepareOptionsMenu(menu);

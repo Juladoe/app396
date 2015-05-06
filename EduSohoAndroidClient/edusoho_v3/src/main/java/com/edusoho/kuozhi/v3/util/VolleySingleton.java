@@ -6,9 +6,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Created by JesseHuang on 15/4/23.
  */
@@ -23,7 +20,7 @@ public class VolleySingleton {
     }
 
     public static synchronized VolleySingleton getInstance(Context context) {
-        if (mInstance != null) {
+        if (mInstance == null) {
             mInstance = new VolleySingleton(context);
         }
         return mInstance;
@@ -39,12 +36,14 @@ public class VolleySingleton {
     }
 
     public void cancelAll() {
-        getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
-            @Override
-            public boolean apply(Request<?> request) {
-                return true;
-            }
-        });
+        if (mRequestQueue != null) {
+            mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+                @Override
+                public boolean apply(Request<?> request) {
+                    return true;
+                }
+            });
+        }
     }
 
     public <T> void addToRequestQueue(Request<T> req) {

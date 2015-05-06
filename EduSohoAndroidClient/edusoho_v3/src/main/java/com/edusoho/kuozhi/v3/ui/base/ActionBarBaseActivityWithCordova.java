@@ -31,6 +31,12 @@ public abstract class ActionBarBaseActivityWithCordova extends ActionBarBaseActi
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        webView.handleDestroy();
+    }
+
+    @Override
     public void startActivityForResult(CordovaPlugin cordovaPlugin, Intent intent, int i) {
 
     }

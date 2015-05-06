@@ -6,10 +6,10 @@ import android.widget.FrameLayout;
 /**
  * Created by howzhi on 14-7-18.
  */
-public class EdusohoAnimWrap {
+public class EduSohoAnimWrap {
     private View mTarget;
 
-    public EdusohoAnimWrap(View target) {
+    public EduSohoAnimWrap(View target) {
         this.mTarget = target;
     }
 

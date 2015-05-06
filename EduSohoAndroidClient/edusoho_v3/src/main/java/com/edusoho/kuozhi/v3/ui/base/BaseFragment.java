@@ -14,7 +14,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.ViewUtil;
-import com.edusoho.kuozhi.v3.view.EdusohoAnimWrap;
+import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 
 import java.lang.reflect.Field;
 
@@ -109,7 +109,7 @@ public abstract class BaseFragment extends Fragment {
     protected void showBtnLayout(View view) {
         view.measure(0, 0);
         int height = view.getMeasuredHeight();
-        CommonUtil.animForHeight(new EdusohoAnimWrap(view), 0, height, 240);
+        CommonUtil.animForHeight(new EduSohoAnimWrap(view), 0, height, 240);
     }
 
     protected void startActivityWithBundle(String activityName, Bundle bundle) {
