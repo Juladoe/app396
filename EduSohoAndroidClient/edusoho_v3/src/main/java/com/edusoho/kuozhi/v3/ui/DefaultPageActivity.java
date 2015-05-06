@@ -194,24 +194,8 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
                 webView.goBack();
                 return true;
             }
-            synchronized (mLock) {
-                if (mIsExit) {
-                    mIsExit = false;
-                    app.exit();
-                }
-                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
-                mIsExit = true;
-                mExitTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mIsExit = false;
-                    }
-                }, 2000);
-            }
-            Log.d(TAG, "goback1");
             return true;
         }
-        Log.d(TAG, "goback2");
         return super.onKeyDown(keyCode, event);
     }
 
@@ -221,5 +205,24 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
         mExitTimer.cancel();
         mExitTimer = null;
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
+    }
+
+    @Override
+    public void finish() {
+        Log.d("finish---->", "finish");
+        synchronized (mLock) {
+            if (mIsExit) {
+                mIsExit = false;
+                app.exit();
+            }
+            CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+            mIsExit = true;
+            mExitTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mIsExit = false;
+                }
+            }, 2000);
+        }
     }
 }

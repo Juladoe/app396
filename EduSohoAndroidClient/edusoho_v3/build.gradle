@@ -18,12 +18,12 @@ dependencies {
     compile project(':liveEplayer')
     compile project(':commonLib')
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.mcxiaoke.volley:library:1.0.+'
+    compile 'com.mcxiaoke.volley:library:1.0.15'
     compile 'de.hdodenhof:circleimageview:1.2.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.google.zxing:zxingorg:3.2.0'
-    compile 'com.belladati:httpclientandroidlib:4.3.0'
+    compile files('libs/gson-2.3.1.jar');
+    compile files('libs/core-3.2.0.jar');
+    compile files('libs/httpclientandroidlib-4.3.0.jar');
     compile files('libs/android-query-full.0.26.8.jar')
     compile files('libs/android-viewbadger.jar')
     compile files('libs/cordova.jar')
