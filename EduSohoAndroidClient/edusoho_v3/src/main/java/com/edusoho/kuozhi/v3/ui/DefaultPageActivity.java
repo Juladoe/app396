@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -63,16 +64,18 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
 
     @Override
     public void initCordovaWebView() {
-        webView = (CordovaWebView) findViewById(R.id.webView);
-        Config.init(this);
-        webView.loadUrl("http://m.baidu.com", 5000);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
+        if (webView == null) {
+            webView = (CordovaWebView) findViewById(R.id.webView);
+            Config.init(this);
+            webView.loadUrl("http://m.baidu.com", 5000);
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+            });
+        }
     }
 
     private void initView() {
@@ -209,7 +212,13 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
 
     @Override
     public void finish() {
-        Log.d("finish---->", "finish");
+        Log.d("return----->", "DefaultPageActivity.finish");
+
+        if (mFragmentNavigationDrawer.isDrawerOpen()) {
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+            return;
+        }
+
         synchronized (mLock) {
             if (mIsExit) {
                 mIsExit = false;

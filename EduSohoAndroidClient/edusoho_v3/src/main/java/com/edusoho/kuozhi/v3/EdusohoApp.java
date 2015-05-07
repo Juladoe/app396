@@ -311,6 +311,7 @@ public class EdusohoApp extends Application {
     }
 
     public void exit() {
+        appFinish();
         stopService(DownLoadService.getIntent(this));
         notifyMap.clear();
         runTask.clear();
