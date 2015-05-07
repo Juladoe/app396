@@ -370,10 +370,14 @@ public class EdusohoApp extends Application {
     }
 
     private void initImageLoaderConfig() {
+        File file = new File(getCacheDir() + "/" + getResources().getString(R.string.image_cache_path));
+        if (!file.exists()) {
+            file.mkdirs();
+        }
         mImageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(this)
                 .memoryCacheExtraOptions((int) (screenW * 0.8f), (int) (screenH * 0.8f))
-                .diskCache(new UnlimitedDiscCache(AQUtility.getCacheDir(this)))
+                .diskCache(new UnlimitedDiscCache(file))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
