@@ -78,4 +78,35 @@ public class AppUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    /**
+     * @param v1
+     * @param v2
+     * @return
+     * @throws RuntimeException
+     */
+    public static int compareVersion(String v1, String v2) throws RuntimeException {
+        if (v1 == null || v2 == null) {
+            return Const.NORMAL_VERSIO;
+        }
+        String[] v1Versons = v1.split("\\.");
+        String[] v2Versons = v2.split("\\.");
+        if (v1Versons.length != v2Versons.length) {
+            throw new RuntimeException("版本不一致，无法对比");
+        }
+
+        int length = v1Versons.length;
+        for (int i = 0; i < length; i++) {
+            int firstVersion = Integer.parseInt(v1Versons[i]);
+            int secoundVersion = Integer.parseInt(v2Versons[i]);
+            if (firstVersion > secoundVersion) {
+                return Const.HEIGHT_VERSIO;
+            }
+            if (firstVersion < secoundVersion) {
+                return Const.LOW_VERSIO;
+            }
+        }
+
+        return Const.NORMAL_VERSIO;
+    }
 }

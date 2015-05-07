@@ -25,7 +25,6 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
-import com.edusoho.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.Service.DownLoadService;
 import com.edusoho.kuozhi.Service.EdusohoMainService;
 import com.edusoho.kuozhi.Service.M3U8DownService;
@@ -35,10 +34,10 @@ import com.edusoho.kuozhi.core.MessageEngine;
 import com.edusoho.kuozhi.core.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.core.model.Cache;
 import com.edusoho.kuozhi.core.model.RequestUrl;
-import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.AppUpdateInfo;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.School;
+import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
@@ -269,7 +268,6 @@ public class EdusohoApp extends Application {
         if (m3U8DownService != null) {
             m3U8DownService.cancelAllDownloadTask();
         }
-        ;
 
         SqliteUtil.getUtil(this).close();
         System.exit(0);

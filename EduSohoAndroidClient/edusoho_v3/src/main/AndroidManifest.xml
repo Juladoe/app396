@@ -51,7 +51,11 @@
         <activity
             android:name=".v3.ui.QrSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".v3.view.qr.CaptureActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
     </application>

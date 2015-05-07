@@ -1,9 +1,5 @@
 package com.edusoho.kuozhi.ui.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -33,6 +29,10 @@ import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author howzhi
@@ -118,8 +118,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         loadSchoolHistory();
     }
 
-    private void saveSearchHistory(String text)
-    {
+    private void saveSearchHistory(String text) {
         SharedPreferences sp = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE);
         Editor editor = sp.edit();
 
@@ -130,8 +129,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         editor.commit();
     }
 
-    private void loadSchoolHistory()
-    {
+    private void loadSchoolHistory() {
         mSchoolList = new ArrayList<String>();
         SharedPreferences sp = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE);
         Map<String, ?> schools = sp.getAll();
@@ -142,16 +140,14 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         setSearchEdtHistory(mSchoolList);
     }
 
-    protected void setSearchEdtHistory(ArrayList<String> list)
-    {
+    protected void setSearchEdtHistory(ArrayList<String> list) {
         ArrayAdapter adapter = new ArrayAdapter(
                 mContext, R.layout.search_dropdown_item, list);
 
         mSearchEdt.setAdapter(adapter);
     }
 
-    private void searchSchool(String searchStr)
-    {
+    private void searchSchool(String searchStr) {
         if (TextUtils.isEmpty(searchStr)) {
             longToast("请输入搜索网校url");
             return;
@@ -170,7 +166,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                     loading.dismiss();
                     SystemInfo info = app.gson.fromJson(
                             object, new TypeToken<SystemInfo>() {
-                    }.getType());
+                            }.getType());
 
                     if (info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
                         PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
@@ -178,12 +174,12 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                     }
 
                     RequestUrl requestUrl = new RequestUrl(info.mobileApiUrl + Const.VERIFYSCHOOL);
-                    ajaxGet(requestUrl, new ResultCallback(){
+                    ajaxGet(requestUrl, new ResultCallback() {
                         @Override
                         public void callback(String url, String object, AjaxStatus ajaxStatus) {
                             SchoolResult schoolResult = app.gson.fromJson(
                                     object, new TypeToken<SchoolResult>() {
-                            }.getType());
+                                    }.getType());
 
                             if (schoolResult == null) {
                                 PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
@@ -208,8 +204,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         });
     }
 
-    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange)
-    {
+    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 
@@ -253,8 +248,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         return true;
     }
 
-    private void showSchSplash(String schoolName, String[] splashs)
-    {
+    private void showSchSplash(String schoolName, String[] splashs) {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
         app.appFinish();
     }
