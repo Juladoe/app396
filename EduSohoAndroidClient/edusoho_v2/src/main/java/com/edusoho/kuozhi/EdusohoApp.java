@@ -41,7 +41,6 @@ import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.User;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.util.SqliteUtil;
 import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
@@ -482,8 +481,6 @@ public class EdusohoApp extends Application {
             loginUser = result.user;
             SqliteUtil.saveUser(loginUser);
         }
-
-        PushUtil.startPusherService(mActivity, mContext, loginUser);
     }
 
 
@@ -502,7 +499,6 @@ public class EdusohoApp extends Application {
             return;
         }
         mService.sendMessage(EdusohoMainService.EXIT_USER, null);
-        PushUtil.stopPusherService(mActivity, mContext);
         Log.d(null, "remove->token user->" + loginUser);
     }
 

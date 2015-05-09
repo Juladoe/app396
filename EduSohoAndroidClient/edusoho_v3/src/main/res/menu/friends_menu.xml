@@ -7,5 +7,6 @@
         app:showAsAction="ifRoom"
         android:visible="true"
         android:title="@null"
-        android:icon="@drawable/icon_menu_me_search" />
+        android:icon="@null"
+        android:enabled="false" />
 </menu>

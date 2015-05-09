@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        lixianggongchang {
-            applicationId "com.lixianggongchang.kuozhi"
+        mycloudedu {
+            applicationId "com.edusoho_edianshang.kuozhi"
         }
     }
 
     sourceSets {
-        lixianggongchang {
+        mycloudedu {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/lixianggongchang/res']
+            res.srcDirs = ['src/edusoho_edianshang/res']
         }
     }
 
@@ -32,21 +32,22 @@ android {
 
     //签名
     signingConfigs {
-        releaseConfig{
-            storeFile file("key/lixianggongchang.jks")
-            storePassword "10001000"
+        releaseConfig {
+            storeFile file("key/edusoho_edianshang.jks")
+            storePassword "edianshang"
             keyAlias "cn"
             keyPassword "10001000"
         }
     }
 
-    buildTypes{
+    buildTypes {
         release {
-            signingConfig  signingConfigs.releaseConfig
+            signingConfig signingConfigs.releaseConfig
         }
     }
 }
 
 dependencies {
     compile project(':edusoho_v2')
+    compile files('libs/android_api_3.6.jar')
 }

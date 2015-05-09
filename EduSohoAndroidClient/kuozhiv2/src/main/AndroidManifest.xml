@@ -5,6 +5,7 @@
     package="com.edusoho">
 
     <application
+        android:hardwareAccelerated="true"
         android:name="com.edusoho.kuozhi.v3.EdusohoApp"
         android:allowBackup="true"
         android:icon="@drawable/icon"

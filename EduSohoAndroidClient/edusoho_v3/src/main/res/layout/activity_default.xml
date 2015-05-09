@@ -19,6 +19,7 @@
             android:background="?attr/colorPrimary"
             android:layout_alignParentTop="true"
             app:centerTitle="@string/toolbar_title"
+            android:visibility="gone"
             app:centerTitleSize="@dimen/medium_font_size" />
 
         <org.apache.cordova.CordovaWebView

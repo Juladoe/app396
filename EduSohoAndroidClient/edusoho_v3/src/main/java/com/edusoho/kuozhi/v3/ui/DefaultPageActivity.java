@@ -67,7 +67,7 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
         if (webView == null) {
             webView = (CordovaWebView) findViewById(R.id.webView);
             Config.init(this);
-            webView.loadUrl("http://m.baidu.com", 5000);
+            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
             webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {

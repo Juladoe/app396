@@ -17,7 +17,6 @@ import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
 import com.edusoho.kuozhi.ui.common.QrSchoolActivity;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.listener.ResultCallback;
 import com.edusoho.plugin.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;

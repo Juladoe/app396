@@ -2,6 +2,7 @@ package com.edusoho.kuozhi;
 
 
 import android.os.Bundle;
+
 import com.androidquery.callback.AjaxStatus;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
@@ -19,7 +20,7 @@ public class KuozhiActivity extends StartActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //initChannel();
+        initChannel();
     }
 
     @Override

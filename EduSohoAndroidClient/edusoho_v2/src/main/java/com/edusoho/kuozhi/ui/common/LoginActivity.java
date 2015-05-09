@@ -18,7 +18,6 @@ import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.LoginFragment;
 import com.edusoho.kuozhi.ui.fragment.RegistFragment;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
