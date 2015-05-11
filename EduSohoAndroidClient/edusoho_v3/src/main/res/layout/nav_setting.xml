@@ -8,7 +8,8 @@
     android:background="@drawable/nav_layout_bg"
     android:id="@+id/nav_bottom_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:visibility="gone">
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
         app:iconSizeScale="2.4"

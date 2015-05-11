@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion '21.1.1'
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 21
+        targetSdkVersion 22
     }
 }
 
@@ -23,5 +23,4 @@ dependencies {
     compile files('libs/httpclientandroidlib-1.2.0.jar')
     compile files('libs/android-query-full.0.26.8.jar')
     compile files('libs/cordova.jar')
-    compile files('libs/ddpush-1.0.02.jar')
 }

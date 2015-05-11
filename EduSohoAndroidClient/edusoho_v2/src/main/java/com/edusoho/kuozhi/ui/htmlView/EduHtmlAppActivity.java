@@ -16,7 +16,6 @@ import android.webkit.WebViewClient;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.HtmlApp.Menu;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
-import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.util.server.handler.WebResourceHandler;
 

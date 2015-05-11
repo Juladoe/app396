@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.edusoho.kuozhi.R;
@@ -36,6 +37,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     };
 
     private Button btnSetting;
+    private Button btnFeedBack;
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
@@ -108,7 +110,19 @@ public class FragmentNavigationDrawer extends BaseFragment {
 
         btnSetting = (Button) mActivity.findViewById(R.id.btnSetting);
         btnSetting.setOnClickListener(mSettingClickListener);
+        btnFeedBack = (Button) mActivity.findViewById(R.id.btnFeedBack);
+        btnFeedBack.setOnClickListener(mFeedBackClickListener);
+
     }
+
+    View.OnClickListener mFeedBackClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mDrawerLayout != null) {
+                mDrawerLayout.closeDrawer(mDrawerFragment);
+            }
+        }
+    };
 
     View.OnClickListener mSettingClickListener = new View.OnClickListener() {
         @Override

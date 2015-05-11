@@ -1,0 +1,53 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '21.1.1'
+
+    defaultConfig {
+        applicationId "com.edusoho"
+        minSdkVersion 9
+        targetSdkVersion 22
+    }
+
+    productFlavors {
+        mycloudedu {
+            applicationId "com.edusoho_edianshang.kuozhi"
+        }
+    }
+
+    sourceSets {
+        mycloudedu {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['src/edusoho_edianshang/res']
+        }
+    }
+
+    //链接选项 移除lint检查的error
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
+    //签名
+    signingConfigs {
+        releaseConfig {
+            storeFile file("key/edusoho_edianshang.jks")
+            storePassword "edianshang"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.releaseConfig
+        }
+    }
+}
+
+dependencies {
+    compile project(':edusoho_v2')
+    compile files('libs/android_api_3.6.jar')
+}

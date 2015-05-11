@@ -4,12 +4,13 @@
     <string name="app_host">http://www.chinahadoop.cn</string>
     <string name="school_about">关于小象学院</string>
     <string name="app_code">chinahadoop</string>
+
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
 
-    <string-array
-        name="shard_filter"
-        >
+    <string name="channel_name">chinahadoop</string>
+
+    <string-array name="shard_filter">
         <item>SinaWeibo</item>
         <item>TencentWeibo</item>
         <item>QZone</item>

@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.ui.fragment.MineFragment;
 import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
-import com.edusoho.kuozhi.util.PushUtil;
 import com.edusoho.kuozhi.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.ResultCallback;

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -63,16 +64,18 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
 
     @Override
     public void initCordovaWebView() {
-        webView = (CordovaWebView) findViewById(R.id.webView);
-        Config.init(this);
-        webView.loadUrl("http://m.baidu.com", 5000);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
+        if (webView == null) {
+            webView = (CordovaWebView) findViewById(R.id.webView);
+            Config.init(this);
+            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+            });
+        }
     }
 
     private void initView() {
@@ -194,24 +197,8 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
                 webView.goBack();
                 return true;
             }
-            synchronized (mLock) {
-                if (mIsExit) {
-                    mIsExit = false;
-                    app.exit();
-                }
-                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
-                mIsExit = true;
-                mExitTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mIsExit = false;
-                    }
-                }, 2000);
-            }
-            Log.d(TAG, "goback1");
             return true;
         }
-        Log.d(TAG, "goback2");
         return super.onKeyDown(keyCode, event);
     }
 
@@ -221,5 +208,30 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
         mExitTimer.cancel();
         mExitTimer = null;
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
+    }
+
+    @Override
+    public void finish() {
+        Log.d("return----->", "DefaultPageActivity.finish");
+
+        if (mFragmentNavigationDrawer.isDrawerOpen()) {
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+            return;
+        }
+
+        synchronized (mLock) {
+            if (mIsExit) {
+                mIsExit = false;
+                app.exit();
+            }
+            CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+            mIsExit = true;
+            mExitTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mIsExit = false;
+                }
+            }, 2000);
+        }
     }
 }
