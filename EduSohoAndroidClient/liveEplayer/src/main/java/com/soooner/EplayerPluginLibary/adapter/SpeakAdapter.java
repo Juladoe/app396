@@ -9,8 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.soooner.EplayerPluginLibary.EplayerPluginBaseActivity;
 import com.soooner.EplayerPluginLibary.R;
+
+import com.soooner.EplayerPluginLibary.EplayerPluginBaseActivity;
 import com.soooner.EplayerPluginLibary.data.AnimationDrawableUtil;
 import com.soooner.source.common.util.DeviceUtil;
 import com.soooner.source.entity.SessionData.SocketMessage;

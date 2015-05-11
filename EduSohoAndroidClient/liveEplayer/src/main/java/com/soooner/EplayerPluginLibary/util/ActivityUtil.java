@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-
 import com.soooner.EplayerPluginLibary.EplayerPluginActivity;
 import com.soooner.EplayerPluginLibary.EplayerPluginPadActivity;
 import com.soooner.EplayerSetting;
 import com.soooner.source.common.util.DeviceUtil;
+import com.soooner.source.entity.EPlayerData;
+import com.soooner.source.entity.EPlayerLoginType;
+import com.soooner.source.entity.EPlayerPlayModelType;
 import com.soooner.widget.DrawPadView;
 
 /**
@@ -50,22 +51,23 @@ public class ActivityUtil {
      * @param liveClassroomId
      * @param username
      * @param userpwd
+     *
+     * @Deprecated use initPlayer
      */
+    @Deprecated
     public static void  initLiveRoom(Context context,String customer,String liveClassroomId, String username, String userpwd){
 
+        EPlayerData playerData = new EPlayerData();
 
-        Bundle bundle=new Bundle();
-        bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID,liveClassroomId);
-        bundle.putString(EplayerPluginActivity.EPLAY_USERNAME,username);
-        bundle.putString(EplayerPluginActivity.EPLAY_USERPWD,userpwd);
-        bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER,customer);
+        playerData.liveClassroomId = liveClassroomId;
+        playerData.customer = customer;
 
-        if(DeviceUtil.getDeviceType(context)== DeviceUtil.DEVICE_TYPE_PHONE){
-            startActivity(context,EplayerPluginActivity.class,bundle);
-        }else{
-            startActivity(context,EplayerPluginPadActivity.class,bundle);
+        playerData.loginType= EPlayerLoginType.EPlayerLoginTypeUserPwd;
+        playerData.user = username;
+        playerData.pwd = userpwd;
 
-        }
+
+        ActivityUtil.initPlayer(context,playerData);
 
     }
 
@@ -78,17 +80,22 @@ public class ActivityUtil {
      * @param customer 类型
      * @param liveClassroomId 房间ID
      * @param exStr
+     *
+     * @Deprecated use initPlayer     and  loginType = EPlayerLoginTypeAuthReverse
      */
+    @Deprecated
     public static void  initLiveRoom(Context context,String customer,String liveClassroomId,String exStr){
-        Bundle bundle=new Bundle();
-        bundle.putString(EplayerPluginActivity.EPLAY_EXSTR,exStr);
-        bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID,liveClassroomId);
-        bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER,customer);
-        if(DeviceUtil.getDeviceType(context)== DeviceUtil.DEVICE_TYPE_PHONE){
-            startActivity(context,EplayerPluginActivity.class,bundle);
-        }else{
-            startActivity(context,EplayerPluginPadActivity.class,bundle);
-       }
+
+        EPlayerData playerData = new EPlayerData();
+
+        playerData.liveClassroomId = liveClassroomId;
+        playerData.customer = customer;
+
+        playerData.loginType= EPlayerLoginType.EPlayerLoginTypeAuthReverse;
+        playerData.validateStr = exStr;
+
+
+        ActivityUtil.initPlayer(context,playerData);
     }
 
     //进入回看房间
@@ -101,25 +108,28 @@ public class ActivityUtil {
      * @param username
      * @param userpwd
      * @param pid     回看编号 ,可以为null
+     *
+     * @Deprecated use initPlayer
      */
+    @Deprecated
     public static void  initPlaybackRoom(Context context,String customer,String liveClassroomId, String username, String userpwd,String pid){
 
 
-        Bundle bundle=new Bundle();
-        bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID,liveClassroomId);
-        bundle.putString(EplayerPluginActivity.EPLAY_USERNAME,username);
-        bundle.putString(EplayerPluginActivity.EPLAY_USERPWD,userpwd);
-        bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER,customer);
-        bundle.putString(EplayerPluginActivity.EPLAY_PID,pid);
+        EPlayerData playerData = new EPlayerData();
 
-        EplayerSetting.isPlayback = true;
+        playerData.liveClassroomId = liveClassroomId;
+        playerData.customer = customer;
 
-        if(DeviceUtil.getDeviceType(context)== DeviceUtil.DEVICE_TYPE_PHONE){
-            startActivity(context,EplayerPluginActivity.class,bundle);
-        }else{
-            startActivity(context,EplayerPluginPadActivity.class,bundle);
+        playerData.loginType= EPlayerLoginType.EPlayerLoginTypeUserPwd;
+        playerData.user = username;
+        playerData.pwd = userpwd;
 
-        }
+
+        playerData.playModel= EPlayerPlayModelType.EPlayerPlayModelTypePlayback ;
+        playerData.playbackid = pid;
+
+        ActivityUtil.initPlayer(context,playerData);
+
 
     }
 
@@ -133,15 +143,43 @@ public class ActivityUtil {
      * @param liveClassroomId 房间ID
      * @param exStr
      * @param pid  回看编号 ,可以为null
+     *
+     * @Deprecated use initPlayer   and  loginType = EPlayerLoginTypeAuthReverse
      */
+    @Deprecated
     public static void  initPlaybackRoom(Context context,String customer,String liveClassroomId,String exStr,String pid){
-        Bundle bundle=new Bundle();
-        bundle.putString(EplayerPluginActivity.EPLAY_EXSTR,exStr);
-        bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID,liveClassroomId);
-        bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER,customer);
-        bundle.putString(EplayerPluginActivity.EPLAY_PID,pid);
 
-        EplayerSetting.isPlayback = true;
+        EPlayerData playerData = new EPlayerData();
+
+        playerData.liveClassroomId = liveClassroomId;
+        playerData.customer = customer;
+
+        playerData.loginType= EPlayerLoginType.EPlayerLoginTypeAuthReverse;
+        playerData.validateStr = exStr;
+
+
+        playerData.playModel= EPlayerPlayModelType.EPlayerPlayModelTypePlayback ;
+        playerData.playbackid = pid;
+
+        ActivityUtil.initPlayer(context,playerData);
+
+    }
+
+    /**
+     *   调用E课堂界面
+     *
+     * @param context
+     * @param playerData
+     */
+    public static void  initPlayer(Context context,EPlayerData playerData){
+        Bundle bundle=new Bundle();
+        bundle.putSerializable(EplayerPluginActivity.EPLAY_DATA, playerData);
+
+        if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){
+            EplayerSetting.isPlayback = true;
+        }else{
+            EplayerSetting.isPlayback = false;
+        }
 
         if(DeviceUtil.getDeviceType(context)== DeviceUtil.DEVICE_TYPE_PHONE){
             startActivity(context,EplayerPluginActivity.class,bundle);
@@ -150,5 +188,6 @@ public class ActivityUtil {
 
         }
     }
+
 
 }

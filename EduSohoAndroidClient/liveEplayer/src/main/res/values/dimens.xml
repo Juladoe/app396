@@ -92,4 +92,7 @@
 
     <dimen name="vote_phone_button_margin">10dp</dimen>
     <dimen name="vote_pad_button_margin">20dp</dimen>
+
+
+    <dimen name="chat_size_with_hight">35dp</dimen>
 </resources>

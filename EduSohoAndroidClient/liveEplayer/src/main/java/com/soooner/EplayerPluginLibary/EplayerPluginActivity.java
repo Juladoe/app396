@@ -1,17 +1,24 @@
 package com.soooner.EplayerPluginLibary;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.soooner.EplayerPluginLibary.adapter.SpeakAdapter;
@@ -26,6 +33,8 @@ import com.soooner.playback.PlaybackLoading;
 import com.soooner.playback.entity.EPlaybackSessionInfo;
 import com.soooner.source.common.net.Protocol;
 import com.soooner.source.common.util.*;
+import com.soooner.source.entity.EPlayerData;
+import com.soooner.source.entity.EPlayerLoginType;
 import com.soooner.source.entity.Prainse;
 import com.soooner.source.entity.SessionData.*;
 import com.soooner.source.entity.SessionData.LivaRoomInfo.LiveRoomInfoData;
@@ -41,6 +50,9 @@ import com.soooner.ws.net.EplayerSocket;
 import com.soooner.ws.net.Sender;
 import de.greenrobot.event.EventBus;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.widget.VideoView;
+
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -54,19 +66,17 @@ import java.util.*;
 public class EplayerPluginActivity extends EplayerPluginBaseActivity implements PlaybackEngin.OnEnginListener {
 
 
-    public static String EPLAY_LIVECLASSROOMID = "eplay_liveClassroomId";
-    public static String EPLAY_USERNAME = "eplay_username";
-    public static String EPLAY_USERPWD = "eplay_userpwd";
-    public static String EPLAY_CUSTOMER= "eplay_customer";
-    public static String EPLAY_PID= "eplay_pid";
 
-    public static String EPLAY_EXSTR = "eplay_exStr";
+    public static String EPLAY_DATA = "eplay_data";
+
 
    // public boolean chatForbid=false;//禁言标识位
     MyChatView chatView;
     int video_margin_left_right;
 
-    public String key_liveClassroomId, key_username, key_userpwd, key_exstr,key_customer,key_pid;
+    public EPlayerData playerData;
+
+//    public String key_liveClassroomId, key_username, key_userpwd, key_exstr,key_customer,key_pid;
 
     private static final String TAG = EplayerPluginActivity.class.getSimpleName();
     Context context;
@@ -719,7 +729,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
 
                     if(EplayerSetting.isPlayback){
-                        new PlaybackLoadingThread(EplayerPluginActivity.this.key_liveClassroomId,EplayerPluginActivity.this.key_pid).start();
+                        new PlaybackLoadingThread(EplayerPluginActivity.this.playerData.liveClassroomId,EplayerPluginActivity.this.playerData.playbackid).start();
                     }else {
 
                         if(EplayerPluginActivity.this.living) {
@@ -994,7 +1004,6 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate is running");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -1228,24 +1237,25 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         EventBus.getDefault().register(this);
 
         Bundle bd = getIntent().getExtras();
-        key_liveClassroomId = StringUtils.getStringResFormBundle(bd, EPLAY_LIVECLASSROOMID);
-        key_username = StringUtils.getStringResFormBundle(bd, EPLAY_USERNAME);
-        key_userpwd = StringUtils.getStringResFormBundle(bd, EPLAY_USERPWD);
 
-        key_exstr = StringUtils.getStringResFormBundle(bd, EPLAY_EXSTR);
 
-        key_customer=StringUtils.getStringResFormBundle(bd, EPLAY_CUSTOMER);
+        if(bd.containsKey(EPLAY_DATA)){
 
-//        if (EplayerSetting.isPlayback){
-        if (StringUtils.containsKeyFormBundle(bd, EPLAY_PID)){
-            EplayerSetting.isPlayback = true;
+            playerData = (EPlayerData) bd.getSerializable(EPLAY_DATA);
+
+        }else {
+
+            playerData =  new    EPlayerData();
+        }
+
+        if (EplayerSetting.isPlayback){
+//            EplayerSetting.isPlayback = true;
 
             playbackEngin =  new PlaybackEngin();
             playbackEngin.setListener(this);
         }else{
-            EplayerSetting.isPlayback = false;
+//            EplayerSetting.isPlayback = false;
         }
-        key_pid=StringUtils.getStringResFormBundle(bd, EPLAY_PID);
 
         DeviceUtil.getUserAgentString();
 
@@ -1302,6 +1312,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                 @Override
                 public void pausePlayback() {
                     EplayerPluginActivity.this.playerStartPlay= false;
+
+
+
                     fl_myvideoview.pause();
                     playbackEngin.pausePlayback();
                     playerControllerView.changePlayerState(PlayerControllerView.PlayerState.PLAYERSTATE_PLAY);
@@ -1360,21 +1373,10 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
         ShowLoading();
 
-        if (StringUtils.isValid(key_liveClassroomId)
-                && StringUtils.isValid(key_username)
-                && StringUtils.isValid(key_userpwd)&& StringUtils.isValid(key_customer)) {
+        if (StringUtils.isValid(playerData.liveClassroomId)
+                && StringUtils.isValid(playerData.customer)){
 
-            EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if(loginTimer!=null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
-            loginTimer = new Timer();
-            loginTimer.schedule(new LoginTimerTask(EplayerPluginActivity.this.currentStaticLoginTimeMillis),100000);
-
-
-            new GetLiveListThread(key_liveClassroomId, key_customer,key_username, key_userpwd).start();
-        } else if (StringUtils.isValid(key_exstr) && StringUtils.isValid(key_liveClassroomId)&& StringUtils.isValid(key_customer)) {
+            checkupPlayerDataValidateStr(playerData);
 
 
             EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
@@ -1385,22 +1387,17 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             loginTimer = new Timer();
             loginTimer.schedule(new LoginTimerTask(EplayerPluginActivity.this.currentStaticLoginTimeMillis),100000);
 
-            new GetLiveListThread(key_liveClassroomId,key_customer, key_exstr).start();
-        } else if( StringUtils.isValid(key_liveClassroomId)&& StringUtils.isValid(key_customer)){
-            EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if(loginTimer!=null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
-            loginTimer = new Timer();
-            loginTimer.schedule(new LoginTimerTask(EplayerPluginActivity.this.currentStaticLoginTimeMillis),100000);
 
-            new GetLiveListThread(key_liveClassroomId,key_customer, null).start();
-        } else {
-            ToastUtil.showToast(context, R.string.liveClassroomId_username_userpwd);
+            new GetLiveListThread(playerData).start();
+
+
+        }else{
+
+            ToastUtil.showToast(context, R.string.liveClassroomId_null);
             EplayerSessionInfo.releaseALL();
             finish();
         }
+
 
 
 
@@ -1904,25 +1901,32 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
     private class GetLiveListThread extends Thread {
 
-        String liveClassroomId = "";
-        String username = "";
-        String userpwd = "";
-        String key_customer="";
+//        String liveClassroomId = "";
+//        String username = "";
+//        String userpwd = "";
+//        String key_customer="";
 
-        String exStr = "";
+//        String exStr = "";
 
-        public GetLiveListThread(String liveClassroomId, String key_customer,String username, String userpwd) {
-            this.liveClassroomId = liveClassroomId;
-            this.username = username;
-            this.userpwd = userpwd;
-            this.key_customer=key_customer;
+        EPlayerData playerData;
+
+        public GetLiveListThread(EPlayerData playerData) {
+            this.playerData = playerData;
         }
 
-        public GetLiveListThread(String liveClassroomId, String key_customer,String exStr) {
-            this.liveClassroomId = liveClassroomId;
-            this.exStr = exStr;
-            this.key_customer=key_customer;
-        }
+
+//        public GetLiveListThread(String liveClassroomId, String key_customer,String username, String userpwd) {
+//            this.liveClassroomId = liveClassroomId;
+//            this.username = username;
+//            this.userpwd = userpwd;
+//            this.key_customer=key_customer;
+//        }
+//
+//        public GetLiveListThread(String liveClassroomId, String key_customer,String exStr) {
+//            this.liveClassroomId = liveClassroomId;
+//            this.exStr = exStr;
+//            this.key_customer=key_customer;
+//        }
 
 
         @Override
@@ -1935,14 +1939,15 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     }
                 }
                 {
-                    UserLoginProtocol protocol = null;
-                    if (StringUtils.isValid(exStr)) {
-                        protocol = new UserLoginProtocol(liveClassroomId, key_customer, exStr);
-                    } else if(StringUtils.isValid(username)&&StringUtils.isValid(userpwd)) {
-                        protocol = new UserLoginProtocol(liveClassroomId, key_customer, username, userpwd);
-                    }else{
-                        protocol = new UserLoginProtocol(liveClassroomId, key_customer, null, null);
-                    }
+                    UserLoginProtocol protocol = new UserLoginProtocol(playerData);
+//
+//                    if (StringUtils.isValid(exStr)) {
+//                        protocol = new UserLoginProtocol(liveClassroomId, key_customer, exStr);
+//                    } else if(StringUtils.isValid(username)&&StringUtils.isValid(userpwd)) {
+//                        protocol = new UserLoginProtocol(liveClassroomId, key_customer, username, userpwd);
+//                    }else{
+//                        protocol = new UserLoginProtocol(liveClassroomId, key_customer, null, null);
+//                    }
 
                     protocol.execute();
 

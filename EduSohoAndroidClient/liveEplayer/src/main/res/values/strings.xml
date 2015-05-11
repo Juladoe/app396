@@ -3,6 +3,9 @@
     <string name="app_name">ACTIVITY_ENTRY_NAME</string>
     <string name="liveClassroomId_username_userpwd">房间ID、用户名、密码不能为空</string>
 
+    <string name="liveClassroomId_null">房间ID不能为空</string>
+    <string name="liveClassroomId_validate">校验码不能为空</string>
+
 
     <string name="edit_hint_speak">我要发言</string>
     <string name="edit_hint_question">我要提问</string>
