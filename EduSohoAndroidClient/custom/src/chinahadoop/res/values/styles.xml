@@ -4,7 +4,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowBackground">@drawable/custom_app_splash</item>
+        <item name="android:windowBackground">@drawable/app_splash</item>
         <item name="android:textColor">@color/system_text</item>
     </style>
 </resources>
