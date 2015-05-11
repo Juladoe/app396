@@ -1,12 +1,10 @@
 package com.edusoho.kuozhi;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.soooner.EplayerPluginLibary.EplayerPluginActivity;
-import com.soooner.EplayerPluginLibary.EplayerPluginPadActivity;
-import com.soooner.source.common.util.DeviceUtil;
+import com.soooner.EplayerPluginLibary.util.ActivityUtil;
+import com.soooner.source.entity.EPlayerData;
+import com.soooner.source.entity.EPlayerLoginType;
+import com.soooner.source.entity.EPlayerPlayModelType;
 
 /**
  * Created by howzhi on 15/4/3.
@@ -22,22 +20,16 @@ public class LiveUtil {
 
     public void startLiveActivity(String liveClassroomId, String exStr, boolean replayState)
     {
-        Bundle bundle = new Bundle();
-        bundle.putString(EplayerPluginActivity.EPLAY_EXSTR, exStr);
-        bundle.putString(EplayerPluginActivity.EPLAY_LIVECLASSROOMID, liveClassroomId);
-        bundle.putString(EplayerPluginActivity.EPLAY_CUSTOMER, "edusoho");
-        if(replayState) {
-            bundle.putString(EplayerPluginActivity.EPLAY_PID, null);
-        }
+        EPlayerData playerData = new EPlayerData();
+        playerData.liveClassroomId = liveClassroomId;
+        playerData.customer = "edusoho";
+        playerData.validateStr = exStr;
+        playerData.loginType= EPlayerLoginType.EPlayerLoginTypeAuthReverse;
 
-        Intent intent = null;
-        if(DeviceUtil.getDeviceType(mContext)== DeviceUtil.DEVICE_TYPE_PHONE){
-            intent = new Intent(mContext, EplayerPluginActivity.class);
-        }else{
-            intent = new Intent(mContext, EplayerPluginPadActivity.class);
+        if (replayState) {
+            playerData.playModel = EPlayerPlayModelType.EPlayerPlayModelTypePlayback;
+            playerData.playbackid = null;
         }
-
-        intent.putExtras(bundle);
-        mContext.startActivity(intent);
+        ActivityUtil.initPlayer(mContext, playerData);
     }
 }

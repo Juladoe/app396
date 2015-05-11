@@ -40,6 +40,7 @@ public class AnimationDrawableUtil {
     private static void dealExpression(Context context,
                                 SpannableString spannableString, Pattern patten, int start)
             throws Exception {
+        int chat_size_with_hight= (int) context.getResources().getDimension(R.dimen.chat_size_with_hight);
         Matcher matcher = patten.matcher(spannableString);
         while (matcher.find()) {
             if (matcher.start() < start) {
@@ -50,7 +51,11 @@ public class AnimationDrawableUtil {
             int result_end=matcher.end();
             int drawableid= ResourceUtil.getResId(context, findresult.substring(1,findresult.length()-1), "drawable");
             if(drawableid>0){
-                VerticalImageSpan imageSpan = new VerticalImageSpan(context, drawableid);
+
+                Drawable drawable = context.getResources().getDrawable(drawableid);
+                drawable.setBounds(0, 0, chat_size_with_hight, chat_size_with_hight);//这里设置图片的大小
+                ImageSpan imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM);
+               // VerticalImageSpan imageSpan = new VerticalImageSpan(context, drawableid);
 
                 spannableString.setSpan(imageSpan,result_start, result_end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 

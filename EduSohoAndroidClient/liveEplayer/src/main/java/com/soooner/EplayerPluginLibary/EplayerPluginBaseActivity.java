@@ -4,7 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import com.soooner.EplayerPluginLibary.util.LogUtil;
+import com.soooner.EplayerPluginLibary.util.StringUtils;
+import com.soooner.EplayerPluginLibary.util.ToastUtil;
 import com.soooner.EplayerPluginLibary.widget.MyVideoView;
+import com.soooner.EplayerSetting;
+import com.soooner.source.entity.EPlayerData;
+import com.soooner.source.entity.EPlayerLoginType;
+import com.soooner.source.entity.SessionData.EplayerSessionInfo;
 
 /**
  * Created by zhaoxu2014 on 15-1-5.
@@ -53,5 +60,24 @@ public class EplayerPluginBaseActivity extends Activity{
         super.onCreate(savedInstanceState);
         face_center= AnimationUtils.loadAnimation(this,R.anim.face_enter);
         face_exit= AnimationUtils.loadAnimation(this,R.anim.face_exit);
+        LogUtil.d("EPlayer SDK_Version", EplayerSetting.version);
+    }
+
+    /*
+      检查validateStr是否有晓
+     */
+    public  void checkupPlayerDataValidateStr(EPlayerData playerData){
+        if(playerData.loginType.value()== EPlayerLoginType.EPlayerLoginTypeAuthReverse.value()||playerData.loginType.value()== EPlayerLoginType.EPlayerLoginTypeAuthForward.value()){
+
+            if (!StringUtils.isValid(playerData.validateStr)) {
+
+                ToastUtil.showToast(this, R.string.liveClassroomId_validate);
+                EplayerSessionInfo.releaseALL();
+                finish();
+                return;
+            }
+
+        }
+
     }
 }
