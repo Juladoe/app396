@@ -1,29 +1,26 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
-
-import org.apache.cordova.Config;
-import org.apache.cordova.CordovaWebView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,7 +28,7 @@ import java.util.TimerTask;
 /**
  * Created by JesseHuang on 15/4/24.
  */
-public class DefaultPageActivity extends BaseActivityWithCordova {
+public class DefaultPageActivity extends ActionBarBaseActivity {
     public static final String TAG = "DefaultPageActivity";
 
     private String mCurrentTag;
@@ -62,20 +59,19 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
         }
     }
 
-    @Override
     public void initCordovaWebView() {
-        if (webView == null) {
-            webView = (CordovaWebView) findViewById(R.id.webView);
-            Config.init(this);
-            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
-                    return true;
-                }
-            });
-        }
+//        if (webView == null) {
+//            webView = (CordovaWebView) findViewById(R.id.webView);
+//            Config.init(this);
+//            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
+//            webView.setWebViewClient(new WebViewClient() {
+//                @Override
+//                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                    view.loadUrl(url);
+//                    return true;
+//                }
+//            });
+//        }
     }
 
     private void initView() {
@@ -135,6 +131,30 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
     }
 
     private void selectDownTab(int id) {
+        String tag;
+        BaseFragment fragment;
+        if (id == R.id.nav_tab_find) {
+            tag = "FindFragment";
+        } else if (id == R.id.nav_tab_news) {
+            tag = "NewsFragment";
+        } else {
+            tag = "FriendFragment";
+        }
+
+        hideFragment(mCurrentTag);
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
+
+        if (fragment != null) {
+            fragmentTransaction.show(fragment);
+        } else {
+            fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
+            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
+        }
+
+        fragmentTransaction.commit();
+        mCurrentTag = tag;
+
         changeNavBtn(id);
         changeBtnIcon(id);
         mSelectBtn = id;
@@ -151,6 +171,16 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
                 child.setEnabled(true);
             }
         }
+    }
+
+    private void hideFragment(String tag) {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            return;
+        }
+        fragmentTransaction.hide(fragment);
+        fragmentTransaction.commit();
     }
 
     private void changeBtnIcon(int id) {
@@ -190,17 +220,17 @@ public class DefaultPageActivity extends BaseActivityWithCordova {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (webView.canGoBack()) {
-                webView.goBack();
-                return true;
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            if (webView.canGoBack()) {
+//                webView.goBack();
+//                return true;
+//            }
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     @Override
     protected void onDestroy() {

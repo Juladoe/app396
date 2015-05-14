@@ -23,7 +23,7 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.fragment_webview);
+        setContainerView(R.layout.fragment_news);
         mActivity.setTitle(getString(R.string.title_news));
     }
 
