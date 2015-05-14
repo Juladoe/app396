@@ -40,6 +40,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -129,12 +130,21 @@ public class CourseDownloadingFragment extends BaseFragment {
                 LessonItem lessonItem = mActivity.parseJsonValue(
                         object, new TypeToken<LessonItem>(){});
                 if (lessonItem == null) {
+                    mActivity.longToast("获取的视频地址不存在!");
                     return;
                 }
 
-                if (listItem.uploadFile == null && lessonItem.mediaUri.startsWith(app.host)) {
-                    mActivity.longToast("暂不支持本地视频下载!");
-                    return;
+                if (listItem.uploadFile == null) {
+                    Pattern urlPattern = Pattern.compile("courses/[\\d]+/lessons/[\\d]+/media", Pattern.DOTALL);
+                    if (urlPattern.matcher(lessonItem.mediaUri).find()) {
+                        mActivity.longToast("暂不支持本地视频下载!");
+                        return;
+                    }
+                } else {
+                    if ("local".equals(listItem.uploadFile.storage)) {
+                        mActivity.longToast("暂不支持本地视频下载!");
+                        return;
+                    }
                 }
 
                 saveCache(
