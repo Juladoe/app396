@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.listener;
 
-import android.content.Intent;
 
 /**
  * Created by JesseHuang on 15/4/23.

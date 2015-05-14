@@ -13,7 +13,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.ResultCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.google.gson.Gson;
@@ -55,7 +54,7 @@ public class BaseActivity extends ActionBarActivity {
         gson = app.gson;
     }
 
-    public void ajaxPost(final RequestUrl requestUrl, ResultCallback resultCallback) {
+    public void ajaxPost(final RequestUrl requestUrl) {
         VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, requestUrl.url, new Response.Listener<String>() {
             @Override

@@ -23,7 +23,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.androidquery.util.AQUtility;
 import com.belladati.httpclientandroidlib.androidextra.Base64;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -528,7 +527,7 @@ public class DownLoadService extends Service {
     private void moveToCache(File file) {
         String fileExt = CommonUtil.getFileExt(file.getName());
         String fileName = Base64.encodeToString(file.getName().getBytes(), Base64.NO_WRAP);
-        File cacheDir = AQUtility.getCacheDir(mContext);
+        File cacheDir = CommonUtil.getCacheFileDir();
         File targetFile = new File(cacheDir, fileName + fileExt);
         try {
             FileUtils.copyFile(file.getAbsolutePath(), targetFile.getAbsolutePath());

@@ -18,31 +18,22 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
-import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.listener.AjaxResultCallback;
-import com.edusoho.kuozhi.v3.listener.CacheAjaxCallback;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
-import com.edusoho.kuozhi.v3.listener.ResultCallback;
 import com.edusoho.kuozhi.v3.model.bal.TokenResult;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
-import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -54,7 +45,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -73,7 +63,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EdusohoApp extends Application {
 
     public AppConfig config;
-    public AQuery query;
     public String host;
     public String domain;
     public Gson gson;
@@ -130,52 +119,6 @@ public class EdusohoApp extends Application {
         return EdusohoMainService.getService();
     }
 
-    public void postByMuiltKeys(
-            final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback
-    ) {
-        AjaxCallback<String> ajaxCallback = new AjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                super.callback(url, object, status);
-                ajaxResultCallback.callback(url, object, status);
-            }
-        };
-
-        ajaxCallback.headers(requestUrl.heads);
-        ajaxCallback.method(AQuery.METHOD_POST);
-
-        query.ajax(requestUrl.url, requestUrl.getKeysMap(), String.class, ajaxCallback);
-    }
-
-    public AjaxCallback getUrl(final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
-        Cache cache = mEngine.appCache.getCache(requestUrl);
-        CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                super.callback(url, object, status);
-                if (this.isCacheRequest()) {
-                    mEngine.appCache.updateCache(requestUrl, object);
-                    ajaxResultCallback.update(url, object, status);
-                    return;
-                }
-                mEngine.appCache.setCache(requestUrl, object);
-                ajaxResultCallback.callback(url, object, status);
-            }
-        };
-
-        ajaxCallback.method(AQuery.METHOD_GET);
-        ajaxCallback.url(requestUrl.url);
-
-        if (cache != null) {
-            Log.d(TAG, "get to cache->" + requestUrl.url);
-            mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
-            ajaxCallback.setCacheRequest(true);
-        }
-
-        query.ajax(requestUrl.url, String.class, ajaxCallback);
-        return ajaxCallback;
-    }
-
     /**
      * volley post请求
      *
@@ -183,7 +126,7 @@ public class EdusohoApp extends Application {
      * @param responseListener 返回reponse信息
      * @param errorListener    错误信息
      */
-    public void postUrl(final RequestUrl requestUrl, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public Request<JSONObject> postUrl(final RequestUrl requestUrl, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl.url, responseListener, errorListener) {
             @Override
@@ -197,7 +140,7 @@ public class EdusohoApp extends Application {
             }
         };
         jsonObjectRequest.setTag(requestUrl.url);
-        mVolley.addToRequestQueue(jsonObjectRequest);
+        return mVolley.addToRequestQueue(jsonObjectRequest);
     }
 
     public void getUrl(final String url, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
@@ -224,47 +167,6 @@ public class EdusohoApp extends Application {
         };
         jsonObjectRequest.setTag(requestUrl.url);
         mVolley.addToRequestQueue(jsonObjectRequest);
-    }
-
-    public AjaxCallback postUrl(boolean isAbort, final RequestUrl requestUrl, final AjaxResultCallback ajaxResultCallback) {
-        Cache cache = mEngine.appCache.getCache(requestUrl);
-        CacheAjaxCallback<String> ajaxCallback = new CacheAjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                if (this.isCacheRequest()) {
-                    mEngine.appCache.updateCache(requestUrl, object);
-                    ajaxResultCallback.update(url, object, status);
-                    return;
-                }
-                mEngine.appCache.setCache(requestUrl, object);
-                ajaxResultCallback.callback(url, object, status);
-            }
-        };
-
-        ajaxCallback.headers(requestUrl.heads);
-        ajaxCallback.timeout(1000 * 10);
-        ajaxCallback.method(AQuery.METHOD_POST);
-        if (isAbort) {
-            ajaxCallback.async(this);
-        }
-
-        if (cache != null) {
-            Log.d(TAG, "get to cache->" + requestUrl.url);
-            mEngine.appCache.cacheCallback(requestUrl.url, cache, ajaxCallback);
-            ajaxCallback.setCacheRequest(true);
-        }
-
-        query.ajax(requestUrl.url, requestUrl.getAllParams(), String.class, ajaxCallback);
-        return ajaxCallback;
-    }
-
-    public <T> void queryUrl(String url, Class<T> tClass, final AjaxCallback<T> ajaxCallback) {
-        query.ajax(url, tClass, new AjaxCallback<T>() {
-            @Override
-            public void callback(String url, T object, AjaxStatus status) {
-                ajaxCallback.callback(url, object, status);
-            }
-        });
     }
 
     public void addMessageListener(String msgId, CoreEngineMsgCallback callback) {
@@ -339,16 +241,9 @@ public class EdusohoApp extends Application {
         gson = new Gson();
         mVolley = VolleySingleton.getInstance(getApplicationContext());
         apiVersion = getString(R.string.api_version);
-        initAquery();
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<String, Bundle>();
         initApp();
-    }
-
-    private void initAquery() {
-        query = new AQuery(this);
-        AjaxCallback.setAgent("Android");
-        AjaxCallback.setTimeout(1000 * 10);
     }
 
     private String getDomain() {
@@ -360,7 +255,7 @@ public class EdusohoApp extends Application {
     }
 
     public void initApp() {
-        initWorkSpace();
+        runTask = new HashMap<String, Activity>();
         initImageLoaderConfig();
         loadConfig();
 
@@ -387,8 +282,8 @@ public class EdusohoApp extends Application {
         app.mEngine.runService(EdusohoMainService.TAG, this, null);
     }
 
-    public Map<String, String> getPlatformInfo() {
-        Map<String, String> params = new HashMap<String, String>();
+    public HashMap<String, String> getPlatformInfo() {
+        HashMap<String, String> params = new HashMap<String, String>();
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -403,15 +298,6 @@ public class EdusohoApp extends Application {
         params.put("edusohoVersion", apiVersion);
 
         return params;
-    }
-
-    public void logToServer(
-            String url, Map<String, String> params, AjaxCallback<String> ajaxCallback) {
-        if (ajaxCallback == null) {
-            ajaxCallback = new AjaxCallback<String>();
-        }
-        ajaxCallback.method(AQuery.METHOD_POST);
-        app.query.ajax(url, params, String.class, ajaxCallback);
     }
 
     public boolean getNetIsConnect() {
@@ -598,37 +484,8 @@ public class EdusohoApp extends Application {
         edit.commit();
     }
 
-    public void query(String url, final ResultCallback callback, Activity mActivity) {
-        if (!getNetIsConnect()) {
-            PopupDialog.createNormal(
-                    mActivity, "提示信息", "无网络,请检查网络和手机设置!").show();
-            mActivity.finish();
-            return;
-        }
-
-        query.ajax(url, String.class, new AjaxCallback<String>() {
-            @Override
-            public void callback(String url, String object, AjaxStatus status) {
-                super.callback(url, object, status);
-                callback.callback(url, object, status);
-            }
-        });
-    }
-
     private void initWorkSpace() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File workSpace = new File(sdcard, "edusoho");
-            if (!workSpace.exists()) {
-                workSpace.mkdir();
-            }
 
-            AQUtility.setCacheDir(new File(workSpace, "cache"));
-        } else {
-            Toast.makeText(this, "设备没有内存卡,数据将保存在手机内存中！", Toast.LENGTH_LONG).show();
-        }
-
-        runTask = new HashMap<String, Activity>();
     }
 
     public static File getWorkSpace() {
@@ -691,8 +548,6 @@ public class EdusohoApp extends Application {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        AQUtility.cleanCacheAsync(this);
-        BitmapAjaxCallback.clearCache();
     }
 
     public void checkToken() {
@@ -701,15 +556,20 @@ public class EdusohoApp extends Application {
                 return;
             }
             String url = bindToken2Url(Const.CHECKTOKEN, true);
-            query.ajax(url, String.class, new AjaxCallback<String>() {
+            app.getUrl(url, new Response.Listener<JSONObject>() {
                 @Override
-                public void callback(String url, String object, AjaxStatus status) {
+                public void onResponse(JSONObject response) {
                     TokenResult result = app.gson.fromJson(
-                            object, new TypeToken<TokenResult>() {
+                            response.toString(), new TypeToken<TokenResult>() {
                             }.getType());
                     if (result != null) {
                         saveToken(result);
                     }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
                 }
             });
         }
@@ -759,23 +619,26 @@ public class EdusohoApp extends Application {
             loadDialog.show();
         }
 
-        query.ajax(url, String.class,
-                new AjaxCallback<String>() {
-                    @Override
-                    public void callback(String url, String object, AjaxStatus status) {
-                        loadDialog.dismiss();
-                        super.callback(url, object, status);
-                        final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
-                                object, new TypeToken<AppUpdateInfo>() {
-                                }.getType());
+        app.getUrl(url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                loadDialog.dismiss();
+                final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
+                        response.toString(), new TypeToken<AppUpdateInfo>() {
+                        }.getType());
 
-                        if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
-                            return;
-                        }
+                if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
+                    return;
+                }
 
-                        callback.success(appUpdateInfo);
-                    }
-                });
+                callback.success(appUpdateInfo);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     public void addNotify(String type, Bundle bundle) {
@@ -816,4 +679,5 @@ public class EdusohoApp extends Application {
 
         return mPlayCacheServer;
     }
+
 }

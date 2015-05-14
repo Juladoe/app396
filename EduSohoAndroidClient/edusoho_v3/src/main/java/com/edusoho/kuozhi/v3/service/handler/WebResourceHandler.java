@@ -3,17 +3,6 @@ package com.edusoho.kuozhi.v3.service.handler;
 import android.net.Uri;
 import android.util.Log;
 
-import com.androidquery.util.AQUtility;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
-
 import com.belladati.httpclientandroidlib.HttpEntity;
 import com.belladati.httpclientandroidlib.HttpException;
 import com.belladati.httpclientandroidlib.HttpHost;
@@ -35,6 +24,16 @@ import com.belladati.httpclientandroidlib.protocol.RequestContent;
 import com.belladati.httpclientandroidlib.protocol.RequestTargetHost;
 import com.belladati.httpclientandroidlib.protocol.RequestUserAgent;
 import com.belladati.httpclientandroidlib.util.EntityUtils;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
 
 import cn.trinea.android.common.util.DigestUtils;
 
@@ -181,7 +180,7 @@ public class WebResourceHandler implements HttpRequestHandler {
     }
 
     private File getVideoDir() {
-        File cacheDir = AQUtility.getCacheDir(mActivity);
+        File cacheDir = CommonUtil.getCacheFileDir();
         File videoDir = new File(cacheDir, "videos");
         if (!videoDir.exists()) {
             videoDir.mkdir();
