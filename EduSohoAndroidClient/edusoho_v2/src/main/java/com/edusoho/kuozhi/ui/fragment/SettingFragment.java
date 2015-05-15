@@ -90,7 +90,7 @@ public class SettingFragment extends BaseFragment {
             }
 
             boolean updateMode = mCheckView.getUpdateMode();
-            if (updateMode) {
+                if (updateMode) {
                 mCheckView.clearUpdateIcon();
             }
         }
