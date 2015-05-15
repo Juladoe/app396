@@ -13,11 +13,11 @@
 
         <com.edusoho.kuozhi.v3.view.EduToolBar
             android:id="@+id/toolbar"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
             app:centerTitle="@string/toolbar_title"
             app:centerTitleSize="@dimen/medium_font_size"
             tools:layout="@layout/toolbar_custom" />
@@ -31,21 +31,21 @@
 
 
         <FrameLayout
-            android:background="@color/system_normal_bg"
-            android:layout_above="@+id/nav_bottom_layout"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"></FrameLayout>
+            android:layout_above="@+id/nav_bottom_layout"
+            android:layout_below="@+id/toolbar"
+            android:background="@color/system_normal_bg"></FrameLayout>
 
         <include layout="@layout/nav_setting" />
     </RelativeLayout>
 
     <fragment
         android:id="@+id/navigation_drawer"
+        android:name="com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:name="com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer"
         tools:layout="@layout/fragment_navigation_drawer" />
 </android.support.v4.widget.DrawerLayout>

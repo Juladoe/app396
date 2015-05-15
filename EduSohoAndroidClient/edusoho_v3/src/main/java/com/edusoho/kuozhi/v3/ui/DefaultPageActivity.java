@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -260,7 +261,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     @Override
     public void finish() {
         Log.d("return----->", "DefaultPageActivity.finish");
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
     }
 }

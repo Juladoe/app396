@@ -131,7 +131,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
             if (mDrawerLayout != null) {
                 mDrawerLayout.closeDrawer(mDrawerFragment);
             }
-            mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mContext, null);
+            mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
         }
     };
 

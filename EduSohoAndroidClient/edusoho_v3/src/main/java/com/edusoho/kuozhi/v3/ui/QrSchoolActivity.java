@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -39,7 +40,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_school);
         app.addTask("QrSchoolActivity", this);
-        setBackMode(null, "进入网校");
+        setBackMode(BACK, "进入网校");
         initView();
     }
 

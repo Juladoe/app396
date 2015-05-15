@@ -4,9 +4,9 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/find_search"
+        android:icon="@drawable/found_menu_search"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom"
         android:title="@null"
-        android:icon="@drawable/found_menu_search" />
+        app:showAsAction="ifRoom" />
 
 </menu>

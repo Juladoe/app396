@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.base;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,5 +42,13 @@ public class ActionBarBaseActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

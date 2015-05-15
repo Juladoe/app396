@@ -53,7 +53,10 @@
         <activity
             android:name=".v3.view.qr.CaptureActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".v3.ui.SettingActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
         <!-- 【必须】 exported设置为true -->
