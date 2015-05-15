@@ -207,9 +207,6 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
-        <service android:name=".Service.PusherService" />
-        <receiver android:name=".broadcast.AlarmReceiver" />
-
         <activity
             android:name=".ui.question.QuestionNewActivity"
             android:configChanges="keyboard|orientation"
