@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -190,14 +191,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         if (id == R.id.nav_tab_news) {
             setTitle(R.string.title_news);
             mDownTabNews.setIcon(R.string.font_news_press);
-            mToolBar.setTitlesetVisibility(View.GONE);
+            mToolBar.setTitleVisibility(View.GONE);
         } else if (id == R.id.nav_tab_find) {
             setTitle(R.string.title_find);
-            mToolBar.setTitlesetVisibility(View.VISIBLE);
+            mToolBar.setTitleVisibility(View.VISIBLE);
             mDownTabFind.setIcon(R.string.font_find_press);
         } else if (id == R.id.nav_tab_friends) {
             setTitle(R.string.title_friends);
-            mToolBar.setTitlesetVisibility(View.GONE);
+            mToolBar.setTitleVisibility(View.GONE);
             mDownTabFriends.setIcon(R.string.font_friends_press);
         }
     }
@@ -220,17 +221,33 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            if (webView.canGoBack()) {
-//                webView.goBack();
-//                return true;
-//            }
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mFragmentNavigationDrawer.isDrawerOpen()) {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                return true;
+            }
+
+            synchronized (mLock) {
+                if (mIsExit) {
+                    mIsExit = false;
+                    app.exit();
+                }
+                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+                mIsExit = true;
+                mExitTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mIsExit = false;
+                    }
+                }, 2000);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -244,24 +261,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     public void finish() {
         Log.d("return----->", "DefaultPageActivity.finish");
 
-        if (mFragmentNavigationDrawer.isDrawerOpen()) {
-            mDrawerLayout.closeDrawer(Gravity.LEFT);
-            return;
-        }
 
-        synchronized (mLock) {
-            if (mIsExit) {
-                mIsExit = false;
-                app.exit();
-            }
-            CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
-            mIsExit = true;
-            mExitTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    mIsExit = false;
-                }
-            }, 2000);
-        }
     }
 }

@@ -16,13 +16,14 @@
         android:layout_gravity="center"
         android:textColor="@color/action_bar_title"
         android:text="@string/toolbar_title"
-        android:textSize="@dimen/app_bar_title" />
+        android:textSize="@dimen/medium_font_size" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:id="@+id/titleArrow"
-        android:src="@drawable/found_select_icon" />
+        android:src="@drawable/found_select_icon"
+        android:contentDescription="" />
 
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -74,6 +75,10 @@ public class EduToolBar extends Toolbar {
         tvCenterTitle.setOnClickListener(new TitleClickListener());
 
         mImageView = (ImageView) findViewById(R.id.titleArrow);
+
+        tvCenterTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, centerTitleSize);
+        tvCenterTitle.setTextColor(centerTitleColor);
+        tvCenterTitle.setText(centerTitle);
     }
 
     public void setCenterTitle(CharSequence text) {
@@ -81,7 +86,7 @@ public class EduToolBar extends Toolbar {
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 
-    public void setTitlesetVisibility(int visibility) {
+    public void setTitleVisibility(int visibility) {
         tvCenterTitle.setVisibility(visibility);
         mImageView.setVisibility(visibility);
     }

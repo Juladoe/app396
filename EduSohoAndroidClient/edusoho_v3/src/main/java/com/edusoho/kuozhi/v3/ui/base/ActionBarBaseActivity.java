@@ -28,7 +28,7 @@ public class ActionBarBaseActivity extends BaseActivity {
 
     public void setBackMode(String backTitle, String title) {
         mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
-        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.action_bar_title);
+        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.tv_action_bar_title);
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.MATCH_PARENT);
