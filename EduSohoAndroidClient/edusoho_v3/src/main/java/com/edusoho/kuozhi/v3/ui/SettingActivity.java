@@ -16,7 +16,6 @@ public class SettingActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        app.addTask("SettingActivity", this);
         setBackMode(BACK, "设置");
         initView();
     }

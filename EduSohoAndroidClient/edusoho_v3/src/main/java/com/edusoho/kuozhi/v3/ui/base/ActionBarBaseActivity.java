@@ -2,12 +2,16 @@ package com.edusoho.kuozhi.v3.ui.base;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.tencent.android.tpush.XGPushClickedResult;
+import com.tencent.android.tpush.XGPushManager;
 
 /**
  * Created by JesseHuang on 15/4/23.
@@ -24,6 +28,7 @@ public class ActionBarBaseActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app.addTask(getLocalClassName(), this);
         mActionBar = getSupportActionBar();
     }
 
@@ -49,6 +54,23 @@ public class ActionBarBaseActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        XGPushClickedResult click = XGPushManager.onActivityStarted(this);
+        Log.d("TPush", "onResumeXGPushClickedResult:" + click);
+        if (click != null) { // 判断是否来自信鸽的打开方式
+            CommonUtil.longToast(this, "通知被点击:" + click.toString());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("MainActivity-->", "onPause");
+        XGPushManager.onActivityStoped(this);
     }
 
 }

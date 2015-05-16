@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +24,11 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushClickedResult;
+import com.tencent.android.tpush.XGPushConfig;
+import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.common.Constants;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,12 +59,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
         initView();
-        mExitTimer = new Timer();
-        app.addTask("DefaultPageActivity", this);
+        registerXgPush();
 
         if (savedInstanceState == null) {
             //selectItem(0);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     public void initCordovaWebView() {
@@ -237,6 +248,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
                 }
                 CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
                 mIsExit = true;
+                if (mExitTimer == null) {
+                    mExitTimer = new Timer();
+                }
                 mExitTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -256,6 +270,25 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mExitTimer.cancel();
         mExitTimer = null;
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
+    }
+
+    public void registerXgPush() {
+        XGPushConfig.enableDebug(this, true);
+        XGPushManager.registerPush(mContext, new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object data, int flag) {
+                Log.w(Constants.LogTag,
+                        "+++ register push success. token:" + data);
+            }
+
+            @Override
+            public void onFail(Object data, int errCode, String msg) {
+                Log.w(Constants.LogTag,
+                        "+++ register push fail. token:" + data
+                                + ", errCode:" + errCode + ",msg:"
+                                + msg);
+            }
+        });
     }
 
     @Override
