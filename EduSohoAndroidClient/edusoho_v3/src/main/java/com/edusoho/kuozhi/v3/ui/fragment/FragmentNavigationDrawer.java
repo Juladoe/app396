@@ -28,6 +28,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private View mDrawerFragment;
+    private int mPosition;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -84,6 +85,17 @@ public class FragmentNavigationDrawer extends BaseFragment {
                 super.onDrawerClosed(view);
 //                mActivity.setTitle(mTitle);
 //                mActivity.invalidateOptionsMenu();
+                switch (mPosition) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+                        break;
+                }
             }
 
             @Override
@@ -116,22 +128,23 @@ public class FragmentNavigationDrawer extends BaseFragment {
 
     }
 
-    View.OnClickListener mFeedBackClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mDrawerLayout != null) {
-                mDrawerLayout.closeDrawer(mDrawerFragment);
-            }
-        }
-    };
-
     View.OnClickListener mSettingClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mDrawerLayout != null) {
                 mDrawerLayout.closeDrawer(mDrawerFragment);
             }
-            mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+            mPosition = 3;
+        }
+    };
+
+    View.OnClickListener mFeedBackClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mDrawerLayout != null) {
+                mDrawerLayout.closeDrawer(mDrawerFragment);
+            }
+            mPosition = 4;
         }
     };
 
@@ -152,6 +165,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mDrawerFragment);
         }
+        mPosition = position;
         CommonUtil.longToast(mActivity, mRadioButtons[position].getText().toString());
     }
 
