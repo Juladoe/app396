@@ -28,6 +28,8 @@ import com.soooner.source.common.util.*;
 import com.soooner.source.entity.SessionData.LivaRoomInfo.LiveRoomInfoData;
 import com.soooner.source.entity.SessionEmun.LiveRoomStreamType;
 import com.soooner.source.system.PlaySpliceLoader;
+import com.soooner.ws.event.LiveRoomEvent.NextSegmentEvent;
+import de.greenrobot.event.EventBus;
 import org.json.JSONObject;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.widget.VideoView;
@@ -57,16 +59,21 @@ public class MyVideoView extends FrameLayout {
 
     Animation chanpian_rotate;
 
+    EventBus bus;
+
     public MyVideoView(Context context) {
         super(context);
+        bus = EventBus.getDefault();
     }
 
     public MyVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        bus = EventBus.getDefault();
     }
 
     public MyVideoView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        bus = EventBus.getDefault();
     }
 
 
@@ -479,6 +486,11 @@ public class MyVideoView extends FrameLayout {
                     try {
                         final SpliceInfo spliceInfo= (SpliceInfo) msg.obj;
                         PlaySpliceLoader.load(spliceInfo);
+
+                        if(spliceInfo.playSplicelist.size()<=1){
+                            bus.post(new NextSegmentEvent());
+                            return;
+                        }
 
                         my_videoview.setMediaPlayContextPacket(true);
                         my_videoview.setOnAvioContentPacketListener(new IMediaPlayer.OnAvioContentPacketListener() {

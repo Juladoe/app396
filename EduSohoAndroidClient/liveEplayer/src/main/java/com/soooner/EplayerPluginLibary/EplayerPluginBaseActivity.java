@@ -9,9 +9,12 @@ import com.soooner.EplayerPluginLibary.util.StringUtils;
 import com.soooner.EplayerPluginLibary.util.ToastUtil;
 import com.soooner.EplayerPluginLibary.widget.MyVideoView;
 import com.soooner.EplayerSetting;
+import com.soooner.playback.PlaybackEngin;
 import com.soooner.source.entity.EPlayerData;
 import com.soooner.source.entity.EPlayerLoginType;
 import com.soooner.source.entity.SessionData.EplayerSessionInfo;
+import com.soooner.ws.event.LiveRoomEvent.JoinRoomEvent;
+import com.soooner.ws.event.LiveRoomEvent.NextSegmentEvent;
 
 /**
  * Created by zhaoxu2014 on 15-1-5.
@@ -32,6 +35,8 @@ public class EplayerPluginBaseActivity extends Activity{
 
     public boolean personChatForbid=false;//个人禁言
     public boolean allChatForbid=false;//全体禁言
+
+    public PlaybackEngin playbackEngin;
 
     public boolean isChatForbid(){
         return personChatForbid||allChatForbid;
@@ -79,5 +84,11 @@ public class EplayerPluginBaseActivity extends Activity{
 
         }
 
+    }
+
+    public void onEventBackgroundThread(NextSegmentEvent event) {
+        if (playbackEngin != null) {
+            playbackEngin.resetNextSegment();
+        }
     }
 }
