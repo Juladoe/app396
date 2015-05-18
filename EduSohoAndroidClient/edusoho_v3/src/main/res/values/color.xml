@@ -20,6 +20,10 @@
     <color name="base_list_background_color">#e5e5e5</color>
 
     <color name="found_title_btn_color">#66ffffff</color>
+    <color name="text_press">#ccc</color>
+    <color name="logout_btn_gradient">#ddff5d47</color>
+    <color name="logout_btn_gradient_pressed">#ff5d47</color>
+
 
     <color name="lesson_item_bg_pressed">#E5E5E5</color>
     <color name="lesson_item_bg">#ffffff</color>
@@ -183,8 +187,6 @@
     <color name="standby_accent_color_deep">#ff5822</color>
     <color name="standby_stress_color">#ff5822</color>
     <color name="logout_btn_stroke">#aaa</color>
-    <color name="logout_btn_gradient">#ddff5d47</color>
-    <color name="logout_btn_gradient_pressed">#ff5d47</color>
     <color name="my_sch_bg_noraml_stroke">#DFDFDF</color>
     <color name="my_sch_bg_noraml_gradient">#F5F5F5</color>
     <color name="my_sch_bg_noraml_gradient_pressed">#ffffff</color>

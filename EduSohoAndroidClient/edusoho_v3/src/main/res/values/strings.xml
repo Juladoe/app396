@@ -12,10 +12,20 @@
     <string name="image_cache_path">ImageLoaderCache</string>
 
 
+    <!--Button-->
     <string name="down_tab_news">动态</string>
     <string name="down_tab_find">发现</string>
     <string name="down_tab_friends">校友</string>
     <string name="toolbar_title">分类</string>
+
+    <!--TextView-->
+    <string name="setting_scan">扫一扫</string>
+    <string name="setting_scan_second">扫描进入网校</string>
+    <string name="setting_new_msg_notify">新消息提醒</string>
+    <string name="setting_online_duration">在线时段</string>
+    <string name="setting_wifi_download">非wifi下视频可以播放/下载</string>
+    <string name="setting_clean_cache">清理缓存</string>
+    <string name="setting_about">关于</string>
 
 
     <!--ttf-->

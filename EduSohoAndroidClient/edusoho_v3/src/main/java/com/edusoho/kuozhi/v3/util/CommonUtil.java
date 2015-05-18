@@ -32,27 +32,14 @@ import android.view.animation.AccelerateInterpolator;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.util.AQUtility;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.listener.ResultCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.StatusCallback;
-import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -98,34 +85,6 @@ public class CommonUtil {
     public static int px2sp(Context context, float spValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (spValue / scale + 0.5f);
-    }
-
-
-    public static void getImage(
-            Context context, String url, final NormalCallback<Bitmap> callback) {
-        AQuery aQuery = new AQuery(context);
-        AjaxCallback<byte[]> ajaxCallback = new AjaxCallback<byte[]>() {
-            @Override
-            public void callback(String url, byte[] object, AjaxStatus status) {
-                super.callback(url, object, status);
-                Bitmap bitmap = null;
-                BitmapFactory.Options option = new BitmapFactory.Options();
-                option.inJustDecodeBounds = true;
-                BitmapFactory.decodeByteArray(object, 0, object.length, option);
-
-                option.inSampleSize = computeSampleSize(option, -1, 200 * 200);
-                option.inJustDecodeBounds = false;
-                try {
-                    bitmap = BitmapFactory.decodeByteArray(object, 0, object.length, option);
-                    Log.d(null, "bm->" + bitmap);
-                } catch (Exception e) {
-                    bitmap = null;
-                }
-                callback.success(bitmap);
-            }
-        };
-
-        aQuery.ajax(url, byte[].class, 60 * 60, ajaxCallback);
     }
 
     public static Bitmap getBitmapFromFile(File file) {
@@ -176,12 +135,6 @@ public class CommonUtil {
                 return gestureDetector.onTouchEvent(motionEvent);
             }
         });
-    }
-
-    public static boolean urlCacheExistsed(Context context, String url) {
-        File cacheDir = AQUtility.getCacheDir(context);
-        File cacheFile = AQUtility.getExistedCacheByUrl(cacheDir, url);
-        return cacheFile != null;
     }
 
     public static void viewTreeObserver(View view, final NormalCallback callback) {
@@ -1205,6 +1158,15 @@ public class CommonUtil {
         );
         popupDialog.setOkText("去设置");
         popupDialog.show();
+    }
+
+    public static File getCacheFileDir() {
+        File sdcard = Environment.getExternalStorageDirectory();
+        File workSpace = new File(sdcard, "edusoho");
+        if (!workSpace.exists()) {
+            workSpace.mkdir();
+        }
+        return workSpace;
     }
 
     public static void longToast(Context context, String title) {

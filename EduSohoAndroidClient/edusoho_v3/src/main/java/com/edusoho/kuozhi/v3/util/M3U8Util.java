@@ -8,10 +8,10 @@ import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.androidquery.callback.AjaxStatus;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownLoadStatusReceiver;
-import com.edusoho.kuozhi.v3.listener.ResultCallback;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
@@ -34,6 +34,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -248,19 +249,16 @@ public class M3U8Util {
                 "lessonId", String.valueOf(lessonId)
         });
 
-        app.postUrl(false, requestUrl, new ResultCallback() {
+        app.postUrl(requestUrl, new Response.Listener<JSONObject>() {
             @Override
-            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+            public void onResponse(JSONObject response) {
                 LessonItem lessonItem = app.gson.fromJson(
-                        object, new TypeToken<LessonItem>() {
+                        response.toString(), new TypeToken<LessonItem>() {
                         }.getType()
                 );
-
-                Log.d(TAG, "load lessonItem " + lessonItem);
                 if (lessonItem == null) {
                     return;
                 }
-
                 mLessonMediaUrl = lessonItem.mediaUri;
                 mLessonTitle = lessonItem.title;
                 mThreadPoolExecutor.execute(new Runnable() {
@@ -270,7 +268,13 @@ public class M3U8Util {
                     }
                 });
             }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
         });
+
     }
 
     public void download(int lessonId, int courseId, int userId) {

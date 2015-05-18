@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.edusoho.kuozhi.R;
@@ -130,7 +131,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
             if (mDrawerLayout != null) {
                 mDrawerLayout.closeDrawer(mDrawerFragment);
             }
-            mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mContext, null);
+            mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
         }
     };
 
@@ -176,4 +177,21 @@ public class FragmentNavigationDrawer extends BaseFragment {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+    public static Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
+
+    public static Runnable mRun = new Runnable() {
+        @Override
+        public void run() {
+            Message msg = mHandler.obtainMessage(2);
+            mHandler.sendMessage(msg);
+            msg.sendToTarget();
+
+        }
+    };
 }

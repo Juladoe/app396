@@ -38,8 +38,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_school);
-        app.addTask("QrSchoolActivity", this);
-        setBackMode(null, "进入网校");
+        setBackMode(BACK, "进入网校");
         initView();
     }
 

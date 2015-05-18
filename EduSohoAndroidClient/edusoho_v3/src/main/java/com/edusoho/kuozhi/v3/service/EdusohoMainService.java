@@ -7,16 +7,18 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.ResultCallback;
 import com.edusoho.kuozhi.v3.model.bal.TokenResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -31,7 +33,7 @@ public class EdusohoMainService extends Service {
     private static EdusohoMainService mService;
     private Handler workHandler;
     //private User mLoginUser;
-    private Queue<AjaxCallback> mAjaxQueue;
+    private Queue<Request<JSONObject>> mAjaxQueue;
 
     public static final int LOGIN_WITH_TOKEN = 0001;
     public static final int EXIT_USER = 0002;
@@ -40,7 +42,7 @@ public class EdusohoMainService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(null, "create Main service");
-        mAjaxQueue = new LinkedList<AjaxCallback>();
+        mAjaxQueue = new LinkedList<Request<JSONObject>>();
         app = (EdusohoApp) getApplication();
         mService = this;
 
@@ -66,14 +68,6 @@ public class EdusohoMainService extends Service {
         message.sendToTarget();
     }
 
-    public void stopAjaxFromQueue() {
-        AjaxCallback ajaxCallback = null;
-        while ((ajaxCallback = mAjaxQueue.poll()) != null) {
-            Log.d(null, "abort->" + ajaxCallback);
-            ajaxCallback.abort();
-        }
-    }
-
     private void loginWithToken(final ActionBarBaseActivity activity) {
         Log.d(null, "send loginwithtoken message1 " + app.token);
         if (TextUtils.isEmpty(app.token)) {
@@ -94,13 +88,12 @@ public class EdusohoMainService extends Service {
             Log.d(null, "send loginwithtoken message " + app.token);
             RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
 
-            AjaxCallback ajaxCallback = app.postUrl(false, url, new ResultCallback() {
+            Request<JSONObject> request = app.postUrl(url, new Response.Listener<JSONObject>() {
                 @Override
-                public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                    Log.d(null, "callback loginWithToken->" + ajaxStatus.getCode());
+                public void onResponse(JSONObject response) {
                     mAjaxQueue.poll();
                     TokenResult result = app.gson.fromJson(
-                            object, new TypeToken<TokenResult>() {
+                            response.toString(), new TypeToken<TokenResult>() {
                             }.getType());
                     Log.d(null, "callback loginWithToken result->" + result);
 
@@ -114,35 +107,63 @@ public class EdusohoMainService extends Service {
 
                     //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                 }
-
+            }, new Response.ErrorListener() {
                 @Override
-                public void update(String url, String object, AjaxStatus ajaxStatus) {
-                    int code = ajaxStatus.getCode();
-                    Log.d(null, "update loginWithToken ->" + code);
-                    if (code != Const.OK) {
-                        return;
-                    }
-                    TokenResult result = app.gson.fromJson(
-                            object, new TypeToken<TokenResult>() {
-                            }.getType());
-                    if (result == null) {
-                        if (app.loginUser != null) {
-                            app.removeToken();
-//                            app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
-//                            app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
-                            //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
-                        }
-                        return;
-                    }
-                    app.loginUser = result.user;
-                    app.saveToken(result);
-//                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
-//                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
-                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
+                public void onErrorResponse(VolleyError error) {
+
                 }
             });
 
-            mAjaxQueue.offer(ajaxCallback);
+
+//            AjaxCallback ajaxCallback = app.postUrl(false, url, new ResultCallback() {
+//                @Override
+//                public void callback(String url, String object, AjaxStatus ajaxStatus) {
+//                    Log.d(null, "callback loginWithToken->" + ajaxStatus.getCode());
+//                    mAjaxQueue.poll();
+//                    TokenResult result = app.gson.fromJson(
+//                            object, new TypeToken<TokenResult>() {
+//                            }.getType());
+//                    Log.d(null, "callback loginWithToken result->" + result);
+//
+//                    if (result != null) {
+//                        //mLoginUser = result.user;
+//                        app.saveToken(result);
+//                    }
+//
+////                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
+////                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
+//
+//                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
+//                }
+//
+//                @Override
+//                public void update(String url, String object, AjaxStatus ajaxStatus) {
+//                    int code = ajaxStatus.getCode();
+//                    Log.d(null, "update loginWithToken ->" + code);
+//                    if (code != Const.OK) {
+//                        return;
+//                    }
+//                    TokenResult result = app.gson.fromJson(
+//                            object, new TypeToken<TokenResult>() {
+//                            }.getType());
+//                    if (result == null) {
+//                        if (app.loginUser != null) {
+//                            app.removeToken();
+////                            app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
+////                            app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
+//                            //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
+//                        }
+//                        return;
+//                    }
+//                    app.loginUser = result.user;
+//                    app.saveToken(result);
+////                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
+////                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
+//                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
+//                }
+//            });
+
+            mAjaxQueue.offer(request);
         }
     }
 

@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="8dp"
-    android:background="@color/system_normal_text_pressed"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/system_normal_text_pressed"
+    android:padding="8dp">
 
     <ImageView
-        android:layout_marginRight="8dp"
         android:id="@+id/notify_icon"
-        android:src="@drawable/notification_download_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/notification_download_icon" />
 
     <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textSize="@dimen/base_size"
-        android:textColor="@color/notify_title"
-        android:layout_toRightOf="@id/notify_icon"
         android:id="@+id/notify_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/notify_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/notify_title"
+        android:textSize="@dimen/base_size" />
 
     <TextView
-        android:layout_below="@id/notify_title"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textSize="@dimen/sys_small_normal"
-        android:textColor="@color/white"
-        android:layout_alignParentRight="true"
         android:id="@+id/notify_percent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/notify_title"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sys_small_normal" />
 
     <TextView
-        android:visibility="gone"
-        android:layout_below="@id/notify_title"
-        android:layout_toLeftOf="@id/notify_percent"
-        android:layout_toRightOf="@id/notify_icon"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textSize="@dimen/sys_small_normal"
-        android:textColor="@color/white"
         android:id="@+id/notify_finish"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <ProgressBar
-        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notify_title"
         android:layout_toLeftOf="@id/notify_percent"
         android:layout_toRightOf="@id/notify_icon"
-        android:progressDrawable="@drawable/course_learn_status_progress"
-        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sys_small_normal"
+        android:visibility="gone" />
+
+    <ProgressBar
         android:id="@+id/notify_progress"
-        android:layout_below="@id/notify_title"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="6dp" />
+        android:layout_height="6dp"
+        android:layout_below="@id/notify_title"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/notify_percent"
+        android:layout_toRightOf="@id/notify_icon"
+        android:progressDrawable="@drawable/course_learn_status_progress" />
 
 
 </RelativeLayout>

@@ -5,13 +5,12 @@ import android.util.Log;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -24,7 +23,6 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
@@ -253,17 +251,17 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             return;
         }
 
-        Map<String, String> params = app.getPlatformInfo();
+        HashMap<String, String> params = app.getPlatformInfo();
 
         if (!config.isPublicRegistDevice) {
-            app.logToServer(Const.MOBILE_REGIST, params, new AjaxCallback<String>() {
+            RequestUrl requestUrl = new RequestUrl(Const.MOBILE_REGIST);
+            requestUrl.setParams(params);
+            app.postUrl(requestUrl, new Response.Listener<JSONObject>() {
                 @Override
-                public void callback(String url, String object, AjaxStatus status) {
-                    super.callback(url, object, status);
-                    Log.d(null, "regist device to public");
+                public void onResponse(JSONObject response) {
                     try {
                         Boolean result = app.gson.fromJson(
-                                object, new TypeToken<Boolean>() {
+                                response.toString(), new TypeToken<Boolean>() {
                                 }.getType()
                         );
 
@@ -272,20 +270,27 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                             app.saveConfig();
                         }
                     } catch (Exception e) {
+                        Log.e(null, e.toString());
                     }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
                 }
             });
         }
 
         if (!config.isRegistDevice) {
-            app.logToServer(app.schoolHost + Const.REGIST_DEVICE, params, new AjaxCallback<String>() {
+            RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
+            requestUrl.setParams(params);
+            app.postUrl(requestUrl, new Response.Listener<JSONObject>() {
                 @Override
-                public void callback(String url, String object, AjaxStatus status) {
-                    super.callback(url, object, status);
+                public void onResponse(JSONObject response) {
                     Log.d(null, "regist device to school");
                     try {
                         Boolean result = app.gson.fromJson(
-                                object, new TypeToken<Boolean>() {
+                                response.toString(), new TypeToken<Boolean>() {
                                 }.getType()
                         );
 
@@ -294,7 +299,13 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                             app.saveConfig();
                         }
                     } catch (Exception e) {
+                        Log.e(null, e.toString());
                     }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
                 }
             });
         }
