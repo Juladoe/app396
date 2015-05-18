@@ -85,7 +85,6 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     RelativeLayout fl_all;
     LinearLayout li_drawpaddview;
    View view_title;
-    PlaybackEngin playbackEngin;
     PlaybackLoading loading;
 
     PlayerControllerView playerControllerView;

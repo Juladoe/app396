@@ -107,7 +107,6 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
     RelativeLayout fl_all;
     LinearLayout li_drawpaddview,li_teacher_area;
 
-    PlaybackEngin playbackEngin;
     MyVideoView fl_myvideoview;
 
 
