@@ -8,11 +8,11 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 /**
  * Created by JesseHuang on 15/5/18.
  */
-public class MsgReminderActivity extends ActionBarBaseActivity {
+public class AboutActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_msg_reminder);
-        setBackMode(BACK, "新消息提醒");
+        setContentView(R.layout.about_activity);
+        setBackMode(BACK, "关于");
     }
 }

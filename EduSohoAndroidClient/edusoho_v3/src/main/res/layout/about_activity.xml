@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvWecome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:alpha="0.87"
+        android:background="@drawable/more_setting_list_select"
+        android:drawableRight="@drawable/more_setting_right"
+        android:padding="12dp"
+        android:text="@string/about_welcome"
+        android:clickable="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/medium_font_size" />
+
+    <TextView
+        android:id="@+id/tvFeedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:alpha="0.87"
+        android:background="@drawable/more_setting_list_select"
+        android:drawableRight="@drawable/more_setting_right"
+        android:padding="12dp"
+        android:text="@string/about_feedback"
+        android:clickable="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/medium_font_size" />
+
+    <RelativeLayout
+        android:id="@+id/linear_check_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/more_setting_list_select"
+        android:clickable="true"
+        android:layout_marginTop="1dp"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tvCheckUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:alpha="0.87"
+            android:text="@string/about_check_update"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/medium_font_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/tvVersion"
+            android:layout_toRightOf="@+id/tvCheckUpdate"
+            android:alpha="0.54"
+            android:text="3.0.0"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/small_font_size" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/more_setting_right" />
+    </RelativeLayout>
+</LinearLayout>

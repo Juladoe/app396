@@ -29,9 +29,20 @@
         name="SettingActivity"
         package="com.edusoho.kuozhi.v3.ui.SettingActivity"
         version="1.0" />
-    <pligun
+
+    <plugin
         name="MsgReminderActivity"
         package="com.edusoho.kuozhi.v3.ui.MsgReminderActivity"
+        version="1.0" />
+
+    <plugin
+        name="OnlineDurationActivity"
+        package="com.edusoho.kuozhi.v3.ui.OnlineDurationActivity"
+        version="1.0" />
+
+    <plugin
+        name="AboutActivity"
+        package="com.edusoho.kuozhi.v3.ui.AboutActivity"
         version="1.0" />
 
 </plugins>

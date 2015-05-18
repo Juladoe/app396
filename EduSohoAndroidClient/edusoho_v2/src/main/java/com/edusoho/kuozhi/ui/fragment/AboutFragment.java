@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.ui.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -67,8 +66,7 @@ public class AboutFragment extends BaseFragment {
         loadContent();
     }
 
-    private void initWebViewConfig()
-    {
+    private void initWebViewConfig() {
         mAboutWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -110,8 +108,7 @@ public class AboutFragment extends BaseFragment {
         });
     }
 
-    private void loadContent()
-    {
+    private void loadContent() {
         if (mType == FROM_URL) {
             mAboutWebView.loadUrl(mUrl);
         } else {
