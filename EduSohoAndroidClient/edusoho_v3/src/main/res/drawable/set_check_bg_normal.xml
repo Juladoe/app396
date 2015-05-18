@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape>
+
+            <!-- 是否是圆角 -->
+            <corners android:radius="5dip" />
+
+            <stroke
+                android:width="1px"
+                android:color="@color/set_check_bg_stroke" />
+
+            <size
+
+                android:height="20dp"
+                android:width="60dp" />
+            <!-- shape的颜色，支持渐变 -->
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/set_check_bg_sel_gradient"
+                android:centerY="0.45"
+                android:endColor="@color/set_check_bg_sel_gradient"
+                android:startColor="@color/set_check_bg_sel_gradient" />
+        </shape>
+    </item>
+    <item
+        android:left="28dp"
+        android:top="1px"
+        android:bottom="1px"
+        android:right="1px">
+        <shape>
+
+            <!-- 是否是圆角 -->
+            <corners android:radius="5dip" />
+
+            <stroke
+                android:width="1px"
+                android:color="@color/set_check_bg_stroke" />
+
+            <size
+                android:height="20dp"
+                android:width="30dp" />
+            <!-- shape的颜色，支持渐变 -->
+            <gradient
+                android:angle="270"
+                android:centerColor="@android:color/white"
+                android:centerY="0.45"
+                android:endColor="@android:color/white"
+                android:startColor="@android:color/white" />
+        </shape>
+    </item>
+
+</layer-list>

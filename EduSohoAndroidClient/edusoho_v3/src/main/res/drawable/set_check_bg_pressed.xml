@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="5dp" />
+            <stroke
+                android:width="1px"
+                android:color="@color/set_check_bg_stroke_pressed" />
+            <size
+                android:height="20dp"
+                android:width="60dp" />
+            <gradient
+                android:angle="270"
+                android:startColor="@color/set_check_bg_stroke_pressed"
+                android:centerY="0.45"
+                android:endColor="@color/set_check_bg_stroke_pressed"
+                android:centerColor="@color/set_check_bg_stroke_pressed" />
+        </shape>
+    </item>
+    <item
+        android:right="28dp"
+        android:bottom="1px"
+        android:left="1px"
+        android:top="1px">
+        <shape>
+
+            <corners android:radius="5dp" />
+            <stroke
+                android:width="1px"
+                android:color="@color/set_check_bg_stroke_pressed" />
+
+            <size
+                android:height="20dp"
+                android:width="30dp" />
+            <gradient
+                android:angle="270"
+                android:centerY="0.45"
+                android:startColor="@android:color/white"
+                android:endColor="@android:color/white"
+                android:centerColor="@android:color/white" />
+        </shape>
+    </item>
+</layer-list>

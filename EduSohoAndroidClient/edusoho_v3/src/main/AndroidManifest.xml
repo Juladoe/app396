@@ -34,7 +34,7 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <!-- 【可选】 信鸽SDK所需权限 -->
-    <!--<uses-permission android:name="android.permission.BLUETOOTH" />-->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
 
     <!-- 获取MAC地址-->
@@ -66,6 +66,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".v3.ui.SettingActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".v3.ui.MsgReminderActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
