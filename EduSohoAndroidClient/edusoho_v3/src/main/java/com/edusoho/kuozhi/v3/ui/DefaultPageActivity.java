@@ -25,7 +25,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.common.Constants;
@@ -70,21 +69,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-    }
-
-    public void initCordovaWebView() {
-//        if (webView == null) {
-//            webView = (CordovaWebView) findViewById(R.id.webView);
-//            Config.init(this);
-//            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
-//            webView.setWebViewClient(new WebViewClient() {
-//                @Override
-//                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                    view.loadUrl(url);
-//                    return true;
-//                }
-//            });
-//        }
     }
 
     private void initView() {
