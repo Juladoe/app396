@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 /**
- * Created by howzhi on 14-7-18.
+ * Created by bhy on 14-7-18.
  */
 public class EduSohoAnimWrap {
     private View mTarget;
