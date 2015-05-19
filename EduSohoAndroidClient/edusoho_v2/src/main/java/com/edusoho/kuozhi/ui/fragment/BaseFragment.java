@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,7 @@ import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import java.lang.reflect.Field;
 
 /**
- * Created by howzhi on 14-8-7.
+ * Created by hby on 14-8-7.
  */
 
 public abstract class BaseFragment extends Fragment implements MessageEngine.MessageCallback {
