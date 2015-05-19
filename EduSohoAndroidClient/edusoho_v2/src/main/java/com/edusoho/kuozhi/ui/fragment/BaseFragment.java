@@ -91,7 +91,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
             }
 
         } catch (Exception e) {
-            //nothing
+            Log.d("BaseFragment", e.toString());
         }
     }
 
