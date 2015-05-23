@@ -99,7 +99,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         app.saveToken(schoolResult);
                     }
                     app.setCurrentSchool(site);
-                    app.sendMessage(Const.LOGING_SUCCESS, null);
+                    app.sendMessage(Const.LOGIN_SUCCESS, null);
 
 
                     //showSchSplash(site.name, site.splashs);

@@ -34,7 +34,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -249,9 +248,9 @@ public class M3U8Util {
                 "lessonId", String.valueOf(lessonId)
         });
 
-        app.postUrl(requestUrl, new Response.Listener<JSONObject>() {
+        app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 LessonItem lessonItem = app.gson.fromJson(
                         response.toString(), new TypeToken<LessonItem>() {
                         }.getType()

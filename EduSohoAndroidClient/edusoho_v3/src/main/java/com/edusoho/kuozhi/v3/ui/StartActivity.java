@@ -256,9 +256,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         if (!config.isPublicRegistDevice) {
             RequestUrl requestUrl = new RequestUrl(Const.MOBILE_REGIST);
             requestUrl.setParams(params);
-            app.postUrl(requestUrl, new Response.Listener<JSONObject>() {
+            app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(String response) {
                     try {
                         Boolean result = app.gson.fromJson(
                                 response.toString(), new TypeToken<Boolean>() {
@@ -284,9 +284,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         if (!config.isRegistDevice) {
             RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
             requestUrl.setParams(params);
-            app.postUrl(requestUrl, new Response.Listener<JSONObject>() {
+            app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(String response) {
                     Log.d(null, "regist device to school");
                     try {
                         Boolean result = app.gson.fromJson(

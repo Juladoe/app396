@@ -78,7 +78,7 @@ public class BaseActivity extends ActionBarActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
-    public void ajaxPost(final RequestUrl requestUrl, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public void ajaxPost(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         app.postUrl(requestUrl, responseListener, errorListener);
     }
 

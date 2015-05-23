@@ -11,8 +11,8 @@ import android.support.v4.app.FragmentTransaction;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.model.School;
+import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.ui.fragment.BaseFragment;
 import com.edusoho.kuozhi.ui.fragment.LoginFragment;
@@ -54,8 +54,7 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     }
 
-    public static void startForResult(Activity context)
-    {
+    public static void startForResult(Activity context) {
         if (isRun) {
             return;
         }
@@ -157,7 +156,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     public void showFragment(String tag) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         BaseFragment fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
-        fragmentTransaction.replace(R.id.login_container, fragment);
+        fragmentTransaction.replace(R.id.login_container, fragment, tag);
         List<Fragment> fragmentList = mFragmentManager.getFragments();
         if (fragmentList != null && !fragmentList.isEmpty()) {
             fragmentTransaction.addToBackStack(tag);

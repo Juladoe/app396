@@ -53,12 +53,11 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("FindFragment-->", "onCreateView");
         LayoutInflater localInflater = inflater.cloneInContext(new CordovaContext(getActivity(), this));
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (CordovaWebView) rootView.findViewById(R.id.webView);
         Config.init(getActivity());
-        webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
+        //webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -75,7 +74,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         if (webView == null) {
             webView = (CordovaWebView) view.findViewById(R.id.webView);
             Config.init(getActivity());
-            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
+            //webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
             webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {

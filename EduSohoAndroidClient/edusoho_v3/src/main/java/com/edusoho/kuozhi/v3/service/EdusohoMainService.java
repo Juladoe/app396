@@ -18,8 +18,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -33,7 +31,7 @@ public class EdusohoMainService extends Service {
     private static EdusohoMainService mService;
     private Handler workHandler;
     //private User mLoginUser;
-    private Queue<Request<JSONObject>> mAjaxQueue;
+    private Queue<Request<String>> mAjaxQueue;
 
     public static final int LOGIN_WITH_TOKEN = 0001;
     public static final int EXIT_USER = 0002;
@@ -42,7 +40,7 @@ public class EdusohoMainService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(null, "create Main service");
-        mAjaxQueue = new LinkedList<Request<JSONObject>>();
+        mAjaxQueue = new LinkedList<Request<String>>();
         app = (EdusohoApp) getApplication();
         mService = this;
 
@@ -88,9 +86,9 @@ public class EdusohoMainService extends Service {
             Log.d(null, "send loginwithtoken message " + app.token);
             RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
 
-            Request<JSONObject> request = app.postUrl(url, new Response.Listener<JSONObject>() {
+            Request<String> request = app.postUrl(url, new Response.Listener<String>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(String response) {
                     mAjaxQueue.poll();
                     TokenResult result = app.gson.fromJson(
                             response.toString(), new TypeToken<TokenResult>() {

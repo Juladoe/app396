@@ -73,7 +73,7 @@ public class Const {
 
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
-    public static final String LOGING_SUCCESS = "login_success";
+    public static final String LOGIN_SUCCESS = "login_success";
     public static final String REFRESH_REVIEWS = "refresh_review";
 
     public static final int OK = 200;

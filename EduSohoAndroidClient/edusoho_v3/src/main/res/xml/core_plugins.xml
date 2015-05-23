@@ -21,6 +21,16 @@
         version="1.0" />
 
     <plugin
+        name="LoginFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.LoginFragment"
+        version="1.0" />
+
+    <plugin
+        name="RegisterFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.RegisterFragment"
+        version="1.0" />
+
+    <plugin
         name="QrSchoolActivity"
         package="com.edusoho.kuozhi.v3.ui.QrSchoolActivity"
         version="1.0" />
@@ -43,6 +53,11 @@
     <plugin
         name="AboutActivity"
         package="com.edusoho.kuozhi.v3.ui.AboutActivity"
+        version="1.0" />
+
+    <plugin
+        name="LoginActivity"
+        package="com.edusoho.kuozhi.v3.ui.LoginActivity"
         version="1.0" />
 
 </plugins>

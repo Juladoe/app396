@@ -13,8 +13,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 /**
  * Created by JesseHuang on 15/4/26.
  */
@@ -29,9 +27,9 @@ public class AppUtil {
                 "code", code
         });
         Log.d(null, "code->" + code);
-        activity.ajaxPost(requestUrl, new Response.Listener<JSONObject>() {
+        activity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 final AppUpdateInfo appUpdateInfo = activity.parseJsonValue(response.toString(), new TypeToken<AppUpdateInfo>() {
                 });
                 if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
