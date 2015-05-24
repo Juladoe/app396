@@ -10,7 +10,7 @@
     <color name="base_black_normal">#000000</color>
     <color name="base_black_35">#35000000</color>
     <color name="base_black_87">#dd000000</color>
-    <color name="base_black_54">#85000000</color>
+    <color name="base_black_54">#8a000000</color>
     <color name="base_black_26">#66000000</color>
     <color name="base_black_12">#1e000000</color>
     <color name="base_black_low">#f2f2f2</color>
@@ -18,6 +18,12 @@
     <color name="base_btn_pressed">#DFDFDF</color>
     <color name="base_color_normal">#2ec368</color>
     <color name="base_list_background_color">#e5e5e5</color>
+
+    <color name="material_grey">#cfd0d1</color>
+    <color name="material_green">#37b97d</color>
+    <color name="material_green_alpha">#dd37b97d</color>
+    <color name="material_green1">#73cea5</color>
+
 
     <color name="found_title_btn_color">#66ffffff</color>
     <color name="text_press">#ccc</color>

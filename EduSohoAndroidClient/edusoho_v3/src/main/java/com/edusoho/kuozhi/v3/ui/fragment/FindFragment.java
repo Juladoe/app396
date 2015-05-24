@@ -54,13 +54,11 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("FindFragment-->", "onCreateView");
         LayoutInflater localInflater = inflater.cloneInContext(new CordovaContext(getActivity(), this));
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
-
+        webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
         return rootView;
     }
 
@@ -70,7 +68,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         if (webView == null) {
             webView = (ESWebView) view.findViewById(R.id.webView);
             Config.init(getActivity());
-            webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
+            webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
         }
     }
 

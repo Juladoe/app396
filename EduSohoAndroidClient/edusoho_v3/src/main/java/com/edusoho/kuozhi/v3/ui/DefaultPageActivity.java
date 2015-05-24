@@ -58,7 +58,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
         initView();
-        registerXgPush();
+        //registerXgPush();
 
         if (savedInstanceState == null) {
             //selectItem(0);
@@ -186,16 +186,16 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mDownTabFriends.setIcon(R.string.font_friends);
         if (id == R.id.nav_tab_news) {
             setTitle(R.string.title_news);
-            mDownTabNews.setIcon(R.string.font_news_press);
+            mDownTabNews.setIcon(R.string.font_news);
             mToolBar.setTitleVisibility(View.GONE);
         } else if (id == R.id.nav_tab_find) {
             setTitle(R.string.title_find);
             mToolBar.setTitleVisibility(View.VISIBLE);
-            mDownTabFind.setIcon(R.string.font_find_press);
+            mDownTabFind.setIcon(R.string.font_find);
         } else if (id == R.id.nav_tab_friends) {
             setTitle(R.string.title_friends);
             mToolBar.setTitleVisibility(View.GONE);
-            mDownTabFriends.setIcon(R.string.font_friends_press);
+            mDownTabFriends.setIcon(R.string.font_friends);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,17 +15,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.readystatesoftware.viewbadger.BadgeView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JesseHuang on 15/4/27.
  */
-public class FragmentNavigationDrawer extends BaseFragment {
+public class FragmentNavigationDrawer extends BaseFragment implements MessageEngine.MessageCallback {
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private View mDrawerFragment;
@@ -40,6 +52,10 @@ public class FragmentNavigationDrawer extends BaseFragment {
 
     private Button btnSetting;
     private Button btnFeedBack;
+    private TextView tvNickname;
+    private ImageView ivLogin;
+    private CircleImageView civAvatar;
+
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
@@ -55,6 +71,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_navigation_drawer);
+        app.registMsgSource(this);
     }
 
     @Override
@@ -101,6 +118,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                mPosition = -1;
 //                mActivity.setTitle(mDrawerTitle);
 //                mActivity.invalidateOptionsMenu();
             }
@@ -125,7 +143,10 @@ public class FragmentNavigationDrawer extends BaseFragment {
         btnSetting.setOnClickListener(mSettingClickListener);
         btnFeedBack = (Button) mActivity.findViewById(R.id.btnFeedBack);
         btnFeedBack.setOnClickListener(mFeedBackClickListener);
-
+        tvNickname = (TextView) mActivity.findViewById(R.id.tv_nickname);
+        ivLogin = (ImageView) mActivity.findViewById(R.id.iv_login);
+        ivLogin.setOnClickListener(mLoginClickListener);
+        civAvatar = (CircleImageView) mActivity.findViewById(R.id.circleIcon);
     }
 
     View.OnClickListener mSettingClickListener = new View.OnClickListener() {
@@ -161,12 +182,21 @@ public class FragmentNavigationDrawer extends BaseFragment {
         }
     };
 
+    View.OnClickListener mLoginClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (app.loginUser == null) {
+                LoginActivity.startLogin(mActivity);
+            }
+        }
+    };
+
     private void selectItem(int position) {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mDrawerFragment);
         }
         mPosition = position;
-        CommonUtil.longToast(mActivity, mRadioButtons[position].getText().toString());
+        //CommonUtil.longToast(mActivity, mRadioButtons[position].getText().toString());
     }
 
     public boolean isDrawerOpen() {
@@ -208,4 +238,22 @@ public class FragmentNavigationDrawer extends BaseFragment {
 
         }
     };
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (Const.LOGIN_SUCCESS.equals(messageType.type)) {
+            tvNickname.setText(mActivity.app.loginUser.nickname);
+            ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(Const.LOGIN_SUCCESS)
+        };
+        return messageTypes;
+    }
 }

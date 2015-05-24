@@ -24,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -119,16 +120,9 @@ public class EdusohoApp extends Application {
         return EdusohoMainService.getService();
     }
 
-    /**
-     * volley post请求
-     *
-     * @param requestUrl       url、参数、header等信息
-     * @param responseListener 返回reponse信息
-     * @param errorListener    错误信息
-     */
-    public Request<JSONObject> postUrl(final RequestUrl requestUrl, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public Request<String> postUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl.url, responseListener, errorListener) {
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, requestUrl.url, responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 return requestUrl.getParams();

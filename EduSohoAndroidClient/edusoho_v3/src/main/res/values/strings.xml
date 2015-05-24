@@ -11,12 +11,12 @@
     <string name="splash_padding">0.3</string>
     <string name="image_cache_path">ImageLoaderCache</string>
 
-
     <!--Button-->
     <string name="down_tab_news">动态</string>
     <string name="down_tab_find">发现</string>
     <string name="down_tab_friends">校友</string>
     <string name="toolbar_title">分类</string>
+    <string name="login">登录</string>
 
     <!--TextView-->
     <string name="setting_scan">扫一扫</string>
@@ -35,14 +35,27 @@
     <string name="about_welcome">欢迎页</string>
     <string name="about_feedback">意见反馈</string>
     <string name="about_check_update">检查新版本</string>
+    <string name="login_forget_password">忘记密码?</string>
+    <string name="drawer_nickname">立即登录</string>
+
+    <!--EditText-->
+    <string name="login_username_hint">手机号/邮箱/昵称</string>
+    <string name="login_password_hint">密码</string>
+    <string name="login_line_text">其他方式登录</string>
+
+    <!--system-->
+    <string name="request_fail_text">请求失败</string>
 
     <!--ttf-->
-    <string name="font_friends">&#xe636;</string>
+    <string name="font_friends">&#xe605;</string>
     <string name="font_friends_press">&#xe637;</string>
-    <string name="font_news">&#xe634;</string>
+    <string name="font_news">&#xe600;</string>
     <string name="font_news_press">&#xe635;</string>
-    <string name="font_find">&#xe632;</string>
+    <string name="font_find">&#xe604;</string>
     <string name="font_find_press">&#xe633;</string>
+
+    <string name="font_lock">&#xe60e;</string>
+    <string name="font_person">&#xe601;</string>
 
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>
