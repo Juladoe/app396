@@ -17,6 +17,7 @@ import android.webkit.WebViewClient;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.CordovaContext;
+import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
@@ -35,7 +36,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     protected CordovaPlugin activityResultCallback = null;
     protected boolean keepRunning = true;
     protected boolean activityResultKeepRunning;
-    protected CordovaWebView webView;
+    protected ESWebView webView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -56,16 +57,10 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         Log.d("FindFragment-->", "onCreateView");
         LayoutInflater localInflater = inflater.cloneInContext(new CordovaContext(getActivity(), this));
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
-        webView = (CordovaWebView) rootView.findViewById(R.id.webView);
-        Config.init(getActivity());
-        webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
+        webView = (ESWebView) rootView.findViewById(R.id.webView);
+        webView.initPlugin(mActivity);
+        webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
+
         return rootView;
     }
 
@@ -73,16 +68,9 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     protected void initView(View view) {
         super.initView(view);
         if (webView == null) {
-            webView = (CordovaWebView) view.findViewById(R.id.webView);
+            webView = (ESWebView) view.findViewById(R.id.webView);
             Config.init(getActivity());
-            webView.loadUrl("http://trymob.edusoho.cn/apph5/client/index.html", 5000);
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
-                    return true;
-                }
-            });
+            webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
         }
     }
 
@@ -161,10 +149,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     public void onDestroyView() {
         super.onDestroyView();
         if (webView != null) {
-            webView.handleDestroy();
-        }
-        if (webView.pluginManager != null) {
-            webView.pluginManager.onDestroy();
+            webView.destory();
         }
     }
 }
