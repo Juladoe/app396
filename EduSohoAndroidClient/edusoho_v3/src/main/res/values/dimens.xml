@@ -122,5 +122,5 @@
     <dimen name="message_head_icon">30dp</dimen>
 
     <!--3.0-->
-    <dimen name="login_control_margin_bottom">15dp</dimen>
+    <dimen name="login_control_margin_bottom">20dp</dimen>
 </resources>

@@ -96,20 +96,22 @@ public class LoginFragment extends BaseFragment {
 
             final LoadDialog loadDialog = LoadDialog.create(mContext);
             loadDialog.setMessage("登录中");
+            loadDialog.show();
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     loadDialog.dismiss();
                     TokenResult tokenResult = mActivity.parseJsonValue(response.toString(), new TypeToken<TokenResult>() {
                     });
-                    if (tokenResult == null) {
-                        CommonUtil.longToast(mContext, "用户名或密码错误");
-                        return;
-                    } else {
+                    if (tokenResult != null) {
                         mActivity.app.saveToken(tokenResult);
                         mActivity.setResult(LoginActivity.OK);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                         mActivity.finish();
+
+                    } else {
+                        CommonUtil.longToast(mContext, "用户名或密码错误");
+                        return;
                     }
                 }
             }, new Response.ErrorListener() {

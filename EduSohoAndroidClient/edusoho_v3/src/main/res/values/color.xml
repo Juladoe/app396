@@ -22,7 +22,7 @@
     <color name="material_grey">#cfd0d1</color>
     <color name="material_green">#37b97d</color>
     <color name="material_green_alpha">#dd37b97d</color>
-    <color name="material_green1">#73cea5</color>
+    <color name="material_green_beta">#73cea5</color>
 
 
     <color name="found_title_btn_color">#66ffffff</color>

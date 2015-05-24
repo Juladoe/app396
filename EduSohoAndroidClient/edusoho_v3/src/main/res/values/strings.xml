@@ -17,6 +17,7 @@
     <string name="down_tab_friends">校友</string>
     <string name="toolbar_title">分类</string>
     <string name="login">登录</string>
+    <string name="register">注册</string>
 
     <!--TextView-->
     <string name="setting_scan">扫一扫</string>
@@ -42,6 +43,16 @@
     <string name="login_username_hint">手机号/邮箱/昵称</string>
     <string name="login_password_hint">密码</string>
     <string name="login_line_text">其他方式登录</string>
+    <string name="reg_phone_hint">手机号</string>
+    <string name="reg_mail_hint">邮箱地址</string>
+    <string name="reg_code_hint">验证码</string>
+    <string name="reg_password_hint">密码</string>
+
+    <!--Button-->
+    <string name="reg_phone_reg">手机注册</string>
+    <string name="reg_mail_reg">邮箱注册</string>
+    <string name="reg_send_code">发送验证码</string>
+
 
     <!--system-->
     <string name="request_fail_text">请求失败</string>
@@ -53,7 +64,6 @@
     <string name="font_news_press">&#xe635;</string>
     <string name="font_find">&#xe604;</string>
     <string name="font_find_press">&#xe633;</string>
-
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
 
