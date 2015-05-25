@@ -58,6 +58,7 @@ public class ESWebView extends FrameLayout {
         mWebView = new CordovaWebView(new CordovaContext(mActivity), attrs);
 
         String userAgent = mWebView.getSettings().getUserAgentString();
+        mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
         Log.d(TAG, mWebView.getSettings().getUserAgentString());
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(mWebChromeClient);

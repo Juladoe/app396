@@ -22,7 +22,36 @@ public class Request {
 
     public String getPath()
     {
-        return getRequestURL().getPath();
+        URL requestURL = getRequestURL();
+        return requestURL == null ? "" : getRequestURL().getPath();
+    }
+
+    public String getName()
+    {
+        String path = getPath();
+        int lastDirPoint = path.lastIndexOf('/');
+        if (lastDirPoint != -1) {
+            return path.substring(lastDirPoint + 1);
+        }
+
+        return null;
+    }
+
+    public String getDir()
+    {
+        String path = getPath();
+        int lastDirPoint = path.lastIndexOf('/');
+        int firstDirPoint = path.indexOf('/');
+        if (firstDirPoint == lastDirPoint) {
+            return null;
+        }
+        return path.substring(0, lastDirPoint);
+    }
+
+    public String getHost()
+    {
+        URL requestURL = getRequestURL();
+        return requestURL == null ? "" : getRequestURL().getHost();
     }
 
     private URL getRequestURL()
@@ -31,6 +60,7 @@ public class Request {
             try {
                 requestURL = new URL(url);
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -131,7 +132,8 @@ public class AppUtil {
         return networkInfo != null && networkInfo.isAvailable();
     }
 
-    public static void saveStreamToFile(InputStream inputStream, File file, boolean inClose)
+    public static boolean saveStreamToFile(
+            InputStream inputStream, File file, boolean inClose)
     {
         byte[] buffer = new byte[1024];
         FileOutputStream outputStream = null;
@@ -141,6 +143,8 @@ public class AppUtil {
             while ((length = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, length);
             }
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -153,6 +157,8 @@ public class AppUtil {
                 //nothing
             }
         }
+
+        return false;
     }
 
     public static File getAppStorage()
@@ -164,6 +170,17 @@ public class AppUtil {
         }
 
         return appStorage;
+    }
+
+    public static File getSchoolStorage(String host)
+    {
+        File store = getAppStorage();
+        File schoolStorage = new File(store, host);
+        if (!schoolStorage.exists()) {
+            schoolStorage.mkdirs();
+        }
+
+        return schoolStorage;
     }
 
     public static File getSystemStorage()

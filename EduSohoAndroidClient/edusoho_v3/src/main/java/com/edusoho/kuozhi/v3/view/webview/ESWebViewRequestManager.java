@@ -14,8 +14,15 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,10 +47,15 @@ public class ESWebViewRequestManager extends RequestManager {
 
     private void initHttpClient()
     {
-        mHttpClient = new DefaultHttpClient();
-
-        mHttpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
-        mHttpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 5000);
+        HttpParams params = new BasicHttpParams();
+        ConnManagerParams.setMaxTotalConnections(params, 50);
+        //超时
+        HttpConnectionParams.setConnectionTimeout(params, 3000);
+        HttpConnectionParams.setSoTimeout(params, 3000);
+        SchemeRegistry schReg = new SchemeRegistry();
+        schReg.register(new Scheme("http", PlainSocketFactory
+                .getSocketFactory(), 80));
+        mHttpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schReg), params);
     }
 
     public void setUserAgent(String userAgent)
@@ -55,7 +67,6 @@ public class ESWebViewRequestManager extends RequestManager {
     {
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent", mUserAgent);
-        Log.d(null, "User-Agent : " + mUserAgent);
 
         return httpGet;
     }
@@ -78,19 +89,16 @@ public class ESWebViewRequestManager extends RequestManager {
         return callback.onResponse(response);
     }
 
-    private void saveApiRequestCache(String apiUrl)
+    private void saveApiRequestCache(Request request)
     {
-        Log.d(null, "saveApiRequestCache->" + apiUrl);
-        File storage = AppUtil.getAppStorage();
-        File apiStore = new File(storage, "apirequest");
-        if (!apiStore.exists()) {
-            apiStore.mkdir();
-        }
+        Log.d(null, "saveApiRequestCache->" + request.url);
+        File apiStore = getApiStorage(request.getHost());
         try {
-            HttpResponse response = mHttpClient.execute(getHttpGet(apiUrl));
+            HttpResponse response = mHttpClient.execute(getHttpGet(request.url));
             AppUtil.saveStreamToFile(
                     response.getEntity().getContent(),
-                    new File(apiStore, AppUtil.md5(apiUrl)), true
+                    new File(apiStore, AppUtil.md5(request.url)),
+                    true
             );
 
         }catch (Exception e) {
@@ -98,17 +106,25 @@ public class ESWebViewRequestManager extends RequestManager {
         }
     }
 
-    private File getApiRequestCache(String apiUrl)
+    private File getApiStorage(String host)
     {
         File storage = AppUtil.getAppStorage();
-        File apiStore = new File(storage, "apirequest");
+        File apiStore = new File(storage, String.format("%s/%s", host, "apirequest"));
+        if (!apiStore.exists()) {
+            apiStore.mkdir();
+        }
+        return apiStore;
+    }
 
-        return new File(apiStore, AppUtil.md5(apiUrl));
+    private File getApiRequestCache(Request request)
+    {
+        File apiStore = getApiStorage(request.getHost());
+        return new File(apiStore, AppUtil.md5(request.url));
     }
 
     private boolean isApiRequest(String urlPath)
     {
-        Log.d(null, "urlPath " + urlPath);
+        Log.d(TAG, "urlPath " + urlPath);
         return urlPath.startsWith("/mapi_v2");
     }
 
@@ -123,14 +139,40 @@ public class ESWebViewRequestManager extends RequestManager {
         return mimeType == null ? "text/html" : mimeType;
     }
 
-    private void saveCacheToFile(String url, File cache)
+    private File getResourceStorage(Request request)
     {
-        Log.d(null, "saveCacheFile->" + url);
+        File storage = AppUtil.getSchoolStorage(request.getHost());
+        File srcDir = new File(storage, request.getDir());
+        if (!srcDir.exists()) {
+            srcDir.mkdirs();
+        }
+
+        return srcDir;
+    }
+
+    private void saveCacheToFile(Request request)
+    {
+        File storage = getResourceStorage(request);
+
+        File cache = new File(storage, request.getName() + "_temp");
+        HttpGet httpGet = getHttpGet(request.url);
         try {
-            HttpResponse response = mHttpClient.execute(getHttpGet(url));
-            AppUtil.saveStreamToFile(response.getEntity().getContent(), cache, true);
+            if (cache.exists()) {
+                Log.d(TAG, "saveCacheFile Range->" + request.url);
+                httpGet.setHeader("Range", "bytes=" + cache.length());
+            }
+
+            HttpResponse response = mHttpClient.execute(httpGet);
+            if (AppUtil.saveStreamToFile(response.getEntity().getContent(),cache,true)) {
+                if (cache.renameTo(new File(cache.getAbsolutePath().replace("_temp", "")))) {
+                    Log.d(TAG, "down successed->" + cache.getAbsolutePath());
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            httpGet.abort();
         }
     }
 
@@ -150,18 +192,17 @@ public class ESWebViewRequestManager extends RequestManager {
         public void handler(final Request request, Response response) {
             Log.d(TAG, "WebViewRequestHandler " + request.url);
 
-            File storage = AppUtil.getAppStorage();
-            String extension = getFileExtension(request.url);
-            final File cache = new File(storage, String.format("%s.%s", AppUtil.md5(request.url), extension));
+            File storage = getResourceStorage(request);
+            File cache = new File(storage, request.getName());
 
             if (isApiRequest(request.getPath())) {
                 if (AppUtil.isNetConnect(mContext)) {
-                    saveApiRequestCache(request.url);
+                    saveApiRequestCache(request);
                 } else {
                     try {
                         response.setEncoding("utf-8");
                         response.setMimeType("text/html");
-                        response.setContent(new FileInputStream(getApiRequestCache(request.url)));
+                        response.setContent(new FileInputStream(getApiRequestCache(request)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -173,13 +214,14 @@ public class ESWebViewRequestManager extends RequestManager {
                 mWorkExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        saveCacheToFile(request.url, cache);
+                        saveCacheToFile(request);
                     }
                 });
                 return;
             }
 
             try {
+                String extension = getFileExtension(request.url);
                 response.setEncoding("utf-8");
                 response.setMimeType(getFileMime(extension));
                 response.setContent(new FileInputStream(cache));
