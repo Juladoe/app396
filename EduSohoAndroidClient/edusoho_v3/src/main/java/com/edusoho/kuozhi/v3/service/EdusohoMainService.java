@@ -12,7 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.TokenResult;
+import com.edusoho.kuozhi.v3.model.bal.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -90,14 +90,14 @@ public class EdusohoMainService extends Service {
                 @Override
                 public void onResponse(String response) {
                     mAjaxQueue.poll();
-                    TokenResult result = app.gson.fromJson(
-                            response.toString(), new TypeToken<TokenResult>() {
+                    UserResult result = app.gson.fromJson(
+                            response.toString(), new TypeToken<UserResult>() {
                             }.getType());
                     Log.d(null, "callback loginWithToken result->" + result);
 
                     if (result != null) {
-                        //mLoginUser = result.user;
-                        app.saveToken(result);
+                        //mLoginUser = result.data;
+                        app.saveToken(result.data);
                     }
 
 //                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
@@ -124,7 +124,7 @@ public class EdusohoMainService extends Service {
 //                    Log.d(null, "callback loginWithToken result->" + result);
 //
 //                    if (result != null) {
-//                        //mLoginUser = result.user;
+//                        //mLoginUser = result.data;
 //                        app.saveToken(result);
 //                    }
 //
@@ -153,7 +153,7 @@ public class EdusohoMainService extends Service {
 //                        }
 //                        return;
 //                    }
-//                    app.loginUser = result.user;
+//                    app.loginUser = result.data;
 //                    app.saveToken(result);
 ////                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
 ////                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);

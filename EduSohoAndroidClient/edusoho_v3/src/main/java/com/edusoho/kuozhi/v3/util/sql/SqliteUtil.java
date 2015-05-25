@@ -247,7 +247,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
         //保存用户
         EdusohoApp app = EdusohoApp.app;
         ContentValues cv = new ContentValues();
-        cv.put("key", "user-" + user.id);
+        cv.put("key", "data-" + user.id);
         cv.put("value", app.gson.toJson(user));
         cv.put("type", Const.CACHE_USER_TYPE);
         SqliteUtil.getUtil(app).insert("data_cache", cv);
@@ -259,7 +259,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
         SqliteUtil.getUtil(app).delete(
                 "data_cache",
                 "key=?",
-                new String[]{"user-" + userId}
+                new String[]{"data-" + userId}
         );
     }
 }

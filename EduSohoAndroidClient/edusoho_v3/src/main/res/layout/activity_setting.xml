@@ -160,6 +160,7 @@
             android:paddingTop="8dp"
             android:text="退出登录"
             android:textColor="@color/login_text"
+            android:visibility="invisible"
             android:textSize="@dimen/large_font_size" />
 
     </LinearLayout>

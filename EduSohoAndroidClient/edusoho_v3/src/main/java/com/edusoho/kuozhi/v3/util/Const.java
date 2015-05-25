@@ -2,6 +2,10 @@ package com.edusoho.kuozhi.v3.util;
 
 public class Const {
 
+    public static final int RESULT_CODE_SUCCESS = 200;
+    public static final int RESULT_CODE_NOT_FOUND = 404;
+    public static final int RESULT_CODE_ERROR = 500;
+
     //popular热门 recommended推荐 latest最新
     public static final String[] SORT = {
             "latest", "popular", "recommended"
@@ -74,6 +78,7 @@ public class Const {
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
+    public static final String LOGOUT_SUCCESS = "logout";
     public static final String REFRESH_REVIEWS = "refresh_review";
 
     public static final int OK = 200;
@@ -97,7 +102,7 @@ public class Const {
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
-    public static final String LIVE_COURSES="Course/getAllLiveCourses";
+    public static final String LIVE_COURSES = "Course/getAllLiveCourses";
     public static final String COURSE_MEMBER = "Course/getCourseMember";
     public static final String FLASH_APK = "School/getFlashApk";
     public static final String MY_TESTPAPER = "Testpaper/myTestpaper";
@@ -327,7 +332,7 @@ public class Const {
     public static final String COURSE_NOTICES = "Course/getCourseNotices";
 
     public static final String CACHE_COURSE_TYPE = "course";
-    public static final String CACHE_USER_TYPE = "user";
+    public static final String CACHE_USER_TYPE = "data";
     public static final String CACHE_LESSON_TYPE = "lesson";
 
     public static final String CACHE_KEY_TYPE = "m3u8_key";

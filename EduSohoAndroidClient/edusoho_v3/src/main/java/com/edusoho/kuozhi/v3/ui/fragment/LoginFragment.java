@@ -14,7 +14,7 @@ import android.widget.EditText;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.TokenResult;
+import com.edusoho.kuozhi.v3.model.bal.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -74,6 +74,7 @@ public class LoginFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -94,24 +95,22 @@ public class LoginFragment extends BaseFragment {
             params.put("_username", mEtUsername.getText().toString().trim());
             params.put("_password", mEtPassword.getText().toString().trim());
 
-            final LoadDialog loadDialog = LoadDialog.create(mContext);
-            loadDialog.setMessage("登录中");
+            final LoadDialog loadDialog = LoadDialog.create(mActivity);
+            loadDialog.setMessage("登录中...");
             loadDialog.show();
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     loadDialog.dismiss();
-                    TokenResult tokenResult = mActivity.parseJsonValue(response.toString(), new TypeToken<TokenResult>() {
+                    UserResult userResult = mActivity.parseJsonValue(response.toString(), new TypeToken<UserResult>() {
                     });
-                    if (tokenResult != null) {
-                        mActivity.app.saveToken(tokenResult);
+                    if (userResult.meta.code != Const.RESULT_CODE_ERROR) {
+                        mActivity.app.saveToken(userResult.data);
                         mActivity.setResult(LoginActivity.OK);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                         mActivity.finish();
-
                     } else {
-                        CommonUtil.longToast(mContext, "用户名或密码错误");
-                        return;
+                        CommonUtil.longToast(mContext, userResult.meta.message);
                     }
                 }
             }, new Response.ErrorListener() {

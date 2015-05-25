@@ -103,7 +103,7 @@ public final class Intents {
      * {@link android.app.Activity#startActivityForResult(android.content.Intent, int)}
      * The barcodes contents can be retrieved with
      * {@link android.content.Intent#getStringExtra(String)}. 
-     * If the user presses Back, the result code will be {@link android.app.Activity#RESULT_CANCELED}.
+     * If the data presses Back, the result code will be {@link android.app.Activity#RESULT_CANCELED}.
      */
     public static final String RESULT = "SCAN_RESULT";
 
@@ -194,7 +194,7 @@ public final class Intents {
     public static final String FORMAT = "ENCODE_FORMAT";
 
     /**
-     * Normally the contents of the barcode are displayed to the user in a TextView. Setting this
+     * Normally the contents of the barcode are displayed to the data in a TextView. Setting this
      * boolean to false will hide that TextView, showing only the encode barcode.
      */
     public static final String SHOW_CONTENTS = "ENCODE_SHOW_CONTENTS";
@@ -250,7 +250,7 @@ public final class Intents {
 
   public static final class Share {
     /**
-     * Give the user a choice of items to encode as a barcode, then render it as a QR Code and
+     * Give the data a choice of items to encode as a barcode, then render it as a QR Code and
      * display onscreen for a friend to scan with their phone.
      */
     public static final String ACTION = "com.google.zxing.client.android.SHARE";

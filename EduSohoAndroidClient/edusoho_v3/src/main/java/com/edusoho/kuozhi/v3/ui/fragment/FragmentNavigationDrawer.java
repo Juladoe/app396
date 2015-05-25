@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
@@ -242,9 +240,15 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (Const.LOGIN_SUCCESS.equals(messageType.type)) {
-            tvNickname.setText(mActivity.app.loginUser.nickname);
-            ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+        switch (messageType.type) {
+            case Const.LOGIN_SUCCESS:
+                tvNickname.setText(mActivity.app.loginUser.nickname);
+                ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+                break;
+            case Const.LOGOUT_SUCCESS:
+                tvNickname.setText(getString(R.string.drawer_nickname));
+                civAvatar.setImageResource(R.drawable.avatar);
+                break;
         }
     }
 
@@ -252,7 +256,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(Const.LOGIN_SUCCESS)
+                new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.LOGOUT_SUCCESS)
         };
         return messageTypes;
     }

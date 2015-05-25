@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.TokenResult;
+import com.edusoho.kuozhi.v3.model.bal.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -78,8 +78,8 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             public void onResponse(JSONObject response) {
                 loading.dismiss();
                 try {
-                    final TokenResult schoolResult = app.gson.fromJson(
-                            response.toString(), new TypeToken<TokenResult>() {
+                    final UserResult schoolResult = app.gson.fromJson(
+                            response.toString(), new TypeToken<UserResult>() {
                             }.getType());
 
                     if (schoolResult == null) {
@@ -87,16 +87,16 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         return;
                     }
 
-                    Log.d(null, "token---->" + schoolResult.token);
+                    Log.d(null, "token---->" + schoolResult.data.token);
                     School site = schoolResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
                     }
 
-                    if (schoolResult.token == null || "".equals(schoolResult.token)) {
+                    if (schoolResult.data.token == null || "".equals(schoolResult.data.token)) {
                         app.removeToken();
                     } else {
-                        app.saveToken(schoolResult);
+                        app.saveToken(schoolResult.data);
                     }
                     app.setCurrentSchool(site);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);

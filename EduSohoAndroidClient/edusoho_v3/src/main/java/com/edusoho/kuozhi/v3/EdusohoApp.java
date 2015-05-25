@@ -31,8 +31,8 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
-import com.edusoho.kuozhi.v3.model.bal.TokenResult;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -414,17 +414,17 @@ public class EdusohoApp extends Application {
         token = sp.getString("token", "");
     }
 
-    public void saveToken(TokenResult result) {
+    public void saveToken(User user) {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putString("token", result.token);
+        edit.putString("token", user.token);
         edit.commit();
 
-        token = result.token == null || "".equals(result.token) ? "" : result.token;
+        token = user.token == null || "".equals(user.token) ? "" : user.token;
         if (TextUtils.isEmpty(token)) {
             loginUser = null;
         } else {
-            loginUser = result.user;
+            loginUser = user;
             SqliteUtil.saveUser(loginUser);
         }
     }
@@ -445,7 +445,7 @@ public class EdusohoApp extends Application {
             return;
         }
         mService.sendMessage(EdusohoMainService.EXIT_USER, null);
-        Log.d(null, "remove->token user->" + loginUser);
+        Log.d(null, "remove->token data->" + loginUser);
     }
 
 
@@ -553,11 +553,11 @@ public class EdusohoApp extends Application {
             app.getUrl(url, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    TokenResult result = app.gson.fromJson(
-                            response.toString(), new TypeToken<TokenResult>() {
+                    UserResult result = app.gson.fromJson(
+                            response.toString(), new TypeToken<UserResult>() {
                             }.getType());
                     if (result != null) {
-                        saveToken(result);
+                        saveToken(result.data);
                     }
                 }
             }, new Response.ErrorListener() {

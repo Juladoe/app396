@@ -10,7 +10,7 @@ import android.widget.EditText;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.TokenResult;
+import com.edusoho.kuozhi.v3.model.bal.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -88,47 +88,53 @@ public class RegisterFragment extends BaseFragment {
     View.OnClickListener mRegisterClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            RequestUrl url = app.bindUrl(Const.REGIST, false);
+            HashMap<String, String> params = url.getParams();
+
             String username = etUsername.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
                 CommonUtil.longToast(mContext, String.format("请输入%s", mIsPhoneReg ? "手机号" : "邮箱地址"));
                 return;
             }
+            params.put("email", username);
 
-            String pass = etPassword.getText().toString();
-            if (TextUtils.isEmpty(pass)) {
+            String password = etPassword.getText().toString();
+            if (TextUtils.isEmpty(password)) {
                 CommonUtil.longToast(mContext, "请输入密码");
                 return;
             }
+            params.put("password", password);
 
             String code = etCode.getText().toString().trim();
-            if (mIsPhoneReg && TextUtils.isEmpty(code)) {
-                CommonUtil.longToast(mContext, "请输入验证码");
-                return;
+            if (mIsPhoneReg) {
+                if (TextUtils.isEmpty(code)) {
+                    CommonUtil.longToast(mContext, "请输入验证码");
+                    return;
+                } else {
+//                    params.put("code", code);
+                }
             }
-            RequestUrl url = app.bindUrl(Const.REGIST, false);
-            HashMap<String, String> params = url.getParams();
-            final LoadDialog loadDialog = LoadDialog.create(mContext);
+            final LoadDialog loadDialog = LoadDialog.create(mActivity);
             loadDialog.setMessage("注册中...");
             loadDialog.show();
-            params.put("email", username);
-            params.put("nickname", pass);
-            params.put("password", pass);
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     loadDialog.dismiss();
-                    TokenResult tokenResult = mActivity.parseJsonValue(
-                            response.toString(), new TypeToken<TokenResult>() {
-                            });
-
-                    if (tokenResult != null) {
-                        app.saveToken(tokenResult);
-                        mActivity.finish();
-                        app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    } else {
-                        CommonUtil.longToast(mContext, "账号注册失败！请重新尝试！!");
+                    try {
+                        UserResult userResult = mActivity.parseJsonValue(
+                                response.toString(), new TypeToken<UserResult>() {
+                                });
+                        if (userResult.meta.code != Const.RESULT_CODE_ERROR) {
+                            app.saveToken(userResult.data);
+                            mActivity.finish();
+                            app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        } else {
+                            CommonUtil.longToast(mContext, userResult.meta.message);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -137,8 +143,6 @@ public class RegisterFragment extends BaseFragment {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });
-
-
         }
     };
 }
