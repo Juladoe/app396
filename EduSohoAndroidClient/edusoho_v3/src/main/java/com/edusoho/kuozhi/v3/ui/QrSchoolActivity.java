@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
@@ -101,7 +102,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
 
 
-                    //showSchSplash(site.name, site.splashs);
+                    showSchSplash(site.name, site.splashs);
                     Log.d("QrCode-->", result);
                     CommonUtil.longToast(mActivity, result);
                     finish();
@@ -121,7 +122,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     }
 
     private void showSchSplash(String schoolName, String[] splashs) {
-        //SchoolSplashActivity.start(mContext, schoolName, splashs);
+        SchoolSplashActivity.start(mContext, schoolName, splashs);
         app.appFinish();
     }
 

@@ -269,7 +269,7 @@ public class EdusohoApp extends Application {
                 .diskCache(new UnlimitedDiscCache(file))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).build();
     }
 
     public void startMainService() {

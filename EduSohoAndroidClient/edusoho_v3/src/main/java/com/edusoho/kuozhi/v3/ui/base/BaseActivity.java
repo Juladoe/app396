@@ -60,6 +60,14 @@ public class BaseActivity extends ActionBarActivity {
         gson = app.gson;
     }
 
+    public void hideActionBar() {
+        mActionBar.hide();
+    }
+
+    public void showActionBar() {
+        mActionBar.show();
+    }
+
     public void ajaxPost(final RequestUrl requestUrl) {
         VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, requestUrl.url, new Response.Listener<String>() {

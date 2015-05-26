@@ -88,6 +88,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".v3.view.photo.SchoolSplashActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
         <!-- 【必须】 exported设置为true -->
         <activity
             android:name="com.tencent.android.tpush.XGPushActivity"
