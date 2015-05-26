@@ -12,7 +12,7 @@ import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.sys.SchoolResult;
+import com.edusoho.kuozhi.v3.model.Result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -201,23 +201,19 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     protected void startApp() {
-
-        app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
-        return;
-
-
-//        if (app.config.startWithSchool && app.defaultSchool != null) {
-//            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//            finish();
-//            return;
-//        }
-//
-//        app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
+//        app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
 //        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 //        finish();
+
+        if (app.config.startWithSchool && app.defaultSchool != null) {
+            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+            return;
+        }
+        app.mEngine.runNormalPlugin("QrSchoolActivity", this, null);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 
 

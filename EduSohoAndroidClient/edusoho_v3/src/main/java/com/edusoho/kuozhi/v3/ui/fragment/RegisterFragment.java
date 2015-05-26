@@ -10,12 +10,11 @@ import android.widget.EditText;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.UserResult;
+import com.edusoho.kuozhi.v3.model.Result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
@@ -114,24 +113,16 @@ public class RegisterFragment extends BaseFragment {
 //                    params.put("code", code);
                 }
             }
-            final LoadDialog loadDialog = LoadDialog.create(mActivity);
-            loadDialog.setMessage("注册中...");
-            loadDialog.show();
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    loadDialog.dismiss();
                     try {
                         UserResult userResult = mActivity.parseJsonValue(
-                                response.toString(), new TypeToken<UserResult>() {
+                                response, new TypeToken<UserResult>() {
                                 });
-                        if (userResult.meta.code != Const.RESULT_CODE_ERROR) {
-                            app.saveToken(userResult.data);
-                            mActivity.finish();
-                            app.sendMessage(Const.LOGIN_SUCCESS, null);
-                        } else {
-                            CommonUtil.longToast(mContext, userResult.meta.message);
-                        }
+                        app.saveToken(userResult);
+                        mActivity.finish();
+                        app.sendMessage(Const.LOGIN_SUCCESS, null);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -139,10 +130,9 @@ public class RegisterFragment extends BaseFragment {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    loadDialog.dismiss();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
-            });
+            }, "注册中...");
         }
     };
 }

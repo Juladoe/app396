@@ -12,7 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.UserResult;
+import com.edusoho.kuozhi.v3.model.Result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -97,7 +97,7 @@ public class EdusohoMainService extends Service {
 
                     if (result != null) {
                         //mLoginUser = result.data;
-                        app.saveToken(result.data);
+                        app.saveToken(result);
                     }
 
 //                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);

@@ -180,6 +180,8 @@ public class EdusohoApp extends Application {
                 mEngine.appCache.setCache(requestUrl, object);
                 ajaxResultCallback.callback(url, object, status);
             }
+
+
         };
 
         ajaxCallback.headers(requestUrl.heads);

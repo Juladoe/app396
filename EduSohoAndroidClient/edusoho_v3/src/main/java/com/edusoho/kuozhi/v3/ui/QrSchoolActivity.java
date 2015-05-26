@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.UserResult;
+import com.edusoho.kuozhi.v3.model.Result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -78,25 +78,24 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             public void onResponse(JSONObject response) {
                 loading.dismiss();
                 try {
-                    final UserResult schoolResult = app.gson.fromJson(
+                    final UserResult userResult = app.gson.fromJson(
                             response.toString(), new TypeToken<UserResult>() {
                             }.getType());
 
-                    if (schoolResult == null) {
+                    if (userResult == null) {
                         CommonUtil.longToast(mActivity, "二维码信息错误!");
                         return;
                     }
 
-                    Log.d(null, "token---->" + schoolResult.data.token);
-                    School site = schoolResult.site;
+                    School site = userResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
                     }
 
-                    if (schoolResult.data.token == null || "".equals(schoolResult.data.token)) {
+                    if (userResult.token == null || "".equals(userResult.token)) {
                         app.removeToken();
                     } else {
-                        app.saveToken(schoolResult.data);
+                        app.saveToken(userResult);
                     }
                     app.setCurrentSchool(site);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
@@ -119,6 +118,11 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mActivity, "二维码信息错误!");
             }
         });
+    }
+
+    private void showSchSplash(String schoolName, String[] splashs) {
+        //SchoolSplashActivity.start(mContext, schoolName, splashs);
+        app.appFinish();
     }
 
     public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {

@@ -42,8 +42,6 @@ public class User implements Serializable {
     public String createdTime;
     public String about;
     public String signature;
-
-    public String token;
     /**
      * 关注
      */

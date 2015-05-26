@@ -31,8 +31,8 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
+import com.edusoho.kuozhi.v3.model.Result.UserResult;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.bal.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -414,17 +414,17 @@ public class EdusohoApp extends Application {
         token = sp.getString("token", "");
     }
 
-    public void saveToken(User user) {
+    public void saveToken(UserResult userResult) {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putString("token", user.token);
+        edit.putString("token", userResult.token);
         edit.commit();
 
-        token = user.token == null || "".equals(user.token) ? "" : user.token;
+        token = userResult.token == null || "".equals(userResult.token) ? "" : userResult.token;
         if (TextUtils.isEmpty(token)) {
             loginUser = null;
         } else {
-            loginUser = user;
+            loginUser = userResult.user;
             SqliteUtil.saveUser(loginUser);
         }
     }
@@ -557,7 +557,7 @@ public class EdusohoApp extends Application {
                             response.toString(), new TypeToken<UserResult>() {
                             }.getType());
                     if (result != null) {
-                        saveToken(result.data);
+                        saveToken(result);
                     }
                 }
             }, new Response.ErrorListener() {

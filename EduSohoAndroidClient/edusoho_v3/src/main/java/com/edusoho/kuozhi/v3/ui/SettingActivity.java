@@ -7,12 +7,9 @@ import android.widget.Button;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.sys.MetaResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -86,21 +83,16 @@ public class SettingActivity extends ActionBarBaseActivity {
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    MetaResult metaResult = mActivity.parseJsonValue(response.toString(), new TypeToken<MetaResult>() {
-                    });
-                    if (metaResult.meta.code == Const.RESULT_CODE_SUCCESS) {
-                        app.removeToken();
-                        btnLogout.setVisibility(View.INVISIBLE);
-                        app.sendMessage(Const.LOGOUT_SUCCESS, null);
-                        CommonUtil.longToast(mContext, metaResult.meta.message);
-                    }
+                    app.removeToken();
+                    btnLogout.setVisibility(View.INVISIBLE);
+                    app.sendMessage(Const.LOGOUT_SUCCESS, null);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            });
+            }, "");
 
 //            M3U8DownService service = M3U8DownService.getService();
 //            if (service != null) {

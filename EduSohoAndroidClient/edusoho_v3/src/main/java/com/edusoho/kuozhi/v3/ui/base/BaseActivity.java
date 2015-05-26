@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.Window;
 
 import com.android.volley.AuthFailureError;
@@ -13,11 +14,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.sys.Meta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -78,8 +84,38 @@ public class BaseActivity extends ActionBarActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
-    public void ajaxPost(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        app.postUrl(requestUrl, responseListener, errorListener);
+    public void ajaxPost(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener, String loadingText) {
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        if (!TextUtils.isEmpty(loadingText)) {
+            loadDialog.setMessage(loadingText);
+        }
+        loadDialog.show();
+        app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    String data = handleRequest(response);
+                    loadDialog.dismiss();
+                    if (data.equals(Const.RESULT_CODE_ERROR)) {
+                        CommonUtil.longToast(mActivity, "服务器请求失败");
+                        return;
+                    }
+                    responseListener.onResponse(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                } else {
+                    errorListener.onErrorResponse(error);
+                }
+                loadDialog.dismiss();
+            }
+        });
     }
 
     public void ajaxGet(final String url, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
@@ -105,5 +141,16 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         return value;
+    }
+
+    private String handleRequest(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response.toString());
+        Meta metaResult = parseJsonValue(jsonObject.getString("meta"), new TypeToken<Meta>() {
+        });
+        if (metaResult.code == Const.OK) {
+            CommonUtil.longToast(mActivity, metaResult.message);
+            return jsonObject.getString("data");
+        }
+        return String.valueOf(Const.RESULT_CODE_ERROR);
     }
 }
