@@ -1,8 +1,8 @@
-package com.edusoho.kuozhi.v3.Cache.request;
+package com.edusoho.kuozhi.v3.cache.request;
 
 
-import com.edusoho.kuozhi.v3.Cache.request.model.Request;
-import com.edusoho.kuozhi.v3.Cache.request.model.Response;
+import com.edusoho.kuozhi.v3.cache.request.model.Request;
+import com.edusoho.kuozhi.v3.cache.request.model.Response;
 
 /**
  * Created by howzhi on 15/4/28.

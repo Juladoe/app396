@@ -4,11 +4,11 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.edusoho.kuozhi.v3.Cache.request.RequestCallback;
-import com.edusoho.kuozhi.v3.Cache.request.RequestHandler;
-import com.edusoho.kuozhi.v3.Cache.request.RequestManager;
-import com.edusoho.kuozhi.v3.Cache.request.model.Request;
-import com.edusoho.kuozhi.v3.Cache.request.model.Response;
+import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
+import com.edusoho.kuozhi.v3.cache.request.RequestHandler;
+import com.edusoho.kuozhi.v3.cache.request.RequestManager;
+import com.edusoho.kuozhi.v3.cache.request.model.Request;
+import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import org.apache.http.HttpResponse;

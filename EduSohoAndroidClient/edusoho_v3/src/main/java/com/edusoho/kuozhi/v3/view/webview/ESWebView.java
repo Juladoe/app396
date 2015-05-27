@@ -16,10 +16,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import com.edusoho.kuozhi.v3.Cache.request.RequestCallback;
-import com.edusoho.kuozhi.v3.Cache.request.RequestManager;
-import com.edusoho.kuozhi.v3.Cache.request.model.Request;
-import com.edusoho.kuozhi.v3.Cache.request.model.Response;
+import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
+import com.edusoho.kuozhi.v3.cache.request.RequestManager;
+import com.edusoho.kuozhi.v3.cache.request.model.Request;
+import com.edusoho.kuozhi.v3.cache.request.model.Response;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;

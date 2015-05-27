@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.Cache.request.model;
+package com.edusoho.kuozhi.v3.cache.request.model;
 
 import java.net.URL;
 import java.util.HashMap;

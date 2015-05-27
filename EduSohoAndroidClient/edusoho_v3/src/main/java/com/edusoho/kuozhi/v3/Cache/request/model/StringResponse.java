@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.Cache.request.model;
+package com.edusoho.kuozhi.v3.cache.request.model;
 
 /**
  * Created by howzhi on 15/4/29.

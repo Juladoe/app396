@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.Result;
+package com.edusoho.kuozhi.v3.model.result;
 
 import com.edusoho.kuozhi.v3.model.sys.Meta;
 
