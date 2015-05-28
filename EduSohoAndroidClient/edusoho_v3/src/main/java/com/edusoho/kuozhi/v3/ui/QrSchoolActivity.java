@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,8 +23,6 @@ import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 
 /**
@@ -32,6 +31,7 @@ import java.util.HashMap;
  */
 public class QrSchoolActivity extends ActionBarBaseActivity {
     private Button mQrSearchBtn;
+    private TextView tvOther;
     public final static int REQUEST_QR = 0001;
     public final static int RESULT_QR = 0002;
 
@@ -46,6 +46,9 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     private void initView() {
         mQrSearchBtn = (Button) findViewById(R.id.qr_search_btn);
         mQrSearchBtn.setOnClickListener(mSearchClickListener);
+        tvOther = (TextView) findViewById(R.id.qr_other_btn);
+        tvOther.setOnClickListener(mOtherClickListener);
+
     }
 
     private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
@@ -54,6 +57,13 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             Intent qrIntent = new Intent();
             qrIntent.setClass(QrSchoolActivity.this, CaptureActivity.class);
             startActivityForResult(qrIntent, REQUEST_QR);
+        }
+    };
+
+    private View.OnClickListener mOtherClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            app.mEngine.runNormalPlugin("NetSchoolActivity", mContext, null);
         }
     };
 
@@ -74,9 +84,9 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         loading.show();
 
         RequestUrl requestUrl = new RequestUrl(result);
-        ajaxGet(requestUrl, new Response.Listener<JSONObject>() {
+        ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 loading.dismiss();
                 try {
                     final UserResult userResult = app.gson.fromJson(

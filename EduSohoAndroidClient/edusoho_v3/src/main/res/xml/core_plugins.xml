@@ -60,4 +60,10 @@
         package="com.edusoho.kuozhi.v3.ui.LoginActivity"
         version="1.0" />
 
+    <plugin
+        name="NetSchoolActivity"
+        package="com.edusoho.kuozhi.v3.ui.NetSchoolActivity"
+        version="1.0" />
+
+
 </plugins>

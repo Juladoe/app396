@@ -164,8 +164,34 @@ public class BaseActivity extends ActionBarActivity {
         app.getUrl(url, responseListener, errorListener);
     }
 
-    public void ajaxGet(final RequestUrl requestUrl, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
-        app.getUrl(requestUrl, responseListener, errorListener);
+    public void ajaxGet(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
+        app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.toString());
+                    boolean result = handleRequest(jsonObject.getString("meta"));
+                    if (result) {
+                        responseListener.onResponse(jsonObject.getString("data"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                } else {
+                    if (errorListener != null) {
+                        errorListener.onErrorResponse(error);
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                    }
+                }
+            }
+        });
     }
 
     public void runService(String packageName) {
@@ -190,9 +216,6 @@ public class BaseActivity extends ActionBarActivity {
         Meta metaResult = parseJsonValue(meta, new TypeToken<Meta>() {
         });
         CommonUtil.longToast(mActivity, metaResult.message);
-        if (metaResult.code == Const.OK) {
-            return true;
-        }
-        return false;
+        return metaResult.code == Const.OK;
     }
 }
