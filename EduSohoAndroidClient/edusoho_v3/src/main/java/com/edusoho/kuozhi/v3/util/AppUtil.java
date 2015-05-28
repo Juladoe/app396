@@ -36,7 +36,7 @@ public class AppUtil {
                 "code", code
         });
         Log.d(null, "code->" + code);
-        activity.ajaxPost(requestUrl, new Response.Listener<String>() {
+        activity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 final AppUpdateInfo appUpdateInfo = activity.parseJsonValue(response.toString(), new TypeToken<AppUpdateInfo>() {

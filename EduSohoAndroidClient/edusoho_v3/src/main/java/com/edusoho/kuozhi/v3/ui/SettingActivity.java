@@ -80,7 +80,7 @@ public class SettingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     app.removeToken();

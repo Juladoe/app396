@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.Meta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -92,7 +93,7 @@ public class BaseActivity extends ActionBarActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
-    public void ajaxPost(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener, String loadingText) {
+    public void ajaxPostWithLoading(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener, String loadingText) {
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         if (!TextUtils.isEmpty(loadingText)) {
             loadDialog.setMessage(loadingText);
@@ -102,13 +103,43 @@ public class BaseActivity extends ActionBarActivity {
             @Override
             public void onResponse(String response) {
                 try {
-                    String data = handleRequest(response);
                     loadDialog.dismiss();
-                    if (data.equals(Const.RESULT_CODE_ERROR)) {
-                        CommonUtil.longToast(mActivity, "服务器请求失败");
-                        return;
+                    JSONObject jsonObject = new JSONObject(response.toString());
+                    boolean result = handleRequest(jsonObject.getString("meta"));
+                    if (result) {
+                        responseListener.onResponse(jsonObject.getString("data"));
                     }
-                    responseListener.onResponse(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loadDialog.dismiss();
+                if (error.networkResponse == null) {
+                    CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                } else {
+                    if (errorListener != null) {
+                        errorListener.onErrorResponse(error);
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                    }
+                }
+            }
+        });
+    }
+
+    public void ajaxPost(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
+        app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.toString());
+                    boolean result = handleRequest(jsonObject.getString("meta"));
+                    if (result) {
+                        responseListener.onResponse(jsonObject.getString("data"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -119,9 +150,12 @@ public class BaseActivity extends ActionBarActivity {
                 if (error.networkResponse == null) {
                     CommonUtil.longToast(mActivity, "无网络连接或请求失败");
                 } else {
-                    errorListener.onErrorResponse(error);
+                    if (errorListener != null) {
+                        errorListener.onErrorResponse(error);
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                    }
                 }
-                loadDialog.dismiss();
             }
         });
     }
@@ -151,14 +185,14 @@ public class BaseActivity extends ActionBarActivity {
         return value;
     }
 
-    private String handleRequest(String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response.toString());
-        Meta metaResult = parseJsonValue(jsonObject.getString("meta"), new TypeToken<Meta>() {
+    private boolean handleRequest(String meta) throws JSONException {
+
+        Meta metaResult = parseJsonValue(meta, new TypeToken<Meta>() {
         });
+        CommonUtil.longToast(mActivity, metaResult.message);
         if (metaResult.code == Const.OK) {
-            CommonUtil.longToast(mActivity, metaResult.message);
-            return jsonObject.getString("data");
+            return true;
         }
-        return String.valueOf(Const.RESULT_CODE_ERROR);
+        return false;
     }
 }

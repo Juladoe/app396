@@ -94,7 +94,7 @@ public class LoginFragment extends BaseFragment {
             params.put("_username", mEtUsername.getText().toString().trim());
             params.put("_password", mEtPassword.getText().toString().trim());
 
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
