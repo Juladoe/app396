@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.shard.WeiboLogin;
+import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -29,6 +29,8 @@ import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.tencent.qq.QQ;
 
 /**
  * Created by JesseHuang on 15/5/23.
@@ -39,6 +41,7 @@ public class LoginFragment extends BaseFragment {
     private EditText etPassword;
     private Button mBtnLogin;
     private ImageView ivWeibo;
+    private ImageView ivQQ;
 
     @Override
     public void onAttach(Activity activity) {
@@ -60,6 +63,8 @@ public class LoginFragment extends BaseFragment {
         mBtnLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) mContainerView.findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
+        ivQQ = (ImageView) mContainerView.findViewById(R.id.iv_qq);
+        ivQQ.setOnClickListener(mQQLoginClickListener);
     }
 
     @Override
@@ -127,16 +132,17 @@ public class LoginFragment extends BaseFragment {
 
         @Override
         public void onClick(View v) {
-            WeiboLogin.getInstance(mContext).login(new PlatformActionListener() {
+            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
 
                 @Override
-                public void onComplete(Platform platform, int action, HashMap<String, Object> stringObjectHashMap) {
+                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
                     if (action == Platform.ACTION_USER_INFOR) {
                         User user = new User();
-                        user.nickname = stringObjectHashMap.get("name").toString();
-                        user.largeAvatar = stringObjectHashMap.get("avatar_large").toString();
-                        user.mediumAvatar = stringObjectHashMap.get("avatar_hd").toString();
-                        user.smallAvatar = stringObjectHashMap.get("profile_image_url").toString();
+                        user.nickname = res.get("name").toString();
+                        user.largeAvatar = res.get("avatar_large").toString();
+                        user.mediumAvatar = res.get("avatar_hd").toString();
+                        user.smallAvatar = res.get("profile_image_url").toString();
+                        user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
                         app.sendMessage(Const.LOGIN_WEIBO_SECCESS, null);
                         mActivity.finish();
@@ -151,9 +157,41 @@ public class LoginFragment extends BaseFragment {
 
                 @Override
                 public void onCancel(Platform platform, int action) {
-                    CommonUtil.longToast(mContext, "取消授权");
+
                 }
-            });
+            }, SinaWeibo.NAME);
+        }
+    };
+
+    private View.OnClickListener mQQLoginClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
+                @Override
+                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
+                    if (action == Platform.ACTION_USER_INFOR) {
+                        User user = new User();
+                        user.nickname = res.get("nickname").toString();
+                        user.mediumAvatar = res.get("figureurl_qq_2").toString();
+                        user.smallAvatar = res.get("figureurl_qq_1").toString();
+                        user.thirdParty = platform.getDb().getPlatformNname();
+                        app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
+                        app.sendMessage(Const.LOGIN_WEIBO_SECCESS, null);
+                        mActivity.finish();
+                    }
+                }
+
+                @Override
+                public void onError(Platform platform, int i, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onCancel(Platform platform, int i) {
+
+                }
+            }, QQ.NAME);
+
         }
     };
 
