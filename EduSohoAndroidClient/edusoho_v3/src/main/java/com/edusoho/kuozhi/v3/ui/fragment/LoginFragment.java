@@ -10,10 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.shard.WeiboLogin;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
@@ -24,14 +27,18 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
+
 /**
  * Created by JesseHuang on 15/5/23.
  */
 public class LoginFragment extends BaseFragment {
     public static final String TAG = "LoginFragment";
-    private EditText mEtUsername;
-    private EditText mEtPassword;
+    private EditText etUsername;
+    private EditText etPassword;
     private Button mBtnLogin;
+    private ImageView ivWeibo;
 
     @Override
     public void onAttach(Activity activity) {
@@ -47,10 +54,12 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        mEtUsername = (EditText) mContainerView.findViewById(R.id.et_username);
-        mEtPassword = (EditText) mContainerView.findViewById(R.id.et_password);
+        etUsername = (EditText) mContainerView.findViewById(R.id.et_username);
+        etPassword = (EditText) mContainerView.findViewById(R.id.et_password);
         mBtnLogin = (Button) mContainerView.findViewById(R.id.btn_login);
         mBtnLogin.setOnClickListener(mLoginClickListener);
+        ivWeibo = (ImageView) mContainerView.findViewById(R.id.iv_weibo);
+        ivWeibo.setOnClickListener(mWeiboLoginClickListener);
     }
 
     @Override
@@ -77,22 +86,22 @@ public class LoginFragment extends BaseFragment {
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String username = mEtUsername.getText().toString().trim();
-            String password = mEtPassword.getText().toString().trim();
+            String username = etUsername.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
                 CommonUtil.longToast(mContext, "请输入用户名");
-                mEtUsername.requestFocus();
+                etUsername.requestFocus();
                 return;
             }
             if (TextUtils.isEmpty(password)) {
                 CommonUtil.longToast(mContext, "请输入密码");
-                mEtPassword.requestFocus();
+                etPassword.requestFocus();
                 return;
             }
             RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
             HashMap<String, String> params = requestUrl.getParams();
-            params.put("_username", mEtUsername.getText().toString().trim());
-            params.put("_password", mEtPassword.getText().toString().trim());
+            params.put("_username", etUsername.getText().toString().trim());
+            params.put("_password", etPassword.getText().toString().trim());
 
             mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                 @Override
@@ -113,4 +122,39 @@ public class LoginFragment extends BaseFragment {
             }, "登录中...");
         }
     };
+
+    private View.OnClickListener mWeiboLoginClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            WeiboLogin.getInstance(mContext).login(new PlatformActionListener() {
+
+                @Override
+                public void onComplete(Platform platform, int action, HashMap<String, Object> stringObjectHashMap) {
+                    if (action == Platform.ACTION_USER_INFOR) {
+                        User user = new User();
+                        user.nickname = stringObjectHashMap.get("name").toString();
+                        user.largeAvatar = stringObjectHashMap.get("avatar_large").toString();
+                        user.mediumAvatar = stringObjectHashMap.get("avatar_hd").toString();
+                        user.smallAvatar = stringObjectHashMap.get("profile_image_url").toString();
+                        app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
+                        app.sendMessage(Const.LOGIN_WEIBO_SECCESS, null);
+                        mActivity.finish();
+
+                    }
+                }
+
+                @Override
+                public void onError(Platform platform, int action, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onCancel(Platform platform, int action) {
+                    CommonUtil.longToast(mContext, "取消授权");
+                }
+            });
+        }
+    };
+
 }

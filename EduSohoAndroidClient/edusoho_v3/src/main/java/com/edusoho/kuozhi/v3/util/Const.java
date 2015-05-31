@@ -78,6 +78,7 @@ public class Const {
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
+    public static final String LOGIN_WEIBO_SECCESS = "login_weibo_seccess";
     public static final String LOGOUT_SUCCESS = "logout";
     public static final String REFRESH_REVIEWS = "refresh_review";
 

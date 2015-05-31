@@ -92,7 +92,7 @@
             android:name=".v3.view.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-        
+
         <activity
             android:name=".v3.ui.NetSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -170,6 +170,13 @@
         <meta-data
             android:name="XG_V2_ACCESS_KEY"
             android:value="A2EX426VLK8D" />
+
+        <!-- 必须注册在微博授权，分享微博时候用到 -->
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false"></activity>
 
 
     </application>
