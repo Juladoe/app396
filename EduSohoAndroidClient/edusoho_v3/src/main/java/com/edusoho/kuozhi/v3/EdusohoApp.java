@@ -31,8 +31,8 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -151,9 +151,9 @@ public class EdusohoApp extends Application {
      * @param responseListener 返回reponse信息
      * @param errorListener    错误信息
      */
-    public void getUrl(final RequestUrl requestUrl, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 return requestUrl.getParams();

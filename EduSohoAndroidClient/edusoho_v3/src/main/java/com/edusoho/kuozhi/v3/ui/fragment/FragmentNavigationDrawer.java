@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FragmentNavigationDrawer extends BaseFragment implements MessageEngine.MessageCallback {
 
+    public static final int WEIBO_LOGIN = 0001;
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private View mDrawerFragment;
@@ -53,6 +56,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     private TextView tvNickname;
     private ImageView ivLogin;
     private CircleImageView civAvatar;
+    private WeiboHandler weiboHandler;
 
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
@@ -69,6 +73,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_navigation_drawer);
+        weiboHandler = new WeiboHandler();
         app.registMsgSource(this);
     }
 
@@ -242,8 +247,15 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         MessageType messageType = message.type;
         switch (messageType.type) {
             case Const.LOGIN_SUCCESS:
-                tvNickname.setText(mActivity.app.loginUser.nickname);
-                ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+            case Const.LOGIN_WEIBO_SECCESS:
+                try {
+
+                    Message msg = weiboHandler.obtainMessage();
+                    msg.what = WEIBO_LOGIN;
+                    weiboHandler.sendMessage(msg);
+                } catch (Exception e) {
+                    Log.d("nimabi-->", e.getMessage());
+                }
                 break;
             case Const.LOGOUT_SUCCESS:
                 tvNickname.setText(getString(R.string.drawer_nickname));
@@ -252,11 +264,23 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         }
     }
 
+    private class WeiboHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == WEIBO_LOGIN) {
+                tvNickname.setText(mActivity.app.loginUser.nickname);
+                ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+            }
+        }
+    }
+
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.LOGOUT_SUCCESS)
+                new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.LOGOUT_SUCCESS),
+                new MessageType((Const.LOGIN_WEIBO_SECCESS))
         };
         return messageTypes;
     }

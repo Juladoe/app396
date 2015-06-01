@@ -1,15 +1,19 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.shard.WeiboLogin;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+
+import cn.sharesdk.sina.weibo.SinaWeibo;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -79,25 +83,33 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener logoutClickLister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    app.removeToken();
-                    btnLogout.setVisibility(View.INVISIBLE);
-                    app.sendMessage(Const.LOGOUT_SUCCESS, null);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
 
-                }
-            }, "");
+            if (TextUtils.isEmpty(app.loginUser.thirdParty)) {
+                RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
+                mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        app.removeToken();
+                        btnLogout.setVisibility(View.INVISIBLE);
+                        app.sendMessage(Const.LOGOUT_SUCCESS, null);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, "");
 
 //            M3U8DownService service = M3U8DownService.getService();
 //            if (service != null) {
 //                service.cancelAllDownloadTask();
 //            }
+            } else if (app.loginUser.thirdParty.equals(SinaWeibo.NAME)) {
+                WeiboLogin.getInstance(mContext).loginOut();
+                app.removeToken();
+                btnLogout.setVisibility(View.INVISIBLE);
+                app.sendMessage(Const.LOGOUT_SUCCESS, null);
+            }
         }
     };
 }

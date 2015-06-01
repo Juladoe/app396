@@ -55,4 +55,6 @@ public class User implements Serializable {
 
 
     public Vip vip;
+
+    public String thirdParty;
 }

@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -30,6 +29,7 @@ public class RegisterFragment extends BaseFragment {
     private Button btnRegister;
     private Button btnEmailReg;
     private Button btnPhoneReg;
+    private Button btnSmsSend;
     private View vCode;
     private boolean mIsPhoneReg;
 
@@ -57,6 +57,8 @@ public class RegisterFragment extends BaseFragment {
         btnRegister = (Button) mContainerView.findViewById(R.id.btn_register);
         btnRegister.setOnClickListener(mRegisterClickListener);
         vCode = mContainerView.findViewById(R.id.v_code);
+        btnSmsSend = (Button) mContainerView.findViewById(R.id.btn_send_code);
+        btnSmsSend.setOnClickListener(mSmsSendClickListener);
 
         initRegStatus(true, btnPhoneReg, btnEmailReg, getString(R.string.reg_phone_hint));
     }
@@ -95,7 +97,7 @@ public class RegisterFragment extends BaseFragment {
                 CommonUtil.longToast(mContext, String.format("请输入%s", mIsPhoneReg ? "手机号" : "邮箱地址"));
                 return;
             }
-            params.put("email", username);
+            params.put(mIsPhoneReg ? "phone" : "email", username);
 
             String password = etPassword.getText().toString();
             if (TextUtils.isEmpty(password)) {
@@ -110,10 +112,10 @@ public class RegisterFragment extends BaseFragment {
                     CommonUtil.longToast(mContext, "请输入验证码");
                     return;
                 } else {
-//                    params.put("code", code);
+                    params.put("smsCode", code);
                 }
             }
-            mActivity.ajaxPost(url, new Response.Listener<String>() {
+            mActivity.ajaxPostWithLoading(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -127,12 +129,27 @@ public class RegisterFragment extends BaseFragment {
                         e.printStackTrace();
                     }
                 }
-            }, new Response.ErrorListener() {
+            }, null, "注册中...");
+        }
+    };
+
+    View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
+            String phoneNumber = etUsername.getText().toString().trim();
+            if (TextUtils.isEmpty(phoneNumber)) {
+                CommonUtil.longToast(mContext, String.format("请输入%s", "手机号"));
+                return;
+            }
+            HashMap<String, String> params = requestUrl.getParams();
+            params.put("phoneNumber", String.valueOf(phoneNumber));
+            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
-                public void onErrorResponse(VolleyError error) {
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                public void onResponse(String response) {
+
                 }
-            }, "注册中...");
+            }, null);
         }
     };
 }
