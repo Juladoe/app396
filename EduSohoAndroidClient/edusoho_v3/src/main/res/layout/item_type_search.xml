@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.v3.view.EduSohoEditText
+    android:id="@+id/search_frame"
+    android:hint="blah balh ..."
+    android:singleLine="true"
+    android:background="@null"
+    android:gravity="center"
+    android:textColor="@color/gray"
+    android:layout_marginRight="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:padding="6dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+</LinearLayout>

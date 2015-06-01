@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        kuakao {
-            applicationId "com.kuakao.kuozhi"
+        chinahadoop {
+            applicationId "com.chinahadoop.kuozhi"
         }
     }
 
     sourceSets {
-        kuakao {
+        chinahadoop {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/kuakao/res']
+            res.srcDirs = ['src/chinahadoop/res']
         }
     }
 
@@ -33,7 +33,7 @@ android {
     //签名
     signingConfigs {
         releaseConfig {
-            storeFile file("key/kuakao.jks")
+            storeFile file("key/chinahadoop.jks")
             storePassword "100010000"
             keyAlias "cn"
             keyPassword "10001000"
