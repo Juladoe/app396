@@ -8,12 +8,10 @@ import android.widget.Button;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.shard.WeiboLogin;
+import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
-
-import cn.sharesdk.sina.weibo.SinaWeibo;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -104,8 +102,8 @@ public class SettingActivity extends ActionBarBaseActivity {
 //            if (service != null) {
 //                service.cancelAllDownloadTask();
 //            }
-            } else if (app.loginUser.thirdParty.equals(SinaWeibo.NAME)) {
-                WeiboLogin.getInstance(mContext).loginOut();
+            } else {
+                ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);

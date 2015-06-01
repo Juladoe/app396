@@ -1,26 +1,17 @@
 package com.soooner.EplayerPluginLibary;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.soooner.EplayerPluginLibary.adapter.PPTGridAdapter;
 import com.soooner.EplayerPluginLibary.adapter.SpeakAdapter;
@@ -37,7 +28,6 @@ import com.soooner.source.common.net.Protocol;
 import com.soooner.source.common.util.*;
 import com.soooner.source.common.util.DateUtil;
 import com.soooner.source.entity.EPlayerData;
-import com.soooner.source.entity.EPlayerLoginType;
 import com.soooner.source.entity.PicUrl;
 import com.soooner.source.entity.Prainse;
 import com.soooner.source.entity.SessionData.*;
@@ -55,7 +45,6 @@ import com.soooner.ws.net.EplayerSocket;
 import com.soooner.ws.net.Sender;
 import de.greenrobot.event.EventBus;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
-import tv.danmaku.ijk.media.widget.VideoView;
 
 import java.util.*;
 
@@ -118,7 +107,6 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
     ImageView img_video_logo;
     MyChatView chatView;
-    public boolean loadingTimeoutShow;
 
     SpeakState speakState=SpeakState.STATE_SPEAK;//当前是发言还是提问的标识
 
@@ -146,25 +134,14 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
     private static  final  int HIDE_TIME=5000;
 
 
-    Timer loginTimer;
-    public long  currentStaticLoginTimeMillis;
 
-    Timer loadingTimer;
-    public long  currentStaticTimeMillis;
-
-    Timer errorTimer;
-    public long  currentStaticErrorTimeMillis;
-
-    public int streamErrorTimes;
 
     Timer refreshTimer=new Timer();
     boolean enable_refresh_listview =true;
 
     boolean progressbar_show = true;
 
-    public final  int   RECONNECTION_MAX_NUM=3;
-    public final  int   RECONNECTION_DEFAULT_NUM=0;
-    int curent_reconnection=RECONNECTION_DEFAULT_NUM;
+
     LineGridView gridview;
     PPTGridAdapter pptGridAdapter;
     HorizontalScrollView hs_gridview;
@@ -242,13 +219,12 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
         public boolean onError(IMediaPlayer mp, int what, int extra) {
             LogUtil.d(TAG,"OnErrorListener.MEDIA_MISS_VIDEO");
 
-            EplayerPluginPadActivity.this.currentStaticErrorTimeMillis = System.currentTimeMillis();
-            if(errorTimer!=null) {
-                errorTimer.cancel();
-                errorTimer = null;
+            if(EplayerPluginPadActivity.this.playbackEngin!=null) {
+                EplayerPluginPadActivity.this.playbackEngin.pausePlayback();
             }
-            errorTimer = new Timer();
-            errorTimer.schedule(new ErrorTimerTask(EplayerPluginPadActivity.this.currentStaticErrorTimeMillis),5000);
+
+
+            ttu.addErrorTask(TimeTaskUtils.TimeTaskType.TIMETASK_ERROR, RECONNECTION_MAX_NUM, 5000, false, true);
 
             return true;
         }
@@ -261,22 +237,12 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
                 if (pause) {
 
                     if (EplayerPluginPadActivity.this.playerStartPlay) {
-                        EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if (loadingTimer != null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
-                        loadingTimer = new Timer();
-                        loadingTimer.schedule(new LoadingTimerTask(EplayerPluginPadActivity.this.currentStaticTimeMillis), 15000);
+                        ttu.addTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD,RECONNECTION_MAX_NUM,15000,false);
+
                     }
                 } else {
-                    EplayerPluginPadActivity.this.playerStartPlay = true;
 
-                    EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                    if (loadingTimer != null) {
-                        loadingTimer.cancel();
-                        loadingTimer = null;
-                    }
+                    ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
 
                 }
                 if(null!=playerControllerView&&playerControllerView.isManualPausePlayer())
@@ -301,13 +267,8 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
             playbackLoadingFlag =true;
             if (!EplayerSessionInfo.sharedSessionInfo().infoData.playMusic) {
 
-                EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                if (loadingTimer != null) {
-                    loadingTimer.cancel();
-                    loadingTimer = null;
-                }
-                loadingTimer = new Timer();
-                loadingTimer.schedule(new LoadingTimerTask(EplayerPluginPadActivity.this.currentStaticTimeMillis), 30000);
+
+                ttu.addTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD,RECONNECTION_MAX_NUM,30000,false);
 
             }
         }
@@ -316,15 +277,12 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
         public void onLoadingEnd(IMediaPlayer mp) {
             playbackLoadingFlag =false;
             if (!EplayerSessionInfo.sharedSessionInfo().infoData.playMusic) {
-                curent_reconnection = RECONNECTION_DEFAULT_NUM;
 
+                ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_ERROR);
+                ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
                 handler.sendEmptyMessage(TaskType.MESSAGE_ENABLE_CONTROL);
 
-                EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                if (loadingTimer != null) {
-                    loadingTimer.cancel();
-                    loadingTimer = null;
-                }
+
 
             }
         }
@@ -362,128 +320,70 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
     //int statusBarHeight=0;//获取状态栏高度
 
 
+    @Override
+    public  void handleLoginOutTime(boolean isEnd){
+
+        requestStop();
+
+        createAlertDialog("提示","您的网络太差啦，无法登录房间，请重试或者切换到稳定网络！");
 
 
-    public class LoginTimerTask extends TimerTask{
-
-        private long  currentTimeMillis;
-
-        public LoginTimerTask(long  currentTimeMillis){
-            this.currentTimeMillis = currentTimeMillis;
-        }
-
-        @Override
-        public void run() {
-            if(EplayerPluginPadActivity.this.loadingTimeoutShow)
-                return;
-
-
-            long currentStaticTimeMillis = EplayerPluginPadActivity.this.currentStaticLoginTimeMillis;
-            if(currentTimeMillis==currentStaticTimeMillis) {
-
-
-                EplayerPluginPadActivity.this.loadingTimeoutShow = true;
-                EplayerPluginPadActivity.this.requestStop();
-
-                EplayerPluginPadActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        new AlertDialog.Builder(EplayerPluginPadActivity.this)
-                                .setTitle("提示")
-                                .setMessage("您的网络太差啦，无法登录房间，请重试或者切换到稳定网络！")
-                                .setPositiveButton(
-                                        "确定",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,
-                                                                int whichButton) {
-                                                finish();
-                                            }
-                                        }).setCancelable(false).create().show();
-
-                    }
-                });
-                LogUtil.d(TAG,"ErrorTimerTask excute");
-            }else{
-
-                LogUtil.d(TAG,"ErrorTimerTask igron");
-            }
-        }
     }
+    @Override
+    public  void handleErrorinOutTime(boolean isEnd){
 
-    public class ErrorTimerTask extends TimerTask{
+        if(!isEnd){
 
-        private long  currentTimeMillis;
+            if(EplayerSetting.isPlayback){
+                LogUtil.d(TAG, "ErrorTimerTask currentPlaybackTime:" + EplayerPluginPadActivity.this.currentPlaybackTime);
+                EplayerPluginPadActivity.this.playerStartPlay= false;
+                fl_myvideoview.stopPlayback();
 
-        public ErrorTimerTask(long  currentTimeMillis){
-            this.currentTimeMillis = currentTimeMillis;
-        }
-
-        @Override
-        public void run() {
-            if(EplayerPluginPadActivity.this.loadingTimeoutShow)
-                return;
-
-
-            long currentStaticTimeMillis = EplayerPluginPadActivity.this.currentStaticErrorTimeMillis;
-
-            if (curent_reconnection < RECONNECTION_MAX_NUM) {
-                LogUtil.d(TAG,"ErrorTimerTask connect age,curent_reconnection:" + curent_reconnection);
-                curent_reconnection++;
-                //TODO: MESSAGE_CHANGE_LIVE_STATUS
-
-
-                if(EplayerSetting.isPlayback){
-
-                    LogUtil.d(TAG, "ErrorTimerTask currentPlaybackTime:" + EplayerPluginPadActivity.this.currentPlaybackTime);
-                    EplayerPluginPadActivity.this.playerStartPlay= false;
-                    fl_myvideoview.stopPlayback();
+                if( EplayerPluginPadActivity.this.playbackEngin!=null)
                     EplayerPluginPadActivity.this.playbackEngin.resumePlayback(EplayerPluginPadActivity.this.currentPlaybackTime);
 
-                }else {
+            }else {
 
-                    LiveRoomInfoData infoData = EplayerSessionInfo.sharedSessionInfo().infoData;
+                //TODO: MESSAGE_CHANGE_LIVE_STATUS
+                LiveRoomInfoData infoData = EplayerSessionInfo.sharedSessionInfo().infoData;
 
-                    if (infoData!=null&&!infoData.playMusic) {
-                        handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
-                    }
-                }
-            } else {
-
-
-                if(currentTimeMillis==currentStaticTimeMillis) {
-
-                    if (EplayerSessionInfo.sharedSessionInfo().infoData.liveStatus == LiveRoomLiveStatus.LiveRoomLiveStatusPlay
-                            && EplayerSessionInfo.sharedSessionInfo().infoData.isStreamPush)  {
-
-                        EplayerPluginPadActivity.this.loadingTimeoutShow = true;
-                        EplayerPluginPadActivity.this.requestStop();
-
-                        EplayerPluginPadActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                new AlertDialog.Builder(EplayerPluginPadActivity.this)
-                                        .setTitle("提示")
-                                        .setMessage("您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看")
-                                        .setPositiveButton(
-                                                "确定",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int whichButton) {
-                                                        finish();
-                                                    }
-                                                }).setCancelable(false).create().show();
-
-                            }
-                        });
-                    }
-                    LogUtil.d(TAG,"ErrorTimerTask excute");
-                }else{
-
-                    LogUtil.d(TAG,"ErrorTimerTask igron");
+                if (infoData!=null&&!infoData.playMusic) {
+                    handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
                 }
             }
+        }else{
+
+            if (EplayerSessionInfo.sharedSessionInfo()!=null&&EplayerSessionInfo.sharedSessionInfo().infoData!=null&&EplayerSessionInfo.sharedSessionInfo().infoData.liveStatus == LiveRoomLiveStatus.LiveRoomLiveStatusPlay
+                    && EplayerSessionInfo.sharedSessionInfo().infoData.isStreamPush)  {
+
+                requestStop();
+
+                createAlertDialog("提示","您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看");
+
+            }
+
         }
+
     }
+
+    @Override
+    public  void handleLoadOutTime(boolean isEnd){
+        if(!isEnd){
+            LiveRoomInfoData infoData= EplayerSessionInfo.sharedSessionInfo().infoData;
+
+            if (infoData!=null&&!infoData.playMusic) {
+                handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
+            }
+
+        }else{
+            requestStop();
+
+            createAlertDialog("提示","您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看");
+
+        }
+
+    }
+
 
 
     View my_videoview_onclick;
@@ -677,11 +577,8 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
                         if (fl_myvideoview.isPlayState()) {
                             if (fl_myvideoview.isPlaying()||fl_myvideoview.isPaused()) {
-                                EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                                if(loadingTimer!=null) {
-                                    loadingTimer.cancel();
-                                    loadingTimer = null;
-                                }
+                                //  ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
+
                                 fl_myvideoview.stopPlayback();
 
                             }
@@ -705,11 +602,8 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
 //                    if (isChange) {
                     if (fl_myvideoview.isPlaying()) {
-                        EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if(loadingTimer!=null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
+                        //  ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
+                        EplayerPluginPadActivity.this.playerStartPlay= false;
                         fl_myvideoview.stopPlayback();
                     }
                     LogUtil.d(TAG,"data.getPlayUrl():"+data.getPlayUrl());
@@ -725,11 +619,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
                 case TaskType.MESSAGE_STOP_MUSIC_ERROR:{
                     if (fl_myvideoview.isPlayMuiceState()) {
-                        EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if(loadingTimer!=null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
+                        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
                         fl_myvideoview.stopPlayback();
                         fl_myvideoview.stopRotateChanpian();
                     }
@@ -742,11 +632,8 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
                 case TaskType.MESSAGE_PLAY_MUSIC:{
                     LogUtil.d(TAG,"TaskType.MESSAGE_PLAY_MUSIC");
                     if(fl_myvideoview.isPlaying()){
-                        EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if(loadingTimer!=null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
+                        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
+
                         fl_myvideoview.stopPlayback();
                     }
                     fl_myvideoview.startRotateChanpian();
@@ -996,7 +883,6 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
     private void initView(){
         context = this;
         shake = AnimationUtils.loadAnimation(this, R.anim.shake);
-        curent_reconnection=RECONNECTION_DEFAULT_NUM;
         LogUtil.d(TAG,"onCreate is running");
 
 //        AudioManager audioManager = (AudioManager)context.getSystemService(Activity.AUDIO_SERVICE);// 获取音量服务
@@ -1054,22 +940,8 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
             public void onLoadingFailed() {
                 try {
                     EplayerPluginPadActivity.this.requestStop();
-                    if (null == loadingFailedDialog) {
-                        loadingFailedDialog = new AlertDialog.Builder(EplayerPluginPadActivity.this)
-                                .setTitle("提示")
-                                .setMessage("您的网络太糟糕，无法加载图片，请重试或者切换到稳定网络！")
-                                .setPositiveButton(
-                                        "确定",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,
-                                                                int whichButton) {
-                                                finish();
-                                            }
-                                        }).setCancelable(false).create();
-                    }
-                    if (!loadingFailedDialog.isShowing()) {
-                        loadingFailedDialog.show();
-                    }
+                    createAlertDialog("提示","您的网络太糟糕，无法加载图片，请重试或者切换到稳定网络！");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1408,14 +1280,9 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
             checkupPlayerDataValidateStr(playerData);
 
-            EplayerPluginPadActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if(loginTimer!=null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
-            loginTimer = new Timer();
-            loginTimer.schedule(new LoginTimerTask(EplayerPluginPadActivity.this.currentStaticLoginTimeMillis),100000);
 
+
+            ttu.addTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN,1,100000,true);
 
             new GetLiveListThread(playerData).start();
 
@@ -1677,67 +1544,6 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
     }
 
-
-    public class LoadingTimerTask extends TimerTask{
-
-        private long  currentTimeMillis;
-
-        public LoadingTimerTask(long  currentTimeMillis){
-            this.currentTimeMillis = currentTimeMillis;
-        }
-
-        @Override
-        public void run() {
-//            if(EplayerPluginPadActivity.this.loadingTimeoutShow)
-//                return;
-//
-//
-            long currentStaticTimeMillis = EplayerPluginPadActivity.this.currentStaticTimeMillis;
-            if(currentTimeMillis==currentStaticTimeMillis){
-
-                EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-
-                if (curent_reconnection < RECONNECTION_MAX_NUM) {
-                    LogUtil.d(TAG,"LoadingTimerTask connect age,curent_reconnection:" + curent_reconnection);
-                    curent_reconnection++;
-                    //TODO: MESSAGE_CHANGE_LIVE_STATUS
-                    LiveRoomInfoData infoData= EplayerSessionInfo.sharedSessionInfo().infoData;
-
-                    if (!infoData.playMusic) {
-                        handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
-                    }
-                } else {
-                    EplayerPluginPadActivity.this.streamErrorTimes++;
-
-                    EplayerPluginPadActivity.this.loadingTimeoutShow = true;
-                    EplayerPluginPadActivity.this.requestStop();
-
-                    EplayerPluginPadActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new AlertDialog.Builder(EplayerPluginPadActivity.this)
-                                    .setTitle("提示")
-                                    .setMessage("您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看")
-                                    .setPositiveButton(
-                                            "确定",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog,
-                                                                    int whichButton) {
-                                                    finish();
-                                                }
-                                            }).setCancelable(false).create().show();
-
-                        }
-                    });
-                    LogUtil.d(TAG, "LoadingTimerTask excute");
-                }
-
-            } else {
-
-                LogUtil.d(TAG, "LoadingTimerTask igron");
-            }
-        }
-    }
     //初始化直播状态
     public void initPlayState(LiveRoomLiveStatus liveStatus){
         //LiveRoomLiveStatusStop(0), LiveRoomLiveStatusPlay(1), LiveRoomLiveStatusPause(2), LiveRoomLiveStatusClose(3);
@@ -1808,11 +1614,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
     public void onEventBackgroundThread(JoinRoomEvent event) {
         handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
 
-        EplayerPluginPadActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-        if(loginTimer!=null) {
-            loginTimer.cancel();
-            loginTimer = null;
-        }
+        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
 
         LiveRoomInfoData infoData= EplayerSessionInfo.sharedSessionInfo().infoData;
         setAllChatForbid(infoData.canChat);
@@ -1846,17 +1648,9 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
     public void onEventBackgroundThread(VideoAudioStatusEvent event) {
 
-        EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-        if(loadingTimer!=null) {
-            loadingTimer.cancel();
-            loadingTimer = null;
-        }
+        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
 
-        EplayerPluginPadActivity.this.currentStaticErrorTimeMillis = System.currentTimeMillis();
-        if(errorTimer!=null) {
-            errorTimer.cancel();
-            errorTimer = null;
-        }
+        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_ERROR);
 
         handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
 
@@ -1873,6 +1667,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
     public void requestStop(){
         try {
+            // StorageUtil.cleanAll();//cleanCacheDir();
             if(loading!=null){
                 loading.stopLoading();
             }
@@ -1901,21 +1696,12 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
             EplayerSocket.close();
             EplayerSetting.isPlayback = false;
 
-            EplayerPluginPadActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-            if (loadingTimer != null) {
-                loadingTimer.cancel();
-                loadingTimer = null;
-            }
-
+            ttu.clearAllTask();
 
             fl_myvideoview.stopPlayback();
 
-            StorageUtil.cleanAll();//cleanCacheDir();
-            EplayerPluginPadActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if (loginTimer != null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
+
+
 
 
         }catch (Exception e){
@@ -2078,7 +1864,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
     public void showAlertDialog() {
         TextView  text=new TextView(this);
-        ViewGroup.LayoutParams lp =text.getLayoutParams();
+        android.view.ViewGroup.LayoutParams lp =text.getLayoutParams();
         text.setTextSize(18);
 
         text.setGravity(Gravity.CENTER);
@@ -2148,11 +1934,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
             handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
 
-            EplayerPluginPadActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if(loginTimer!=null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
+            ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
 
 
         }

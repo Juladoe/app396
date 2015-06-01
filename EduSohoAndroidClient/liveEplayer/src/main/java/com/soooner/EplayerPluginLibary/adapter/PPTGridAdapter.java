@@ -250,7 +250,7 @@ public class PPTGridAdapter extends BaseAdapter {
         PicUrl picUrl = documentItem.coverThumb();
         String imgPath = picUrl.getLocalPicPath();
 
-        if(!StringUtils.isValid(imgPath)){
+        if(!com.soooner.source.common.util.StringUtils.isValid(imgPath)){
             return;
         }
 
@@ -275,7 +275,7 @@ public class PPTGridAdapter extends BaseAdapter {
 
         DocumentItem picUrl = (DocumentItem) getItem(this.currentPostion);
         String imgPath=picUrl.thumbUrl;
-        if(!StringUtils.isValid(imgPath)){
+        if(!com.soooner.source.common.util.StringUtils.isValid(imgPath)){
             return;
         }
 

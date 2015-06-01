@@ -122,7 +122,7 @@ public class VoteControllerView extends LinearLayout {
         tv_vote_style2_bt2_desc = (TextView) view.findViewById(R.id.tv_vote_style2_bt2_desc);
 
 
-        tv_cancel.setOnClickListener(new OnClickListener(){
+        tv_cancel.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
@@ -131,7 +131,7 @@ public class VoteControllerView extends LinearLayout {
         });
 
         if(DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PAD){
-            tv_enter.setOnClickListener(new OnClickListener(){
+            tv_enter.setOnClickListener(new View.OnClickListener(){
 
                 @Override
                 public void onClick(View view) {
@@ -176,7 +176,7 @@ public class VoteControllerView extends LinearLayout {
         for (int i = 0; i < style1Bts.size(); i++) {
             final int postion = i;
             final TextView tv = style1Bts.get(postion);
-            tv.setOnClickListener(new OnClickListener() {
+            tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
@@ -204,7 +204,7 @@ public class VoteControllerView extends LinearLayout {
         for (int i = 0; i < style2Bts.size(); i++) {
             final int postion = i;
             final TextView tv =style2Bts.get(postion);
-            tv.setOnClickListener(new OnClickListener() {
+            tv.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -239,7 +239,7 @@ public class VoteControllerView extends LinearLayout {
         li_vote_style1 = (LinearLayout) view.findViewById(R.id.li_vote_style1);
         li_vote_style2 = (LinearLayout) view.findViewById(R.id.li_vote_style2);
         li_vote_all= (LinearLayout) view.findViewById(R.id.li_vote_all);
-        li_vote_all.setOnClickListener(new OnClickListener(){
+        li_vote_all.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -275,7 +275,7 @@ public class VoteControllerView extends LinearLayout {
             voteState=VoteState.VoteStateSendMesssageScuess;
             handler.sendEmptyMessageDelayed(TaskType.MESSAGE_VOTE_HIDE, HIDE_DELAY_TIME);
             view_top.setVisibility(View.VISIBLE);
-            view_top.setOnClickListener(new OnClickListener() {
+            view_top.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (voteState==VoteState.VoteStateSendMesssageScuess) {

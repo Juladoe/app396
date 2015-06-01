@@ -1,15 +1,19 @@
 package com.soooner.EplayerPluginLibary;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import com.soooner.EplayerPluginLibary.util.LogUtil;
 import com.soooner.EplayerPluginLibary.util.StringUtils;
+import com.soooner.EplayerPluginLibary.util.TimeTaskUtils;
 import com.soooner.EplayerPluginLibary.util.ToastUtil;
 import com.soooner.EplayerPluginLibary.widget.MyVideoView;
 import com.soooner.EplayerSetting;
 import com.soooner.playback.PlaybackEngin;
+import com.soooner.source.common.util.StorageUtil;
 import com.soooner.source.entity.EPlayerData;
 import com.soooner.source.entity.EPlayerLoginType;
 import com.soooner.source.entity.SessionData.EplayerSessionInfo;
@@ -59,13 +63,77 @@ public class EplayerPluginBaseActivity extends Activity{
     }
 
     Animation face_center,face_exit;
+    public boolean loadingTimeoutShow;
+    public final  int   RECONNECTION_MAX_NUM=3;
+
+    TimeTaskUtils.TimeTaskListener ttl= new TimeTaskUtils.TimeTaskListener() {
+        @Override
+        public void handlerTimeTaskLooping(int taskType,boolean isEnd) {
+            if(isEnd){
+                ttu.clearAllTask();
+            }
+
+            switch (taskType){
+                case TimeTaskUtils.TASK_LOGIN:{
+                    handleLoginOutTime(isEnd);
+                    break;
+                }
+                case  TimeTaskUtils.TASK_LOAD:{
+                    handleLoadOutTime(isEnd);
+                    break;
+                }
+                case  TimeTaskUtils.TASK_ERROR:{
+                    handleErrorinOutTime(isEnd);
+                    break;
+                }
+            }
+        }
+    };
+
+    public  void handleLoginOutTime(boolean isEnd){};
+    public  void handleLoadOutTime(boolean isEnd){};
+    public  void handleErrorinOutTime(boolean isEnd){};
+    TimeTaskUtils ttu = new TimeTaskUtils(ttl);
+    AlertDialog alertDialog;
+    public void createAlertDialog(final String title, final String message) {
+        if (StringUtils.isEmpty(title) || StringUtils.isEmpty(message)) {
+            return;
+        }
+
+       EplayerPluginBaseActivity.this.runOnUiThread(new Runnable() {
+           @Override
+           public void run() {
+               if(null!=alertDialog&&alertDialog.isShowing()){
+                   return;
+               }
+
+               alertDialog= new AlertDialog.Builder(EplayerPluginBaseActivity.this)
+                       .setTitle(title)
+                       .setMessage(message)
+                       .setPositiveButton(
+                               "确定",
+                               new DialogInterface.OnClickListener() {
+                                   public void onClick(DialogInterface dialog,
+                                                       int whichButton) {
+                                       finish();
+                                   }
+                               }).setCancelable(false).create();
+               alertDialog.show();
+
+           }
+       });
+   }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         face_center= AnimationUtils.loadAnimation(this,R.anim.face_enter);
         face_exit= AnimationUtils.loadAnimation(this,R.anim.face_exit);
         LogUtil.d("EPlayer SDK_Version", EplayerSetting.version);
+
+
     }
 
     /*

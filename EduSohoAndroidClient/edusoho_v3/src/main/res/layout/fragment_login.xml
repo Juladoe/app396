@@ -136,6 +136,7 @@
             android:layout_marginRight="20dp"
             android:background="@drawable/weixin_bg"
             android:padding="10dp"
+            android:id="@+id/iv_qq"
             android:src="@drawable/qq" />
 
         <ImageView
