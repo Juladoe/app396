@@ -70,6 +70,12 @@ public class FriendFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.friends_search){
+            //TODO 跳转到搜索页面
+            app.mEngine.runNormalPlugin("", mActivity, null);
+        }else if(item.getItemId() == R.id.friends_news){
+            //TODO 新消息页面
+        }
         return super.onOptionsItemSelected(item);
     }
 }

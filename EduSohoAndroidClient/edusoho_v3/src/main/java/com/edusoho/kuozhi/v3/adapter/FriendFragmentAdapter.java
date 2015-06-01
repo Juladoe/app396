@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Created by Melomelon on 2015/5/26.
  */
-public class FriendFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FriendFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnClickListener{
 
     public static final int ITEM_TYPE_SERCH = 0;
     public static final int ITEM_TYPE_ADD_FRIEND = 1;
@@ -60,12 +61,15 @@ public class FriendFragmentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         }
 
+        //TODO
+        holder.itemView.setOnClickListener(this);
+
     }
 
     @Override
     public int getItemCount() {
         //TODO for test
-        return 10;
+        return 50;
     }
 
     @Override
@@ -84,6 +88,15 @@ public class FriendFragmentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public FriendFragmentAdapter(Context mContext) {
         this.mContext = mContext;
         mLayoutInflater = LayoutInflater.from(mContext);
+    }
+
+    @Override
+    public void onClick(View v) {
+        //TODO
+        switch (v.getId()){
+
+        }
+
     }
 
     public class searchItemHolder extends RecyclerView.ViewHolder {
