@@ -204,7 +204,7 @@ public class MyChatView extends LinearLayout {
 
 
         img_zhan.setAlpha(1);
-        img_zhan.setOnClickListener(new OnClickListener() {
+        img_zhan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(activity.isChatForbid()){
@@ -240,7 +240,10 @@ public class MyChatView extends LinearLayout {
             @Override
             public void onClick(View v) {
 
-                if(activity.isPersonChatForbid()||((activity.isAllChatForbid()&&speakState==SpeakState.STATE_SPEAK))){//禁言时，点击无效
+//                if(activity.isPersonChatForbid()||((activity.isAllChatForbid()&&speakState==SpeakState.STATE_SPEAK))){//禁言时，点击无效
+//                    return;
+//                }
+                if(activity.isChatForbid()){//禁言时，点击无效
                     return;
                 }
 
@@ -260,14 +263,16 @@ public class MyChatView extends LinearLayout {
 
             }
         });
-        img_face.setOnClickListener(new OnClickListener(){
+        img_face.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
-                if(activity.isPersonChatForbid()||((activity.isAllChatForbid()&&speakState==SpeakState.STATE_SPEAK))){//禁言时，点击无效
+//                if(activity.isPersonChatForbid()||((activity.isAllChatForbid()&&speakState==SpeakState.STATE_SPEAK))){//禁言时，点击无效
+//                    return;
+//                }
+                if(activity.isChatForbid()){//禁言时，点击无效
                     return;
                 }
-
 
                 inputMethodManager.hideSoftInputFromWindow(et_bottom_speak.getApplicationWindowToken(), 0);
 
@@ -294,7 +299,7 @@ public class MyChatView extends LinearLayout {
         linearLayoutList.add(li_face_tab2);
         li_face_tab1.setOnClickListener(liListener);
         li_face_tab2.setOnClickListener(liListener);
-        li_face_tab3.setOnClickListener(new OnClickListener(){
+        li_face_tab3.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
@@ -328,7 +333,7 @@ public class MyChatView extends LinearLayout {
     }
 
 
-    OnClickListener liListener=new OnClickListener(){
+    View.OnClickListener liListener=new OnClickListener(){
         @Override
         public void onClick(View view) {
             initSelectTabBg(view.getId());
@@ -608,7 +613,8 @@ public class MyChatView extends LinearLayout {
             //被禁言时聊天，提问不受影响
             ToastUtil.showStringToast(context, "您已经被禁言，暂时无法发送聊天信息");
 
-        }else if(activity.isAllChatForbid()&&(speakState==SpeakState.STATE_SPEAK)){
+       // }else if(activity.isAllChatForbid()&&(speakState==SpeakState.STATE_SPEAK)){
+        }else if(activity.isAllChatForbid()){
             ToastUtil.showStringToast(context, "老师发起了全体禁言，您暂时无法发送聊天信息");
         }else{
             String edit_content= StringUtils.getEditTextText(et_bottom_speak);
@@ -640,22 +646,29 @@ public class MyChatView extends LinearLayout {
     public String changeSpeakState(){
         String hintStr="";
         initSelectTabBg(R.id.li_face_tab1);
-        if(speakState==SpeakState.STATE_SPEAK){
-            speakState=SpeakState.STATE_QUESTION;
-            li_face_tab2.setVisibility(View.INVISIBLE);
-            hintStr="讨论";
-        }else{
-            speakState=SpeakState.STATE_SPEAK;
-            li_face_tab2.setVisibility(View.VISIBLE);
-            hintStr="提问";
+        switch (speakState){
+            case STATE_SPEAK:{
+                speakState=SpeakState.STATE_QUESTION;
+                li_face_tab2.setVisibility(View.INVISIBLE);
+                hintStr="讨论";
+                break;
+            }
+            case STATE_QUESTION:{
+                speakState=SpeakState.STATE_SPEAK;
+                li_face_tab2.setVisibility(View.VISIBLE);
+                hintStr="提问";
+                break;
+            }
         }
         initSpeakEditText(true);
         return  hintStr;
+
     }
 
     public void initChatForbid(boolean clearContent){
 
-        if (activity.isPersonChatForbid() || ((activity.isAllChatForbid() && speakState == SpeakState.STATE_SPEAK))) {
+      //  if (activity.isPersonChatForbid() || ((activity.isAllChatForbid() && speakState == SpeakState.STATE_SPEAK))) {
+        if(activity.isChatForbid()){
             inputMethodManager.hideSoftInputFromWindow(et_bottom_speak.getApplicationWindowToken(), 0);
             if (li_face_area.getVisibility() == View.VISIBLE) {
                 li_face_area.setVisibility(View.GONE);
@@ -674,14 +687,14 @@ public class MyChatView extends LinearLayout {
         li_speak_li1_tv= (TextView) view.findViewById(R.id.li_speak_li1_tv);
         li_speak_li2_tv= (TextView) view.findViewById(R.id.li_speak_li2_tv);
 
-        li_speak_li1.setOnClickListener(new OnClickListener(){
+        li_speak_li1.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
                 initSpeakEditText(SpeakState.STATE_QUESTION,true);
             }
         });
-        li_speak_li2.setOnClickListener(new OnClickListener() {
+        li_speak_li2.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -692,30 +705,30 @@ public class MyChatView extends LinearLayout {
 
         Resources res=context.getResources();
         int pad_li_bottom_speak_height=(int)res.getDimension(R.dimen.pad_li_bottom_speak_height);
-        LayoutParams li_bottom_speakLayoutParams= (LayoutParams) li_bottom_speak.getLayoutParams();
+        LinearLayout.LayoutParams li_bottom_speakLayoutParams= (LinearLayout.LayoutParams) li_bottom_speak.getLayoutParams();
         li_bottom_speakLayoutParams.height=(int)(pad_li_bottom_speak_height*BASE_SCREEN_HEIGHT_SCALE);
 
         int pad_li_speak_li_width=(int)res.getDimension(R.dimen.pad_li_speak_li_width);
-        LayoutParams li_speak_li1LayoutParams= (LayoutParams) li_speak_li1.getLayoutParams();
+        LinearLayout.LayoutParams li_speak_li1LayoutParams= (LinearLayout.LayoutParams) li_speak_li1.getLayoutParams();
         li_speak_li1LayoutParams.width=(int)(pad_li_speak_li_width*BASE_SCREEN_WIDTH_SCALE);
-        LayoutParams li_speak_li2LayoutParams= (LayoutParams) li_speak_li2.getLayoutParams();
+        LinearLayout.LayoutParams li_speak_li2LayoutParams= (LinearLayout.LayoutParams) li_speak_li2.getLayoutParams();
         li_speak_li2LayoutParams.width=(int)(pad_li_speak_li_width*BASE_SCREEN_WIDTH_SCALE);
 
 
         int pad_li_speak_li_img_width= (int) res.getDimension(R.dimen.pad_li_speak_li_img_width);
         int pad_li_speak_li_img_height=(int) res.getDimension(R.dimen.pad_li_speak_li_img_height);
-        LayoutParams li_speak_li1_imgLayoutParams = (LayoutParams) li_speak_li1_img.getLayoutParams();
+        LinearLayout.LayoutParams li_speak_li1_imgLayoutParams = (LinearLayout.LayoutParams) li_speak_li1_img.getLayoutParams();
         li_speak_li1_imgLayoutParams.width=(int)(pad_li_speak_li_img_width*BASE_SCREEN_WIDTH_SCALE);
         li_speak_li1_imgLayoutParams.height=(int)(pad_li_speak_li_img_height*BASE_SCREEN_WIDTH_SCALE);
 
-        LayoutParams li_speak_li2_imgLayoutParams = (LayoutParams) li_speak_li2_img.getLayoutParams();
+        LinearLayout.LayoutParams li_speak_li2_imgLayoutParams = (LinearLayout.LayoutParams) li_speak_li2_img.getLayoutParams();
         li_speak_li2_imgLayoutParams.width=(int)(pad_li_speak_li_img_width*BASE_SCREEN_WIDTH_SCALE);
         li_speak_li2_imgLayoutParams.height=(int)(pad_li_speak_li_img_height*BASE_SCREEN_WIDTH_SCALE);
 
         int bt_bottom_speak_height= (int) res.getDimension(R.dimen.pad_et_bottom_speak_height);
 
 
-        LayoutParams et_bottom_speakLayoutParams= (LayoutParams) et_bottom_speak.getLayoutParams();
+        LinearLayout.LayoutParams et_bottom_speakLayoutParams= (LinearLayout.LayoutParams) et_bottom_speak.getLayoutParams();
         et_bottom_speakLayoutParams.height=(int)(bt_bottom_speak_height*BASE_SCREEN_HEIGHT_SCALE);
 
 
@@ -801,7 +814,7 @@ public class MyChatView extends LinearLayout {
                 break;
             }
             case  STATE_QUESTION:{
-                if(activity.isPersonChatForbid()){
+                if(activity.isChatForbid()){
                     et_bottom_speak.setEnabled(false);
                 }else{
                     et_bottom_speak.setEnabled(true);

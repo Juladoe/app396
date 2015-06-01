@@ -1,24 +1,17 @@
 package com.soooner.EplayerPluginLibary;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.soooner.EplayerPluginLibary.adapter.SpeakAdapter;
@@ -34,7 +27,6 @@ import com.soooner.playback.entity.EPlaybackSessionInfo;
 import com.soooner.source.common.net.Protocol;
 import com.soooner.source.common.util.*;
 import com.soooner.source.entity.EPlayerData;
-import com.soooner.source.entity.EPlayerLoginType;
 import com.soooner.source.entity.Prainse;
 import com.soooner.source.entity.SessionData.*;
 import com.soooner.source.entity.SessionData.LivaRoomInfo.LiveRoomInfoData;
@@ -50,9 +42,7 @@ import com.soooner.ws.net.EplayerSocket;
 import com.soooner.ws.net.Sender;
 import de.greenrobot.event.EventBus;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
-import tv.danmaku.ijk.media.widget.VideoView;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -70,7 +60,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     public static String EPLAY_DATA = "eplay_data";
 
 
-   // public boolean chatForbid=false;//禁言标识位
+    // public boolean chatForbid=false;//禁言标识位
     MyChatView chatView;
     int video_margin_left_right;
 
@@ -84,7 +74,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     MyVideoView fl_myvideoview;
     RelativeLayout fl_all;
     LinearLayout li_drawpaddview;
-   View view_title;
+    View view_title;
     PlaybackLoading loading;
 
     PlayerControllerView playerControllerView;
@@ -99,7 +89,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     ScrollView scrollview;
     TextView tv_middle_state,tv_online_num;
 
-     public boolean loadingTimeoutShow;
+
     InputMethodManager inputMethodManager;
 
 
@@ -155,16 +145,11 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     List<SocketMessage> bufferList=new ArrayList<SocketMessage>();
     HashSet<String> msgKeys = new HashSet<String>();
 
-    Timer loginTimer;
-    public long  currentStaticLoginTimeMillis;
 
-    Timer loadingTimer;
-    public long  currentStaticTimeMillis;
 
-    Timer errorTimer;
-    public long  currentStaticErrorTimeMillis;
 
-    public int streamErrorTimes;
+
+
 
     Timer refreshTimer=new Timer();
     boolean enable_refresh_listview =true;
@@ -174,9 +159,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     boolean playerStartPlay = false;
 
 
-    public final  int   RECONNECTION_MAX_NUM=3;
-    public final  int   RECONNECTION_DEFAULT_NUM=0;
-    int curent_reconnection=RECONNECTION_DEFAULT_NUM;
+
 
 
 
@@ -185,17 +168,17 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
         @Override
         public void onVideoviewClick() {
-                LogUtil.d(TAG,"my_videoview onClick MotionEvent.ACTION_DOWN");
-                if (screenstate == MyVideoView.SCREENSTATE.NORMAL || screenstate == MyVideoView.SCREENSTATE.FULLSCREEN_VIDEOVIEW) {
-                    if (screenstate == MyVideoView.SCREENSTATE.FULLSCREEN_VIDEOVIEW) {
-                        if (playerControllerView != null && playerControllerView.getVisibility() == View.VISIBLE) {
-                            playerControllerView.setVisibility(View.INVISIBLE);
-                            return;
-                        }
+            LogUtil.d(TAG,"my_videoview onClick MotionEvent.ACTION_DOWN");
+            if (screenstate == MyVideoView.SCREENSTATE.NORMAL || screenstate == MyVideoView.SCREENSTATE.FULLSCREEN_VIDEOVIEW) {
+                if (screenstate == MyVideoView.SCREENSTATE.FULLSCREEN_VIDEOVIEW) {
+                    if (playerControllerView != null && playerControllerView.getVisibility() == View.VISIBLE) {
+                        playerControllerView.setVisibility(View.INVISIBLE);
+                        return;
                     }
-                    changedVideoViewScreen();
-
                 }
+                changedVideoViewScreen();
+
+            }
         }
 
         @Override
@@ -233,14 +216,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                 EplayerPluginActivity.this.playbackEngin.pausePlayback();
             }
 
-            EplayerPluginActivity.this.currentStaticErrorTimeMillis = System.currentTimeMillis();
-            if(errorTimer!=null) {
-                errorTimer.cancel();
-                errorTimer = null;
-            }
-            errorTimer = new Timer();
-            errorTimer.schedule(new ErrorTimerTask(EplayerPluginActivity.this.currentStaticErrorTimeMillis),5000);
 
+
+            ttu.addErrorTask(TimeTaskUtils.TimeTaskType.TIMETASK_ERROR, RECONNECTION_MAX_NUM, 5000, false, true);
             return true;
         }
 
@@ -253,23 +231,15 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
                     if(EplayerPluginActivity.this.playerStartPlay) {
 
-                        EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if (loadingTimer != null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
-                        loadingTimer = new Timer();
-                        loadingTimer.schedule(new LoadingTimerTask(EplayerPluginActivity.this.currentStaticTimeMillis), 15000);
+
+
+                        ttu.addTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD, RECONNECTION_MAX_NUM, 15000, false);
                     }
 
                 } else {
                     EplayerPluginActivity.this.playerStartPlay = true;
 
-                    EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                    if(loadingTimer!=null) {
-                        loadingTimer.cancel();
-                        loadingTimer = null;
-                    }
+                    ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
 
                 }
                 if(null!=playerControllerView&&playerControllerView.isManualPausePlayer())
@@ -297,14 +267,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             playbackLoadingFlag =true;
             if(!EplayerSessionInfo.sharedSessionInfo().infoData.playMusic) {
 
-                EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                if(loadingTimer!=null) {
-                    loadingTimer.cancel();
-                    loadingTimer = null;
-                }
-                loadingTimer = new Timer();
-                loadingTimer.schedule(new LoadingTimerTask(EplayerPluginActivity.this.currentStaticTimeMillis),30000);
 
+
+                ttu.addTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD,RECONNECTION_MAX_NUM,30000,false);
             }
         }
 
@@ -313,150 +278,81 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             LogUtil.d("onVideoSizeChanged  onLoadingEnd");
             playbackLoadingFlag =false;
             if(!EplayerSessionInfo.sharedSessionInfo().infoData.playMusic) {
-                curent_reconnection=RECONNECTION_DEFAULT_NUM;
+
+                ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_ERROR);
+                ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
 
                 handler.sendEmptyMessage(TaskType.MESSAGE_ENABLE_CONTROL);
 
 
-                EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                if(loadingTimer!=null) {
-                    loadingTimer.cancel();
-                    loadingTimer = null;
-                }
 
             }
         }
     };
 
+    @Override
+    public  void handleLoginOutTime(boolean isEnd){
+
+        requestStop();
+
+        createAlertDialog("提示","您的网络太差啦，无法登录房间，请重试或者切换到稳定网络！");
 
 
-
-
-    public class LoginTimerTask extends TimerTask{
-
-        private long  currentTimeMillis;
-
-        public LoginTimerTask(long  currentTimeMillis){
-            this.currentTimeMillis = currentTimeMillis;
-        }
-
-        @Override
-        public void run() {
-            if(EplayerPluginActivity.this.loadingTimeoutShow)
-                return;
-
-
-            long currentStaticTimeMillis = EplayerPluginActivity.this.currentStaticLoginTimeMillis;
-            if(currentTimeMillis==currentStaticTimeMillis) {
-
-
-                    EplayerPluginActivity.this.loadingTimeoutShow = true;
-                    EplayerPluginActivity.this.requestStop();
-
-                    EplayerPluginActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new AlertDialog.Builder(EplayerPluginActivity.this)
-                                    .setTitle("提示")
-                                    .setMessage("您的网络太差啦，无法登录房间，请重试或者切换到稳定网络！")
-                                    .setPositiveButton(
-                                            "确定",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog,
-                                                                    int whichButton) {
-                                                    finish();
-                                                }
-                                            }).setCancelable(false).create().show();
-
-                        }
-                    });
-                LogUtil.d(TAG,"ErrorTimerTask excute");
-            }else{
-
-                LogUtil.d(TAG,"ErrorTimerTask igron");
-            }
-        }
     }
+    @Override
+    public  void handleErrorinOutTime(boolean isEnd){
+        LogUtil.d("streamEOF","handleErrorinOutTime isEnd:"+isEnd);
+        if(!isEnd){
 
-    public class ErrorTimerTask extends TimerTask{
+            if(EplayerSetting.isPlayback){
+                LogUtil.d(TAG, "ErrorTimerTask currentPlaybackTime:" + EplayerPluginActivity.this.currentPlaybackTime);
+                EplayerPluginActivity.this.playerStartPlay= false;
+                fl_myvideoview.stopPlayback();
 
-        private long  currentTimeMillis;
-
-        public ErrorTimerTask(long  currentTimeMillis){
-            this.currentTimeMillis = currentTimeMillis;
-        }
-
-        @Override
-        public void run() {
-            if(EplayerPluginActivity.this.loadingTimeoutShow)
-                return;
-
-
-            long currentStaticTimeMillis = EplayerPluginActivity.this.currentStaticErrorTimeMillis;
-
-            if (curent_reconnection < RECONNECTION_MAX_NUM) {
-                LogUtil.d(TAG,"ErrorTimerTask connect age,curent_reconnection:" + curent_reconnection);
-                curent_reconnection++;
-                if(EplayerSetting.isPlayback){
-
-                    LogUtil.d(TAG, "ErrorTimerTask currentPlaybackTime:" + EplayerPluginActivity.this.currentPlaybackTime);
-                    EplayerPluginActivity.this.playerStartPlay= false;
-
-                    fl_myvideoview.stopPlayback();
-
-
-                    if( EplayerPluginActivity.this.playbackEngin!=null)
+                if( EplayerPluginActivity.this.playbackEngin!=null)
                     EplayerPluginActivity.this.playbackEngin.resumePlayback(EplayerPluginActivity.this.currentPlaybackTime);
 
+            }else {
 
-                }else {
+                //TODO: MESSAGE_CHANGE_LIVE_STATUS
+                LiveRoomInfoData infoData = EplayerSessionInfo.sharedSessionInfo().infoData;
 
-
-                    //TODO: MESSAGE_CHANGE_LIVE_STATUS
-                    LiveRoomInfoData infoData = EplayerSessionInfo.sharedSessionInfo().infoData;
-
-                    if (infoData!=null&&!infoData.playMusic) {
-                        handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
-                    }
+                if (infoData!=null&&!infoData.playMusic) {
+                    handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
                 }
-            } else {
-
-
-            if(currentTimeMillis==currentStaticTimeMillis) {
-
-                if (EplayerSessionInfo.sharedSessionInfo()!=null&&EplayerSessionInfo.sharedSessionInfo().infoData!=null&&EplayerSessionInfo.sharedSessionInfo().infoData.liveStatus == LiveRoomLiveStatus.LiveRoomLiveStatusPlay
-                        && EplayerSessionInfo.sharedSessionInfo().infoData.isStreamPush)  {
-
-                    EplayerPluginActivity.this.loadingTimeoutShow = true;
-                    EplayerPluginActivity.this.requestStop();
-
-                    EplayerPluginActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new AlertDialog.Builder(EplayerPluginActivity.this)
-                                    .setTitle("提示")
-                                    .setMessage("您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看")
-                                    .setPositiveButton(
-                                            "确定",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog,
-                                                                    int whichButton) {
-                                                    finish();
-                                                }
-                                            }).setCancelable(false).create().show();
-
-                        }
-                    });
-                }
-                LogUtil.d(TAG,"ErrorTimerTask excute");
-            }else{
-
-                LogUtil.d(TAG,"ErrorTimerTask igron");
             }
-        }
-    }
-    }
+        }else{
+            LogUtil.d("streamEOF","handleErrorinOutTime EplayerSessionInfo:");
+            if (EplayerSessionInfo.sharedSessionInfo()!=null&&EplayerSessionInfo.sharedSessionInfo().infoData!=null&&EplayerSessionInfo.sharedSessionInfo().infoData.liveStatus == LiveRoomLiveStatus.LiveRoomLiveStatusPlay
+                    && EplayerSessionInfo.sharedSessionInfo().infoData.isStreamPush)  {
 
+                requestStop();
+
+                createAlertDialog("提示","您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看");
+
+            }
+
+        }
+
+    }
+    @Override
+    public  void handleLoadOutTime(boolean isEnd){
+        LogUtil.d("handleLoadOutTime","isEnd:"+isEnd);
+        if(!isEnd){
+            LiveRoomInfoData infoData= EplayerSessionInfo.sharedSessionInfo().infoData;
+
+            if (infoData!=null&&!infoData.playMusic) {
+                handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
+            }
+
+        }else{
+            requestStop();
+
+            createAlertDialog("提示","您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看");
+
+        }
+
+    }
 
 
     boolean isValidChangeScreen = true;
@@ -575,17 +471,14 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                         if(data.getPlayUrl()!=null)
                             handler.sendEmptyMessage(TaskType.MESSAGE_PLAY_STREAMPUSH);
                     }else{
-                       if(data.playMusic){
-                           return;
-                       }
+                        if(data.playMusic){
+                            return;
+                        }
 
                         if (fl_myvideoview.isPlayState()) {
                             if (fl_myvideoview.isPlaying()||fl_myvideoview.isPaused()) {
-                                EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                                if(loadingTimer!=null) {
-                                    loadingTimer.cancel();
-                                    loadingTimer = null;
-                                }
+
+                                //  ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
                                 EplayerPluginActivity.this.playerStartPlay= false;
                                 fl_myvideoview.stopPlayback();
 
@@ -610,35 +503,29 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     }
 
 //                    if (isChange) {
-                        if (fl_myvideoview.isPlaying()) {
-                            EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                            if(loadingTimer!=null) {
-                                loadingTimer.cancel();
-                                loadingTimer = null;
-                            }
-                            EplayerPluginActivity.this.playerStartPlay= false;
-                            fl_myvideoview.stopPlayback();
-                        }
-                        LogUtil.d(TAG,"data.getPlayUrl():"+data.getPlayUrl());
-                        fl_myvideoview.setVideoURI(data);
-                        if(playerControllerView!=null){
-                            playerControllerView.setEnabled(false);
-                        }
+                    if (fl_myvideoview.isPlaying()) {
 
-                   //     fl_myvideoview.showVideoviewProgressbar();
-                        resetVideoSize();
-                        fl_myvideoview.start();
+                        //ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
+                        EplayerPluginActivity.this.playerStartPlay= false;
+                        fl_myvideoview.stopPlayback();
+                    }
+                    LogUtil.d(TAG,"data.getPlayUrl():"+data.getPlayUrl());
+                    fl_myvideoview.setVideoURI(data);
+                    if(playerControllerView!=null){
+                        playerControllerView.setEnabled(false);
+                    }
+
+                    //     fl_myvideoview.showVideoviewProgressbar();
+                    resetVideoSize();
+                    fl_myvideoview.start();
 //                    }
                     break;
                 }
 
                 case TaskType.MESSAGE_STOP_MUSIC_ERROR:{
                     if (fl_myvideoview.isPlayMuiceState()) {
-                        EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if(loadingTimer!=null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
+
+                        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
                         fl_myvideoview.stopPlayback();
                         fl_myvideoview.stopRotateChanpian();
                     }
@@ -651,11 +538,8 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                 case TaskType.MESSAGE_PLAY_MUSIC:{
                     LogUtil.d(TAG,"TaskType.MESSAGE_PLAY_MUSIC");
                     if(fl_myvideoview.isPlaying()){
-                        EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-                        if(loadingTimer!=null) {
-                            loadingTimer.cancel();
-                            loadingTimer = null;
-                        }
+
+                        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
                         fl_myvideoview.stopPlayback();
                     }
                     fl_myvideoview.startRotateChanpian();
@@ -665,7 +549,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                         playerControllerView.setEnabled(false);
                     }
 
-                  //  fl_myvideoview.showVideoviewProgressbar();
+                    //  fl_myvideoview.showVideoviewProgressbar();
                     resetVideoSize();
                     fl_myvideoview.start();
                     break;
@@ -689,9 +573,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
 
                     }
-                        List<String> li = new ArrayList<String>();
-                        li.add(forbidMessage.userKey);
-                        adapter.updateBlackList(li, forbidMessage.chatForbid);
+                    List<String> li = new ArrayList<String>();
+                    li.add(forbidMessage.userKey);
+                    adapter.updateBlackList(li, forbidMessage.chatForbid);
 
 
                     break;
@@ -706,18 +590,18 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     if(!enable_refresh_listview){
                         break;
                     }
-                     List<SocketMessage> list=new ArrayList<SocketMessage>();
-                      synchronized (bufferList){
-                          if(null!=bufferList&&bufferList.size()>0){
-                              list.addAll(bufferList);
-                              bufferList.clear();
-                          }
-                      }
-                     if(list.size()>0){
-                      adapter.addSpeakList(list);
-                      adapter.notifyDataSetChanged();
-                      listview.setSelection(0);
-                     }
+                    List<SocketMessage> list=new ArrayList<SocketMessage>();
+                    synchronized (bufferList){
+                        if(null!=bufferList&&bufferList.size()>0){
+                            list.addAll(bufferList);
+                            bufferList.clear();
+                        }
+                    }
+                    if(list.size()>0){
+                        adapter.addSpeakList(list);
+                        adapter.notifyDataSetChanged();
+                        listview.setSelection(0);
+                    }
 
                     break;
                 }
@@ -785,14 +669,14 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         super.finish();
     }
 
-   public void initLiveRoomInfo(){
+    public void initLiveRoomInfo(){
 
-       LiveRoomInfoData data=EplayerSessionInfo.sharedSessionInfo().infoData;
-       if(null!=data){
-           top_title_title.setText(data.subject);
-           initPlayState(data.liveStatus);
-       }
-   }
+        LiveRoomInfoData data=EplayerSessionInfo.sharedSessionInfo().infoData;
+        if(null!=data){
+            top_title_title.setText(data.subject);
+            initPlayState(data.liveStatus);
+        }
+    }
 
 
 
@@ -997,7 +881,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         }
         return super.onKeyDown (keyCode, event);
     }
-    AlertDialog loadingFailedDialog=null;
+
 
 
     @Override
@@ -1013,7 +897,6 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
         setContentView(R.layout.eplayer_activity);
         context = this;
-        curent_reconnection=RECONNECTION_DEFAULT_NUM;
         LogUtil.d(TAG,"onCreate is running");
 
 //        AudioManager audioManager = (AudioManager)context.getSystemService(Activity.AUDIO_SERVICE);// 获取音量服务
@@ -1060,22 +943,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             public void onLoadingFailed() {
                 try {
                     EplayerPluginActivity.this.requestStop();
-                    if (null == loadingFailedDialog) {
-                        loadingFailedDialog = new AlertDialog.Builder(EplayerPluginActivity.this)
-                                .setTitle("提示")
-                                .setMessage("您的网络太糟糕，无法加载图片，请重试或者切换到稳定网络！")
-                                .setPositiveButton(
-                                        "确定",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,
-                                                                int whichButton) {
-                                                finish();
-                                            }
-                                        }).setCancelable(false).create();
-                    }
-                    if (!loadingFailedDialog.isShowing()) {
-                        loadingFailedDialog.show();
-                    }
+                    createAlertDialog("提示","您的网络太糟糕，无法加载图片，请重试或者切换到稳定网络！");
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1217,7 +1087,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         SCREEN_WIDTH=metrics.widthPixels;
         SCREEN_HEIGHT=metrics.heightPixels;
         Resources res = getResources();
-         video_margin_left_right = (int) res.getDimension(R.dimen.video_margin_left_right);
+        video_margin_left_right = (int) res.getDimension(R.dimen.video_margin_left_right);
         BASE_WIDTH =(int)(SCREEN_WIDTH-video_margin_left_right*2);
 
         fl_myvideoview.resetSize(BASE_WIDTH,(int)(BASE_WIDTH *CHANGPIAN_SCALE),video_margin_left_right);
@@ -1378,14 +1248,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             checkupPlayerDataValidateStr(playerData);
 
 
-            EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if(loginTimer!=null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
-            loginTimer = new Timer();
-            loginTimer.schedule(new LoginTimerTask(EplayerPluginActivity.this.currentStaticLoginTimeMillis),100000);
 
+
+            ttu.addTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN,1,100000,true);
 
             new GetLiveListThread(playerData).start();
 
@@ -1418,66 +1283,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
 
 
-    public class LoadingTimerTask extends TimerTask{
 
-        private long  currentTimeMillis;
-
-        public LoadingTimerTask(long  currentTimeMillis){
-            this.currentTimeMillis = currentTimeMillis;
-        }
-
-        @Override
-        public void run() {
-//            if(EplayerPluginActivity.this.loadingTimeoutShow)
-//                return;
-//
-//
-           long currentStaticTimeMillis = EplayerPluginActivity.this.currentStaticTimeMillis;
-            if(currentTimeMillis==currentStaticTimeMillis){
-
-                EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-
-                if (curent_reconnection < RECONNECTION_MAX_NUM) {
-                    LogUtil.d(TAG,"LoadingTimerTask connect age,curent_reconnection:" + curent_reconnection);
-                    curent_reconnection++;
-                //TODO: MESSAGE_CHANGE_LIVE_STATUS
-                LiveRoomInfoData infoData= EplayerSessionInfo.sharedSessionInfo().infoData;
-
-                if (!infoData.playMusic) {
-                    handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
-                }
-                } else {
-                    EplayerPluginActivity.this.streamErrorTimes++;
-
-                    EplayerPluginActivity.this.loadingTimeoutShow = true;
-                    EplayerPluginActivity.this.requestStop();
-
-                    EplayerPluginActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new AlertDialog.Builder(EplayerPluginActivity.this)
-                                    .setTitle("提示")
-                                    .setMessage("您的网络太差啦，无法稳定的播放音视频，请切换到稳定网络观看")
-                                    .setPositiveButton(
-                                            "确定",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog,
-                                                                    int whichButton) {
-                                                    finish();
-                                                }
-                                            }).setCancelable(false).create().show();
-
-                        }
-                    });
-                    LogUtil.d(TAG, "LoadingTimerTask excute");
-                }
-
-            } else {
-
-                LogUtil.d(TAG, "LoadingTimerTask igron");
-            }
-        }
-    }
     //初始化直播状态
     public void initPlayState(LiveRoomLiveStatus liveStatus){
         String state_str="";
@@ -1550,11 +1356,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
         handler.sendEmptyMessage(TaskType.MESSAGE_INIT_PADVIEW);
 
-        EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-        if(loginTimer!=null) {
-            loginTimer.cancel();
-            loginTimer = null;
-        }
+        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
 
         LiveRoomInfoData infoData= EplayerSessionInfo.sharedSessionInfo().infoData;
         setAllChatForbid(infoData.canChat);
@@ -1591,17 +1393,10 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
     public void onEventBackgroundThread(VideoAudioStatusEvent event) {
 
-        EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-        if(loadingTimer!=null) {
-            loadingTimer.cancel();
-            loadingTimer = null;
-        }
 
-        EplayerPluginActivity.this.currentStaticErrorTimeMillis = System.currentTimeMillis();
-        if(errorTimer!=null) {
-            errorTimer.cancel();
-            errorTimer = null;
-        }
+        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOAD);
+
+        ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_ERROR);
 
         handler.sendEmptyMessage(TaskType.MESSAGE_CHANGE_LIVE_STATUS);
 
@@ -1619,6 +1414,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
     public void requestStop(){
         try {
+           // StorageUtil.cleanAll();//cleanCacheDir();
             this.living = false;
             if(loading!=null){
                 loading.stopLoading();
@@ -1641,21 +1437,13 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             }
             EplayerSocket.close();
             EplayerSetting.isPlayback = false;
-            EplayerPluginActivity.this.currentStaticTimeMillis = System.currentTimeMillis();
-            if(loadingTimer!=null) {
-                loadingTimer.cancel();
-                loadingTimer = null;
-            }
+
             EplayerPluginActivity.this.playerStartPlay= false;
             fl_myvideoview.stopPlayback();
-            StorageUtil.cleanAll();//cleanCacheDir();
+
             EPlaybackSessionInfo.releaseALL();
 
-            EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if (loginTimer != null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
+            ttu.clearAllTask();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -1663,7 +1451,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     }
 
 
-   //播放音乐
+    //播放音乐
     public void onEventBackgroundThread(MusicEvent event) {
         if(event.getInfoData().playMusic) {
             int musicType=event.getInfoData().musicType;
@@ -1742,7 +1530,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
     //获取在线人数
     public void onEventBackgroundThread(UserCountEvent event) {
-       int count= event.getCount();
+        int count= event.getCount();
         Message message=Message.obtain();
         message.what=TaskType.MESSAGE_REFRESH_ONLINE_NUM;
         message.obj=count;
@@ -1752,7 +1540,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     //获取到聊天
     public void onEventBackgroundThread(SocketMessageEvent event) {
         LogUtil.d(TAG,"SocketMessageEvent is running");
-       // handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
+        // handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
         try {
 
             synchronized (bufferList){
@@ -1802,7 +1590,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         handler.sendMessage(message);
     }
 
-     //投票统计结果
+    //投票统计结果
     public void onEventBackgroundThread(VoteStatisticMsgInfoEvent event) {
         VoteStatisticMsgInfo voteStatisticMsgInfo= event.getInfoData();
 
@@ -1814,7 +1602,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
     public void showAlertDialog() {
         TextView  text=new TextView(this);
-        ViewGroup.LayoutParams lp =text.getLayoutParams();
+        android.view.ViewGroup.LayoutParams lp =text.getLayoutParams();
         text.setTextSize(18);
 
         text.setGravity(Gravity.CENTER);
@@ -1829,7 +1617,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 EplayerSessionInfo.releaseALL();
-                  finish();
+                finish();
             }
         });
 
@@ -1888,13 +1676,8 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
             handler.sendEmptyMessage(TaskType.MESSAGE_INIT_PADVIEW);
 
-            EplayerPluginActivity.this.currentStaticLoginTimeMillis = System.currentTimeMillis();
-            if(loginTimer!=null) {
-                loginTimer.cancel();
-                loginTimer = null;
-            }
 
-
+            ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
         }
     }
 
