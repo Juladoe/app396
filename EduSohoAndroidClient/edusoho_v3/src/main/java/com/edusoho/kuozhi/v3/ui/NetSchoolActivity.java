@@ -179,6 +179,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
                         if (error.networkResponse == null) {
                             CommonUtil.longToast(mActivity, "无网络连接或请求失败");
                         } else {
@@ -190,6 +191,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
                 if (error.networkResponse == null) {
                     CommonUtil.longToast(mActivity, "无网络连接或请求失败");
                 } else {
