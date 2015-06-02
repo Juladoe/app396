@@ -132,10 +132,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         BaseFragment fragment;
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
+            mToolBar.setVisibility(View.GONE);
         } else if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
+            mToolBar.setVisibility(View.VISIBLE);
         } else {
             tag = "FriendFragment";
+            mToolBar.setVisibility(View.VISIBLE);
         }
 
         hideFragment(mCurrentTag);
@@ -187,14 +190,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         if (id == R.id.nav_tab_news) {
             setTitle(R.string.title_news);
             mDownTabNews.setIcon(R.string.font_news);
-            mToolBar.setTitleVisibility(View.GONE);
+            //mToolBar.setTitleVisibility(View.GONE);
         } else if (id == R.id.nav_tab_find) {
             setTitle(R.string.title_find);
-            mToolBar.setTitleVisibility(View.VISIBLE);
+            //mToolBar.setTitleVisibility(View.VISIBLE);
             mDownTabFind.setIcon(R.string.font_find);
         } else if (id == R.id.nav_tab_friends) {
             setTitle(R.string.title_friends);
-            mToolBar.setTitleVisibility(View.GONE);
+            //mToolBar.setTitleVisibility(View.GONE);
             mDownTabFriends.setIcon(R.string.font_friends);
         }
     }
