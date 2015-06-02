@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        qswangxiao {
-            applicationId "com.qswangxiao.kuozhi"
+        kuakao {
+            applicationId "com.kuakao.kuozhi"
         }
     }
 
     sourceSets {
-        qswangxiao {
+        kuakao {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/qswangxiao/res']
+            res.srcDirs = ['src/kuakao/res']
         }
     }
 
@@ -33,7 +33,7 @@ android {
     //签名
     signingConfigs {
         releaseConfig {
-            storeFile file("key/qswangxiao.jks")
+            storeFile file("key/kuakao.jks")
             storePassword "100010000"
             keyAlias "cn"
             keyPassword "10001000"

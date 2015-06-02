@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">跨考教育</string>
+    <string name="app_name">跨考网校</string>
     <string name="app_host">http://e.kuakao.com</string>
-    <string name="school_about">关于跨考教育</string>
+    <string name="school_about">关于跨考网校</string>
     <string name="app_code">kuakao</string>
 
     <string name="splash_num">2</string>
