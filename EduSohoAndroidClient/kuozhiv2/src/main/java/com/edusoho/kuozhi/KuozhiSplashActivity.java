@@ -2,7 +2,7 @@ package com.edusoho.kuozhi;
 
 import android.view.View;
 
-import com.edusoho.kuozhi.ui.SplashActivity;
+import com.edusoho.kuozhi.v3.ui.SplashActivity;
 
 import java.util.ArrayList;
 
