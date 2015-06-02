@@ -9,7 +9,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FragmentNavigationDrawer extends BaseFragment implements MessageEngine.MessageCallback {
 
-    public static final int WEIBO_LOGIN = 0001;
+    public static final int THIRd_PARTY_LOGIN = 0001;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -56,7 +55,9 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     private TextView tvNickname;
     private ImageView ivLogin;
     private CircleImageView civAvatar;
-    private WeiboHandler weiboHandler;
+    private ThirdPartyLoginHandler mThirdPartyLoginHandler;
+
+//    ActionBar actionBar = mActivity.getSupportActionBar();
 
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
@@ -73,7 +74,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_navigation_drawer);
-        weiboHandler = new WeiboHandler();
+        mThirdPartyLoginHandler = new ThirdPartyLoginHandler();
         app.registMsgSource(this);
     }
 
@@ -87,9 +88,11 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         initView();
         mDrawerFragment = mActivity.findViewById(fragmentDrawerId);
         mTitle = mDrawerTitle = mActivity.getTitle();
-        ActionBar actionBar = mActivity.getSupportActionBar();
+
         mDrawerLayout = drawerLayout;
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        ActionBar actionBar = mActivity.getSupportActionBar();
 
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
@@ -247,14 +250,16 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         MessageType messageType = message.type;
         switch (messageType.type) {
             case Const.LOGIN_SUCCESS:
-            case Const.LOGIN_WEIBO_SECCESS:
+                tvNickname.setText(mActivity.app.loginUser.nickname);
+                ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+                break;
+            case Const.Third_PARTY_LOGIN_SUCCESS:
                 try {
-
-                    Message msg = weiboHandler.obtainMessage();
-                    msg.what = WEIBO_LOGIN;
-                    weiboHandler.sendMessage(msg);
+                    Message msg = mThirdPartyLoginHandler.obtainMessage();
+                    msg.what = THIRd_PARTY_LOGIN;
+                    mThirdPartyLoginHandler.sendMessage(msg);
                 } catch (Exception e) {
-                    Log.d("nimabi-->", e.getMessage());
+                    throw e;
                 }
                 break;
             case Const.LOGOUT_SUCCESS:
@@ -264,11 +269,11 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         }
     }
 
-    private class WeiboHandler extends Handler {
+    private class ThirdPartyLoginHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == WEIBO_LOGIN) {
+            if (msg.what == THIRd_PARTY_LOGIN) {
                 tvNickname.setText(mActivity.app.loginUser.nickname);
                 ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
             }
@@ -280,7 +285,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.LOGOUT_SUCCESS),
-                new MessageType((Const.LOGIN_WEIBO_SECCESS))
+                new MessageType((Const.Third_PARTY_LOGIN_SUCCESS))
         };
         return messageTypes;
     }

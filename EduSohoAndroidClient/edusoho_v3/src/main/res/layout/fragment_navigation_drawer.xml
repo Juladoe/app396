@@ -192,6 +192,21 @@
                 android:text="意见反馈"
                 android:textColor="@drawable/drawer_selector_font"
                 android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/btnVip"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/drawer_selector_bg"
+                android:button="@null"
+                android:drawableLeft="@drawable/navigation_icon_feedback"
+                android:drawablePadding="15dp"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="17dp"
+                android:paddingRight="0dp"
+                android:text="开通会员"
+                android:textColor="@drawable/drawer_selector_font"
+                android:textSize="17sp" />
         </LinearLayout>
 
     </LinearLayout>

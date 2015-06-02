@@ -20,7 +20,8 @@
             android:minHeight="?attr/actionBarSize"
             app:centerTitle="@string/toolbar_title"
             app:centerTitleSize="@dimen/medium_font_size"
-            tools:layout="@layout/toolbar_custom" />
+            tools:layout="@layout/toolbar_custom"
+            android:visibility="gone" />
 
         <!--<org.apache.cordova.CordovaWebView-->
         <!--android:id="@+id/webView"-->

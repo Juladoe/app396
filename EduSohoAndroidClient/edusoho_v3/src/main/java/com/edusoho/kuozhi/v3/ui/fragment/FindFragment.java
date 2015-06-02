@@ -40,15 +40,12 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
 
     @Override
     public void onAttach(Activity activity) {
-        Log.d("FindFragment-->", "onAttach");
         super.onAttach(activity);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContainerView(R.layout.fragment_webview);
-        Log.d("FindFragment-->", "onCreate");
         mActivity.setTitle(getString(R.string.title_find));
     }
 
@@ -58,7 +55,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
+        //webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
         return rootView;
     }
 
@@ -68,7 +65,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         if (webView == null) {
             webView = (ESWebView) view.findViewById(R.id.webView);
             Config.init(getActivity());
-            webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
+            //webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
         }
     }
 
