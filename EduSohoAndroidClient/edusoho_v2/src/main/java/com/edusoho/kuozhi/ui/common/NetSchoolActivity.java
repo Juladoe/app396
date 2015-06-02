@@ -199,7 +199,14 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     PopupDialog.createNormal(mContext, "错误信息", "没有搜索到网校").show();
+                    loading.dismiss();
                 }
+            }
+
+            @Override
+            public void error(String url, AjaxStatus ajaxStatus) {
+                loading.dismiss();
+                super.error(url, ajaxStatus);
             }
         });
     }
