@@ -41,6 +41,7 @@ import java.util.TimerTask;
  */
 public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
+    public static final int XINGGE_PUSH_REGISTER = 0x01;
 
     private String mCurrentTag;
     private boolean mIsExit;
@@ -62,7 +63,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
         initView();
-        //registerXgPush();
 
         if (savedInstanceState == null) {
             //selectItem(0);
@@ -82,7 +82,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
         mDownTabFriends = (EduSohoTextBtn) findViewById(R.id.nav_tab_friends);
         mToolBar = (EduToolBar) findViewById(R.id.toolbar);
-        mToolBar.setTitleVisibility(View.GONE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavDownTabClickListener = new NavDownTabClickListener();
 
@@ -141,9 +140,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             mToolBar.setVisibility(View.GONE);
         } else if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
+            mToolBar.setCenterTitle(getString(R.string.title_news));
             mToolBar.setVisibility(View.VISIBLE);
         } else {
             tag = "FriendFragment";
+            mToolBar.setCenterTitle(getString(R.string.title_friends));
             mToolBar.setVisibility(View.VISIBLE);
         }
         hideFragment(mCurrentTag);
@@ -266,7 +267,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     public void registerXgPush() {
         XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, new XGIOperateCallback() {
+        XGPushManager.registerPush(mContext, app.loginUser.nickname, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object data, int flag) {
                 Log.w(Constants.LogTag,
@@ -296,15 +297,21 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (messageType.code == Const.OPEN_COURSE_CHAT) {
-            app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
+        switch (messageType.code) {
+            case Const.OPEN_COURSE_CHAT:
+                app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
+                break;
+            case XINGGE_PUSH_REGISTER:
+                registerXgPush();
+                break;
+            default:
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.OPEN_COURSE_CHAT, source)};
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.OPEN_COURSE_CHAT, source), new MessageType(XINGGE_PUSH_REGISTER, source)};
         return messageTypes;
     }
 }

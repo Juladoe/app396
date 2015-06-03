@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -116,6 +117,7 @@ public class LoginFragment extends BaseFragment {
                     mActivity.app.saveToken(userResult);
                     mActivity.setResult(LoginActivity.OK);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
+                    app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
                     mActivity.finish();
 
                 }
@@ -145,8 +147,8 @@ public class LoginFragment extends BaseFragment {
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
                         mActivity.finish();
-
                     }
                 }
 
@@ -177,6 +179,7 @@ public class LoginFragment extends BaseFragment {
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
                         mActivity.finish();
                     }
                 }
