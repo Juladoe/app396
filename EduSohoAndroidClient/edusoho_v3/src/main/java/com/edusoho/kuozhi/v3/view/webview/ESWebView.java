@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -140,7 +139,7 @@ public class ESWebView extends FrameLayout {
 
         @Override
         public void onReceivedIcon(WebView view, Bitmap icon) {
-            mActivity.getActionBar().setIcon(new BitmapDrawable(icon));
+            //mActivity.getActionBar().setIcon(new BitmapDrawable(icon));
         }
 
     };

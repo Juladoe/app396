@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -145,7 +144,7 @@ public class LoginFragment extends BaseFragment {
                         user.smallAvatar = res.get("profile_image_url").toString();
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
-                        app.sendMessage(Const.Third_PARTY_LOGIN_SUCCESS, null);
+                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                         mActivity.finish();
 
                     }
@@ -177,7 +176,7 @@ public class LoginFragment extends BaseFragment {
                         user.smallAvatar = res.get("figureurl_qq_1").toString();
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
-                        app.sendMessage(Const.Third_PARTY_LOGIN_SUCCESS, null);
+                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                         mActivity.finish();
                     }
                 }

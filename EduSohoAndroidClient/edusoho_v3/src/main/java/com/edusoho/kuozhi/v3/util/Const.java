@@ -75,11 +75,15 @@ public class Const {
     //默认分页数量
     public static final int LIMIT = 10;
 
+    //Plugin事件
+    public static final int MAIN_MENU_OPEN = 0x03;
+    public static final int OPEN_COURSE_CHAT = 0x04;
+
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
-    public static final String Third_PARTY_LOGIN_SUCCESS = "login_weibo_seccess";
-    public static final String LOGOUT_SUCCESS = "logout";
+    public static final String THIRD_PARTY_LOGIN_SUCCESS = "third_party_login_success";
+    public static final String LOGOUT_SUCCESS = "logout_success";
     public static final String REFRESH_REVIEWS = "refresh_review";
 
     public static final int OK = 200;

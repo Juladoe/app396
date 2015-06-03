@@ -42,7 +42,7 @@ public class ESWebViewRequestManager extends RequestManager {
         this.mContext = context;
         this.mUserAgent = userAgent;
         initHttpClient();
-        registHandler(".+", new WebViewRequestHandler());
+        //registHandler(".+", new WebViewRequestHandler());
     }
 
     private void initHttpClient()
