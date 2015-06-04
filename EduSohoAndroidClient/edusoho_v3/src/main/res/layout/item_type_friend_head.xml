@@ -4,27 +4,11 @@
     android:layout_height="match_parent"
     android:background="@color/base_gray">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
         android:background="@color/white">
-
-        <!--<com.edusoho.kuozhi.v3.view.EduSohoRoundedEditText-->
-            <!--android:id="@+id/search_frame"-->
-            <!--android:hint="搜索昵称/手机/QQ号"-->
-            <!--android:singleLine="true"-->
-            <!--android:background="@null"-->
-            <!--android:gravity="center"-->
-            <!--android:textColor="@color/gray"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:layout_marginLeft="16dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:padding="6dp"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--/>-->
 
         <com.edusoho.kuozhi.v3.view.EduSohoRoundButton
             android:id="@+id/search_friend_btn"
@@ -37,17 +21,14 @@
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             />
-
         </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/gray"
+        android:background="@color/material_grey"
         />
-
 
     <LinearLayout
         android:id="@+id/item_add_phone_friend"
@@ -64,7 +45,6 @@
             android:src="@drawable/icon_add_phone"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
-
         <TextView
             android:layout_marginLeft="8dp"
             android:id="@+id/tv_add_friend"
@@ -75,6 +55,20 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <View
+            android:background="@color/material_grey"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="1px"/>
+        </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/item_add_lesson_friend"
@@ -91,7 +85,6 @@
             android:src="@drawable/icon_add_lesson"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
-
         <TextView
             android:layout_marginLeft="8dp"
             android:id="@+id/tv_add_lesson_friend"
@@ -101,6 +94,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <View
+            android:background="@color/material_grey"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="1px"/>
     </LinearLayout>
 
     <LinearLayout
@@ -118,7 +124,6 @@
             android:src="@drawable/icon_add_class"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
-
         <TextView
             android:layout_marginLeft="8dp"
             android:id="@+id/tv_add_class_friend"
@@ -142,7 +147,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/gray"
+        android:background="@color/material_grey"
         />
 
     <LinearLayout
@@ -183,7 +188,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/gray"
+        android:background="@color/material_grey"
         />
 
 </LinearLayout>

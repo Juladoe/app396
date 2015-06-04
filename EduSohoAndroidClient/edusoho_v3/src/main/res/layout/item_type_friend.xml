@@ -43,8 +43,9 @@
 
 
     <View
-        android:background="@color/gray"
+        android:background="@color/material_grey"
         android:layout_marginLeft="80dp"
+        android:layout_marginRight="16dp"
         android:layout_width="match_parent"
         android:layout_height="1px"/>
 

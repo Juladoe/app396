@@ -7,17 +7,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
-import com.edusoho.kuozhi.v3.ui.fragment.SearchDialogFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundButton;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundedEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Melomelon on 2015/5/26.
  */
-public class FriendFragmentAdapter extends BaseAdapter implements OnClickListener{
+public class FriendFragmentAdapter extends BaseAdapter{
 
     private LayoutInflater mInflater;
     private Context mContext;
@@ -36,6 +31,7 @@ public class FriendFragmentAdapter extends BaseAdapter implements OnClickListene
     private boolean isCache;
     private int mListViewLayoutId;
     private ArrayList<Friend> mList;
+    private OnClickListener mOnClickListener;
 
     public FriendFragmentAdapter(Context mContext, int mResource) {
         this.mContext = mContext;
@@ -70,10 +66,10 @@ public class FriendFragmentAdapter extends BaseAdapter implements OnClickListene
                 v = getCacheView(0);
                 headHolder = (HeadHolder) v.getTag();
             }
-            headHolder.searchFriendBtn.setOnClickListener(this);
-            headHolder.addPhoneFriends.setOnClickListener(this);
-            headHolder.addLessonFriends.setOnClickListener(this);
-            headHolder.addClassFriends.setOnClickListener(this);
+            headHolder.searchFriendBtn.setOnClickListener(mOnClickListener);
+            headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
+            headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
+            headHolder.addClassFriends.setOnClickListener(mOnClickListener);
 
         }else{
             final ItemHolder itemHolder;
@@ -117,6 +113,10 @@ public class FriendFragmentAdapter extends BaseAdapter implements OnClickListene
         mCacheArray.put(index,view);
     }
 
+    public void setHeadClickListener(OnClickListener onclickListener){
+        this.mOnClickListener = onclickListener;
+    }
+
     @Override
     public int getCount() {
         return mList.size()+1;
@@ -130,26 +130,6 @@ public class FriendFragmentAdapter extends BaseAdapter implements OnClickListene
     @Override
     public long getItemId(int position) {
         return 0;
-    }
-
-    @Override
-    public void onClick(View v) {
-        //TODO 添加好友
-        int i = v.getId();
-        if(i == R.id.search_friend_btn){
-            SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
-            searchDialogFragment.showDialogFragment("searchFriend");
-        }
-        else if (i == R.id.item_add_phone_friend){
-            System.out.println("手机联系人----》");
-        }else if(i == R.id.item_add_lesson_friend){
-            System.out.println("课程好友----》");
-
-        }else if(i == R.id.item_add_class_friend){
-            System.out.println("班级好友---》");
-
-        }
-
     }
 
     public void setListViewLayout(int layoutId) {
