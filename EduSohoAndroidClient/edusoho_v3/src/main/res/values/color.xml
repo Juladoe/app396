@@ -108,7 +108,7 @@
     <color name="titleTextColor">#03b884</color>
     <color name="backPressedColor">#e0e0e0</color>
     <color name="actionBarMenu">#03b884</color>
-    <color name="nav_btn_normal">#f4f9f6</color>
+    <color name="nav_btn_normal">#97989a</color>
     <color name="nav_btn_pressed">#45d17b</color>
 
     <!-- popup -->
