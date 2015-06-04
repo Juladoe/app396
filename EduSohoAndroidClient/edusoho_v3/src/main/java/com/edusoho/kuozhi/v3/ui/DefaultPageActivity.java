@@ -199,18 +199,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void changeBtnIcon(int id) {
-        mDownTabNews.setIcon(R.string.font_news);
-        mDownTabFind.setIcon(R.string.font_find);
-        mDownTabFriends.setIcon(R.string.font_friends);
+        mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+        mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+        mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         if (id == R.id.nav_tab_news) {
-            setTitle(R.string.title_news);
-            mDownTabNews.setIcon(R.string.font_news);
+            mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_find) {
-            setTitle(R.string.title_find);
-            mDownTabFind.setIcon(R.string.font_find);
+            mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_friends) {
-            setTitle(R.string.title_friends);
-            mDownTabFriends.setIcon(R.string.font_friends);
+            mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         }
     }
 

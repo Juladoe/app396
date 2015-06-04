@@ -59,11 +59,8 @@
 
     <!--ttf-->
     <string name="font_friends">&#xe605;</string>
-    <string name="font_friends_press">&#xe637;</string>
-    <string name="font_news">&#xe600;</string>
-    <string name="font_news_press">&#xe635;</string>
+    <string name="font_news">&#xe607;</string>
     <string name="font_find">&#xe604;</string>
-    <string name="font_find_press">&#xe633;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
 
