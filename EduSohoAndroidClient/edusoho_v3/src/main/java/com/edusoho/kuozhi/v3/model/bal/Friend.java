@@ -8,6 +8,12 @@ public class Friend {
         this.name = name;
     }
 
+    public Friend(int avatarID, String name) {
+        this.avatarID = avatarID;
+        this.name = name;
+    }
+
+    public int avatarID;
     public String avatar;
     public String name;
 }

@@ -107,6 +107,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     }
 
+    public EduToolBar getToolBar() {
+        return mToolBar;
+    }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

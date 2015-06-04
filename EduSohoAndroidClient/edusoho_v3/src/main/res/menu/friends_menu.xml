@@ -2,6 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/friends_news"
+        android:enabled="false"
+        android:icon="@drawable/icon_notifications"
+        android:orderInCategory="100"
+        android:title="@null"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/friends_search"
         android:enabled="false"
         android:icon="@drawable/found_menu_search"
@@ -9,15 +18,5 @@
         android:title="@null"
         android:visible="true"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/friends_news"
-        android:enabled="false"
-        android:icon="@drawable/found_menu_search"
-        android:orderInCategory="100"
-        android:title="@null"
-        android:visible="true"
-        app:showAsAction="ifRoom" />
-
 
 </menu>
