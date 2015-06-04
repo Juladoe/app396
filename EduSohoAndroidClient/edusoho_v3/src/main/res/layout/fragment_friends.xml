@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/base_gray">
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/friends_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:divider="@null">
+        </ListView>
 
 
 </RelativeLayout>

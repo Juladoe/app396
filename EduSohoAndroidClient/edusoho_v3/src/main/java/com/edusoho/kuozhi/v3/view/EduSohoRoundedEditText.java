@@ -11,14 +11,14 @@ import android.widget.EditText;
 /**
  * Created by Melomelon on 2015/5/26.
  */
-public class EduSohoEditText extends EditText {
+public class EduSohoRoundedEditText extends EditText {
 
     private Paint mPaint;
-    public EduSohoEditText(Context context) {
+    public EduSohoRoundedEditText(Context context) {
         super(context);
     }
 
-    public EduSohoEditText(Context context, AttributeSet attrs) {
+    public EduSohoRoundedEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
