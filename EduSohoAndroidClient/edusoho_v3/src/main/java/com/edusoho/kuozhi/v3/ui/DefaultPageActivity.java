@@ -141,6 +141,12 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private void selectDownTab(int id) {
         String tag;
+        if (TextUtils.isEmpty(app.token) && id != R.id.nav_tab_find) {
+            app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
+            return;
+
+        }
+
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
             mToolBar.setVisibility(View.GONE);
