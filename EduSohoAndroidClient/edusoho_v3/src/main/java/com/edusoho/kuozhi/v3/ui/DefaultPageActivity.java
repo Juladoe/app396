@@ -17,10 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
@@ -35,8 +39,9 @@ import java.util.TimerTask;
 /**
  * Created by JesseHuang on 15/4/24.
  */
-public class DefaultPageActivity extends ActionBarBaseActivity {
+public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
+    public static final int XINGGE_PUSH_REGISTER = 0x01;
 
     private String mCurrentTag;
     private boolean mIsExit;
@@ -58,11 +63,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
         initView();
-        //registerXgPush();
 
         if (savedInstanceState == null) {
             //selectItem(0);
         }
+        app.registMsgSource(this);
     }
 
     @Override
@@ -97,6 +102,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
+
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -129,19 +135,27 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
     private void selectDownTab(int id) {
         String tag;
-        BaseFragment fragment;
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
             mToolBar.setVisibility(View.GONE);
         } else if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
+            mToolBar.setCenterTitle(getString(R.string.title_news));
             mToolBar.setVisibility(View.VISIBLE);
         } else {
             tag = "FriendFragment";
+            mToolBar.setCenterTitle(getString(R.string.title_friends));
             mToolBar.setVisibility(View.VISIBLE);
         }
-
         hideFragment(mCurrentTag);
+        showFragment(tag);
+        changeNavBtn(id);
+        changeBtnIcon(id);
+        mSelectBtn = id;
+    }
+
+    private void showFragment(String tag) {
+        BaseFragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
 
@@ -154,11 +168,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
         fragmentTransaction.commit();
         mCurrentTag = tag;
-
-        changeNavBtn(id);
-        changeBtnIcon(id);
-        mSelectBtn = id;
-        this.invalidateOptionsMenu();
     }
 
     private void changeNavBtn(int id) {
@@ -190,14 +199,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         if (id == R.id.nav_tab_news) {
             setTitle(R.string.title_news);
             mDownTabNews.setIcon(R.string.font_news);
-            //mToolBar.setTitleVisibility(View.GONE);
         } else if (id == R.id.nav_tab_find) {
             setTitle(R.string.title_find);
-            //mToolBar.setTitleVisibility(View.VISIBLE);
             mDownTabFind.setIcon(R.string.font_find);
         } else if (id == R.id.nav_tab_friends) {
             setTitle(R.string.title_friends);
-            //mToolBar.setTitleVisibility(View.GONE);
             mDownTabFriends.setIcon(R.string.font_friends);
         }
     }
@@ -261,7 +267,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
 
     public void registerXgPush() {
         XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, new XGIOperateCallback() {
+        XGPushManager.registerPush(mContext, app.loginUser.nickname, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object data, int flag) {
                 Log.w(Constants.LogTag,
@@ -286,5 +292,26 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return false;
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        switch (messageType.code) {
+            case Const.OPEN_COURSE_CHAT:
+                app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
+                break;
+            case XINGGE_PUSH_REGISTER:
+                registerXgPush();
+                break;
+            default:
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.OPEN_COURSE_CHAT, source), new MessageType(XINGGE_PUSH_REGISTER, source)};
+        return messageTypes;
     }
 }

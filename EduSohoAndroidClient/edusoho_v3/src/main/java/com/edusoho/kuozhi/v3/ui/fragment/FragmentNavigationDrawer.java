@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,7 +36,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FragmentNavigationDrawer extends BaseFragment implements MessageEngine.MessageCallback {
 
-    public static final int THIRd_PARTY_LOGIN = 0001;
+    public static final String TAG = "FragmentDrawer";
+    public static final int THIRD_PARTY_LOGIN = 0001;
+    public static final int OPEN_DRAWER = 0002;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -55,7 +58,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     private TextView tvNickname;
     private ImageView ivLogin;
     private CircleImageView civAvatar;
-    private ThirdPartyLoginHandler mThirdPartyLoginHandler;
+    private DrawerHandler mHandler;
 
 //    ActionBar actionBar = mActivity.getSupportActionBar();
 
@@ -74,7 +77,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_navigation_drawer);
-        mThirdPartyLoginHandler = new ThirdPartyLoginHandler();
+        mHandler = new DrawerHandler();
         app.registMsgSource(this);
     }
 
@@ -228,36 +231,24 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public static Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
-
-    public static Runnable mRun = new Runnable() {
-        @Override
-        public void run() {
-            Message msg = mHandler.obtainMessage(2);
-            mHandler.sendMessage(msg);
-            msg.sendToTarget();
-
-        }
-    };
-
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
+        if (messageType.code == Const.MAIN_MENU_OPEN) {
+            Message msg = mHandler.obtainMessage();
+            msg.what = OPEN_DRAWER;
+            mHandler.sendMessage(msg);
+        }
         switch (messageType.type) {
             case Const.LOGIN_SUCCESS:
                 tvNickname.setText(mActivity.app.loginUser.nickname);
                 ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
                 break;
-            case Const.Third_PARTY_LOGIN_SUCCESS:
+            case Const.THIRD_PARTY_LOGIN_SUCCESS:
                 try {
-                    Message msg = mThirdPartyLoginHandler.obtainMessage();
-                    msg.what = THIRd_PARTY_LOGIN;
-                    mThirdPartyLoginHandler.sendMessage(msg);
+                    Message msg = mHandler.obtainMessage();
+                    msg.what = THIRD_PARTY_LOGIN;
+                    mHandler.sendMessage(msg);
                 } catch (Exception e) {
                     throw e;
                 }
@@ -266,16 +257,22 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
                 tvNickname.setText(getString(R.string.drawer_nickname));
                 civAvatar.setImageResource(R.drawable.avatar);
                 break;
+            default:
+                return;
         }
     }
 
-    private class ThirdPartyLoginHandler extends Handler {
-
+    private class DrawerHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == THIRd_PARTY_LOGIN) {
-                tvNickname.setText(mActivity.app.loginUser.nickname);
-                ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+            switch (msg.what) {
+                case OPEN_DRAWER:
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                    break;
+                case THIRD_PARTY_LOGIN:
+                    tvNickname.setText(mActivity.app.loginUser.nickname);
+                    ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+                    break;
             }
         }
     }
@@ -284,9 +281,12 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.LOGOUT_SUCCESS),
-                new MessageType((Const.Third_PARTY_LOGIN_SUCCESS))
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.LOGOUT_SUCCESS),
+                new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
+                new MessageType(Const.MAIN_MENU_OPEN, source)
         };
         return messageTypes;
     }
+
 }

@@ -11,8 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -22,7 +20,6 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,7 +52,8 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        //webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
+        webView.loadUrl("http://192.168.10.125/mapi_v2/mobileApp");
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         return rootView;
     }
 
@@ -65,7 +63,8 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         if (webView == null) {
             webView = (ESWebView) view.findViewById(R.id.webView);
             Config.init(getActivity());
-            //webView.loadUrl("http://192.168.2.106/mapi_v2/mobileApp");
+            webView.loadUrl("http://192.168.10.125/mapi_v2/mobileApp");
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 

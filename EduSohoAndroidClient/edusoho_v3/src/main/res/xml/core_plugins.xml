@@ -6,31 +6,6 @@
         version="1.0" />
 
     <plugin
-        name="NewsFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.NewsFragment"
-        version="1.0" />
-
-    <plugin
-        name="FriendFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.FriendFragment"
-        version="1.0" />
-
-    <plugin
-        name="FindFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
-        version="1.0" />
-
-    <plugin
-        name="LoginFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.LoginFragment"
-        version="1.0" />
-
-    <plugin
-        name="RegisterFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.RegisterFragment"
-        version="1.0" />
-
-    <plugin
         name="QrSchoolActivity"
         package="com.edusoho.kuozhi.v3.ui.QrSchoolActivity"
         version="1.0" />
@@ -63,6 +38,46 @@
     <plugin
         name="NetSchoolActivity"
         package="com.edusoho.kuozhi.v3.ui.NetSchoolActivity"
+        version="1.0" />
+
+    <plugin
+        name="ChatLstActivity"
+        package="com.edusoho.kuozhi.v3.ui.NetSchoolActivity"
+        version="1.0" />
+
+    <plugin
+        name="ChatActivity"
+        package="com.edusoho.kuozhi.v3.ui.ChatActivity"
+        version="1.0" />
+
+    <plugin
+        name="NewsFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.NewsFragment"
+        version="1.0" />
+
+    <plugin
+        name="FriendFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FriendFragment"
+        version="1.0" />
+
+    <plugin
+        name="FindFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
+        version="1.0" />
+
+    <plugin
+        name="LoginFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.LoginFragment"
+        version="1.0" />
+
+    <plugin
+        name="RegisterFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.RegisterFragment"
+        version="1.0" />
+
+    <plugin
+        name="ChatFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ChatFragment"
         version="1.0" />
 
 

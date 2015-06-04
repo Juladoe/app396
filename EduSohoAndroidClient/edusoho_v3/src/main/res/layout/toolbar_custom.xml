@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:contentDescription=""
+        android:visibility="gone"
         android:src="@drawable/found_select_icon" />
 
 </LinearLayout>

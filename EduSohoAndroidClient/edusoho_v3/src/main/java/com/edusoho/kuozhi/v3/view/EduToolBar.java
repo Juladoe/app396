@@ -72,9 +72,9 @@ public class EduToolBar extends Toolbar {
                 RelativeLayout.LayoutParams.MATCH_PARENT));
 
         tvCenterTitle = (TextView) findViewById(R.id.centerTitle);
-        tvCenterTitle.setOnClickListener(new TitleClickListener());
+        //tvCenterTitle.setOnClickListener(new TitleClickListener());
 
-        mImageView = (ImageView) findViewById(R.id.titleArrow);
+        //mImageView = (ImageView) findViewById(R.id.titleArrow);
 
         tvCenterTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, centerTitleSize);
         tvCenterTitle.setTextColor(centerTitleColor);
@@ -88,26 +88,26 @@ public class EduToolBar extends Toolbar {
 
     public void setTitleVisibility(int visibility) {
         tvCenterTitle.setVisibility(visibility);
-        mImageView.setVisibility(visibility);
+        //mImageView.setVisibility(visibility);
     }
 
-    private class TitleClickListener implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (rotationFlag) {
-                rotation(mImageView, 0, -180);
-
-            } else {
-                rotation(mImageView, -180, 0);
-            }
-            rotationFlag = !rotationFlag;
-
-        }
-    }
-
-    private void rotation(View view, float start, float end) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
-        objectAnimator.setDuration(180).setInterpolator(new LinearInterpolator());
-        objectAnimator.start();
-    }
+//    private class TitleClickListener implements OnClickListener {
+//        @Override
+//        public void onClick(View v) {
+//            if (rotationFlag) {
+//                rotation(mImageView, 0, -180);
+//
+//            } else {
+//                rotation(mImageView, -180, 0);
+//            }
+//            rotationFlag = !rotationFlag;
+//
+//        }
+//    }
+//
+//    private void rotation(View view, float start, float end) {
+//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
+//        objectAnimator.setDuration(180).setInterpolator(new LinearInterpolator());
+//        objectAnimator.start();
+//    }
 }

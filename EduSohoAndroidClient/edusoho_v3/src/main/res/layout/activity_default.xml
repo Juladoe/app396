@@ -19,7 +19,7 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             app:centerTitle="@string/toolbar_title"
-            app:centerTitleSize="@dimen/medium_font_size"
+            app:centerTitleSize="@dimen/large_font_size"
             tools:layout="@layout/toolbar_custom"
             android:visibility="gone" />
 
