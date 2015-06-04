@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -237,5 +240,94 @@ public class AppUtil {
             out[j++] = DIGITS_LOWER[0x0F & data[i]];
         }
         return out;
+    }
+
+    /**
+     * 将服务器端的时间格式转化为milli Second
+     *
+     * @param time
+     * @return
+     */
+    public static long convertMilliSec(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long returnTime = 0;
+        try {
+            String tDate = time.split("[+]")[0].replace('T', ' ');
+            return sdf.parse(tDate).getTime();
+
+        } catch (Exception ex) {
+            Log.d("AppUtil.convertMilliSec", ex.toString());
+        }
+        return returnTime;
+    }
+
+    /**
+     * 根据时间转化私信显示的时间
+     * 当天显示，18：00
+     * 昨天显示，昨天 18：00
+     * 比昨天更早，星期几 18：00
+     *
+     * @param t
+     * @return
+     */
+    public static String convertWeekTime(String t) {
+        String result = "";
+        try {
+            String tDate = t.split("[+]")[0].replace('T', ' ');
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar nowCalendar = Calendar.getInstance();
+            Date paramDate = sdf.parse(tDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(paramDate);
+            int interval = nowCalendar.get(Calendar.DATE) - calendar.get(Calendar.DATE);
+            String postTime = (calendar.get(Calendar.HOUR_OF_DAY) >= 10 ? calendar.get(Calendar.HOUR_OF_DAY) : "0" + calendar.get(Calendar.HOUR)) + ":"
+                    + (calendar.get(Calendar.MINUTE) >= 10 ? calendar.get(Calendar.MINUTE) : ("0" + calendar.get(Calendar.MINUTE)));
+            if (interval == 0) {
+                result = postTime;
+            } else if (interval == 1) {
+                result = "昨天 " + postTime;
+            } else {
+                result = (calendar.get(Calendar.MONTH) + 1) + "月" + calendar.get(Calendar.DATE) + "日 " + postTime;
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getPostDays", ex.toString());
+        }
+        return result;
+    }
+
+    /**
+     * 计算发布问题天数,服务端获取时间格式：2014-05-20T22:03:43+08:00
+     * 转换为天数或者小时
+     */
+    public static String getPostDays(String postTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long l = 1;
+        try {
+            String tDate = postTime.split("[+]")[0].replace('T', ' ');
+            long milliSec = 1000;
+            Date date = new Date();
+            l = (date.getTime() - sdf.parse(tDate).getTime()) / (milliSec);
+
+            //如果大于24返回天数
+            if (l > 30 * 24 * 60 * 60) {
+                return postTime.split("T")[0];
+            } else if (l > 24 * 60 * 60) {
+                l = l / (24 * 60 * 60);
+                return String.valueOf(l) + "天前";
+            } else if (l > 60 * 60) {
+                l = l / (60 * 60);
+                return String.valueOf(l) + "小时前";
+            } else if (l > 60) {
+                l = l / (60);
+                return String.valueOf(l) + "分钟前";
+            }
+            if (l < 1) {
+                return "刚刚";
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getPostDays", ex.toString());
+        }
+
+        return String.valueOf(l) + "秒前";
     }
 }

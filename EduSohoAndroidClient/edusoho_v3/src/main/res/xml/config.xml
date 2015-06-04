@@ -22,7 +22,7 @@
         <param name="android-package" value="org.apache.cordova.App" />
     </feature>
     <feature name="ESNativeCore">
-        <param name="android-package" value="com.edusoho.kuozhi.v3.plugin.ChatClickPlugin" />
+        <param name="android-package" value="com.edusoho.kuozhi.v3.plugin.MenuClickPlugin" />
     </feature>
 </widget>
 

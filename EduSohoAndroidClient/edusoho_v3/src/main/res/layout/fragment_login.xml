@@ -134,8 +134,6 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/weixin_bg"
-            android:padding="10dp"
             android:id="@+id/iv_qq"
             android:src="@drawable/qq" />
 
@@ -143,10 +141,8 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/weixin_bg"
             android:id="@+id/iv_weibo"
-            android:padding="8dp"
-            android:src="@drawable/weixin" />
+            android:src="@drawable/weibo" />
 
     </LinearLayout>
 

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -21,7 +20,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 /**
  * Created by JesseHuang on 15/6/2.
  */
-public class ChatFragment extends BaseFragment implements MessageEngine.MessageCallback {
+public class ChatFragment extends BaseFragment {
 
     public static final int COURSE_CHAT = 0x01;
     public static final String COURSE_ID = "course_id";

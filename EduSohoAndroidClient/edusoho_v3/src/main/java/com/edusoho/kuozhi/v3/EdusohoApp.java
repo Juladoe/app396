@@ -236,7 +236,7 @@ public class EdusohoApp extends Application {
         mVolley = VolleySingleton.getInstance(getApplicationContext());
         apiVersion = getString(R.string.api_version);
         setHost(getString(R.string.app_host));
-        notifyMap = new HashMap<String, Bundle>();
+        notifyMap = new HashMap<>();
         initApp();
     }
 
@@ -249,7 +249,7 @@ public class EdusohoApp extends Application {
     }
 
     public void initApp() {
-        runTask = new HashMap<String, Activity>();
+        runTask = new HashMap<>();
         initImageLoaderConfig();
         loadConfig();
 

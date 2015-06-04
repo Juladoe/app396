@@ -11,7 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.ViewUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
@@ -21,7 +24,7 @@ import java.lang.reflect.Field;
 /**
  * Created by JesseHuang on 15/4/24.
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements MessageEngine.MessageCallback {
 
     protected BaseActivity mActivity;
     protected EdusohoApp app;
@@ -44,6 +47,37 @@ public abstract class BaseFragment extends Fragment {
         if (app == null) {
             app = EdusohoApp.app;
         }
+        registMsgSrc();
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+
+    }
+
+    @Override
+    public com.edusoho.kuozhi.v3.model.sys.MessageType[] getMsgTypes() {
+        return new com.edusoho.kuozhi.v3.model.sys.MessageType[0];
+    }
+
+    @Override
+    public void onDestroy() {
+        app.unRegistMsgSource(this);
+        super.onDestroy();
+
+        MessageType[] messageTypes = getMsgTypes();
+        if (messageTypes == null) {
+            return;
+        }
+        for (MessageType messageType : messageTypes) {
+            if (messageType.code == MessageType.NONE) {
+                app.unRegistPubMsg(messageType, this);
+            }
+        }
+    }
+
+    protected void registMsgSrc() {
+        app.registMsgSource(this);
     }
 
     protected void setContainerView(int viewId) {

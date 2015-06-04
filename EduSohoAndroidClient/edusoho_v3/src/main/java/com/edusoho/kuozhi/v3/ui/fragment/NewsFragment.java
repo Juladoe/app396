@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -11,8 +12,17 @@ import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.NewsAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.InitModelTool;
+import com.edusoho.kuozhi.v3.model.bal.news.NewsEnum;
+import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
+
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -54,7 +64,13 @@ public class NewsFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         lvChatList = (ListView) view.findViewById(R.id.lv_chat_list);
-        NewsAdapter newsAdapter = new NewsAdapter(mContext, R.layout.news_item, InitModelTool.initNewsItemList());
+        List<NewsItem> list = InitModelTool.initNewsItemList1();
+//        if (app.loginUser.nickname.equals("suju")) {
+//            list = InitModelTool.initNewsItemList1();
+//        } else {
+//            list = InitModelTool.initNewsItemList();
+//        }
+        NewsAdapter newsAdapter = new NewsAdapter(mContext, R.layout.news_item, list);
         lvChatList.setAdapter(newsAdapter);
         lvChatList.setOnItemClickListener(mItemClickListener);
     }
@@ -63,8 +79,38 @@ public class NewsFragment extends BaseFragment {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final NewsItem newItem = (NewsItem) parent.getItemAtPosition(position);
+            if (newItem.type == NewsEnum.FRIEND || newItem.type == NewsEnum.TEACHER) {
+                app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ChatActivity.CHAT_DATA, newItem);
+                    }
+                });
+            } else {
 
+            }
         }
     };
+
+    private void getNewOneMessage(Bundle data) {
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (messageType.code == Const.CHAT_MSG) {
+            getNewOneMessage(message.data);
+            message.callback.success("success");
+        }
+    }
+
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.CHAT_MSG, source)};
+        return messageTypes;
+    }
 
 }

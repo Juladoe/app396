@@ -1,9 +1,21 @@
 package com.edusoho.kuozhi.v3.service;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.news.SimpleNew;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
@@ -38,7 +50,50 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
         String text = "收到消息:" + message.toString();
-        CommonUtil.longToast(context, text);
+        Bundle bundle = new Bundle();
+        final SimpleNew sn = new SimpleNew();
+        sn.title = message.getTitle();
+        sn.content = message.getContent();
+        bundle.putSerializable("msg", sn);
+        //通知聊天列表
+        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, ChatActivity.class, new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+
+            }
+        });
+
+        //通知动态列表
+        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, NewsFragment.class, new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                if (obj.equals("success")) {
+                    showNotification(sn);
+                }
+            }
+        });
+        //CommonUtil.longToast(context, text);
+    }
+
+    private void showNotification(SimpleNew sn) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(sn.title)
+                        .setContentText(sn.content).setAutoCancel(true);
+        NotificationManager mNotificationManager =
+                (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        int requestCode = (int) SystemClock.uptimeMillis();
+        PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, requestCode,
+                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendIntent);
+
+        mNotificationManager.notify(1, mBuilder.build());
     }
 
     //通知展示
@@ -56,7 +111,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             text = "通知被清除 :" + message;
         }
         Log.d("PushMessageReceiver", text);
-        CommonUtil.longToast(context, message.toString());
+        //CommonUtil.longToast(context, message.toString());
     }
 
     @Override

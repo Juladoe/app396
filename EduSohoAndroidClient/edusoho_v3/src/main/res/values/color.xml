@@ -386,4 +386,8 @@
 
     <!--直播-->
     <color name="live_course_button_focus">#259c54</color>
+
+    <color name="drawer_title">#97989a</color>
+    <color name="normal_grey">#999999</color>
+    <color name="user_avatar_bg">#444444</color>
 </resources>

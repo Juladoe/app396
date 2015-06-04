@@ -14,6 +14,7 @@ import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
@@ -72,10 +73,6 @@ public class EdusohoMainService extends Service {
             return;
         }
         synchronized (this) {
-//            if (mLoginUser != null) {
-//                app.loginUser = mLoginUser;
-//                return;
-//            }
             if (app.loginUser != null) {
                 return;
             }
@@ -100,7 +97,8 @@ public class EdusohoMainService extends Service {
                         app.saveToken(result);
                     }
 
-//                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
+                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                    app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
 //                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
 
                     //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
