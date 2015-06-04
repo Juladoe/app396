@@ -11,6 +11,5 @@ public class NewsItem extends SimpleNew implements Serializable {
     public String srcUrl;
     public NewsEnum type;
     public int id;
-    public String postTime;
     public int isTop;
 }

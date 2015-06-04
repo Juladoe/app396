@@ -62,6 +62,8 @@ public class BaseActivity extends ActionBarActivity {
         setProgressBarIndeterminateVisibility(false);
         gson = app.gson;
         mService = app.getService();
+        app.mActivity = mActivity;
+        app.mContext = mContext;
     }
 
     public EdusohoMainService getService() {

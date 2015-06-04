@@ -12,6 +12,7 @@ import android.util.Log;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
 import com.edusoho.kuozhi.v3.model.bal.news.SimpleNew;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -51,9 +52,10 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
     public void onTextMessage(Context context, XGPushTextMessage message) {
         String text = "收到消息:" + message.toString();
         Bundle bundle = new Bundle();
-        final SimpleNew sn = new SimpleNew();
+        final NewsItem sn = new NewsItem();
         sn.title = message.getTitle();
         sn.content = message.getContent();
+        sn.postTime = String.valueOf(SystemClock.uptimeMillis());
         bundle.putSerializable("msg", sn);
         //通知聊天列表
         EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, ChatActivity.class, new NormalCallback() {
@@ -93,7 +95,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);
 
-        mNotificationManager.notify(1, mBuilder.build());
+        mNotificationManager.notify(requestCode, mBuilder.build());
     }
 
     //通知展示

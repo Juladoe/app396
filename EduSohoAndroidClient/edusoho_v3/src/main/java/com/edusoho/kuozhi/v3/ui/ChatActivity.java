@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MessageAdapter;
 import com.edusoho.kuozhi.v3.model.InitModelTool;
+import com.edusoho.kuozhi.v3.model.bal.ChatMessage;
 import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/6/3.
@@ -33,6 +35,8 @@ public class ChatActivity extends ActionBarBaseActivity {
     private EditText etSend;
     private ListView lvMessage;
     private TextView tvSend;
+    private MessageAdapter mAdapter;
+    private List<ChatMessage> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +51,9 @@ public class ChatActivity extends ActionBarBaseActivity {
         tvSend = (TextView) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(mSendClickListener);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
-        MessageAdapter adapter = new MessageAdapter(mContext, InitModelTool.initMessageList());
-        lvMessage.setAdapter(adapter);
+        mList = InitModelTool.initMessageList();
+        mAdapter = new MessageAdapter(mContext, mList);
+        lvMessage.setAdapter(mAdapter);
     }
 
     @Override
@@ -65,7 +70,7 @@ public class ChatActivity extends ActionBarBaseActivity {
     View.OnClickListener mSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String url = "http://192.168.10.125/mapi_v2/User/sendPushMsg";
+            String url = "http://192.168.2.2/mapi_v2/User/sendPushMsg";
             RequestUrl requestUrl = new RequestUrl(url);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("toId", String.valueOf(mNewsItem.title));
@@ -80,9 +85,23 @@ public class ChatActivity extends ActionBarBaseActivity {
         }
     };
 
-    void getNewOneMessage(Bundle bundle) {
+    void addNewOneMsg(Bundle bundle) {
+        NewsItem simpleNew = (NewsItem) bundle.getSerializable("msg");
 
     }
 
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (messageType.code == Const.CHAT_MSG) {
+            addNewOneMsg(message.data);
+        }
+    }
 
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.CHAT_MSG, source)};
+        return messageTypes;
+    }
 }

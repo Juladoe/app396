@@ -265,12 +265,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return super.onKeyDown(keyCode, event);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mExitTimer.cancel();
-        mExitTimer = null;
+        if (mExitTimer != null) {
+            mExitTimer.cancel();
+            mExitTimer = null;
+        }
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
     }
 
