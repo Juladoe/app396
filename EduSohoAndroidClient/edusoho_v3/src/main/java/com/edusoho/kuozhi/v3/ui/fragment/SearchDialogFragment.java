@@ -14,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +63,7 @@ public class SearchDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view  = inflater.inflate(R.layout.search_dialog,container,false);
+        view = inflater.inflate(R.layout.search_dialog, container, false);
         mSearchFrame = (EduSohoRoundedEditText) view.findViewById(R.id.search_dialog_frame);
         mSearchFrame.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
 
@@ -74,12 +72,12 @@ public class SearchDialogFragment extends DialogFragment {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCancel.getTag() == CANCEL_STATE){
+                if (mCancel.getTag().equals(CANCEL_STATE)) {
                     dismiss();
                 }
-                if(mCancel.getTag() == SEARCH_STATE){
+                if (mCancel.getTag().equals(SEARCH_STATE)) {
                     //TODO
-                    Toast.makeText(mContext,"搜索！",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "搜索！", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -88,7 +86,7 @@ public class SearchDialogFragment extends DialogFragment {
         return view;
     }
 
-    public void searchListener(){
+    public void searchListener() {
         mSearchFrame.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,11 +94,11 @@ public class SearchDialogFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length()>0){
+                if (s.length() > 0) {
                     mCancel.setTag(SEARCH_STATE);
                     mCancel.setText("搜索");
                 }
-                if(s.length()==0){
+                if (s.length() == 0) {
                     mCancel.setTag(CANCEL_STATE);
                     mCancel.setText("取消");
                 }
@@ -114,14 +112,14 @@ public class SearchDialogFragment extends DialogFragment {
     }
 
 
-    public void getToolBar(EduToolBar eduToolBar){
+    public void getToolBar(EduToolBar eduToolBar) {
         this.mEduToolBar = eduToolBar;
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if(mEduToolBar.getVisibility() == View.GONE){
+        if (mEduToolBar.getVisibility() == View.GONE) {
         }
 
         mEduToolBar.measure(0, 0);

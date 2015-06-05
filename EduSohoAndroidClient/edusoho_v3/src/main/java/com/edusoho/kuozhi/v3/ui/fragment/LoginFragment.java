@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class LoginFragment extends BaseFragment {
     private Button mBtnLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
+    private ImageView ivWeixin;
 
     @Override
     public void onAttach(Activity activity) {
@@ -66,6 +68,8 @@ public class LoginFragment extends BaseFragment {
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
         ivQQ = (ImageView) mContainerView.findViewById(R.id.iv_qq);
         ivQQ.setOnClickListener(mQQLoginClickListener);
+        ivWeixin = (ImageView) mContainerView.findViewById(R.id.iv_weixin);
+        //ivWeixin.setOnClickListener(mWeChatLoginClickListener);
     }
 
     @Override
@@ -139,16 +143,20 @@ public class LoginFragment extends BaseFragment {
                 @Override
                 public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
                     if (action == Platform.ACTION_USER_INFOR) {
-                        User user = new User();
-                        user.nickname = res.get("name").toString();
-                        user.largeAvatar = res.get("avatar_large").toString();
-                        user.mediumAvatar = res.get("avatar_hd").toString();
-                        user.smallAvatar = res.get("profile_image_url").toString();
-                        user.thirdParty = platform.getDb().getPlatformNname();
-                        app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
-                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
-                        mActivity.finish();
+                        try {
+                            User user = new User();
+                            user.nickname = res.get("name").toString();
+                            user.largeAvatar = res.get("avatar_large").toString();
+                            user.mediumAvatar = res.get("avatar_hd").toString();
+                            user.smallAvatar = res.get("profile_image_url").toString();
+                            user.thirdParty = platform.getDb().getPlatformNname();
+                            app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
+                            app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                            app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                            mActivity.finish();
+                        } catch (Exception ex) {
+                            Log.e("ThirdPartyLogin-->", ex.getMessage());
+                        }
                     }
                 }
 
@@ -194,7 +202,6 @@ public class LoginFragment extends BaseFragment {
 
                 }
             }, QQ.NAME);
-
         }
     };
 

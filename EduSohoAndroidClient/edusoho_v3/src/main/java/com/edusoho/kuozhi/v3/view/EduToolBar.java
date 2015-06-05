@@ -9,13 +9,12 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 /**
  * Created by JesseHuang on 15/5/5.
@@ -32,7 +31,7 @@ public class EduToolBar extends Toolbar {
     private boolean rotationFlag = true;
 
 
-    private final static int TITLE_ID = 0X001;
+    private final static int TITLE_ID = 0x001;
 
     private Context mContext;
 

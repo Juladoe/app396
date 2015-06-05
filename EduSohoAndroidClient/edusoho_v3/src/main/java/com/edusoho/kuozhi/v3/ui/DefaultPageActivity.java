@@ -88,6 +88,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mNavDownTabClickListener = new NavDownTabClickListener();
 
         setSupportActionBar(mToolBar);
+
         int count = mNavLayout.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mNavLayout.getChildAt(i);
@@ -144,7 +145,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (TextUtils.isEmpty(app.token) && id != R.id.nav_tab_find) {
             app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
             return;
-
         }
 
         if (id == R.id.nav_tab_find) {
@@ -272,12 +272,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             mExitTimer.cancel();
             mExitTimer = null;
         }
+
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
     }
 
     public void registerXgPush() {
         XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, app.loginUser.nickname, new XGIOperateCallback() {
+        XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
             @Override
             public void onSuccess(Object data, int flag) {
                 Log.w(Constants.LogTag,

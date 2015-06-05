@@ -15,7 +15,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
 import com.edusoho.kuozhi.v3.model.bal.news.SimpleNew;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
@@ -66,36 +66,40 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
         });
 
         //通知动态列表
-        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, NewsFragment.class, new NormalCallback() {
-            @Override
-            public void success(Object obj) {
-                if (obj.equals("success")) {
-                    showNotification(sn);
-                }
-            }
-        });
-        //CommonUtil.longToast(context, text);
+//        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, NewsFragment.class, new NormalCallback() {
+//            @Override
+//            public void success(Object obj) {
+//                if (obj.equals("success")) {
+//                    showNotification(sn);
+//                }
+//            }
+//        });
+        CommonUtil.longToast(context, text);
     }
 
     private void showNotification(SimpleNew sn) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(sn.title)
-                        .setContentText(sn.content).setAutoCancel(true);
-        NotificationManager mNotificationManager =
-                (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        try {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(sn.title)
+                            .setContentText(sn.content).setAutoCancel(true);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        int requestCode = (int) SystemClock.uptimeMillis();
-        PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, requestCode,
-                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pendIntent);
+            int requestCode = (int) SystemClock.uptimeMillis();
+            PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, requestCode,
+                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendIntent);
 
-        mNotificationManager.notify(requestCode, mBuilder.build());
+            mNotificationManager.notify(requestCode, mBuilder.build());
+        } catch (Exception ex) {
+            Log.d("showNotification-->", ex.getMessage());
+        }
     }
 
     //通知展示

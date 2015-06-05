@@ -30,6 +30,7 @@ import java.util.List;
  */
 public class NewsFragment extends BaseFragment {
     private ListView lvChatList;
+    private NewsAdapter mNewsAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -64,14 +65,14 @@ public class NewsFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         lvChatList = (ListView) view.findViewById(R.id.lv_chat_list);
-        List<NewsItem> list = InitModelTool.initNewsItemList1();
+        List<NewsItem> list = InitModelTool.initNewsItemList();
 //        if (app.loginUser.nickname.equals("suju")) {
 //            list = InitModelTool.initNewsItemList1();
 //        } else {
 //            list = InitModelTool.initNewsItemList();
 //        }
-        NewsAdapter newsAdapter = new NewsAdapter(mContext, R.layout.news_item, list);
-        lvChatList.setAdapter(newsAdapter);
+        mNewsAdapter = new NewsAdapter(mContext, R.layout.news_item, list);
+        lvChatList.setAdapter(mNewsAdapter);
         lvChatList.setOnItemClickListener(mItemClickListener);
     }
 
@@ -94,6 +95,8 @@ public class NewsFragment extends BaseFragment {
     };
 
     private void getNewOneMessage(Bundle data) {
+        NewsItem item = (NewsItem) data.getSerializable("msg");
+        mNewsAdapter.findNews(item);
     }
 
     @Override

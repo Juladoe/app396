@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -70,7 +71,7 @@ public class ChatActivity extends ActionBarBaseActivity {
     View.OnClickListener mSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String url = "http://192.168.2.2/mapi_v2/User/sendPushMsg";
+            String url = "http://192.168.10.125/mapi_v2/User/sendPushMsg";
             RequestUrl requestUrl = new RequestUrl(url);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("toId", String.valueOf(mNewsItem.title));
@@ -85,9 +86,21 @@ public class ChatActivity extends ActionBarBaseActivity {
         }
     };
 
+    //id|title
     void addNewOneMsg(Bundle bundle) {
-        NewsItem simpleNew = (NewsItem) bundle.getSerializable("msg");
-
+        try {
+            NewsItem simpleNew = (NewsItem) bundle.getSerializable("msg");
+            ChatMessage msg = new ChatMessage();
+            String[] titles = simpleNew.title.split("[|]");
+            msg.fromId = Integer.valueOf(titles[0]);
+            msg.toId = app.loginUser.id;
+            msg.content = simpleNew.content;
+            msg.createdTime = "";
+            mList.add(msg);
+            mAdapter.notifyDataSetChanged();
+        } catch (Exception ex) {
+            Log.d("addNewOneMsg-->", ex.getMessage());
+        }
     }
 
     @Override

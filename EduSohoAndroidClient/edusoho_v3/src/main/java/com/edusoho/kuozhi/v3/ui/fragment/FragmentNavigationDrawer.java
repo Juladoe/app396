@@ -63,9 +63,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
     private View vLogin;
     private Button btnLogin;
 
-//    ActionBar actionBar = mActivity.getSupportActionBar();
-
-
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
     @Override
@@ -209,7 +206,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
             mDrawerLayout.closeDrawer(mDrawerFragment);
         }
         mPosition = position;
-        //CommonUtil.longToast(mActivity, mRadioButtons[position].getText().toString());
     }
 
     public boolean isDrawerOpen() {
@@ -243,12 +239,12 @@ public class FragmentNavigationDrawer extends BaseFragment {
             msg.what = OPEN_DRAWER;
             mHandler.sendMessage(msg);
         } else {
-            setLoginStatus(messageType.type);
             switch (messageType.type) {
                 case Const.LOGIN_SUCCESS:
                     tvNickname.setText(mActivity.app.loginUser.nickname);
                     tvTitle.setText(mActivity.app.loginUser.title);
                     ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+                    setLoginStatus(messageType.type);
                     break;
                 case Const.THIRD_PARTY_LOGIN_SUCCESS:
                     try {
@@ -262,11 +258,11 @@ public class FragmentNavigationDrawer extends BaseFragment {
                 case Const.LOGOUT_SUCCESS:
                     tvNickname.setText(getString(R.string.drawer_nickname));
                     civAvatar.setImageResource(R.drawable.user_avatar);
+                    setLoginStatus(messageType.type);
                     break;
                 default:
-                    setLoginStatus(messageType.type);
-                    return;
             }
+
         }
     }
 
@@ -278,6 +274,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                     mDrawerLayout.openDrawer(Gravity.LEFT);
                     break;
                 case THIRD_PARTY_LOGIN:
+                    setLoginStatus(Const.THIRD_PARTY_LOGIN_SUCCESS);
                     tvNickname.setText(mActivity.app.loginUser.nickname);
                     ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
                     break;

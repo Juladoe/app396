@@ -57,10 +57,10 @@ public class InitModelTool {
         list.add(item3);
 
         NewsItem item4 = new NewsItem();
-        item4.srcUrl = "http://demo.edusoho.com/files/default/2015/05-13/152651b0432b052124.jpg?5.5.10";
+        item4.srcUrl = "http://demo.edusoho.com/files/user/2014/11-17/170301575ca2581498.jpg?5.5.11";
         item4.title = "suju";
-        item4.content = "今天《Android M 初步了解》更新了，你看了吗？";
-        item4.unread = 1;
+        item4.content = "每星期五晚上更新。";
+        item4.unread = 0;
         item4.type = NewsEnum.FRIEND;
         item4.postTime = "18:11";
         list.add(item4);

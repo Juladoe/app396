@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +105,9 @@ public class MessageAdapter extends BaseAdapter {
             holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
         }
         holder.tvSendContent.setText(model.content);
+        if (TextUtils.isEmpty(model.createdUser.mediumAvatar)) {
+            model.createdUser.mediumAvatar = "http://demo.edusoho.com/files/user/2014/11-17/170301575ca2581498.jpg?5.5.11";
+        }
         ImageLoader.getInstance().displayImage(model.createdUser.mediumAvatar, holder.ciPic, EdusohoApp.app.mOptions);
         return convertView;
     }
