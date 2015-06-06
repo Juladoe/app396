@@ -13,10 +13,15 @@ android {
 
 dependencies {
     compile files('libs/mframework.jar')
-    compile files('libs/ShareSDK-Core-2.5.8.jar')
-    compile files('libs/ShareSDK-QQ-2.5.8.jar')
-    compile files('libs/ShareSDK-QZone-2.5.8.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.5.8.jar')
-    compile files('libs/ShareSDK-TencentWeibo-2.5.8.jar')
+    compile files('libs/ShareSDK-Wechat-2.6.0.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.6.0.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.6.0.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.6.0.jar')
+    compile files('libs/ShareSDK-Core-2.6.0.jar')
+    compile files('libs/ShareSDK-QQ-2.6.0.jar')
+    compile files('libs/ShareSDK-QZone-2.6.0.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.6.0.jar')
+    compile files('libs/ShareSDK-TencentWeibo-2.6.0.jar')
     compile files('libs/weibosdkcore.jar')
+    compile files('libs/MobTools.jar')
 }

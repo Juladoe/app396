@@ -15,7 +15,8 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
-import static cn.sharesdk.framework.utils.R.getBitmapRes;
+import static com.mob.tools.utils.R.getBitmapRes;
+
 
 /**
  * Created by onewoman on 14-11-6.
@@ -140,7 +141,7 @@ public class ShareUtil {
         mOneKeyShare.disableSSOWhenAuthorize();
         mOneKeyShare.setDialogMode();
         // 分享时Notification的图标和文字
-        mOneKeyShare.setNotification(mNotification_icon, mNotification_text);
+        //mOneKeyShare.setNotification(mNotification_icon, mNotification_text);
         // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
         mOneKeyShare.setTitle(mShareTextTitle);
         // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
