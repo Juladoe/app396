@@ -33,6 +33,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
+import cn.sharesdk.wechat.friends.Wechat;
 
 /**
  * Created by JesseHuang on 15/5/23.
@@ -69,7 +70,7 @@ public class LoginFragment extends BaseFragment {
         ivQQ = (ImageView) mContainerView.findViewById(R.id.iv_qq);
         ivQQ.setOnClickListener(mQQLoginClickListener);
         ivWeixin = (ImageView) mContainerView.findViewById(R.id.iv_weixin);
-        //ivWeixin.setOnClickListener(mWeChatLoginClickListener);
+        ivWeixin.setOnClickListener(mWeChatLoginClickListener);
     }
 
     @Override
@@ -202,6 +203,38 @@ public class LoginFragment extends BaseFragment {
 
                 }
             }, QQ.NAME);
+        }
+    };
+
+    private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
+                @Override
+                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
+                    if (action == Platform.ACTION_USER_INFOR) {
+                        User user = new User();
+                        user.nickname = res.get("nickname").toString();
+                        user.mediumAvatar = res.get("figureurl_qq_2").toString();
+                        user.smallAvatar = res.get("figureurl_qq_1").toString();
+                        user.thirdParty = platform.getDb().getPlatformNname();
+                        app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
+                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                        mActivity.finish();
+                    }
+                }
+
+                @Override
+                public void onError(Platform platform, int i, Throwable throwable) {
+                    Log.d("onError", "");
+                }
+
+                @Override
+                public void onCancel(Platform platform, int i) {
+
+                }
+            }, Wechat.NAME);
         }
     };
 
