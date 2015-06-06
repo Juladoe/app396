@@ -151,7 +151,7 @@ public class LoginFragment extends BaseFragment {
                             user.mediumAvatar = res.get("avatar_hd").toString();
                             user.smallAvatar = res.get("profile_image_url").toString();
                             user.thirdParty = platform.getDb().getPlatformNname();
-                            app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
+                            app.saveToken(new UserResult(user, res.get("id").toString(), null));
                             app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                             app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
                             mActivity.finish();
@@ -215,10 +215,10 @@ public class LoginFragment extends BaseFragment {
                     if (action == Platform.ACTION_USER_INFOR) {
                         User user = new User();
                         user.nickname = res.get("nickname").toString();
-                        user.mediumAvatar = res.get("figureurl_qq_2").toString();
-                        user.smallAvatar = res.get("figureurl_qq_1").toString();
+                        user.mediumAvatar = res.get("headimgurl").toString();
+                        user.smallAvatar = res.get("headimgurl").toString();
                         user.thirdParty = platform.getDb().getPlatformNname();
-                        app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
+                        app.saveToken(new UserResult(user, res.get("unionid").toString(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                         app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
                         mActivity.finish();
