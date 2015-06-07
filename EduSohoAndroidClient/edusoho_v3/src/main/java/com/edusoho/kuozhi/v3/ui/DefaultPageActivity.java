@@ -239,36 +239,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            if (mFragmentNavigationDrawer.isDrawerOpen()) {
-//                mDrawerLayout.closeDrawer(Gravity.LEFT);
-//                return true;
-//            }
-//
-//            synchronized (mLock) {
-//                if (mIsExit) {
-//                    mIsExit = false;
-//                    app.exit();
-//                }
-//                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
-//                mIsExit = true;
-//                if (mExitTimer == null) {
-//                    mExitTimer = new Timer();
-//                }
-//                mExitTimer.schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        mIsExit = false;
-//                    }
-//                }, 2000);
-//            }
-//            return true;
-//        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mExitTimer != null) {
@@ -296,11 +266,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                                 + msg);
             }
         });
-    }
-
-    @Override
-    public void finish() {
-        Log.d("return----->", "DefaultPageActivity.finish");
     }
 
     @Override
