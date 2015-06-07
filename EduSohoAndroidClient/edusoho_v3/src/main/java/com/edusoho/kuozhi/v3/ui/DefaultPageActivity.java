@@ -245,7 +245,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             mExitTimer.cancel();
             mExitTimer = null;
         }
-
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
     }
 
