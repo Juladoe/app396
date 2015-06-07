@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.FindFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -33,6 +34,8 @@ import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.common.Constants;
+
+import org.apache.cordova.CordovaWebView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -237,31 +240,31 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mFragmentNavigationDrawer.isDrawerOpen()) {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                return true;
-            }
-
-            synchronized (mLock) {
-                if (mIsExit) {
-                    mIsExit = false;
-                    app.exit();
-                }
-                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
-                mIsExit = true;
-                if (mExitTimer == null) {
-                    mExitTimer = new Timer();
-                }
-                mExitTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mIsExit = false;
-                    }
-                }, 2000);
-            }
-            return true;
-        }
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            if (mFragmentNavigationDrawer.isDrawerOpen()) {
+//                mDrawerLayout.closeDrawer(Gravity.LEFT);
+//                return true;
+//            }
+//
+//            synchronized (mLock) {
+//                if (mIsExit) {
+//                    mIsExit = false;
+//                    app.exit();
+//                }
+//                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+//                mIsExit = true;
+//                if (mExitTimer == null) {
+//                    mExitTimer = new Timer();
+//                }
+//                mExitTimer.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        mIsExit = false;
+//                    }
+//                }, 2000);
+//            }
+//            return true;
+//        }
         return super.onKeyDown(keyCode, event);
     }
 
@@ -324,5 +327,46 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{new MessageType(Const.OPEN_COURSE_CHAT, source), new MessageType(XINGGE_PUSH_REGISTER, source)};
         return messageTypes;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mFragmentNavigationDrawer.isDrawerOpen()) {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                return true;
+            }
+
+            Fragment fragment = mFragmentManager.findFragmentByTag("FindFragment");
+            if (fragment instanceof FindFragment) {
+                CordovaWebView webView = ((FindFragment) fragment).getView().getWebView();
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
+            }
+
+            synchronized (mLock) {
+                if (mIsExit) {
+                    mIsExit = false;
+                    app.exit();
+                }
+                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+                mIsExit = true;
+                if (mExitTimer == null) {
+                    mExitTimer = new Timer();
+                }
+                mExitTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mIsExit = false;
+                    }
+                }, 2000);
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }

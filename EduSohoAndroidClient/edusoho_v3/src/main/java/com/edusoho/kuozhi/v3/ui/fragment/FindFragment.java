@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
  */
 public class FindFragment extends BaseFragment implements CordovaInterface {
 
+    private static final String TAG = "FindFragment";
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
     protected CordovaPlugin activityResultCallback = null;
     protected boolean keepRunning = true;
@@ -52,7 +53,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl("http://192.168.10.125/mapi_v2/mobileApp");
+        webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
 //        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         return rootView;
     }
@@ -63,7 +64,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         if (webView == null) {
             webView = (ESWebView) view.findViewById(R.id.webView);
             Config.init(getActivity());
-            webView.loadUrl("http://192.168.10.125/mapi_v2/mobileApp");
+            webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
 //            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
@@ -146,4 +147,9 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
             webView.destory();
         }
     }
+
+    public ESWebView getView() {
+        return webView;
+    }
+
 }

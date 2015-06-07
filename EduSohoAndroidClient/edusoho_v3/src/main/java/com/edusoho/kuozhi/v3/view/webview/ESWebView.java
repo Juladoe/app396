@@ -193,4 +193,8 @@ public class ESWebView extends FrameLayout {
         }
     }
 
+    public CordovaWebView getWebView() {
+        return mWebView;
+    }
+
 }
