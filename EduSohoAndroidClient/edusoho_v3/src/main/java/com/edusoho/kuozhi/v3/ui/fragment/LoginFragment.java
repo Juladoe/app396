@@ -238,4 +238,5 @@ public class LoginFragment extends BaseFragment {
             }, Wechat.NAME);
         }
     };
+    
 }
