@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class LoginFragment extends BaseFragment {
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
+    private String mAuthCancel;
 
     @Override
     public void onAttach(Activity activity) {
@@ -58,6 +60,7 @@ public class LoginFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_login);
         mActivity.setTitle("登录");
+        mAuthCancel = mContext.getResources().getString(R.string.authorize_cancelled);
     }
 
     @Override
@@ -169,7 +172,7 @@ public class LoginFragment extends BaseFragment {
 
                 @Override
                 public void onCancel(Platform platform, int action) {
-
+                    CommonUtil.longToast(mContext, mAuthCancel);
                 }
             }, SinaWeibo.NAME);
         }
@@ -201,11 +204,12 @@ public class LoginFragment extends BaseFragment {
 
                 @Override
                 public void onCancel(Platform platform, int i) {
-
+                    CommonUtil.longToast(mContext, mAuthCancel);
                 }
             }, QQ.NAME);
         }
     };
+
 
     private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
         @Override
@@ -228,12 +232,19 @@ public class LoginFragment extends BaseFragment {
 
                 @Override
                 public void onError(Platform platform, int i, Throwable throwable) {
-                    Log.d("onError", "");
+                    Looper.prepare();
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            CommonUtil.longToast(mContext, "您尚未安装微信客户端");
+                        }
+                    });
+                    Looper.loop();
                 }
 
                 @Override
                 public void onCancel(Platform platform, int i) {
-
+                    CommonUtil.longToast(mContext, mAuthCancel);
                 }
             }, Wechat.NAME);
         }
