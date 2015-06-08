@@ -65,7 +65,7 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.news_menu, menu);
     }
 
     @Override

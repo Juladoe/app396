@@ -259,7 +259,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     @Override
