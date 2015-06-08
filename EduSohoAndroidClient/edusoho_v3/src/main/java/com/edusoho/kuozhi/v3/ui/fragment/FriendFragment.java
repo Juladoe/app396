@@ -57,20 +57,26 @@ public class FriendFragment extends BaseFragment {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
-                    animator.setDuration(200);
+                    animator.setDuration(300);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//                    animator.setInterpolator(new AccelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
                             searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
                             searchDialogFragment.getToolBar(mEduToolBar);
+//                            searchDialogFragment.editTextFocus();
                         }
                     });
 
                     animator.start();
                 } else if (i == R.id.item_add_phone_friend) {
                     System.out.println("手机联系人----》");
+                } else if (i == R.id.item_add_lesson_friend) {
+
+                } else if (i == R.id.item_add_phone_friend) {
+                    app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
                 } else if (i == R.id.item_add_lesson_friend) {
                     System.out.println("课程好友----》");
 

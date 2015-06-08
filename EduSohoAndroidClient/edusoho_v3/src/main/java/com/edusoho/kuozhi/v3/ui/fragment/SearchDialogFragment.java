@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.inputmethod.InputMethodManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -72,16 +73,17 @@ public class SearchDialogFragment extends DialogFragment {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCancel.getTag().equals(CANCEL_STATE)) {
+                if(mCancel.getTag().equals(CANCEL_STATE)){
                     dismiss();
-                }
-                if (mCancel.getTag().equals(SEARCH_STATE)) {
+                   }
+                if(mCancel.getTag().equals(SEARCH_STATE)){
                     //TODO
                     Toast.makeText(mContext, "搜索！", Toast.LENGTH_LONG).show();
                 }
 
             }
         });
+
         searchListener();
         return view;
     }
@@ -126,7 +128,7 @@ public class SearchDialogFragment extends DialogFragment {
         int toolsBarHeight = mEduToolBar.getMeasuredHeight();
         ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", 0, toolsBarHeight);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(200);
+        animator.setDuration(300);
         animator.start();
 
     }
