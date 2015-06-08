@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/navigation_drawer"
         android:name="com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer"
-        android:layout_width="300dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         tools:layout="@layout/fragment_navigation_drawer" />
