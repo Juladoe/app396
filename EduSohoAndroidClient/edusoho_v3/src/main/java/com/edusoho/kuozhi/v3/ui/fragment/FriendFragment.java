@@ -42,7 +42,7 @@ public class FriendFragment extends BaseFragment {
         setContainerView(R.layout.fragment_friends);
         mActivity.setTitle(getString(R.string.title_friends));
         mEduToolBar = ((DefaultPageActivity)mActivity).getToolBar();
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class FriendFragment extends BaseFragment {
                 int i = v.getId();
                 if(i == R.id.search_friend_btn){
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
-                    animator.setDuration(300);
+                    animator.setDuration(00);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
 //                    animator.setInterpolator(new AccelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
@@ -109,7 +109,7 @@ public class FriendFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
     }
 
     @Override
