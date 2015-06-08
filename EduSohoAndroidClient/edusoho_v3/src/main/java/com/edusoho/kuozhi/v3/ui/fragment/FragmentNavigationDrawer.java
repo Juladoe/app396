@@ -39,6 +39,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     public static final int THIRD_PARTY_LOGIN = 0x01;
     public static final int OPEN_DRAWER = 0x02;
     public static final int CLOSE_DRAWER = 0x03;
+    public static final int DRAWER_REGISTER = 0x11;
 
 
     private DrawerLayout mDrawerLayout;
@@ -65,6 +66,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     private View vItems;
     private View vLogin;
     private Button btnLogin;
+    private Button btnRegister;
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
@@ -155,11 +157,14 @@ public class FragmentNavigationDrawer extends BaseFragment {
         vLogin = mActivity.findViewById(R.id.ll_login);
         btnLogin = (Button) mActivity.findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(mLoginClickListener);
+        btnRegister = (Button) mActivity.findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(mRegisterClickListener);
         if (app.loginUser == null) {
             setLoginStatus(Const.LOGOUT_SUCCESS);
         } else {
             setLoginStatus(Const.LOGIN_SUCCESS);
         }
+
     }
 
     View.OnClickListener mSettingClickListener = new View.OnClickListener() {
@@ -201,6 +206,13 @@ public class FragmentNavigationDrawer extends BaseFragment {
             if (app.loginUser == null) {
                 LoginActivity.startLogin(mActivity);
             }
+        }
+    };
+
+    View.OnClickListener mRegisterClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mActivity.app.mEngine.runNormalPluginForResult("RegisterActivity", mActivity, Const.DRAWER_REGISTER, null);
         }
     };
 

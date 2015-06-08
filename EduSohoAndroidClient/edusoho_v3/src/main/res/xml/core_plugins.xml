@@ -36,6 +36,11 @@
         version="1.0" />
 
     <plugin
+        name="RegisterActivity"
+        package="com.edusoho.kuozhi.v3.ui.RegisterActivity"
+        version="1.0" />
+
+    <plugin
         name="NetSchoolActivity"
         package="com.edusoho.kuozhi.v3.ui.NetSchoolActivity"
         version="1.0" />

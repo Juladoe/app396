@@ -121,8 +121,8 @@
     </style>
 
     <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/action_bar_back</item>
-        <item name="android:textSize">@dimen/base_size</item>
+        <item name="android:textColor">@color/green_alpha</item>
+        <item name="android:textSize">@dimen/large_font_size</item>
         <item name="android:textStyle">normal</item>
     </style>
 

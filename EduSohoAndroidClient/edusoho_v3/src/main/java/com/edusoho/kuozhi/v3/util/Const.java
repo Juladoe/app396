@@ -82,6 +82,7 @@ public class Const {
 
     public static final int CHAT_MSG = 0x05;
     public static final int SWITCH_TAB = 0x06;
+    public static final int DRAWER_REGISTER = 0x07;
 
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
