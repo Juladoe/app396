@@ -76,10 +76,12 @@ public class Const {
     public static final int LIMIT = 10;
 
     //Plugin事件
+    public static final int MAIN_MENU_CLOSE = 0x02;
     public static final int MAIN_MENU_OPEN = 0x03;
     public static final int OPEN_COURSE_CHAT = 0x04;
 
     public static final int CHAT_MSG = 0x05;
+    public static final int SWITCH_TAB = 0x06;
 
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";

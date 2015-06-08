@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -35,8 +36,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FragmentNavigationDrawer extends BaseFragment {
 
     public static final String TAG = "FragmentDrawer";
-    public static final int THIRD_PARTY_LOGIN = 0001;
-    public static final int OPEN_DRAWER = 0002;
+    public static final int THIRD_PARTY_LOGIN = 0x01;
+    public static final int OPEN_DRAWER = 0x02;
+    public static final int CLOSE_DRAWER = 0x03;
+
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -238,6 +241,10 @@ public class FragmentNavigationDrawer extends BaseFragment {
             Message msg = mHandler.obtainMessage();
             msg.what = OPEN_DRAWER;
             mHandler.sendMessage(msg);
+        } else if (messageType.code == Const.MAIN_MENU_CLOSE) {
+            Message msg = mHandler.obtainMessage();
+            msg.what = CLOSE_DRAWER;
+            mHandler.sendMessage(msg);
         } else {
             switch (messageType.type) {
                 case Const.LOGIN_SUCCESS:
@@ -273,6 +280,11 @@ public class FragmentNavigationDrawer extends BaseFragment {
                 case OPEN_DRAWER:
                     mDrawerLayout.openDrawer(Gravity.LEFT);
                     break;
+                case CLOSE_DRAWER:
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                    //通知主页面跳到发现
+                    app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+                    break;
                 case THIRD_PARTY_LOGIN:
                     setLoginStatus(Const.THIRD_PARTY_LOGIN_SUCCESS);
                     tvNickname.setText(mActivity.app.loginUser.nickname);
@@ -289,7 +301,8 @@ public class FragmentNavigationDrawer extends BaseFragment {
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.LOGOUT_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
-                new MessageType(Const.MAIN_MENU_OPEN, source)
+                new MessageType(Const.MAIN_MENU_OPEN, source),
+                new MessageType(Const.MAIN_MENU_CLOSE, source)
         };
         return messageTypes;
     }
