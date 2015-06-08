@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.Meta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
@@ -42,7 +43,7 @@ public class BaseActivity extends ActionBarActivity {
     public EdusohoApp app;
     public ActionBar mActionBar;
     protected FragmentManager mFragmentManager;
-
+    protected EdusohoMainService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,15 @@ public class BaseActivity extends ActionBarActivity {
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
         app.setDisplay(this);
+        setProgressBarIndeterminateVisibility(false);
         gson = app.gson;
+        mService = app.getService();
+        app.mActivity = mActivity;
+        app.mContext = mContext;
+    }
+
+    public EdusohoMainService getService() {
+        return mService;
     }
 
     public void hideActionBar() {

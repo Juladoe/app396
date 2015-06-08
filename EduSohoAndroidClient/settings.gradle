@@ -1,2 +1,2 @@
-include ':kuozhiv2', ':custom', ':edusoho_v3', ':oauthlib'
+include ':kuozhiv2', ':custom', ':edusoho_v3'
 include ':commonLib', ':bdvideoplayer', ':commonUtils', ':shard', ':edusoho_v2', ':liveEplayer'

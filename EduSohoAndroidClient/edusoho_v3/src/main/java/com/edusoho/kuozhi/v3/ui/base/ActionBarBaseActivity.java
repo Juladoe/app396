@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
@@ -17,7 +20,7 @@ import com.tencent.android.tpush.XGPushManager;
  * Created by JesseHuang on 15/4/23.
  * 用于包含ActionBar的theme
  */
-public class ActionBarBaseActivity extends BaseActivity {
+public class ActionBarBaseActivity extends BaseActivity implements MessageEngine.MessageCallback {
 
     public static final String TAG = "ActionBarBaseActivity";
     public static final String BACK = "返回";
@@ -30,6 +33,7 @@ public class ActionBarBaseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         app.addTask(getLocalClassName(), this);
         mActionBar = getSupportActionBar();
+        regPushMsg();
     }
 
     public void setBackMode(String backTitle, String title) {
@@ -73,4 +77,17 @@ public class ActionBarBaseActivity extends BaseActivity {
         XGPushManager.onActivityStoped(this);
     }
 
+    protected void regPushMsg() {
+        app.registMsgSource(this);
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[0];
+    }
 }

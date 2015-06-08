@@ -66,6 +66,7 @@
             android:id="@+id/et_password"
             android:hint="@string/login_password_hint"
             android:alpha="0.56"
+            android:inputType="textPassword"
             android:textCursorDrawable="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -134,18 +135,22 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/weixin_bg"
-            android:padding="10dp"
             android:id="@+id/iv_qq"
             android:src="@drawable/qq" />
+
+        <ImageView
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/iv_weibo"
+            android:src="@drawable/weibo" />
 
         <ImageView
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/weixin_bg"
-            android:id="@+id/iv_weibo"
-            android:padding="8dp"
+            android:id="@+id/iv_weixin"
             android:src="@drawable/weixin" />
 
     </LinearLayout>

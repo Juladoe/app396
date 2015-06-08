@@ -12,17 +12,18 @@
         android:layout_marginTop="4dp"
         android:layout_marginLeft="6dp"
         android:layout_marginBottom="4dp"
-        android:layout_weight="7">
+        android:layout_weight="5">
 
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:src="@drawable/defaultpic"
+            android:layout_centerVertical="true"
             android:layout_margin="6dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitXY" />
 
-        <com.readystatesoftware.viewbadger.BadgeView
+        <com.edusoho.kuozhi.v3.view.EduBadgeView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1"

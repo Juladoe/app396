@@ -17,7 +17,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.4"
+        app:iconSizeScale="2.0"
         app:image="@string/font_news"
         app:size="@dimen/nav_layout_btn"
         app:text="@string/down_tab_news" />
@@ -29,7 +29,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.4"
+        app:iconSizeScale="2.0"
         app:image="@string/font_find"
         app:size="@dimen/nav_layout_btn"
         app:text="@string/down_tab_find" />
@@ -41,7 +41,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.4"
+        app:iconSizeScale="2.0"
         app:image="@string/font_friends"
         app:size="@dimen/nav_layout_btn"
         app:text="@string/down_tab_friends" />

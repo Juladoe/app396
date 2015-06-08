@@ -14,12 +14,12 @@
         <com.edusoho.kuozhi.v3.view.EduToolBar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentTop="true"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
+            android:background="@android:color/white"
             app:centerTitle="@string/toolbar_title"
             app:centerTitleSize="@dimen/large_font_size"
+            app:centerTitleColor="@color/primary_color"
             tools:layout="@layout/toolbar_custom"
             android:visibility="gone" />
 
@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/navigation_drawer"
         android:name="com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer"
-        android:layout_width="240dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         tools:layout="@layout/fragment_navigation_drawer" />

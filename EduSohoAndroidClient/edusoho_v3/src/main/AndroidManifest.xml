@@ -54,10 +54,9 @@
         <activity
             android:name=".v3.ui.DefaultPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".v3.ui.QrSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -101,12 +100,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.ChatLstActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-
-
-        <activity
             android:name=".v3.ui.ChatActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -126,6 +119,7 @@
             android:name=".v3.ui.AddPhoneContactActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"/>
+        <service android:name="com.edusoho.kuozhi.v3.service.EdusohoMainService" />
 
         <!-- 【必须】 信鸽receiver广播接收 -->
         <receiver
@@ -188,7 +182,6 @@
         <meta-data
             android:name="XG_V2_ACCESS_KEY"
             android:value="A2EX426VLK8D" />
-
 
 
     </application>

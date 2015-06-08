@@ -20,21 +20,19 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.readystatesoftware.viewbadger.BadgeView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JesseHuang on 15/4/27.
  */
-public class FragmentNavigationDrawer extends BaseFragment implements MessageEngine.MessageCallback {
+public class FragmentNavigationDrawer extends BaseFragment {
 
     public static final String TAG = "FragmentDrawer";
     public static final int THIRD_PARTY_LOGIN = 0001;
@@ -56,29 +54,22 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
     private Button btnSetting;
     private Button btnFeedBack;
     private TextView tvNickname;
+    private TextView tvTitle;
+    private TextView tvLogin;
     private ImageView ivLogin;
     private CircleImageView civAvatar;
     private DrawerHandler mHandler;
-
-//    ActionBar actionBar = mActivity.getSupportActionBar();
-
+    private View vItems;
+    private View vLogin;
+    private Button btnLogin;
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
-
-    private final int mBadgeIds[] = {
-            R.id.badge0,
-            R.id.badge1,
-            R.id.badge2,
-    };
-
-    private final BadgeView[] mBadges = new BadgeView[mBadgeIds.length];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_navigation_drawer);
         mHandler = new DrawerHandler();
-        app.registMsgSource(this);
     }
 
     @Override
@@ -150,12 +141,22 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
 
         btnSetting = (Button) mActivity.findViewById(R.id.btnSetting);
         btnSetting.setOnClickListener(mSettingClickListener);
-        btnFeedBack = (Button) mActivity.findViewById(R.id.btnFeedBack);
+        btnFeedBack = (Button) mActivity.findViewById(R.id.btn_collection);
         btnFeedBack.setOnClickListener(mFeedBackClickListener);
         tvNickname = (TextView) mActivity.findViewById(R.id.tv_nickname);
         ivLogin = (ImageView) mActivity.findViewById(R.id.iv_login);
-        ivLogin.setOnClickListener(mLoginClickListener);
+        tvTitle = (TextView) mActivity.findViewById(R.id.tv_user_title);
+        tvLogin = (TextView) mActivity.findViewById(R.id.tv_login);
         civAvatar = (CircleImageView) mActivity.findViewById(R.id.circleIcon);
+        vItems = mActivity.findViewById(R.id.ll_item);
+        vLogin = mActivity.findViewById(R.id.ll_login);
+        btnLogin = (Button) mActivity.findViewById(R.id.btn_login);
+        btnLogin.setOnClickListener(mLoginClickListener);
+        if (app.loginUser == null) {
+            setLoginStatus(Const.LOGOUT_SUCCESS);
+        } else {
+            setLoginStatus(Const.LOGIN_SUCCESS);
+        }
     }
 
     View.OnClickListener mSettingClickListener = new View.OnClickListener() {
@@ -205,7 +206,6 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
             mDrawerLayout.closeDrawer(mDrawerFragment);
         }
         mPosition = position;
-        //CommonUtil.longToast(mActivity, mRadioButtons[position].getText().toString());
     }
 
     public boolean isDrawerOpen() {
@@ -238,27 +238,31 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
             Message msg = mHandler.obtainMessage();
             msg.what = OPEN_DRAWER;
             mHandler.sendMessage(msg);
-        }
-        switch (messageType.type) {
-            case Const.LOGIN_SUCCESS:
-                tvNickname.setText(mActivity.app.loginUser.nickname);
-                ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
-                break;
-            case Const.THIRD_PARTY_LOGIN_SUCCESS:
-                try {
-                    Message msg = mHandler.obtainMessage();
-                    msg.what = THIRD_PARTY_LOGIN;
-                    mHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    throw e;
-                }
-                break;
-            case Const.LOGOUT_SUCCESS:
-                tvNickname.setText(getString(R.string.drawer_nickname));
-                civAvatar.setImageResource(R.drawable.avatar);
-                break;
-            default:
-                return;
+        } else {
+            switch (messageType.type) {
+                case Const.LOGIN_SUCCESS:
+                    tvNickname.setText(mActivity.app.loginUser.nickname);
+                    tvTitle.setText(mActivity.app.loginUser.title);
+                    ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
+                    setLoginStatus(messageType.type);
+                    break;
+                case Const.THIRD_PARTY_LOGIN_SUCCESS:
+                    try {
+                        Message msg = mHandler.obtainMessage();
+                        msg.what = THIRD_PARTY_LOGIN;
+                        mHandler.sendMessage(msg);
+                    } catch (Exception e) {
+                        throw e;
+                    }
+                    break;
+                case Const.LOGOUT_SUCCESS:
+                    tvNickname.setText(getString(R.string.drawer_nickname));
+                    civAvatar.setImageResource(R.drawable.user_avatar);
+                    setLoginStatus(messageType.type);
+                    break;
+                default:
+            }
+
         }
     }
 
@@ -270,6 +274,7 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
                     mDrawerLayout.openDrawer(Gravity.LEFT);
                     break;
                 case THIRD_PARTY_LOGIN:
+                    setLoginStatus(Const.THIRD_PARTY_LOGIN_SUCCESS);
                     tvNickname.setText(mActivity.app.loginUser.nickname);
                     ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
                     break;
@@ -287,6 +292,22 @@ public class FragmentNavigationDrawer extends BaseFragment implements MessageEng
                 new MessageType(Const.MAIN_MENU_OPEN, source)
         };
         return messageTypes;
+    }
+
+    private void setLoginStatus(String str) {
+        if (str.equals(Const.LOGOUT_SUCCESS)) {
+            tvLogin.setVisibility(View.VISIBLE);
+            tvNickname.setVisibility(View.GONE);
+            tvTitle.setVisibility(View.GONE);
+            vItems.setVisibility(View.GONE);
+            vLogin.setVisibility(View.VISIBLE);
+        } else {
+            tvLogin.setVisibility(View.GONE);
+            tvNickname.setVisibility(View.VISIBLE);
+            tvTitle.setVisibility(View.VISIBLE);
+            vItems.setVisibility(View.VISIBLE);
+            vLogin.setVisibility(View.GONE);
+        }
     }
 
 }

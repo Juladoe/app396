@@ -59,11 +59,8 @@
 
     <!--ttf-->
     <string name="font_friends">&#xe605;</string>
-    <string name="font_friends_press">&#xe637;</string>
-    <string name="font_news">&#xe600;</string>
-    <string name="font_news_press">&#xe635;</string>
+    <string name="font_news">&#xe607;</string>
     <string name="font_find">&#xe604;</string>
-    <string name="font_find_press">&#xe633;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
 
@@ -96,9 +93,11 @@
     </string-array>
 
     <string name="drawer_items_learn">我的学习</string>
+    <string name="drawer_items_download">我的下载</string>
+    <string name="drawer_items_buy_vip">开通会员</string>
     <string name="drawer_items_collection">我的收藏</string>
-    <string name="drawer_items_message">我发表的</string>
-    <string name="drawer_items_setting">设置</string>
+    <string name="drawer_items_publish">我的发表</string>
+    <string name="drawer_items_setting">我的设置</string>
 
 
 </resources>

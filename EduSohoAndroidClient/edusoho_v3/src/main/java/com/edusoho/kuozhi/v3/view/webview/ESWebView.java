@@ -127,6 +127,7 @@ public class ESWebView extends FrameLayout {
             mWebView.pluginManager.onDestroy();
         }
         mWebView.handleDestroy();
+        mWebView.removeAllViews();
         mWebView.destroy();
         mRequestManager.destory();
     }
@@ -191,6 +192,10 @@ public class ESWebView extends FrameLayout {
             Log.d(TAG, String.format("WebResourceResponse %s %s", url, resourceResponse));
             return resourceResponse;
         }
+    }
+
+    public CordovaWebView getWebView() {
+        return mWebView;
     }
 
 }

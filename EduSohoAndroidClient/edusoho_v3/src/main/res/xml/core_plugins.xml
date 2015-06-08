@@ -85,5 +85,10 @@
         package="com.edusoho.kuozhi.v3.ui.fragment.ChatFragment"
         version="1.0" />
 
+    <plugin
+        name="EdusohoMainService"
+        package="com.edusoho.kuozhi.v3.service.EdusohoMainService"
+        version="1.0"></plugin>
+
 
 </plugins>

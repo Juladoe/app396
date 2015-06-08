@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
+import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.readystatesoftware.viewbadger.BadgeView;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class NewsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(mLayoutId, null);
             viewHolder = new ViewHolder();
             viewHolder.ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
-            viewHolder.bvUnread = (BadgeView) convertView.findViewById(R.id.bv_unread);
+            viewHolder.bvUnread = (EduBadgeView) convertView.findViewById(R.id.bv_unread);
             viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
             viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_content);
             viewHolder.tvPostTime = (TextView) convertView.findViewById(R.id.tv_post_time);
@@ -78,9 +78,23 @@ public class NewsAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         public ImageView ivAvatar;
-        public BadgeView bvUnread;
+        public EduBadgeView bvUnread;
         public TextView tvTitle;
         public TextView tvContent;
         public TextView tvPostTime;
+    }
+
+    public void findNews(NewsItem newItem) {
+        if (mList.size() > 0) {
+            for (NewsItem item : mList) {
+                if (item.title.equals(newItem.title)) {
+                    item.unread = item.unread + 1;
+                    item.title = newItem.title;
+                    item.content = newItem.content;
+                    item.postTime = newItem.postTime;
+                }
+            }
+        }
+        this.notifyDataSetChanged();
     }
 }

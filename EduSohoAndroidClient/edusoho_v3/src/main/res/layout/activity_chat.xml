@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.edusoho.kuozhi.v3.ui.ChatActivity">
 
-</LinearLayout>
+    <RelativeLayout
+        android:paddingBottom="3dp"
+        android:id="@+id/ll_send_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white">
+
+        <EditText
+            android:id="@+id/et_send_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_send"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/tv_send"
+            android:alpha="0.56"
+            android:textCursorDrawable="@null" />
+
+        <TextView
+            android:layout_width="62dp"
+            android:layout_height="42dp"
+            android:id="@+id/tv_send"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/edit_send_green"
+            android:textColor="@color/white"
+            android:layout_margin="5dp"
+            android:includeFontPadding="false"
+            android:text="发送" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_send_info"
+        android:divider="@null"
+        android:dividerHeight="0px"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none"
+        android:smoothScrollbar="true"
+        android:clickable="true"
+        android:id="@+id/lv_messages"></ListView>
+
+</RelativeLayout>

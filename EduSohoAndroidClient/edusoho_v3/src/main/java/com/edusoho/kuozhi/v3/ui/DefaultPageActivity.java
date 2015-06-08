@@ -20,8 +20,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.FindFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -32,6 +34,8 @@ import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.common.Constants;
+
+import org.apache.cordova.CordovaWebView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -67,6 +71,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (savedInstanceState == null) {
             //selectItem(0);
         }
+        mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         app.registMsgSource(this);
     }
 
@@ -86,6 +91,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mNavDownTabClickListener = new NavDownTabClickListener();
 
         setSupportActionBar(mToolBar);
+
         int count = mNavLayout.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mNavLayout.getChildAt(i);
@@ -139,6 +145,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private void selectDownTab(int id) {
         String tag;
+        if (TextUtils.isEmpty(app.token) && id != R.id.nav_tab_find) {
+            app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
+            return;
+        }
+
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
             mToolBar.setVisibility(View.GONE);
@@ -197,18 +208,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void changeBtnIcon(int id) {
-        mDownTabNews.setIcon(R.string.font_news);
-        mDownTabFind.setIcon(R.string.font_find);
-        mDownTabFriends.setIcon(R.string.font_friends);
+        mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+        mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+        mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         if (id == R.id.nav_tab_news) {
-            setTitle(R.string.title_news);
-            mDownTabNews.setIcon(R.string.font_news);
+            mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_find) {
-            setTitle(R.string.title_find);
-            mDownTabFind.setIcon(R.string.font_find);
+            mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_friends) {
-            setTitle(R.string.title_friends);
-            mDownTabFriends.setIcon(R.string.font_friends);
+            mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         }
     }
 
@@ -230,48 +238,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mFragmentNavigationDrawer.isDrawerOpen()) {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                return true;
-            }
-
-            synchronized (mLock) {
-                if (mIsExit) {
-                    mIsExit = false;
-                    app.exit();
-                }
-                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
-                mIsExit = true;
-                if (mExitTimer == null) {
-                    mExitTimer = new Timer();
-                }
-                mExitTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mIsExit = false;
-                    }
-                }, 2000);
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mExitTimer.cancel();
-        mExitTimer = null;
-        VolleySingleton.getInstance(getApplicationContext()).cancelAll();
-    }
-
     public void registerXgPush() {
         XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, app.loginUser.nickname, new XGIOperateCallback() {
+        XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
             @Override
             public void onSuccess(Object data, int flag) {
                 Log.w(Constants.LogTag,
@@ -286,11 +255,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                                 + msg);
             }
         });
-    }
-
-    @Override
-    public void finish() {
-        Log.d("return----->", "DefaultPageActivity.finish");
     }
 
     @Override
@@ -318,4 +282,61 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         MessageType[] messageTypes = new MessageType[]{new MessageType(Const.OPEN_COURSE_CHAT, source), new MessageType(XINGGE_PUSH_REGISTER, source)};
         return messageTypes;
     }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mFragmentNavigationDrawer.isDrawerOpen()) {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                return true;
+            }
+
+            Fragment fragment = mFragmentManager.findFragmentByTag("FindFragment");
+            if (fragment instanceof FindFragment) {
+                CordovaWebView webView = ((FindFragment) fragment).getView().getWebView();
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
+            }
+
+            synchronized (mLock) {
+                if (mIsExit) {
+                    mIsExit = false;
+                    app.exit();
+                }
+                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+                mIsExit = true;
+                if (mExitTimer == null) {
+                    mExitTimer = new Timer();
+                }
+                mExitTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mIsExit = false;
+                    }
+                }, 2000);
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+        if (mExitTimer != null) {
+            Log.d(TAG, "mExitTimer.cancel()");
+            mExitTimer.cancel();
+            mExitTimer = null;
+        }
+        VolleySingleton.getInstance(getApplicationContext()).cancelAll();
+    }
+
+    @Override
+    public void finish() {
+        Log.d(TAG, "finish");
+    }
+
 }

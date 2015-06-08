@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,6 +34,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
+import cn.sharesdk.wechat.friends.Wechat;
 
 /**
  * Created by JesseHuang on 15/5/23.
@@ -43,6 +46,7 @@ public class LoginFragment extends BaseFragment {
     private Button mBtnLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
+    private ImageView ivWeixin;
 
     @Override
     public void onAttach(Activity activity) {
@@ -66,6 +70,8 @@ public class LoginFragment extends BaseFragment {
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
         ivQQ = (ImageView) mContainerView.findViewById(R.id.iv_qq);
         ivQQ.setOnClickListener(mQQLoginClickListener);
+        ivWeixin = (ImageView) mContainerView.findViewById(R.id.iv_weixin);
+        ivWeixin.setOnClickListener(mWeChatLoginClickListener);
     }
 
     @Override
@@ -139,16 +145,20 @@ public class LoginFragment extends BaseFragment {
                 @Override
                 public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
                     if (action == Platform.ACTION_USER_INFOR) {
-                        User user = new User();
-                        user.nickname = res.get("name").toString();
-                        user.largeAvatar = res.get("avatar_large").toString();
-                        user.mediumAvatar = res.get("avatar_hd").toString();
-                        user.smallAvatar = res.get("profile_image_url").toString();
-                        user.thirdParty = platform.getDb().getPlatformNname();
-                        app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
-                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
-                        mActivity.finish();
+                        try {
+                            User user = new User();
+                            user.nickname = res.get("name").toString();
+                            user.largeAvatar = res.get("avatar_large").toString();
+                            user.mediumAvatar = res.get("avatar_hd").toString();
+                            user.smallAvatar = res.get("profile_image_url").toString();
+                            user.thirdParty = platform.getDb().getPlatformNname();
+                            app.saveToken(new UserResult(user, res.get("id").toString(), null));
+                            app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                            app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                            mActivity.finish();
+                        } catch (Exception ex) {
+                            Log.e("ThirdPartyLogin-->", ex.getMessage());
+                        }
                     }
                 }
 
@@ -194,8 +204,38 @@ public class LoginFragment extends BaseFragment {
 
                 }
             }, QQ.NAME);
-
         }
     };
 
+    private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
+                @Override
+                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
+                    if (action == Platform.ACTION_USER_INFOR) {
+                        User user = new User();
+                        user.nickname = res.get("nickname").toString();
+                        user.mediumAvatar = res.get("headimgurl").toString();
+                        user.smallAvatar = res.get("headimgurl").toString();
+                        user.thirdParty = platform.getDb().getPlatformNname();
+                        app.saveToken(new UserResult(user, res.get("unionid").toString(), null));
+                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                        mActivity.finish();
+                    }
+                }
+
+                @Override
+                public void onError(Platform platform, int i, Throwable throwable) {
+                    Log.d("onError", "");
+                }
+
+                @Override
+                public void onCancel(Platform platform, int i) {
+
+                }
+            }, Wechat.NAME);
+        }
+    };
 }
