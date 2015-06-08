@@ -238,16 +238,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mExitTimer != null) {
-            mExitTimer.cancel();
-            mExitTimer = null;
-        }
-        VolleySingleton.getInstance(getApplicationContext()).cancelAll();
-    }
-
     public void registerXgPush() {
         XGPushConfig.enableDebug(this, true);
         XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
@@ -295,8 +285,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-
-
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mFragmentNavigationDrawer.isDrawerOpen()) {
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
@@ -333,4 +321,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         }
         return super.onKeyUp(keyCode, event);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+        if (mExitTimer != null) {
+            Log.d(TAG, "mExitTimer.cancel()");
+            mExitTimer.cancel();
+            mExitTimer = null;
+        }
+        VolleySingleton.getInstance(getApplicationContext()).cancelAll();
+    }
+
+    @Override
+    public void finish() {
+        Log.d(TAG, "finish");
+    }
+
 }

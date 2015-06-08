@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +53,8 @@ public class EduToolBar extends Toolbar {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.EduToolBar);
         centerTitle = typedArray.getString(R.styleable.EduToolBar_centerTitle);
         centerTitleSize = (int) typedArray.getDimension(R.styleable.EduToolBar_centerTitleSize, 14);
-        centerTitleColor = typedArray.getColor(R.styleable.EduSohoTextBtn_fontColor, Color.WHITE);
+        centerTitleColor = typedArray.getColor(R.styleable.EduToolBar_centerTitleColor, Color.WHITE);
+        this.setNavigationIcon(R.drawable.buy_vip_icon_normal);
     }
 
     @Override
