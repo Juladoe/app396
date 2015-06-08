@@ -90,5 +90,11 @@
         package="com.edusoho.kuozhi.v3.service.EdusohoMainService"
         version="1.0"></plugin>
 
+    <plugin
+        name="FriendNewsActivity"
+        package="com.edusoho.kuozhi.v3.ui.FriendNewsActivity"
+        version="1.0"/>
+
+
 
 </plugins>

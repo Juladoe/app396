@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.fragment;
+package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Melomelon on 2015/6/8.
  */
-public class FriendNewsFragment extends BaseFragment {
+public class FriendNewsActivity extends ActionBarBaseActivity {
 
     public static final int HAVE_ADD_TRUE = 0;
     public static final int HAVE_ADD_FALSE = 1;
@@ -41,18 +42,14 @@ public class FriendNewsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity.setTitle(mTitle);
+        setBackMode(BACK,"添加好友");
         mList = new ArrayList<Friend>();
-        setContainerView(R.layout.friend_news_layout);
-    }
+        setContentView(R.layout.friend_news_layout);
 
-    @Override
-    protected void initView(View view) {
-        newsList = (ListView) view.findViewById(R.id.friend_news_list);
+        newsList = (ListView)findViewById(R.id.friend_news_list);
         mAdapter = new FriendNewsAdapter(mContext,R.layout.add_friend_item);
         newsList.setAdapter(mAdapter);
         loadFriend();
-
     }
 
     private void loadFriend(){
@@ -68,8 +65,8 @@ public class FriendNewsFragment extends BaseFragment {
         mAdapter.addItem(new Friend(R.drawable.sample_avatar_10,"山鸡",HAVE_ADD_WAIT));
     }
 
-    private class FriendNewsAdapter extends BaseAdapter{
 
+    private class FriendNewsAdapter extends BaseAdapter{
         private  int mResource;
         private FriendNewsAdapter(Context mContext,int mResource) {
             mInflater = LayoutInflater.from(mContext);
@@ -105,11 +102,11 @@ public class FriendNewsFragment extends BaseFragment {
                 holder.mImage = (CircleImageView) convertView.findViewById(R.id.add_friend_image);
                 holder.mName = (TextView) convertView.findViewById(R.id.add_friend_name);
                 holder.mState = (ImageView) convertView.findViewById(R.id.add_friend_state);
-
                 convertView.setTag(holder);
             }else {
                 holder = (ItemHolder) convertView.getTag();
             }
+
             holder.mImage.setImageResource(mList.get(position).avatarID);
             holder.mName.setText(mList.get(position).name);
             if(position == 3){

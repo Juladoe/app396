@@ -387,8 +387,14 @@
     <!--直播-->
     <color name="live_course_button_focus">#259c54</color>
 
-    <color name="drawer_title">#97989a</color>
-    <color name="normal_grey">#999999</color>
-    <color name="user_avatar_bg">#444444</color>
+    <color name="green_alpha">#37b97d</color>
+    <color name="green_beta">#59c593</color>
+    <color name="green_feedback">#0e9e5c</color>
+    <color name="grey_gamma">#97989a</color>
+    <color name="grey_beta">#999999</color>
+    <color name="grey_alpha">#444444</color>
+    <color name="grey_feedback">#f0f0f0</color>
+
+
     <color name="badge_red">#ff0000</color>
 </resources>

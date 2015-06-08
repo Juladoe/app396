@@ -225,18 +225,18 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mSelectBtn == R.id.nav_tab_find) {
-            getMenuInflater().inflate(R.menu.find_menu, menu);
-        } else if (mSelectBtn == R.id.nav_tab_friends) {
-            getMenuInflater().inflate(R.menu.friends_menu, menu);
-        } else {
-            getMenuInflater().inflate(R.menu.news_menu, menu);
-            this.closeOptionsMenu();
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        if (mSelectBtn == R.id.nav_tab_find) {
+//            getMenuInflater().inflate(R.menu.find_menu, menu);
+//        } else if (mSelectBtn == R.id.nav_tab_friends) {
+//            getMenuInflater().inflate(R.menu.friends_menu, menu);
+//        } else {
+//            getMenuInflater().inflate(R.menu.news_menu, menu);
+//            this.closeOptionsMenu();
+//        }
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     public void registerXgPush() {
         XGPushConfig.enableDebug(this, true);
@@ -338,5 +338,4 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     public void finish() {
         Log.d(TAG, "finish");
     }
-
 }
