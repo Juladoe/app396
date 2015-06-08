@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/friends_news"
-        android:enabled="false"
+        android:enabled="true"
         android:icon="@drawable/icon_notifications"
         android:orderInCategory="100"
         android:title="@null"
@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/friends_search"
-        android:enabled="false"
+        android:enabled="true"
         android:icon="@drawable/found_menu_search"
         android:orderInCategory="100"
         android:title="@null"
