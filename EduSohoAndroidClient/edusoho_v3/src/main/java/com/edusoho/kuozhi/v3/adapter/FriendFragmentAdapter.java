@@ -78,7 +78,6 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 itemHolder = new ItemHolder();
                 itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
                 itemHolder.friendAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
-                itemHolder.friendAvatar.setImageResource(mList.get(position-1).avatarID);
                 v.setTag(itemHolder);
                 setCacheView(position,v);
             }else {
@@ -86,6 +85,7 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 itemHolder = (ItemHolder) v.getTag();
             }
             itemHolder.friendName.setText(mList.get(position-1).name);
+            itemHolder.friendAvatar.setImageResource(mList.get(position-1).avatarID);
         }
         return v;
     }

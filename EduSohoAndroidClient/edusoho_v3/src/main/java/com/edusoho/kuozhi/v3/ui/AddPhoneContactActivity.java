@@ -14,12 +14,10 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -190,9 +188,9 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
                 mContactList.get(position).isFriend = true;
             }
             if(mContactList.get(position).isFriend == true){
-                itemHolder.mTag.setImageResource(R.drawable.have_add_contact_true);
+                itemHolder.mTag.setImageResource(R.drawable.have_add_friend_true);
             }else {
-                itemHolder.mTag.setImageResource(R.drawable.have_add_contact_false);
+                itemHolder.mTag.setImageResource(R.drawable.have_add_friend_false);
             }
             return convertView;
         }

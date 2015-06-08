@@ -158,7 +158,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
         btnLogin = (Button) mActivity.findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(mLoginClickListener);
         btnRegister = (Button) mActivity.findViewById(R.id.btn_register);
-        btnRegister.setOnClickListener(mRegisterClickListener);
+        btnRegister.setOnClickListener(mRegisterClickListener);git
         if (app.loginUser == null) {
             setLoginStatus(Const.LOGOUT_SUCCESS);
         } else {

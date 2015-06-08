@@ -57,7 +57,7 @@ public class FriendFragment extends BaseFragment {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
-                    animator.setDuration(300);
+                    animator.setDuration(00);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
 //                    animator.setInterpolator(new AccelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
@@ -132,9 +132,8 @@ public class FriendFragment extends BaseFragment {
         if (item.getItemId() == R.id.friends_search) {
             //TODO 跳转到搜索页面
             System.out.println("搜索");
-            app.mEngine.runNormalPlugin("", mActivity, null);
         } else if (item.getItemId() == R.id.friends_news) {
-            //TODO 好友验证列表页面
+            app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
             System.out.println("好友验证");
         }
         return super.onOptionsItemSelected(item);

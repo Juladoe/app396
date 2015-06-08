@@ -13,7 +13,14 @@ public class Friend {
         this.name = name;
     }
 
+    public Friend(int avatarID, String name, int state) {
+        this.avatarID = avatarID;
+        this.name = name;
+        this.state = state;
+    }
+
     public int avatarID;
     public String avatar;
     public String name;
+    public int state;
 }
