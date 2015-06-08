@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -11,6 +12,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
 
 /**
@@ -90,6 +92,8 @@ public class SettingActivity extends ActionBarBaseActivity {
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
+                        app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+                        finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -107,7 +111,15 @@ public class SettingActivity extends ActionBarBaseActivity {
                 app.removeToken();
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);
+                app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+                finish();
             }
         }
     };
+
+    @Override
+    public void finish() {
+        Log.d("setting--->", "finish");
+        super.finish();
+    }
 }

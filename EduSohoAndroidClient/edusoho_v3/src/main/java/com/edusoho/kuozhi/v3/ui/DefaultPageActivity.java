@@ -61,6 +61,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private DrawerLayout mDrawerLayout;
     private FragmentNavigationDrawer mFragmentNavigationDrawer;
     private final byte[] mLock = new byte[1];
+    private boolean mLogoutFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //super.onSaveInstanceState(outState);
     }
 
     private void initView() {
@@ -169,6 +175,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mSelectBtn = id;
     }
 
+    private void hideFragment(String tag) {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+        if (fragment != null) {
+            fragmentTransaction.hide(fragment);
+            if (!mLogoutFlag) {
+                fragmentTransaction.commit();
+            } else {
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        }
+    }
+
     private void showFragment(String tag) {
         BaseFragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -181,7 +200,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
 
-        fragmentTransaction.commit();
+        if (!mLogoutFlag) {
+            fragmentTransaction.commit();
+        } else {
+            fragmentTransaction.commitAllowingStateLoss();
+        }
         mCurrentTag = tag;
     }
 
@@ -195,16 +218,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 child.setEnabled(true);
             }
         }
-    }
-
-    private void hideFragment(String tag) {
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
-        if (fragment == null) {
-            return;
-        }
-        fragmentTransaction.hide(fragment);
-        fragmentTransaction.commit();
     }
 
     private void changeBtnIcon(int id) {
@@ -272,6 +285,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             case XINGGE_PUSH_REGISTER:
                 registerXgPush();
                 break;
+            case Const.SWITCH_TAB:
+                try {
+                    mLogoutFlag = true;
+                    selectDownTab(R.id.nav_tab_find);
+                    mLogoutFlag = false;
+                } catch (Exception ex) {
+                    Log.d(TAG, ex.getMessage());
+                }
+                break;
             default:
         }
     }
@@ -279,7 +301,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.OPEN_COURSE_CHAT, source), new MessageType(XINGGE_PUSH_REGISTER, source)};
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(Const.OPEN_COURSE_CHAT, source),
+                new MessageType(XINGGE_PUSH_REGISTER, source),
+                new MessageType(Const.SWITCH_TAB, source)};
         return messageTypes;
     }
 
