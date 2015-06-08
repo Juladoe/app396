@@ -51,6 +51,11 @@
         version="1.0" />
 
     <plugin
+        name="AddPhoneContactActivity"
+        package="com.edusoho.kuozhi.v3.ui.AddPhoneContactActivity"
+        version="1.0" />
+
+    <plugin
         name="NewsFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.NewsFragment"
         version="1.0" />
