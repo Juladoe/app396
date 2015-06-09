@@ -382,4 +382,9 @@ public class Const {
     public static final String LIVING_COURSE = "Course/getLiveCourses";
 
     public static final String LIVE_COURSE = "Course/getLiveCourse";
+
+    public static final int HAVE_ADD_TRUE = 0;
+    public static final int HAVE_ADD_FALSE = 1;
+    public static final int HAVE_ADD_WAIT = 2;
+    public static final int HAVE_ADD_REJECT = 3;
 }

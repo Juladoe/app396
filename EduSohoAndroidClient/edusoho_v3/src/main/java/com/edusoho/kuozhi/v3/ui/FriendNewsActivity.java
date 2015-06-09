@@ -13,8 +13,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-
+import com.edusoho.kuozhi.v3.util.Const;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -24,10 +23,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendNewsActivity extends ActionBarBaseActivity {
 
-    public static final int HAVE_ADD_TRUE = 0;
-    public static final int HAVE_ADD_FALSE = 1;
-    public static final int HAVE_ADD_WAIT = 2;
-    public static final int HAVE_ADD_REJECT = 3;
 
 
     public String mTitle = "添加校友";
@@ -53,16 +48,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     }
 
     private void loadFriend(){
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_1,"花非花",HAVE_ADD_FALSE));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_2,"扫地神僧",HAVE_ADD_TRUE));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_3,"独孤求败",HAVE_ADD_FALSE));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_4,"阮玲玉",HAVE_ADD_FALSE));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_5,"西门吹雪",HAVE_ADD_TRUE));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_6,"虚竹",HAVE_ADD_FALSE));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_7,"段誉",HAVE_ADD_WAIT));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_8,"乔峰",HAVE_ADD_WAIT));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_9,"风清扬",HAVE_ADD_WAIT));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_10,"山鸡",HAVE_ADD_WAIT));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_1,"花非花",Const.HAVE_ADD_FALSE));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_2,"扫地神僧",Const.HAVE_ADD_TRUE));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_3,"独孤求败",Const.HAVE_ADD_FALSE));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_4,"阮玲玉",Const.HAVE_ADD_FALSE));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_5,"西门吹雪",Const.HAVE_ADD_TRUE));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_6,"虚竹",Const.HAVE_ADD_FALSE));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_7,"段誉",Const.HAVE_ADD_WAIT));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_8,"乔峰",Const.HAVE_ADD_WAIT));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_9,"风清扬",Const.HAVE_ADD_WAIT));
+        mAdapter.addItem(new Friend(R.drawable.sample_avatar_10,"山鸡",Const.HAVE_ADD_WAIT));
     }
 
 

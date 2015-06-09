@@ -19,8 +19,16 @@ public class Friend {
         this.state = state;
     }
 
+    public Friend(int avatarID, String name, int state,boolean isTeacher) {
+        this.avatarID = avatarID;
+        this.name = name;
+        this.state = state;
+        this.isTeacher = isTeacher;
+    }
+
     public int avatarID;
     public String avatar;
     public String name;
     public int state;
+    public boolean isTeacher;
 }
