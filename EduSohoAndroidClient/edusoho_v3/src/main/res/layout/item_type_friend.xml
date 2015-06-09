@@ -10,30 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:padding="12dp"
         >
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/friend_avatar"
             android:src="@drawable/friend_avatar"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             />
 
         <TextView
-            android:layout_marginLeft="8dp"
-            android:padding="6dp"
+            android:layout_marginLeft="12dp"
             android:id="@+id/friend_name"
             android:text="好友姓名"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <!-- 教师标签-->
         <ImageView
-            android:id="@+id/friend_tag"
+            android:id="@+id/teacher_tag"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -44,8 +41,8 @@
 
     <View
         android:background="@color/material_grey"
-        android:layout_marginLeft="72dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         android:layout_width="match_parent"
         android:layout_height="1px"/>
 

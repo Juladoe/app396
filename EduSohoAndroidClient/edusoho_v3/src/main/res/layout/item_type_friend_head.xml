@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/base_gray">
+    android:background="@color/grey_bg">
 
     <View
         android:layout_width="match_parent"
@@ -39,24 +39,22 @@
     <LinearLayout
         android:id="@+id/item_add_phone_friend"
         android:gravity="center_vertical"
-        android:padding="8dp"
+        android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/white">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginLeft="12dp"
             android:id="@+id/icon_add_phone_friend"
             android:src="@drawable/icon_add_phone"
-            android:layout_width="48dp"
-            android:layout_height="48dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
         <TextView
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="12dp"
             android:id="@+id/tv_add_friend"
             android:text="添加手机联系人"
-            android:textSize="18sp"
-            android:padding="6dp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -69,8 +67,8 @@
 
         <View
             android:background="@color/material_grey"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
             android:layout_width="match_parent"
             android:layout_height="1px"/>
         </LinearLayout>
@@ -79,24 +77,22 @@
     <LinearLayout
         android:id="@+id/item_add_lesson_friend"
         android:gravity="center_vertical"
-        android:padding="8dp"
+        android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/white">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginLeft="12dp"
             android:id="@+id/icon_add_lesson_friend"
             android:src="@drawable/icon_add_lesson"
-            android:layout_width="48dp"
-            android:layout_height="48dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
         <TextView
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="12dp"
             android:id="@+id/tv_add_lesson_friend"
             android:text="添加课程好友"
-            android:textSize="18sp"
-            android:padding="6dp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -109,8 +105,8 @@
 
         <View
             android:background="@color/material_grey"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
             android:layout_width="match_parent"
             android:layout_height="1px"/>
     </LinearLayout>
@@ -118,24 +114,22 @@
     <LinearLayout
         android:id="@+id/item_add_class_friend"
         android:gravity="center_vertical"
-        android:padding="8dp"
+        android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/white">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginLeft="12dp"
             android:id="@+id/icon_add_class_friend"
             android:src="@drawable/icon_add_class"
-            android:layout_width="48dp"
-            android:layout_height="48dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
         <TextView
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="12dp"
             android:id="@+id/tv_add_class_friend"
             android:text="添加班级好友"
-            android:textSize="18sp"
-            android:padding="6dp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -144,6 +138,7 @@
     <TextView
         android:paddingLeft="8dp"
         android:text="服务号"
+        android:textSize="10sp"
         android:padding="6dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
@@ -153,6 +148,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/material_grey"
         />
 
@@ -161,22 +158,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:padding="12dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/friend_avatar"
             android:src="@drawable/icon_qiqiuyu"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="40dp"
             android:layout_height="40dp"/>
         <TextView
-            android:layout_marginLeft="8dp"
-            android:padding="6dp"
+            android:layout_marginLeft="12dp"
             android:id="@+id/friend_name"
             android:text="气球鱼学院"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -185,6 +179,7 @@
     <TextView
         android:paddingLeft="8dp"
         android:text="好友"
+        android:textSize="10sp"
         android:padding="6dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
@@ -194,6 +189,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/material_grey"
         />
 
