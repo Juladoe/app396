@@ -388,6 +388,7 @@
     <color name="live_course_button_focus">#259c54</color>
 
     <color name="green_alpha">#37b97d</color>
+    <color name="green_alpha_12">#2e37b97d</color>
     <color name="green_beta">#59c593</color>
     <color name="green_feedback">#0e9e5c</color>
     <color name="grey_gamma">#97989a</color>

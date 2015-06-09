@@ -43,10 +43,10 @@
     <string name="login_username_hint">手机号/邮箱/昵称</string>
     <string name="login_password_hint">密码</string>
     <string name="login_line_text">其他方式登录</string>
-    <string name="reg_phone_hint">手机号</string>
-    <string name="reg_mail_hint">邮箱地址</string>
-    <string name="reg_code_hint">验证码</string>
-    <string name="reg_password_hint">密码</string>
+    <string name="reg_phone_hint">请输入手机号</string>
+    <string name="reg_mail_hint">请输入邮箱地址</string>
+    <string name="reg_code_hint">请输入验证码</string>
+    <string name="reg_password_hint">请输入密码</string>
 
     <!--Button-->
     <string name="reg_phone_reg">手机注册</string>

@@ -164,7 +164,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
         } else {
             setLoginStatus(Const.LOGIN_SUCCESS);
         }
-
     }
 
     View.OnClickListener mSettingClickListener = new View.OnClickListener() {
