@@ -20,9 +20,12 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
@@ -53,9 +56,11 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -131,6 +136,22 @@ public class EdusohoApp extends Application {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return requestUrl.getHeads();
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                try {
+                    Map<String, String> map = response.headers;
+                    String cookie = map.get("Set-Cookie");
+                    String data = new String(response.data, "UTF-8");
+                    JSONObject jsonObject = new JSONObject(data);
+                    jsonObject.put("Cookie", cookie);
+                    return Response.success(jsonObject.toString(), HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                } catch (JSONException e) {
+                    return Response.error(new ParseError(e));
+                }
             }
         };
         jsonObjectRequest.setTag(requestUrl.url);

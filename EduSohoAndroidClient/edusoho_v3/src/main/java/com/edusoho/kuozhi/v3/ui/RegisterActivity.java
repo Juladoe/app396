@@ -20,6 +20,9 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 /**
@@ -34,7 +37,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
     private EditText etMail;
     private EditText etMailPass;
     private Button btnMailReg;
-
+    private String mCookie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +89,15 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }
             HashMap<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(phoneNumber));
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            mActivity.ajaxPostHandleCookie(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        mCookie = jsonObject.getString("Cookie");
+                    } catch (JSONException e) {
 
+                    }
                 }
             }, null);
         }
@@ -121,6 +129,11 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 return;
             } else {
                 params.put("smsCode", strCode);
+            }
+
+            HashMap<String, String> headers = url.getHeads();
+            if (!TextUtils.isEmpty(mCookie)) {
+                headers.put("Cookie", mCookie);
             }
 
             mActivity.ajaxPostWithLoading(url, new Response.Listener<String>() {
