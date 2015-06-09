@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/base_gray">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/material_grey"
+        />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

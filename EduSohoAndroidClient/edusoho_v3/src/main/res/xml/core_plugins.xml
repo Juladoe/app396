@@ -100,6 +100,13 @@
         package="com.edusoho.kuozhi.v3.ui.FriendNewsActivity"
         version="1.0"/>
 
+    <plugin
+        name="AddNormalFriend"
+        package="com.edusoho.kuozhi.v3.ui.AddNormalFriend"
+        version="1.0"/>
+
+
+
 
 
 </plugins>

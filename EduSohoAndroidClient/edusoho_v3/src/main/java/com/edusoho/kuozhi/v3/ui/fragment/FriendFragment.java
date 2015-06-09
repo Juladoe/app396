@@ -59,28 +59,26 @@ public class FriendFragment extends BaseFragment {
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
                     animator.setDuration(00);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
-//                    animator.setInterpolator(new AccelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
                             searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
                             searchDialogFragment.getToolBar(mEduToolBar);
-//                            searchDialogFragment.editTextFocus();
                         }
                     });
 
                     animator.start();
-                } else if (i == R.id.item_add_phone_friend) {
-                    System.out.println("手机联系人----》");
-                } else if (i == R.id.item_add_lesson_friend) {
 
                 } else if (i == R.id.item_add_phone_friend) {
                     app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
+
                 } else if (i == R.id.item_add_lesson_friend) {
-                    System.out.println("课程好友----》");
+                    app.mEngine.runNormalPlugin("AddNormalFriend", mActivity, null);
+                    System.out.println("课程好友---》");
 
                 } else if (i == R.id.item_add_class_friend) {
+                    app.mEngine.runNormalPlugin("AddNormalFriend", mActivity, null);
                     System.out.println("班级好友---》");
 
                 }
@@ -134,7 +132,6 @@ public class FriendFragment extends BaseFragment {
             System.out.println("搜索");
         } else if (item.getItemId() == R.id.friends_news) {
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
-            System.out.println("好友验证");
         }
         return super.onOptionsItemSelected(item);
     }
