@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class AddNormalFriend extends ActionBarBaseActivity{
 
-    public final String mTitle = "添加课时好友";
+    public final String mTitle = "添加班级好友";
+    public boolean isClass = false;
     private ArrayList<Friend> mTeacherList;
     private ArrayList<Friend> mStudentList;
     private ArrayList<Friend> mFriendsList;
@@ -42,6 +44,20 @@ public class AddNormalFriend extends ActionBarBaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_normal_friend_layout);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String string = bundle.getString("type");
+
+        /**选择课程还是课时**/
+        if(string.equals("班级")){
+            setBackMode(BACK,mTitle);
+            isClass = true;
+        }else {
+            setBackMode(BACK,"添加课程好友");
+            isClass = false;
+        }
+
         mList = (ListView) findViewById(R.id.add_normal_friend_list);
         mAdapter = new AddNormalFriendAdapter(R.layout.add_friend_item);
 
@@ -50,10 +66,7 @@ public class AddNormalFriend extends ActionBarBaseActivity{
         mFriendsList = new ArrayList<Friend>();
 
         mList.setAdapter(mAdapter);
-        /**选择课程还是课时**/
-        if(true){
-            setBackMode(BACK,"添加课程好友");
-        }
+
 
         loadFriends();
         mAdapter.addItems(mTeacherList);
@@ -133,11 +146,19 @@ public class AddNormalFriend extends ActionBarBaseActivity{
 
             if(position == 0){
                 holder.typeText.setVisibility(View.VISIBLE);
-                holder.typeText.setText("课程教师"+"("+mTeacherList.size()+")");
+                if(isClass){
+                    holder.typeText.setText("班级教师"+"("+mTeacherList.size()+")");
+                }else {
+                    holder.typeText.setText("课程教师"+"("+mTeacherList.size()+")");
+                }
             }else if(position == mTeacherList.size()){
                 holder.typeText.setVisibility(View.VISIBLE);
                 holder.divider.setVisibility(View.VISIBLE);
-                holder.typeText.setText("课程好友"+"("+mStudentList.size()+")");
+                if(isClass){
+                    holder.typeText.setText("班级好友"+"("+mTeacherList.size()+")");
+                }else {
+                    holder.typeText.setText("课程好友"+"("+mStudentList.size()+")");
+                }
             }else {
                 holder.typeText.setVisibility(View.GONE);
                 holder.divider.setVisibility(View.GONE);

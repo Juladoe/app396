@@ -74,13 +74,14 @@ public class FriendFragment extends BaseFragment {
                     app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
 
                 } else if (i == R.id.item_add_lesson_friend) {
-                    app.mEngine.runNormalPlugin("AddNormalFriend", mActivity, null);
-                    System.out.println("课程好友---》");
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type","课程");
+                    app.mEngine.runNormalPluginWithBundle("AddNormalFriend", mActivity, bundle);
 
                 } else if (i == R.id.item_add_class_friend) {
-                    app.mEngine.runNormalPlugin("AddNormalFriend", mActivity, null);
-                    System.out.println("班级好友---》");
-
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type","班级");
+                    app.mEngine.runNormalPluginWithBundle("AddNormalFriend", mActivity, bundle);
                 }
             }
         });
