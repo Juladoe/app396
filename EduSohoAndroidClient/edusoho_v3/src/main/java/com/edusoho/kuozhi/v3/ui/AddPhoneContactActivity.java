@@ -65,13 +65,6 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
 
         mAddAdapter = new AddPhoneContactAdapter();
         mList.setAdapter(mAddAdapter);
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
-                System.out.println(""+position);
-            }
-        });
 
         loadDialog = LoadDialog.create(this);
         loadDialog.setMessage("请等待…");
@@ -190,8 +183,14 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
             if(mContactList.get(position).isFriend == true){
                 itemHolder.mTag.setImageResource(R.drawable.have_add_friend_true);
             }else {
-                itemHolder.mTag.setImageResource(R.drawable.have_add_friend_false);
+                itemHolder.mTag.setImageResource(R.drawable.add_friend_selector);
             }
+            itemHolder.mTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO
+                }
+            });
             return convertView;
         }
 

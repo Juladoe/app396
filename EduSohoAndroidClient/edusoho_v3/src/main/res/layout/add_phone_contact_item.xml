@@ -50,11 +50,12 @@
 
         <ImageView
             android:id="@+id/add_contact_tag"
-            android:src="@drawable/have_add_friend_false"
+            android:src="@drawable/add_friend_selector"
+            android:clickable="true"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="16dp"
-            android:layout_width="48dp"
+            android:layout_width="64dp"
             android:layout_height="24dp"
             android:scaleType="centerInside"
             />

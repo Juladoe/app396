@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -78,11 +79,17 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 itemHolder = new ItemHolder();
                 itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
                 itemHolder.friendAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
+                itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
                 v.setTag(itemHolder);
                 setCacheView(position,v);
             }else {
                 v = mCacheArray.get(position);
                 itemHolder = (ItemHolder) v.getTag();
+            }
+            if(mList.get(position-1).isTeacher == true){
+                itemHolder.teacherTag.setVisibility(View.VISIBLE);
+            }else {
+                itemHolder.teacherTag.setVisibility(View.GONE);
             }
             itemHolder.friendName.setText(mList.get(position-1).name);
             itemHolder.friendAvatar.setImageResource(mList.get(position-1).avatarID);
@@ -146,5 +153,6 @@ public class FriendFragmentAdapter extends BaseAdapter{
     private class ItemHolder{
         private CircleImageView friendAvatar;
         private TextView friendName;
+        private ImageView teacherTag;
     }
 }
