@@ -1,52 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:orientation="vertical"
     >
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@drawable/sample_avatar_1"
-        android:id="@+id/phone_contact_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:background="@color/grey_feedback"
         />
 
-    <TextView
-        android:id="@+id/phone_contact_Name"
-        android:text="伯牙"
-        android:textSize="18sp"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_toRightOf="@id/phone_contact_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/phone_contact_number"
-        android:text="18868888888"
-        android:textSize="14sp"
-        android:layout_toRightOf="@id/phone_contact_image"
-        android:layout_below="@id/phone_contact_Name"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:src="@drawable/sample_avatar_1"
+            android:id="@+id/phone_contact_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            />
 
-    <ImageView
-        android:id="@+id/add_contact_tag"
-        android:src="@drawable/setting_icon_normal"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:layout_width="64dp"
-        android:layout_height="32dp"
-        android:scaleType="centerInside"
-        />
+        <TextView
+            android:id="@+id/phone_contact_Name"
+            android:text="伯牙"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="16dp"
+            android:layout_alignTop="@id/phone_contact_image"
+            android:layout_toRightOf="@id/phone_contact_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/phone_contact_number"
+            android:text="18868888888"
+            android:textSize="12sp"
+            android:layout_toRightOf="@id/phone_contact_image"
+            android:layout_below="@id/phone_contact_Name"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/add_contact_tag"
+            android:src="@drawable/have_add_friend_false"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:scaleType="centerInside"
+            />
+        </RelativeLayout>
 
 
-
-</RelativeLayout>
+</LinearLayout>
