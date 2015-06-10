@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -20,10 +22,9 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by JesseHuang on 15/6/8.
@@ -37,7 +38,10 @@ public class RegisterActivity extends ActionBarBaseActivity {
     private EditText etMail;
     private EditText etMailPass;
     private Button btnMailReg;
-    private String mCookie;
+    private String mCookie = "";
+
+    private int mClockTime;
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             tv.setTextSize(AppUtil.px2sp(this, getResources().getDimension(R.dimen.large_font_size)));
             tv.setTypeface(null, Typeface.NORMAL);
             tv.setTextColor(this.getResources().getColor(R.color.green_alpha));
-            //tabWidget.getChildAt(i).setBackgroundResource(R.drawable.register_tab_bg);
+            tabWidget.getChildAt(i).setBackgroundResource(R.drawable.register_tab_bg);
         }
 
         etPhone = (EditText) findViewById(R.id.et_phone);
@@ -78,28 +82,57 @@ public class RegisterActivity extends ActionBarBaseActivity {
         btnMailReg.setOnClickListener(mMailRegClickListener);
     }
 
+    Handler mCodeHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            btnSendCode.setText(mClockTime + "秒后重发");
+            mClockTime--;
+            if (mClockTime < 0) {
+                mTimer.cancel();
+                mTimer = null;
+                btnSendCode.setText(getResources().getString(R.string.reg_send_code));
+                btnSendCode.setEnabled(true);
+                btnSendCode.setBackgroundResource(R.drawable.reg_code_press);
+            }
+        }
+    };
+
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-            String phoneNumber = etPhone.getText().toString().trim();
-            if (TextUtils.isEmpty(phoneNumber)) {
-                CommonUtil.longToast(mContext, String.format("请输入%s", "手机号"));
-                return;
-            }
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("phoneNumber", String.valueOf(phoneNumber));
-            mActivity.ajaxPostHandleCookie(requestUrl, new Response.Listener<String>() {
+            btnSendCode.setEnabled(false);
+            btnSendCode.setBackgroundResource(R.drawable.reg_code_disable);
+            mClockTime = 10;
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
                 @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        mCookie = jsonObject.getString("Cookie");
-                    } catch (JSONException e) {
+                public void run() {
+                    Message message = mCodeHandler.obtainMessage();
+                    message.what = 0;
+                    mCodeHandler.sendMessage(message);
 
-                    }
                 }
-            }, null);
+            }, 0, 1000);
+
+//            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
+//            String phoneNumber = etPhone.getText().toString().trim();
+//            if (TextUtils.isEmpty(phoneNumber)) {
+//                CommonUtil.longToast(mContext, String.format("请输入%s", "手机号"));
+//                return;
+//            }
+//            HashMap<String, String> params = requestUrl.getParams();
+//            params.put("phoneNumber", String.valueOf(phoneNumber));
+//            mActivity.ajaxPostHandleCookie(requestUrl, new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(String response) {
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(response);
+//                        mCookie = jsonObject.getString("Cookie");
+//                    } catch (JSONException e) {
+//
+//                    }
+//                }
+//            }, null);
         }
     };
 
