@@ -90,6 +90,11 @@
         package="com.edusoho.kuozhi.v3.ui.AddNormalFriendActivity"
         version="1.0"/>
 
+    <plugin
+        name="SearchFriendActivity"
+        package="com.edusoho.kuozhi.v3.ui.SearchFriendActivity"
+        version="1.0"/>
+
 
 
 

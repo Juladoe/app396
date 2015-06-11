@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.text.TextUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.ui.SearchFriendActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundedEditText;
@@ -77,8 +81,7 @@ public class SearchDialogFragment extends DialogFragment {
                     dismiss();
                    }
                 if(mCancel.getTag().equals(SEARCH_STATE)){
-                    //TODO
-                    Toast.makeText(mContext, "搜索！", Toast.LENGTH_LONG).show();
+                    searchFriend(mSearchFrame.getText().toString());
                 }
 
             }
@@ -86,6 +89,20 @@ public class SearchDialogFragment extends DialogFragment {
 
         searchListener();
         return view;
+    }
+
+    public void searchFriend(final String searchStr){
+        if(TextUtils.isEmpty(searchStr)){
+            Toast.makeText(getActivity(), "请输入搜索内容！", Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            mApp.mEngine.runNormalPlugin("SearchFriendActivity",mActivity,new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(SearchFriendActivity.NAME,searchStr);
+                }
+            });
+        }
     }
 
     public void searchListener() {
