@@ -30,6 +30,7 @@
             android:button="@null"
             android:layout_marginRight="12dp"
             android:background="@drawable/set_check_bg" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -82,12 +83,12 @@
             android:textSize="@dimen/medium_font_size" />
 
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="24dp"
             android:layout_weight="0"
             android:button="@null"
             android:layout_marginRight="12dp"
-            android:background="@drawable/set_check_bg" />
+            android:background="@android:color/holo_red_dark" />
     </LinearLayout>
 
 

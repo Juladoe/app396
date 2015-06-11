@@ -98,7 +98,7 @@ public class EdusohoMainService extends Service {
                     }
 
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                    app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
 //                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
 
                     //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);

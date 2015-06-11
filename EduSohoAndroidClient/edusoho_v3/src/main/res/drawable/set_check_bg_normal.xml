@@ -1,53 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item>
         <shape>
-
             <!-- 是否是圆角 -->
-            <corners android:radius="5dip" />
-
+            <corners android:radius="12dp" />
             <stroke
-                android:width="1px"
+                android:width="2px"
                 android:color="@color/set_check_bg_stroke" />
-
             <size
-
-                android:height="20dp"
-                android:width="60dp" />
+                android:height="24dp"
+                android:width="40dp" />
             <!-- shape的颜色，支持渐变 -->
-            <gradient
-                android:angle="270"
-                android:centerColor="@color/set_check_bg_sel_gradient"
-                android:centerY="0.45"
-                android:endColor="@color/set_check_bg_sel_gradient"
-                android:startColor="@color/set_check_bg_sel_gradient" />
+            <solid android:color="@android:color/white" />
         </shape>
     </item>
     <item
-        android:left="28dp"
+        android:right="16dp"
         android:top="1px"
         android:bottom="1px"
-        android:right="1px">
+        android:left="1px">
         <shape>
-
             <!-- 是否是圆角 -->
-            <corners android:radius="5dip" />
+            <corners android:radius="12dp" />
 
             <stroke
                 android:width="1px"
                 android:color="@color/set_check_bg_stroke" />
 
             <size
-                android:height="20dp"
-                android:width="30dp" />
+                android:height="24dp"
+                android:width="24dp" />
             <!-- shape的颜色，支持渐变 -->
-            <gradient
-                android:angle="270"
-                android:centerColor="@android:color/white"
-                android:centerY="0.45"
-                android:endColor="@android:color/white"
-                android:startColor="@android:color/white" />
+            <solid android:color="@android:color/white" />
         </shape>
     </item>
 
