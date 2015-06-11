@@ -87,7 +87,7 @@
 
     <plugin
         name="AddNormalFriend"
-        package="com.edusoho.kuozhi.v3.ui.AddNormalFriend"
+        package="com.edusoho.kuozhi.v3.ui.AddNormalFriendActivity"
         version="1.0"/>
 
 

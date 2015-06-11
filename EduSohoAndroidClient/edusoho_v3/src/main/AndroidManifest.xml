@@ -137,7 +137,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.AddNormalFriend"
+            android:name=".v3.ui.AddNormalFriendActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 

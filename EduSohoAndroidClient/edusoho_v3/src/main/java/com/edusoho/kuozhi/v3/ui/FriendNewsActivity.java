@@ -109,7 +109,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             }else if(position%3 == 0){
                 holder.mState.setImageResource(R.drawable.have_add_friend_true);
             }else {
-                holder.mState.setImageResource(R.drawable.have_add_friend_false);
+                holder.mState.setImageResource(R.drawable.add_friend_selector);
             }
             return convertView;
         }

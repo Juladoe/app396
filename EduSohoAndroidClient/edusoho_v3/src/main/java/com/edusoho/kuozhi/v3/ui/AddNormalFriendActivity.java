@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ActionMenuView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * 添加班级好友
  *
  */
-public class AddNormalFriend extends ActionBarBaseActivity{
+public class AddNormalFriendActivity extends ActionBarBaseActivity{
 
     public final String mTitle = "添加班级好友";
     public boolean isClass = false;
@@ -66,7 +67,12 @@ public class AddNormalFriend extends ActionBarBaseActivity{
         mFriendsList = new ArrayList<Friend>();
 
         mList.setAdapter(mAdapter);
-
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
+            }
+        });
 
         loadFriends();
         mAdapter.addItems(mTeacherList);
@@ -171,7 +177,7 @@ public class AddNormalFriend extends ActionBarBaseActivity{
                     holder.state.setImageResource(R.drawable.have_add_friend_true);
                     break;
                 case Const.HAVE_ADD_FALSE:
-                    holder.state.setImageResource(R.drawable.have_add_friend_false);
+                    holder.state.setImageResource(R.drawable.add_friend_selector);
                     break;
                 case Const.HAVE_ADD_WAIT:
                     holder.state.setImageResource(R.drawable.have_add_friend_wait);

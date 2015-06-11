@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
 
@@ -53,11 +55,10 @@ public class FriendFragment extends BaseFragment {
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
-                    animator.setDuration(00);
+                    animator.setDuration(300);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
                         @Override
@@ -93,18 +94,18 @@ public class FriendFragment extends BaseFragment {
     public void loadFriend() {
         mFriendAdapter.setListViewLayout(R.layout.item_type_friend);
 
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_1, "花非花"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_2, "扫地神僧"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_3, "独孤求败"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_4, "阮玲玉"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_5, "西门吹雪"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_6, "虚竹"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_7, "段誉"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_8, "乔峰"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_9, "风清扬"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_10, "山鸡"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_11, "陈浩南"));
-        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_12, "王小二"));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_1, "花非花", Const.HAVE_ADD_FALSE,false));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_2, "扫地神僧", Const.HAVE_ADD_FALSE,false));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_3, "独孤求败", Const.HAVE_ADD_FALSE,true));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_4, "阮玲玉", Const.HAVE_ADD_FALSE,true));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_5, "西门吹雪", Const.HAVE_ADD_FALSE,false));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_6, "虚竹", Const.HAVE_ADD_FALSE,true));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_7, "段誉", Const.HAVE_ADD_FALSE,false));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_8, "乔峰", Const.HAVE_ADD_FALSE,false));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_9, "风清扬", Const.HAVE_ADD_FALSE,true));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_10, "山鸡", Const.HAVE_ADD_FALSE,true));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_11, "陈浩南", Const.HAVE_ADD_FALSE,false));
+        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_12, "王小二", Const.HAVE_ADD_FALSE,false));
     }
 
     @Override
