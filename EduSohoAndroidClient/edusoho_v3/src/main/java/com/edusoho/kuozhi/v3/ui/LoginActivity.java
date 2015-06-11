@@ -111,7 +111,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                     mActivity.app.saveToken(userResult);
                     mActivity.setResult(LoginActivity.OK);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                    app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
                     mActivity.finish();
 
                 }
@@ -142,7 +142,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                             user.thirdParty = platform.getDb().getPlatformNname();
                             app.saveToken(new UserResult(user, res.get("id").toString(), null));
                             app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                            app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                            app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
                             mActivity.finish();
                         } catch (Exception ex) {
                             Log.e("ThirdPartyLogin-->", ex.getMessage());
@@ -177,7 +177,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                        app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
                         mActivity.finish();
                     }
                 }
@@ -210,7 +210,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, res.get("unionid").toString(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                        app.sendMsgToTarget(DefaultPageActivity.XINGGE_PUSH_REGISTER, null, DefaultPageActivity.class);
+                        app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
                         mActivity.finish();
                     }
                 }

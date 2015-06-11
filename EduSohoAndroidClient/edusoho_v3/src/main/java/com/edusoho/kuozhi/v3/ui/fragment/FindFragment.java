@@ -149,6 +149,8 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         }
     }
 
+
+
     public ESWebView getView() {
         return webView;
     }

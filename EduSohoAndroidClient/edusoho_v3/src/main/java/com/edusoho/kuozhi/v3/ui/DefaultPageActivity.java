@@ -45,7 +45,7 @@ import java.util.TimerTask;
  */
 public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
-    public static final int XINGGE_PUSH_REGISTER = 0x01;
+    public static final int XG_PUSH_REGISTER = 0x01;
 
     private String mCurrentTag;
     private boolean mIsExit;
@@ -282,7 +282,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             case Const.OPEN_COURSE_CHAT:
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
                 break;
-            case XINGGE_PUSH_REGISTER:
+            case XG_PUSH_REGISTER:
                 registerXgPush();
                 break;
             case Const.SWITCH_TAB:
@@ -303,7 +303,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
-                new MessageType(XINGGE_PUSH_REGISTER, source),
+                new MessageType(XG_PUSH_REGISTER, source),
                 new MessageType(Const.SWITCH_TAB, source)};
         return messageTypes;
     }

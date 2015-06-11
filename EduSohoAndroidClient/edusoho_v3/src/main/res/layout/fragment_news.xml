@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
-    android:id="@+id/lv_news_list">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bottom_edge_height"
+        android:src="@drawable/login_line_bg" />
 
-</com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView>
+    <com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:id="@+id/lv_news_list">
+
+    </com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView>
+
+</LinearLayout>
