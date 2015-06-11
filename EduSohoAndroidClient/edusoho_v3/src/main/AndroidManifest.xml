@@ -114,6 +114,12 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.edusoho.kuozhi.wxapi.WXEntryActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true" />
+
         <!-- 【必须】 exported设置为true -->
         <activity
             android:name="com.tencent.android.tpush.XGPushActivity"
