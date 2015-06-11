@@ -111,6 +111,8 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
                 String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
                 if(TextUtils.isEmpty(phoneNumber)){
                     continue;
+                }else if(phoneNumber.length()<11){
+                    continue;
                 }
                 String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
                 Long contactId = phoneCursor.getLong(PHONES_CONTACT_ID_INDEX);

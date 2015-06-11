@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">财商365</string>
-    <string name="app_host">http://www.dowin365.com</string>
+    <string name="app_host">http://120.25.224.84</string>
     <string name="school_about">关于财商365</string>
     <string name="app_code">dowin365</string>
     <string name="channel_name">dowin365</string>
-    <string name="splash_num">3</string>
+    <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
 
     <string-array
