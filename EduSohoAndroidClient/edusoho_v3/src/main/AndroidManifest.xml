@@ -141,6 +141,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".v3.ui.SearchFriendActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
         <service android:name="com.edusoho.kuozhi.v3.service.EdusohoMainService" />
 
         <!-- 【必须】 信鸽receiver广播接收 -->

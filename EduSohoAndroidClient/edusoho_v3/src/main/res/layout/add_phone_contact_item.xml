@@ -5,12 +5,12 @@
     android:orientation="vertical"
     >
 
-    <TextView
+    <View
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
-        android:background="@color/grey_feedback"
+        android:background="@color/material_grey"
         />
 
     <RelativeLayout
@@ -54,7 +54,6 @@
             android:clickable="true"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp"
             android:layout_width="64dp"
             android:layout_height="24dp"
             android:scaleType="centerInside"

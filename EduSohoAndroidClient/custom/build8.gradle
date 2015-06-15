@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        dowin365 {
-            applicationId "com.dowin365.kuozhi"
+        kuakao {
+            applicationId "com.kuakao.kuozhi"
         }
     }
 
     sourceSets {
-        dowin365 {
+        kuakao {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/dowin365/res']
+            res.srcDirs = ['src/kuakao/res']
         }
     }
 
@@ -33,7 +33,7 @@ android {
     //签名
     signingConfigs {
         releaseConfig {
-            storeFile file("key/dowin365.jks")
+            storeFile file("key/kuakao.jks")
             storePassword "100010000"
             keyAlias "cn"
             keyPassword "10001000"
