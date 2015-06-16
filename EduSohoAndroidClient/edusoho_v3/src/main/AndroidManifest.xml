@@ -46,6 +46,11 @@
     <application
         android:hardwareAccelerated="true"
         android:theme="@style/EdusohoAppTheme">
+
+        <service android:name="com.edusoho.kuozhi.v3.service.M3U8DownService" />
+        <service android:name="com.edusoho.kuozhi.v3.service.DownLoadService" />
+        <service android:name="com.edusoho.kuozhi.v3.service.EdusohoMainService" />
+
         <activity
             android:name=".v3.ui.StartActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -106,6 +111,16 @@
 
         <activity
             android:name=".v3.ui.RegisterActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.LessonDownloadingActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.DownloadManagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 

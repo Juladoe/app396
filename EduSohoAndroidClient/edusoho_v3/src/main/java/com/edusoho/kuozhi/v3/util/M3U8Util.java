@@ -11,7 +11,7 @@ import android.util.SparseArray;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.broadcast.DownLoadStatusReceiver;
+import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
@@ -402,7 +402,7 @@ public class M3U8Util {
             HttpResponse response = mHttpClient.execute(httpGet);
 
             //发送下载广播
-            Intent intent = new Intent(DownLoadStatusReceiver.ACTION);
+            Intent intent = new Intent(DownloadStatusReceiver.ACTION);
             intent.putExtra(Const.LESSON_ID, mLessonId);
             intent.putExtra(Const.COURSE_ID, mCourseId);
             intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
@@ -610,7 +610,7 @@ public class M3U8Util {
                     updateDownloadStatus(url, 1);
 
                     //发送下载广播
-                    Intent intent = new Intent(DownLoadStatusReceiver.ACTION);
+                    Intent intent = new Intent(DownloadStatusReceiver.ACTION);
                     intent.putExtra(Const.LESSON_ID, mLessonId);
                     intent.putExtra(Const.COURSE_ID, mCourseId);
                     intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);

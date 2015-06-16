@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.model.bal.Lesson;
 
 
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+
 /**
  * Created by howzhi on 14-5-24.
  */
@@ -37,6 +39,10 @@ public class LessonItem<T> {
     public String startTime;
     public String endTime;
     public String replayStatus;
+
+    public M3U8DbModle m3u8Model;
+    public boolean isSelected;
+    public int groupId;
 
     public UploadFile uploadFile;
 

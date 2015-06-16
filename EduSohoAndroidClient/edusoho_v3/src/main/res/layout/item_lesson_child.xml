@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_unit_title"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_lesson_chapter"
+            android:text="第一节 Activity数据交换"
+            android:textSize="@dimen/x_small_font_size"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="28dp"
+            android:layout_alignParentLeft="true"
+            android:background="@color/grey_bg" />
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="24dp"
+            android:textColor="@color/green_alpha"
+            android:text="@string/font_less"
+            android:visibility="gone"
+            android:textSize="@dimen/x_small_font_size" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:id="@+id/rl_lesson_info">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="34dp"
+            android:background="@drawable/lesson_list_item_bg">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activity数据交换"
+                android:textSize="@dimen/small_font_size"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_download_finish"
+                android:layout_marginRight="10dp"
+                android:id="@+id/tv_lesson_name" />
+
+            <!--<com.edusoho.kuozhi.v3.view.EduSohoIconView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/iv_download"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textColor="@color/green_alpha"-->
+            <!--android:text="@string/font_downloading"-->
+            <!--android:textSize="@dimen/large_font_size" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/iv_download_finish"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:padding="3dp"
+                android:textSize="@dimen/x_small_font_size"
+                android:textColor="@color/grey_alpha"
+                android:text="已下载"
+                android:background="@drawable/download_finish_bg"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_download_selected"
+            android:text="@string/font_download_unselect"
+            android:textSize="@dimen/large_font_size"
+            android:clickable="true"
+            android:textColor="@color/green_alpha"
+            android:background="@android:color/white"
+            android:layout_marginLeft="24dp" />
+    </RelativeLayout>
+
+
+</LinearLayout>

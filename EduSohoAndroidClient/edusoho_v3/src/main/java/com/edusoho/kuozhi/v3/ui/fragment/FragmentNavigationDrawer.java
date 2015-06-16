@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,14 +16,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -53,14 +58,14 @@ public class FragmentNavigationDrawer extends BaseFragment {
             R.id.radio0,
             R.id.radio1,
             R.id.radio2,
+            R.id.radio3,
+            R.id.radio4,
+            R.id.radio5
     };
 
-    private Button btnSetting;
-    private Button btnFeedBack;
     private TextView tvNickname;
     private TextView tvTitle;
     private TextView tvLogin;
-    private ImageView ivLogin;
     private CircleImageView civAvatar;
     private DrawerHandler mHandler;
     private View vItems;
@@ -109,14 +114,49 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //                mActivity.invalidateOptionsMenu();
                 switch (mPosition) {
                     case 0:
+                        //我的学习
                         break;
                     case 1:
+                        //我的下载
+                        RequestUrl url = app.bindUrl(Const.COURSE, true);
+                        url.setParams(new String[]{
+                                "courseId", "1"
+                        });
+                        mActivity.ajaxPost(url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                final String result = response;
+                                mActivity.app.mEngine.runNormalPlugin("LessonDownloadingActivity", mContext, new PluginRunCallback() {
+                                    @Override
+                                    public void setIntentDate(Intent startIntent) {
+
+                                        startIntent.putExtra(LessonDownloadingActivity.COURSE_JSON, result);
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
+
+
                         break;
                     case 2:
+                        //开通会员
                         break;
                     case 3:
+                        //我的收藏
+                        break;
+                    case 4:
+                        //我的发表
+                        break;
+                    case 5:
+                        //我的设置
                         mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
                         break;
+                    default:
                 }
             }
 
@@ -144,12 +184,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
             mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
         }
 
-        btnSetting = (Button) mActivity.findViewById(R.id.btnSetting);
-        btnSetting.setOnClickListener(mSettingClickListener);
-        btnFeedBack = (Button) mActivity.findViewById(R.id.btn_collection);
-        btnFeedBack.setOnClickListener(mFeedBackClickListener);
         tvNickname = (TextView) mActivity.findViewById(R.id.tv_nickname);
-        ivLogin = (ImageView) mActivity.findViewById(R.id.iv_login);
         tvTitle = (TextView) mActivity.findViewById(R.id.tv_user_title);
         tvLogin = (TextView) mActivity.findViewById(R.id.tv_login);
         civAvatar = (CircleImageView) mActivity.findViewById(R.id.circleIcon);
@@ -165,26 +200,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
             setLoginStatus(Const.LOGIN_SUCCESS);
         }
     }
-
-    View.OnClickListener mSettingClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mDrawerLayout != null) {
-                mDrawerLayout.closeDrawer(mDrawerFragment);
-            }
-            mPosition = 3;
-        }
-    };
-
-    View.OnClickListener mFeedBackClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mDrawerLayout != null) {
-                mDrawerLayout.closeDrawer(mDrawerFragment);
-            }
-            mPosition = 4;
-        }
-    };
 
     View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
         @Override

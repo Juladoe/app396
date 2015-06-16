@@ -76,8 +76,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         mListView = (EduSohoListView) view.findViewById(R.id.list_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mListView.setLayoutManager(linearLayoutManager);
-        mAdapter = new CourseLessonAdapter(
-                mActivity, R.layout.course_details_learning_lesson_item);
+        mAdapter = new CourseLessonAdapter(mActivity, R.layout.course_details_learning_lesson_item);
 
         mListView.setEmptyString(new String[]{"暂无课时"}, R.drawable.icon_course_empty);
         mHeadView = initHeadView();
@@ -123,8 +122,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
         });
     }
 
-    private void updateM3U8Modles()
-    {
+    private void updateM3U8Modles() {
         if (mLessons == null) {
             return;
         }
@@ -157,7 +155,7 @@ public class CourseLessonsFragment extends ViewPagerBaseFragment {
                 mIsLoadLesson = false;
                 final LessonsResult lessonsResult = mActivity.parseJsonValue(
                         object, new TypeToken<LessonsResult>() {
-                });
+                        });
                 if (lessonsResult == null) {
                     return;
                 }

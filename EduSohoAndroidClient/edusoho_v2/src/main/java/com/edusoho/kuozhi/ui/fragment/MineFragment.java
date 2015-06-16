@@ -212,6 +212,7 @@ public class MineFragment extends BaseFragment {
         setUserStatus();
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.me_menu_search) {

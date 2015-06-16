@@ -8,18 +8,18 @@ import android.util.Log;
 /**
  * Created by howzhi on 14-6-10.
  */
-public class DownLoadStatusReceiver extends BroadcastReceiver {
+public class DownloadStatusReceiver extends BroadcastReceiver {
 
     //所发的Intent的名字
     public static final String ACTION = "android.intent.action.DOWNLOAD_STATUS";
 
     private StatusCallback mStatusCallback;
 
-    public DownLoadStatusReceiver() {
+    public DownloadStatusReceiver() {
         super();
     }
 
-    public DownLoadStatusReceiver(StatusCallback callback) {
+    public DownloadStatusReceiver(StatusCallback callback) {
         this();
         this.mStatusCallback = callback;
     }

@@ -8,6 +8,7 @@
     <dimen name="base_xx_large_size">24sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="x_large_font_size">24sp</dimen>
     <!--大字-->
     <dimen name="large_font_size">20sp</dimen>
     <!--中字-->

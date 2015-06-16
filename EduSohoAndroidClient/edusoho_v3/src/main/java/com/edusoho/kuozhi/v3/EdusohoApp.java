@@ -127,6 +127,7 @@ public class EdusohoApp extends Application {
 
     public Request<String> postUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
+
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, requestUrl.url, responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -144,9 +145,13 @@ public class EdusohoApp extends Application {
                     Map<String, String> map = response.headers;
                     String cookie = map.get("Set-Cookie");
                     String data = new String(response.data, "UTF-8");
-                    JSONObject jsonObject = new JSONObject(data);
-                    jsonObject.put("Cookie", cookie);
-                    return Response.success(jsonObject.toString(), HttpHeaderParser.parseCacheHeaders(response));
+                    if (TextUtils.isEmpty(cookie)) {
+                        return Response.success(data, HttpHeaderParser.parseCacheHeaders(response));
+                    } else {
+                        JSONObject jsonObject = new JSONObject(data);
+                        jsonObject.put("Cookie", cookie);
+                        return Response.success(jsonObject.toString(), HttpHeaderParser.parseCacheHeaders(response));
+                    }
                 } catch (UnsupportedEncodingException e) {
                     return Response.error(new ParseError(e));
                 } catch (JSONException e) {

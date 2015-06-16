@@ -18,12 +18,6 @@
             android:layout_marginTop="10dp"
             android:layout_height="100dp">
 
-            <ImageView
-                android:id="@+id/iv_login"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
-
             <RelativeLayout
                 android:id="@+id/circleLayout"
                 android:layout_width="73dp"
@@ -158,8 +152,8 @@
 
             </RelativeLayout>
 
-            <Button
-                android:id="@+id/btn_collection"
+            <RadioButton
+                android:id="@+id/radio3"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:button="@null"
@@ -173,8 +167,8 @@
                 android:textColor="@drawable/drawer_selector_font"
                 android:textSize="17sp" />
 
-            <Button
-                android:id="@+id/btnVip"
+            <RadioButton
+                android:id="@+id/radio4"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/transparent"
@@ -188,11 +182,11 @@
                 android:textColor="@drawable/drawer_selector_font"
                 android:textSize="17sp" />
 
-            <Button
-                android:id="@+id/btnSetting"
+            <RadioButton
+                android:id="@+id/radio5"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/drawer_selector_bg"
+                android:background="@color/transparent"
                 android:button="@null"
                 android:drawableLeft="@drawable/drawer_selector_5"
                 android:drawablePadding="15dp"

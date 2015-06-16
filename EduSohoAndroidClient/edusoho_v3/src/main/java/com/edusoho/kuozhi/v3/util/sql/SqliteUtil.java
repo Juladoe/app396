@@ -192,16 +192,12 @@ public class SqliteUtil extends SQLiteOpenHelper {
     public static class QueryCallBack {
         public void query(Cursor cursor) {
         }
-
-        ;
     }
 
     public static class QueryPaser<T> {
         public T parse(Cursor cursor) {
             return null;
         }
-
-        ;
 
         public boolean isSignle() {
             return false;

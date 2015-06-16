@@ -30,10 +30,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushConfig;
-import com.tencent.android.tpush.XGPushManager;
-import com.tencent.android.tpush.common.Constants;
 
 import org.apache.cordova.CordovaWebView;
 
@@ -252,22 +248,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 //    }
 
     public void registerXgPush() {
-        XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
-            @Override
-            public void onSuccess(Object data, int flag) {
-                Log.w(Constants.LogTag,
-                        "+++ register push success. token:" + data);
-            }
-
-            @Override
-            public void onFail(Object data, int errCode, String msg) {
-                Log.w(Constants.LogTag,
-                        "+++ register push fail. token:" + data
-                                + ", errCode:" + errCode + ",msg:"
-                                + msg);
-            }
-        });
+//        XGPushConfig.enableDebug(this, false);
+//        XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
+//            @Override
+//            public void onSuccess(Object data, int flag) {
+//                Log.w(Constants.LogTag,
+//                        "+++ register push success. token:" + data);
+//            }
+//
+//            @Override
+//            public void onFail(Object data, int errCode, String msg) {
+//                Log.w(Constants.LogTag,
+//                        "+++ register push fail. token:" + data
+//                                + ", errCode:" + errCode + ",msg:"
+//                                + msg);
+//            }
+//        });
     }
 
     @Override

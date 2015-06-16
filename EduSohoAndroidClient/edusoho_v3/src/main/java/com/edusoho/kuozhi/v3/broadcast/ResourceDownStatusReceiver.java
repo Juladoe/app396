@@ -14,13 +14,13 @@ public class ResourceDownStatusReceiver extends BroadcastReceiver {
     //所发的Intent的名字
     public static final String ACTION = "android.intent.action.RESOURCE_DOWNLOAD_STATUS";
 
-    private DownLoadStatusReceiver.StatusCallback mStatusCallback;
+    private DownloadStatusReceiver.StatusCallback mStatusCallback;
 
     public ResourceDownStatusReceiver() {
         super();
     }
 
-    public ResourceDownStatusReceiver(DownLoadStatusReceiver.StatusCallback callback) {
+    public ResourceDownStatusReceiver(DownloadStatusReceiver.StatusCallback callback) {
         this();
         this.mStatusCallback = callback;
     }

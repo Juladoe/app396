@@ -64,10 +64,23 @@
     <string name="font_find">&#xe604;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
+    <string name="font_downloading">&#xe608;</string>
+    <string name="font_stop_downloading">&#xe60c;</string>
+    <string name="font_wait_downloading">&#xe610;</string>
+    <string name="font_download_select">&#xe620;</string>
+    <string name="font_download_unselect">&#xe629;</string>
+    <string name="font_less">&#xe625;</string>
+    <string name="font_more">&#xe624;</string>
 
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>
     <string name="title_friends">校友</string>
+
+    <string name="select_all">全选</string>
+    <string name="select_all_cancel">取消</string>
+    <string name="download_finish">已缓存</string>
+    <string name="downloading">正在下载</string>
+    <string name="wait_download">等待下载</string>
 
     <string name="app_exit_msg">再按一次退出应用</string>
 

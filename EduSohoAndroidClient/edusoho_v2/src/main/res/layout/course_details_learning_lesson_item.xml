@@ -82,6 +82,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="3dp"
-            android:visibility="gone" />
+ />
     </RelativeLayout>
 </LinearLayout>
