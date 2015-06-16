@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -75,14 +76,18 @@ public class FriendFragment extends BaseFragment {
                     app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
 
                 } else if (i == R.id.item_add_lesson_friend) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("type","课程");
-                    app.mEngine.runNormalPluginWithBundle("AddNormalFriend", mActivity, bundle);
+                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
+                    Bundle arg = new Bundle();
+                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_LESSEN);
+                    chooseClassDialogFragment.setArguments(arg);
+                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
 
                 } else if (i == R.id.item_add_class_friend) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("type","班级");
-                    app.mEngine.runNormalPluginWithBundle("AddNormalFriend", mActivity, bundle);
+                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
+                    Bundle arg = new Bundle();
+                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_CLASS);
+                    chooseClassDialogFragment.setArguments(arg);
+                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
                 }
             }
         });
