@@ -42,8 +42,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 
 /**
@@ -64,7 +62,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     private List<LessonItem> mGroupItems = new ArrayList<>();
     private List<List<LessonItem>> mChildItems = new ArrayList<>();
     private DownloadLessonAdapter mAdapter;
-    private ScheduledExecutorService mThreadPoolExecutor;
     String lessonListJsonStr = "";
     String courseJsonStr = "";
 
@@ -75,7 +72,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_lesson_downloading);
         setBackMode(BACK, "下载列表");
         mContext = this;
-        mThreadPoolExecutor = Executors.newScheduledThreadPool(3);
         testdata();
         //initView();
     }
@@ -232,22 +228,10 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             }
 
             for (LessonItem item : mLessonList) {
-//                if (item.id == 537) {
-//                    downloadLesson(item);
-//                }
                 if (item.isSelected) {
                     downloadLesson(item);
                     item.isSelected = false;
                 }
-
-//                if (lessonItem.isSelected) {
-//                    mThreadPoolExecutor.execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            downloadLesson(lessonItem);
-//                        }
-//                    });
-//                }
             }
         }
     };
@@ -258,17 +242,21 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             if (btnSelectAll.getVisibility() == View.VISIBLE
                     && btnSelectAll.getText().equals(getString(R.string.select_all))) {
                 btnSelectAll.setText(getString(R.string.select_all_cancel));
-                for (LessonItem item : mLessonList) {
-                    if (item.m3u8Model == null) {
-                        item.isSelected = true;
+                for (List<LessonItem> itemList : mChildItems) {
+                    for (LessonItem item : itemList) {
+                        if (item.m3u8Model == null) {
+                            item.isSelected = true;
+                        }
                     }
                 }
             } else if (btnSelectAll.getVisibility() == View.VISIBLE
                     && btnSelectAll.getText().equals(getString(R.string.select_all_cancel))) {
                 btnSelectAll.setText(getString(R.string.select_all));
-                for (LessonItem item : mLessonList) {
-                    if (item.m3u8Model == null) {
-                        item.isSelected = false;
+                for (List<LessonItem> itemList : mChildItems) {
+                    for (LessonItem item : itemList) {
+                        if (item.m3u8Model == null) {
+                            item.isSelected = false;
+                        }
                     }
                 }
             }
