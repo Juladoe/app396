@@ -1,11 +1,13 @@
 package com.edusoho.kuozhi.v3.model.bal.course;
 
+import com.edusoho.kuozhi.v3.model.bal.Teacher;
+
 import java.io.Serializable;
 
 /**
- * Created by howzhi on 14-5-23.
+ * Created by JesseHuang on 15/6/14.
  */
-public class Course implements Serializable{
+public class Course implements Serializable {
     public String title;
     public String studentNum;
     public double rating;
@@ -38,6 +40,6 @@ public class Course implements Serializable{
     public String userId;
     public int vipLevelId;
     public String createdTime;
-//    public Teacher[] teachers;
+    public Teacher[] teachers;
     public String type;
 }

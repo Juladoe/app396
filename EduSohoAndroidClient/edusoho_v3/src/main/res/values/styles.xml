@@ -81,8 +81,8 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
         <item name="actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
-        <item name="actionMenuTextColor">@color/white</item>
-        <item name="android:actionMenuTextColor">@color/white</item>
+        <item name="actionMenuTextColor">@color/green_alpha</item>
+        <item name="android:actionMenuTextColor">@color/green_alpha</item>
         <item name="titleTextStyle">@style/CustomTitleTextStyle</item>
         <item name="android:actionBarStyle">@style/EdusohoActionBarStyle</item>
         <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>

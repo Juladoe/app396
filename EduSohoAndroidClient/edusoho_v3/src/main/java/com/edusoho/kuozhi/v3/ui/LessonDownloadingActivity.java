@@ -20,13 +20,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.model.bal.Course;
-import com.edusoho.kuozhi.v3.model.bal.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.UploadFile;
 import com.edusoho.kuozhi.v3.model.bal.LessonsResult;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -94,7 +94,9 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             }
             M3U8DbModle m3u8Model = M3U8Util.queryM3U8Modle(
                     mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
-            mAdapter.updateDownloadSign(lessonId, m3u8Model);
+            if (mAdapter != null) {
+                mAdapter.updateDownloadSign(lessonId, m3u8Model);
+            }
         }
     };
 
@@ -102,7 +104,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
         try {
             url.setParams(new String[]{
-                    "courseId", "1"
+                    "courseId", "136"
             });
 
             this.ajaxPostWithLoading(url, new Response.Listener<String>() {
@@ -490,7 +492,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             GroupPanel groupPanel;
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_lesson_group, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_course_group, null);
                 groupPanel = new GroupPanel(convertView);
                 convertView.setTag(groupPanel);
             } else {
@@ -604,6 +606,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mDownloadStatusReceiver);
+        if (mDownloadStatusReceiver != null) {
+            unregisterReceiver(mDownloadStatusReceiver);
+        }
     }
 }

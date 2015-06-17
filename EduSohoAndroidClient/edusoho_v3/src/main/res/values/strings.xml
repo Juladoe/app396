@@ -106,6 +106,18 @@
         <item>设置</item>
     </string-array>
 
+    <string-array name="exitcourse_array">
+        <item>老师服务态度不好</item>
+        <item>课程内容质量差</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="offline_array">
+        <item>仅wifi</item>
+        <item>仅wifi,3G/4G</item>
+        <item>从不</item>
+    </string-array>
+
     <string name="drawer_items_learn">我的学习</string>
     <string name="drawer_items_download">我的下载</string>
     <string name="drawer_items_buy_vip">开通会员</string>

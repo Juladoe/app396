@@ -120,7 +120,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         //我的下载
                         RequestUrl url = app.bindUrl(Const.COURSE, true);
                         url.setParams(new String[]{
-                                "courseId", "1"
+                                "courseId", "136"
                         });
                         mActivity.ajaxPost(url, new Response.Listener<String>() {
                             @Override
@@ -129,7 +129,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
                                 mActivity.app.mEngine.runNormalPlugin("LessonDownloadingActivity", mContext, new PluginRunCallback() {
                                     @Override
                                     public void setIntentDate(Intent startIntent) {
-
                                         startIntent.putExtra(LessonDownloadingActivity.COURSE_JSON, result);
                                     }
                                 });
@@ -145,6 +144,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         break;
                     case 2:
                         //开通会员
+                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity", mContext, null);
                         break;
                     case 3:
                         //我的收藏

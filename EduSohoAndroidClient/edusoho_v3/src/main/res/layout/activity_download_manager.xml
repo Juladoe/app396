@@ -1,6 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bottom_edge_height"
+        android:src="@drawable/login_line_bg"
+        android:id="@+id/top_line"
+        android:layout_alignParentTop="true" />
+
+    <TabHost
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tabHost"
+        android:layout_below="@+id/top_line"
+        android:layout_above="@+id/download_device_info"
+        android:layout_gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:src="@drawable/login_tab_bg"
+                        android:scaleType="fitXY" />
+
+                    <ExpandableListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/el_downloaded"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_alignParentTop="true"
+                        android:groupIndicator="@null"
+                        android:dividerHeight="0dp"
+                        android:childDivider="@android:color/white"
+                        android:layout_above="@+id/line" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:src="@drawable/login_tab_bg"
+                        android:scaleType="fitXY" />
+
+                    <ExpandableListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/el_downloading"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_alignParentTop="true"
+                        android:groupIndicator="@null"
+                        android:dividerHeight="0dp"
+                        android:childDivider="@android:color/white"
+                        android:layout_above="@+id/line" />
+                </LinearLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+    <TextView
+        android:id="@+id/download_device_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_black_normal"
+        android:gravity="center"
+        android:textColor="@color/base_white_normal"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/base_size"
+        android:alpha="0.54" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:id="@+id/download_tools_layout">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@drawable/download_tool_line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@android:color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:text="@string/select_all"
+                android:gravity="center"
+                android:textColor="@color/green_alpha"
+                android:clickable="true"
+                android:textSize="@dimen/medium_font_size"
+                android:id="@+id/tv_select_all" />
+
+            <ImageView
+                android:layout_width="2px"
+                android:layout_height="16dp"
+                android:src="@drawable/login_line_bg"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:text="删除"
+                android:gravity="center"
+                android:textColor="@color/green_alpha"
+                android:clickable="true"
+                android:textSize="@dimen/medium_font_size"
+                android:id="@+id/tv_delete" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</RelativeLayout>

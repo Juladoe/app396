@@ -48,17 +48,14 @@ public class RegisterActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         setBackMode(BACK, "注册");
-        initViews();
+        initView();
     }
 
-    private void initViews() {
+    private void initView() {
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
-        tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("手机注册",
-                null).setContent(R.id.tab1));
-
-        tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("邮箱注册")
-                .setContent(R.id.tab2));
+        tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("手机注册").setContent(R.id.tab1));
+        tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("邮箱注册").setContent(R.id.tab2));
         TabWidget tabWidget = tabHost.getTabWidget();
 
         for (int i = 0; i < tabWidget.getChildCount(); i++) {

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.util.Log;
+import android.view.animation.AccelerateInterpolator;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.google.gson.reflect.TypeToken;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -329,5 +331,55 @@ public class AppUtil {
         }
 
         return String.valueOf(l) + "秒前";
+    }
+
+    /**
+     * 格式化容量
+     *
+     * @param totalSize
+     * @return
+     */
+    public static String formatSize(long totalSize) {
+        Log.d(null, "totalSize->" + totalSize);
+        float kb = 1024.0f;
+        if (totalSize < (kb * kb)) {
+            return String.format("%.1f%s", (totalSize / kb), "KB");
+        }
+
+        if (totalSize < (kb * kb * kb)) {
+            return String.format("%.1f%s", (totalSize / (kb * kb)), "M");
+        }
+
+        return String.format("%.1f%s", (totalSize / (kb * kb * kb)), "G");
+    }
+
+    public static ObjectAnimator animForHeight(Object view, int start, int end, int time) {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(
+                view, "height", start, end);
+        objectAnimator.setDuration(time);
+        objectAnimator.setInterpolator(new AccelerateInterpolator());
+        objectAnimator.start();
+        return objectAnimator;
+    }
+
+    public static String convertCNTime(String time) {
+        String[] times = time.split(":");
+        String hour = "";
+        String min = times[0];
+        String sec = times[1];
+
+        if (Integer.valueOf(min) / 60 > 1) {
+            hour = Integer.valueOf(min) / 60 + "";
+        } else {
+            if (min.length() > 1 && min.substring(0, 1).equals("0")) {
+                min = min.substring(1, 2);
+            }
+        }
+
+        if (hour.length() > 0) {
+            return String.format("%s小时%s分%s秒", hour, min, sec);
+        } else {
+            return String.format("%s分%s秒", min, sec);
+        }
     }
 }

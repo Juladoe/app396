@@ -1,4 +1,8 @@
-package com.edusoho.kuozhi.v3.model.bal;
+package com.edusoho.kuozhi.v3.model.bal.course;
+
+import com.edusoho.kuozhi.v3.model.bal.Member;
+import com.edusoho.kuozhi.v3.model.bal.Vip;
+import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.io.Serializable;
 
