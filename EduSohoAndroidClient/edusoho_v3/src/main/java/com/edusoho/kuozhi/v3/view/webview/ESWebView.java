@@ -126,8 +126,8 @@ public class ESWebView extends FrameLayout {
         if (mWebView.pluginManager != null) {
             mWebView.pluginManager.onDestroy();
         }
-        mWebView.handleDestroy();
         mWebView.removeAllViews();
+        mWebView.handleDestroy();
         mWebView.destroy();
         mRequestManager.destory();
     }

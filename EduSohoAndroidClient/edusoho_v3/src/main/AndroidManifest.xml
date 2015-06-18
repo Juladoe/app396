@@ -135,17 +135,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true" />
 
-        <!-- 【必须】 exported设置为true -->
-        <activity
-            android:name="com.tencent.android.tpush.XGPushActivity"
-            android:theme="@android:style/Theme.Translucent"
-            android:exported="true">
-            <intent-filter>
-                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
-                <action android:name="android.intent.action" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".v3.ui.AddPhoneContactActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -160,6 +149,23 @@
             android:name=".v3.ui.SearchFriendActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.WebViewActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/AppThemeNoActionBar"
+            android:screenOrientation="portrait" />
+
+        <!-- 【必须】 exported设置为true -->
+        <activity
+            android:name="com.tencent.android.tpush.XGPushActivity"
+            android:theme="@android:style/Theme.Translucent"
+            android:exported="true">
+            <intent-filter>
+                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
+                <action android:name="android.intent.action" />
+            </intent-filter>
+        </activity>
 
         <service android:name="com.edusoho.kuozhi.v3.service.EdusohoMainService" />
 
