@@ -138,11 +138,11 @@ public class FriendFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.friends_search) {
-            //TODO 跳转到搜索页面
-            System.out.println("搜索");
-        } else if (item.getItemId() == R.id.friends_news) {
+        if (item.getItemId() == R.id.friends_news) {
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
+//        }else if (item.getItemId() == R.id.friends_search) {
+//            //TODO 跳转到搜索页面 暂时不做
+//            System.out.println("搜索");
         }
         return super.onOptionsItemSelected(item);
     }
