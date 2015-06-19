@@ -14,7 +14,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,17 +23,6 @@ import org.json.JSONObject;
  * Created by JesseHuang on 15/6/2.
  */
 public class MenuClickPlugin extends CordovaPlugin {
-    @Override
-    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        return super.execute(action, args, callbackContext);
-    }
-
-
-    @Override
-    public boolean execute(String action, String rawArgs, CallbackContext callbackContext) throws JSONException {
-        return super.execute(action, rawArgs, callbackContext);
-    }
-
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         Log.d("MenuClickPlugin-->", "MenuClickPlugin");
