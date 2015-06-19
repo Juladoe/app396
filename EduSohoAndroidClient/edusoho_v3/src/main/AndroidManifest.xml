@@ -125,7 +125,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.FriendNewsActivity"
+            android:name=".v3.ui.friend.FriendNewsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
@@ -147,17 +147,27 @@
         </activity>
 
         <activity
-            android:name=".v3.ui.AddPhoneContactActivity"
+            android:name=".v3.ui.friend.AddPhoneContactActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.AddNormalFriendActivity"
+            android:name=".v3.ui.friend.AddNormalFriendActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.SearchFriendActivity"
+            android:name=".v3.ui.friend.SearchFriendActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.payCourse.PayCourseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 

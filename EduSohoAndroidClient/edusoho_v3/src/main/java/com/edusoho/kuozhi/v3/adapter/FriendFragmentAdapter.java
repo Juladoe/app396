@@ -61,6 +61,7 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 headHolder.addPhoneFriends = (LinearLayout) v.findViewById(R.id.item_add_phone_friend);
                 headHolder.addLessonFriends = (LinearLayout) v.findViewById(R.id.item_add_lesson_friend);
                 headHolder.addClassFriends = (LinearLayout) v.findViewById(R.id.item_add_class_friend);
+                headHolder.qiqiuyuSever = (LinearLayout) v.findViewById(R.id.item_service_qiqiuyu);
                 v.setTag(headHolder);
                 setCacheView(0,v);
             }else {
@@ -71,6 +72,7 @@ public class FriendFragmentAdapter extends BaseAdapter{
             headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
             headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
             headHolder.addClassFriends.setOnClickListener(mOnClickListener);
+            headHolder.qiqiuyuSever.setOnClickListener(mOnClickListener);
 
         }else{
             final ItemHolder itemHolder;
@@ -148,6 +150,7 @@ public class FriendFragmentAdapter extends BaseAdapter{
         LinearLayout addPhoneFriends;
         LinearLayout addLessonFriends;
         LinearLayout addClassFriends;
+        LinearLayout qiqiuyuSever;
     }
 
     private class ItemHolder{
