@@ -91,7 +91,7 @@ public class FriendFragment extends BaseFragment {
                     chooseClassDialogFragment.setArguments(arg);
                     chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
                 } else if (i == R.id.item_service_qiqiuyu){
-                    
+
                 }
             }
         });

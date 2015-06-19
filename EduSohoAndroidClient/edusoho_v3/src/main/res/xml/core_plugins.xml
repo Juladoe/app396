@@ -120,4 +120,9 @@
         package="com.edusoho.kuozhi.v3.ui.FragmentPageActivity"
         version="1.0" />
 
+    <plugin
+        name="WebViewActivity"
+        package="com.edusoho.kuozhi.v3.ui.WebViewActivity"
+        version="1.0" />
+
 </plugins>

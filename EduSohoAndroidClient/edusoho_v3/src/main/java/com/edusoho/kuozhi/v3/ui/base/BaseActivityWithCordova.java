@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +16,6 @@ import java.util.concurrent.Executors;
 public abstract class BaseActivityWithCordova extends BaseActivity implements CordovaInterface {
 
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
-    protected CordovaWebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +25,6 @@ public abstract class BaseActivityWithCordova extends BaseActivity implements Co
     @Override
     protected void onResume() {
         super.onResume();
-        initCordovaWebView();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (webView != null) {
-            webView.handleDestroy();
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -62,8 +51,4 @@ public abstract class BaseActivityWithCordova extends BaseActivity implements Co
     public ExecutorService getThreadPool() {
         return threadPool;
     }
-
-    public abstract void initCordovaWebView();
-
-
 }
