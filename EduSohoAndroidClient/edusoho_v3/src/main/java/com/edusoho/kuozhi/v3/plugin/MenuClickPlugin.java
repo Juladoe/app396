@@ -5,12 +5,16 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,9 +25,19 @@ import org.json.JSONObject;
  */
 public class MenuClickPlugin extends CordovaPlugin {
     @Override
+    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+        return super.execute(action, args, callbackContext);
+    }
+
+
+    @Override
+    public boolean execute(String action, String rawArgs, CallbackContext callbackContext) throws JSONException {
+        return super.execute(action, rawArgs, callbackContext);
+    }
+
+    @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         Log.d("MenuClickPlugin-->", "MenuClickPlugin");
-
         if (action.equals("openDrawer")) {
             String message = args.getString(0);
             if (message.equals("open")) {
@@ -50,8 +64,12 @@ public class MenuClickPlugin extends CordovaPlugin {
                 result = new JSONObject();
             }
             callbackContext.success(result);
+        } else if (action.equals("saveUserToken")) {
+            BaseActivity baseActivity = (BaseActivity) EdusohoApp.app.mActivity;
+            EdusohoApp.app.loginUser = baseActivity.parseJsonValue(args.getJSONObject(0).getString("user"), new TypeToken<User>() {
+            });
+            EdusohoApp.app.token = args.getString(1);
         }
-
         return super.execute(action, args, callbackContext);
     }
 }
