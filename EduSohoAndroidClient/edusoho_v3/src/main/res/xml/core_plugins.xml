@@ -57,7 +57,7 @@
 
     <plugin
         name="AddPhoneContactActivity"
-        package="com.edusoho.kuozhi.v3.ui.AddPhoneContactActivity"
+        package="com.edusoho.kuozhi.v3.ui.friend.AddPhoneContactActivity"
         version="1.0" />
 
     <plugin
@@ -82,17 +82,17 @@
 
     <plugin
         name="FriendNewsActivity"
-        package="com.edusoho.kuozhi.v3.ui.FriendNewsActivity"
+        package="com.edusoho.kuozhi.v3.ui.friend.FriendNewsActivity"
         version="1.0" />
 
     <plugin
         name="AddNormalFriend"
-        package="com.edusoho.kuozhi.v3.ui.AddNormalFriendActivity"
+        package="com.edusoho.kuozhi.v3.ui.friend.AddNormalFriendActivity"
         version="1.0" />
 
     <plugin
         name="SearchFriendActivity"
-        package="com.edusoho.kuozhi.v3.ui.SearchFriendActivity"
+        package="com.edusoho.kuozhi.v3.ui.friend.SearchFriendActivity"
         version="1.0" />
 
     <plugin
@@ -103,6 +103,21 @@
     <plugin
         name="DownloadManagerActivity"
         package="com.edusoho.kuozhi.v3.ui.DownloadManagerActivity"
+        version="1.0" />
+
+    <plugin
+        name="PayCourseActivity"
+        package="com.edusoho.kuozhi.v3.ui.payCourse.PayCourseActivity"
+        version="1.0" />
+
+    <plugin
+        name="AlipayFragment"
+        package="com.edusoho.kuozhi.v3.ui.payCourse.AlipayFragment"
+        version="1.0" />
+
+    <plugin
+        name="FragmentPageActivity"
+        package="com.edusoho.kuozhi.v3.ui.FragmentPageActivity"
         version="1.0" />
 
     <plugin

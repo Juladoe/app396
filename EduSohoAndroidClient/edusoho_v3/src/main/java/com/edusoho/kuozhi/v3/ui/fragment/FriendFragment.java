@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -88,6 +90,8 @@ public class FriendFragment extends BaseFragment {
                     arg.putInt("Type",ChooseClassDialogFragment.TYPE_CLASS);
                     chooseClassDialogFragment.setArguments(arg);
                     chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
+                } else if (i == R.id.item_service_qiqiuyu){
+
                 }
             }
         });

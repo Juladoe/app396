@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui;
+package com.edusoho.kuozhi.v3.ui.friend;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
