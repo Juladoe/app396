@@ -61,16 +61,6 @@ public class ShareUtil {
         return this;
     }
 
-    private ArrayList<ListData> addWechatPlat(ArrayList<ListData> list) {
-        list.add(new ListData(
-                mContext.getResources().getDrawable(R.drawable.logo_wechat), "Wechat", mContext));
-        list.add(new ListData(
-                mContext.getResources().getDrawable(R.drawable.logo_wechatmoments), "WechatMoments", mContext));
-        list.add(new ListData(
-                mContext.getResources().getDrawable(R.drawable.logo_wechatfavorite), "WechatFavorite", mContext));
-        return list;
-    }
-
     private boolean filterPlat(String name) {
         String[] filters = mContext.getResources().getStringArray(R.array.shard_filter);
         for (String filter : filters) {
@@ -96,7 +86,7 @@ public class ShareUtil {
             list.add(data);
         }
 
-        list = addWechatPlat(list);
+        //list = addWechatPlat(list);
         Collections.sort(list, new Comparator<ListData>() {
             @Override
             public int compare(ListData lhs, ListData rhs) {

@@ -57,6 +57,12 @@ public class MenuClickPlugin extends CordovaPlugin {
             EdusohoApp.app.loginUser = baseActivity.parseJsonValue(args.getJSONObject(0).getString("user"), new TypeToken<User>() {
             });
             EdusohoApp.app.token = args.length() > 1 ? args.getString(1) : "";
+        } else if (action.equals("share")) {
+            String id = args.getString(0);
+            String title = args.getString(1);
+            String about = args.getString(2);
+            String pic = args.getString(3);
+            new ShareTool(cordova.getActivity(), id, title, about, pic).shardCourse();
         }
         return super.execute(action, args, callbackContext);
     }

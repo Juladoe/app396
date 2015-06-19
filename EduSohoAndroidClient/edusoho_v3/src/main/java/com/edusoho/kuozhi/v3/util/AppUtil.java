@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -22,6 +23,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -381,5 +383,23 @@ public class AppUtil {
         } else {
             return String.format("%s分%s秒", min, sec);
         }
+    }
+
+    public static String coverCourseAbout(String about) {
+        return about.replaceAll("<[^>]+>", "");
+    }
+
+    public static boolean saveBitmap2File(Bitmap bmp, String filename) {
+        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
+        int quality = 100;
+        OutputStream stream = null;
+        try {
+            stream = new FileOutputStream(filename);
+            stream.flush();
+            stream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bmp.compress(format, quality, stream);
     }
 }

@@ -84,7 +84,7 @@
 
     <string name="app_exit_msg">再按一次退出应用</string>
 
-
+    <string name="app_id">wx91c11946311906a3</string>
     <!-- 网校提示字符 -->
     <string name="testpaper_reviewing">请耐心等待老师批阅，老师批阅后可查看全部考试结果</string>
     <string name="course_no_teacher">该课程尚未设置教师</string>
