@@ -56,7 +56,7 @@ public class MenuClickPlugin extends CordovaPlugin {
             BaseActivity baseActivity = (BaseActivity) EdusohoApp.app.mActivity;
             EdusohoApp.app.loginUser = baseActivity.parseJsonValue(args.getJSONObject(0).getString("user"), new TypeToken<User>() {
             });
-            EdusohoApp.app.token = args.getString(1);
+            EdusohoApp.app.token = args.length() > 1 ? args.getString(1) : "";
         }
         return super.execute(action, args, callbackContext);
     }
