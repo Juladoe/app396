@@ -7,11 +7,20 @@
             <!-- shape的颜色，支持渐变 -->
             <gradient
                 android:angle="270"
-                android:centerColor="@android:color/white"
+                android:centerColor="@color/grey_cccccc"
                 android:centerY="0.45"
-                android:endColor="@android:color/white"
-                android:startColor="@android:color/white" />
+                android:endColor="@color/grey_cccccc"
+                android:startColor="@color/grey_cccccc" />
+        </shape>
+    </item>
 
+    <item
+        android:top="0dp"
+        android:bottom="1dp"
+        android:left="0dp"
+        android:right="0dp">
+        <shape>
+            <solid android:color="@android:color/white" />
         </shape>
     </item>
 

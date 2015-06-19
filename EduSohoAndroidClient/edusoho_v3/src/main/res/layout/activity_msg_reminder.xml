@@ -4,12 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bottom_edge_height"
-        android:src="@drawable/login_line_bg" />
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
@@ -17,25 +12,27 @@
 
         <TextView
             android:id="@+id/tvMsgNotify"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alpha="0.87"
             android:padding="12dp"
-            android:layout_weight="1"
             android:background="@android:color/white"
             android:text="@string/setting_new_msg_notify"
+            android:layout_alignParentLeft="true"
             android:textColor="@android:color/black"
             android:textSize="@dimen/medium_font_size" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
             android:button="@null"
+            android:background="@drawable/set_check_bg"
             android:layout_marginRight="12dp"
-            android:background="@drawable/set_check_bg" />
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="match_parent"
