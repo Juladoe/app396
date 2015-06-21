@@ -27,6 +27,8 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.lang.ref.WeakReference;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -73,7 +75,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_navigation_drawer);
-        mHandler = new DrawerHandler();
+        mHandler = new DrawerHandler(this);
     }
 
     @Override
@@ -291,23 +293,33 @@ public class FragmentNavigationDrawer extends BaseFragment {
         }
     }
 
-    private class DrawerHandler extends Handler {
+    private static class DrawerHandler extends Handler {
+        private WeakReference<FragmentNavigationDrawer> mWeakReference;
+
+        public DrawerHandler(FragmentNavigationDrawer fragment) {
+            mWeakReference = new WeakReference<>(fragment);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case OPEN_DRAWER:
-                    mDrawerLayout.openDrawer(Gravity.LEFT);
-                    break;
-                case CLOSE_DRAWER:
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
-                    //通知主页面跳到发现
-                    app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-                    break;
-                case THIRD_PARTY_LOGIN:
-                    setLoginStatus(Const.THIRD_PARTY_LOGIN_SUCCESS);
-                    tvNickname.setText(mActivity.app.loginUser.nickname);
-                    ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
-                    break;
+            final FragmentNavigationDrawer mFragment = mWeakReference.get();
+            if (mFragment != null) {
+                switch (msg.what) {
+                    case OPEN_DRAWER:
+                        mFragment.mDrawerLayout.openDrawer(Gravity.LEFT);
+                        break;
+                    case CLOSE_DRAWER:
+                        mFragment.mDrawerLayout.closeDrawer(Gravity.LEFT);
+                        //通知主页面跳到发现
+                        mFragment.app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+                        break;
+                    case THIRD_PARTY_LOGIN:
+                        mFragment.setLoginStatus(Const.THIRD_PARTY_LOGIN_SUCCESS);
+                        mFragment.tvNickname.setText(mFragment.mActivity.app.loginUser.nickname);
+                        ImageLoader.getInstance().displayImage(mFragment.app.loginUser.mediumAvatar,
+                                mFragment.civAvatar, mFragment.mActivity.app.mOptions);
+                        break;
+                }
             }
         }
     }

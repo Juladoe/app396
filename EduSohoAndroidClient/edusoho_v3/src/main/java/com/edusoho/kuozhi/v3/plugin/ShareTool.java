@@ -89,8 +89,6 @@ public class ShareTool {
 
             }
         });
-
-
     }
 
     private boolean shardToMM(Context context, int type) {
