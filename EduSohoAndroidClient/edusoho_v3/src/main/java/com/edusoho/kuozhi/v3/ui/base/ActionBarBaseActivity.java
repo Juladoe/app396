@@ -33,7 +33,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onCreate(savedInstanceState);
         app.addTask(getLocalClassName(), this);
         mActionBar = getSupportActionBar();
-        regPushMsg();
+        app.registMsgSource(this);
     }
 
     public void setBackMode(String backTitle, String title) {
@@ -77,8 +77,10 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         XGPushManager.onActivityStoped(this);
     }
 
-    protected void regPushMsg() {
-        app.registMsgSource(this);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        app.unRegistMsgSource(this);
     }
 
     @Override

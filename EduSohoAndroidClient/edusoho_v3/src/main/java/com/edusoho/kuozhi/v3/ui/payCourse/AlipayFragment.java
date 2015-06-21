@@ -9,6 +9,7 @@ import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import java.lang.reflect.Method;
@@ -30,7 +31,7 @@ public class AlipayFragment extends BaseFragment {
 
     private static Pattern urlPat = Pattern.compile("objc://([\\w\\W]+)\\?([\\w]+)", Pattern.DOTALL);
 
-//    @Override
+    //    @Override
     public String getTitle() {
         return "alipay";
     }
@@ -47,7 +48,7 @@ public class AlipayFragment extends BaseFragment {
 
         Bundle bundle = getArguments();
         if (bundle == null) {
-            mActivity.longToast("错误的支付页面网址");
+            CommonUtil.longToast(mContext, "错误的支付页面网址");
             return;
         }
 
@@ -61,7 +62,7 @@ public class AlipayFragment extends BaseFragment {
 
         webView = (WebView) view.findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -73,7 +74,7 @@ public class AlipayFragment extends BaseFragment {
                     callMethod(callBack, param);
                     return;
                 }
-                if (url.startsWith(mHost) && ! isEqualsURl(mPayurl, url)) {
+                if (url.startsWith(mHost) && !isEqualsURl(mPayurl, url)) {
                     app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, PayCourseActivity.class);
                     mActivity.finish();
                     return;
@@ -83,8 +84,7 @@ public class AlipayFragment extends BaseFragment {
         webView.loadUrl(mPayurl);
     }
 
-    private void callMethod(String name, String params)
-    {
+    private void callMethod(String name, String params) {
         Log.d(null, "callMethod->" + name + "  " + params);
         try {
             Method method = getClass().getMethod(name, new Class[]{String.class});
@@ -94,16 +94,14 @@ public class AlipayFragment extends BaseFragment {
         }
     }
 
-    public void alipayCallback(String status)
-    {
+    public void alipayCallback(String status) {
         if (Const.RESULT_SUCCESS.equals(status)) {
             app.sendMsgToTarget(PayCourseActivity.PAY_SUCCESS, null, PayCourseActivity.class);
             mActivity.finish();
         }
     }
 
-    private boolean isEqualsURl(String firstUrl, String secUrl)
-    {
+    private boolean isEqualsURl(String firstUrl, String secUrl) {
         int tagIndex1 = firstUrl.indexOf("?");
         if (tagIndex1 != -1) {
             firstUrl = firstUrl.substring(0, tagIndex1);

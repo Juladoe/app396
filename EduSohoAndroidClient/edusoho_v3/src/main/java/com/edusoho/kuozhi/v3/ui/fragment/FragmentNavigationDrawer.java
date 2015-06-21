@@ -142,6 +142,17 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         break;
                     case 3:
                         //我的收藏
+                        //测试支付
+//                        app.mEngine.runNormalPluginForResult(
+//                                "PayCourseActivity", mActivity, 6, new PluginRunCallback() {
+//                                    @Override
+//                                    public void setIntentDate(Intent startIntent) {
+//                                        startIntent.putExtra("price", 0.01d);
+//                                        startIntent.putExtra("title", "学习卡体验课程");
+//                                        startIntent.putExtra("payurl", "学习卡体验课程");
+//                                        startIntent.putExtra("courseId", 471);
+//                                    }
+//                                });
                         break;
                     case 4:
                         //我的发表

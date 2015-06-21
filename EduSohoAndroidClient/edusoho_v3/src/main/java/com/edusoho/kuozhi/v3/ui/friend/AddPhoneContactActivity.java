@@ -117,9 +117,7 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
         }
         mAddAdapter.addItems(mTempList);
         phoneCursor.close();
-
     }
-
 
     public class AddPhoneContactAdapter extends BaseAdapter {
 

@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -221,10 +220,6 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         return value;
-    }
-
-    public void longToast(String title) {
-        Toast.makeText(mContext, title, Toast.LENGTH_SHORT).show();
     }
 
     private boolean handleRequest(String meta) throws JSONException {

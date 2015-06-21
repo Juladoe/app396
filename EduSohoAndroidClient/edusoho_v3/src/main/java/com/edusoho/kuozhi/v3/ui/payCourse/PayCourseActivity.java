@@ -24,13 +24,14 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by howzhi on 14-9-4.
- *
+ * <p/>
  * 需要传递传递参数：
  * "price"
  * "title"
@@ -38,7 +39,7 @@ import com.google.gson.reflect.TypeToken;
  * "courseId"
  */
 public class PayCourseActivity extends ActionBarBaseActivity
-        implements MessageEngine.MessageCallback{
+        implements MessageEngine.MessageCallback {
 
     private TextView mPriceView;
     private TextView mTitleView;
@@ -59,7 +60,6 @@ public class PayCourseActivity extends ActionBarBaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pay_course);
-        app.registMsgSource(this);
         initView();
     }
 
@@ -69,7 +69,7 @@ public class PayCourseActivity extends ActionBarBaseActivity
         switch (type) {
             case PAY_SUCCESS:
                 Log.d(null, "pay->success");
-                longToast("支付完成");
+                CommonUtil.longToast(mActivity, "支付完成");
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 setResult(5);
                 /**原文件中 CourseDetailsActivity.PAY_COURSE_SUCCESS 为 0005**/
@@ -94,7 +94,7 @@ public class PayCourseActivity extends ActionBarBaseActivity
 
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.show();
-        ajaxPost(url,new Response.Listener<String>() {
+        ajaxPost(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();
@@ -103,17 +103,17 @@ public class PayCourseActivity extends ActionBarBaseActivity
                         }
                 );
                 if (member == null) {
-                    mActivity.longToast("支付课程失败!");
+                    CommonUtil.longToast(mActivity, "支付课程失败!");
                     return;
                 }
-                longToast("支付完成");
+                CommonUtil.longToast(mActivity, "支付完成");
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 setResult(5);
                 /**原文件中 CourseDetailsActivity.PAY_COURSE_SUCCESS 为 0005**/
 //                setResult(CourseDetailsActivity.PAY_COURSE_SUCCESS);
                 finish();
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -132,8 +132,7 @@ public class PayCourseActivity extends ActionBarBaseActivity
         return messageTypes;
     }
 
-    private void initView()
-    {
+    private void initView() {
         Intent data = getIntent();
         mTitle = data.getStringExtra("title");
         mCourseId = data.getIntExtra("courseId", 0);
@@ -156,7 +155,7 @@ public class PayCourseActivity extends ActionBarBaseActivity
             public void onClick(View view) {
                 String code = mCodeView.getText().toString();
                 if (TextUtils.isEmpty(code)) {
-                    longToast("请输入优惠码！");
+                    CommonUtil.longToast(mActivity, "请输入优惠码!");
                     return;
                 }
                 checkCode(code);
@@ -166,25 +165,20 @@ public class PayCourseActivity extends ActionBarBaseActivity
         mPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final LoadDialog loadDialog = LoadDialog.create(mActivity);
-                loadDialog.show();
-
                 RequestUrl url = app.bindUrl(Const.PAYCOURSE, true);
                 url.setParams(new String[]{
                         "payment", "alipay",
                         "courseId", mCourseId + ""
                 });
-                ajaxPost(url,new Response.Listener<String>() {
+                ajaxPostWithLoading(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-                        loadDialog.dismiss();
                         final PayStatus payStatus = parseJsonValue(
                                 response, new TypeToken<PayStatus>() {
                                 });
 
                         if (payStatus == null) {
-                            longToast("购买课程失败！！");
+                            CommonUtil.longToast(mActivity, "购买课程失败!");
                             return;
                         }
                         app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
@@ -196,33 +190,28 @@ public class PayCourseActivity extends ActionBarBaseActivity
                             }
                         });
                     }
-                },new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                });
+                }, null, "");
 
             }
         });
     }
 
-    private void checkCode(String code)
-    {
+    private void checkCode(String code) {
         RequestUrl requestUrl = app.bindUrl(Const.COURSE_CODE, false);
-        requestUrl.setParams(new String[] {
-                Const.COURSE_ID,  mCourseId + "",
+        requestUrl.setParams(new String[]{
+                Const.COURSE_ID, mCourseId + "",
                 "type", "course",
                 "code", code
         });
         setProgressBarIndeterminateVisibility(true);
-        ajaxPost(requestUrl,new Response.Listener<String>() {
+        ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
                 setProgressBarIndeterminateVisibility(false);
                 CourseCode result = parseJsonValue(
-                        response, new TypeToken<CourseCode>(){});
+                        response, new TypeToken<CourseCode>() {
+                        });
                 if (result != null) {
                     if (result.useable == CourseCode.Code.yes) {
                         setColorText(
@@ -241,15 +230,15 @@ public class PayCourseActivity extends ActionBarBaseActivity
                                 getResources().getColor(R.color.pay_course_end_price)
                         );
                         mCodeCheckBtn.setEnabled(false);
-                        longToast("优惠:" + result.decreaseAmount);
+                        CommonUtil.longToast(mActivity, "优惠:" + result.decreaseAmount);
                     } else {
-                        longToast(result.message);
+                        CommonUtil.longToast(mActivity, result.message);
                     }
                 } else {
-                    longToast("验证错误！");
+                    CommonUtil.longToast(mActivity, "验证错误");
                 }
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -257,16 +246,14 @@ public class PayCourseActivity extends ActionBarBaseActivity
         });
     }
 
-    private void setViewData()
-    {
+    private void setViewData() {
         setColorText(mPriceView, "价格:", mPrice + "元", getResources().getColor(R.color.pay_course_old_price));
         setColorText(mCardEndPrice, "优惠后价格:", mPrice + "元", getResources().getColor(R.color.pay_course_end_price));
         setColorText(mCardNumber, "优惠:", "0.00元", getResources().getColor(R.color.pay_course_end_price));
         mTitleView.setText("课程名称：  " + mTitle);
     }
 
-    private void setColorText(TextView view, String base, String text, int color)
-    {
+    private void setColorText(TextView view, String base, String text, int color) {
         StringBuilder oldText = new StringBuilder(base);
         int start = oldText.length();
         oldText.append(text);

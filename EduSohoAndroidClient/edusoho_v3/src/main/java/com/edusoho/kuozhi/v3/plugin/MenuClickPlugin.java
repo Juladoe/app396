@@ -63,6 +63,19 @@ public class MenuClickPlugin extends CordovaPlugin {
             String about = args.getString(2);
             String pic = args.getString(3);
             new ShareTool(cordova.getActivity(), id, title, about, pic).shardCourse();
+        } else if (action.equals("payCourse")) {
+            final double price = args.getDouble(0);
+            final int courseId = args.getInt(1);
+            final String title = args.getString(2);
+            EdusohoApp.app.mEngine.runNormalPluginForResult(
+                    "PayCourseActivity", cordova.getActivity(), 6, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra("price", price);
+                            startIntent.putExtra("title", title);
+                            startIntent.putExtra("courseId", courseId);
+                        }
+                    });
         }
         return super.execute(action, args, callbackContext);
     }
