@@ -301,7 +301,6 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             total = blockCount * blockSize;
             free = blockSize * availableBlocks;
         }
-
         return new long[]{total, free};
     }
 

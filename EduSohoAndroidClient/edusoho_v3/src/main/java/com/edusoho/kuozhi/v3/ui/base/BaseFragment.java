@@ -47,7 +47,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         if (app == null) {
             app = EdusohoApp.app;
         }
-        registMsgSrc();
+        app.registMsgSource(this);
     }
 
     @Override
@@ -74,10 +74,6 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
                 app.unRegistPubMsg(messageType, this);
             }
         }
-    }
-
-    protected void registMsgSrc() {
-        app.registMsgSource(this);
     }
 
     protected void setContainerView(int viewId) {

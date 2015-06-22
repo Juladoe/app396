@@ -15,7 +15,7 @@ import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
@@ -36,14 +36,14 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class DownloadingAdapter extends BaseExpandableListAdapter {
     private Context mContex;
-    private ActionBarBaseActivity mActivity;
+    private BaseActivity mActivity;
     private SparseArray<M3U8DbModle> m3u8ModelList;
     private List<Course> mGroupItems;
     private List<List<LessonItem>> mChildItems;
     private boolean mSelectedShow = false;
     private DownloadType mType;
 
-    public DownloadingAdapter(Context ctx, ActionBarBaseActivity activity, SparseArray<M3U8DbModle> m3u8List,
+    public DownloadingAdapter(Context ctx, BaseActivity activity, SparseArray<M3U8DbModle> m3u8List,
                               List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons, DownloadType type) {
         mContex = ctx;
         mActivity = activity;

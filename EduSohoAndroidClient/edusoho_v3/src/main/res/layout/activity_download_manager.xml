@@ -145,7 +145,5 @@
                 android:textSize="@dimen/medium_font_size"
                 android:id="@+id/tv_delete" />
         </LinearLayout>
-
-
     </LinearLayout>
 </RelativeLayout>

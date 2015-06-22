@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <extensions.PagerSlidingTabStrip
+        android:id="@+id/tab_download"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        app:pst_textSize="@dimen/course_details_info_tab"
+        app:pst_textColor="@android:color/black"
+        app:dividerColor="@color/transparent"
+        app:indicatorColor="@color/action_bar_bg"
+        app:tabPaddingLeftRight="14dip"
+        app:indicatorHeight="2dp"
+        app:underlineHeight="0dp"
+        android:background="@color/action_bar_title"
+        app:underlineColor="@color/transparent" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_download"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/download_device_info"
+        android:layout_below="@+id/tab_download" />
+
+    <TextView
+        android:id="@+id/download_device_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_black_normal"
+        android:gravity="center"
+        android:textColor="@color/base_white_normal"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/base_size"
+        android:alpha="0.54" />
+
+</RelativeLayout>
