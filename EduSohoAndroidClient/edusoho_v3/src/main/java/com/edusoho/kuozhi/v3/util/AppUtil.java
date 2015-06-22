@@ -17,6 +17,8 @@ import com.edusoho.kuozhi.v3.listener.StatusCallback;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -401,5 +403,23 @@ public class AppUtil {
             e.printStackTrace();
         }
         return bmp.compress(format, quality, stream);
+    }
+
+    public static void showAlertDialog(final BaseActivity activity, String content) {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                activity,
+                "播放提示",
+                content,
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            activity.app.mEngine.runNormalPlugin("SettingActivity", activity, null);
+                        }
+                    }
+                }
+        );
+        popupDialog.setOkText("去设置");
+        popupDialog.show();
     }
 }
