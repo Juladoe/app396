@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp">
 
-        <com.edusoho.kuozhi.view.EduSohoTextBtn
+        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
             android:padding="8dp"
             android:orientation="vertical"
             app:iconSizeScale="2.4"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.edusoho.kuozhi.view.EduSohoTextBtn
+        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
             android:padding="8dp"
             android:orientation="vertical"
             app:iconSizeScale="2.4"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.edusoho.kuozhi.view.EduSohoTextBtn
+        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
             android:padding="8dp"
             android:orientation="vertical"
             app:iconSizeScale="2.4"
@@ -74,7 +74,7 @@
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content" />-->
 
-        <com.edusoho.kuozhi.view.EduSohoTextBtn
+        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
             android:padding="8dp"
             android:orientation="vertical"
             app:iconSizeScale="2.4"

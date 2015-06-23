@@ -36,6 +36,11 @@
         version="1.0" />
 
     <plugin
+        name="LessonActivity"
+        package="com.edusoho.kuozhi.v3.ui.LessonActivity"
+        version="1.0" />
+
+    <plugin
         name="RegisterActivity"
         package="com.edusoho.kuozhi.v3.ui.RegisterActivity"
         version="1.0" />
@@ -71,8 +76,33 @@
         version="1.0" />
 
     <plugin
-        name="FindFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
+        name="WebVideoLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.WebVideoLessonFragment"
+        version="1.0" />
+
+    <plugin
+        name="VideoLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.VideoLessonFragment"
+        version="1.0" />
+
+    <plugin
+        name="TextLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.TextLessonFragment"
+        version="1.0" />
+
+    <plugin
+        name="CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
+        version="1.0" />
+
+    <plugin
+        name="EduVideoViewFragment"
+        package="com.edusoho.kuozhi.v3.view.video.EduVideoViewFragment"
+        version="1.0" />
+
+    <plugin
+        name="MediaPlayerFragment"
+        package="com.edusoho.kuozhi.v3.view.video.MediaPlayerFragment"
         version="1.0" />
 
     <plugin

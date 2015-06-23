@@ -60,18 +60,6 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        if (webView == null) {
-            webView = (ESWebView) view.findViewById(R.id.webView);
-            Config.init(getActivity());
-            webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
-//            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
-    }
-
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d("FindFragment-->", "onActivityCreated");

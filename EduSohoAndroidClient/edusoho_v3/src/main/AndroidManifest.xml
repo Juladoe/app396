@@ -130,6 +130,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.LessonActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".v3.ui.friend.FriendNewsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

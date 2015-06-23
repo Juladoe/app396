@@ -60,6 +60,10 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         return new com.edusoho.kuozhi.v3.model.sys.MessageType[0];
     }
 
+    public String getTitle() {
+        return "";
+    }
+
     @Override
     public void onDestroy() {
         app.unRegistMsgSource(this);

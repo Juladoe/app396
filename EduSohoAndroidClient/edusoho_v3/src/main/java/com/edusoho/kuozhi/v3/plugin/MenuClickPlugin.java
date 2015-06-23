@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -79,25 +78,18 @@ public class MenuClickPlugin extends CordovaPlugin {
                         }
                     });
         } else if (action.equals("learnCourseLesson")) {
-            BaseActivity baseActivity = (BaseActivity) EdusohoApp.app.mActivity;
-            final LessonItem lesson = baseActivity.parseJsonValue(args.getJSONObject(0).getString("lessonItem"), new TypeToken<LessonItem>() {
-            });
-            final boolean isLearned = args.getBoolean(1);
+            final int courseId = args.getInt(0);
+            final int lessonId = args.getInt(1);
             EdusohoApp.app.mEngine.runNormalPlugin(
                     LessonActivity.TAG, cordova.getActivity(), new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.COURSE_ID, lesson.courseId);
-                            startIntent.putExtra(Const.IS_LEARN, isLearned);
-                            startIntent.putExtra(Const.LESSON_ID, lesson.id);
-                            startIntent.putExtra(Const.LESSON_TYPE, lesson.type);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE, lesson.title);
+                            startIntent.putExtra(Const.COURSE_ID, courseId);
+                            startIntent.putExtra(Const.IS_LEARN, lessonId);
                         }
                     }
             );
         }
-
-
         return super.execute(action, args, callbackContext);
     }
 }
