@@ -4,28 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <extensions.PagerSlidingTabStrip
-        android:id="@+id/tab_download"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        app:pst_textSize="@dimen/medium_font_size"
-        app:pst_textColor="@color/green_alpha"
-        app:pst_other_color="@color/grey_alpha"
-        app:dividerColor="@color/transparent"
-        app:indicatorColor="@color/green_alpha"
-        app:tabPaddingLeftRight="14dip"
-        app:indicatorHeight="2dp"
-        app:underlineHeight="0dp"
-        android:background="@color/action_bar_title"
-        app:underlineColor="@color/transparent" />
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_tab">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/rl_inside_tab">
+
+            <extensions.PagerSlidingTabStrip
+                android:id="@+id/tab_download"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:pst_textSize="@dimen/medium_font_size"
+                app:pst_textColor="@color/green_alpha"
+                app:pst_other_color="@color/grey_alpha"
+                app:dividerColor="@color/transparent"
+                app:indicatorColor="@color/green_alpha"
+                app:tabPaddingLeftRight="14dip"
+                app:indicatorHeight="2dp"
+                app:underlineHeight="0dp"
+                android:background="@color/action_bar_title"
+                app:underlineColor="@color/transparent"
+                android:fillViewport="false" />
+
+            <ImageView
+                android:layout_width="2px"
+                android:layout_height="20dp"
+                android:src="@drawable/login_line_bg"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/iv_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="@drawable/login_tab_bg"
+            android:scaleType="fitXY"
+            android:layout_below="@+id/rl_inside_tab" />
+
+    </RelativeLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_download"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/download_device_info"
-        android:layout_below="@+id/tab_download" />
+        android:layout_below="@+id/rl_tab" />
 
     <TextView
         android:id="@+id/download_device_info"
