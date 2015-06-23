@@ -173,21 +173,6 @@
                 android:layout_height="50dp"
                 android:background="@color/transparent"
                 android:button="@null"
-                android:drawableLeft="@drawable/drawer_selector_4"
-                android:drawablePadding="15dp"
-                android:gravity="center_vertical|left"
-                android:paddingLeft="40dp"
-                android:paddingRight="0dp"
-                android:text="@string/drawer_items_publish"
-                android:textColor="@drawable/drawer_selector_font"
-                android:textSize="17sp" />
-
-            <RadioButton
-                android:id="@+id/radio5"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/transparent"
-                android:button="@null"
                 android:drawableLeft="@drawable/drawer_selector_5"
                 android:drawablePadding="15dp"
                 android:gravity="center_vertical|left"

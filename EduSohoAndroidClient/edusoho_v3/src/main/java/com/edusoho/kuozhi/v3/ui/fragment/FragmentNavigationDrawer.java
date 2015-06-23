@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,15 +18,10 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -62,7 +56,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
             R.id.radio2,
             R.id.radio3,
             R.id.radio4,
-            R.id.radio5
     };
 
     private TextView tvNickname;
@@ -144,7 +137,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         break;
                     case 2:
                         //开通会员
-                        //mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity1", mContext, null);
+                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity1", mContext, null);
                         break;
                     case 3:
                         //我的收藏
@@ -161,9 +154,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //                                });
                         break;
                     case 4:
-                        //我的发表
-                        break;
-                    case 5:
                         //我的设置
                         mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
                         break;

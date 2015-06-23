@@ -69,7 +69,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             //selectItem(0);
         }
         mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
-        app.registMsgSource(this);
     }
 
     @Override
