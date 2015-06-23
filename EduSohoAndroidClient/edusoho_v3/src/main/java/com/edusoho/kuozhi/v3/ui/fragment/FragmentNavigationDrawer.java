@@ -110,7 +110,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
                 switch (mPosition) {
                     case 0:
                         //我的学习
-
                         break;
                     case 1:
                         //我的下载
