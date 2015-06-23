@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
@@ -143,6 +145,12 @@ public class ESWebView extends FrameLayout {
             //mActivity.getActionBar().setIcon(new BitmapDrawable(icon));
         }
 
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            PopupDialog.createNormal(mActivity, "提示:", message).show();
+            result.cancel();
+            return true;
+        }
     };
 
     protected OnKeyListener mOnKeyListener = new OnKeyListener() {
