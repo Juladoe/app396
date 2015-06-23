@@ -43,8 +43,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.commonlib.R;
 import com.nineoldandroids.view.ViewHelper;
 
-import org.w3c.dom.Text;
-
 import java.util.Locale;
 
 public class PagerSlidingTabStrip extends HorizontalScrollView {
@@ -96,6 +94,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private int tabTextSize = 18;
     private int tabTextColor = Color.BLACK;
+    private int otherTextColor = tabTextColor;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.NORMAL;
 
@@ -139,6 +138,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
         tabTextSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pst_textSize, tabTextSize);
         tabTextColor = a.getColor(R.styleable.PagerSlidingTabStrip_pst_textColor, tabTextColor);
+        otherTextColor = a.getColor(R.styleable.PagerSlidingTabStrip_pst_other_color, tabTextColor);
 
         indicatorColor = a.getColor(R.styleable.PagerSlidingTabStrip_indicatorColor, indicatorColor);
         underlineColor = a.getColor(R.styleable.PagerSlidingTabStrip_underlineColor, underlineColor);
@@ -274,18 +274,22 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     private void setTextViewAlpha(View tv, int position) {
         for (int i = 0; i < tabsContainer.getChildCount(); i++) {
             if (i == position) {
+                TextView textView = (TextView) tv;
                 if (Build.VERSION.SDK_INT < 11) {
                     ViewHelper.setAlpha(tv, 1.0f);
                 } else {
                     tv.setAlpha(1.0f);
                 }
+                textView.setTextColor(tabTextColor);
             } else {
                 View v = tabsContainer.getChildAt(i);
+                TextView textView = (TextView) v;
                 if (Build.VERSION.SDK_INT < 11) {
                     ViewHelper.setAlpha(v, mAlpha);
                 } else {
                     v.setAlpha(mAlpha);
                 }
+                textView.setTextColor(otherTextColor);
             }
         }
     }
@@ -309,7 +313,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 TextView tab = (TextView) v;
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
-                tab.setTextColor(tabTextColor);
+                if (i == currentPosition) {
+                    tab.setTextColor(tabTextColor);
+                } else {
+                    tab.setTextColor(otherTextColor);
+                }
 
                 // setAllCaps() is only available from API 14, so the upper case is made manually if we are on a
                 // pre-ICS-build

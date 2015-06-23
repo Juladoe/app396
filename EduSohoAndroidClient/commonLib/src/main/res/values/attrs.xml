@@ -50,6 +50,7 @@
         <attr name="dividerColor" format="color" />
         <attr name="pst_textColor" format="color" />
         <attr name="pst_textSize" format="dimension" />
+        <attr name="pst_other_color" format="color" />
         <attr name="indicatorHeight" format="dimension" />
         <attr name="underlineHeight" format="dimension" />
         <attr name="pst_dividerPadding" format="dimension" />

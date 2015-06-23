@@ -115,6 +115,7 @@ public class DownloadManagerActivity1 extends ActionBarBaseActivity {
     private void initView() {
         setBackMode(BACK, "已下载课时");
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
+
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);
         mDeviceSpaceInfo = (TextView) findViewById(R.id.download_device_info);
         MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), DOWNLOAD_TITLES, DOWNLOAD_FRAGMENTS);
