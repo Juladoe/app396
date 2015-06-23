@@ -9,10 +9,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/el_downloading"
         android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/download_tools_layout"
         android:groupIndicator="@null"
         android:dividerHeight="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/download_tools_layout"
+        android:background="@android:color/white"
         android:childDivider="@android:color/white" />
 
     <LinearLayout
