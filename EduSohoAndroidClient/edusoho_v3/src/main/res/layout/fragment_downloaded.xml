@@ -13,6 +13,7 @@
         android:dividerHeight="0dp"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/download_tools_layout"
+        android:background="@android:color/white"
         android:childDivider="@android:color/white" />
 
     <LinearLayout
