@@ -72,7 +72,7 @@ public class MenuClickPlugin extends CordovaPlugin {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
-                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "支付课程-" + mTitle);
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mTitle);
                     startIntent.putExtra("payurl", payUrl);
                 }
             });
