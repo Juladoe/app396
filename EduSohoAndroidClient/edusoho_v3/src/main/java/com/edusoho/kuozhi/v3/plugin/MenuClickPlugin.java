@@ -6,6 +6,7 @@ import android.util.Log;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
@@ -65,18 +66,16 @@ public class MenuClickPlugin extends CordovaPlugin {
             String pic = args.getString(3);
             new ShareTool(cordova.getActivity(), id, title, about, pic).shardCourse();
         } else if (action.equals("payCourse")) {
-            final double price = args.getDouble(0);
-            final int courseId = args.getInt(1);
-            final String title = args.getString(2);
-            EdusohoApp.app.mEngine.runNormalPluginForResult(
-                    "PayCourseActivity", cordova.getActivity(), 6, new PluginRunCallback() {
-                        @Override
-                        public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra("price", price);
-                            startIntent.putExtra("title", title);
-                            startIntent.putExtra("courseId", courseId);
-                        }
-                    });
+            final String mTitle = args.getString(0);
+            final String payUrl = args.getString(1);
+            EdusohoApp.app.mEngine.runNormalPlugin("FragmentPageActivity", cordova.getActivity(), new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "支付课程-" + mTitle);
+                    startIntent.putExtra("payurl", payUrl);
+                }
+            });
         } else if (action.equals("learnCourseLesson")) {
             final int courseId = args.getInt(0);
             final int lessonId = args.getInt(1);
