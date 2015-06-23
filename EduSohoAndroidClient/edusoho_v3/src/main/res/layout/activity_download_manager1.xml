@@ -38,7 +38,6 @@
 
         </RelativeLayout>
 
-
         <ImageView
             android:id="@+id/iv_line"
             android:layout_width="match_parent"

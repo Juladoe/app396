@@ -15,11 +15,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.sys.Meta;
+import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
@@ -113,12 +112,9 @@ public class BaseActivity extends ActionBarActivity {
             public void onResponse(String response) {
                 try {
                     loadDialog.dismiss();
-//                    JSONObject jsonObject = new JSONObject(response.toString());
-//                    boolean result = handleRequest(jsonObject.getString("meta"));
-//                    if (result) {
-//                        responseListener.onResponse(jsonObject.getString("data"));
-//                    }
-                    responseListener.onResponse(response);
+                    if (handleRequest(response) != null) {
+                        responseListener.onResponse(response);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -145,12 +141,9 @@ public class BaseActivity extends ActionBarActivity {
             @Override
             public void onResponse(String response) {
                 try {
-//                    JSONObject jsonObject = new JSONObject(response.toString());
-//                    boolean result = handleRequest(jsonObject.getString("meta"));
-//                    if (result) {
-//                        responseListener.onResponse(jsonObject.getString("data"));
-//                    }
-                    responseListener.onResponse(response);
+                    if (handleRequest(response) != null) {
+                        responseListener.onResponse(response);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -180,10 +173,8 @@ public class BaseActivity extends ActionBarActivity {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response.toString());
-                    boolean result = handleRequest(jsonObject.getString("meta"));
-                    if (result) {
-                        responseListener.onResponse(jsonObject.getString("data"));
+                    if (handleRequest(response) != null) {
+                        responseListener.onResponse(response);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -222,11 +213,14 @@ public class BaseActivity extends ActionBarActivity {
         return value;
     }
 
-    private boolean handleRequest(String meta) throws JSONException {
-
-        Meta metaResult = parseJsonValue(meta, new TypeToken<Meta>() {
+    private String handleRequest(String response) throws JSONException {
+        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
         });
-        CommonUtil.longToast(mActivity, metaResult.message);
-        return metaResult.code == Const.OK;
+        if (result != null && result.error != null) {
+            CommonUtil.longToast(mActivity, result.error.message);
+            return null;
+        } else {
+            return response;
+        }
     }
 }
