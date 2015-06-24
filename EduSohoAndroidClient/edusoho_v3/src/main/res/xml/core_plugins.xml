@@ -86,6 +86,11 @@
         version="1.0" />
 
     <plugin
+        name="AudioLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.AudioLessonFragment"
+        version="1.0" />
+
+    <plugin
         name="WebVideoLessonFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.lesson.WebVideoLessonFragment"
         version="1.0" />
