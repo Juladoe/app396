@@ -24,8 +24,8 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -122,7 +122,13 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //                                    }
 //                                }
 //                        );
-
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = mActivity.app.host + Const.MY_LEARN;
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
                         break;
                     case 1:
                         //我的下载
@@ -147,24 +153,28 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //
 //                            }
 //                        });
+                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity1", mContext, null);
                         break;
                     case 2:
                         //开通会员
                         //mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity1", mContext, null);
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = mActivity.app.host + Const.VIP_LIST;
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
                         break;
                     case 3:
                         //我的收藏
-                        //测试支付
-//                        app.mEngine.runNormalPluginForResult(
-//                                "PayCourseActivity", mActivity, 6, new PluginRunCallback() {
-//                                    @Override
-//                                    public void setIntentDate(Intent startIntent) {
-//                                        startIntent.putExtra("price", 0.01d);
-//                                        startIntent.putExtra("title", "学习卡体验课程");
-//                                        startIntent.putExtra("payurl", "学习卡体验课程");
-//                                        startIntent.putExtra("courseId", 471);
-//                                    }
-//                                });
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = mActivity.app.host + Const.MY_FAVORITE;
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
                         break;
                     case 4:
                         //我的设置

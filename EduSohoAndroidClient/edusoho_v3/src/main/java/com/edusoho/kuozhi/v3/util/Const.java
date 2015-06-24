@@ -380,8 +380,14 @@ public class Const {
      * 在学直播课程
      */
     public static final String LIVING_COURSE = "Course/getLiveCourses";
-
     public static final String LIVE_COURSE = "Course/getLiveCourse";
+
+    /**
+     * 侧边栏url
+     */
+    public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn/";
+    public static final String VIP_LIST = "/mapi_v2/mobileApp#/viplist";
+    public static final String MY_FAVORITE = "/mapi_v2/mobileApp#/myfavorite";
 
     public static final int HAVE_ADD_TRUE = 0;
     public static final int HAVE_ADD_FALSE = 1;
