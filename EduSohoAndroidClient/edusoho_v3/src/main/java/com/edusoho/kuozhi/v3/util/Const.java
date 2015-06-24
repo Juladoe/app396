@@ -385,7 +385,7 @@ public class Const {
     /**
      * 侧边栏url
      */
-    public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn/";
+    public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn";
     public static final String VIP_LIST = "/mapi_v2/mobileApp#/viplist";
     public static final String MY_FAVORITE = "/mapi_v2/mobileApp#/myfavorite";
 
