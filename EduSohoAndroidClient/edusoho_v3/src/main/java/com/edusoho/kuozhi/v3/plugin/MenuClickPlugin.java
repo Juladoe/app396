@@ -79,7 +79,7 @@ public class MenuClickPlugin extends CordovaPlugin {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(Const.COURSE_ID, courseId);
-                            startIntent.putExtra(Const.IS_LEARN, lessonId);
+                            startIntent.putExtra(Const.LESSON_ID, lessonId);
                         }
                     }
             );
