@@ -17,7 +17,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.CordovaContext;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
-import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 
@@ -53,7 +52,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl("http://192.168.11.71/mapi_v2/mobileApp");
+        webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
         //webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
 //        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         return rootView;

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/grey_cccccc"
         android:orientation="vertical">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/base_black_12">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/linear_scan"
@@ -148,7 +149,6 @@
                 android:background="@drawable/more_setting_list_select"
                 android:drawableRight="@drawable/more_setting_right"
                 android:padding="12dp"
-
                 android:text="@string/setting_about"
                 android:clickable="true"
                 android:textColor="@android:color/black"
@@ -158,23 +158,30 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/item_edge_height"
-            android:src="@drawable/login_line_bg" />
+            android:src="@color/grey_cccccc" />
 
-        <Button
-            android:id="@+id/setting_logout_btn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:background="@drawable/logout_btn_background"
-            android:paddingBottom="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"
-            android:text="退出登录"
-            android:textColor="@color/login_text"
-            android:visibility="invisible"
-            android:textSize="@dimen/large_font_size" />
+            android:background="@android:color/white">
+
+            <Button
+                android:id="@+id/setting_logout_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:background="@drawable/logout_btn_background"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:text="退出登录"
+                android:textColor="@color/login_text"
+                android:visibility="invisible"
+                android:textSize="@dimen/large_font_size" />
+        </LinearLayout>
+
 
     </LinearLayout>
 </ScrollView>
