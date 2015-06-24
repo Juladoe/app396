@@ -174,8 +174,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-
-                    LessonItem lessonItem = getLessonResultType(mLessonType, response);
+                    LessonItem lessonItem = parseJsonValue(response, new TypeToken<LessonItem>() {
+                    });
+                    lessonItem = getLessonResultType(lessonItem.type, response);
                     if (lessonItem == null) {
                         return;
                     }
