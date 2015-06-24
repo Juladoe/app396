@@ -99,9 +99,6 @@ public class EdusohoMainService extends Service {
 
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
-//                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
-
-                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -109,55 +106,6 @@ public class EdusohoMainService extends Service {
 
                 }
             });
-
-
-//            AjaxCallback ajaxCallback = app.postUrl(false, url, new ResultCallback() {
-//                @Override
-//                public void callback(String url, String object, AjaxStatus ajaxStatus) {
-//                    Log.d(null, "callback loginWithToken->" + ajaxStatus.getCode());
-//                    mAjaxQueue.poll();
-//                    TokenResult result = app.gson.fromJson(
-//                            object, new TypeToken<TokenResult>() {
-//                            }.getType());
-//                    Log.d(null, "callback loginWithToken result->" + result);
-//
-//                    if (result != null) {
-//                        //mLoginUser = result.data;
-//                        app.saveToken(result);
-//                    }
-//
-////                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
-////                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
-//
-//                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
-//                }
-//
-//                @Override
-//                public void update(String url, String object, AjaxStatus ajaxStatus) {
-//                    int code = ajaxStatus.getCode();
-//                    Log.d(null, "update loginWithToken ->" + code);
-//                    if (code != Const.OK) {
-//                        return;
-//                    }
-//                    TokenResult result = app.gson.fromJson(
-//                            object, new TypeToken<TokenResult>() {
-//                            }.getType());
-//                    if (result == null) {
-//                        if (app.loginUser != null) {
-//                            app.removeToken();
-////                            app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
-////                            app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
-//                            //app.sendMsgToTarget(MyInfoFragment.LOGOUT, null, MyInfoFragment.class);
-//                        }
-//                        return;
-//                    }
-//                    app.loginUser = result.data;
-//                    app.saveToken(result);
-////                    app.sendMsgToTarget(MineFragment.LOGINT_WITH_TOKEN, null, MineFragment.class);
-////                    app.sendMsgToTarget(SchoolRoomFragment.LOGINT_WITH_TOKEN, null, SchoolRoomFragment.class);
-//                    //app.sendMsgToTarget(MyInfoFragment.LOGINT_WITH_TOKEN, null, MyInfoFragment.class);
-//                }
-//            });
 
             mAjaxQueue.offer(request);
         }

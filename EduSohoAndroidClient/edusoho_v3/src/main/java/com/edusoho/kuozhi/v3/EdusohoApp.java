@@ -174,7 +174,7 @@ public class EdusohoApp extends Application {
      * volley get 请求
      *
      * @param requestUrl       url、参数、header等信息
-     * @param responseListener 返回reponse信息
+     * @param responseListener 返回response信息
      * @param errorListener    错误信息
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
