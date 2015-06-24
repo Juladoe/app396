@@ -62,6 +62,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_default);
         initView();
 

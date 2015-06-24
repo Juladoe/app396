@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import photoview.PhotoView;
 
 public class SchoolSplashActivity extends BaseActivity {
+    public static final String TAG = "SchoolSplashActivity";
 
     private ViewPager mViewPager;
     private Context mContext;
