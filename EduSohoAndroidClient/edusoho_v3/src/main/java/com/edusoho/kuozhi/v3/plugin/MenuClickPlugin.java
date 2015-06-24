@@ -12,7 +12,6 @@ import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.cordova.CallbackContext;
@@ -44,13 +43,10 @@ public class MenuClickPlugin extends CordovaPlugin {
         } else if (action.equals("closeWebView")) {
             EdusohoApp.app.sendMsgToTarget(WebViewActivity.CLOSE, null, WebViewActivity.class);
         } else if (action.equals("getUserToken")) {
-            Gson gson = new Gson();
             JSONObject result = new JSONObject();
             if (EdusohoApp.app.loginUser != null) {
                 result.put("user", EdusohoApp.app.loginUser);
                 result.put("token", EdusohoApp.app.token);
-            } else {
-                result = new JSONObject();
             }
             callbackContext.success(result);
         } else if (action.equals("saveUserToken")) {
