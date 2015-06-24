@@ -181,12 +181,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     }
                     setBackMode(BACK, lessonItem.title);
                     mLessonItem = lessonItem;
-                    switchLoadLessonContent(lessonItem);
+                    loadLesson(mLessonId);
+                    //switchLoadLessonContent(lessonItem);
                 }
             }, null, "加载中");
 
 
-            loadLesson(mLessonId);
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
@@ -397,7 +397,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 //            bindListener();
 //        }
         mLessonItem = lessonItem;
-        switchLoadLessonContent(lessonItem);
+        switchLoadLessonContent(mLessonItem);
     }
 
     private LessonItem getLessonResultType(String lessonType, String object) {
