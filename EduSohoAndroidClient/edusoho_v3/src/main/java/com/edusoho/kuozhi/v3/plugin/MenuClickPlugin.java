@@ -38,17 +38,16 @@ public class MenuClickPlugin extends CordovaPlugin {
             EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", cordova.getActivity(), new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(WebViewActivity.DATA, jsonObject);
+                    startIntent.putExtra(WebViewActivity.URL, jsonObject);
                 }
             });
         } else if (action.equals("closeWebView")) {
             EdusohoApp.app.sendMsgToTarget(WebViewActivity.CLOSE, null, WebViewActivity.class);
         } else if (action.equals("getUserToken")) {
             Gson gson = new Gson();
-            JSONObject result;
+            JSONObject result = new JSONObject();
             if (EdusohoApp.app.loginUser != null) {
-                String userJSON = gson.toJson(EdusohoApp.app.loginUser);
-                result = new JSONObject(userJSON);
+                result.put("user", EdusohoApp.app.loginUser);
                 result.put("token", EdusohoApp.app.token);
             } else {
                 result = new JSONObject();
