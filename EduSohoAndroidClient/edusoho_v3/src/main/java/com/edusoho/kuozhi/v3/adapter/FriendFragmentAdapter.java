@@ -58,9 +58,9 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 v = mInflater.inflate(mResource,null);
                 headHolder = new HeadHolder();
                 headHolder.searchFriendBtn = (EduSohoRoundButton) v.findViewById(R.id.search_friend_btn);
-                headHolder.addPhoneFriends = (LinearLayout) v.findViewById(R.id.item_add_phone_friend);
-                headHolder.addLessonFriends = (LinearLayout) v.findViewById(R.id.item_add_lesson_friend);
-                headHolder.addClassFriends = (LinearLayout) v.findViewById(R.id.item_add_class_friend);
+//                headHolder.addPhoneFriends = (LinearLayout) v.findViewById(R.id.item_add_phone_friend);
+//                headHolder.addLessonFriends = (LinearLayout) v.findViewById(R.id.item_add_lesson_friend);
+//                headHolder.addClassFriends = (LinearLayout) v.findViewById(R.id.item_add_class_friend);
                 headHolder.qiqiuyuSever = (LinearLayout) v.findViewById(R.id.item_service_qiqiuyu);
                 v.setTag(headHolder);
                 setCacheView(0,v);
@@ -69,9 +69,9 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 headHolder = (HeadHolder) v.getTag();
             }
             headHolder.searchFriendBtn.setOnClickListener(mOnClickListener);
-            headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
-            headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
-            headHolder.addClassFriends.setOnClickListener(mOnClickListener);
+//            headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
+//            headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
+//            headHolder.addClassFriends.setOnClickListener(mOnClickListener);
             headHolder.qiqiuyuSever.setOnClickListener(mOnClickListener);
 
         }else{
