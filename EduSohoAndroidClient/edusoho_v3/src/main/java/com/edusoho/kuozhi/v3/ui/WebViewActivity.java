@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -28,6 +29,8 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     private String url = "";
     private CordovaWebView webView;
     private ProgressBar pbLoading;
+
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,16 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
         if (messageType.code == CLOSE) {
-            this.finish();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (webView.canGoBack()) {
+                        webView.goBack();
+                        return;
+                    }
+                    finish();
+                }
+            });
         }
     }
 
