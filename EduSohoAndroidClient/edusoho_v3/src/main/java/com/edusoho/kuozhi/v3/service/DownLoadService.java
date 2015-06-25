@@ -101,7 +101,7 @@ public class DownLoadService extends Service {
             mTimer.cancel();
             mTimer = null;
         }
-        Log.d(null, "download_service destory");
+        Log.d(null, "download_service destroy");
     }
 
     @Override

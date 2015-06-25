@@ -51,7 +51,7 @@ public class M3U8DownService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mDownLoadStatusReceiver);
-        Log.d(TAG, "m3u8 download_service destory");
+        Log.d(TAG, "m3u8 download_service destroy");
     }
 
     @Override

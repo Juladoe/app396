@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.CordovaContext;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 import org.apache.cordova.CordovaInterface;
@@ -59,11 +58,11 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
 
     @Override
     public void onResume() {
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.getBooleanExtra(Const.CLEAR_WEBVIEW_CACHE, false)) {
-            webView.setIsClearHistory(true);
-            webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
-        }
+//        Intent intent = getActivity().getIntent();
+//        if (intent != null && intent.getBooleanExtra(Const.CLEAR_WEBVIEW_CACHE, false)) {
+//            webView.setIsClearHistory(true);
+//            webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
+//        }
         super.onResume();
     }
 
@@ -140,7 +139,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     public void onDestroyView() {
         super.onDestroyView();
         if (webView != null) {
-            webView.destory();
+            webView.destroy();
         }
     }
 
@@ -148,5 +147,6 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     public ESWebView getView() {
         return webView;
     }
+
 
 }

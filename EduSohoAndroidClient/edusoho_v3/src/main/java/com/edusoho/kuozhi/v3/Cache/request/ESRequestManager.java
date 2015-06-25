@@ -23,7 +23,7 @@ public class ESRequestManager extends RequestManager {
     }
 
     @Override
-    public void destory() {
+    public void destroy() {
 
     }
 

@@ -44,7 +44,6 @@ public class ESWebView extends RelativeLayout {
     protected ProgressBar pbLoading;
     protected Context mContext;
     protected Activity mActivity;
-    private boolean mIsClearHistory;
 
     private AttributeSet mAttrs;
     private static final String TAG = "ESWebView";
@@ -75,8 +74,6 @@ public class ESWebView extends RelativeLayout {
         pbLoading = (ProgressBar) LayoutInflater.from(new CordovaContext(mActivity)).inflate(R.layout.progress_bar, null);
         RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
         paramProgressBar.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-        pbLoading.setProgress(0);
-        pbLoading.setMax(100);
         pbLoading.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_status));
         addView(pbLoading, paramProgressBar);
 
@@ -86,10 +83,6 @@ public class ESWebView extends RelativeLayout {
         addView(mWebView, webViewProgressBar);
 
         mRequestManager = new ESWebViewRequestManager(mContext, mWebView.getSettings().getUserAgentString());
-    }
-
-    public void setIsClearHistory(boolean clear) {
-        mIsClearHistory = clear;
     }
 
     public void loadUrl(String url) {
@@ -146,14 +139,16 @@ public class ESWebView extends RelativeLayout {
         super.onDetachedFromWindow();
     }
 
-    public void destory() {
+    public void destroy() {
         if (mWebView.pluginManager != null) {
             mWebView.pluginManager.onDestroy();
         }
+        mRequestManager.destroy();
+        RelativeLayout relativeLayout = (RelativeLayout) mWebView.getParent();
+        relativeLayout.removeView(mWebView);
         mWebView.removeAllViews();
         mWebView.handleDestroy();
         mWebView.destroy();
-        mRequestManager.destory();
     }
 
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
@@ -204,17 +199,7 @@ public class ESWebView extends RelativeLayout {
         }
     };
 
-    protected WebViewClient mWebViewClient = new ESWebViewClient() {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            if (mIsClearHistory) {
-                mIsClearHistory = false;
-                mWebView.clearHistory();
-                mWebView.clearCache(true);
-            }
-            super.onPageFinished(view, url);
-        }
-    };
+    protected WebViewClient mWebViewClient = new ESWebViewClient();
 
     private class ESWebViewClient extends WebViewClient {
 

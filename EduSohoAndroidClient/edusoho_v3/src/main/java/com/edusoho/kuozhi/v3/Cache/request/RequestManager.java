@@ -19,14 +19,12 @@ public abstract class RequestManager {
 
     protected ScheduledThreadPoolExecutor mWorkExecutor;
 
-    public RequestManager()
-    {
+    public RequestManager() {
         mRequestHandlerList = new HashMap<>();
         mWorkExecutor = new ScheduledThreadPoolExecutor(3);
     }
 
-    public static RequestManager getDefaultManager()
-    {
+    public static RequestManager getDefaultManager() {
         synchronized (RequestManager.class) {
             if (mRequestManager == null) {
                 mRequestManager = RequestManagerFactory.createDefaultManager();
@@ -35,22 +33,21 @@ public abstract class RequestManager {
         return mRequestManager;
     }
 
-    public abstract void destory();
+    public abstract void destroy();
 
     public abstract void get(Request request, RequestCallback callback);
 
     public abstract <T> T blockGet(Request request, RequestCallback<T> callback);
+
     public abstract <T> T blocPost(Request request, RequestCallback<T> callback);
 
     public abstract void post(Request request, RequestCallback callback);
 
-    public void registHandler(String pattern, RequestHandler handler)
-    {
+    public void registHandler(String pattern, RequestHandler handler) {
         mRequestHandlerList.put(pattern, handler);
     }
 
-    protected void handleRequest(Request request, Response response)
-    {
+    protected void handleRequest(Request request, Response response) {
         for (String filter : mRequestHandlerList.keySet()) {
             if (Pattern.matches(filter, request.url)) {
                 mRequestHandlerList.get(filter).handler(request, response);

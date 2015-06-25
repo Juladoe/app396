@@ -72,7 +72,7 @@ public class ESWebViewRequestManager extends RequestManager {
     }
 
     @Override
-    public void destory() {
+    public void destroy() {
         mHttpClient.getConnectionManager().shutdown();
     }
 
