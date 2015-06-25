@@ -2,12 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bottom_edge_height"
-        android:src="@drawable/login_line_bg" />
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,11 +14,10 @@
             android:id="@+id/tvWifiDownload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.87"
             android:padding="13dp"
             android:text="@string/setting_online_duration"
             android:clickable="false"
-            android:textColor="@android:color/black"
+            android:textColor="@color/grey"
             android:textSize="@dimen/medium_font_size" />
 
         <TextView
@@ -40,7 +35,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_edge_height"
-        android:src="@drawable/login_line_bg" />
+        android:src="@color/base_black_12" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,11 +46,10 @@
             android:id="@+id/tvStartTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.87"
             android:padding="13dp"
             android:text="@string/online_duration_start"
             android:clickable="false"
-            android:textColor="@android:color/black"
+            android:textColor="@color/grey"
             android:textSize="@dimen/medium_font_size" />
 
     </LinearLayout>
@@ -63,7 +57,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_edge_height"
-        android:src="@drawable/login_line_bg" />
+        android:src="@color/base_black_12" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -74,11 +68,10 @@
             android:id="@+id/tvStartEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.87"
             android:padding="13dp"
             android:text="@string/online_duration_end"
             android:clickable="false"
-            android:textColor="@android:color/black"
+            android:textColor="@color/grey"
             android:textSize="@dimen/medium_font_size" />
 
     </LinearLayout>
@@ -86,6 +79,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_edge_height"
-        android:src="@drawable/login_line_bg" />
+        android:src="@color/base_black_12" />
 
 </LinearLayout>

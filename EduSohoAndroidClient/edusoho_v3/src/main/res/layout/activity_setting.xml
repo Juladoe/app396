@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_cccccc"
+        android:background="@color/base_black_12"
         android:orientation="vertical">
 
         <LinearLayout
@@ -29,9 +29,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:alpha="0.87"
                     android:text="@string/setting_scan"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/grey"
                     android:textSize="@dimen/medium_font_size" />
 
                 <TextView
@@ -57,13 +56,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:alpha="0.87"
                 android:background="@drawable/more_setting_list_select"
                 android:drawableRight="@drawable/more_setting_right"
                 android:padding="12dp"
                 android:text="@string/setting_new_msg_notify"
                 android:clickable="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
 
             <TextView
@@ -71,13 +69,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:alpha="0.87"
                 android:background="@drawable/more_setting_list_select"
                 android:drawableRight="@drawable/more_setting_right"
                 android:padding="12dp"
                 android:text="@string/setting_online_duration"
                 android:clickable="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
 
             <LinearLayout
@@ -91,11 +88,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:alpha="0.87"
                     android:padding="13dp"
                     android:text="@string/setting_wifi_download"
                     android:clickable="false"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/grey"
                     android:textSize="@dimen/medium_font_size" />
 
                 <CheckBox
@@ -120,12 +116,11 @@
                     android:layout_marginTop="1dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:alpha="0.87"
                     android:background="@drawable/more_setting_list_select"
                     android:padding="12dp"
                     android:text="@string/setting_clean_cache"
                     android:clickable="true"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/grey"
                     android:textSize="@dimen/medium_font_size" />
 
                 <TextView
@@ -145,24 +140,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:alpha="0.87"
                 android:background="@drawable/more_setting_list_select"
                 android:drawableRight="@drawable/more_setting_right"
                 android:padding="12dp"
                 android:text="@string/setting_about"
                 android:clickable="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
         </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/item_edge_height"
-            android:src="@color/grey_cccccc" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
             android:background="@android:color/white">
 
             <Button

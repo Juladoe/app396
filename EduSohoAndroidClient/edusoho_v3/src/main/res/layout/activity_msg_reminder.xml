@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/grey_cccccc"
+        android:background="@color/base_black_12"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -22,12 +22,10 @@
                 android:id="@+id/tvMsgNotify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:padding="12dp"
-
                 android:text="@string/setting_new_msg_notify"
                 android:layout_alignParentLeft="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
 
             <CheckBox
@@ -53,12 +51,11 @@
                 android:id="@+id/tvSound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:padding="12dp"
                 android:background="@android:color/white"
                 android:text="@string/msg_reminder_sound"
                 android:layout_alignParentLeft="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
 
             <CheckBox
@@ -83,12 +80,11 @@
                 android:id="@+id/tvViberate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:padding="12dp"
                 android:layout_alignParentLeft="true"
                 android:background="@android:color/white"
                 android:text="@string/msg_reminder_viberate"
-                android:textColor="@android:color/black"
+                android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
 
             <CheckBox
