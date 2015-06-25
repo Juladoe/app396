@@ -393,4 +393,6 @@ public class Const {
     public static final int HAVE_ADD_FALSE = 1;
     public static final int HAVE_ADD_WAIT = 2;
     public static final int HAVE_ADD_REJECT = 3;
+
+    public static final String CLEAR_WEBVIEW_CACHE = "clear_webview_cache";
 }

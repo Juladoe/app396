@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.CordovaContext;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 import org.apache.cordova.CordovaInterface;
@@ -52,10 +53,18 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
-        //webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
-//        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.getBooleanExtra(Const.CLEAR_WEBVIEW_CACHE, false)) {
+            webView.setIsClearHistory(true);
+            webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
+        }
+        super.onResume();
     }
 
     @Override
@@ -72,7 +81,6 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         }
         super.onHiddenChanged(hidden);
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

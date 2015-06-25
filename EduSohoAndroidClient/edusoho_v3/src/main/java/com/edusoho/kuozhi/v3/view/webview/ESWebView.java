@@ -44,6 +44,7 @@ public class ESWebView extends RelativeLayout {
     protected ProgressBar pbLoading;
     protected Context mContext;
     protected Activity mActivity;
+    private boolean mIsClearHistory;
 
     private AttributeSet mAttrs;
     private static final String TAG = "ESWebView";
@@ -85,6 +86,10 @@ public class ESWebView extends RelativeLayout {
         addView(mWebView, webViewProgressBar);
 
         mRequestManager = new ESWebViewRequestManager(mContext, mWebView.getSettings().getUserAgentString());
+    }
+
+    public void setIsClearHistory(boolean clear) {
+        mIsClearHistory = clear;
     }
 
     public void loadUrl(String url) {
@@ -199,7 +204,17 @@ public class ESWebView extends RelativeLayout {
         }
     };
 
-    protected WebViewClient mWebViewClient = new ESWebViewClient();
+    protected WebViewClient mWebViewClient = new ESWebViewClient() {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            if (mIsClearHistory) {
+                mIsClearHistory = false;
+                mWebView.clearHistory();
+                mWebView.clearCache(true);
+            }
+            super.onPageFinished(view, url);
+        }
+    };
 
     private class ESWebViewClient extends WebViewClient {
 
