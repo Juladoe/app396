@@ -2,8 +2,10 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -12,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
 
 import org.apache.cordova.Config;
+import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaWebView;
 
 /**
@@ -24,6 +27,7 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     public final static int CLOSE = 0x01;
     private String url = "";
     private CordovaWebView webView;
+    private ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
         }
         Config.init(mActivity);
         webView = (CordovaWebView) findViewById(R.id.webView);
+        pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
         String userAgent = webView.getSettings().getUserAgentString();
         webView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
         webView.loadUrl(url);
@@ -48,6 +53,21 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+        });
+
+        webView.setWebChromeClient(new CordovaChromeClient(this) {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    WebViewActivity.this.pbLoading.setVisibility(View.GONE);
+                } else {
+                    if (WebViewActivity.this.pbLoading.getVisibility() == View.GONE) {
+                        WebViewActivity.this.pbLoading.setVisibility(View.VISIBLE);
+                    }
+                    WebViewActivity.this.pbLoading.setProgress(newProgress);
+                }
+                super.onProgressChanged(view, newProgress);
             }
         });
     }

@@ -8,18 +8,23 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
 import org.apache.cordova.Config;
@@ -33,9 +38,10 @@ import java.util.concurrent.Executors;
 /**
  * Created by howzhi on 15/4/16.
  */
-public class ESWebView extends FrameLayout {
+public class ESWebView extends RelativeLayout {
 
     protected CordovaWebView mWebView;
+    protected ProgressBar pbLoading;
     protected Context mContext;
     protected Activity mActivity;
 
@@ -65,7 +71,18 @@ public class ESWebView extends FrameLayout {
         mWebView.setWebChromeClient(mWebChromeClient);
         mWebView.setOnKeyListener(mOnKeyListener);
 
-        addView(mWebView);
+        pbLoading = (ProgressBar) LayoutInflater.from(new CordovaContext(mActivity)).inflate(R.layout.progress_bar, null);
+        RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
+        paramProgressBar.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        pbLoading.setProgress(0);
+        pbLoading.setMax(100);
+        pbLoading.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_status));
+        addView(pbLoading, paramProgressBar);
+
+        RelativeLayout.LayoutParams webViewProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        webViewProgressBar.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        webViewProgressBar.addRule(RelativeLayout.BELOW, R.id.pb_loading);
+        addView(mWebView, webViewProgressBar);
 
         mRequestManager = new ESWebViewRequestManager(mContext, mWebView.getSettings().getUserAgentString());
     }
@@ -151,7 +168,22 @@ public class ESWebView extends FrameLayout {
             result.cancel();
             return true;
         }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == 100) {
+                //ESWebView.this.pbLoading.setProgress(newProgress);
+                ESWebView.this.pbLoading.setVisibility(View.GONE);
+            } else {
+                if (ESWebView.this.pbLoading.getVisibility() == View.GONE) {
+                    ESWebView.this.pbLoading.setVisibility(View.VISIBLE);
+                }
+                ESWebView.this.pbLoading.setProgress(newProgress);
+            }
+            super.onProgressChanged(view, newProgress);
+        }
     };
+
 
     protected OnKeyListener mOnKeyListener = new OnKeyListener() {
         @Override
