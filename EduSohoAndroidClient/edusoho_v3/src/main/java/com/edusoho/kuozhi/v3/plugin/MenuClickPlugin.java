@@ -9,7 +9,9 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -56,9 +58,13 @@ public class MenuClickPlugin extends CordovaPlugin {
             callbackContext.success(result);
         } else if (action.equals("saveUserToken")) {
             BaseActivity baseActivity = (BaseActivity) EdusohoApp.app.mActivity;
-            EdusohoApp.app.loginUser = baseActivity.parseJsonValue(args.getJSONObject(0).getString("user"), new TypeToken<User>() {
+            UserResult userResult = new UserResult();
+            userResult.token = args.length() > 1 ? args.getString(1) : "";
+            userResult.user = baseActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
             });
-            EdusohoApp.app.token = args.length() > 1 ? args.getString(1) : "";
+            EdusohoApp.app.saveToken(userResult);
+            EdusohoApp.app.sendMessage(Const.LOGIN_SUCCESS, null);
+            EdusohoApp.app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
         } else if (action.equals("share")) {
             String id = args.getString(0);
             String title = args.getString(1);

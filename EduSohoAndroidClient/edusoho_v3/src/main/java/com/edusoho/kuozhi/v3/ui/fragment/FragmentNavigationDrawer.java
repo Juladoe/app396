@@ -41,9 +41,11 @@ public class FragmentNavigationDrawer extends BaseFragment {
 
     public static final String TAG = "FragmentDrawer";
     public static final int THIRD_PARTY_LOGIN = 0x01;
+    private static final int LOGIN_SUCCESS = 0x4;
     public static final int OPEN_DRAWER = 0x02;
     public static final int CLOSE_DRAWER = 0x03;
     public static final int DRAWER_REGISTER = 0x11;
+    private static final int LOGOUT_SUCCESS = 0x05;
 
 
     private DrawerLayout mDrawerLayout;
@@ -265,16 +267,15 @@ public class FragmentNavigationDrawer extends BaseFragment {
             msg.what = CLOSE_DRAWER;
             mHandler.sendMessage(msg);
         } else {
+            Message msg = mHandler.obtainMessage();
             switch (messageType.type) {
                 case Const.LOGIN_SUCCESS:
-                    tvNickname.setText(mActivity.app.loginUser.nickname);
-                    tvTitle.setText(mActivity.app.loginUser.title);
-                    ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, civAvatar, mActivity.app.mOptions);
-                    setLoginStatus(messageType.type);
+                    msg.what = LOGIN_SUCCESS;
+                    msg.obj = messageType.type;
+                    mHandler.sendMessage(msg);
                     break;
                 case Const.THIRD_PARTY_LOGIN_SUCCESS:
                     try {
-                        Message msg = mHandler.obtainMessage();
                         msg.what = THIRD_PARTY_LOGIN;
                         mHandler.sendMessage(msg);
                     } catch (Exception e) {
@@ -282,9 +283,9 @@ public class FragmentNavigationDrawer extends BaseFragment {
                     }
                     break;
                 case Const.LOGOUT_SUCCESS:
-                    tvNickname.setText(getString(R.string.drawer_nickname));
-                    civAvatar.setImageResource(R.drawable.user_avatar);
-                    setLoginStatus(messageType.type);
+                    msg.what = LOGOUT_SUCCESS;
+                    msg.obj = messageType.type;
+                    mHandler.sendMessage(msg);
                     break;
                 default:
             }
@@ -317,6 +318,17 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         mFragment.tvNickname.setText(mFragment.mActivity.app.loginUser.nickname);
                         ImageLoader.getInstance().displayImage(mFragment.app.loginUser.mediumAvatar,
                                 mFragment.civAvatar, mFragment.mActivity.app.mOptions);
+                        break;
+                    case LOGIN_SUCCESS:
+                        mFragment.tvNickname.setText(mFragment.mActivity.app.loginUser.nickname);
+                        mFragment.tvTitle.setText(mFragment.mActivity.app.loginUser.title);
+                        ImageLoader.getInstance().displayImage(mFragment.app.loginUser.mediumAvatar, mFragment.civAvatar, mFragment.mActivity.app.mOptions);
+                        mFragment.setLoginStatus(String.valueOf(msg.obj));
+                        break;
+                    case LOGOUT_SUCCESS:
+                        mFragment.tvNickname.setText(mFragment.getString(R.string.drawer_nickname));
+                        mFragment.civAvatar.setImageResource(R.drawable.user_avatar);
+                        mFragment.setLoginStatus(String.valueOf(msg.obj));
                         break;
                 }
             }
