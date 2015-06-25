@@ -20,6 +20,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -57,6 +58,7 @@ public class DownloadManagerActivity1 extends ActionBarBaseActivity {
     private PagerSlidingTabStrip mPagerTab;
     private ViewPager mViewPagers;
     private TextView mDeviceSpaceInfo;
+    private ProgressBar pbDownloadDeviceInfo;
 
     private final Handler mHandler = new Handler();
     protected DownloadStatusReceiver mDownLoadStatusReceiver;
@@ -115,7 +117,7 @@ public class DownloadManagerActivity1 extends ActionBarBaseActivity {
     private void initView() {
         setBackMode(BACK, "已下载课时");
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
-
+        pbDownloadDeviceInfo = (ProgressBar) findViewById(R.id.pb_download_device_info);
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);
         mDeviceSpaceInfo = (TextView) findViewById(R.id.download_device_info);
         MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), DOWNLOAD_TITLES, DOWNLOAD_FRAGMENTS);
@@ -141,6 +143,8 @@ public class DownloadManagerActivity1 extends ActionBarBaseActivity {
 
     private void loadDeviceSpaceInfo() {
         long[] size = getDeviceSpaceSize();
+        double percent = (double) size[1] / (double) size[0];
+        pbDownloadDeviceInfo.setProgress((int) ((1 - percent) * 100));
         mDeviceSpaceInfo.setText(String.format("共%s, 剩余空间%s", AppUtil.formatSize(size[0]), AppUtil.formatSize(size[1])));
     }
 

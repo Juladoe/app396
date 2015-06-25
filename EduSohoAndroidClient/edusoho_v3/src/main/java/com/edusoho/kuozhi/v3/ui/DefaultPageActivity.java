@@ -77,7 +77,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         super.onNewIntent(intent);
         intent.putExtra(Const.CLEAR_WEBVIEW_CACHE, true);
         setIntent(intent);
-
     }
 
     @Override
