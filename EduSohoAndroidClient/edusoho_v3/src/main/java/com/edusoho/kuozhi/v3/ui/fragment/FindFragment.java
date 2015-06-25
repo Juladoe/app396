@@ -52,10 +52,18 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
-        //webView.loadUrl("http://trymob.edusoho.cn/mapi_v2/mobileApp");
-//        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+//        Intent intent = getActivity().getIntent();
+//        if (intent != null && intent.getBooleanExtra(Const.CLEAR_WEBVIEW_CACHE, false)) {
+//            webView.setIsClearHistory(true);
+//            webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
+//        }
+        super.onResume();
     }
 
     @Override
@@ -72,7 +80,6 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         }
         super.onHiddenChanged(hidden);
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -132,7 +139,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     public void onDestroyView() {
         super.onDestroyView();
         if (webView != null) {
-            webView.destory();
+            webView.destroy();
         }
     }
 
@@ -140,5 +147,6 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     public ESWebView getView() {
         return webView;
     }
+
 
 }

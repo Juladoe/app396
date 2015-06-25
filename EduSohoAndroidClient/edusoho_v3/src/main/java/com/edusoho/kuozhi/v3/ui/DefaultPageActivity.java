@@ -45,6 +45,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private String mCurrentTag;
     private boolean mIsExit;
+    private boolean isKeyBack;
     private int mSelectBtn;
     private Timer mExitTimer;
     private LinearLayout mNavLayout;
@@ -305,6 +306,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            isKeyBack = true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mFragmentNavigationDrawer.isDrawerOpen()) {
@@ -357,6 +366,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public void finish() {
+        if (isKeyBack) {
+            isKeyBack = false;
+            return;
+        }
+        super.finish();
         Log.d(TAG, "finish");
     }
 }
