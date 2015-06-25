@@ -74,22 +74,23 @@ public class FriendFragment extends BaseFragment {
 
                     animator.start();
 
-                } else if (i == R.id.item_add_phone_friend) {
-                    app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
 
-                } else if (i == R.id.item_add_lesson_friend) {
-                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
-                    Bundle arg = new Bundle();
-                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_LESSEN);
-                    chooseClassDialogFragment.setArguments(arg);
-                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
-
-                } else if (i == R.id.item_add_class_friend) {
-                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
-                    Bundle arg = new Bundle();
-                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_CLASS);
-                    chooseClassDialogFragment.setArguments(arg);
-                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
+//                } else if (i == R.id.item_add_phone_friend) {
+//                    app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
+//
+//                } else if (i == R.id.item_add_lesson_friend) {
+//                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
+//                    Bundle arg = new Bundle();
+//                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_LESSEN);
+//                    chooseClassDialogFragment.setArguments(arg);
+//                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
+//
+//                } else if (i == R.id.item_add_class_friend) {
+//                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
+//                    Bundle arg = new Bundle();
+//                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_CLASS);
+//                    chooseClassDialogFragment.setArguments(arg);
+//                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
                 } else if (i == R.id.item_service_qiqiuyu){
 
                 }

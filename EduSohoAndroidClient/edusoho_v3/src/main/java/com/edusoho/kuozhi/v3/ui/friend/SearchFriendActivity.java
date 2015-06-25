@@ -9,8 +9,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 
@@ -46,13 +49,31 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         mAdapter = new SearchFriendAdapter();
         mList.setAdapter(mAdapter);
 
-        //TODO
         loadResultFriends();
 
     }
 
     public void loadResultFriends(){
-
+        //TODO
+//        RequestUrl requestUrl = app.bindUrl(Const.SEARCH_FRIEND,false);
+//        requestUrl.setParams(new String[]{
+//                "mobile",name,
+//                "qq",name,
+//                "nickname",name
+//        });
+//        setProgressBarIndeterminate(true);
+//        ajaxGet(requestUrl,new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                setProgressBarIndeterminateVisibility(false);
+//
+//            }
+//        },new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        });
     }
 
 
