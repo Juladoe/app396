@@ -3,10 +3,12 @@ package com.edusoho.kuozhi.v3.model.bal.Lesson;
 
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 
+import java.io.Serializable;
+
 /**
  * Created by howzhi on 14-5-24.
  */
-public class LessonItem<T> {
+public class LessonItem<T> implements Serializable {
     public static final int FREE = 1;
 
     public int id;

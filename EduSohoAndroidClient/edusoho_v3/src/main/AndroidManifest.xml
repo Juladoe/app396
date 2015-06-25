@@ -172,7 +172,7 @@
 
         <activity
             android:name=".v3.ui.FragmentPageActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
 
         <activity

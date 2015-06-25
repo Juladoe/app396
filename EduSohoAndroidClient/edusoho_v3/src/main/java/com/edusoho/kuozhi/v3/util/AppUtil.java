@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.animation.AccelerateInterpolator;
 
@@ -30,6 +31,8 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -93,6 +96,41 @@ public class AppUtil {
     public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 去掉所有<Img>标签
+     *
+     * @param content
+     * @return
+     */
+    public static String removeImgTagFromString(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return "";
+        }
+        Matcher m = Pattern.compile("(<img src=\".*?\" .>)").matcher(content);
+        new StringBuffer().append("1");
+        while (m.find()) {
+            content = content.replace(m.group(1), "");
+        }
+        return content;
+    }
+
+    /**
+     * 去掉字符串中的\n\t
+     *
+     * @param content
+     * @return
+     */
+    public static String removeHtmlSpace(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return "";
+        }
+        Matcher m = Pattern.compile("\\t|\\n").matcher(content);
+        while (m.find()) {
+            content = content.replace(m.group(0), "");
+        }
+        return content;
     }
 
     /**

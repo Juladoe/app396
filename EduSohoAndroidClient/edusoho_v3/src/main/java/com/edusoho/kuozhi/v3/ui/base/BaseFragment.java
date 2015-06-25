@@ -60,6 +60,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         return new com.edusoho.kuozhi.v3.model.sys.MessageType[0];
     }
 
+    protected void changeTitle(String title) {
+        mTitle = title;
+        mActivity.setTitle(title);
+    }
+
     public String getTitle() {
         return "";
     }

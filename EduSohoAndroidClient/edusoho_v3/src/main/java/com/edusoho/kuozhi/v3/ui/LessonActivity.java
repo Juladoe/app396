@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -23,7 +22,6 @@ import com.edusoho.kuozhi.v3.model.bal.LessonsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.TestpaperStatus;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -45,6 +43,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String CONTENT = "content";
     public static final String FROM_CACHE = "from_cache";
     public static final String RESULT_ID = "resultId";
+    public static final String LESSON_MODEL = "lesson_MODEL";
+    public static final String LESSON_JSON = "lesson_JSON";
 
     private String mCurrentFragment;
     private Class mCurrentFragmentClass;
@@ -56,6 +56,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mLessonType;
     private String mTitle;
     private String mLessonListJson;
+    private String mLessonJson;
     private Bundle fragmentData;
     private boolean mFromCache;
     private boolean mIsLearn;
@@ -156,36 +157,39 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 //            mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
 
             if (data != null) {
-                mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
+                mLessonItem = (LessonItem) data.getSerializableExtra(LESSON_MODEL);
+                mLessonJson = data.getStringExtra(LESSON_JSON);
             }
 
-            if (mCourseId == 0 || mLessonId == 0) {
+
+            if (mLessonItem == null) {
                 CommonUtil.longToast(mContext, "课程数据错误！");
                 return;
             }
 
-            RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
-            requestUrl.setParams(new String[]{
-                    "courseId", mCourseId + "",
-                    "lessonId", mLessonId + ""
-            });
+            mLessonItem = getLessonResultType(mLessonItem.type, mLessonJson);
+            if (mLessonItem == null) {
+                return;
+            }
+            setBackMode(BACK, mLessonItem.title);
+            loadLesson(mLessonId);
 
-            ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    LessonItem lessonItem = parseJsonValue(response, new TypeToken<LessonItem>() {
-                    });
-                    lessonItem = getLessonResultType(lessonItem.type, response);
-                    if (lessonItem == null) {
-                        return;
-                    }
-                    setBackMode(BACK, lessonItem.title);
-                    mLessonItem = lessonItem;
-                    loadLesson(mLessonId);
-                    //switchLoadLessonContent(lessonItem);
-                }
-            }, null, "加载中");
+//            RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
+//            requestUrl.setParams(new String[]{
+//                    "courseId", mCourseId + "",
+//                    "lessonId", mLessonId + ""
+//            });
+//
+//            ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(String response) {
+//                    LessonItem lessonItem = parseJsonValue(response, new TypeToken<LessonItem>() {
+//                    });
+//                    lessonItem = getLessonResultType(lessonItem.type, response);
+//
+//                    //switchLoadLessonContent(lessonItem);
+//                }
+//            }, null, "加载中");
 
 
         } catch (Exception ex) {

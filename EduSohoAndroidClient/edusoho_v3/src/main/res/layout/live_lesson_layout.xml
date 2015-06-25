@@ -32,7 +32,7 @@
         android:textColor="@color/base_color_normal"
         android:textSize="20sp" />
 
-    <com.edusoho.kuozhi.view.ESExpandableTextView
+    <com.edusoho.kuozhi.v3.view.ESExpandableTextView
         android:id="@+id/live_introduction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:textColor="@color/base_color_normal"
             android:background="@android:color/transparent"
             android:textSize="20sp" />
-    </com.edusoho.kuozhi.view.ESExpandableTextView>
+    </com.edusoho.kuozhi.v3.view.ESExpandableTextView>
 
     <ImageView
         android:layout_width="match_parent"

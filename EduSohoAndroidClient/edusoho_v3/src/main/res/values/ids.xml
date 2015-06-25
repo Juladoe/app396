@@ -10,4 +10,6 @@
     <item name="restart_preview" type="id" />
     <item name="return_scan_result" type="id" />
     <item name="es_webview_pb" type="id" />
+    <item type="id" name="expandable_text" />
+    <item type="id" name="expand_collapse" />
 </resources>

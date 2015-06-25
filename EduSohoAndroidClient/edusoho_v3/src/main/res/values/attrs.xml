@@ -13,4 +13,14 @@
         <attr name="centerTitleSize" format="dimension" />
         <attr name="centerTitleColor" format="color"></attr>
     </declare-styleable>
+
+    <declare-styleable name="ESExpandableTextView">
+        <attr name="maxCollapsedLines" format="integer" />
+        <attr name="animDuration" format="integer" />
+        <attr name="animAlphaStart" format="float" />
+        <attr name="expandDrawable" format="reference" />
+        <attr name="collapseDrawable" format="reference" />
+        <attr name="expandText" format="string" />
+        <attr name="collapseText" format="string" />
+    </declare-styleable>
 </resources>
