@@ -24,7 +24,7 @@ dependencies {
     compile files('libs/mid-sdk-2.10.jar')
     compile files('libs/jg_filter_sdk_1.1.jar')
     compile files('libs/wup-1.0.0-SNAPSHOT.jar')
-    compile files('libs/Xg_sdk_v2.38_20150405_2046.jar')
+    compile files('libs/Xg_sdk_v2.38.jar')
     compile files('libs/libammsdk.jar')
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'

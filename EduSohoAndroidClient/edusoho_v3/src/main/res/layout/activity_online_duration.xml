@@ -74,6 +74,7 @@
             android:textColor="@color/grey"
             android:textSize="@dimen/medium_font_size" />
 
+
     </LinearLayout>
 
     <ImageView

@@ -11,9 +11,11 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.tencent.android.tpush.XGPushManager;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -84,6 +86,7 @@ public class SettingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
 
+            XGPushManager.unregisterPush(mContext);
             if (TextUtils.isEmpty(app.loginUser.thirdParty)) {
                 RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
                 mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
@@ -102,10 +105,6 @@ public class SettingActivity extends ActionBarBaseActivity {
                     }
                 }, "");
 
-//            M3U8DownService service = M3U8DownService.getService();
-//            if (service != null) {
-//                service.cancelAllDownloadTask();
-//            }
             } else {
                 ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
@@ -114,6 +113,12 @@ public class SettingActivity extends ActionBarBaseActivity {
                 app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
                 finish();
             }
+
+            M3U8DownService service = M3U8DownService.getService();
+            if (service != null) {
+                service.cancelAllDownloadTask();
+            }
+
         }
     };
 
