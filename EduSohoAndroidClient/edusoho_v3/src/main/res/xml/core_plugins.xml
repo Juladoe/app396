@@ -66,6 +66,16 @@
         version="1.0" />
 
     <plugin
+        name="TestpaperParseActivity"
+        package="com.edusoho.kuozhi.v3.ui.test.TestpaperParseActivity"
+        version="1.0" />
+
+    <plugin
+        name="TestpaperActivity"
+        package="com.edusoho.kuozhi.v3.ui.test.TestpaperActivity"
+        version="1.0" />
+
+    <plugin
         name="NewsFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.NewsFragment"
         version="1.0" />
@@ -178,6 +188,46 @@
     <plugin
         name="DownloadingFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.DownloadingFragment"
+        version="1.0" />
+
+    <!--试卷fragment -->
+    <plugin
+        name="ChoiceFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.ChoiceFragment"
+        version="1.0" />
+    <plugin
+        name="DetermineFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.DetermineFragment"
+        version="1.0" />
+    <plugin
+        name="EssayFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.EssayFragment"
+        version="1.0" />
+    <plugin
+        name="FillFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.FillFragment"
+        version="1.0" />
+    <plugin
+        name="MaterialFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.MaterialFragment"
+        version="1.0" />
+    <plugin
+        name="SingleChoiceFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.SingleChoiceFragment"
+        version="1.0" />
+    <plugin
+        name="UncertainChoiceFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.UncertainChoiceFragment"
+        version="1.0" />
+
+    <plugin
+        name="TestpaperResultFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment"
+        version="1.0" />
+
+    <plugin
+        name="TestpaperLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperLessonFragment"
         version="1.0" />
 
     <plugin

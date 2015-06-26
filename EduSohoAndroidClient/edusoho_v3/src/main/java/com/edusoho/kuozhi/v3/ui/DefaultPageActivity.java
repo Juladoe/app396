@@ -271,7 +271,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
                 break;
             case XG_PUSH_REGISTER:
-                registerXgPush();
+                //registerXgPush();
                 break;
             case Const.SWITCH_TAB:
                 try {

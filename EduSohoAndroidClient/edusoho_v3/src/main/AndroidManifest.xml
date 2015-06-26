@@ -140,6 +140,16 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.test.TestpaperActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.test.TestpaperParseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".v3.ui.friend.FriendNewsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

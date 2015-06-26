@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView
+    <com.edusoho.kuozhi.v3.view.EduSohoAutoCompleteTextView
         android:singleLine="true"
         android:layout_margin="24dp"
         android:id="@+id/school_url_edit"

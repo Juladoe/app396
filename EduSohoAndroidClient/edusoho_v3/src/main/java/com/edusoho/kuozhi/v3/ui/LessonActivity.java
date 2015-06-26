@@ -18,7 +18,6 @@ import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonStatus;
-import com.edusoho.kuozhi.v3.model.bal.LessonsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.TestpaperStatus;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -61,13 +60,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private boolean mFromCache;
     private boolean mIsLearn;
     private LessonStatus mLessonStatus;
-
-//    protected MenuDrawer mMenuDrawer;
-//    private EduSohoTextBtn mLearnBtn;
-//    private EduSohoTextBtn mLessonNextBtn;
-//    private EduSohoTextBtn mLessonPreviousBtn;
-//    private EduSohoTextBtn mMoreBtn;
-//    private View mToolsLayout;
 
     private MsgHandler msgHandler;
 
@@ -122,39 +114,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return mLessonId;
     }
 
-//    private void changeLessonStatus(boolean isLearn) {
-//        mLearnBtn.setEnabled(false);
-//        RequestUrl requestUrl = app.bindUrl(
-//                isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
-//        requestUrl.setParams(new String[]{
-//                Const.COURSE_ID, mCourseId + "",
-//                Const.LESSON_ID, mLessonId + ""
-//        });
-//
-//        ajaxPost(requestUrl, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                mLearnBtn.setEnabled(true);
-//                setSupportProgressBarIndeterminateVisibility(false);
-//                LearnStatus result = parseJsonValue(response, new TypeToken<LearnStatus>() {
-//                });
-//                if (result == null) {
-//                    return;
-//                }
-//
-//                setLearnStatus(result);
-//            }
-//        }, null);
-//    }
-
     private void initView() {
         try {
             Intent data = getIntent();
-//            mToolsLayout = findViewById(R.id.lesson_tools_layout);
-//            mLessonNextBtn = (EduSohoTextBtn) findViewById(R.id.lesson_next);
-//            mLessonPreviousBtn = (EduSohoTextBtn) findViewById(R.id.lesson_previous);
-//            mMoreBtn = (EduSohoTextBtn) findViewById(R.id.lesson_more_btn);
-//            mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
 
             if (data != null) {
                 mLessonItem = (LessonItem) data.getSerializableExtra(LESSON_MODEL);
@@ -173,127 +135,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             }
             setBackMode(BACK, mLessonItem.title);
             loadLesson(mLessonId);
-
-//            RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
-//            requestUrl.setParams(new String[]{
-//                    "courseId", mCourseId + "",
-//                    "lessonId", mLessonId + ""
-//            });
-//
-//            ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    LessonItem lessonItem = parseJsonValue(response, new TypeToken<LessonItem>() {
-//                    });
-//                    lessonItem = getLessonResultType(lessonItem.type, response);
-//
-//                    //switchLoadLessonContent(lessonItem);
-//                }
-//            }, null, "加载中");
-
-
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
     }
 
-//    private void initRedirectBtn() {
-//        if (mNextLessonItem == null) {
-//            mLessonNextBtn.setEnabled(false);
-//        } else {
-//            mLessonNextBtn.setEnabled(true);
-//        }
-//        if (mPreviousLessonItem == null) {
-//            mLessonPreviousBtn.setEnabled(false);
-//        } else {
-//            mLessonPreviousBtn.setEnabled(true);
-//        }
-//    }
-
-    /**
-     * 去掉mLessonListJson中不是lesson的item
-     */
-    private void clearLessonResult() {
-        LessonsResult result = mActivity.parseJsonValue(
-                mLessonListJson, new TypeToken<LessonsResult>() {
-                });
-        mCleanLessonList = result.lessons;
-
-        for (int i = 0; i < mCleanLessonList.size(); i++) {
-            if (!mCleanLessonList.get(i).itemType.equals("lesson")) {
-                mCleanLessonList.remove(i--);
-            }
-        }
-    }
-
-    /**
-     * 初始化前一个课时和后一个课时信息
-     */
-    private void initLessonResult() {
-        ArrayList<LessonItem> list = mCleanLessonList;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).id == mLessonId) {
-                if (i == 0) {
-                    mPreviousLessonItem = null;
-                    mNextLessonItem = list.size() > 1 ? list.get(i + 1) : null;
-                } else if (i == list.size() - 1) {
-                    mPreviousLessonItem = list.get(i - 1);
-                    mNextLessonItem = null;
-                } else {
-                    mPreviousLessonItem = list.get(i - 1);
-                    mNextLessonItem = list.get(i + 1);
-                }
-            }
-        }
-    }
-
-//    private void goToAnotherLesson(LessonItem lessonItem) {
-//        CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
-//        if (courseLessonType == CourseLessonType.VIDEO) {
-//            int offlineType = app.config.offlineType;
-//            if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
-//                AppUtil.showAlertDialog(
-//                        mActivity,
-//                        "当前设置视频课时观看、下载为wifi模式!\n模式可以在设置里修改。"
-//                );
-//                return;
-//            }
-//        }
-//
-//        mLessonId = lessonItem.id;
-//        mLessonType = lessonItem.type;
-//        initLessonResult();
-//        initRedirectBtn();
-//        hieToolsByAnim();
-//        setTitle(lessonItem.title);
-//        loadLesson(mLessonId);
-//    }
-
-    /**
-     * 获取课时是否已学状态
-     */
-//    private void loadLessonStatus() {
-//        RequestUrl requestUrl = app.bindUrl(Const.LESSON_STATUS, true);
-//        requestUrl.setParams(new String[]{
-//                "courseId", mCourseId + "",
-//                "lessonId", mLessonId + ""
-//        });
-//
-//        ajaxPost(requestUrl, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                mLessonStatus = parseJsonValue(
-//                        response, new TypeToken<LessonStatus>() {
-//                        });
-//                if (mLessonStatus.learnStatus != LearnStatus.finished) {
-//                    mLessonStatus.learnStatus = LearnStatus.learning;
-//                }
-//                mToolsLayout.setVisibility(View.VISIBLE);
-//                showToolsByAnim();
-//                setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
-//            }
-//        }, null);
-//    }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -317,46 +163,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         Log.d(null, "onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
     }
-
-//    private void bindListener() {
-//        mLearnBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                boolean isLearn;
-//                if (mLearnBtn.getTag() == null) {
-//                    isLearn = true;
-//                } else {
-//                    isLearn = (Boolean) mLearnBtn.getTag();
-//                }
-//                changeLessonStatus(isLearn);
-//            }
-//        });
-//
-//        mLessonNextBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (mNextLessonItem != null) {
-//                    goToAnotherLesson(mNextLessonItem);
-//                }
-//            }
-//        });
-//
-//        mLessonPreviousBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (mPreviousLessonItem != null) {
-//                    goToAnotherLesson(mPreviousLessonItem);
-//                }
-//            }
-//        });
-//
-//        mMoreBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //showMoreBtn(view);
-//            }
-//        });
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -397,17 +203,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (lessonItem == null) {
             return;
         }
-//        if (!mLessonType.equals("testpaper") && mIsLearn) {
-//            loadLessonStatus();
-//            bindListener();
-//        }
+
         mLessonItem = lessonItem;
         switchLoadLessonContent(mLessonItem);
     }
 
     private LessonItem getLessonResultType(String lessonType, String object) {
         CourseLessonType courseLessonType = CourseLessonType.value(lessonType);
-        LessonItem<String> normalLesson = null;
         switch (courseLessonType) {
             case PPT:
                 LessonItem<ArrayList<String>> pptLesson = parseJsonValue(
@@ -432,7 +234,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             case AUDIO:
             case TEXT:
             default:
-                normalLesson = parseJsonValue(
+                LessonItem<String> normalLesson = parseJsonValue(
                         object, new TypeToken<LessonItem<String>>() {
                         });
                 if (mFromCache) {
@@ -474,22 +276,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return new File(dirBuilder.toString(), "play.m3u8");
     }
 
-//    private void setLearnStatus(LearnStatus learnStatus) {
-//        Resources resources = getResources();
-//        switch (learnStatus) {
-//            case learning:
-//                mLearnBtn.setTag(true);
-//                mLearnBtn.setIcon(R.string.learning_status);
-//                mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learn_btn_normal));
-//                break;
-//            case finished:
-//                mLearnBtn.setTag(false);
-//                mLearnBtn.setIcon(R.string.learned_status);
-//                mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learned_btn_normal));
-//                break;
-//        }
-//    }
-
     private void switchLoadLessonContent(LessonItem lessonItem) {
         CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
         if (Const.NETEASE_OPEN_COURSE.equals(lessonItem.mediaSource)) {
@@ -507,19 +293,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         stringBuilder.append("LessonFragment");
         loadLessonFragment(stringBuilder.toString());
     }
-
-//    private void showToolsByAnim() {
-//        mToolsLayout.measure(0, 0);
-//        int height = mToolsLayout.getMeasuredHeight();
-//        Log.d(null, "height->" + height);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
-//    }
-//
-//    private void hieToolsByAnim() {
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
-//    }
 
     private void loadLessonFragment(String fragmentName) {
         Log.d(null, "fragmentName->" + fragmentName);

@@ -6,15 +6,15 @@ import android.widget.AutoCompleteTextView;
 /**
  * Created by howzhi on 14-8-14.
  */
-public class EdusohoAutoCompleteTextView extends AutoCompleteTextView {
+public class EduSohoAutoCompleteTextView extends AutoCompleteTextView {
 
     private KeyDownCallback mKeyDownCallback;
 
-    public EdusohoAutoCompleteTextView(Context context) {
+    public EduSohoAutoCompleteTextView(Context context) {
         super(context);
     }
 
-    public EdusohoAutoCompleteTextView(Context context, android.util.AttributeSet attrs) {
+    public EduSohoAutoCompleteTextView(Context context, android.util.AttributeSet attrs) {
         super(context, attrs);
     }
 

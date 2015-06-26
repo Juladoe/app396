@@ -16,9 +16,9 @@ public class RequestUrl {
     public IdentityHashMap<String, Object> muiltKeysMap;
 
     public RequestUrl() {
-        heads = new HashMap<String, String>();
-        params = new HashMap<String, String>();
-        muiltParams = new HashMap<String, Object>();
+        heads = new HashMap<>();
+        params = new HashMap<>();
+        muiltParams = new HashMap<>();
         initHeads();
     }
 
@@ -77,7 +77,7 @@ public class RequestUrl {
     }
 
     public IdentityHashMap<String, Object> initKeysMap() {
-        muiltKeysMap = new IdentityHashMap<String, Object>();
+        muiltKeysMap = new IdentityHashMap<>();
         return muiltKeysMap;
     }
 

@@ -24,7 +24,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView;
+import com.edusoho.kuozhi.v3.view.EduSohoAutoCompleteTextView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
@@ -41,7 +41,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
     private static final String SEARCH_HISTORY = "search_history";
     private static final int REQUEST_QR = 001;
     private static final int RESULT_QR = 002;
-    private EdusohoAutoCompleteTextView mSearchEdt;
+    private EduSohoAutoCompleteTextView mSearchEdt;
     private View mSearchBtn;
     private ArrayList<String> mSchoolList;
 
@@ -56,8 +56,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
     private void initView() {
         mSearchBtn = findViewById(R.id.normal_search_btn);
-        mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
-        mSearchEdt.setKeyDownCallback(new EdusohoAutoCompleteTextView.KeyDownCallback() {
+        mSearchEdt = (EduSohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
+        mSearchEdt.setKeyDownCallback(new EduSohoAutoCompleteTextView.KeyDownCallback() {
             @Override
             public void invoke(int length) {
                 if (length < 1) {

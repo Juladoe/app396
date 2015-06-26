@@ -44,6 +44,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
@@ -276,6 +277,7 @@ public class EdusohoApp extends Application {
 
     public void initApp() {
         runTask = new HashMap<>();
+        initWorkSpace();
         initImageLoaderConfig();
         loadConfig();
 
@@ -505,16 +507,20 @@ public class EdusohoApp extends Application {
     }
 
     private void initWorkSpace() {
-
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            File sdcard = Environment.getExternalStorageDirectory();
+            File workSpace = new File(sdcard, "edusoho");
+            if (!workSpace.exists()) {
+                workSpace.mkdir();
+            }
+        } else {
+            CommonUtil.longToast(getApplicationContext(), "设备没有内存卡,数据将保存在手机内存中！");
+        }
     }
 
     public static File getWorkSpace() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            File sdcard = Environment.getExternalStorageDirectory();
-            return new File(sdcard, "edusoho");
-        }
-
-        return null;
+        File file = new File(Environment.getExternalStorageDirectory() + "/edusoho");
+        return file != null ? file : null;
     }
 
     public void setDisplay(Activity activity) {
