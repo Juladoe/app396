@@ -122,6 +122,10 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
 
     @Override
     public void onNotifactionShowedResult(Context context, XGPushShowedResult xgPushShowedResult) {
+        if (context == null || xgPushShowedResult == null) {
+
+            return;
+        }
 
     }
 }

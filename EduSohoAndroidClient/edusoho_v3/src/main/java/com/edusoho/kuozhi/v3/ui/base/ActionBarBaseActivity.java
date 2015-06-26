@@ -36,6 +36,23 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         app.registMsgSource(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        XGPushClickedResult click = XGPushManager.onActivityStarted(this);
+        Log.d("TPush", "onResumeXGPushClickedResult:" + click);
+        if (click != null) { // 判断是否来自信鸽的打开方式
+            CommonUtil.longToast(this, "通知被点击:" + click.toString());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("MainActivity-->", "onPause");
+        XGPushManager.onActivityStoped(this);
+    }
+
     public void setBackMode(String backTitle, String title) {
         mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
         mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.tv_action_bar_title);
@@ -58,23 +75,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        XGPushClickedResult click = XGPushManager.onActivityStarted(this);
-        Log.d("TPush", "onResumeXGPushClickedResult:" + click);
-        if (click != null) { // 判断是否来自信鸽的打开方式
-            CommonUtil.longToast(this, "通知被点击:" + click.toString());
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("MainActivity-->", "onPause");
-        XGPushManager.onActivityStoped(this);
     }
 
     @Override
