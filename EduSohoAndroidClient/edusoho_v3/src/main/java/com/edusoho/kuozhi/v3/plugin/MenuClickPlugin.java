@@ -121,6 +121,17 @@ public class MenuClickPlugin extends CordovaPlugin {
                     }
                 }
             }, null);
+        } else if (action.equals("showImages")) {
+            int index = args.getInt(0);
+            JSONArray imageArray = args.getJSONArray(1);
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", index);
+            String[] imgPaths = new String[imageArray.length()];
+            for (int i = 0; i < imageArray.length(); i++) {
+                imgPaths[i] = imageArray.getString(i);
+            }
+            bundle.putStringArray("images", imgPaths);
+            EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", cordova.getActivity(), bundle);
         }
         return super.execute(action, args, callbackContext);
     }

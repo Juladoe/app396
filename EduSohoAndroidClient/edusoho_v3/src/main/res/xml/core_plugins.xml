@@ -61,6 +61,11 @@
         version="1.0" />
 
     <plugin
+        name="ViewPagerActivity"
+        package="com.edusoho.kuozhi.v3.view.photo.ViewPagerActivity"
+        version="1.0" />
+
+    <plugin
         name="AddPhoneContactActivity"
         package="com.edusoho.kuozhi.v3.ui.friend.AddPhoneContactActivity"
         version="1.0" />

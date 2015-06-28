@@ -46,6 +46,7 @@ import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.MultipartRequest;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
@@ -126,9 +127,21 @@ public class EdusohoApp extends Application {
         return EdusohoMainService.getService();
     }
 
+    public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        mVolley.getRequestQueue();
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, requestUrl, responseListener, errorListener) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return requestUrl.getHeads();
+            }
+        };
+        multipartRequest.setTag(requestUrl.url);
+        return mVolley.addToRequestQueue(multipartRequest);
+    }
+
     public Request<String> postUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, requestUrl.url, responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

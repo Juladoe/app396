@@ -136,6 +136,34 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
+    public void ajaxPostMultiUrl(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
+        app.postMultiUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    if (handleRequest(response) != null) {
+                        responseListener.onResponse(response);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                } else {
+                    if (errorListener != null) {
+                        errorListener.onErrorResponse(error);
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                    }
+                }
+            }
+        });
+    }
+
     public void ajaxPost(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override

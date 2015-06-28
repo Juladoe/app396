@@ -99,7 +99,7 @@ public class EssayFragment extends SelectQuestionFragment {
                 "file", imageFile
         });
 
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+        mActivity.ajaxPostMultiUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();
@@ -120,6 +120,28 @@ public class EssayFragment extends SelectQuestionFragment {
                 loadDialog.dismiss();
             }
         });
+
+//        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                loadDialog.dismiss();
+//                String result = mActivity.parseJsonValue(
+//                        response, new TypeToken<String>() {
+//                        });
+//
+//                Log.d(null, "upload result->" + result);
+//                if (result == null || TextUtils.isEmpty(result)) {
+//                    CommonUtil.longToast(mContext, "上传失败!服务器暂不支持过大图片");
+//                }
+//                callback.success(String.format("<img src='%s'/>", result));
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                CommonUtil.longToast(mContext, "上传失败!服务器暂不支持过大图片");
+//                loadDialog.dismiss();
+//            }
+//        });
     }
 
     private void camera() {
