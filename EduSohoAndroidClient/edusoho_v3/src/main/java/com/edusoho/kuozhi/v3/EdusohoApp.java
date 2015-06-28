@@ -290,8 +290,8 @@ public class EdusohoApp extends Application {
 
     public void initApp() {
         runTask = new HashMap<>();
-        initWorkSpace();
-        initImageLoaderConfig();
+        File workFile = initWorkSpace();
+        initImageLoaderConfig(workFile);
         loadConfig();
 
         mEngine = CoreEngine.create(this);
@@ -299,10 +299,9 @@ public class EdusohoApp extends Application {
         startMainService();
     }
 
-    private void initImageLoaderConfig() {
-        File file = new File(getCacheDir() + "/" + getResources().getString(R.string.image_cache_path));
-        if (!file.exists()) {
-            file.mkdirs();
+    private void initImageLoaderConfig(File file) {
+        if (file == null || !file.exists()) {
+            file = new File(getCacheDir() + "/" + getResources().getString(R.string.image_cache_path));
         }
         mImageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(this)
@@ -519,16 +518,17 @@ public class EdusohoApp extends Application {
         edit.commit();
     }
 
-    private void initWorkSpace() {
+    private File initWorkSpace() {
+        File workSpace = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File workSpace = new File(sdcard, "edusoho");
+            workSpace = new File(Environment.getExternalStorageDirectory(), "edusoho");
             if (!workSpace.exists()) {
                 workSpace.mkdir();
             }
         } else {
             CommonUtil.longToast(getApplicationContext(), "设备没有内存卡,数据将保存在手机内存中！");
         }
+        return workSpace;
     }
 
     public static File getWorkSpace() {
