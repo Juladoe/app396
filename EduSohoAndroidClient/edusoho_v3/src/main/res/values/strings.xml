@@ -60,7 +60,7 @@
     <string name="authorize_cancelled">取消授权</string>
 
     <!--ttf-->
-    <string name="font_friends">&#xe605;</string>
+    <string name="font_friends">&#xe628;</string>
     <string name="font_news">&#xe607;</string>
     <string name="font_find">&#xe604;</string>
     <string name="font_lock">&#xe60e;</string>
