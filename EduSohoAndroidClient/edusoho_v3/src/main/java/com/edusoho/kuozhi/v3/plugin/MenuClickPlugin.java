@@ -40,11 +40,11 @@ public class MenuClickPlugin extends CordovaPlugin {
                 EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
             }
         } else if (action.equals("openWebView")) {
-            final String jsonObject = args.getString(0);
+            final String strUrl = args.getString(0);
             EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", cordova.getActivity(), new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(WebViewActivity.URL, jsonObject);
+                    startIntent.putExtra(WebViewActivity.URL, strUrl);
                 }
             });
         } else if (action.equals("closeWebView")) {
