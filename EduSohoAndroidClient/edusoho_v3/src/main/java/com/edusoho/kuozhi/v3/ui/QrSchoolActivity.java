@@ -116,16 +116,16 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
 
                     if (userResult.token == null || "".equals(userResult.token)) {
                         app.removeToken();
+                        app.sendMessage(Const.LOGOUT_SUCCESS, null);
                     } else {
                         app.saveToken(userResult);
+                        app.sendMessage(Const.LOGIN_SUCCESS, null);
                     }
                     app.setCurrentSchool(site);
-                    app.sendMessage(Const.LOGIN_SUCCESS, null);
-
 
                     showSchSplash(site.name, site.splashs);
                     Log.d("QrCode-->", result);
-                    CommonUtil.longToast(mActivity, result);
+                    //CommonUtil.longToast(mActivity, result);
                     finish();
 
                 } catch (Exception e) {

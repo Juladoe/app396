@@ -211,7 +211,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         finish();
     }
 
-
     /**
      * 处理网校异常dlg
      */
