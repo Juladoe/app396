@@ -8,11 +8,11 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
+import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -138,8 +138,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                                 );
                                 app.startUpdateWebView(updateUrl);
                             } else {
-                                // TODO SCAN
-                                //QrSchoolActivity.start(mActivity);
+                                QrSchoolActivity.start(mActivity);
                                 finish();
                             }
                         }
@@ -160,8 +159,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                // TODO SCAN
-                                //QrSchoolActivity.start(mActivity);
+                                QrSchoolActivity.start(mActivity);
                                 finish();
                             }
                         }
@@ -226,8 +224,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     @Override
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
-                            // TODO SCAN
-                            //QrSchoolActivity.start(mActivity);
+                            QrSchoolActivity.start(mActivity);
                             finish();
                         }
                     }
@@ -298,7 +295,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    Log.d(null, "regist failed");
                 }
             });
         }

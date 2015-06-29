@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -43,12 +45,21 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         initView();
     }
 
+    public static void start(Activity context) {
+        Activity qrSchoolActivity = EdusohoApp.runTask.get("QrSchoolActivity");
+        if (qrSchoolActivity != null) {
+            qrSchoolActivity.finish();
+        }
+        Intent intent = new Intent();
+        intent.setClass(context, QrSchoolActivity.class);
+        context.startActivity(intent);
+    }
+
     private void initView() {
         mQrSearchBtn = (Button) findViewById(R.id.qr_search_btn);
         mQrSearchBtn.setOnClickListener(mSearchClickListener);
         tvOther = (TextView) findViewById(R.id.qr_other_btn);
         tvOther.setOnClickListener(mOtherClickListener);
-
     }
 
     private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
