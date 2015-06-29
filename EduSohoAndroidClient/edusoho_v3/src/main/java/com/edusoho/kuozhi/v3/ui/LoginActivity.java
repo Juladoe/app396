@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -111,7 +112,9 @@ public class LoginActivity extends ActionBarBaseActivity {
                     mActivity.app.saveToken(userResult);
                     mActivity.setResult(LoginActivity.OK);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                    EdusohoApp.app.pushRegister(bundle);
                     mActivity.finish();
 
                 }
@@ -142,7 +145,10 @@ public class LoginActivity extends ActionBarBaseActivity {
                             user.thirdParty = platform.getDb().getPlatformNname();
                             app.saveToken(new UserResult(user, res.get("id").toString(), null));
                             app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                            app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+                            //TODO 获取userInfo
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+                            app.pushRegister(bundle);
                             mActivity.finish();
                         } catch (Exception ex) {
                             Log.e("ThirdPartyLogin-->", ex.getMessage());
@@ -176,8 +182,10 @@ public class LoginActivity extends ActionBarBaseActivity {
                         user.smallAvatar = res.get("figureurl_qq_1").toString();
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, platform.getDb().getToken(), null));
-                        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                        app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+                        //TODO 获取userInfo
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+                        app.pushRegister(bundle);
                         mActivity.finish();
                     }
                 }
@@ -210,7 +218,10 @@ public class LoginActivity extends ActionBarBaseActivity {
                         user.thirdParty = platform.getDb().getPlatformNname();
                         app.saveToken(new UserResult(user, res.get("unionid").toString(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                        app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+                        //TODO 获取userInfo
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+                        app.pushRegister(bundle);
                         mActivity.finish();
                     }
                 }

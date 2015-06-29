@@ -127,13 +127,29 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
 
                     Log.d("QrCode-->", result);
                     //CommonUtil.longToast(mActivity, result);
-                    app.registDevice(new NormalCallback() {
+
+                    RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
+                    app.postUrl(requestUrl, new Response.Listener<String>() {
                         @Override
-                        public void success(Object obj) {
-                            showSchSplash(site.name, site.splashs);
-                            finish();
+                        public void onResponse(String response) {
+                            // TODO save apitoken
+                            app.saveApiToken(response);
+
+                            app.registDevice(new NormalCallback() {
+                                @Override
+                                public void success(Object obj) {
+                                    showSchSplash(site.name, site.splashs);
+                                    finish();
+                                }
+                            });
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            CommonUtil.longToast(mContext, "无法获取网校Token");
                         }
                     });
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     CommonUtil.longToast(mActivity, "二维码信息错误!");

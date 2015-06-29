@@ -30,10 +30,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushConfig;
-import com.tencent.android.tpush.XGPushManager;
-import com.tencent.android.tpush.common.Constants;
 
 import org.apache.cordova.CordovaWebView;
 
@@ -45,7 +41,6 @@ import java.util.TimerTask;
  */
 public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
-    public static final int XG_PUSH_REGISTER = 0x01;
 
     private String mCurrentTag;
     private boolean mIsExit;
@@ -239,24 +234,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void registerXgPush() {
-        XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
-            @Override
-            public void onSuccess(Object data, int flag) {
-                Log.w(Constants.LogTag,
-                        "+++ register push success. token:" + data);
-            }
-
-            @Override
-            public void onFail(Object data, int errCode, String msg) {
-                Log.w(Constants.LogTag,
-                        "+++ register push fail. token:" + data
-                                + ", errCode:" + errCode + ",msg:"
-                                + msg);
-            }
-        });
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -269,9 +246,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         switch (messageType.code) {
             case Const.OPEN_COURSE_CHAT:
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
-                break;
-            case XG_PUSH_REGISTER:
-                //registerXgPush();
                 break;
             case Const.SWITCH_TAB:
                 try {
@@ -291,7 +265,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
-                new MessageType(XG_PUSH_REGISTER, source),
                 new MessageType(Const.SWITCH_TAB, source)};
         return messageTypes;
     }

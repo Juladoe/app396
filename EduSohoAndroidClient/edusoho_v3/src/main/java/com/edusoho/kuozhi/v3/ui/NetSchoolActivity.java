@@ -177,14 +177,29 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                         app.removeToken();
                         showSchSplash(site.name, site.splashs);
 
-                        app.registDevice(new NormalCallback() {
+                        RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
+                        app.postUrl(requestUrl, new Response.Listener<String>() {
                             @Override
-                            public void success(Object obj) {
-                                app.setCurrentSchool(site);
-                                app.removeToken();
-                                showSchSplash(site.name, site.splashs);
+                            public void onResponse(String response) {
+                                // TODO save apitoken
+                                app.saveApiToken(response);
+
+                                app.registDevice(new NormalCallback() {
+                                    @Override
+                                    public void success(Object obj) {
+                                        app.setCurrentSchool(site);
+                                        app.removeToken();
+                                        showSchSplash(site.name, site.splashs);
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                CommonUtil.longToast(mContext, "无法获取网校Token");
                             }
                         });
+
                     }
                 }, new Response.ErrorListener() {
                     @Override

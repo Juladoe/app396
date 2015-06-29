@@ -8,6 +8,9 @@ public class AppConfig {
     public boolean startWithSchool;
     public boolean showSplash;
     public boolean isPublicRegistDevice;
-
+    /**
+     * 网校token
+     */
+    public String apiToken;
     public int offlineType;
 }
