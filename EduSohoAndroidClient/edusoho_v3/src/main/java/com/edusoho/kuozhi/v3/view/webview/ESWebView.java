@@ -140,15 +140,18 @@ public class ESWebView extends RelativeLayout {
     }
 
     public void destroy() {
-        if (mWebView.pluginManager != null) {
-            mWebView.pluginManager.onDestroy();
+        try {
+            if (mWebView.pluginManager != null) {
+                mWebView.handleDestroy();
+            }
+            mRequestManager.destroy();
+            RelativeLayout relativeLayout = (RelativeLayout) mWebView.getParent();
+            relativeLayout.removeView(mWebView);
+            mWebView.removeAllViews();
+            mWebView.destroy();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
         }
-        mRequestManager.destroy();
-        RelativeLayout relativeLayout = (RelativeLayout) mWebView.getParent();
-        relativeLayout.removeView(mWebView);
-        mWebView.removeAllViews();
-        mWebView.handleDestroy();
-        mWebView.destroy();
     }
 
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {

@@ -12,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -101,7 +102,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                 loading.dismiss();
                 try {
                     final UserResult userResult = app.gson.fromJson(
-                            response.toString(), new TypeToken<UserResult>() {
+                            response, new TypeToken<UserResult>() {
                             }.getType());
 
                     if (userResult == null) {
@@ -109,7 +110,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         return;
                     }
 
-                    School site = userResult.site;
+                    final School site = userResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
                     }
@@ -123,11 +124,16 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }
                     app.setCurrentSchool(site);
 
-                    showSchSplash(site.name, site.splashs);
+
                     Log.d("QrCode-->", result);
                     //CommonUtil.longToast(mActivity, result);
-                    finish();
-
+                    app.registDevice(new NormalCallback() {
+                        @Override
+                        public void success(Object obj) {
+                            showSchSplash(site.name, site.splashs);
+                            finish();
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                     CommonUtil.longToast(mActivity, "二维码信息错误!");

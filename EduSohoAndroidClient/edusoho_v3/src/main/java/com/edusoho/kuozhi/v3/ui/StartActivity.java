@@ -236,7 +236,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     private void registDevice() {
         Log.d(null, "registDevice->");
         AppConfig config = app.config;
-        if (config.isPublicRegistDevice && config.isRegistDevice) {
+        if (config.isPublicRegistDevice) {
             return;
         }
 
@@ -250,11 +250,11 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 public void onResponse(String response) {
                     try {
                         Boolean result = app.gson.fromJson(
-                                response.toString(), new TypeToken<Boolean>() {
+                                response, new TypeToken<Boolean>() {
                                 }.getType()
                         );
 
-                        if (true == result) {
+                        if (true) {
                             app.config.isPublicRegistDevice = true;
                             app.saveConfig();
                         }
@@ -266,35 +266,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                }
-            });
-        }
-
-        if (!config.isRegistDevice) {
-            RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
-            requestUrl.setParams(params);
-            app.postUrl(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(null, "regist device to school");
-                    try {
-                        Boolean result = app.gson.fromJson(
-                                response.toString(), new TypeToken<Boolean>() {
-                                }.getType()
-                        );
-
-                        if (true == result) {
-                            app.config.isRegistDevice = true;
-                            app.saveConfig();
-                        }
-                    } catch (Exception e) {
-                        Log.e(null, e.toString());
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(null, "regist failed");
                 }
             });
         }

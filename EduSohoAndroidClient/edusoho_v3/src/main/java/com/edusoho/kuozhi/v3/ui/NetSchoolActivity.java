@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -167,14 +168,23 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                             PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                             return;
                         }
-                        School site = schoolResult.site;
+                        final School site = schoolResult.site;
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
 
-                        showSchSplash(site.name, site.splashs);
                         app.setCurrentSchool(site);
                         app.removeToken();
+                        showSchSplash(site.name, site.splashs);
+
+                        app.registDevice(new NormalCallback() {
+                            @Override
+                            public void success(Object obj) {
+                                app.setCurrentSchool(site);
+                                app.removeToken();
+                                showSchSplash(site.name, site.splashs);
+                            }
+                        });
                     }
                 }, new Response.ErrorListener() {
                     @Override

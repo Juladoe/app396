@@ -334,6 +334,38 @@ public class EdusohoApp extends Application {
         return params;
     }
 
+    public void registDevice(final NormalCallback normalCallback) {
+        HashMap<String, String> params = getPlatformInfo();
+        RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
+        requestUrl.setParams(params);
+        app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(null, "regist device to school");
+                try {
+                    Boolean result = app.gson.fromJson(
+                            response, new TypeToken<Boolean>() {
+                            }.getType()
+                    );
+
+                    if (result) {
+                        app.saveConfig();
+                    }
+
+                    normalCallback.success(null);
+                } catch (Exception e) {
+                    Log.e(null, e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                normalCallback.success(null);
+                Log.d(null, "regist failed");
+            }
+        });
+    }
+
     public boolean getNetIsConnect() {
         ConnectivityManager connManager = (ConnectivityManager)
                 getSystemService(CONNECTIVITY_SERVICE);
@@ -437,7 +469,6 @@ public class EdusohoApp extends Application {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         config = new AppConfig();
         config.showSplash = sp.getBoolean("showSplash", true);
-        config.isRegistDevice = sp.getBoolean("registDevice", false);
         config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
 
@@ -511,7 +542,6 @@ public class EdusohoApp extends Application {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("showSplash", config.showSplash);
-        edit.putBoolean("registDevice", config.isRegistDevice);
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
         edit.putInt("offlineType", config.offlineType);
