@@ -193,7 +193,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                showSchoolErrorDlg();
             }
         });
     }
