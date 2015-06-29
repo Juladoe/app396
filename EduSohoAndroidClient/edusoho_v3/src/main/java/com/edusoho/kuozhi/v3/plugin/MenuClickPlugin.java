@@ -132,6 +132,10 @@ public class MenuClickPlugin extends CordovaPlugin {
             }
             bundle.putStringArray("images", imgPaths);
             EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", cordova.getActivity(), bundle);
+        } else if (action.equals("clearUserToken")) {
+            EdusohoApp.app.removeToken();
+            EdusohoApp.app.sendMessage(Const.LOGOUT_SUCCESS, null);
+            EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
         }
         return super.execute(action, args, callbackContext);
     }
