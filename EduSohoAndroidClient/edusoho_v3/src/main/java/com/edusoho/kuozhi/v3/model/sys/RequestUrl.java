@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.model.sys;
 
+import android.os.Build;
+
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 
@@ -23,7 +25,7 @@ public class RequestUrl {
     }
 
     private void initHeads() {
-        heads.put("User-Agent", "Android");
+        heads.put("User-Agent", String.format("%s%s%s", Build.MODEL, " Android-kuozhi ", Build.VERSION.SDK));
     }
 
     public RequestUrl(String url) {

@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
 
@@ -15,13 +16,14 @@ public abstract class RequestManager {
 
     private static RequestManager mRequestManager;
 
-    private HashMap<String, RequestHandler> mRequestHandlerList;
+    private LinkedHashMap<String, RequestHandler> mRequestHandlerList;
 
     protected ScheduledThreadPoolExecutor mWorkExecutor;
+    private static final int MAX_POOL = 10;
 
     public RequestManager() {
-        mRequestHandlerList = new HashMap<>();
-        mWorkExecutor = new ScheduledThreadPoolExecutor(3);
+        mRequestHandlerList = new LinkedHashMap<>();
+        mWorkExecutor = new ScheduledThreadPoolExecutor(MAX_POOL);
     }
 
     public static RequestManager getDefaultManager() {
@@ -41,6 +43,8 @@ public abstract class RequestManager {
 
     public abstract <T> T blocPost(Request request, RequestCallback<T> callback);
 
+    public abstract void downloadResource(Request request);
+
     public abstract void post(Request request, RequestCallback callback);
 
     public void registHandler(String pattern, RequestHandler handler) {
@@ -51,6 +55,7 @@ public abstract class RequestManager {
         for (String filter : mRequestHandlerList.keySet()) {
             if (Pattern.matches(filter, request.url)) {
                 mRequestHandlerList.get(filter).handler(request, response);
+                return;
             }
         }
     }

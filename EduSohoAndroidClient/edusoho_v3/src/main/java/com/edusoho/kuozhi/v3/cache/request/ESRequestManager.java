@@ -28,6 +28,10 @@ public class ESRequestManager extends RequestManager {
     }
 
     @Override
+    public void downloadResource(Request request) {
+    }
+
+    @Override
     public <T> T blockGet(Request request, RequestCallback<T> callback) {
         return null;
     }
