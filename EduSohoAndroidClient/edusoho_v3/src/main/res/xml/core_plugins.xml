@@ -51,11 +51,6 @@
         version="1.0" />
 
     <plugin
-        name="ChatLstActivity"
-        package="com.edusoho.kuozhi.v3.ui.NetSchoolActivity"
-        version="1.0" />
-
-    <plugin
         name="ChatActivity"
         package="com.edusoho.kuozhi.v3.ui.ChatActivity"
         version="1.0" />

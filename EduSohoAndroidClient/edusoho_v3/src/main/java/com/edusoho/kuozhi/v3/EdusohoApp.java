@@ -35,7 +35,6 @@ import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.result.PushResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
@@ -514,16 +513,13 @@ public class EdusohoApp extends Application {
         return activity != null;
     }
 
-    public void removeTask(String name) {
-        runTask.remove(name);
-    }
-
     public void addTask(String name, Activity activity) {
         Activity oldActivity = runTask.get(name);
         runTask.put(name, activity);
         if (oldActivity != null) {
             Log.d(null, "remove activity->" + name);
             oldActivity.finish();
+            runTask.remove(name);
         }
     }
 
@@ -778,31 +774,32 @@ public class EdusohoApp extends Application {
         XGPushManager.registerPush(mContext, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object data, int flag) {
-                RequestUrl requestUrl = null;
-                if (bundle != null) {
-                    requestUrl = app.bindPushUrl(Const.BIND);
-                    HashMap<String, String> params = requestUrl.getParams();
-                    params.put("appToken", data.toString());
-                    params.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                    params.put("euqip", Const.EQUIP_TYPE);
-                } else {
-                    requestUrl = app.bindPushUrl(Const.ANONYMOUS_BIND);
-                    HashMap<String, String> params = requestUrl.getParams();
-                    params.put("appToken", data.toString());
-                    params.put("euqip", Const.EQUIP_TYPE);
-                }
-                app.postUrl(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
-                        });
-                        if (pushResult != null && pushResult.result.equals("success")) {
-                            Log.d(TAG, "cloud register success");
-                        } else {
-                            Log.d(TAG, "cloud register failed");
-                        }
-                    }
-                }, null);
+                Log.w(Constants.LogTag, "+++ register push success. token:" + data);
+//                RequestUrl requestUrl = null;
+//                if (bundle != null) {
+//                    requestUrl = app.bindPushUrl(Const.BIND);
+//                    HashMap<String, String> params = requestUrl.getParams();
+//                    params.put("appToken", data.toString());
+//                    params.put("studentId", bundle.getString(Const.BIND_USER_ID));
+//                    params.put("euqip", Const.EQUIP_TYPE);
+//                } else {
+//                    requestUrl = app.bindPushUrl(Const.ANONYMOUS_BIND);
+//                    HashMap<String, String> params = requestUrl.getParams();
+//                    params.put("appToken", data.toString());
+//                    params.put("euqip", Const.EQUIP_TYPE);
+//                }
+//                app.postUrl(requestUrl, new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+//                        });
+//                        if (pushResult != null && pushResult.result.equals("success")) {
+//                            Log.d(TAG, "cloud register success");
+//                        } else {
+//                            Log.d(TAG, "cloud register failed");
+//                        }
+//                    }
+//                }, null);
             }
 
             @Override
@@ -824,18 +821,18 @@ public class EdusohoApp extends Application {
                 RequestUrl requestUrl = bindPushUrl(Const.UNBIND);
                 HashMap<String, String> hashMap = requestUrl.getParams();
                 hashMap.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                postUrl(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
-                        });
-                        if (pushResult != null && pushResult.result.equals("success")) {
-                            Log.d(TAG, "cloud register success");
-                        } else {
-                            Log.d(TAG, "cloud register failed");
-                        }
-                    }
-                }, null);
+//                postUrl(requestUrl, new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+//                        });
+//                        if (pushResult != null && pushResult.result.equals("success")) {
+//                            Log.d(TAG, "cloud register success");
+//                        } else {
+//                            Log.d(TAG, "cloud register failed");
+//                        }
+//                    }
+//                }, null);
             }
 
             @Override
@@ -846,13 +843,13 @@ public class EdusohoApp extends Application {
     }
 
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
-        T value = null;
+        T value;
         try {
             value = gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
             e.printStackTrace();
-            return value;
+            return null;
         }
 
         return value;

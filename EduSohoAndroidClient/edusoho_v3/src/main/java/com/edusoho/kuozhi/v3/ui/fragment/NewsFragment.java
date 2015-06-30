@@ -162,4 +162,9 @@ public class NewsFragment extends BaseFragment {
         MessageType[] messageTypes = new MessageType[]{new MessageType(Const.CHAT_MSG, source)};
         return messageTypes;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

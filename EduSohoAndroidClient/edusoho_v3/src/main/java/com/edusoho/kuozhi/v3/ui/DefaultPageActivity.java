@@ -335,6 +335,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             return;
         }
         super.finish();
+        this.onDestroy();
         Log.d(TAG, "finish");
     }
 }

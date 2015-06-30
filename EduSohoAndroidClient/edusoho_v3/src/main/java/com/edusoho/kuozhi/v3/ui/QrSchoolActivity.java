@@ -124,7 +124,6 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }
                     app.setCurrentSchool(site);
 
-
                     Log.d("QrCode-->", result);
                     //CommonUtil.longToast(mActivity, result);
 

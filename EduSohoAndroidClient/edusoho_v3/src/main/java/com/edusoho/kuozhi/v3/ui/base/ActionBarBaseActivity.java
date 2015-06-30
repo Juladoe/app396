@@ -80,6 +80,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, this.getLocalClassName());
         app.unRegistMsgSource(this);
     }
 
