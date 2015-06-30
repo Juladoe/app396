@@ -23,21 +23,13 @@
             tools:layout="@layout/toolbar_custom"
             android:visibility="gone" />
 
-        <!--<org.apache.cordova.CordovaWebView-->
-        <!--android:id="@+id/webView"-->
-        <!--android:layout_above="@+id/nav_bottom_layout"-->
-        <!--android:layout_below="@+id/toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
-
-
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/nav_bottom_layout"
             android:layout_below="@+id/toolbar"
-            android:background="@color/system_normal_bg"></FrameLayout>
+            android:background="@color/system_normal_bg" />
 
         <include layout="@layout/nav_setting" />
     </RelativeLayout>

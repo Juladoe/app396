@@ -8,11 +8,11 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
+import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -138,8 +138,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                                 );
                                 app.startUpdateWebView(updateUrl);
                             } else {
-                                // TODO SCAN
-                                //QrSchoolActivity.start(mActivity);
+                                QrSchoolActivity.start(mActivity);
                                 finish();
                             }
                         }
@@ -160,8 +159,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                         @Override
                         public void onClick(int button) {
                             if (button == PopupDialog.OK) {
-                                // TODO SCAN
-                                //QrSchoolActivity.start(mActivity);
+                                QrSchoolActivity.start(mActivity);
                                 finish();
                             }
                         }
@@ -195,7 +193,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                showSchoolErrorDlg();
             }
         });
     }
@@ -213,7 +211,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         finish();
     }
 
-
     /**
      * 处理网校异常dlg
      */
@@ -226,8 +223,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     @Override
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
-                            // TODO SCAN
-                            //QrSchoolActivity.start(mActivity);
+                            QrSchoolActivity.start(mActivity);
                             finish();
                         }
                     }
@@ -240,7 +236,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     private void registDevice() {
         Log.d(null, "registDevice->");
         AppConfig config = app.config;
-        if (config.isPublicRegistDevice && config.isRegistDevice) {
+        if (config.isPublicRegistDevice) {
             return;
         }
 
@@ -254,41 +250,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 public void onResponse(String response) {
                     try {
                         Boolean result = app.gson.fromJson(
-                                response.toString(), new TypeToken<Boolean>() {
+                                response, new TypeToken<Boolean>() {
                                 }.getType()
                         );
 
-                        if (true == result) {
+                        if (true) {
                             app.config.isPublicRegistDevice = true;
-                            app.saveConfig();
-                        }
-                    } catch (Exception e) {
-                        Log.e(null, e.toString());
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-
-        if (!config.isRegistDevice) {
-            RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
-            requestUrl.setParams(params);
-            app.postUrl(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(null, "regist device to school");
-                    try {
-                        Boolean result = app.gson.fromJson(
-                                response.toString(), new TypeToken<Boolean>() {
-                                }.getType()
-                        );
-
-                        if (true == result) {
-                            app.config.isRegistDevice = true;
                             app.saveConfig();
                         }
                     } catch (Exception e) {

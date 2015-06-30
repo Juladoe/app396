@@ -70,7 +70,7 @@ public class SchoolSplashActivity extends BaseActivity {
     private static boolean checkIsSaveSchool(Context context, String schoolName) {
         SharedPreferences sp = context.getSharedPreferences("school_history", Context.MODE_APPEND);
         int count = sp.getInt(schoolName, 0);
-        return count > 0 ? true : false;
+        return count > 0;
     }
 
     private static void saveSchoolHistory(Context context, String schoolName) {

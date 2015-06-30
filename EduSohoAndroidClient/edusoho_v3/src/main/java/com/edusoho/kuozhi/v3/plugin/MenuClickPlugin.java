@@ -11,7 +11,6 @@ import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -40,11 +39,11 @@ public class MenuClickPlugin extends CordovaPlugin {
                 EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
             }
         } else if (action.equals("openWebView")) {
-            final String jsonObject = args.getString(0);
+            final String strUrl = args.getString(0);
             EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", cordova.getActivity(), new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(WebViewActivity.URL, jsonObject);
+                    startIntent.putExtra(WebViewActivity.URL, strUrl);
                 }
             });
         } else if (action.equals("closeWebView")) {
@@ -64,7 +63,9 @@ public class MenuClickPlugin extends CordovaPlugin {
             });
             EdusohoApp.app.saveToken(userResult);
             EdusohoApp.app.sendMessage(Const.LOGIN_SUCCESS, null);
-            EdusohoApp.app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+            EdusohoApp.app.pushRegister(bundle);
         } else if (action.equals("share")) {
             String id = args.getString(0);
             String title = args.getString(1);
@@ -132,6 +133,10 @@ public class MenuClickPlugin extends CordovaPlugin {
             }
             bundle.putStringArray("images", imgPaths);
             EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", cordova.getActivity(), bundle);
+        } else if (action.equals("clearUserToken")) {
+            EdusohoApp.app.removeToken();
+            EdusohoApp.app.sendMessage(Const.LOGOUT_SUCCESS, null);
+            EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
         }
         return super.execute(action, args, callbackContext);
     }

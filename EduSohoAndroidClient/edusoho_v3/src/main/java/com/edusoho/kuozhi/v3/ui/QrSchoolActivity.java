@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -43,12 +46,21 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         initView();
     }
 
+    public static void start(Activity context) {
+        Activity qrSchoolActivity = EdusohoApp.runTask.get("QrSchoolActivity");
+        if (qrSchoolActivity != null) {
+            qrSchoolActivity.finish();
+        }
+        Intent intent = new Intent();
+        intent.setClass(context, QrSchoolActivity.class);
+        context.startActivity(intent);
+    }
+
     private void initView() {
         mQrSearchBtn = (Button) findViewById(R.id.qr_search_btn);
         mQrSearchBtn.setOnClickListener(mSearchClickListener);
         tvOther = (TextView) findViewById(R.id.qr_other_btn);
         tvOther.setOnClickListener(mOtherClickListener);
-
     }
 
     private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
@@ -90,7 +102,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                 loading.dismiss();
                 try {
                     final UserResult userResult = app.gson.fromJson(
-                            response.toString(), new TypeToken<UserResult>() {
+                            response, new TypeToken<UserResult>() {
                             }.getType());
 
                     if (userResult == null) {
@@ -98,24 +110,45 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         return;
                     }
 
-                    School site = userResult.site;
+                    final School site = userResult.site;
                     if (!checkMobileVersion(site, site.apiVersionRange)) {
                         return;
                     }
 
                     if (userResult.token == null || "".equals(userResult.token)) {
                         app.removeToken();
+                        app.sendMessage(Const.LOGOUT_SUCCESS, null);
                     } else {
                         app.saveToken(userResult);
+                        app.sendMessage(Const.LOGIN_SUCCESS, null);
                     }
                     app.setCurrentSchool(site);
-                    app.sendMessage(Const.LOGIN_SUCCESS, null);
 
 
-                    showSchSplash(site.name, site.splashs);
                     Log.d("QrCode-->", result);
-                    CommonUtil.longToast(mActivity, result);
-                    finish();
+                    //CommonUtil.longToast(mActivity, result);
+
+                    RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
+                    app.postUrl(requestUrl, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            // TODO save apitoken
+                            app.saveApiToken(response);
+
+                            app.registDevice(new NormalCallback() {
+                                @Override
+                                public void success(Object obj) {
+                                    showSchSplash(site.name, site.splashs);
+                                    finish();
+                                }
+                            });
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            CommonUtil.longToast(mContext, "无法获取网校Token");
+                        }
+                    });
 
                 } catch (Exception e) {
                     e.printStackTrace();
