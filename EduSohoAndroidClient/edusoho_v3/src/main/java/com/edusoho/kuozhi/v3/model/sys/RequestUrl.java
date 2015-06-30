@@ -41,6 +41,23 @@ public class RequestUrl {
         }
     }
 
+    public String setGetParams(String[] values) {
+        if(values == null || values.length == 0){
+            return url;
+        }
+
+        StringBuffer sb = new StringBuffer(url);
+        for (int i = 0;i<values.length;i += 2){
+            if(i==0){
+                sb.deleteCharAt(sb.length()-1);
+                sb.append("?"+values[i]+"="+values[i+1]);
+            }else {
+                sb.append("&"+values[i]+"="+values[i+1]);
+            }
+        }
+        return sb.toString();
+    }
+
     public void setMuiltParams(Object[] values) {
         if (values == null || values.length == 0) {
             return;

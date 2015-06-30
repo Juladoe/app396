@@ -103,7 +103,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             }
 
             holder.mImage.setImageResource(mList.get(position).avatarID);
-            holder.mName.setText(mList.get(position).name);
+            holder.mName.setText(mList.get(position).nickname);
             if(position == 3){
                 holder.mState.setImageResource(R.drawable.have_add_friend_wait);
             }else if(position%3 == 0){

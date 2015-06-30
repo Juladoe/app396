@@ -388,6 +388,7 @@ public class Const {
     public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn";
     public static final String VIP_LIST = "/mapi_v2/mobileApp#/viplist";
     public static final String MY_FAVORITE = "/mapi_v2/mobileApp#/myfavorite";
+    public static final String SEARCH_FRIEND = "/api/users/";
 
     public static final int HAVE_ADD_TRUE = 0;
     public static final int HAVE_ADD_FALSE = 1;
