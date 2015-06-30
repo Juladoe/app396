@@ -41,7 +41,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private String mCurrentTag;
     private boolean mIsExit;
-    private boolean isKeyBack;
     private int mSelectBtn;
     private Timer mExitTimer;
     private LinearLayout mNavLayout;
@@ -277,9 +276,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             synchronized (mLock) {
                 if (mIsExit) {
                     mIsExit = false;
+                    finish();
                     app.exit();
                 }
-                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+                CommonUtil.longToast(mActivity, getString(R.string.app_exit_msg));
                 mIsExit = true;
                 if (mExitTimer == null) {
                     mExitTimer = new Timer();
@@ -311,7 +311,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public void finish() {
         super.finish();
-        this.onDestroy();
+        //this.onDestroy();
         Log.d(TAG, "finish");
     }
 }

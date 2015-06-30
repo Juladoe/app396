@@ -275,7 +275,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
     private void showSchSplash(String schoolName, String[] splashs) {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        app.appFinish();
+        //app.appFinish();
     }
 
     private void showQrResultDlg(String result) {

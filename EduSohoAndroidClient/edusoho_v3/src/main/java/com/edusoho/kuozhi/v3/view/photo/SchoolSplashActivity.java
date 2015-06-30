@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -53,7 +54,12 @@ public class SchoolSplashActivity extends BaseActivity {
     }
 
     private void startMain() {
-        app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, null);
+        app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            }
+        });
         finish();
     }
 
