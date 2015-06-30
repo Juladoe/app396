@@ -291,7 +291,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             }
             return true;
         }
-        return super.onKeyUp(keyCode, event);
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

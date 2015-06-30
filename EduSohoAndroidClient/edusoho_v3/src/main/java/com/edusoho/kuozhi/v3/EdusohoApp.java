@@ -268,7 +268,6 @@ public class EdusohoApp extends Application {
         for (Activity activity : runTask.values()) {
             activity.finish();
         }
-        runTask.clear();
     }
 
     public void exit() {
