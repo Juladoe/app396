@@ -31,7 +31,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app.addTask(getLocalClassName(), this);
         mActionBar = getSupportActionBar();
         app.registMsgSource(this);
     }
@@ -80,10 +79,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("Activity", getLocalClassName());
-        app.sendMessage("onDestroy", bundle);
         app.unRegistMsgSource(this);
     }
 

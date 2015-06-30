@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -69,8 +70,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application {
@@ -245,33 +249,7 @@ public class EdusohoApp extends Application {
         mEngine.getMessageEngine().sendMsgToTagetForCallback(msgType, body, target, callback);
     }
 
-    public void appFinish() {
-        app.registMsgSource(new MessageEngine.MessageCallback() {
-            @Override
-            public void invoke(WidgetMessage message) {
-                if ("onDestroy".equals(message.type.type)) {
-                    runTask.remove(message.data.get("Activity"));
-                    if (runTask.isEmpty()) {
-                        System.exit(0);
-                    }
-                }
-            }
-
-            @Override
-            public MessageType[] getMsgTypes() {
-                return new MessageType[] {
-                        new MessageType("onDestroy")
-                };
-            }
-        });
-
-        for (Activity activity : runTask.values()) {
-            activity.finish();
-        }
-    }
-
     public void exit() {
-        appFinish();
         stopService(DownLoadService.getIntent(this));
         notifyMap.clear();
         if (mResouceCacheServer != null) {
@@ -289,6 +267,7 @@ public class EdusohoApp extends Application {
 //        }
 
         SqliteUtil.getUtil(this).close();
+        //System.exit(0);
     }
 
     private void init() {

@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
@@ -201,7 +203,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void startApp() {
 
         if (app.config.startWithSchool && app.defaultSchool != null) {
-            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
+            app.mEngine.runNormalPlugin("DefaultPageActivity", this, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                }
+            });
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
             return;
@@ -261,7 +268,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     } catch (Exception e) {
                         Log.e(null, e.toString());
                     } finally {
-                        finish();
+
                     }
                 }
             }, new Response.ErrorListener() {
