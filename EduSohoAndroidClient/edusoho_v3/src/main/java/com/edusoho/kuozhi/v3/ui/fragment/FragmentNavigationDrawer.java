@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.lang.ref.WeakReference;
@@ -72,6 +73,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     private View vLogin;
     private Button btnLogin;
     private Button btnRegister;
+    private EduSohoIconView ivSetting;
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
 
@@ -189,6 +191,13 @@ public class FragmentNavigationDrawer extends BaseFragment {
         btnLogin.setOnClickListener(mLoginClickListener);
         btnRegister = (Button) mActivity.findViewById(R.id.btn_register);
         btnRegister.setOnClickListener(mRegisterClickListener);
+        ivSetting = (EduSohoIconView) mActivity.findViewById(R.id.iv_setting);
+        ivSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+            }
+        });
         if (app.loginUser == null) {
             setLoginStatus(Const.LOGOUT_SUCCESS);
         } else {
@@ -355,12 +364,14 @@ public class FragmentNavigationDrawer extends BaseFragment {
             tvTitle.setVisibility(View.GONE);
             vItems.setVisibility(View.GONE);
             vLogin.setVisibility(View.VISIBLE);
+            ivSetting.setVisibility(View.VISIBLE);
         } else {
             tvLogin.setVisibility(View.GONE);
             tvNickname.setVisibility(View.VISIBLE);
             tvTitle.setVisibility(View.VISIBLE);
             vItems.setVisibility(View.VISIBLE);
             vLogin.setVisibility(View.GONE);
+            ivSetting.setVisibility(View.GONE);
         }
     }
 

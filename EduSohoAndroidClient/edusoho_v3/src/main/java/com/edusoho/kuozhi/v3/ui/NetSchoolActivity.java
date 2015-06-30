@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -173,32 +172,36 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                             return;
                         }
 
+//                        app.setCurrentSchool(site);
+//                        app.removeToken();
+//                        showSchSplash(site.name, site.splashs);
+
                         app.setCurrentSchool(site);
                         app.removeToken();
                         showSchSplash(site.name, site.splashs);
 
-                        RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
-                        app.postUrl(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // TODO save apitoken
-                                app.saveApiToken(response);
-
-                                app.registDevice(new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        app.setCurrentSchool(site);
-                                        app.removeToken();
-                                        showSchSplash(site.name, site.splashs);
-                                    }
-                                });
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                CommonUtil.longToast(mContext, "无法获取网校Token");
-                            }
-                        });
+//                        RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
+//                        app.postUrl(requestUrl, new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(String response) {
+//                                // TODO save apitoken
+//                                app.saveApiToken(response);
+//
+//                                app.registDevice(new NormalCallback() {
+//                                    @Override
+//                                    public void success(Object obj) {
+//                                        app.setCurrentSchool(site);
+//                                        app.removeToken();
+//                                        showSchSplash(site.name, site.splashs);
+//                                    }
+//                                });
+//                            }
+//                        }, new Response.ErrorListener() {
+//                            @Override
+//                            public void onErrorResponse(VolleyError error) {
+//                                CommonUtil.longToast(mContext, "无法获取网校Token");
+//                            }
+//                        });
 
                     }
                 }, new Response.ErrorListener() {
@@ -307,4 +310,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

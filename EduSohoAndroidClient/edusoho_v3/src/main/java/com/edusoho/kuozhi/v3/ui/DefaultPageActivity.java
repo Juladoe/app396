@@ -309,6 +309,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public void finish() {
         super.finish();
+        this.onDestroy();
         Log.d(TAG, "finish");
     }
 }

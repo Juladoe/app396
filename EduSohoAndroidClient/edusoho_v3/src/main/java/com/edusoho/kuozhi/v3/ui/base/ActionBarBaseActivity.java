@@ -80,6 +80,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         Bundle bundle = new Bundle();
         bundle.putString("Activity", getLocalClassName());
         app.sendMessage("onDestroy", bundle);
