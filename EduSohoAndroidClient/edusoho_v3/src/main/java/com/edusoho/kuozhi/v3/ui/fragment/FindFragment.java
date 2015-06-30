@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.CordovaContext;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 import org.apache.cordova.CordovaInterface;
@@ -52,17 +54,12 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
+        webView.loadApp("main");
         return rootView;
     }
 
     @Override
     public void onResume() {
-//        Intent intent = getActivity().getIntent();
-//        if (intent != null && intent.getBooleanExtra(Const.CLEAR_WEBVIEW_CACHE, false)) {
-//            webView.setIsClearHistory(true);
-//            webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
-//        }
         super.onResume();
     }
 

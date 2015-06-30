@@ -18,22 +18,31 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
-
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.android.volley.Response.Listener;
+import com.google.gson.reflect.TypeToken;
+import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by howzhi on 15/4/16.
@@ -43,12 +52,15 @@ public class ESWebView extends RelativeLayout {
     protected CordovaWebView mWebView;
     protected ProgressBar pbLoading;
     protected Context mContext;
-    protected Activity mActivity;
+    protected BaseActivity mActivity;
+    protected String mAppCode;
 
     private AttributeSet mAttrs;
     private static final String TAG = "ESWebView";
+    private static Pattern APPCODE_PAT = Pattern.compile(".+/mapi_v2/mobile/(\\w+)[#|/]*", Pattern.DOTALL);
 
     private RequestManager mRequestManager;
+    private AppMeta mLocalAppMeta;
 
     public ESWebView(Context context) {
         super(context);
@@ -66,7 +78,7 @@ public class ESWebView extends RelativeLayout {
 
         String userAgent = mWebView.getSettings().getUserAgentString();
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
-        Log.d(TAG, mWebView.getSettings().getUserAgentString());
+
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(mWebChromeClient);
         mWebView.setOnKeyListener(mOnKeyListener);
@@ -82,14 +94,84 @@ public class ESWebView extends RelativeLayout {
         webViewProgressBar.addRule(RelativeLayout.BELOW, R.id.pb_loading);
         addView(mWebView, webViewProgressBar);
 
-        mRequestManager = new ESWebViewRequestManager(mContext, mWebView.getSettings().getUserAgentString());
+        mRequestManager = new ESWebViewRequestManager(this, mWebView.getSettings().getUserAgentString());
+    }
+
+    public void loadApp(String appCode) {
+        this.mAppCode = appCode;
+        mLocalAppMeta = getLocalApp(appCode);
+        updateApp(mAppCode);
+        mWebView.loadUrl(String.format("%s%s/%s", mActivity.app.schoolHost, "mobile", appCode));
+    }
+
+    private AppMeta getLocalApp(String appCode) {
+        File schoolStorage = AppUtil.getSchoolStorage(mActivity.app.domain);
+        File appDir = new File(schoolStorage, appCode);
+
+        if (appDir.exists()) {
+            StringBuilder appVersionString = FileUtils.readFile(
+                    new File(appDir, "version.json").getAbsolutePath(), "utf-8");
+            return mActivity.parseJsonValue(
+                    appVersionString.toString(), new TypeToken<AppMeta>() {
+            });
+        }
+
+        return null;
+    }
+
+    public boolean canGoBack() {
+        return mWebView.canGoBack();
+    }
+
+    public void goBack() {
+        mWebView.goBack();
+    }
+
+    public String getAppCode() {
+        return mAppCode;
+    }
+
+    private void updateAppResource(final String resourceUrl) {
+        mRequestManager.downloadResource(new Request(resourceUrl));
+    }
+
+    public void updateApp(final String appCode) {
+        RequestUrl appVersionUrl = mActivity.app.bindUrl(
+                String.format(Const.MOBILE_APP_VERSION, appCode), true);
+        mActivity.ajaxPost(appVersionUrl, new Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                AppMeta appMeta = mActivity.parseJsonValue(response, new TypeToken<AppMeta>() {
+                });
+                if (appMeta == null) {
+                    return;
+                }
+
+                if (mLocalAppMeta == null) {
+                    updateAppResource(appMeta.resource);
+                    return;
+                }
+
+                int result = CommonUtil.compareVersion(mLocalAppMeta.version, appMeta.version);
+                if (result == Const.LOW_VERSIO) {
+                    updateAppResource(appMeta.resource);
+                }
+            }
+        }, null);
     }
 
     public void loadUrl(String url) {
+
+        Matcher matcher = APPCODE_PAT.matcher(url);
+        if (matcher.find()) {
+            mAppCode = matcher.group(1);
+            mLocalAppMeta = getLocalApp(mAppCode);
+        }
+
         mWebView.loadUrl(url);
     }
 
-    public void initPlugin(Activity activity) {
+    public void initPlugin(BaseActivity activity) {
         this.mActivity = activity;
         Config.init(activity);
         initWebView(mAttrs);
@@ -141,13 +223,12 @@ public class ESWebView extends RelativeLayout {
 
     public void destroy() {
         if (mWebView.pluginManager != null) {
-            mWebView.pluginManager.onDestroy();
+            mWebView.handleDestroy();
         }
         mRequestManager.destroy();
         RelativeLayout relativeLayout = (RelativeLayout) mWebView.getParent();
         relativeLayout.removeView(mWebView);
         mWebView.removeAllViews();
-        mWebView.handleDestroy();
         mWebView.destroy();
     }
 
@@ -211,11 +292,14 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            if (mAppCode == null) {
+                return super.shouldInterceptRequest(view, url);
+            }
             WebResourceResponse resourceResponse = mRequestManager.blockGet(
                     new Request(url), new RequestCallback<WebResourceResponse>() {
                         @Override
                         public WebResourceResponse onResponse(Response<WebResourceResponse> response) {
-                            Log.d(TAG, "onResponse: " + response.isEmpty());
+
                             if (response.isEmpty()) {
                                 return null;
                             }
@@ -229,7 +313,7 @@ public class ESWebView extends RelativeLayout {
             if (resourceResponse == null) {
                 resourceResponse = super.shouldInterceptRequest(view, url);
             }
-            Log.d(TAG, String.format("WebResourceResponse %s %s", url, resourceResponse));
+
             return resourceResponse;
         }
     }

@@ -60,6 +60,10 @@ public class Response<T> {
         return mData;
     }
 
+    public void setData(T data) {
+        this.mData = data;
+    }
+
     public boolean isEmpty()
     {
         return mInputStream == null;

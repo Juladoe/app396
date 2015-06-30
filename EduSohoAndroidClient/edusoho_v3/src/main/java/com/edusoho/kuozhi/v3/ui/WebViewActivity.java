@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
+import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaChromeClient;
@@ -27,8 +28,7 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     public final static String URL = "data";
     public final static int CLOSE = 0x01;
     private String url = "";
-    private CordovaWebView webView;
-    private ProgressBar pbLoading;
+    private ESWebView mWebView;
 
     private Handler mHandler = new Handler();
 
@@ -45,34 +45,10 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
         if (intent != null) {
             url = intent.getStringExtra(URL);
         }
-        Config.init(mActivity);
-        webView = (CordovaWebView) findViewById(R.id.webView);
-        pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
-        String userAgent = webView.getSettings().getUserAgentString();
-        webView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
-        webView.loadUrl(url);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
 
-        webView.setWebChromeClient(new CordovaChromeClient(this) {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100) {
-                    WebViewActivity.this.pbLoading.setVisibility(View.GONE);
-                } else {
-                    if (WebViewActivity.this.pbLoading.getVisibility() == View.GONE) {
-                        WebViewActivity.this.pbLoading.setVisibility(View.VISIBLE);
-                    }
-                    WebViewActivity.this.pbLoading.setProgress(newProgress);
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
+        mWebView = (ESWebView) findViewById(R.id.webView);
+        mWebView.initPlugin(mActivity);
+        mWebView.loadUrl(url);
     }
 
     @Override
@@ -82,8 +58,8 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (webView.canGoBack()) {
-                        webView.goBack();
+                    if (mWebView.canGoBack()) {
+                        mWebView.goBack();
                         return;
                     }
                     finish();
@@ -96,8 +72,8 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     protected void onDestroy() {
         super.onDestroy();
         app.unRegistMsgSource(this);
-        if (webView != null) {
-            webView.handleDestroy();
+        if (mWebView != null) {
+            mWebView.destroy();
         }
     }
 
