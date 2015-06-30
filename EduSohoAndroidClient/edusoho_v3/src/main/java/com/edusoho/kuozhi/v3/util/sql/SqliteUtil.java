@@ -29,7 +29,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
 
     private static SqliteUtil instance;
 
-    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql"};
+    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql"};
 
     public SqliteUtil(Context context, String name, CursorFactory factory) {
         super(context, Const.DB_NAME, null, dbVersion);
@@ -64,7 +64,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
         try {
             inputStream = mContext.getAssets().open(name);
             reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
                 if (line.endsWith(";")) {
@@ -76,8 +76,12 @@ public class SqliteUtil extends SQLiteOpenHelper {
             //nothing
         } finally {
             try {
-                reader.close();
-                inputStream.close();
+                if (reader != null) {
+                    reader.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
             } catch (Exception e) {
                 //nothing
             }

@@ -12,7 +12,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
 
@@ -28,6 +27,8 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected TextView mTitleTextView;
     private View mTitleLayoutView;
 
+    protected XGPushClickedResult mXGClick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,11 +39,11 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     @Override
     protected void onResume() {
         super.onResume();
-        XGPushClickedResult click = XGPushManager.onActivityStarted(this);
-        Log.d("TPush", "onResumeXGPushClickedResult:" + click);
-        if (click != null) { // 判断是否来自信鸽的打开方式
-            CommonUtil.longToast(this, "通知被点击:" + click.toString());
-        }
+        mXGClick = XGPushManager.onActivityStarted(this);
+        Log.d("TPush", "onResumeXGPushClickedResult:" + mXGClick);
+//        if (mXGClick != null) { // 判断是否来自信鸽的打开方式
+//            CommonUtil.longToast(this, "通知被点击:" + mXGClick.toString());
+//        }
     }
 
     @Override
@@ -50,6 +51,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onPause();
         Log.d("MainActivity-->", "onPause");
         XGPushManager.onActivityStoped(this);
+        mXGClick = null;
     }
 
     public void setBackMode(String backTitle, String title) {

@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,7 +43,6 @@ import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -71,11 +71,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application {
@@ -850,5 +848,23 @@ public class EdusohoApp extends Application {
         }
 
         return value;
+    }
+
+    public boolean isForeground(String PackageName) {
+        // Get the Activity Manager
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+
+        // Get a list of running tasks, we are only interested in the last one,
+        // the top most so we give a 1 as parameter so we only get the topmost.
+        List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
+
+        // Get the info we need for comparison.
+        ComponentName componentInfo = task.get(0).topActivity;
+
+        // Check if it matches our package name.
+        if (componentInfo.getClassName().equals(PackageName)) return true;
+
+        // If not then our app is not on the foreground.
+        return false;
     }
 }
