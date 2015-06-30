@@ -317,12 +317,19 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public boolean onKeyDown(int keyCode, KeyEvent event) {
-            return false;
+            if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
+                mWebView.goBack();
+                return true;
+            }
+            return super.onKeyDown(keyCode, event);
         }
 
         @Override
         public boolean onKeyUp(int keyCode, KeyEvent event) {
-            return false;
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                return false;
+            }
+            return super.onKeyUp(keyCode, event);
         }
     }
 }
