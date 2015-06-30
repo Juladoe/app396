@@ -167,14 +167,42 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                             PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                             return;
                         }
-                        School site = schoolResult.site;
+                        final School site = schoolResult.site;
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
 
-                        showSchSplash(site.name, site.splashs);
+//                        app.setCurrentSchool(site);
+//                        app.removeToken();
+//                        showSchSplash(site.name, site.splashs);
+
                         app.setCurrentSchool(site);
                         app.removeToken();
+                        showSchSplash(site.name, site.splashs);
+
+//                        RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
+//                        app.postUrl(requestUrl, new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(String response) {
+//                                // TODO save apitoken
+//                                app.saveApiToken(response);
+//
+//                                app.registDevice(new NormalCallback() {
+//                                    @Override
+//                                    public void success(Object obj) {
+//                                        app.setCurrentSchool(site);
+//                                        app.removeToken();
+//                                        showSchSplash(site.name, site.splashs);
+//                                    }
+//                                });
+//                            }
+//                        }, new Response.ErrorListener() {
+//                            @Override
+//                            public void onErrorResponse(VolleyError error) {
+//                                CommonUtil.longToast(mContext, "无法获取网校Token");
+//                            }
+//                        });
+
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -247,7 +275,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
     private void showSchSplash(String schoolName, String[] splashs) {
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        app.appFinish();
+        //app.appFinish();
     }
 
     private void showQrResultDlg(String result) {
@@ -282,4 +310,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

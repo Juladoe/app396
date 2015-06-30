@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -23,20 +22,12 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.FindFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushConfig;
-import com.tencent.android.tpush.XGPushManager;
-import com.tencent.android.tpush.common.Constants;
-
-import org.apache.cordova.CordovaWebView;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,11 +36,9 @@ import java.util.TimerTask;
  */
 public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
-    public static final int XG_PUSH_REGISTER = 0x01;
 
     private String mCurrentTag;
     private boolean mIsExit;
-    private boolean isKeyBack;
     private int mSelectBtn;
     private Timer mExitTimer;
     private LinearLayout mNavLayout;
@@ -239,24 +228,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void registerXgPush() {
-        XGPushConfig.enableDebug(this, true);
-        XGPushManager.registerPush(mContext, app.loginUser.id + "", new XGIOperateCallback() {
-            @Override
-            public void onSuccess(Object data, int flag) {
-                Log.w(Constants.LogTag,
-                        "+++ register push success. token:" + data);
-            }
-
-            @Override
-            public void onFail(Object data, int errCode, String msg) {
-                Log.w(Constants.LogTag,
-                        "+++ register push fail. token:" + data
-                                + ", errCode:" + errCode + ",msg:"
-                                + msg);
-            }
-        });
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -269,9 +240,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         switch (messageType.code) {
             case Const.OPEN_COURSE_CHAT:
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
-                break;
-            case XG_PUSH_REGISTER:
-                //registerXgPush();
                 break;
             case Const.SWITCH_TAB:
                 try {
@@ -291,7 +259,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
-                new MessageType(XG_PUSH_REGISTER, source),
                 new MessageType(Const.SWITCH_TAB, source)};
         return messageTypes;
     }
@@ -299,34 +266,18 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            isKeyBack = true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mFragmentNavigationDrawer.isDrawerOpen()) {
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 return true;
             }
 
-            Fragment fragment = mFragmentManager.findFragmentByTag("FindFragment");
-            if (fragment instanceof FindFragment) {
-                CordovaWebView webView = ((FindFragment) fragment).getView().getWebView();
-                if (webView.canGoBack()) {
-                    webView.goBack();
-                    return true;
-                }
-            }
-
             synchronized (mLock) {
                 if (mIsExit) {
                     mIsExit = false;
+                    finish();
                     app.exit();
                 }
-                CommonUtil.longToast(mContext, getString(R.string.app_exit_msg));
+                CommonUtil.longToast(mActivity, getString(R.string.app_exit_msg));
                 mIsExit = true;
                 if (mExitTimer == null) {
                     mExitTimer = new Timer();
@@ -340,7 +291,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             }
             return true;
         }
-        return super.onKeyUp(keyCode, event);
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -357,11 +308,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public void finish() {
-        if (isKeyBack) {
-            isKeyBack = false;
-            return;
-        }
         super.finish();
+        //this.onDestroy();
         Log.d(TAG, "finish");
     }
 }

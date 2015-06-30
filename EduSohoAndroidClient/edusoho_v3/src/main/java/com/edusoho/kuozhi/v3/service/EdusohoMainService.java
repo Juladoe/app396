@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -14,7 +15,6 @@ import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
@@ -98,7 +98,9 @@ public class EdusohoMainService extends Service {
                     }
 
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Const.BIND_USER_ID, result.user.id + "");
+                    app.pushRegister(bundle);
                 }
             }, new Response.ErrorListener() {
                 @Override

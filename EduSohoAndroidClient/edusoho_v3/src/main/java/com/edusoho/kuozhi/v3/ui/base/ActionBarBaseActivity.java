@@ -31,7 +31,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app.addTask(getLocalClassName(), this);
         mActionBar = getSupportActionBar();
         app.registMsgSource(this);
     }

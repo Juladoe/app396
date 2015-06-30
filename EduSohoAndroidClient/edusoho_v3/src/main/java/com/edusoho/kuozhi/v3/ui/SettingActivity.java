@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.tencent.android.tpush.XGPushManager;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -85,13 +84,14 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener logoutClickLister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-            XGPushManager.unregisterPush(mContext);
             if (TextUtils.isEmpty(app.loginUser.thirdParty)) {
                 RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
                 mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+                        app.pushUnregister(bundle);
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);

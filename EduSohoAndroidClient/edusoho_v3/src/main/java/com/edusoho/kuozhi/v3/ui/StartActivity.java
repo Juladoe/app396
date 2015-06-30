@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
@@ -193,7 +195,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                showSchoolErrorDlg();
             }
         });
     }
@@ -201,7 +203,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void startApp() {
 
         if (app.config.startWithSchool && app.defaultSchool != null) {
-            app.mEngine.runNormalPlugin("DefaultPageActivity", this, null);
+            app.mEngine.runNormalPlugin("DefaultPageActivity", this, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                }
+            });
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
             return;
@@ -236,7 +243,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     private void registDevice() {
         Log.d(null, "registDevice->");
         AppConfig config = app.config;
-        if (config.isPublicRegistDevice && config.isRegistDevice) {
+        if (config.isPublicRegistDevice) {
             return;
         }
 
@@ -250,51 +257,24 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 public void onResponse(String response) {
                     try {
                         Boolean result = app.gson.fromJson(
-                                response.toString(), new TypeToken<Boolean>() {
+                                response, new TypeToken<Boolean>() {
                                 }.getType()
                         );
 
-                        if (true == result) {
+                        if (true) {
                             app.config.isPublicRegistDevice = true;
                             app.saveConfig();
                         }
                     } catch (Exception e) {
                         Log.e(null, e.toString());
+                    } finally {
+
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-
-        if (!config.isRegistDevice) {
-            RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
-            requestUrl.setParams(params);
-            app.postUrl(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(null, "regist device to school");
-                    try {
-                        Boolean result = app.gson.fromJson(
-                                response.toString(), new TypeToken<Boolean>() {
-                                }.getType()
-                        );
-
-                        if (true == result) {
-                            app.config.isRegistDevice = true;
-                            app.saveConfig();
-                        }
-                    } catch (Exception e) {
-                        Log.e(null, e.toString());
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(null, "regist failed");
+                    finish();
                 }
             });
         }

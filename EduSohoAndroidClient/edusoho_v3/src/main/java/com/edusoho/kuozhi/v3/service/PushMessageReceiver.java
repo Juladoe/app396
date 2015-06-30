@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.service;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -128,4 +129,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
         }
 
     }
+
+
 }

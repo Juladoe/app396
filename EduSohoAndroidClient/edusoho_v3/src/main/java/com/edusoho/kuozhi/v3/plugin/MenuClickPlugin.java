@@ -11,7 +11,6 @@ import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -64,7 +63,9 @@ public class MenuClickPlugin extends CordovaPlugin {
             });
             EdusohoApp.app.saveToken(userResult);
             EdusohoApp.app.sendMessage(Const.LOGIN_SUCCESS, null);
-            EdusohoApp.app.sendMsgToTarget(DefaultPageActivity.XG_PUSH_REGISTER, null, DefaultPageActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+            EdusohoApp.app.pushRegister(bundle);
         } else if (action.equals("share")) {
             String id = args.getString(0);
             String title = args.getString(1);

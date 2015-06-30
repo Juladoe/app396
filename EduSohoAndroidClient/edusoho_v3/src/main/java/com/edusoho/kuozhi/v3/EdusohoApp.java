@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -57,6 +59,10 @@ import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushConfig;
+import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.common.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,8 +70,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application {
@@ -236,17 +245,9 @@ public class EdusohoApp extends Application {
         mEngine.getMessageEngine().sendMsgToTagetForCallback(msgType, body, target, callback);
     }
 
-    public void appFinish() {
-        for (Activity activity : runTask.values()) {
-            activity.finish();
-        }
-    }
-
     public void exit() {
-        appFinish();
         stopService(DownLoadService.getIntent(this));
         notifyMap.clear();
-        runTask.clear();
         if (mResouceCacheServer != null) {
             mResouceCacheServer.close();
         }
@@ -262,7 +263,7 @@ public class EdusohoApp extends Application {
 //        }
 
         SqliteUtil.getUtil(this).close();
-        System.exit(0);
+        //System.exit(0);
     }
 
     private void init() {
@@ -328,6 +329,38 @@ public class EdusohoApp extends Application {
         params.put("edusohoVersion", apiVersion);
 
         return params;
+    }
+
+    public void registDevice(final NormalCallback normalCallback) {
+        HashMap<String, String> params = getPlatformInfo();
+        RequestUrl requestUrl = new RequestUrl(app.schoolHost + Const.REGIST_DEVICE);
+        requestUrl.setParams(params);
+        app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(null, "regist device to school");
+                try {
+                    Boolean result = app.gson.fromJson(
+                            response, new TypeToken<Boolean>() {
+                            }.getType()
+                    );
+
+                    if (result) {
+                        app.saveConfig();
+                    }
+
+                    normalCallback.success(null);
+                } catch (Exception e) {
+                    Log.e(null, e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                normalCallback.success(null);
+                Log.d(null, "regist failed");
+            }
+        });
     }
 
     public boolean getNetIsConnect() {
@@ -429,22 +462,6 @@ public class EdusohoApp extends Application {
         return url;
     }
 
-    private void loadConfig() {
-        SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
-        config = new AppConfig();
-        config.showSplash = sp.getBoolean("showSplash", true);
-        config.isRegistDevice = sp.getBoolean("registDevice", false);
-        config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
-        config.startWithSchool = sp.getBoolean("startWithSchool", true);
-
-        config.offlineType = sp.getInt("offlineType", 0);
-        if (config.startWithSchool) {
-            loadDefaultSchool();
-        }
-
-        loadToken();
-    }
-
     private void loadToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         token = sp.getString("token", "");
@@ -464,7 +481,6 @@ public class EdusohoApp extends Application {
             SqliteUtil.saveUser(loginUser);
         }
     }
-
 
     public void removeToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
@@ -490,28 +506,46 @@ public class EdusohoApp extends Application {
         return activity != null;
     }
 
-    public void removeTask(String name) {
-        runTask.remove(name);
-    }
-
     public void addTask(String name, Activity activity) {
         Activity oldActivity = runTask.get(name);
         runTask.put(name, activity);
         if (oldActivity != null) {
             Log.d(null, "remove activity->" + name);
             oldActivity.finish();
+            runTask.remove(name);
         }
+    }
+
+    public void saveApiToken(String apiToken) {
+        SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
+        SharedPreferences.Editor edit = sp.edit();
+        config.apiToken = apiToken;
+        edit.putString("apiToken", apiToken);
+        edit.apply();
+    }
+
+    private void loadConfig() {
+        SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
+        config = new AppConfig();
+        config.showSplash = sp.getBoolean("showSplash", true);
+        config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
+        config.startWithSchool = sp.getBoolean("startWithSchool", true);
+        config.offlineType = sp.getInt("offlineType", 0);
+        if (config.startWithSchool) {
+            loadDefaultSchool();
+        }
+
+        loadToken();
     }
 
     public void saveConfig() {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("showSplash", config.showSplash);
-        edit.putBoolean("registDevice", config.isRegistDevice);
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
         edit.putInt("offlineType", config.offlineType);
-        edit.commit();
+        edit.apply();
     }
 
     private File initWorkSpace() {
@@ -580,7 +614,7 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
-    public RequestUrl bindNewUrl(String url,boolean addToken){
+    public RequestUrl bindNewUrl(String url,boolean addToken) {
         StringBuffer sb = new StringBuffer(app.host);
         sb.append(url);
         RequestUrl requestUrl = new RequestUrl(sb.toString());
@@ -589,6 +623,14 @@ public class EdusohoApp extends Application {
             requestUrl.heads.put("token", token);
         }
         return requestUrl;
+    }
+    
+    public RequestUrl bindPushUrl(String url) {
+        StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
+        sb.append(url);
+        RequestUrl pushRequesUrl = new RequestUrl(sb.toString());
+        pushRequesUrl.heads.put("Auth-Token", EdusohoApp.app.config.apiToken);
+        return pushRequesUrl;
     }
 
     @Override
@@ -726,4 +768,94 @@ public class EdusohoApp extends Application {
         return mPlayCacheServer;
     }
 
+    /**
+     * 注册到xg、教育云
+     *
+     * @param bundle
+     */
+    public void pushRegister(final Bundle bundle) {
+        XGPushConfig.enableDebug(this, true);
+        XGPushManager.registerPush(mContext, new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object data, int flag) {
+                Log.w(Constants.LogTag, "+++ register push success. token:" + data);
+//                RequestUrl requestUrl = null;
+//                if (bundle != null) {
+//                    requestUrl = app.bindPushUrl(Const.BIND);
+//                    HashMap<String, String> params = requestUrl.getParams();
+//                    params.put("appToken", data.toString());
+//                    params.put("studentId", bundle.getString(Const.BIND_USER_ID));
+//                    params.put("euqip", Const.EQUIP_TYPE);
+//                } else {
+//                    requestUrl = app.bindPushUrl(Const.ANONYMOUS_BIND);
+//                    HashMap<String, String> params = requestUrl.getParams();
+//                    params.put("appToken", data.toString());
+//                    params.put("euqip", Const.EQUIP_TYPE);
+//                }
+//                app.postUrl(requestUrl, new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+//                        });
+//                        if (pushResult != null && pushResult.result.equals("success")) {
+//                            Log.d(TAG, "cloud register success");
+//                        } else {
+//                            Log.d(TAG, "cloud register failed");
+//                        }
+//                    }
+//                }, null);
+            }
+
+            @Override
+            public void onFail(Object data, int errCode, String msg) {
+                Log.w(Constants.LogTag, "+++ register push fail. token:" + data + ", errCode:" + errCode + ",msg:" + msg);
+            }
+        });
+    }
+
+    /**
+     * 注销到xg、教育云
+     *
+     * @param bundle
+     */
+    public void pushUnregister(final Bundle bundle) {
+        XGPushManager.unregisterPush(mContext, new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object data, int i) {
+                RequestUrl requestUrl = bindPushUrl(Const.UNBIND);
+                HashMap<String, String> hashMap = requestUrl.getParams();
+                hashMap.put("studentId", bundle.getString(Const.BIND_USER_ID));
+//                postUrl(requestUrl, new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+//                        });
+//                        if (pushResult != null && pushResult.result.equals("success")) {
+//                            Log.d(TAG, "cloud register success");
+//                        } else {
+//                            Log.d(TAG, "cloud register failed");
+//                        }
+//                    }
+//                }, null);
+            }
+
+            @Override
+            public void onFail(Object data, int i, String s) {
+                Log.w(Constants.LogTag, "+++ unregister push fail. token:" + data + ", errCode:" + i + ",msg:" + s);
+            }
+        });
+    }
+
+    public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
+        T value;
+        try {
+            value = gson.fromJson(
+                    json, typeToken.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return value;
+    }
 }

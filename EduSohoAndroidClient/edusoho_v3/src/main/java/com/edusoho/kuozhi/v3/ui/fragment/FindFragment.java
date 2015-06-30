@@ -52,17 +52,12 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
         View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
         webView = (ESWebView) rootView.findViewById(R.id.webView);
         webView.initPlugin(mActivity);
-        webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
+        webView.loadApp("main");
         return rootView;
     }
 
     @Override
     public void onResume() {
-//        Intent intent = getActivity().getIntent();
-//        if (intent != null && intent.getBooleanExtra(Const.CLEAR_WEBVIEW_CACHE, false)) {
-//            webView.setIsClearHistory(true);
-//            webView.loadUrl(mActivity.app.schoolHost + "mobileApp");
-//        }
         super.onResume();
     }
 
@@ -138,11 +133,11 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
         if (webView != null) {
             webView.destroy();
         }
     }
-
 
     public ESWebView getView() {
         return webView;

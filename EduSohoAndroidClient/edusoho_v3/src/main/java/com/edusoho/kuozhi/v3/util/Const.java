@@ -1,11 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
 public class Const {
-
-    public static final int RESULT_CODE_SUCCESS = 200;
-    public static final int RESULT_CODE_NOT_FOUND = 404;
-    public static final int RESULT_CODE_ERROR = 500;
-
     //popular热门 recommended推荐 latest最新
     public static final String[] SORT = {
             "latest", "popular", "recommended"
@@ -75,6 +70,9 @@ public class Const {
     //默认分页数量
     public static final int LIMIT = 10;
 
+    public static final String EQUIP_TYPE = "Android";
+    public static final String BIND_USER_ID = "bind_user_id";
+
     //Plugin事件
     public static final int MAIN_MENU_CLOSE = 0x02;
     public static final int MAIN_MENU_OPEN = 0x03;
@@ -119,6 +117,10 @@ public class Const {
     public static final String COURSELESSON = "Lesson/getLesson";
     public static final String DOWNLOAD_MATERIAL = "%sLesson/downMaterial?courseId=%d&materialId=%d&token=%s";
     public static final String UPLOAD_IMAGE = "Testpaper/uploadQuestionImage";
+
+    /** mobile/{code}/version  **/
+    public static final String MOBILE_APP_VERSION = "mobile/%s/version";
+    public static final String MOBILE_APP_RESOURCE = "mobile/%s/resource";
 
     /**
      * course status
@@ -229,6 +231,21 @@ public class Const {
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
+
+    public static final String GET_API_TOKEN = "";
+    public static final String PUSH_HOST = "https://tui.edusoho.net/";
+    public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
+    public static final String BIND = "/auth/bind";
+    public static final String UNBIND = "/auth/unBind";
+    /**
+     * "/message/:studentId/friend/:fid/send"
+     */
+    public static final String SEND_MSG_FRIEND = "/message/:{%d}/friend/:{%d}/send";
+
+    /**
+     * /message/classroom/:cid/send
+     */
+    public static final String SEND_MSG_CLASS = "/message/classroom/:{%d}/send";
 
     /**
      * 获取课程状态（是否包含资料，学习状态）
@@ -351,20 +368,6 @@ public class Const {
     public static final int NET_WIFI = 0;
     public static final int NET_3G_WIFI = 1;
     public static final int NET_NONE = 2;
-
-    //Pusher相关 --------------------------------
-    public static final int PUSH_CODE = 32;
-    public static final int APP_ID = 1;
-    public static final String PUSH_CMD_CODE = "CMD";
-
-    public static final String LOCAL_PUSH_DATA = "pushData";
-    public static final String SERVER_IP = "serverIp";
-    public static final String SERVER_PORT = "serverPort";
-    public static final String PUSH_PORT = "pushPort";
-    public static final String USER_ID = "userName";
-    public static final String SENT_PKGS = "sentPkgs";
-    public static final String RECEIVE_PKGS = "receivePkgs";
-
 
     /**
      * 获取单个回答的内容
