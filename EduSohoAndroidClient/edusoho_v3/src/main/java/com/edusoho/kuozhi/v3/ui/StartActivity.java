@@ -260,12 +260,14 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                         }
                     } catch (Exception e) {
                         Log.e(null, e.toString());
+                    } finally {
+                        finish();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    finish();
                 }
             });
         }
