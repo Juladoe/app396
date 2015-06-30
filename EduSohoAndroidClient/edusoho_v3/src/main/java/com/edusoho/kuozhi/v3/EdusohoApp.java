@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -245,16 +246,35 @@ public class EdusohoApp extends Application {
     }
 
     public void appFinish() {
+        app.registMsgSource(new MessageEngine.MessageCallback() {
+            @Override
+            public void invoke(WidgetMessage message) {
+                if ("onDestroy".equals(message.type.type)) {
+                    runTask.remove(message.data.get("Activity"));
+                    if (runTask.isEmpty()) {
+                        System.exit(0);
+                    }
+                }
+            }
+
+            @Override
+            public MessageType[] getMsgTypes() {
+                return new MessageType[] {
+                        new MessageType("onDestroy")
+                };
+            }
+        });
+
         for (Activity activity : runTask.values()) {
             activity.finish();
         }
+        runTask.clear();
     }
 
     public void exit() {
         appFinish();
         stopService(DownLoadService.getIntent(this));
         notifyMap.clear();
-        runTask.clear();
         if (mResouceCacheServer != null) {
             mResouceCacheServer.close();
         }
@@ -270,7 +290,6 @@ public class EdusohoApp extends Application {
 //        }
 
         SqliteUtil.getUtil(this).close();
-        System.exit(0);
     }
 
     private void init() {

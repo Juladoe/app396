@@ -49,7 +49,7 @@ import cn.trinea.android.common.util.FileUtils;
  */
 public class ESWebView extends RelativeLayout {
 
-    protected CordovaWebView mWebView;
+    protected ESCordovaWebView mWebView;
     protected ProgressBar pbLoading;
     protected Context mContext;
     protected BaseActivity mActivity;
@@ -74,14 +74,14 @@ public class ESWebView extends RelativeLayout {
     }
 
     private void initWebView(AttributeSet attrs) {
-        mWebView = new CordovaWebView(new CordovaContext(mActivity), attrs);
+        mWebView = new ESCordovaWebView(new CordovaContext(mActivity), attrs);
 
         String userAgent = mWebView.getSettings().getUserAgentString();
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
 
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(mWebChromeClient);
-        mWebView.setOnKeyListener(mOnKeyListener);
+        //mWebView.setOnKeyListener(mOnKeyListener);
 
         pbLoading = (ProgressBar) LayoutInflater.from(new CordovaContext(mActivity)).inflate(R.layout.progress_bar, null);
         RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
@@ -177,16 +177,6 @@ public class ESWebView extends RelativeLayout {
         initWebView(mAttrs);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
-            mWebView.goBack();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
     private class CordovaContext extends ContextWrapper implements CordovaInterface {
 
         Activity activity;
@@ -222,14 +212,11 @@ public class ESWebView extends RelativeLayout {
     }
 
     public void destroy() {
-        if (mWebView.pluginManager != null) {
-            mWebView.handleDestroy();
-        }
+        Log.d(TAG, "destroy");
+
+        mWebView.stopLoading();
+        mWebView.handleDestroy();
         mRequestManager.destroy();
-        RelativeLayout relativeLayout = (RelativeLayout) mWebView.getParent();
-        relativeLayout.removeView(mWebView);
-        mWebView.removeAllViews();
-        mWebView.destroy();
     }
 
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
@@ -265,20 +252,16 @@ public class ESWebView extends RelativeLayout {
         }
     };
 
-
-    protected OnKeyListener mOnKeyListener = new OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            Log.d(TAG, "onKey " + event.getAction());
-            if (event.getAction() == KeyEvent.ACTION_DOWN
-                    && keyCode == KeyEvent.KEYCODE_BACK
-                    && mWebView.canGoBack()) {
-                mWebView.goBack();
-                return true;
-            }
-            return false;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && mWebView.canGoBack()) {
+            mWebView.goBack();
+            return true;
         }
-    };
+        return false;
+    }
 
     protected WebViewClient mWebViewClient = new ESWebViewClient();
 
@@ -322,4 +305,24 @@ public class ESWebView extends RelativeLayout {
         return mWebView;
     }
 
+    private class ESCordovaWebView extends CordovaWebView
+    {
+        public ESCordovaWebView(Context context) {
+            super(context);
+        }
+
+        public ESCordovaWebView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        public boolean onKeyDown(int keyCode, KeyEvent event) {
+            return false;
+        }
+
+        @Override
+        public boolean onKeyUp(int keyCode, KeyEvent event) {
+            return false;
+        }
+    }
 }

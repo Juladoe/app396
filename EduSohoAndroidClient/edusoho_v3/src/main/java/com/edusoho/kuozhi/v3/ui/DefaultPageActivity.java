@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -23,16 +22,12 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.FindFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
-
-import org.apache.cordova.CordovaWebView;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -272,26 +267,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            isKeyBack = true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mFragmentNavigationDrawer.isDrawerOpen()) {
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 return true;
-            }
-
-            Fragment fragment = mFragmentManager.findFragmentByTag("FindFragment");
-            if (fragment instanceof FindFragment) {
-                CordovaWebView webView = ((FindFragment) fragment).getView().getWebView();
-                if (webView.canGoBack()) {
-                    webView.goBack();
-                    return true;
-                }
             }
 
             synchronized (mLock) {
@@ -330,10 +308,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public void finish() {
-        if (isKeyBack) {
-            isKeyBack = false;
-            return;
-        }
         super.finish();
         this.onDestroy();
         Log.d(TAG, "finish");
