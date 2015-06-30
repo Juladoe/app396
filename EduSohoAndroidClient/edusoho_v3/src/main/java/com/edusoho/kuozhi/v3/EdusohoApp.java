@@ -28,7 +28,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -185,9 +184,9 @@ public class EdusohoApp extends Application {
         return mVolley.addToRequestQueue(jsonObjectRequest);
     }
 
-    public void getUrl(final String url, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public void getUrl(final String url, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, responseListener, errorListener);
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, url, responseListener, errorListener);
         jsonObjectRequest.setTag(url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
@@ -201,12 +200,7 @@ public class EdusohoApp extends Application {
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return requestUrl.getParams();
-            }
-        };
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener);
         jsonObjectRequest.setTag(requestUrl.url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
@@ -635,11 +629,11 @@ public class EdusohoApp extends Application {
                 return;
             }
             String url = bindToken2Url(Const.CHECKTOKEN, true);
-            app.getUrl(url, new Response.Listener<JSONObject>() {
+            app.getUrl(url, new Response.Listener<String>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(String response) {
                     UserResult result = app.gson.fromJson(
-                            response.toString(), new TypeToken<UserResult>() {
+                            response, new TypeToken<UserResult>() {
                             }.getType());
                     if (result != null) {
                         saveToken(result);
@@ -698,12 +692,12 @@ public class EdusohoApp extends Application {
             loadDialog.show();
         }
 
-        app.getUrl(url, new Response.Listener<JSONObject>() {
+        app.getUrl(url, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 loadDialog.dismiss();
                 final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
-                        response.toString(), new TypeToken<AppUpdateInfo>() {
+                        response, new TypeToken<AppUpdateInfo>() {
                         }.getType());
 
                 if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {

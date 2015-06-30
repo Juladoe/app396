@@ -22,8 +22,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 
 
@@ -88,9 +86,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      * 检查网校版本
      */
     private void checkSchoolVersion(SystemInfo systemInfo) {
-        ajaxGet(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL, new Response.Listener<JSONObject>() {
+        ajaxGet(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 SchoolResult schoolResult = parseJsonValue(response.toString(), new TypeToken<SchoolResult>() {
                 });
 
@@ -179,9 +177,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      * 检查网校Api版本
      */
     private void checkSchoolApiVersion() {
-        ajaxGet(app.host + Const.VERIFYVERSION, new Response.Listener<JSONObject>() {
+        ajaxGet(app.host + Const.VERIFYVERSION, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 SystemInfo info = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
                 });
                 if (info == null
