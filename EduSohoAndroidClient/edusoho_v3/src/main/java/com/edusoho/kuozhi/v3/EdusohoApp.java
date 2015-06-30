@@ -44,6 +44,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
+import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -283,11 +284,10 @@ public class EdusohoApp extends Application {
             mPlayCacheServer.close();
         }
 
-//
-//        M3U8DownService m3U8DownService = M3U8DownService.getService();
-//        if (m3U8DownService != null) {
-//            m3U8DownService.cancelAllDownloadTask();
-//        }
+        M3U8DownService m3U8DownService = M3U8DownService.getService();
+        if (m3U8DownService != null) {
+            m3U8DownService.cancelAllDownloadTask();
+        }
 
         SqliteUtil.getUtil(this).close();
     }

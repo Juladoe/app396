@@ -309,9 +309,4 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
             }
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 }

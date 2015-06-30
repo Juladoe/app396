@@ -132,6 +132,7 @@ public class FindFragment extends BaseFragment implements CordovaInterface {
 
     @Override
     public void onDestroyView() {
+        Log.d("DefaultPageActivity", "onDestroyView");
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
         if (webView != null) {
