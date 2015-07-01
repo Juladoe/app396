@@ -171,7 +171,7 @@ public class AddNormalFriendActivity extends ActionBarBaseActivity{
             }
 
             holder.friendImage.setImageResource(mFriendsList.get(position).avatarID);
-            holder.friendName.setText(mFriendsList.get(position).name);
+            holder.friendName.setText(mFriendsList.get(position).nickname);
             switch (mFriendsList.get(position).state){
                 case Const.HAVE_ADD_TRUE:
                     holder.state.setImageResource(R.drawable.have_add_friend_true);

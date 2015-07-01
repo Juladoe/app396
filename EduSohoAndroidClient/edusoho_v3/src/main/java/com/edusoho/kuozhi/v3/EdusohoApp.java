@@ -202,12 +202,8 @@ public class EdusohoApp extends Application {
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return requestUrl.getParams();
-            }
-        };
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url,
+                responseListener, errorListener);
         jsonObjectRequest.setTag(requestUrl.url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
@@ -618,6 +614,17 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
+    public RequestUrl bindNewUrl(String url,boolean addToken) {
+        StringBuffer sb = new StringBuffer(app.host);
+        sb.append(url);
+        RequestUrl requestUrl = new RequestUrl(sb.toString());
+
+        if (addToken) {
+            requestUrl.heads.put("token", token);
+        }
+        return requestUrl;
+    }
+    
     public RequestUrl bindPushUrl(String url) {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);

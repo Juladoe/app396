@@ -93,7 +93,7 @@ public class FriendFragmentAdapter extends BaseAdapter{
             }else {
                 itemHolder.teacherTag.setVisibility(View.GONE);
             }
-            itemHolder.friendName.setText(mList.get(position-1).name);
+            itemHolder.friendName.setText(mList.get(position-1).nickname);
             itemHolder.friendAvatar.setImageResource(mList.get(position-1).avatarID);
         }
         return v;
