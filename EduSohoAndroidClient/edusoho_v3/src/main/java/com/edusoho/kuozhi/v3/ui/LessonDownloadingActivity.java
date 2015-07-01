@@ -205,10 +205,13 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 }
                 curLessonItem.groupId = chapterCount;
                 tempArray.add(curLessonItem);
-                
+                if (i == size - 1) {
+                    mChildItems.add(tempArray);
+                    break;
+                }
                 LessonItem nextLessonItem = mLessonList.get(i + 1);
-                if (i + 1 == size || (nextLessonItem.itemType.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())
-                        && nextLessonItem.type.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString()))) {
+                if (nextLessonItem.itemType.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())
+                        && nextLessonItem.type.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
                     mChildItems.add(tempArray);
                     tempArray = new ArrayList<>();
                 }
