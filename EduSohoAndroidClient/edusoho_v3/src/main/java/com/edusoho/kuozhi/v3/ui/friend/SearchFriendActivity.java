@@ -20,7 +20,9 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,6 +40,8 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     private ListView mList;
     private ArrayList<Friend> mResultList;
     private ArrayList<Friend> mTmpList;
+    private Integer[] friendIds = new Integer[15];
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +63,10 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
     public void loadResultFriends(){
         RequestUrl requestUrl = app.bindNewUrl(Const.SEARCH_FRIEND, false);
-        requestUrl.url = requestUrl.setGetParams(new String[]{"q",name});
+        requestUrl.setGetParams(new String[]{"q",name});
         ajaxGet(requestUrl,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                setProgressBarIndeterminateVisibility(false);
                 FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
 
                 if(friendResult == null){
@@ -71,19 +74,35 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
                 }
 
+                count = 0;
                 if(friendResult.mobile != null){
                     for(Friend friend:friendResult.mobile){
                         mAdapter.addItem(friend);
+                        friendIds[count] = friend.id;
+                        count++;
+
                     }
                 }
                 if(friendResult.qq != null){
                     for(Friend friend:friendResult.qq){
-                        mAdapter.addItem(friend);
+                        if(Arrays.asList(friendIds).contains(friend.id)){
+                            continue;
+                        }else {
+                            friendIds[count] = friend.id;
+                            mAdapter.addItem(friend);
+                            count++;
+                        }
                     }
                 }
                 if(friendResult.nickname != null){
                     for(Friend friend:friendResult.nickname){
-                        mAdapter.addItem(friend);
+                        if(Arrays.asList(friendIds).contains(friend.id)){
+                            continue;
+                        }else {
+                            friendIds[count] = friend.id;
+                            mAdapter.addItem(friend);
+                            count++;
+                        }
                     }
                 }
 
@@ -115,6 +134,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
         public void addItem(Friend friend){
             mResultList.add(friend);
+            notifyDataSetChanged();
         }
 
         @Override
