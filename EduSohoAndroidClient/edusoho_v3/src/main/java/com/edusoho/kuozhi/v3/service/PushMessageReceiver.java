@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.service;
 
-import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,12 +11,9 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
 import com.edusoho.kuozhi.v3.model.bal.news.SimpleNew;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
@@ -28,6 +24,8 @@ import com.tencent.android.tpush.XGPushTextMessage;
  * Created by JesseHuang on 15/5/16.
  */
 public class PushMessageReceiver extends XGPushBaseReceiver {
+    private static final String TAG = "PushMessageReceiver";
+
     @Override
     public void onRegisterResult(Context context, int i, XGPushRegisterResult xgPushRegisterResult) {
 
@@ -58,13 +56,15 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
         sn.content = message.getContent();
         sn.postTime = String.valueOf(SystemClock.uptimeMillis());
         bundle.putSerializable("msg", sn);
+        boolean isForeground = EdusohoApp.app.isForeground("com.edusoho.kuozhi.v3.ui.ChatActivity");
+        Log.d(TAG, isForeground + "");
         //通知聊天列表
-        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, ChatActivity.class, new NormalCallback() {
-            @Override
-            public void success(Object obj) {
-
-            }
-        });
+//        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, ChatActivity.class, new NormalCallback() {
+//            @Override
+//            public void success(Object obj) {
+//
+//            }
+//        });
 
         //通知动态列表
 //        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, NewsFragment.class, new NormalCallback() {
@@ -75,7 +75,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
 //                }
 //            }
 //        });
-        CommonUtil.longToast(context, text);
+        //CommonUtil.longToast(context, text);
     }
 
     private void showNotification(SimpleNew sn) {

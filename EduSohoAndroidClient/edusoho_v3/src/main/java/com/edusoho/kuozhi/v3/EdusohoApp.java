@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +28,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -42,9 +42,9 @@ import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
+import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -70,11 +70,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application {
@@ -185,9 +183,9 @@ public class EdusohoApp extends Application {
         return mVolley.addToRequestQueue(jsonObjectRequest);
     }
 
-    public void getUrl(final String url, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public void getUrl(final String url, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, responseListener, errorListener);
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, url, responseListener, errorListener);
         jsonObjectRequest.setTag(url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
@@ -201,8 +199,7 @@ public class EdusohoApp extends Application {
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url,
-                responseListener, errorListener);
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener);
         jsonObjectRequest.setTag(requestUrl.url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
@@ -255,11 +252,10 @@ public class EdusohoApp extends Application {
             mPlayCacheServer.close();
         }
 
-//
-//        M3U8DownService m3U8DownService = M3U8DownService.getService();
-//        if (m3U8DownService != null) {
-//            m3U8DownService.cancelAllDownloadTask();
-//        }
+        M3U8DownService m3U8DownService = M3U8DownService.getService();
+        if (m3U8DownService != null) {
+            m3U8DownService.cancelAllDownloadTask();
+        }
 
         SqliteUtil.getUtil(this).close();
         //System.exit(0);
@@ -613,7 +609,7 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
-    public RequestUrl bindNewUrl(String url,boolean addToken) {
+    public RequestUrl bindNewUrl(String url, boolean addToken) {
         StringBuffer sb = new StringBuffer(app.host);
         sb.append(url);
         RequestUrl requestUrl = new RequestUrl(sb.toString());
@@ -623,7 +619,7 @@ public class EdusohoApp extends Application {
         }
         return requestUrl;
     }
-    
+
     public RequestUrl bindPushUrl(String url) {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);
@@ -643,11 +639,11 @@ public class EdusohoApp extends Application {
                 return;
             }
             String url = bindToken2Url(Const.CHECKTOKEN, true);
-            app.getUrl(url, new Response.Listener<JSONObject>() {
+            app.getUrl(url, new Response.Listener<String>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(String response) {
                     UserResult result = app.gson.fromJson(
-                            response.toString(), new TypeToken<UserResult>() {
+                            response, new TypeToken<UserResult>() {
                             }.getType());
                     if (result != null) {
                         saveToken(result);
@@ -706,12 +702,12 @@ public class EdusohoApp extends Application {
             loadDialog.show();
         }
 
-        app.getUrl(url, new Response.Listener<JSONObject>() {
+        app.getUrl(url, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 loadDialog.dismiss();
                 final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
-                        response.toString(), new TypeToken<AppUpdateInfo>() {
+                        response, new TypeToken<AppUpdateInfo>() {
                         }.getType());
 
                 if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
@@ -856,5 +852,23 @@ public class EdusohoApp extends Application {
         }
 
         return value;
+    }
+
+    public boolean isForeground(String PackageName) {
+        // Get the Activity Manager
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+
+        // Get a list of running tasks, we are only interested in the last one,
+        // the top most so we give a 1 as parameter so we only get the topmost.
+        List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
+
+        // Get the info we need for comparison.
+        ComponentName componentInfo = task.get(0).topActivity;
+
+        // Check if it matches our package name.
+        if (componentInfo.getClassName().equals(PackageName)) return true;
+
+        // If not then our app is not on the foreground.
+        return false;
     }
 }
