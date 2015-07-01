@@ -118,7 +118,9 @@ public class Const {
     public static final String DOWNLOAD_MATERIAL = "%sLesson/downMaterial?courseId=%d&materialId=%d&token=%s";
     public static final String UPLOAD_IMAGE = "Testpaper/uploadQuestionImage";
 
-    /** mobile/{code}/version  **/
+    /**
+     * mobile/{code}/version  *
+     */
     public static final String MOBILE_APP_VERSION = "mobile/%s/version";
     public static final String MOBILE_APP_RESOURCE = "mobile/%s/resource";
 
@@ -237,6 +239,9 @@ public class Const {
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
+
+    public static final String BIND_LOGIN = "/bind_login";
+
     /**
      * "/message/:studentId/friend/:fid/send"
      */

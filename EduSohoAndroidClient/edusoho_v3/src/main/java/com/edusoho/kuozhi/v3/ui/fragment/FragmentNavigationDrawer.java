@@ -198,14 +198,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
         ivSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RequestUrl requestUrl = app.bindUrl("http://trymob.edusoho.cn/api/users", false);
-                requestUrl.url = "http://trymob.edusoho.cn/api/users";
-                mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("a", "1");
-                    }
-                }, null);
                 mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
             }
         });
