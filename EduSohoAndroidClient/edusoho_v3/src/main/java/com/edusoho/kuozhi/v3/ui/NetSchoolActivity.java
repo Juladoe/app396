@@ -16,10 +16,12 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -172,37 +174,30 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                             return;
                         }
 
-//                        app.setCurrentSchool(site);
-//                        app.removeToken();
-//                        showSchSplash(site.name, site.splashs);
-
-                        app.setCurrentSchool(site);
-                        app.removeToken();
-                        showSchSplash(site.name, site.splashs);
-
-//                        RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
-//                        app.postUrl(requestUrl, new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(String response) {
-//                                // TODO save apitoken
-//                                app.saveApiToken(response);
-//
-//                                app.registDevice(new NormalCallback() {
-//                                    @Override
-//                                    public void success(Object obj) {
-//                                        app.setCurrentSchool(site);
-//                                        app.removeToken();
-//                                        showSchSplash(site.name, site.splashs);
-//                                    }
-//                                });
-//                            }
-//                        }, new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                CommonUtil.longToast(mContext, "无法获取网校Token");
-//                            }
-//                        });
-
+                        final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
+                        app.getUrl(requestUrl, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Token token = parseJsonValue(response, new TypeToken<Token>() {
+                                });
+                                if (token != null) {
+                                    app.config.apiToken = token.token;
+                                    app.setCurrentSchool(site);
+                                    app.removeToken();
+                                    app.registDevice(new NormalCallback() {
+                                        @Override
+                                        public void success(Object obj) {
+                                            showSchSplash(site.name, site.splashs);
+                                        }
+                                    });
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                CommonUtil.longToast(mContext, "无法获取网校Token");
+                            }
+                        });
                     }
                 }, new Response.ErrorListener() {
                     @Override

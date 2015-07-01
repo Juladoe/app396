@@ -353,7 +353,6 @@ public class EdusohoApp extends Application {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                normalCallback.success(null);
                 Log.d(null, "regist failed");
             }
         });
@@ -541,6 +540,7 @@ public class EdusohoApp extends Application {
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
         edit.putInt("offlineType", config.offlineType);
+        edit.putString("apiToken", config.apiToken);
         edit.apply();
     }
 
