@@ -111,6 +111,9 @@ public class ESWebView extends RelativeLayout {
         if (appDir.exists()) {
             StringBuilder appVersionString = FileUtils.readFile(
                     new File(appDir, "version.json").getAbsolutePath(), "utf-8");
+            if (appVersionString == null) {
+                return null;
+            }
             return mActivity.parseJsonValue(
                     appVersionString.toString(), new TypeToken<AppMeta>() {
             });

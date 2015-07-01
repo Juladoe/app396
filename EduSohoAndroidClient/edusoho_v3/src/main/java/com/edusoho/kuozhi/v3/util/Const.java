@@ -220,6 +220,7 @@ public class Const {
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
     public static final String LESSONS = "Lesson/getCourseLessons";
+    public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
     public static final String LESSON = "Lesson/getLesson";
     public static final String SEARCH_COURSE = "Course/searchCourse";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
