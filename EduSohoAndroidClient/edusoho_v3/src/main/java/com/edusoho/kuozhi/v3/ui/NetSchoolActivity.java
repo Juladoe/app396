@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAutoCompleteTextView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -173,6 +174,15 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
+                        app.setCurrentSchool(site);
+                        app.removeToken();
+                        SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
+                        app.registDevice(new NormalCallback() {
+                            @Override
+                            public void success(Object obj) {
+                                showSchSplash(site.name, site.splashs);
+                            }
+                        });
 
                         final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
                         app.getUrl(requestUrl, new Response.Listener<String>() {
@@ -181,15 +191,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                                 Token token = parseJsonValue(response, new TypeToken<Token>() {
                                 });
                                 if (token != null) {
-                                    app.config.apiToken = token.token;
-                                    app.setCurrentSchool(site);
-                                    app.removeToken();
-                                    app.registDevice(new NormalCallback() {
-                                        @Override
-                                        public void success(Object obj) {
-                                            showSchSplash(site.name, site.splashs);
-                                        }
-                                    });
+                                    app.saveApiToken(token.token);
+                                    app.pushRegister(null);
                                 }
                             }
                         }, new Response.ErrorListener() {

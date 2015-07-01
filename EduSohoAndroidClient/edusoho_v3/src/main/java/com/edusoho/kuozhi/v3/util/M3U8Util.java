@@ -106,7 +106,7 @@ public class M3U8Util {
         mTimeOutList = new Hashtable<String, Integer>();
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(3);
         mThreadPoolExecutor.setMaximumPoolSize(4);
-        mSqliteUtil = new SqliteUtil(mContext, null, null);
+        mSqliteUtil = SqliteUtil.getUtil(mContext);
     }
 
     public String getLessonTitle() {

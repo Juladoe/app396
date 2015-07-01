@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
@@ -126,6 +127,16 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                     }
 
+                    app.setCurrentSchool(site);
+                    SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
+                    showSchSplash(site.name, site.splashs);
+                    app.registDevice(new NormalCallback() {
+                        @Override
+                        public void success(Object obj) {
+                            showSchSplash(site.name, site.splashs);
+                        }
+                    });
+
                     RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
                     app.getUrl(requestUrl, new Response.Listener<String>() {
                         @Override
@@ -133,15 +144,10 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                             Token token = parseJsonValue(response, new TypeToken<Token>() {
                             });
                             if (token != null) {
-                                app.config.apiToken = token.token;
-                                app.setCurrentSchool(site);
-                                showSchSplash(site.name, site.splashs);
-                                app.registDevice(new NormalCallback() {
-                                    @Override
-                                    public void success(Object obj) {
-                                        showSchSplash(site.name, site.splashs);
-                                    }
-                                });
+                                app.saveApiToken(token.token);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                                app.pushRegister(bundle);
                             }
                         }
                     }, new Response.ErrorListener() {

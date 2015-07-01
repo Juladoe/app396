@@ -36,6 +36,7 @@ import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.result.PushResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
@@ -92,6 +93,10 @@ public class EdusohoApp extends Application {
     public Context mContext;
 
     public String token;
+    /**
+     * school token
+     */
+    public String apiToken;
 
     private HashMap<String, Bundle> notifyMap;
     public static HashMap<String, Activity> runTask;
@@ -459,6 +464,15 @@ public class EdusohoApp extends Application {
     private void loadToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         token = sp.getString("token", "");
+        apiToken = sp.getString("apiToken", "");
+    }
+
+    public void saveApiToken(String apiToken) {
+        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putString("token", apiToken);
+        edit.apply();
+        this.apiToken = apiToken;
     }
 
     public void saveToken(UserResult userResult) {
@@ -480,7 +494,7 @@ public class EdusohoApp extends Application {
         SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", "");
-        edit.commit();
+        edit.apply();
 
         SqliteUtil.clearUser(loginUser == null ? 0 : loginUser.id);
         token = null;
@@ -510,14 +524,6 @@ public class EdusohoApp extends Application {
         }
     }
 
-    public void saveApiToken(String apiToken) {
-        SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
-        SharedPreferences.Editor edit = sp.edit();
-        config.apiToken = apiToken;
-        edit.putString("apiToken", apiToken);
-        edit.apply();
-    }
-
     private void loadConfig() {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         config = new AppConfig();
@@ -539,7 +545,6 @@ public class EdusohoApp extends Application {
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
         edit.putInt("offlineType", config.offlineType);
-        edit.putString("apiToken", config.apiToken);
         edit.apply();
     }
 
@@ -624,7 +629,7 @@ public class EdusohoApp extends Application {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);
         RequestUrl pushRequesUrl = new RequestUrl(sb.toString());
-        pushRequesUrl.heads.put("Auth-Token", EdusohoApp.app.config.apiToken);
+        pushRequesUrl.heads.put("Auth-Token", app.apiToken);
         return pushRequesUrl;
     }
 
@@ -774,31 +779,36 @@ public class EdusohoApp extends Application {
             @Override
             public void onSuccess(Object data, int flag) {
                 Log.w(Constants.LogTag, "+++ register push success. token:" + data);
-//                RequestUrl requestUrl = null;
-//                if (bundle != null) {
-//                    requestUrl = app.bindPushUrl(Const.BIND);
-//                    HashMap<String, String> params = requestUrl.getParams();
-//                    params.put("appToken", data.toString());
-//                    params.put("studentId", bundle.getString(Const.BIND_USER_ID));
-//                    params.put("euqip", Const.EQUIP_TYPE);
-//                } else {
-//                    requestUrl = app.bindPushUrl(Const.ANONYMOUS_BIND);
-//                    HashMap<String, String> params = requestUrl.getParams();
-//                    params.put("appToken", data.toString());
-//                    params.put("euqip", Const.EQUIP_TYPE);
-//                }
-//                app.postUrl(requestUrl, new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
-//                        });
-//                        if (pushResult != null && pushResult.result.equals("success")) {
-//                            Log.d(TAG, "cloud register success");
-//                        } else {
-//                            Log.d(TAG, "cloud register failed");
-//                        }
-//                    }
-//                }, null);
+                RequestUrl requestUrl;
+                if (bundle != null) {
+                    requestUrl = app.bindPushUrl(Const.BIND);
+                    HashMap<String, String> params = requestUrl.getParams();
+                    params.put("appToken", data.toString());
+                    params.put("studentId", bundle.getString(Const.BIND_USER_ID));
+                    params.put("euqip", Const.EQUIP_TYPE);
+                } else {
+                    requestUrl = app.bindPushUrl(Const.ANONYMOUS_BIND);
+                    HashMap<String, String> params = requestUrl.getParams();
+                    params.put("appToken", data.toString());
+                    params.put("euqip", Const.EQUIP_TYPE);
+                }
+                app.postUrl(requestUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+                        });
+                        if (pushResult != null && pushResult.result.equals("success")) {
+                            Log.d(TAG, "cloud register success");
+                        } else {
+                            Log.d(TAG, "cloud register failed");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, error.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -820,18 +830,18 @@ public class EdusohoApp extends Application {
                 RequestUrl requestUrl = bindPushUrl(Const.UNBIND);
                 HashMap<String, String> hashMap = requestUrl.getParams();
                 hashMap.put("studentId", bundle.getString(Const.BIND_USER_ID));
-//                postUrl(requestUrl, new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
-//                        });
-//                        if (pushResult != null && pushResult.result.equals("success")) {
-//                            Log.d(TAG, "cloud register success");
-//                        } else {
-//                            Log.d(TAG, "cloud register failed");
-//                        }
-//                    }
-//                }, null);
+                postUrl(requestUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+                        });
+                        if (pushResult != null && pushResult.result.equals("success")) {
+                            Log.d(TAG, "cloud register success");
+                        } else {
+                            Log.d(TAG, "cloud register failed");
+                        }
+                    }
+                }, null);
             }
 
             @Override
