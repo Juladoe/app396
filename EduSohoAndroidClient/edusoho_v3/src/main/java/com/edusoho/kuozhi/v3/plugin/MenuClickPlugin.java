@@ -137,6 +137,16 @@ public class MenuClickPlugin extends CordovaPlugin {
             EdusohoApp.app.removeToken();
             EdusohoApp.app.sendMessage(Const.LOGOUT_SUCCESS, null);
             EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+        } else if (action.equals("showDownLesson")) {
+            final int courseId = args.getInt(0);
+            EdusohoApp.app.mEngine.runNormalPlugin(
+                    "LessonDownloadingActivity", cordova.getActivity(), new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.COURSE_ID, courseId);
+                        }
+                    }
+            );
         }
         return super.execute(action, args, callbackContext);
     }

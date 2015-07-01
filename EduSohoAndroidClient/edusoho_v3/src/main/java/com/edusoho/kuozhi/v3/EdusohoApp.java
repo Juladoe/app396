@@ -610,6 +610,17 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
+    public RequestUrl bindNewUrl(String url, boolean addToken) {
+        StringBuffer sb = new StringBuffer(app.host);
+        sb.append(url);
+        RequestUrl requestUrl = new RequestUrl(sb.toString());
+
+        if (addToken) {
+            requestUrl.heads.put("token", token);
+        }
+        return requestUrl;
+    }
+
     public RequestUrl bindPushUrl(String url) {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.friend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,9 +14,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.bal.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
     private ListView mList;
     private ArrayList<Friend> mResultList;
+    private ArrayList<Friend> mTmpList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,26 +58,42 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     }
 
     public void loadResultFriends(){
-        //TODO
-//        RequestUrl requestUrl = app.bindUrl(Const.SEARCH_FRIEND,false);
-//        requestUrl.setParams(new String[]{
-//                "mobile",name,
-//                "qq",name,
-//                "nickname",name
-//        });
-//        setProgressBarIndeterminate(true);
-//        ajaxGet(requestUrl,new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                setProgressBarIndeterminateVisibility(false);
-//
-//            }
-//        },new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        });
+        RequestUrl requestUrl = app.bindNewUrl(Const.SEARCH_FRIEND, false);
+        requestUrl.url = requestUrl.setGetParams(new String[]{"q",name});
+        ajaxGet(requestUrl,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                setProgressBarIndeterminateVisibility(false);
+                FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
+
+                if(friendResult == null){
+                    //TODO 空数据页面
+
+                }
+
+                if(friendResult.mobile != null){
+                    for(Friend friend:friendResult.mobile){
+                        mAdapter.addItem(friend);
+                    }
+                }
+                if(friendResult.qq != null){
+                    for(Friend friend:friendResult.qq){
+                        mAdapter.addItem(friend);
+                    }
+                }
+                if(friendResult.nickname != null){
+                    for(Friend friend:friendResult.nickname){
+                        mAdapter.addItem(friend);
+                    }
+                }
+
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
 
@@ -111,7 +131,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 holder = (ItemHolder) convertView.getTag();
             }
             holder.image.setImageResource(mResultList.get(position).avatarID);
-            holder.name.setText(mResultList.get(position).name);
+            holder.name.setText(mResultList.get(position).nickname);
             switch (mResultList.get(position).state){
                 case Const.HAVE_ADD_TRUE:
                     holder.state.setImageResource(R.drawable.have_add_friend_true);

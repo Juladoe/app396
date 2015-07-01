@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
+import com.edusoho.kuozhi.v3.model.bal.Lesson.DownLessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.UploadFile;
 import com.edusoho.kuozhi.v3.model.bal.LessonsResult;
@@ -54,6 +55,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
 
     private TextView btnSelectAll;
     private TextView btnDownload;
+    private int mCourseId;
 
     private ExpandableListView mListView;
     private Context mContext;
@@ -62,8 +64,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     private List<LessonItem> mGroupItems = new ArrayList<>();
     private List<List<LessonItem>> mChildItems = new ArrayList<>();
     private DownloadLessonAdapter mAdapter;
-    String lessonListJsonStr = "";
-    String courseJsonStr = "";
 
 
     @Override
@@ -72,8 +72,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_lesson_downloading);
         setBackMode(BACK, "下载列表");
         mContext = this;
-        testdata();
-        //initView();
+        initView();
     }
 
     @Override
@@ -100,18 +99,22 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         }
     };
 
-    private void testdata() {
-        RequestUrl url = mActivity.app.bindUrl(Const.LESSONS, true);
+    private void getCourseLessons() {
+        RequestUrl url = mActivity.app.bindUrl(Const.DOWN_LESSONS, true);
         try {
             url.setParams(new String[]{
-                    "courseId", "136"
+                    "courseId", String.valueOf(mCourseId)
             });
 
             this.ajaxPostWithLoading(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    lessonListJsonStr = response;
-                    initView();
+                    DownLessonItem downLessonItem = mActivity.parseJsonValue(
+                            response, new TypeToken<DownLessonItem>(){});
+                    if (downLessonItem != null) {
+                        mCourse = downLessonItem.course;
+                        initDownLessons(downLessonItem.lessons);
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -124,25 +127,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         }
     }
 
-    private void initView() {
-        mListView = (ExpandableListView) findViewById(R.id.el_download);
-        btnSelectAll = (TextView) findViewById(R.id.tv_select_all);
-        btnSelectAll.setOnClickListener(mSelectAllClick);
-        btnDownload = (TextView) findViewById(R.id.tv_download);
-        btnDownload.setOnClickListener(mDownloadClick);
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            //lessonListJsonStr = intent.getStringExtra(LIST_JSON);
-            courseJsonStr = intent.getStringExtra(COURSE_JSON);
-        }
-
-        LessonsResult lessonsResult = parseJsonValue(lessonListJsonStr, new TypeToken<LessonsResult>() {
-        });
-        CourseDetailsResult result = parseJsonValue(courseJsonStr, new TypeToken<CourseDetailsResult>() {
-        });
-        mCourse = result.course;
-        mLessonList = lessonsResult.lessons;
+    private void initDownLessons(List<LessonItem> lessonItems) {
+        mLessonList = lessonItems;
         filterLesson(mLessonList);
         loadLocalLessonStatus(mLessonList);
 
@@ -178,9 +164,21 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 return false;
             }
         });
+    }
 
-//        mCourse = parseJsonValue(courseJsonStr, new TypeToken<Course>() {
-//        });
+    private void initView() {
+        mListView = (ExpandableListView) findViewById(R.id.el_download);
+        btnSelectAll = (TextView) findViewById(R.id.tv_select_all);
+        btnSelectAll.setOnClickListener(mSelectAllClick);
+        btnDownload = (TextView) findViewById(R.id.tv_download);
+        btnDownload.setOnClickListener(mDownloadClick);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
+        }
+
+        getCourseLessons();
     }
 
     private void initData() {
@@ -207,6 +205,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 }
                 curLessonItem.groupId = chapterCount;
                 tempArray.add(curLessonItem);
+                
                 LessonItem nextLessonItem = mLessonList.get(i + 1);
                 if (i + 1 == size || (nextLessonItem.itemType.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())
                         && nextLessonItem.type.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString()))) {

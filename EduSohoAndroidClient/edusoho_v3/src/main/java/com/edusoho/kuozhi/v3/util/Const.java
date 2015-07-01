@@ -222,6 +222,7 @@ public class Const {
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
     public static final String LESSONS = "Lesson/getCourseLessons";
+    public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
     public static final String LESSON = "Lesson/getLesson";
     public static final String SEARCH_COURSE = "Course/searchCourse";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
@@ -396,6 +397,7 @@ public class Const {
     public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn";
     public static final String VIP_LIST = "/mapi_v2/mobileApp#/viplist";
     public static final String MY_FAVORITE = "/mapi_v2/mobileApp#/myfavorite";
+    public static final String SEARCH_FRIEND = "/api/users/";
 
     public static final int HAVE_ADD_TRUE = 0;
     public static final int HAVE_ADD_FALSE = 1;
