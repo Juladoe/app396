@@ -25,9 +25,7 @@ import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.DownLessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.UploadFile;
-import com.edusoho.kuozhi.v3.model.bal.LessonsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -110,7 +108,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 @Override
                 public void onResponse(String response) {
                     DownLessonItem downLessonItem = mActivity.parseJsonValue(
-                            response, new TypeToken<DownLessonItem>(){});
+                            response, new TypeToken<DownLessonItem>() {
+                    });
                     if (downLessonItem != null) {
                         mCourse = downLessonItem.course;
                         initDownLessons(downLessonItem.lessons);

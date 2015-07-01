@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.HashMap;
@@ -65,6 +66,9 @@ public class ChatActivity extends ActionBarBaseActivity {
             mNewsItem = (NewsItem) intent.getSerializableExtra(CHAT_DATA);
 //            String courseId = intent.getStringExtra(COURSE_ID);
 //            CommonUtil.longToast(mActivity, courseId);
+        }
+        if (mXGClick != null) {
+            CommonUtil.longToast(this, "通知被点击:" + mXGClick.toString());
         }
     }
 

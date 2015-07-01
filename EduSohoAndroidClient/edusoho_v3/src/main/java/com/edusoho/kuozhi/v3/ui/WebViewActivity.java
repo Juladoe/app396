@@ -3,10 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
+import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -14,10 +11,6 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
-
-import org.apache.cordova.Config;
-import org.apache.cordova.CordovaChromeClient;
-import org.apache.cordova.CordovaWebView;
 
 /**
  * Created by JesseHuang on 15/6/17.
@@ -70,6 +63,7 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
         super.onDestroy();
         app.unRegistMsgSource(this);
         if (mWebView != null) {
@@ -82,5 +76,11 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{new MessageType(CLOSE, source)};
         return messageTypes;
+    }
+
+    @Override
+    public void finish() {
+        Log.d(TAG, "finish");
+        super.finish();
     }
 }

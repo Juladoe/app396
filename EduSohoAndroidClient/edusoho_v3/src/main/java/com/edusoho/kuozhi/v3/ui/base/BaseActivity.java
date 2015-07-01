@@ -25,7 +25,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -192,7 +191,7 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxGet(final String url, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public void ajaxGet(final String url, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         app.getUrl(url, responseListener, errorListener);
     }
 
