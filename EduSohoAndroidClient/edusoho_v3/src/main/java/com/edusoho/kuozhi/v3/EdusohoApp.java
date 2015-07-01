@@ -95,13 +95,12 @@ public class EdusohoApp extends Application {
 
     public String token;
 
+    private HashMap<String, Bundle> notifyMap;
     public static HashMap<String, Activity> runTask;
     private static final String TAG = "EdusohoApp";
 
     public static int screenW;
     public static int screenH;
-
-    private HashMap<String, Bundle> notifyMap;
 
     public static EdusohoApp app;
     public static boolean debug = true;
