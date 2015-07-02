@@ -13,12 +13,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -30,7 +34,7 @@ public class EdusohoMainService extends Service {
     protected EdusohoApp app;
     public static final String TAG = "EdusohoMainService";
     private static EdusohoMainService mService;
-    private Handler workHandler;
+    private WorkHandler mWorkHandler;
     //private User mLoginUser;
     private Queue<Request<String>> mAjaxQueue;
 
@@ -41,28 +45,14 @@ public class EdusohoMainService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(null, "create Main service");
-        mAjaxQueue = new LinkedList<Request<String>>();
+        mAjaxQueue = new LinkedList<>();
         app = (EdusohoApp) getApplication();
         mService = this;
-
-        workHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case EXIT_USER:
-                        app.loginUser = null;
-                        break;
-                    case LOGIN_WITH_TOKEN:
-                        loginWithToken();
-                        break;
-                }
-            }
-        };
+        mWorkHandler = new WorkHandler(this);
     }
 
     public void sendMessage(int type, Object obj) {
-        Message message = workHandler.obtainMessage(type);
+        Message message = mWorkHandler.obtainMessage(type);
         message.obj = obj;
         message.sendToTarget();
     }
@@ -130,5 +120,35 @@ public class EdusohoMainService extends Service {
 
     public static void start(ActionBarBaseActivity activity) {
         activity.runService(TAG);
+    }
+
+    public void insertNew(New newModel) {
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(this, EdusohoApp.app.domain));
+        newDataSource.createNew(newModel);
+    }
+
+    public static class WorkHandler extends Handler {
+        WeakReference<EdusohoMainService> mWeakReference;
+        EdusohoMainService mEdusohoMainService;
+
+        public WorkHandler(EdusohoMainService service) {
+            mWeakReference = new WeakReference<>(service);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (mEdusohoMainService == null) {
+                mEdusohoMainService = mWeakReference.get();
+            }
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case EXIT_USER:
+                    mEdusohoMainService.app.loginUser = null;
+                    break;
+                case LOGIN_WITH_TOKEN:
+                    mEdusohoMainService.loginWithToken();
+                    break;
+            }
+        }
     }
 }

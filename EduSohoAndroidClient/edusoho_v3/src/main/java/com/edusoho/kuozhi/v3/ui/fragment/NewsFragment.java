@@ -15,8 +15,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.InitModelTool;
-import com.edusoho.kuozhi.v3.model.bal.news.NewsEnum;
-import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
+import com.edusoho.kuozhi.v3.model.bal.push.ChatTypeEnum;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
@@ -70,7 +70,7 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        List<NewsItem> list = InitModelTool.initNewsItemList();
+        List<New> list = InitModelTool.initNewsItemList();
 //        if (app.loginUser.nickname.equals("suju")) {
 //            list = InitModelTool.initNewsItemList1();
 //        } else {
@@ -128,8 +128,8 @@ public class NewsFragment extends BaseFragment {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final NewsItem newItem = (NewsItem) parent.getItemAtPosition(position);
-            if (newItem.type == NewsEnum.FRIEND || newItem.type == NewsEnum.TEACHER) {
+            final New newItem = (New) parent.getItemAtPosition(position);
+            if (newItem.type == ChatTypeEnum.FRIEND.getName() || newItem.type == ChatTypeEnum.TEACHER.getName()) {
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -143,7 +143,7 @@ public class NewsFragment extends BaseFragment {
     };
 
     private void getNewOneMessage(Bundle data) {
-        NewsItem item = (NewsItem) data.getSerializable("msg");
+        New item = (New) data.getSerializable("msg");
         //mSwipeAdapter.findNews(item);
     }
 

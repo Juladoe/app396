@@ -47,6 +47,6 @@
         android:scrollbars="none"
         android:smoothScrollbar="true"
         android:clickable="true"
-        android:id="@+id/lv_messages"></ListView>
+        android:id="@+id/lv_messages" />
 
 </RelativeLayout>

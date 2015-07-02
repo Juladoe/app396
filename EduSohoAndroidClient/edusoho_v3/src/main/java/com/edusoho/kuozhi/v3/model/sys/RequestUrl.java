@@ -44,16 +44,15 @@ public class RequestUrl {
     }
 
     public void setGetParams(String[] values) {
-        if(values == null || values.length == 0){
+        if (values == null || values.length == 0) {
             return;
         }
-
         StringBuffer sb = new StringBuffer(url);
-        for (int i = 0;i<values.length;i += 2){
-            if(i==0){
-                sb.append("?"+values[i]+"="+values[i+1]);
-            }else {
-                sb.append("&"+values[i]+"="+values[i+1]);
+        for (int i = 0; i < values.length; i += 2) {
+            if (i == 0) {
+                sb.append("?" + values[i] + "=" + values[i + 1]);
+            } else {
+                sb.append("&" + values[i] + "=" + values[i + 1]);
             }
         }
         url = sb.toString();
