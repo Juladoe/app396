@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.cache.request.model;
 
+import android.util.Log;
+
 import java.net.URL;
 import java.util.HashMap;
 
@@ -11,8 +13,10 @@ public class Request {
     public HashMap<String, Object> params;
     public HashMap<String, Object> heads;
     public String url;
+    private String mPath;
+    private String mHost;
 
-    private URL requestURL;
+    private URL mRequestURL;
 
     public Request(String url)
     {
@@ -22,8 +26,10 @@ public class Request {
 
     public String getPath()
     {
-        URL requestURL = getRequestURL();
-        return requestURL == null ? "" : getRequestURL().getPath();
+        if (mPath == null) {
+            mPath = mRequestURL == null ? "" : mRequestURL.getPath();
+        }
+        return mPath;
     }
 
     public String getName()
@@ -35,6 +41,22 @@ public class Request {
         }
 
         return null;
+    }
+
+    /**
+     * 获取parentPath下path
+     * @param parentPath
+     * @return
+     */
+    public String getPath(String parentPath)
+    {
+        String path = getPath();
+        int lastDirPoint = path.lastIndexOf(parentPath);
+        if (lastDirPoint != -1) {
+            return path.substring(lastDirPoint + parentPath.length() + 1);
+        }
+
+        return path;
     }
 
     public String getDir()
@@ -50,21 +72,22 @@ public class Request {
 
     public String getHost()
     {
-        URL requestURL = getRequestURL();
-        return requestURL == null ? "" : getRequestURL().getHost();
+        if (mHost == null) {
+            mHost = mRequestURL == null ? "" : mRequestURL.getHost();
+        }
+        return mHost;
     }
 
     private URL getRequestURL()
     {
-        if (requestURL == null) {
-            try {
-                requestURL = new URL(url);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        URL requestUrl = null;
+        try {
+            requestUrl = new URL(url);
+        } catch (Exception e) {
+            Log.e(null, e.toString());
         }
 
-        return requestURL;
+        return requestUrl;
     }
 
     public void destory()
@@ -77,5 +100,8 @@ public class Request {
     {
         this.params = new HashMap<>();
         this.heads = new HashMap<>();
+        mRequestURL = getRequestURL();
+        mPath = getPath();
+        mHost = getHost();
     }
 }

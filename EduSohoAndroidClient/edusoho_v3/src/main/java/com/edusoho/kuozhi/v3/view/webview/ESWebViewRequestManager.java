@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.soooner.EplayerPluginLibary.util.ZipUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -24,13 +24,10 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by howzhi on 15/4/29.
@@ -49,6 +46,7 @@ public class ESWebViewRequestManager extends RequestManager {
         this.mWebView = webView;
         this.mUserAgent = userAgent;
         initHttpClient();
+        registHandler(".+/mapi_v2/.+", new ApiRequestHandler());
         registHandler(".+", new WebViewRequestHandler());
     }
 
@@ -150,51 +148,15 @@ public class ESWebViewRequestManager extends RequestManager {
         return storage;
     }
 
-    private File getResourceStorage(Request request)
+    private File getResourceStorage(String host)
     {
-        File storage = AppUtil.getSchoolStorage(request.getHost());
+        File storage = AppUtil.getSchoolStorage(host);
         File srcDir = new File(storage, mWebView.getAppCode());
         if (!srcDir.exists()) {
             srcDir.mkdirs();
         }
 
         return srcDir;
-    }
-
-    private void saveResourceFile(final Request request) {
-        File storage = getResourceStorage(request);
-        saveFile(storage, request, new RequestCallback<File>() {
-            @Override
-            public File onResponse(Response<File> response) {
-
-                File schoolStorage = AppUtil.getSchoolStorage(request.getHost());
-                File schoolAppStorage = new File(schoolStorage, mWebView.getAppCode());
-                if (! schoolAppStorage.exists()) {
-                    schoolAppStorage.mkdir();
-                }
-                try {
-                    ZipInputStream zin = new ZipInputStream(new FileInputStream(response.getData()));
-                    for (ZipEntry e; (e = zin.getNextEntry()) != null; zin.closeEntry()) {
-                        File file = new File(schoolAppStorage, e.getName());
-                        if (e.isDirectory()) {
-                            file.mkdirs();
-                            continue;
-                        }
-
-                        if (! isFileDirExists(file)) {
-                            continue;
-                        }
-                        if (AppUtil.saveStreamToFile(zin, file, false)) {
-                            Log.d(TAG, String.format("file %s is unzip", e.getName()));
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        });
     }
 
     private boolean isFileDirExists(File file) {
@@ -205,7 +167,7 @@ public class ESWebViewRequestManager extends RequestManager {
         return true;
     }
 
-    private void saveFile(File storage, Request request, RequestCallback callback) {
+    private File saveFile(File storage, Request request) {
         File cache = new File(storage, request.getName() + "_temp");
         HttpGet httpGet = getHttpGet(request.url);
         try {
@@ -217,12 +179,7 @@ public class ESWebViewRequestManager extends RequestManager {
             if (AppUtil.saveStreamToFile(response.getEntity().getContent(), cache, true)) {
                 File realFile = new File(cache.getAbsolutePath().replace("_temp", ""));
                 if (cache.renameTo(realFile)) {
-                    if (callback == null) {
-                        return;
-                    }
-                    Response callbackRsp = new Response();
-                    callbackRsp.setData(realFile);
-                    callback.onResponse(callbackRsp);
+                    return realFile;
                 }
             }
 
@@ -231,20 +188,52 @@ public class ESWebViewRequestManager extends RequestManager {
         } finally {
             httpGet.abort();
         }
+
+        return null;
     }
 
-    private void saveCacheToFile(Request request, RequestCallback callback)
-    {
-        File storage = getCacheStorage(request);
-        saveFile(storage, request, callback);
+    private boolean unZipFile(String schoolHost, File zinFile) {
+        File schoolStorage = AppUtil.getSchoolStorage(schoolHost);
+        File schoolAppStorage = new File(schoolStorage, mWebView.getAppCode());
+        if (! schoolAppStorage.exists()) {
+            schoolAppStorage.mkdir();
+        }
+        try {
+            ZipInputStream zin = new ZipInputStream(new FileInputStream(zinFile));
+            for (ZipEntry e; (e = zin.getNextEntry()) != null; zin.closeEntry()) {
+                File file = new File(schoolAppStorage, e.getName());
+                if (e.isDirectory()) {
+                    file.mkdirs();
+                    continue;
+                }
+
+                if (! isFileDirExists(file)) {
+                    continue;
+                }
+                if (AppUtil.saveStreamToFile(zin, file, false)) {
+                    Log.d(TAG, String.format("file %s is unzip", e.getName()));
+                }
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
-    public void downloadResource(final Request request) {
+    public void downloadResource(final Request request, final RequestCallback callback) {
         mWorkExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                saveResourceFile(request);
+                File storage = getResourceStorage(request.getHost());
+                File saveFile = saveFile(storage, request);
+                if (unZipFile(request.getHost(), saveFile)) {
+                    callback.onResponse(new Response(true));
+                    return;
+                }
+                callback.onResponse(new Response(false));
             }
         });
     }
@@ -258,52 +247,53 @@ public class ESWebViewRequestManager extends RequestManager {
 
     }
 
+    private File getResourceFile(String host, String fileName) {
+        File storage = getResourceStorage(host);
+        File cache = new File(storage, fileName);
+
+        return cache;
+    }
+
+    public class ApiRequestHandler implements RequestHandler
+    {
+        @Override
+        public void handler(Request request, Response response) {
+            Log.d(TAG, "api handler :" + request.url);
+
+            if (request.getPath().endsWith(String.format(Const.MOBILE_APP_URL, "/", mWebView.getAppCode()))) {
+                File cache = getResourceFile(request.getHost(), "index.html");
+                if (! cache.exists()) {
+                    return;
+                }
+
+                handlerResponse(cache, response);
+            }
+        }
+    }
+
+    private void handlerResponse(File file, Response response) {
+        try {
+            String extension = getFileExtension(file.getName());
+            response.setEncoding("utf-8");
+            response.setMimeType(getFileMime(extension));
+            response.setContent(new FileInputStream(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public class WebViewRequestHandler implements RequestHandler
     {
         @Override
         public void handler(Request request, Response response) {
 
-            File storage = getResourceStorage(request);
-            File cache = new File(storage, request.getName());
+            String path = request.getPath(mWebView.getAppCode() + "/release");
+            File cache = getResourceFile(request.getHost(), path);
             if (! cache.exists()) {
                 return;
             }
-
-            Log.d(TAG, "cache:" + request.url);
-            /*
-            if (isApiRequest(request.getPath())) {
-                if (AppUtil.isNetConnect(mContext)) {
-                    saveApiRequestCache(request);
-                } else {
-                    try {
-                        response.setEncoding("utf-8");
-                        response.setMimeType("text/html");
-                        response.setContent(new FileInputStream(getApiRequestCache(request)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                return;
-            }
-
-            if (cache == null || !cache.exists()) {
-                mWorkExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveCacheToFile(request);
-                    }
-                });
-                return;
-            }
-            */
-            try {
-                String extension = getFileExtension(request.url);
-                response.setEncoding("utf-8");
-                response.setMimeType(getFileMime(extension));
-                response.setContent(new FileInputStream(cache));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Log.d(TAG, "cache :" + request.url);
+            handlerResponse(cache, response);
         }
     }
 }

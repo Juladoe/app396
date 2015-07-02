@@ -123,6 +123,7 @@ public class Const {
      */
     public static final String MOBILE_APP_VERSION = "mobile/%s/version";
     public static final String MOBILE_APP_RESOURCE = "mobile/%s/resource";
+    public static final String MOBILE_APP_URL = "%smobile/%s";
 
     /**
      * course status

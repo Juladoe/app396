@@ -16,7 +16,7 @@ public abstract class RequestManager {
 
     private static RequestManager mRequestManager;
 
-    private LinkedHashMap<String, RequestHandler> mRequestHandlerList;
+    private LinkedHashMap<Pattern, RequestHandler> mRequestHandlerList;
 
     protected ScheduledThreadPoolExecutor mWorkExecutor;
     private static final int MAX_POOL = 10;
@@ -43,17 +43,17 @@ public abstract class RequestManager {
 
     public abstract <T> T blocPost(Request request, RequestCallback<T> callback);
 
-    public abstract void downloadResource(Request request);
+    public abstract <T> void downloadResource(Request request, RequestCallback<T> callback);
 
     public abstract void post(Request request, RequestCallback callback);
 
     public void registHandler(String pattern, RequestHandler handler) {
-        mRequestHandlerList.put(pattern, handler);
+        mRequestHandlerList.put(Pattern.compile(pattern), handler);
     }
 
     protected void handleRequest(Request request, Response response) {
-        for (String filter : mRequestHandlerList.keySet()) {
-            if (Pattern.matches(filter, request.url)) {
+        for (Pattern filter : mRequestHandlerList.keySet()) {
+            if (filter.matcher(request.url).find()) {
                 mRequestHandlerList.get(filter).handler(request, response);
                 return;
             }

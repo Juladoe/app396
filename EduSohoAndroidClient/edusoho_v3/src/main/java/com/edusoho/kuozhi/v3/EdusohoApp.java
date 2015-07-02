@@ -470,7 +470,7 @@ public class EdusohoApp extends Application {
     public void saveApiToken(String apiToken) {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putString("token", apiToken);
+        edit.putString("apiToken", apiToken);
         edit.apply();
         this.apiToken = apiToken;
     }
