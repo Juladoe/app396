@@ -185,7 +185,6 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             }
 
             final Friend friend = mResultList.get(position);
-            //TODO touxiang
             if(friend.smallAvatar == ""){
                 holder.image.setImageResource(R.drawable.default_avatar);
             }else {
@@ -213,6 +212,9 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                     StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
                     stringBuffer.append(friend.id+"/followers");
                     requestUrl.url = stringBuffer.toString();
+                    HashMap<String, String> params = requestUrl.getParams();
+                    params.put("method", "follow");
+                    params.put("userId", app.loginUser.id+"");
                     ajaxPost(requestUrl,new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -223,7 +225,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                             }
                             if(followResult.success){
                                 CommonUtil.longToast(mContext,"关注用户成功");
-                                mAdapter.notifyDataSetChanged();
+                                getRelationship();
                             }else {
                                 CommonUtil.longToast(mContext,"关注用户失败");
                             }
