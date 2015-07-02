@@ -2,25 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="48dp"
     android:layout_marginRight="6dp"
     android:layout_marginLeft="6dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:layout_marginLeft="6dp"
         android:layout_marginBottom="4dp"
-        android:layout_weight="5">
+        android:layout_weight="8">
 
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="43dp"
             android:src="@drawable/defaultpic"
             android:layout_centerVertical="true"
-            android:layout_margin="6dp"
+            android:layout_margin="4dp"
             android:scaleType="fitXY" />
 
         <com.edusoho.kuozhi.v3.view.EduBadgeView
@@ -44,9 +44,9 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/medium_font_size"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
+            android:textSize="@dimen/small_font_size"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
             android:lines="1"
             android:singleLine="true"
             android:maxLength="12"
@@ -58,10 +58,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_post_time"
             android:textColor="@color/base_black_35"
-            android:textSize="@dimen/x_small_font_size"
+            android:textSize="@dimen/xx_small_font_size"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:layout_alignBaseline="@+id/tv_title"
             android:text="8:50" />
 
@@ -69,7 +69,7 @@
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/small_font_size"
+            android:textSize="@dimen/x_small_font_size"
             android:textColor="@color/base_black_54"
             android:layout_below="@+id/tv_title"
             android:ellipsize="end"
