@@ -29,6 +29,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
@@ -39,7 +40,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.android.volley.Response.Listener;
 import com.google.gson.reflect.TypeToken;
 import cn.trinea.android.common.util.FileUtils;
@@ -81,7 +81,6 @@ public class ESWebView extends RelativeLayout {
 
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(mWebChromeClient);
-        //mWebView.setOnKeyListener(mOnKeyListener);
 
         pbLoading = (ProgressBar) LayoutInflater.from(new CordovaContext(mActivity)).inflate(R.layout.progress_bar, null);
         RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
@@ -101,7 +100,6 @@ public class ESWebView extends RelativeLayout {
         this.mAppCode = appCode;
         mLocalAppMeta = getLocalApp(appCode);
         updateApp(mAppCode);
-        mWebView.loadUrl(String.format("%s%s/%s", mActivity.app.schoolHost, "mobile", appCode));
     }
 
     private AppMeta getLocalApp(String appCode) {
@@ -135,7 +133,18 @@ public class ESWebView extends RelativeLayout {
     }
 
     private void updateAppResource(final String resourceUrl) {
-        mRequestManager.downloadResource(new Request(resourceUrl));
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
+        mRequestManager.downloadResource(new Request(resourceUrl), new RequestCallback<Boolean>() {
+            @Override
+            public Boolean onResponse(Response<Boolean> response) {
+                if (response.getData()) {
+                    mWebView.loadUrl(String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, mAppCode));
+                }
+                loadDialog.dismiss();
+                return null;
+            }
+        });
     }
 
     public void updateApp(final String appCode) {
@@ -144,9 +153,10 @@ public class ESWebView extends RelativeLayout {
         mActivity.ajaxPost(appVersionUrl, new Listener<String>() {
             @Override
             public void onResponse(String response) {
-                AppMeta appMeta = mActivity.parseJsonValue(response, new TypeToken<AppMeta>() {
-                });
+                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
+                AppMeta appMeta = mActivity.parseJsonValue(response, new TypeToken<AppMeta>(){});
                 if (appMeta == null) {
+                    mWebView.loadUrl(url);
                     return;
                 }
 
@@ -158,7 +168,9 @@ public class ESWebView extends RelativeLayout {
                 int result = CommonUtil.compareVersion(mLocalAppMeta.version, appMeta.version);
                 if (result == Const.LOW_VERSIO) {
                     updateAppResource(appMeta.resource);
+                    return;
                 }
+                mWebView.loadUrl(url);
             }
         }, null);
     }

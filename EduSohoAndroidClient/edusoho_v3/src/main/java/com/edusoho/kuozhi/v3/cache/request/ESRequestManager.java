@@ -28,7 +28,7 @@ public class ESRequestManager extends RequestManager {
     }
 
     @Override
-    public void downloadResource(Request request) {
+    public <T> void downloadResource(Request request, RequestCallback<T> callback) {
     }
 
     @Override
