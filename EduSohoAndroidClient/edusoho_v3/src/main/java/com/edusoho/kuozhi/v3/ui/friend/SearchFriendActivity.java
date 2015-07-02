@@ -13,16 +13,19 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,11 +61,41 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         mList.setAdapter(mAdapter);
 
         loadResultFriends();
+    }
 
+    public void getRelationship(){
+        for(final Friend friend:mResultList){
+            RequestUrl requestUrl = setRelationParams(friend.id);
+            ajaxGet(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    HashMap<String,String> relationShip =  mActivity.parseJsonValue(response, new TypeToken<HashMap<String,String>>() {
+                    });
+                    friend.friendship = relationShip.get("friendship");
+                    mAdapter.notifyDataSetChanged();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Log.d("VoleyError",error.toString());
+
+                }
+            });
+        }
+    };
+
+    public RequestUrl setRelationParams(int toId){
+        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
+        StringBuffer sb = new StringBuffer(requestUrl.url.toString());
+        sb.append(app.loginUser.id+"/"+"friendship?toId="+toId);
+        requestUrl.url = sb.toString();
+
+        return requestUrl;
     }
 
     public void loadResultFriends(){
-        RequestUrl requestUrl = app.bindNewUrl(Const.SEARCH_FRIEND, false);
+        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
         requestUrl.setGetParams(new String[]{"q",name});
         ajaxGet(requestUrl,new Response.Listener<String>() {
             @Override
@@ -105,7 +138,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                         }
                     }
                 }
-
+                getRelationship();
             }
         },new Response.ErrorListener() {
             @Override
@@ -132,11 +165,6 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             return position;
         }
 
-        public void addItem(Friend friend){
-            mResultList.add(friend);
-            notifyDataSetChanged();
-        }
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ItemHolder holder;
@@ -150,9 +178,19 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             }else {
                 holder = (ItemHolder) convertView.getTag();
             }
-            holder.image.setImageResource(mResultList.get(position).avatarID);
-            holder.name.setText(mResultList.get(position).nickname);
-            switch (mResultList.get(position).state){
+
+            Friend friend = mResultList.get(position);
+            //TODO touxiang
+            if(friend.smallAvatar == ""){
+                holder.image.setImageResource(R.drawable.default_avatar);
+            }else {
+                ImageLoader.getInstance().displayImage(friend.smallAvatar, holder.image, mActivity.app.mOptions);
+            }
+            holder.name.setText(friend.nickname);
+            if (friend.friendship == null){
+                return convertView;
+            }
+            switch (friend.friendship){
                 case Const.HAVE_ADD_TRUE:
                     holder.state.setImageResource(R.drawable.have_add_friend_true);
                     break;
@@ -164,6 +202,11 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                     break;
             }
             return convertView;
+        }
+
+        public void addItem(Friend friend){
+            mResultList.add(friend);
+            notifyDataSetChanged();
         }
 
         private class ItemHolder{
