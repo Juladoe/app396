@@ -108,7 +108,7 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
                     InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(contentResolver, uri);
                     contactPhoto = BitmapFactory.decodeStream(inputStream);
                 } else {
-                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.friend_default_avatar);
+                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.default_avatar);
                 }
 
                 PhoneContact phoneContact = new PhoneContact(contactName, phoneNumber, contactPhoto);

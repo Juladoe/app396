@@ -33,9 +33,8 @@ public class SqliteUtil extends SQLiteOpenHelper {
 
     private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql"};
 
-    public SqliteUtil(Context context, String name, CursorFactory factory) {
+    private SqliteUtil(Context context, String name, CursorFactory factory) {
         super(context, Const.DB_NAME, null, dbVersion);
-        Log.d("SqliteUtil", "dbVersion " + dbVersion);
         mContext = context;
 
         //更新
@@ -59,7 +58,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     }
 
     private ArrayList<String> getInitSql(String name) {
-        ArrayList<String> sqlList = new ArrayList<String>();
+        ArrayList<String> sqlList = new ArrayList<>();
         InputStream inputStream = null;
         BufferedReader reader = null;
         StringBuilder stringBuilder = new StringBuilder();
@@ -95,20 +94,16 @@ public class SqliteUtil extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(null, String.format("create db_init_m3u8 db newVersion %d ov %d", newVersion, oldVersion));
-        if (oldVersion < newVersion) {
-            SharedPreferences sp = mContext.getSharedPreferences("db_preference", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            for (String initSql : INIT_SQLS) {
-                if (!sp.contains(initSql)) {
-                    initDbSql(initSql, db);
-                    if ("db_init_chat.sql".equals(initSql)) {
-                        initTypeTable(db);
-                    }
-                    editor.putBoolean(initSql, true);
-                }
+
+        SharedPreferences sp = mContext.getSharedPreferences("db_preference", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        for (String initSql : INIT_SQLS) {
+            if (!sp.contains(initSql)) {
+                initDbSql(initSql, db);
+                editor.putBoolean(initSql, true);
             }
-            editor.commit();
         }
+        editor.commit();
     }
 
     private void initDbSql(String name, SQLiteDatabase db) {
@@ -117,36 +112,6 @@ public class SqliteUtil extends SQLiteOpenHelper {
         for (String sql : sqlList) {
             db.execSQL(sql);
         }
-    }
-
-    private void initTypeTable(SQLiteDatabase db) {
-        try {
-            String sql = "INSERT INTO TYPE VALUES(?,?)";
-            SQLiteStatement sqLiteStatement = db.compileStatement(sql);
-            int size = getTypeDatas().size();
-            db.beginTransaction();
-            for (int i = 1; i < size + 1; i++) {
-                sqLiteStatement.bindLong(1, i);
-                sqLiteStatement.bindString(2, getTypeDatas().get(i));
-                sqLiteStatement.execute();
-                sqLiteStatement.clearBindings();
-            }
-            db.setTransactionSuccessful();
-            db.endTransaction();
-        } catch (Exception ex) {
-            Log.d("init", ex.getMessage());
-        }
-    }
-
-    private SparseArray<String> getTypeDatas() {
-        SparseArray<String> typeDatas = new SparseArray<>(6);
-        typeDatas.put(1, "friend");
-        typeDatas.put(2, "teacher");
-        typeDatas.put(3, "course");
-        typeDatas.put(4, "text");
-        typeDatas.put(5, "sound");
-        typeDatas.put(6, "image");
-        return typeDatas;
     }
 
     public Cache query(String selection, String... selectionArgs) {

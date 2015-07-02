@@ -236,7 +236,7 @@ public class Const {
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
 
-    public static final String GET_API_TOKEN = "";
+    public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "https://tui.edusoho.net/";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
@@ -398,12 +398,12 @@ public class Const {
     public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn";
     public static final String VIP_LIST = "/mapi_v2/mobileApp#/viplist";
     public static final String MY_FAVORITE = "/mapi_v2/mobileApp#/myfavorite";
-    public static final String SEARCH_FRIEND = "/api/users/";
+    public static final String USERS = "/api/users/";
 
-    public static final int HAVE_ADD_TRUE = 0;
-    public static final int HAVE_ADD_FALSE = 1;
-    public static final int HAVE_ADD_WAIT = 2;
-    public static final int HAVE_ADD_REJECT = 3;
+    public static final String HAVE_ADD_TRUE = "friend";
+    public static final String HAVE_ADD_FALSE = "none";
+    public static final String HAVE_ADD_WAIT = "following";
+    public static final String HAVE_ADD_ME = "follower";
 
     public static final String CLEAR_WEBVIEW_CACHE = "clear_webview_cache";
 }

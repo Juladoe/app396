@@ -54,7 +54,7 @@ public class EdusohoMainService extends Service {
                         app.loginUser = null;
                         break;
                     case LOGIN_WITH_TOKEN:
-                        loginWithToken((ActionBarBaseActivity) msg.obj);
+                        loginWithToken();
                         break;
                 }
             }
@@ -67,9 +67,10 @@ public class EdusohoMainService extends Service {
         message.sendToTarget();
     }
 
-    private void loginWithToken(final ActionBarBaseActivity activity) {
+    private void loginWithToken() {
         Log.d(null, "send loginwithtoken message1 " + app.token);
         if (TextUtils.isEmpty(app.token)) {
+            app.pushRegister(null);
             return;
         }
         synchronized (this) {
@@ -88,7 +89,7 @@ public class EdusohoMainService extends Service {
                 public void onResponse(String response) {
                     mAjaxQueue.poll();
                     UserResult result = app.gson.fromJson(
-                            response.toString(), new TypeToken<UserResult>() {
+                            response, new TypeToken<UserResult>() {
                             }.getType());
                     Log.d(null, "callback loginWithToken result->" + result);
 

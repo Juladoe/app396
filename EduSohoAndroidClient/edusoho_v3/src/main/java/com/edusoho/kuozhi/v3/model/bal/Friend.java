@@ -13,16 +13,16 @@ public class Friend {
         this.nickname = name;
     }
 
-    public Friend(int avatarID, String name, int state) {
+    public Friend(int avatarID, String name, String state) {
         this.avatarID = avatarID;
         this.nickname = name;
-        this.state = state;
+        this.friendship = state;
     }
 
-    public Friend(int avatarID, String name, int state,boolean isTeacher) {
+    public Friend(int avatarID, String name, String state,boolean isTeacher) {
         this.avatarID = avatarID;
         this.nickname = name;
-        this.state = state;
+        this.friendship = state;
         this.isTeacher = isTeacher;
     }
 
@@ -34,6 +34,6 @@ public class Friend {
     public String nickname;
     public String title;
     public UserRole[] roles;
-    public int state;
+    public String friendship;
     public boolean isTeacher;
 }

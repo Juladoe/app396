@@ -16,10 +16,12 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
@@ -116,31 +118,37 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }
 
                     if (userResult.token == null || "".equals(userResult.token)) {
+                        //未登录二维码
                         app.removeToken();
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
                     } else {
+                        //扫描登录用户二维码
                         app.saveToken(userResult);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                     }
-                    app.setCurrentSchool(site);
 
-                    Log.d("QrCode-->", result);
-                    //CommonUtil.longToast(mActivity, result);
+                    app.setCurrentSchool(site);
+                    SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
+                    showSchSplash(site.name, site.splashs);
+                    app.registDevice(new NormalCallback() {
+                        @Override
+                        public void success(Object obj) {
+                            showSchSplash(site.name, site.splashs);
+                        }
+                    });
 
                     RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
-                    app.postUrl(requestUrl, new Response.Listener<String>() {
+                    app.getUrl(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            // TODO save apitoken
-                            app.saveApiToken(response);
-
-                            app.registDevice(new NormalCallback() {
-                                @Override
-                                public void success(Object obj) {
-                                    showSchSplash(site.name, site.splashs);
-                                    finish();
-                                }
+                            Token token = parseJsonValue(response, new TypeToken<Token>() {
                             });
+                            if (token != null) {
+                                app.saveApiToken(token.token);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                                app.pushRegister(bundle);
+                            }
                         }
                     }, new Response.ErrorListener() {
                         @Override
