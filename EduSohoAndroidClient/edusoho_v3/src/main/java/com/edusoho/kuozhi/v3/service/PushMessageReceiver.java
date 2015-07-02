@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
 import com.edusoho.kuozhi.v3.model.bal.news.SimpleNew;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
@@ -58,6 +59,12 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
         bundle.putSerializable("msg", sn);
         boolean isForeground = EdusohoApp.app.isForeground("com.edusoho.kuozhi.v3.ui.ChatActivity");
         Log.d(TAG, isForeground + "");
+        if (isForeground) {
+            EdusohoApp.app.sendMsgToTarget(Const.CHAT_MSG, bundle, ChatActivity.class);
+        } else {
+            showNotification(sn);
+        }
+
         //通知聊天列表
 //        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, ChatActivity.class, new NormalCallback() {
 //            @Override

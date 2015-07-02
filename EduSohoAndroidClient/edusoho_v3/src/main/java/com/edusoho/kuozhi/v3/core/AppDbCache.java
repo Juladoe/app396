@@ -22,7 +22,7 @@ public class AppDbCache implements AppCache {
     private static AppDbCache instance;
 
     private AppDbCache(Context context) {
-        sqliteUtil = new SqliteUtil(context, null, null);
+        sqliteUtil = SqliteUtil.getUtil(context);
     }
 
     private static String[] FILTERS = {

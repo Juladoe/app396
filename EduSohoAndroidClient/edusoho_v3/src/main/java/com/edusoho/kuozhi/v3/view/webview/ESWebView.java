@@ -272,7 +272,12 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
+            if (url.startsWith(mActivity.app.host)) {
+                view.loadUrl(url);
+                return true;
+            }
+
+            mActivity.app.startUpdateWebView(url);
             return true;
         }
 

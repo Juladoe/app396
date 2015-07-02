@@ -235,7 +235,7 @@ public class Const {
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
 
-    public static final String GET_API_TOKEN = "";
+    public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "https://tui.edusoho.net/";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
