@@ -16,8 +16,11 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.FriendResult;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.result.FollowResult;
+import com.edusoho.kuozhi.v3.model.sys.*;
+import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -64,31 +67,33 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     }
 
     public void getRelationship(){
-        for(final Friend friend:mResultList){
-            RequestUrl requestUrl = setRelationParams(friend.id);
-            ajaxGet(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    HashMap<String,String> relationShip =  mActivity.parseJsonValue(response, new TypeToken<HashMap<String,String>>() {
-                    });
-                    friend.friendship = relationShip.get("friendship");
-                    mAdapter.notifyDataSetChanged();
+        RequestUrl requestUrl = setRelationParams(mResultList);
+        ajaxGet(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String[] relationReults = mActivity.parseJsonValue(response,new TypeToken<String[]>(){});
+                for(int i = 0;i<mResultList.size();i++){
+                    mResultList.get(i).friendship = relationReults[i];
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                mAdapter.notifyDataSetChanged();
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-                    Log.d("VoleyError",error.toString());
+            }
+        });
 
-                }
-            });
-        }
     };
 
-    public RequestUrl setRelationParams(int toId){
+    public RequestUrl setRelationParams(ArrayList<Friend> list){
         RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
         StringBuffer sb = new StringBuffer(requestUrl.url.toString());
-        sb.append(app.loginUser.id+"/"+"friendship?toId="+toId);
+        sb.append(app.loginUser.id+"/"+"friendship?toIds=");
+        for(Friend friend:list){
+            sb.append(friend.id+",");
+        }
+        sb.deleteCharAt(sb.length()-1);
         requestUrl.url = sb.toString();
 
         return requestUrl;
@@ -179,12 +184,12 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 holder = (ItemHolder) convertView.getTag();
             }
 
-            Friend friend = mResultList.get(position);
+            final Friend friend = mResultList.get(position);
             //TODO touxiang
             if(friend.smallAvatar == ""){
                 holder.image.setImageResource(R.drawable.default_avatar);
             }else {
-                ImageLoader.getInstance().displayImage(friend.smallAvatar, holder.image, mActivity.app.mOptions);
+                ImageLoader.getInstance().displayImage(app.host+"/"+friend.smallAvatar, holder.image, mActivity.app.mOptions);
             }
             holder.name.setText(friend.nickname);
             if (friend.friendship == null){
@@ -200,6 +205,42 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 case Const.HAVE_ADD_WAIT:
                     holder.state.setImageResource(R.drawable.have_add_friend_wait);
                     break;
+            }
+            holder.state.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS,false);
+                    StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+                    stringBuffer.append(friend.id+"/followers");
+                    requestUrl.url = stringBuffer.toString();
+                    ajaxPost(requestUrl,new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            FollowResult followResult = mActivity.parseJsonValue(response,new TypeToken<FollowResult>(){});
+                            if(followResult==null){
+                                Error error = mActivity.parseJsonValue(response,new TypeToken<Error>(){});
+                                CommonUtil.longToast(mContext, error.message);
+                            }
+                            if(followResult.success){
+                                CommonUtil.longToast(mContext,"关注用户成功");
+                                mAdapter.notifyDataSetChanged();
+                            }else {
+                                CommonUtil.longToast(mContext,"关注用户失败");
+                            }
+
+                        }
+                    },new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                }
+            });
+            if(!(friend.friendship.equals(Const.HAVE_ADD_TRUE) || friend.friendship.equals(Const.HAVE_ADD_WAIT))){
+                holder.state.setClickable(true);
+            }else {
+                holder.state.setClickable(false);
             }
             return convertView;
         }
