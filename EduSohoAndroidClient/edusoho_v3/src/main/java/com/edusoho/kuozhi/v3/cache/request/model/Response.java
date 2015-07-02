@@ -15,6 +15,13 @@ public class Response<T> {
     private InputStream mInputStream;
     private T mData;
 
+    public Response() {
+    }
+
+    public Response(T data) {
+        this.mData = data;
+    }
+
     public String getMimeType() {
         return mMimeType;
     }
