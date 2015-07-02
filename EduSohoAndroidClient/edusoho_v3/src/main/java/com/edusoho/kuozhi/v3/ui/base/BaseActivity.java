@@ -223,8 +223,8 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
-    public void runService(String packageName) {
-
+    public void runService(String serviceName) {
+        app.mEngine.runService(serviceName, mActivity, null);
     }
 
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
