@@ -523,17 +523,11 @@ public class AppUtil {
         return out;
     }
 
-    /**
-     * 将服务器端的时间格式转化为milli Second
-     *
-     * @param time
-     * @return
-     */
-    public static long convertMilliSec(String time) {
+    public static long convertMilliSec(int time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long returnTime = 0;
         try {
-            String tDate = time.split("[+]")[0].replace('T', ' ');
+            String tDate = String.valueOf(time).split("[+]")[0].replace('T', ' ');
             return sdf.parse(tDate).getTime();
 
         } catch (Exception ex) {
@@ -551,10 +545,10 @@ public class AppUtil {
      * @param t
      * @return
      */
-    public static String convertWeekTime(String t) {
+    public static String convertWeekTime(int t) {
         String result = "";
         try {
-            String tDate = t.split("[+]")[0].replace('T', ' ');
+            String tDate = String.valueOf(t).split("[+]")[0].replace('T', ' ');
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Calendar nowCalendar = Calendar.getInstance();
             Date paramDate = sdf.parse(tDate);

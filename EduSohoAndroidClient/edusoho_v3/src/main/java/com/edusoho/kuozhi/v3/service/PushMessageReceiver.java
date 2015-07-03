@@ -11,15 +11,20 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
-import com.edusoho.kuozhi.v3.model.bal.news.SimpleNew;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.google.gson.reflect.TypeToken;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
 import com.tencent.android.tpush.XGPushShowedResult;
 import com.tencent.android.tpush.XGPushTextMessage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by JesseHuang on 15/5/16.
@@ -52,46 +57,22 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
     public void onTextMessage(Context context, XGPushTextMessage message) {
         String text = "收到消息:" + message.toString();
         Bundle bundle = new Bundle();
-        final NewsItem sn = new NewsItem();
-        sn.title = message.getTitle();
-        sn.content = message.getContent();
-        sn.postTime = String.valueOf(SystemClock.uptimeMillis());
-        bundle.putSerializable("msg", sn);
         boolean isForeground = EdusohoApp.app.isForeground("com.edusoho.kuozhi.v3.ui.ChatActivity");
         Log.d(TAG, isForeground + "");
         if (isForeground) {
             EdusohoApp.app.sendMsgToTarget(Const.CHAT_MSG, bundle, ChatActivity.class);
         } else {
-            showNotification(sn);
+            //showNotification(sn);
         }
-
-        //通知聊天列表
-//        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, ChatActivity.class, new NormalCallback() {
-//            @Override
-//            public void success(Object obj) {
-//
-//            }
-//        });
-
-        //通知动态列表
-//        EdusohoApp.app.sendMsgToTargetForCallback(Const.CHAT_MSG, bundle, NewsFragment.class, new NormalCallback() {
-//            @Override
-//            public void success(Object obj) {
-//                if (obj.equals("success")) {
-//                    showNotification(sn);
-//                }
-//            }
-//        });
-        //CommonUtil.longToast(context, text);
     }
 
-    private void showNotification(SimpleNew sn) {
+    private void showNotification(New newModel) {
         try {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
                             .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle(sn.title)
-                            .setContentText(sn.content).setAutoCancel(true);
+                            .setContentTitle(newModel.title)
+                            .setContentText(newModel.content).setAutoCancel(true);
             NotificationManager mNotificationManager =
                     (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -134,8 +115,22 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
 
             return;
         }
-
     }
 
+    private Chat convert2ChatModel(XGPushTextMessage message) throws JSONException {
+        Chat chat = new Chat();
+//        chat.setNewId();
+        JSONObject jsonObject = new JSONObject(message.getCustomContent());
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(jsonObject.getString("key"), new TypeToken<CustomContent>() {
+        });
+        chat.setFromId(Integer.valueOf(customContent.fromId));
+        chat.setToId(EdusohoApp.app.loginUser.id);
+        chat.setNickName(customContent.nickname);
+        chat.setHeadimgurl(customContent.imgUrl);
+        chat.setContent(message.getContent());
+        chat.setType(customContent.type);
+        chat.setCreatedTime(customContent.createdTime);
+        return chat;
+    }
 
 }

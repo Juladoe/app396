@@ -54,7 +54,7 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
         for (String sql : sqlList) {
             db.execSQL(sql);
         }
-        initTypeTable(db);
+        //initTypeTable(db);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
                     inputStream.close();
                 }
             } catch (Exception e) {
-                //nothing
+                Log.d("sqlchat", e.getMessage());
             }
         }
 
@@ -124,11 +124,6 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
         typeDatas.put(5, "sound");
         typeDatas.put(6, "image");
         return typeDatas;
-    }
-
-    public void execSQL(String sql) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sql);
     }
 
     public void close() {

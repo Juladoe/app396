@@ -116,7 +116,6 @@ public class LoginActivity extends ActionBarBaseActivity {
                     bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
                     EdusohoApp.app.pushRegister(bundle);
                     mActivity.finish();
-
                 }
             }, new Response.ErrorListener() {
                 @Override

@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -22,9 +23,9 @@ import java.util.List;
 public class SwipeAdapter extends BaseAdapter {
     private Context mContext;
     private int mLayoutId;
-    private List<NewsItem> mList;
+    private List<New> mList;
 
-    public SwipeAdapter(Context ctx, int id, List<NewsItem> list) {
+    public SwipeAdapter(Context ctx, int id, List<New> list) {
         mContext = ctx;
         mLayoutId = id;
         mList = list;
@@ -47,7 +48,7 @@ public class SwipeAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(mLayoutId, null);
             viewHolder = new ViewHolder(convertView);
@@ -55,8 +56,8 @@ public class SwipeAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        NewsItem item = mList.get(position);
-        ImageLoader.getInstance().displayImage(item.srcUrl, viewHolder.ivAvatar, EdusohoApp.app.mOptions);
+        New item = mList.get(position);
+        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, EdusohoApp.app.mOptions);
         if (item.unread == 0) {
             viewHolder.bvUnread.setVisibility(View.GONE);
         } else {
@@ -66,7 +67,7 @@ public class SwipeAdapter extends BaseAdapter {
 
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
-        viewHolder.tvPostTime.setText(item.postTime);
+        viewHolder.tvPostTime.setText(AppUtil.getPostDays(String.valueOf(item.createdTime)));
         return convertView;
 
     }

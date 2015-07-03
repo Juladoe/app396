@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -10,16 +9,17 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.MessageAdapter;
-import com.edusoho.kuozhi.v3.model.InitModelTool;
-import com.edusoho.kuozhi.v3.model.bal.ChatMessage;
-import com.edusoho.kuozhi.v3.model.bal.news.NewsItem;
+import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +31,14 @@ public class ChatActivity extends ActionBarBaseActivity {
 
     public static final int COURSE_CHAT = 0x01;
     public static final String CHAT_DATA = "chat_data";
-    public static final String COURSE_ID = "course_id";
-    public NewsItem mNewsItem;
+    public static final String NEW_ID = "new_id";
+    public New mNewsItem;
 
     private EditText etSend;
     private ListView lvMessage;
     private TextView tvSend;
-    private MessageAdapter mAdapter;
-    private List<ChatMessage> mList;
+    private ChatAdapter mAdapter;
+    private List<Chat> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +53,19 @@ public class ChatActivity extends ActionBarBaseActivity {
         tvSend = (TextView) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(mSendClickListener);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
-        mList = InitModelTool.initMessageList();
-        mAdapter = new MessageAdapter(mContext, mList);
+        initData();
+    }
+
+    private void initData() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            CommonUtil.longToast(mContext, "聊天记录读取错误");
+            return;
+        }
+        int newId = intent.getIntExtra(NEW_ID, 0);
+        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        mList = chatDataSource.getChats(0, 15, "NEWID = " + newId);
+        mAdapter = new ChatAdapter(mContext, mList);
         lvMessage.setAdapter(mAdapter);
     }
 
@@ -63,7 +74,7 @@ public class ChatActivity extends ActionBarBaseActivity {
         super.onResume();
         Intent intent = getIntent();
         if (intent != null) {
-            mNewsItem = (NewsItem) intent.getSerializableExtra(CHAT_DATA);
+            mNewsItem = (New) intent.getSerializableExtra(CHAT_DATA);
 //            String courseId = intent.getStringExtra(COURSE_ID);
 //            CommonUtil.longToast(mActivity, courseId);
         }
@@ -90,28 +101,12 @@ public class ChatActivity extends ActionBarBaseActivity {
         }
     };
 
-    //id|title
-    void addNewOneMsg(Bundle bundle) {
-        try {
-            NewsItem simpleNew = (NewsItem) bundle.getSerializable("msg");
-            ChatMessage msg = new ChatMessage();
-            String[] titles = simpleNew.title.split("[|]");
-            msg.fromId = Integer.valueOf(titles[0]);
-            msg.toId = app.loginUser.id;
-            msg.content = simpleNew.content;
-            msg.createdTime = "";
-            mList.add(msg);
-            mAdapter.notifyDataSetChanged();
-        } catch (Exception ex) {
-            Log.d("addNewOneMsg-->", ex.getMessage());
-        }
-    }
-
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
         if (messageType.code == Const.CHAT_MSG) {
-            addNewOneMsg(message.data);
+            Chat chat = (Chat) message.data.get(CHAT_DATA);
+            mAdapter.addOneChat(chat);
         }
     }
 

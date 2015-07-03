@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +9,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.ChatMessage;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -22,19 +21,24 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by JesseHuang on 15/6/3.
  */
-public class MessageAdapter extends BaseAdapter {
+public class ChatAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<ChatMessage> mList;
+    private List<Chat> mList;
     private User mLoginUser;
     private static long TIME_INTERVAL = 1000 * 60 * 5;
 
     private static final int TYPE_ITEMS = 2, TYPE_ME = 0, TYPE_OTHER_SIDE = 1;
 
-    public MessageAdapter(Context ctx, List<ChatMessage> list) {
+    public ChatAdapter(Context ctx, List<Chat> list) {
         mContext = ctx;
         mList = list;
         mLoginUser = EdusohoApp.app.loginUser;
+    }
+
+    public void addOneChat(Chat chat) {
+        mList.add(chat);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -49,7 +53,7 @@ public class MessageAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage msg = mList.get(position);
+        Chat msg = mList.get(position);
         if (msg.fromId == mLoginUser.id) {
             return TYPE_ME;
         } else {
@@ -93,7 +97,7 @@ public class MessageAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ChatMessage model = mList.get(position);
+        Chat model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position != 0) {
             if (AppUtil.convertMilliSec(model.createdTime) - AppUtil.convertMilliSec(mList.get(position - 1).createdTime) > TIME_INTERVAL) {
@@ -105,10 +109,7 @@ public class MessageAdapter extends BaseAdapter {
             holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
         }
         holder.tvSendContent.setText(model.content);
-        if (TextUtils.isEmpty(model.createdUser.mediumAvatar)) {
-            model.createdUser.mediumAvatar = "http://demo.edusoho.com/files/user/2014/11-17/170301575ca2581498.jpg?5.5.11";
-        }
-        ImageLoader.getInstance().displayImage(model.createdUser.mediumAvatar, holder.ciPic, EdusohoApp.app.mOptions);
+        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
         return convertView;
     }
 
