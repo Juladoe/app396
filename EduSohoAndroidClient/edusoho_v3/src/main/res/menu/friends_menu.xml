@@ -1,14 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/friends_news"
-        android:enabled="true"
-        android:icon="@drawable/icon_menu_notification"
-        android:orderInCategory="100"
-        android:title="@null"
-        android:visible="true"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/friends_news"-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@drawable/icon_menu_notification"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:title="@null"-->
+        <!--android:visible="true"-->
+        <!--app:showAsAction="ifRoom" />-->
 
     <!--<item-->
         <!--android:id="@+id/friends_search"-->

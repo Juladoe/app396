@@ -411,5 +411,5 @@ public class Const {
      * 校友api
      */
     public static final String USERS = "/api/users/";
-    public static final String MY_FRIEND = "/api/me/friends/";
+    public static final String MY_FRIEND = "/api/me/friends";
 }
