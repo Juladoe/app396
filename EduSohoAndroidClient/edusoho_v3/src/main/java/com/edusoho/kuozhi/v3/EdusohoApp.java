@@ -204,7 +204,12 @@ public class EdusohoApp extends Application {
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener);
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return requestUrl.getHeads();
+            }
+        };
         jsonObjectRequest.setTag(requestUrl.url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
