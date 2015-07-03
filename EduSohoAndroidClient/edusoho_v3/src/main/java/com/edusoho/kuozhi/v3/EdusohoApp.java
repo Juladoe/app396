@@ -806,7 +806,7 @@ public class EdusohoApp extends Application {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, error.getMessage());
+                        Log.d(TAG, error.toString());
                     }
                 });
             }
