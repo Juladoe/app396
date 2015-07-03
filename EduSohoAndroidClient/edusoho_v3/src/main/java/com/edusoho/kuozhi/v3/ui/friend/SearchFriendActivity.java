@@ -44,6 +44,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     private SearchFriendAdapter mAdapter;
 
     private ListView mList;
+    private TextView mNotice;
     private ArrayList<Friend> mResultList;
     private ArrayList<Friend> mTmpList;
     private Integer[] friendIds = new Integer[15];
@@ -54,6 +55,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_friend_layout);
         mList = (ListView) findViewById(R.id.search_friend_list);
+        mNotice = (TextView) findViewById(R.id.search_friend_empty);
         Intent intent = getIntent();
         if(intent != null){
             name = intent.getStringExtra(NAME);
@@ -107,9 +109,15 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             public void onResponse(String response) {
                 FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
 
-                if(friendResult == null){
-                    //TODO 空数据页面
-
+                boolean isEmpty;
+                if((friendResult.mobile.length == 0)&&(friendResult.nickname.length == 0)&&(friendResult.qq.length == 0)){
+                    isEmpty = true;
+                    mList.setVisibility(View.GONE);
+                    mNotice.setVisibility(View.VISIBLE);
+                }else {
+                    isEmpty = false;
+                    mList.setVisibility(View.VISIBLE);
+                    mNotice.setVisibility(View.GONE);
                 }
 
                 count = 0;
@@ -143,7 +151,9 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                         }
                     }
                 }
-                getRelationship();
+                if(!isEmpty){
+                    getRelationship();
+                }
             }
         },new Response.ErrorListener() {
             @Override
