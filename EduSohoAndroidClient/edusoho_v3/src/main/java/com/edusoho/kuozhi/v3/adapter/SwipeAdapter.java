@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -29,6 +30,29 @@ public class SwipeAdapter extends BaseAdapter {
         mContext = ctx;
         mLayoutId = id;
         mList = list;
+    }
+
+    public void update(List<New> list) {
+        mList = list;
+        notifyDataSetChanged();
+    }
+
+    public void addItem(New newModel) {
+        mList.add(newModel);
+        notifyDataSetChanged();
+    }
+
+    public void updateItem(New newModel) {
+        Iterator<New> iterator = mList.iterator();
+        while (iterator.hasNext()) {
+            New item = iterator.next();
+            if (item.fromId == newModel.fromId) {
+                mList.remove(item);
+                mList.add(0, newModel);
+                notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
     @Override

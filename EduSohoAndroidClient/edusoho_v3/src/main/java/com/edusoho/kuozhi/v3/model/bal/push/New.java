@@ -1,5 +1,9 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.google.gson.reflect.TypeToken;
+import com.tencent.android.tpush.XGPushTextMessage;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +12,7 @@ import java.io.Serializable;
  */
 public class New implements Serializable {
     public int id;
-    public int toId;
+    public int fromId;
     public String title;
     public String content;
     public int createdTime;
@@ -25,7 +29,7 @@ public class New implements Serializable {
     public int unread;
 
     public int belongId;
-    public int isTop;
+    public int isTop = 0;
 
     public int getId() {
         return id;
@@ -35,12 +39,12 @@ public class New implements Serializable {
         this.id = id;
     }
 
-    public int getToId() {
-        return toId;
+    public int getFromId() {
+        return fromId;
     }
 
-    public void setToId(int toId) {
-        this.toId = toId;
+    public void setFromId(int fromId) {
+        this.fromId = fromId;
     }
 
     public String getTitle() {
@@ -106,5 +110,23 @@ public class New implements Serializable {
 
     public void setIsTop(int isTop) {
         this.isTop = isTop;
+    }
+
+    public New() {
+
+    }
+
+    public New(XGPushTextMessage message) {
+        //JSONObject jsonObject = new JSONObject(message.getCustomContent());
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContent(), new TypeToken<CustomContent>() {
+        });
+        fromId = customContent.fromId;
+        title = message.getTitle();
+        content = message.getContent();
+        createdTime = customContent.createdTime;
+        imgUrl = customContent.imgUrl;
+        //newModel.setUnread();
+        type = customContent.typeObject;
+        belongId = EdusohoApp.app.loginUser.id;
     }
 }

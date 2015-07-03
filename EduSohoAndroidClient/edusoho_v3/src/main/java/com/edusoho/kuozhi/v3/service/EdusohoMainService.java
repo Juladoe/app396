@@ -1,24 +1,32 @@
 package com.edusoho.kuozhi.v3.service;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
+import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -40,6 +48,7 @@ public class EdusohoMainService extends Service {
 
     public static final int LOGIN_WITH_TOKEN = 0001;
     public static final int EXIT_USER = 0002;
+    public static final int INSERT_CHAT = 0x03;
 
     @Override
     public void onCreate() {
@@ -65,33 +74,37 @@ public class EdusohoMainService extends Service {
         }
         synchronized (this) {
             if (app.loginUser != null) {
+                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                Bundle bundle = new Bundle();
+                bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+                app.pushRegister(bundle);
                 return;
             }
             if (!mAjaxQueue.isEmpty()) {
                 return;
             }
-
-            Log.d(null, "send loginwithtoken message " + app.token);
             RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
-
             Request<String> request = app.postUrl(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    mAjaxQueue.poll();
-                    UserResult result = app.gson.fromJson(
-                            response, new TypeToken<UserResult>() {
-                            }.getType());
-                    Log.d(null, "callback loginWithToken result->" + result);
+                    try {
+                        Log.d("-->", "onResponse");
+                        mAjaxQueue.poll();
+                        UserResult result = app.gson.fromJson(
+                                response, new TypeToken<UserResult>() {
+                                }.getType());
 
-                    if (result != null) {
-                        //mLoginUser = result.data;
-                        app.saveToken(result);
+                        if (result != null) {
+                            app.saveToken(result);
+                            app.sendMessage(Const.LOGIN_SUCCESS, null);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Const.BIND_USER_ID, result.user.id + "");
+                            app.pushRegister(bundle);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                    app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.BIND_USER_ID, result.user.id + "");
-                    app.pushRegister(bundle);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -122,11 +135,6 @@ public class EdusohoMainService extends Service {
         activity.runService(TAG);
     }
 
-    public void insertNew(New newModel) {
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(this, EdusohoApp.app.domain));
-        newDataSource.createNew(newModel);
-    }
-
     public static class WorkHandler extends Handler {
         WeakReference<EdusohoMainService> mWeakReference;
         EdusohoMainService mEdusohoMainService;
@@ -148,7 +156,44 @@ public class EdusohoMainService extends Service {
                 case LOGIN_WITH_TOKEN:
                     mEdusohoMainService.loginWithToken();
                     break;
+                case Const.ADD_CHAT_MSG:
+                    try {
+                        WrapperXGPushTextMessage xgMessage = (WrapperXGPushTextMessage) msg.obj;
+                        Chat chatModel = new Chat(xgMessage);
+                        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).openWrite();
+                        chatDataSource.create(chatModel);
+                        chatDataSource.close();
+                        if (xgMessage.isForeground) {
+                            mEdusohoMainService.showNotification(xgMessage);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
+        }
+    }
+
+    private void showNotification(WrapperXGPushTextMessage xgMessage) {
+        try {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(xgMessage.title)
+                            .setContentText(xgMessage.content).setAutoCancel(true);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            int requestCode = (int) SystemClock.uptimeMillis();
+            PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, requestCode,
+                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendIntent);
+            mNotificationManager.notify(requestCode, mBuilder.build());
+        } catch (Exception ex) {
+            Log.d("showNotification-->", ex.getMessage());
         }
     }
 }

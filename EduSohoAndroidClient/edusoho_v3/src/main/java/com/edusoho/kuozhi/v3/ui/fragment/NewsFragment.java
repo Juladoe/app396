@@ -14,20 +14,23 @@ import android.widget.AdapterView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.InitModelTool;
 import com.edusoho.kuozhi.v3.model.bal.push.ChatTypeEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +40,7 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
+    public static final int INSERT_NEW = 0x01;
 
     @Override
     public void onAttach(Activity activity) {
@@ -47,6 +51,7 @@ public class NewsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_news);
+
     }
 
     @Override
@@ -70,18 +75,9 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        List<New> list = InitModelTool.initNewsItemList();
-//        if (app.loginUser.nickname.equals("suju")) {
-//            list = InitModelTool.initNewsItemList1();
-//        } else {
-//            list = InitModelTool.initNewsItemList();
-//        }
-
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);
-        mSwipeAdapter = new SwipeAdapter(mContext, R.layout.news_item, list);
-        lvNewsList.setAdapter(mSwipeAdapter);
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
 
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
             public void create(SwipeMenu menu) {
 //                SwipeMenuItem openItem = new SwipeMenuItem(
@@ -103,9 +99,20 @@ public class NewsFragment extends BaseFragment {
                 menu.addMenuItem(deleteItem);
             }
         };
+        mSwipeAdapter = new SwipeAdapter(mContext, R.layout.news_item, new ArrayList<New>());
+        lvNewsList.setAdapter(mSwipeAdapter);
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
+    }
+
+    private void initData() {
+        if (app.loginUser != null) {
+            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
+            List<New> news = newDataSource.getNews("WHERE BELONGID = ?", app.loginUser.id + "");
+            mSwipeAdapter.update(news);
+            newDataSource.close();
+        }
     }
 
     SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
@@ -129,37 +136,59 @@ public class NewsFragment extends BaseFragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final New newItem = (New) parent.getItemAtPosition(position);
-            if (newItem.type == ChatTypeEnum.FRIEND.getName() || newItem.type == ChatTypeEnum.TEACHER.getName()) {
+            if (ChatTypeEnum.FRIEND.getName().toLowerCase().equals(newItem.type) || ChatTypeEnum.TEACHER.getName().toLowerCase().equals(newItem.type)) {
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ChatActivity.CHAT_DATA, newItem);
+                        startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
                     }
                 });
             } else {
-
+                // TODO 课程
             }
         }
     };
 
-    private void getNewOneMessage(Bundle data) {
-        New item = (New) data.getSerializable("msg");
-        //mSwipeAdapter.findNews(item);
+    private void insertNew(New newModel) {
+        mSwipeAdapter.addItem(newModel);
+    }
+
+    private void updateNew(New newModel) {
+        mSwipeAdapter.updateItem(newModel);
     }
 
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (messageType.code == Const.CHAT_MSG) {
-            getNewOneMessage(message.data);
-            message.callback.success("success");
+        if (messageType.code == Const.ADD_CHAT_MSG) {
+            try {
+                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                New newModel = new New(wrapperMessage);
+                newModel.belongId = app.loginUser.id;
+                NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                List<New> news = newDataSource.getNews("WHERE FROMID = ?", newModel.fromId + "");
+                if (news == null || news.size() == 0) {
+                    newModel.unread = 1;
+                    newDataSource.create(newModel);
+                    insertNew(newModel);
+                } else {
+                    newModel.unread = wrapperMessage.isForeground ? 0 : news.get(0).unread + 1;
+                    newDataSource.update(newModel);
+                    updateNew(newModel);
+                }
+                newDataSource.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
+            initData();
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.CHAT_MSG, source)};
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.LOGIN_SUCCESS)};
         return messageTypes;
     }
 

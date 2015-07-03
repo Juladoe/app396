@@ -254,6 +254,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 break;
             default:
         }
+        if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
+            mLogoutFlag = true;
+            selectDownTab(R.id.nav_tab_news);
+            mLogoutFlag = false;
+        }
     }
 
     @Override
@@ -261,7 +266,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
-                new MessageType(Const.SWITCH_TAB, source)};
+                new MessageType(Const.SWITCH_TAB, source), new MessageType(Const.LOGIN_SUCCESS)};
         return messageTypes;
     }
 

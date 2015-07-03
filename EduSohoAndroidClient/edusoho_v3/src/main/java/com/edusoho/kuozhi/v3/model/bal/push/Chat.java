@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.Serializable;
 
 /**
@@ -7,7 +10,6 @@ import java.io.Serializable;
  */
 public class Chat implements Serializable {
     public int id;
-    public int newId;
     public int fromId;
     public int toId;
     public String nickName;
@@ -22,14 +24,6 @@ public class Chat implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getNewId() {
-        return newId;
-    }
-
-    public void setNewId(int newId) {
-        this.newId = newId;
     }
 
     public int getFromId() {
@@ -86,5 +80,21 @@ public class Chat implements Serializable {
 
     public void setCreatedTime(int createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public Chat() {
+
+    }
+
+    public Chat(WrapperXGPushTextMessage message) {
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContent(), new TypeToken<CustomContent>() {
+        });
+        fromId = customContent.fromId;
+        toId = EdusohoApp.app.loginUser.id;
+        nickName = customContent.nickname;
+        headimgurl = customContent.imgUrl;
+        content = message.getContent();
+        type = customContent.typeMsg;
+        createdTime = customContent.createdTime;
     }
 }

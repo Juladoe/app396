@@ -16,7 +16,7 @@ public class InitModelTool {
 
         List<New> list = new ArrayList<>();
         New newModel = new New();
-        newModel.setToId(32);
+        newModel.setFromId(32);
         newModel.setTitle("suju");
         newModel.setContent("请问下一章什么时候更新？");
         newModel.setCreatedTime(1413796863);

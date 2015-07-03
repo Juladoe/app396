@@ -7,7 +7,8 @@ public class CustomContent {
     public int fromId;
     public String nickname;
     public String imgUrl;
-    public String type;
+    public String typeObject;
+    public String typeMsg;
     public int createdTime;
 
 }

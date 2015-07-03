@@ -8,10 +8,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.model.result.PushResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -20,7 +25,9 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,7 +38,7 @@ public class ChatActivity extends ActionBarBaseActivity {
 
     public static final int COURSE_CHAT = 0x01;
     public static final String CHAT_DATA = "chat_data";
-    public static final String NEW_ID = "new_id";
+    public static final String FROM_ID = "from_id";
     public New mNewsItem;
 
     private EditText etSend;
@@ -39,6 +46,11 @@ public class ChatActivity extends ActionBarBaseActivity {
     private TextView tvSend;
     private ChatAdapter mAdapter;
     private List<Chat> mList;
+    /**
+     * 对方的userInfo信息;
+     */
+    private User mFromUserInfo;
+    private int mFromId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,58 +74,88 @@ public class ChatActivity extends ActionBarBaseActivity {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
-        int newId = intent.getIntExtra(NEW_ID, 0);
+        mFromId = intent.getIntExtra(FROM_ID, 0);
+        int toId = app.loginUser.id;
         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        mList = chatDataSource.getChats(0, 15, "NEWID = " + newId);
+        String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, toId, mFromId, toId);
+        mList = chatDataSource.getChats(0, 15, selectSql);
         mAdapter = new ChatAdapter(mContext, mList);
         lvMessage.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Intent intent = getIntent();
-        if (intent != null) {
-            mNewsItem = (New) intent.getSerializableExtra(CHAT_DATA);
-//            String courseId = intent.getStringExtra(COURSE_ID);
-//            CommonUtil.longToast(mActivity, courseId);
-        }
-        if (mXGClick != null) {
-            CommonUtil.longToast(this, "通知被点击:" + mXGClick.toString());
-        }
     }
 
     View.OnClickListener mSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String url = "http://192.168.10.125/mapi_v2/User/sendPushMsg";
-            RequestUrl requestUrl = new RequestUrl(url);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("toId", String.valueOf(mNewsItem.title));
-            params.put("title", String.valueOf(mNewsItem.title));
-            params.put("content", etSend.getText().toString());
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
+            if (mFromUserInfo != null) {
+                sendMsg();
 
-                }
-            }, null);
+            } else {
+                RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
+                HashMap<String, String> params = requestUrl.getParams();
+                params.put("userId", mFromId + "");
+                ajaxPost(requestUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
+                        });
+                        sendMsg();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        CommonUtil.longToast(mContext, "无法获取对方信息");
+                    }
+                });
+            }
         }
     };
 
+    private void sendMsg() {
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", app.loginUser.nickname);
+        params.put("type", "text");
+        params.put("content", etSend.getText().toString());
+        params.put("custom", gson.toJson(getCustomContent()));
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+                });
+                if (result.equals("success")) {
+
+                }
+            }
+        }, null);
+    }
+
+    private CustomContent getCustomContent() {
+        CustomContent customContent = new CustomContent();
+        customContent.fromId = app.loginUser.id;
+        customContent.nickname = app.loginUser.nickname;
+        customContent.imgUrl = app.loginUser.smallAvatar;
+        customContent.createdTime = (int) Calendar.getInstance().getTimeInMillis() / 1000;
+        return customContent;
+    }
+
     @Override
     public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        if (messageType.code == Const.CHAT_MSG) {
-            Chat chat = (Chat) message.data.get(CHAT_DATA);
-            mAdapter.addOneChat(chat);
+        try {
+            MessageType messageType = message.type;
+            if (messageType.code == Const.ADD_CHAT_MSG) {
+                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
+                Chat chat = new Chat(wrapperMessage);
+                mAdapter.addOneChat(chat);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.CHAT_MSG, source)};
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source)};
         return messageTypes;
     }
 }

@@ -78,7 +78,8 @@ public class Const {
     public static final int MAIN_MENU_OPEN = 0x03;
     public static final int OPEN_COURSE_CHAT = 0x04;
 
-    public static final int CHAT_MSG = 0x05;
+    public static final String CHAT_DATA = "chat_data";
+    public static final int ADD_CHAT_MSG = 0x05;
     public static final int SWITCH_TAB = 0x06;
     public static final int DRAWER_REGISTER = 0x07;
 
@@ -242,6 +243,7 @@ public class Const {
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
+    public static final String SEND = "/message/%d/friend/%d/send";
 
     public static final String BIND_LOGIN = "/bind_login";
 
