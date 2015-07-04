@@ -119,7 +119,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                String url = mActivity.app.host + Const.MY_LEARN;
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_LEARN);
                                 startIntent.putExtra(WebViewActivity.URL, url);
                             }
                         });
@@ -133,7 +133,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                String url = mActivity.app.host + Const.VIP_LIST;
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.VIP_LIST);
                                 startIntent.putExtra(WebViewActivity.URL, url);
                             }
                         });
@@ -143,7 +143,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                String url = mActivity.app.host + Const.MY_FAVORITE;
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_FAVORITE);
                                 startIntent.putExtra(WebViewActivity.URL, url);
                             }
                         });
@@ -164,7 +164,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //                mActivity.invalidateOptionsMenu();
             }
         };
-
         mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -179,7 +178,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
             mRadioButtons[i] = (RadioButton) getView().findViewById(mRadioIds[i]);
             mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
         }
-
         tvNickname = (TextView) mActivity.findViewById(R.id.tv_nickname);
         tvTitle = (TextView) mActivity.findViewById(R.id.tv_user_title);
         tvLogin = (TextView) mActivity.findViewById(R.id.tv_login);
@@ -297,7 +295,6 @@ public class FragmentNavigationDrawer extends BaseFragment {
                     break;
                 default:
             }
-
         }
     }
 

@@ -398,9 +398,9 @@ public class Const {
     /**
      * 侧边栏url
      */
-    public static final String MY_LEARN = "/mapi_v2/mobileApp#/mylearn";
-    public static final String VIP_LIST = "/mapi_v2/mobileApp#/viplist";
-    public static final String MY_FAVORITE = "/mapi_v2/mobileApp#/myfavorite";
+    public static final String MY_LEARN = "main#/mylearn";
+    public static final String VIP_LIST = "main#/viplist";
+    public static final String MY_FAVORITE = "main#/myfavorite";
     public static final String USERS = "/api/users/";
 
     public static final String HAVE_ADD_TRUE = "friend";
