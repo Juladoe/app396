@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 
@@ -40,17 +41,21 @@ public class ChatDataSource {
     }
 
     public List<Chat> getChats(int start, int limit, String sql) {
-        List<Chat> list = new ArrayList<>();
-        if (TextUtils.isEmpty(sql)) {
-            sql = null;
+        List<Chat> list = null;
+        try {
+            list = new ArrayList<>();
+            if (TextUtils.isEmpty(sql)) {
+                sql = null;
+            }
+            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "ID DESC",
+                    String.format("%d, %d", start, limit));
+            while (cursor.moveToNext()) {
+                list.add(cursorToComment(cursor));
+            }
+            cursor.close();
+        } catch (Exception ex) {
+            Log.d("-->", ex.getMessage());
         }
-        Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "ORDER BY CREATEDTIME DESC",
-                String.format("limit %d, %d", start, limit));
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(cursorToComment(cursor));
-        }
-        cursor.close();
         return list;
     }
 

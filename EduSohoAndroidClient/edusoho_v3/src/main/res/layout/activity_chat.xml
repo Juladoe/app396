@@ -47,6 +47,8 @@
         android:scrollbars="none"
         android:smoothScrollbar="true"
         android:clickable="true"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
         android:id="@+id/lv_messages" />
 
 </RelativeLayout>

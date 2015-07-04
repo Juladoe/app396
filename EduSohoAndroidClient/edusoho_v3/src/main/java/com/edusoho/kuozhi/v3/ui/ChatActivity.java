@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -14,7 +15,6 @@ import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -23,11 +23,13 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,11 +37,11 @@ import java.util.List;
  * Created by JesseHuang on 15/6/3.
  */
 public class ChatActivity extends ActionBarBaseActivity {
-
+    public static final String TAG = "ChatActivity";
     public static final int COURSE_CHAT = 0x01;
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
-    public New mNewsItem;
+    public static final String TITLE = "title";
 
     private EditText etSend;
     private ListView lvMessage;
@@ -56,8 +58,9 @@ public class ChatActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        setBackMode(BACK, "suju");
+
         initView();
+        Log.d(TAG, this.getTaskId() + "");
     }
 
     private void initView() {
@@ -74,11 +77,14 @@ public class ChatActivity extends ActionBarBaseActivity {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
+        setBackMode(BACK, intent.getStringExtra(TITLE));
         mFromId = intent.getIntExtra(FROM_ID, 0);
+        NotificationUtil.cancelById(mFromId);
         int toId = app.loginUser.id;
-        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, toId, mFromId, toId);
         mList = chatDataSource.getChats(0, 15, selectSql);
+        Collections.reverse(mList);
         mAdapter = new ChatAdapter(mContext, mList);
         lvMessage.setAdapter(mAdapter);
     }

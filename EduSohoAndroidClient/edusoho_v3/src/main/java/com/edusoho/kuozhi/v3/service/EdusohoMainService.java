@@ -1,31 +1,25 @@
 package com.edusoho.kuozhi.v3.service;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
@@ -163,8 +157,8 @@ public class EdusohoMainService extends Service {
                         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).openWrite();
                         chatDataSource.create(chatModel);
                         chatDataSource.close();
-                        if (xgMessage.isForeground) {
-                            mEdusohoMainService.showNotification(xgMessage);
+                        if (!xgMessage.isForeground) {
+                            NotificationUtil.showNotification(xgMessage);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -174,26 +168,5 @@ public class EdusohoMainService extends Service {
         }
     }
 
-    private void showNotification(WrapperXGPushTextMessage xgMessage) {
-        try {
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle(xgMessage.title)
-                            .setContentText(xgMessage.content).setAutoCancel(true);
-            NotificationManager mNotificationManager =
-                    (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
-            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            int requestCode = (int) SystemClock.uptimeMillis();
-            PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, requestCode,
-                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mBuilder.setContentIntent(pendIntent);
-            mNotificationManager.notify(requestCode, mBuilder.build());
-        } catch (Exception ex) {
-            Log.d("showNotification-->", ex.getMessage());
-        }
-    }
 }

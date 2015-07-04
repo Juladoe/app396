@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.push.ChatTypeEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -40,7 +39,6 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
-    public static final int INSERT_NEW = 0x01;
 
     @Override
     public void onAttach(Activity activity) {
@@ -94,7 +92,7 @@ public class NewsFragment extends BaseFragment {
                         mContext);
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
-                deleteItem.setWidth(AppUtil.dp2px(mContext, 90));
+                deleteItem.setWidth(AppUtil.dp2px(mContext, 65));
                 deleteItem.setIcon(R.drawable.ic_delete);
                 menu.addMenuItem(deleteItem);
             }
@@ -136,15 +134,20 @@ public class NewsFragment extends BaseFragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final New newItem = (New) parent.getItemAtPosition(position);
-            if (ChatTypeEnum.FRIEND.getName().toLowerCase().equals(newItem.type) || ChatTypeEnum.TEACHER.getName().toLowerCase().equals(newItem.type)) {
-                app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
-                    }
-                });
-            } else {
-                // TODO 课程
+            switch (newItem.type) {
+                case "friend":
+                case "teacher":
+                    app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
+                            startIntent.putExtra(ChatActivity.TITLE, newItem.title);
+                        }
+                    });
+                    break;
+                case "course":
+                    // TODO 打开课程
+                    break;
             }
         }
     };
