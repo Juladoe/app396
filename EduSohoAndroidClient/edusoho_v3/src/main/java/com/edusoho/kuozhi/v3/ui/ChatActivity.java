@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.ChatTypeEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
@@ -117,7 +118,7 @@ public class ChatActivity extends ActionBarBaseActivity {
     };
 
     private void sendMsg() {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("type", "text");
@@ -140,7 +141,9 @@ public class ChatActivity extends ActionBarBaseActivity {
         customContent.fromId = app.loginUser.id;
         customContent.nickname = app.loginUser.nickname;
         customContent.imgUrl = app.loginUser.smallAvatar;
-        customContent.createdTime = (int) Calendar.getInstance().getTimeInMillis() / 1000;
+        customContent.typeMsg = ChatTypeEnum.TEXT.toString().toLowerCase();
+        customContent.typeObject = ChatTypeEnum.FRIEND.toString().toLowerCase();
+        customContent.createdTime = (int) Calendar.getInstance().getTimeInMillis();
         return customContent;
     }
 

@@ -60,15 +60,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, EdusohoMainService.class);
             EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
 
-//            EdusohoApp.app.sendMsgToTargetForCallback(Const.ADD_CHAT_MSG, bundle, EdusohoMainService.class, new NormalCallback<Boolean>() {
-//                @Override
-//                public void success(Boolean obj) {
-//                    if (obj && isForeground) {
-//                        showNotification(null);
-//                    }
-//                }
-//            });
-
         } catch (Exception e) {
             e.printStackTrace();
         }

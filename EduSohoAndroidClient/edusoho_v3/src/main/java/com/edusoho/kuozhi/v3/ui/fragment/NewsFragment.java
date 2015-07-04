@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +31,7 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,8 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
+    private MyHandler mMyHandler;
+    public static final int UPDATE_UNREAD = 0x01;
 
     @Override
     public void onAttach(Activity activity) {
@@ -49,7 +54,6 @@ public class NewsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_news);
-
     }
 
     @Override
@@ -105,6 +109,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void initData() {
+        mMyHandler = new MyHandler(this);
         if (app.loginUser != null) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
             List<New> news = newDataSource.getNews("WHERE BELONGID = ?", app.loginUser.id + "");
@@ -120,7 +125,6 @@ public class NewsFragment extends BaseFragment {
                 case 0:
                     mSwipeAdapter.removeItem(position);
                     mSwipeAdapter.notifyDataSetChanged();
-                    // TODO 本地数据库操作
                     break;
                 case 1:
                     break;
@@ -144,6 +148,12 @@ public class NewsFragment extends BaseFragment {
                             startIntent.putExtra(ChatActivity.TITLE, newItem.title);
                         }
                     });
+                    if (newItem.unread > 0) {
+                        Message msg = mMyHandler.obtainMessage();
+                        msg.what = UPDATE_UNREAD;
+                        msg.obj = newItem;
+                        msg.sendToTarget();
+                    }
                     break;
                 case "course":
                     // TODO 打开课程
@@ -198,5 +208,35 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private static class MyHandler extends Handler {
+        private WeakReference<NewsFragment> mWeakReference;
+
+        public MyHandler(NewsFragment newsFragment) {
+            if (mWeakReference == null) {
+                mWeakReference = new WeakReference<>(newsFragment);
+            }
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            NewsFragment mNewsFragment = mWeakReference.get();
+            if (mNewsFragment != null) {
+                switch (msg.what) {
+                    case UPDATE_UNREAD:
+                        mNewsFragment.updateUnreadFromLocalDB((New) msg.obj);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void updateUnreadFromLocalDB(New newItem) {
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        newItem.unread = 0;
+        newDataSource.update(newItem);
+        newDataSource.close();
+        updateNew(newItem);
     }
 }

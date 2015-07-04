@@ -28,15 +28,15 @@ public class NotificationUtil {
                     (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
             Chat chat = new Chat(xgMessage);
+            int notificationId = chat.fromId;
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             //int requestCode = (int) SystemClock.uptimeMillis();
-            int requestCode = chat.fromId;
-            PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, requestCode,
+            PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
-            mNotificationManager.notify(requestCode, mBuilder.build());
+            mNotificationManager.notify(notificationId, mBuilder.build());
         } catch (Exception ex) {
             Log.d("showNotification-->", ex.getMessage());
         }
