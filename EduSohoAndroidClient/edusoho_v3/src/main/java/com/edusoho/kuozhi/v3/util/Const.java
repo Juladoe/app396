@@ -79,6 +79,7 @@ public class Const {
     public static final int OPEN_COURSE_CHAT = 0x04;
 
     public static final String CHAT_DATA = "chat_data";
+    public static final String FROM_ID = "from_id";
     public static final int ADD_CHAT_MSG = 0x05;
     public static final int SWITCH_TAB = 0x06;
     public static final int DRAWER_REGISTER = 0x07;

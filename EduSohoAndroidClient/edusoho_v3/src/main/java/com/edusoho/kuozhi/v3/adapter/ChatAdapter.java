@@ -36,6 +36,11 @@ public class ChatAdapter extends BaseAdapter {
         mLoginUser = EdusohoApp.app.loginUser;
     }
 
+    public void updateList(List<Chat> list) {
+        mList = list;
+        notifyDataSetChanged();
+    }
+
     public void addOneChat(Chat chat) {
         mList.add(chat);
         notifyDataSetChanged();

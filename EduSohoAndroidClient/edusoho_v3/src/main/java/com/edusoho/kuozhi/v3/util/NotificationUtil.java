@@ -31,7 +31,7 @@ public class NotificationUtil {
             int notificationId = chat.fromId;
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
-            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             //int requestCode = (int) SystemClock.uptimeMillis();
             PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);

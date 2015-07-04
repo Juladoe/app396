@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
@@ -43,12 +44,15 @@ public class ChatActivity extends ActionBarBaseActivity {
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
     public static final String TITLE = "title";
+    public static final int UPDATE_UNREAD = 0x02;
 
     private EditText etSend;
     private ListView lvMessage;
     private TextView tvSend;
     private ChatAdapter mAdapter;
     private List<Chat> mList;
+    private ChatDataSource mChatDataSource;
+
     /**
      * 对方的userInfo信息;
      */
@@ -70,6 +74,17 @@ public class ChatActivity extends ActionBarBaseActivity {
         tvSend.setOnClickListener(mSendClickListener);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
         initData();
+        mAdapter = new ChatAdapter(mContext, mList);
+        lvMessage.setAdapter(mAdapter);
+        sendNewFragment2UpdateItem();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        initData();
+        mAdapter.updateList(mList);
+        sendNewFragment2UpdateItem();
     }
 
     private void initData() {
@@ -78,16 +93,21 @@ public class ChatActivity extends ActionBarBaseActivity {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
-        setBackMode(BACK, intent.getStringExtra(TITLE));
-        mFromId = intent.getIntExtra(FROM_ID, 0);
+        mFromId = intent.getIntExtra(FROM_ID, mFromId);
         NotificationUtil.cancelById(mFromId);
+        setBackMode(BACK, intent.getStringExtra(TITLE));
         int toId = app.loginUser.id;
         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, toId, mFromId, toId);
         mList = chatDataSource.getChats(0, 15, selectSql);
         Collections.reverse(mList);
-        mAdapter = new ChatAdapter(mContext, mList);
-        lvMessage.setAdapter(mAdapter);
+        chatDataSource.close();
+    }
+
+    private void sendNewFragment2UpdateItem() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.FROM_ID, mFromId);
+        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD, bundle, NewsFragment.class);
     }
 
     View.OnClickListener mSendClickListener = new View.OnClickListener() {
@@ -118,6 +138,17 @@ public class ChatActivity extends ActionBarBaseActivity {
     };
 
     private void sendMsg() {
+        if (mChatDataSource == null) {
+            mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        }
+        final Chat chat = new Chat();
+        chat.fromId = app.loginUser.id;
+        chat.toId = mFromId;
+        chat.nickName = app.loginUser.nickname;
+        chat.headimgurl = app.loginUser.smallAvatar;
+        chat.content = etSend.getText().toString();
+        chat.type = ChatTypeEnum.TEXT.toString().toLowerCase();
+        chat.createdTime = (int) Calendar.getInstance().getTimeInMillis();
         RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
@@ -129,8 +160,9 @@ public class ChatActivity extends ActionBarBaseActivity {
             public void onResponse(String response) {
                 PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
                 });
-                if (result.equals("success")) {
-
+                if (result.result.equals("success")) {
+                    mChatDataSource.create(chat);
+                    mAdapter.addOneChat(chat);
                 }
             }
         }, null);

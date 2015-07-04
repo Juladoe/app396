@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +29,6 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +39,6 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
-    private MyHandler mMyHandler;
     public static final int UPDATE_UNREAD = 0x01;
 
     @Override
@@ -109,7 +105,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void initData() {
-        mMyHandler = new MyHandler(this);
+
         if (app.loginUser != null) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
             List<New> news = newDataSource.getNews("WHERE BELONGID = ?", app.loginUser.id + "");
@@ -149,10 +145,7 @@ public class NewsFragment extends BaseFragment {
                         }
                     });
                     if (newItem.unread > 0) {
-                        Message msg = mMyHandler.obtainMessage();
-                        msg.what = UPDATE_UNREAD;
-                        msg.obj = newItem;
-                        msg.sendToTarget();
+
                     }
                     break;
                 case "course":
@@ -173,63 +166,55 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (messageType.code == Const.ADD_CHAT_MSG) {
-            try {
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
-                New newModel = new New(wrapperMessage);
-                newModel.belongId = app.loginUser.id;
-                NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
-                List<New> news = newDataSource.getNews("WHERE FROMID = ?", newModel.fromId + "");
-                if (news == null || news.size() == 0) {
-                    newModel.unread = 1;
-                    newDataSource.create(newModel);
-                    insertNew(newModel);
-                } else {
-                    newModel.unread = wrapperMessage.isForeground ? 0 : news.get(0).unread + 1;
+        if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
+            initData();
+        } else {
+            switch (messageType.code) {
+                case Const.ADD_CHAT_MSG:
+                    try {
+                        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                        New newModel = new New(wrapperMessage);
+                        newModel.belongId = app.loginUser.id;
+                        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+                        if (news == null || news.size() == 0) {
+                            newModel.unread = 1;
+                            newDataSource.create(newModel);
+                            insertNew(newModel);
+                        } else {
+                            newModel.unread = wrapperMessage.isForeground ? 0 : news.get(0).unread + 1;
+                            newDataSource.update(newModel);
+                            updateNew(newModel);
+                        }
+                        newDataSource.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case UPDATE_UNREAD:
+                    int fromId = message.data.getInt(Const.FROM_ID);
+                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
+                    New newModel = news.get(0);
+                    newModel.unread = 0;
                     newDataSource.update(newModel);
                     updateNew(newModel);
-                }
-                newDataSource.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                    break;
             }
-        } else if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
-            initData();
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.LOGIN_SUCCESS)};
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(UPDATE_UNREAD, source)};
         return messageTypes;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    private static class MyHandler extends Handler {
-        private WeakReference<NewsFragment> mWeakReference;
-
-        public MyHandler(NewsFragment newsFragment) {
-            if (mWeakReference == null) {
-                mWeakReference = new WeakReference<>(newsFragment);
-            }
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            NewsFragment mNewsFragment = mWeakReference.get();
-            if (mNewsFragment != null) {
-                switch (msg.what) {
-                    case UPDATE_UNREAD:
-                        mNewsFragment.updateUnreadFromLocalDB((New) msg.obj);
-                        break;
-                }
-            }
-        }
     }
 
     private void updateUnreadFromLocalDB(New newItem) {
