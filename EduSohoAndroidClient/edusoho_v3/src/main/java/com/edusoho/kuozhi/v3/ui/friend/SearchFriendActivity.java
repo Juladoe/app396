@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui.friend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -43,17 +46,25 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     private String name;
     private SearchFriendAdapter mAdapter;
 
+    private static final int END = 0;
+
+
     private ListView mList;
+    private TextView mNotice;
     private ArrayList<Friend> mResultList;
     private ArrayList<Friend> mTmpList;
     private Integer[] friendIds = new Integer[15];
     private int count;
+
+    private LoadHandler mHandler;
+    private LoadDialog mLoadDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_friend_layout);
         mList = (ListView) findViewById(R.id.search_friend_list);
+        mNotice = (TextView) findViewById(R.id.search_friend_empty);
         Intent intent = getIntent();
         if(intent != null){
             name = intent.getStringExtra(NAME);
@@ -63,7 +74,12 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         mAdapter = new SearchFriendAdapter();
         mList.setAdapter(mAdapter);
 
+        mHandler = new LoadHandler();
+        mLoadDialog = LoadDialog.create(this);
+        mLoadDialog.setMessage("请等待");
+        mLoadDialog.show();
         loadResultFriends();
+
     }
 
     public void getRelationship(){
@@ -107,14 +123,23 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             public void onResponse(String response) {
                 FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
 
-                if(friendResult == null){
-                    //TODO 空数据页面
-
+                boolean isEmpty;
+                if((friendResult.mobile.length == 0)&&(friendResult.nickname.length == 0)&&(friendResult.qq.length == 0)){
+                    isEmpty = true;
+                    mList.setVisibility(View.GONE);
+                    mNotice.setVisibility(View.VISIBLE);
+                }else {
+                    isEmpty = false;
+                    mList.setVisibility(View.VISIBLE);
+                    mNotice.setVisibility(View.GONE);
                 }
 
                 count = 0;
                 if(friendResult.mobile != null){
                     for(Friend friend:friendResult.mobile){
+                        if(friend.id == app.loginUser.id){
+                            continue;
+                        }
                         mAdapter.addItem(friend);
                         friendIds[count] = friend.id;
                         count++;
@@ -123,7 +148,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 }
                 if(friendResult.qq != null){
                     for(Friend friend:friendResult.qq){
-                        if(Arrays.asList(friendIds).contains(friend.id)){
+                        if((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)){
                             continue;
                         }else {
                             friendIds[count] = friend.id;
@@ -134,7 +159,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 }
                 if(friendResult.nickname != null){
                     for(Friend friend:friendResult.nickname){
-                        if(Arrays.asList(friendIds).contains(friend.id)){
+                        if((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)){
                             continue;
                         }else {
                             friendIds[count] = friend.id;
@@ -143,7 +168,10 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                         }
                     }
                 }
-                getRelationship();
+                if(!isEmpty){
+                    getRelationship();
+                }
+                mHandler.sendEmptyMessage(END);
             }
         },new Response.ErrorListener() {
             @Override
@@ -152,6 +180,18 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             }
         });
     }
+
+
+    public class LoadHandler extends android.os.Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == END){
+                if(mLoadDialog != null){
+                    mLoadDialog.dismiss();
+                }
+            }
+        }
+    };
 
 
     public class SearchFriendAdapter extends BaseAdapter{

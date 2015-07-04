@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -54,7 +55,6 @@ public class ESWebView extends RelativeLayout {
     protected Context mContext;
     protected BaseActivity mActivity;
     protected String mAppCode;
-
     private AttributeSet mAttrs;
     private static final String TAG = "ESWebView";
     private static Pattern APPCODE_PAT = Pattern.compile(".+/mapi_v2/mobile/(\\w+)[#|/]*", Pattern.DOTALL);
@@ -71,6 +71,10 @@ public class ESWebView extends RelativeLayout {
         super(context, attrs);
         mContext = context;
         this.mAttrs = attrs;
+    }
+
+    public String getUserAgent() {
+        return mWebView.getSettings().getUserAgentString();
     }
 
     private void initWebView(AttributeSet attrs) {
@@ -93,7 +97,11 @@ public class ESWebView extends RelativeLayout {
         webViewProgressBar.addRule(RelativeLayout.BELOW, R.id.pb_loading);
         addView(mWebView, webViewProgressBar);
 
-        mRequestManager = new ESWebViewRequestManager(this, mWebView.getSettings().getUserAgentString());
+        mRequestManager = ESWebViewRequestManager.getRequestManager(this);
+    }
+
+    public RequestManager getRequestManager() {
+        return mRequestManager;
     }
 
     public void loadApp(String appCode) {
@@ -231,7 +239,6 @@ public class ESWebView extends RelativeLayout {
 
         mWebView.stopLoading();
         mWebView.handleDestroy();
-        mRequestManager.destroy();
     }
 
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {

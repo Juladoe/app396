@@ -399,10 +399,10 @@ public class Const {
     /**
      * 侧边栏url
      */
+
     public static final String MY_LEARN = "main#/mylearn";
     public static final String VIP_LIST = "main#/viplist";
     public static final String MY_FAVORITE = "main#/myfavorite";
-    public static final String USERS = "/api/users/";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
@@ -410,4 +410,10 @@ public class Const {
     public static final String HAVE_ADD_ME = "follower";
 
     public static final String CLEAR_WEBVIEW_CACHE = "clear_webview_cache";
+
+    /**
+     * 校友api
+     */
+    public static final String USERS = "/api/users/";
+    public static final String MY_FRIEND = "/api/me/friends";
 }

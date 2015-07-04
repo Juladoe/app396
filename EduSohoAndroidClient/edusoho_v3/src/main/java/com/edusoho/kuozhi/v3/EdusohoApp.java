@@ -205,7 +205,12 @@ public class EdusohoApp extends Application {
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener);
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return requestUrl.getHeads();
+            }
+        };
         jsonObjectRequest.setTag(requestUrl.url);
         mVolley.addToRequestQueue(jsonObjectRequest);
     }
@@ -264,7 +269,6 @@ public class EdusohoApp extends Application {
         }
 
         SqliteUtil.getUtil(this).close();
-        //System.exit(0);
     }
 
     private void init() {
@@ -807,7 +811,7 @@ public class EdusohoApp extends Application {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, error.getMessage());
+                        Log.d(TAG, error.toString());
                     }
                 });
             }

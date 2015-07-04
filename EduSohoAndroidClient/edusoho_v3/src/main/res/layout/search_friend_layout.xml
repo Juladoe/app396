@@ -10,4 +10,13 @@
         android:divider="@null">
 
         </ListView>
+
+    <TextView
+        android:id="@+id/search_friend_empty"
+        android:text="未能搜索到相关用户"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

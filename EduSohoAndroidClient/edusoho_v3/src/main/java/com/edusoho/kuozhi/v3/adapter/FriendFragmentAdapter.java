@@ -12,8 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundButton;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +35,15 @@ public class FriendFragmentAdapter extends BaseAdapter{
     private int mListViewLayoutId;
     private ArrayList<Friend> mList;
     private OnClickListener mOnClickListener;
+    private EdusohoApp mApp;
 
-    public FriendFragmentAdapter(Context mContext, int mResource) {
+    public FriendFragmentAdapter(Context mContext, int mResource,EdusohoApp app) {
         this.mContext = mContext;
         this.mResource = mResource;
         mList = new ArrayList<Friend>();
         mCacheArray = new SparseArray<View>();
         mInflater = LayoutInflater.from(mContext);
+        mApp = app;
 
     }
 
@@ -88,12 +92,17 @@ public class FriendFragmentAdapter extends BaseAdapter{
                 v = mCacheArray.get(position);
                 itemHolder = (ItemHolder) v.getTag();
             }
-            if(mList.get(position-1).isTeacher == true){
+
+            final Friend friend = mList.get(position-1);
+            if(friend.isTeacher == true){
                 itemHolder.teacherTag.setVisibility(View.VISIBLE);
             }else {
                 itemHolder.teacherTag.setVisibility(View.GONE);
             }
-            itemHolder.friendName.setText(mList.get(position-1).nickname);
+            itemHolder.friendName.setText(friend.nickname);
+            if(friend.smallAvatar !=""){
+                ImageLoader.getInstance().displayImage(mApp.host+"/"+friend.smallAvatar, itemHolder.friendAvatar, mApp.mOptions);
+            }
             itemHolder.friendAvatar.setImageResource(mList.get(position-1).avatarID);
         }
         return v;
