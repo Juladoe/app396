@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -54,7 +55,6 @@ public class ESWebView extends RelativeLayout {
     protected Context mContext;
     protected BaseActivity mActivity;
     protected String mAppCode;
-
     private AttributeSet mAttrs;
     private static final String TAG = "ESWebView";
     private static Pattern APPCODE_PAT = Pattern.compile(".+/mapi_v2/mobile/(\\w+)[#|/]*", Pattern.DOTALL);
