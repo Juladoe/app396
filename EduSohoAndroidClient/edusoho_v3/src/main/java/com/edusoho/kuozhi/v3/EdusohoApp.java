@@ -268,7 +268,6 @@ public class EdusohoApp extends Application {
         }
 
         SqliteUtil.getUtil(this).close();
-        //System.exit(0);
     }
 
     private void init() {

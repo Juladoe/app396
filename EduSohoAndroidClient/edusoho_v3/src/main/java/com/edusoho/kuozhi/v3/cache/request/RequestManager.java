@@ -2,10 +2,13 @@ package com.edusoho.kuozhi.v3.cache.request;
 
 
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
+import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
 
@@ -14,28 +17,37 @@ import java.util.regex.Pattern;
  */
 public abstract class RequestManager {
 
-    private static RequestManager mRequestManager;
-
+    protected Hashtable<String, Response> mResoucrCache;
     private LinkedHashMap<Pattern, RequestHandler> mRequestHandlerList;
 
     protected ScheduledThreadPoolExecutor mWorkExecutor;
     private static final int MAX_POOL = 10;
 
     public RequestManager() {
+        mResoucrCache = new Hashtable<>();
         mRequestHandlerList = new LinkedHashMap<>();
         mWorkExecutor = new ScheduledThreadPoolExecutor(MAX_POOL);
     }
 
-    public static RequestManager getDefaultManager() {
-        synchronized (RequestManager.class) {
-            if (mRequestManager == null) {
-                mRequestManager = RequestManagerFactory.createDefaultManager();
-            }
-        }
-        return mRequestManager;
+    public void destroy() {
+        mResoucrCache.clear();
+        mRequestHandlerList.clear();
+        mWorkExecutor.shutdown();
     }
 
-    public abstract void destroy();
+    protected void executeTask(Task task) {
+        mWorkExecutor.execute(task);
+    }
+
+    protected class Task implements Runnable {
+
+        public Task(Object... params) {
+        }
+
+        @Override
+        public void run() {
+        }
+    }
 
     public abstract void get(Request request, RequestCallback callback);
 

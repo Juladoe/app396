@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.cache.request.model;
 
+import android.util.Log;
+
 import java.io.InputStream;
 import java.util.Map;
 
@@ -8,14 +10,21 @@ import java.util.Map;
  */
 public class Response<T> {
 
-    private String mMimeType;
-    private String mEncoding;
-    private int mStatusCode;
-    private Map<String, String> mResponseHeaders;
-    private InputStream mInputStream;
-    private T mData;
+    protected static final String TAG = "Response";
+    protected String mMimeType;
+    protected String mEncoding;
+    protected int mStatusCode;
+    protected Map<String, String> mResponseHeaders;
+    protected InputStream mInputStream;
+    protected T mData;
 
     public Response() {
+    }
+
+    public void setResponse(Response response) {
+        setMimeType(response.getMimeType());
+        setContent(response.getContent());
+        setEncoding(response.getEncoding());
     }
 
     public Response(T data) {

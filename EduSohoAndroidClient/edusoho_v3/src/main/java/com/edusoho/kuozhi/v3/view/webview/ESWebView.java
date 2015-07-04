@@ -73,6 +73,10 @@ public class ESWebView extends RelativeLayout {
         this.mAttrs = attrs;
     }
 
+    public String getUserAgent() {
+        return mWebView.getSettings().getUserAgentString();
+    }
+
     private void initWebView(AttributeSet attrs) {
         mWebView = new ESCordovaWebView(new CordovaContext(mActivity), attrs);
 
@@ -93,7 +97,11 @@ public class ESWebView extends RelativeLayout {
         webViewProgressBar.addRule(RelativeLayout.BELOW, R.id.pb_loading);
         addView(mWebView, webViewProgressBar);
 
-        mRequestManager = new ESWebViewRequestManager(this, mWebView.getSettings().getUserAgentString());
+        mRequestManager = ESWebViewRequestManager.getRequestManager(this);
+    }
+
+    public RequestManager getRequestManager() {
+        return mRequestManager;
     }
 
     public void loadApp(String appCode) {
@@ -231,7 +239,6 @@ public class ESWebView extends RelativeLayout {
 
         mWebView.stopLoading();
         mWebView.handleDestroy();
-        mRequestManager.destroy();
     }
 
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
