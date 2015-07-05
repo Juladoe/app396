@@ -2,7 +2,8 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -30,7 +31,6 @@ import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +52,7 @@ public class ChatActivity extends ActionBarBaseActivity {
     private ChatAdapter mAdapter;
     private List<Chat> mList;
     private ChatDataSource mChatDataSource;
+    private int mSendTime;
 
     /**
      * 对方的userInfo信息;
@@ -65,13 +66,13 @@ public class ChatActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_chat);
 
         initView();
-        Log.d(TAG, this.getTaskId() + "");
     }
 
     private void initView() {
         etSend = (EditText) findViewById(R.id.et_send_content);
         tvSend = (TextView) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(mSendClickListener);
+        etSend.addTextChangedListener(msgTextWatcher);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
         initData();
         mAdapter = new ChatAdapter(mContext, mList);
@@ -126,6 +127,8 @@ public class ChatActivity extends ActionBarBaseActivity {
                         mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
                         });
                         sendMsg();
+                        etSend.setText("");
+                        etSend.requestFocus();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -137,18 +140,40 @@ public class ChatActivity extends ActionBarBaseActivity {
         }
     };
 
+    TextWatcher msgTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 0) {
+                etSend.setEnabled(false);
+            } else {
+                etSend.setEnabled(true);
+            }
+        }
+    };
+
     private void sendMsg() {
         if (mChatDataSource == null) {
             mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
         }
         final Chat chat = new Chat();
+        mSendTime = (int) (System.currentTimeMillis() / 1000);
         chat.fromId = app.loginUser.id;
         chat.toId = mFromId;
         chat.nickName = app.loginUser.nickname;
         chat.headimgurl = app.loginUser.smallAvatar;
         chat.content = etSend.getText().toString();
         chat.type = ChatTypeEnum.TEXT.toString().toLowerCase();
-        chat.createdTime = (int) Calendar.getInstance().getTimeInMillis();
+        chat.createdTime = mSendTime;
         RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
@@ -175,7 +200,7 @@ public class ChatActivity extends ActionBarBaseActivity {
         customContent.imgUrl = app.loginUser.smallAvatar;
         customContent.typeMsg = ChatTypeEnum.TEXT.toString().toLowerCase();
         customContent.typeObject = ChatTypeEnum.FRIEND.toString().toLowerCase();
-        customContent.createdTime = (int) Calendar.getInstance().getTimeInMillis();
+        customContent.createdTime = mSendTime;
         return customContent;
     }
 

@@ -104,14 +104,14 @@ public class ChatAdapter extends BaseAdapter {
         }
         Chat model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
-        if (position != 0) {
-            if (AppUtil.convertMilliSec(model.createdTime) - AppUtil.convertMilliSec(mList.get(position - 1).createdTime) > TIME_INTERVAL) {
+        if (position > 0) {
+            if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertWeekTime(model.createdTime));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);

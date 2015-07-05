@@ -570,6 +570,23 @@ public class AppUtil {
         return result;
     }
 
+    public static String convertMills2Date(long millsTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            String nowTime = sdf.format(System.currentTimeMillis());
+            String showTime = sdf.format(millsTime);
+            if (nowTime.substring(0, 10).equals(
+                    showTime.substring(0, 10))) {
+                return showTime.substring(11);
+            } else {
+                return showTime;
+            }
+        } catch (Exception ex) {
+            Log.e("convertMills2Date", ex.getMessage());
+            return "";
+        }
+    }
+
     /**
      * 计算发布问题天数,服务端获取时间格式：2014-05-20T22:03:43+08:00
      * 转换为天数或者小时
