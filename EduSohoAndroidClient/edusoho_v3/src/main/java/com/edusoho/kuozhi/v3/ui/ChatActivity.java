@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -48,7 +49,7 @@ public class ChatActivity extends ActionBarBaseActivity {
 
     private EditText etSend;
     private ListView lvMessage;
-    private TextView tvSend;
+    private Button tvSend;
     private ChatAdapter mAdapter;
     private List<Chat> mList;
     private ChatDataSource mChatDataSource;
@@ -70,7 +71,7 @@ public class ChatActivity extends ActionBarBaseActivity {
 
     private void initView() {
         etSend = (EditText) findViewById(R.id.et_send_content);
-        tvSend = (TextView) findViewById(R.id.tv_send);
+        tvSend = (Button) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(mSendClickListener);
         etSend.addTextChangedListener(msgTextWatcher);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
@@ -148,16 +149,23 @@ public class ChatActivity extends ActionBarBaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            if (count > 0) {
+                tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_click));
+                tvSend.setTextColor(getResources().getColor(android.R.color.white));
+                tvSend.setEnabled(true);
+                Log.d(TAG, "0");
+            } else {
+                tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_unclick));
+                tvSend.setTextColor(getResources().getColor(R.color.grey_alpha));
+                tvSend.setEnabled(false);
+                CommonUtil.longToast(mContext, "消息不能为空");
+                Log.d(TAG, ">0");
+            }
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.length() == 0) {
-                etSend.setEnabled(false);
-            } else {
-                etSend.setEnabled(true);
-            }
+
         }
     };
 

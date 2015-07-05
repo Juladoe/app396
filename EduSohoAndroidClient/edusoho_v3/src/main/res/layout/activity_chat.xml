@@ -6,34 +6,57 @@
     tools:context="com.edusoho.kuozhi.v3.ui.ChatActivity">
 
     <RelativeLayout
-        android:paddingBottom="3dp"
-        android:id="@+id/ll_send_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white">
+        android:padding="5dp"
+        android:id="@+id/ll_send_info">
 
         <EditText
             android:id="@+id/et_send_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tv_send"
-            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/tv_send"
-            android:alpha="0.56"
-            android:textCursorDrawable="@null" />
+            android:layout_alignBottom="@+id/tv_send"
+            android:maxLines="4"
+            android:background="@drawable/login_edt_bg_sel" />
 
-        <TextView
-            android:layout_width="62dp"
-            android:layout_height="42dp"
+        <!--<EditText-->
+        <!--android:id="@+id/et_send_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:alpha="0.56"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/green_alpha"-->
+        <!--android:maxLines="4"-->
+        <!--android:layout_toLeftOf="@+id/ll_send_button"-->
+        <!--android:background="@drawable/edit_select" />-->
+        <Button
+            android:textSize="@dimen/small_font_size"
             android:id="@+id/tv_send"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/edit_send_green"
-            android:textColor="@color/white"
-            android:layout_margin="5dp"
-            android:includeFontPadding="false"
-            android:text="发送" />
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="@drawable/send_btn_unclick"
+            android:text="发送"
+            android:textColor="@color/grey_cccccc" />
 
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:id="@+id/tv_send"-->
+        <!--android:background="@drawable/edit_send_green"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:gravity="center"-->
+        <!--android:visibility="visible"-->
+        <!--android:padding="5dp"-->
+        <!--android:text="发送" />-->
     </RelativeLayout>
 
     <ListView
