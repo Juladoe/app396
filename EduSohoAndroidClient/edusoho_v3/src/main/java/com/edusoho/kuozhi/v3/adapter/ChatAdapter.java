@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -30,15 +31,15 @@ public class ChatAdapter extends BaseAdapter {
 
     private static final int TYPE_ITEMS = 2, TYPE_ME = 0, TYPE_OTHER_SIDE = 1;
 
+    public void addItems(ArrayList<Chat> list) {
+        mList.addAll(0, list);
+        notifyDataSetChanged();
+    }
+
     public ChatAdapter(Context ctx, List<Chat> list) {
         mContext = ctx;
         mList = list;
         mLoginUser = EdusohoApp.app.loginUser;
-    }
-
-    public void updateList(List<Chat> list) {
-        mList = list;
-        notifyDataSetChanged();
     }
 
     public void addOneChat(Chat chat) {
@@ -116,6 +117,13 @@ public class ChatAdapter extends BaseAdapter {
         holder.tvSendContent.setText(model.content);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
         return convertView;
+    }
+
+    public void clear() {
+        if (mList.size() > 0) {
+            mList.clear();
+            notifyDataSetChanged();
+        }
     }
 
     private static class ViewHolder {

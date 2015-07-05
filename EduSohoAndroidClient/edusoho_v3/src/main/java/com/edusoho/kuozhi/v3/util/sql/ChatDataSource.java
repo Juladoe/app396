@@ -10,7 +10,6 @@ import android.util.Log;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by JesseHuang on 15/7/2.
@@ -40,8 +39,8 @@ public class ChatDataSource {
         mDbHelper.close();
     }
 
-    public List<Chat> getChats(int start, int limit, String sql) {
-        List<Chat> list = null;
+    public ArrayList<Chat> getChats(int start, int limit, String sql) {
+        ArrayList<Chat> list = null;
         try {
             list = new ArrayList<>();
             if (TextUtils.isEmpty(sql)) {

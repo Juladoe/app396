@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,9 +31,14 @@ import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by JesseHuang on 15/6/3.
@@ -51,21 +55,24 @@ public class ChatActivity extends ActionBarBaseActivity {
     private ListView lvMessage;
     private Button tvSend;
     private ChatAdapter mAdapter;
-    private List<Chat> mList;
+    private PtrClassicFrameLayout mPtrFrame;
+    private ArrayList<Chat> mList;
     private ChatDataSource mChatDataSource;
     private int mSendTime;
+    private int mStart = 0;
+    private static final int LIMIT = 15;
 
     /**
      * 对方的userInfo信息;
      */
     private User mFromUserInfo;
     private int mFromId;
+    private int mToId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
         initView();
     }
 
@@ -76,8 +83,24 @@ public class ChatActivity extends ActionBarBaseActivity {
         etSend.addTextChangedListener(msgTextWatcher);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
         initData();
-        mAdapter = new ChatAdapter(mContext, mList);
+        mAdapter = new ChatAdapter(mContext, getChatList(0));
         lvMessage.setAdapter(mAdapter);
+        mStart = mAdapter.getCount();
+        mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mAdapter.addItems(getChatList(mStart));
+                mStart = mAdapter.getCount();
+                mPtrFrame.refreshComplete();
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
         sendNewFragment2UpdateItem();
     }
 
@@ -85,7 +108,9 @@ public class ChatActivity extends ActionBarBaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         initData();
-        mAdapter.updateList(mList);
+        mAdapter.clear();
+        mAdapter.addItems(getChatList(0));
+        mStart = mAdapter.getCount();
         sendNewFragment2UpdateItem();
     }
 
@@ -96,14 +121,18 @@ public class ChatActivity extends ActionBarBaseActivity {
             return;
         }
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
+        mToId = app.loginUser.id;
         NotificationUtil.cancelById(mFromId);
         setBackMode(BACK, intent.getStringExtra(TITLE));
-        int toId = app.loginUser.id;
+    }
+
+    private ArrayList<Chat> getChatList(int start) {
         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
-        String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, toId, mFromId, toId);
-        mList = chatDataSource.getChats(0, 15, selectSql);
+        String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, mToId, mFromId, mToId);
+        mList = chatDataSource.getChats(start, LIMIT, selectSql);
         Collections.reverse(mList);
         chatDataSource.close();
+        return mList;
     }
 
     private void sendNewFragment2UpdateItem() {
@@ -115,9 +144,11 @@ public class ChatActivity extends ActionBarBaseActivity {
     View.OnClickListener mSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (etSend.getText().length() == 0) {
+                return;
+            }
             if (mFromUserInfo != null) {
                 sendMsg();
-
             } else {
                 RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
                 HashMap<String, String> params = requestUrl.getParams();
@@ -128,8 +159,6 @@ public class ChatActivity extends ActionBarBaseActivity {
                         mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
                         });
                         sendMsg();
-                        etSend.setText("");
-                        etSend.requestFocus();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -153,13 +182,10 @@ public class ChatActivity extends ActionBarBaseActivity {
                 tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_click));
                 tvSend.setTextColor(getResources().getColor(android.R.color.white));
                 tvSend.setEnabled(true);
-                Log.d(TAG, "0");
             } else {
                 tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_unclick));
                 tvSend.setTextColor(getResources().getColor(R.color.grey_alpha));
                 tvSend.setEnabled(false);
-                CommonUtil.longToast(mContext, "消息不能为空");
-                Log.d(TAG, ">0");
             }
         }
 
@@ -196,6 +222,8 @@ public class ChatActivity extends ActionBarBaseActivity {
                 if (result.result.equals("success")) {
                     mChatDataSource.create(chat);
                     mAdapter.addOneChat(chat);
+                    etSend.setText("");
+                    etSend.requestFocus();
                 }
             }
         }, null);

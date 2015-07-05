@@ -59,19 +59,31 @@
         <!--android:text="发送" />-->
     </RelativeLayout>
 
-    <ListView
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/rotate_header_list_view_frame"
+        android:layout_above="@+id/ll_send_info"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_send_info"
-        android:divider="@null"
-        android:dividerHeight="0px"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="false"
-        android:scrollbars="none"
-        android:smoothScrollbar="true"
-        android:clickable="true"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
-        android:id="@+id/lv_messages" />
+        cube_ptr:ptr_duration_to_close="200"
+        cube_ptr:ptr_duration_to_close_header="1000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:fadingEdge="none"
+            android:fastScrollEnabled="false"
+            android:scrollbars="none"
+            android:smoothScrollbar="true"
+            android:clickable="true"
+            android:transcriptMode="alwaysScroll"
+            android:stackFromBottom="true"
+            android:id="@+id/lv_messages" />
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 
 </RelativeLayout>
