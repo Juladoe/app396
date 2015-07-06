@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -17,6 +18,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
 import java.io.File;
 
@@ -31,13 +33,16 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View viewClearCache;
     private TextView tvCache;
     private Button btnLogout;
+    private CheckBox cbOfflineType;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         setBackMode(BACK, "设置");
         initView();
+        initData();
     }
 
     private void initView() {
@@ -49,15 +54,13 @@ public class SettingActivity extends ActionBarBaseActivity {
         tvOnlineDuration.setOnClickListener(onlineDurationClickListener);
         tvAbout = findViewById(R.id.tvAbout);
         tvAbout.setOnClickListener(aboutClickListener);
+        cbOfflineType = (CheckBox) findViewById(R.id.cb_offline_type);
+        cbOfflineType.setOnClickListener(setOfflineTypeListener);
+
         tvCache = (TextView) findViewById(R.id.tv_cache);
         viewClearCache = findViewById(R.id.rl_clear_cache);
         viewClearCache.setOnClickListener(clearCacheListener);
-        float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
-        if (size == 0) {
-            tvCache.setText("0M");
-        } else {
-            tvCache.setText(String.format("%.1f%s", size, "M"));
-        }
+
         btnLogout = (Button) findViewById(R.id.setting_logout_btn);
         btnLogout.setOnClickListener(logoutClickLister);
         if (app.loginUser != null) {
@@ -67,10 +70,42 @@ public class SettingActivity extends ActionBarBaseActivity {
         }
     }
 
+    private void initData() {
+        float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
+        if (size == 0) {
+            tvCache.setText("0M");
+        } else {
+            tvCache.setText(String.format("%.1f%s", size, "M"));
+        }
+
+        cbOfflineType.setChecked(app.config.offlineType == 1);
+    }
+
+    private View.OnClickListener setOfflineTypeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("setOfflineTypeListener", "setOfflineTypeListener");
+            //cbOfflineType.setChecked(!cbOfflineType.isChecked());
+            app.config.offlineType = cbOfflineType.isChecked() ? 1 : 0;
+            app.saveConfig();
+        }
+    };
+
     private View.OnClickListener clearCacheListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            clearCache();
+            PopupDialog.createMuilt(
+                    mActivity,
+                    "清理缓存",
+                    "是否清理文件缓存",
+                    new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            if (button == PopupDialog.OK) {
+                                clearCache();
+                            }
+                        }
+                    }).show();
         }
     };
 
