@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -15,6 +16,9 @@ import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+
+import java.io.File;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -24,6 +28,8 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View tvMsgNotify;
     private View tvOnlineDuration;
     private View tvAbout;
+    private View viewClearCache;
+    private TextView tvCache;
     private Button btnLogout;
 
     @Override
@@ -43,7 +49,11 @@ public class SettingActivity extends ActionBarBaseActivity {
         tvOnlineDuration.setOnClickListener(onlineDurationClickListener);
         tvAbout = findViewById(R.id.tvAbout);
         tvAbout.setOnClickListener(aboutClickListener);
-
+        tvCache = (TextView) findViewById(R.id.tv_cache);
+        viewClearCache = findViewById(R.id.rl_clear_cache);
+        viewClearCache.setOnClickListener(clearCacheListener);
+        float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
+        tvCache.setText(String.format("%.1f%s", size, "M"));
         btnLogout = (Button) findViewById(R.id.setting_logout_btn);
         btnLogout.setOnClickListener(logoutClickLister);
         if (app.loginUser != null) {
@@ -52,6 +62,13 @@ public class SettingActivity extends ActionBarBaseActivity {
             btnLogout.setVisibility(View.INVISIBLE);
         }
     }
+
+    private View.OnClickListener clearCacheListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            clearCache();
+        }
+    };
 
     private View.OnClickListener scanClickListener = new View.OnClickListener() {
         @Override
@@ -121,6 +138,41 @@ public class SettingActivity extends ActionBarBaseActivity {
 
         }
     };
+
+//        File dir = app.getWorkSpace();
+//        long totalSize = dir.length();
+
+    private long getCacheSize(File workSpace) {
+        long totalSize = 0;
+        for (File file : workSpace.listFiles()) {
+            if (!file.isDirectory()) {
+                totalSize = totalSize + file.length();
+            } else {
+                totalSize = totalSize + getCacheSize(file);
+            }
+        }
+        return totalSize;
+    }
+
+    private void clearCache() {
+        deleteFile(app.getWorkSpace());
+        tvCache.setText("0M");
+        mContext.deleteDatabase("webview.db");
+        mContext.deleteDatabase("webviewCache.db");
+
+        SqliteUtil.getUtil(mContext).delete("lesson_resource", "", null);
+    }
+
+    private void deleteFile(File workSpace) {
+        for (File file : workSpace.listFiles()) {
+            if (file.isDirectory()) {
+                deleteFile(file);
+                file.delete();
+            } else {
+                file.delete();
+            }
+        }
+    }
 
     @Override
     public void finish() {
