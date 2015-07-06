@@ -22,7 +22,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
+import com.edusoho.kuozhi.v3.model.result.SchoolAppResult;
+import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -101,7 +104,7 @@ public class FriendFragment extends BaseFragment {
 //                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_CLASS);
 //                    chooseClassDialogFragment.setArguments(arg);
 //                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
-                } else if (i == R.id.item_service_qiqiuyu){
+//                } else if (i == R.id.item_service_qiqiuyu){
 
                 }
             }
@@ -111,7 +114,45 @@ public class FriendFragment extends BaseFragment {
         mLoadDialog = LoadDialog.create(mActivity);
         mLoadDialog.setMessage("正在载入数据");
         mLoadDialog.show();
-        loadFriend();
+        loadSchoolApps();
+
+    }
+
+    public void loadSchoolApps(){
+        mFriendAdapter.setListViewLayout(R.layout.item_type_school_app);
+
+        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        requestUrl.url = stringBuffer.toString();
+        HashMap<String,String> heads= requestUrl.getHeads();
+        heads.put("Auth-Token",app.token);
+        mActivity.ajaxGet(requestUrl,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response,new TypeToken<SchoolApp[]>(){});
+                if(schoolAppResult.length != 0){
+                    mFriendAdapter.setSchoolListSize(schoolAppResult.length);
+
+                    SchoolApp firstApp = schoolAppResult[0];
+                    firstApp.isTop = true;
+                    mFriendAdapter.addItem(firstApp);
+                    for(int i = 1;i<schoolAppResult.length;i++){
+                        mFriendAdapter.addItem(schoolAppResult[i]);
+                    }
+                    loadFriend();
+                }else {
+                    //TODO 空数据
+                    loadFriend();
+                }
+
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
     }
 
     public void loadFriend() {
@@ -128,13 +169,19 @@ public class FriendFragment extends BaseFragment {
             public void onResponse(String response) {
                 FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
                 if(friendResult.data.length != 0){
-                    for(Friend friend:friendResult.data){
-                        mFriendAdapter.addItem(friend);
+                    Friend firstFriend = friendResult.data[0];
+                    firstFriend.isTop = true;
+                    mFriendAdapter.addItem(firstFriend);
+                    for(int i = 1;i<friendResult.data.length;i++){
+                        mFriendAdapter.addItem(friendResult.data[i]);
                     }
+                    mFriendAdapter.addItems();
+                    mLoadDialog.dismiss();
                 }else {
                     //TODO 空数据
+                    mLoadDialog.dismiss();
                 }
-                mLoadDialog.dismiss();
+
             }
         },new Response.ErrorListener() {
             @Override
@@ -143,18 +190,6 @@ public class FriendFragment extends BaseFragment {
             }
         });
 
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_1, "花非花", Const.HAVE_ADD_FALSE,false));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_2, "扫地神僧", Const.HAVE_ADD_FALSE,false));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_3, "独孤求败", Const.HAVE_ADD_FALSE,true));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_4, "阮玲玉", Const.HAVE_ADD_FALSE,true));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_5, "西门吹雪", Const.HAVE_ADD_FALSE,false));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_6, "虚竹", Const.HAVE_ADD_FALSE,true));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_7, "段誉", Const.HAVE_ADD_FALSE,false));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_8, "乔峰", Const.HAVE_ADD_FALSE,false));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_9, "风清扬", Const.HAVE_ADD_FALSE,true));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_10, "山鸡", Const.HAVE_ADD_FALSE,true));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_11, "陈浩南", Const.HAVE_ADD_FALSE,false));
-//        mFriendAdapter.addItem(new Friend(R.drawable.sample_avatar_12, "王小二", Const.HAVE_ADD_FALSE,false));
     }
 
     @Override
