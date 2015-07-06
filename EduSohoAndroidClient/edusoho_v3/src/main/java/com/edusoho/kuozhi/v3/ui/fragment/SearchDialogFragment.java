@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,9 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundedEditText;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Melomelon on 2015/6/3.
@@ -86,6 +90,16 @@ public class SearchDialogFragment extends DialogFragment {
             }
         });
 
+        mSearchFrame.setFocusableInTouchMode(true);
+        mSearchFrame.requestFocus();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask(){
+                public void run(){
+                    InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(mSearchFrame, 0);
+                }
+        },500);
         searchListener();
         return view;
     }
