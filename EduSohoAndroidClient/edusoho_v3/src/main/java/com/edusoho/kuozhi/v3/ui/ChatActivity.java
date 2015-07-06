@@ -184,7 +184,7 @@ public class ChatActivity extends ActionBarBaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (count > 0) {
+            if (!"".equals(s.toString().trim())) {
                 tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_click));
                 tvSend.setTextColor(getResources().getColor(android.R.color.white));
                 tvSend.setEnabled(true);
