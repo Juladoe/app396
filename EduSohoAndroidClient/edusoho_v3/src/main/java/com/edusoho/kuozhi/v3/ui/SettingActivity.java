@@ -53,7 +53,11 @@ public class SettingActivity extends ActionBarBaseActivity {
         viewClearCache = findViewById(R.id.rl_clear_cache);
         viewClearCache.setOnClickListener(clearCacheListener);
         float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
-        tvCache.setText(String.format("%.1f%s", size, "M"));
+        if (size == 0) {
+            tvCache.setText("0M");
+        } else {
+            tvCache.setText(String.format("%.1f%s", size, "M"));
+        }
         btnLogout = (Button) findViewById(R.id.setting_logout_btn);
         btnLogout.setOnClickListener(logoutClickLister);
         if (app.loginUser != null) {
@@ -139,12 +143,12 @@ public class SettingActivity extends ActionBarBaseActivity {
         }
     };
 
-//        File dir = app.getWorkSpace();
-//        long totalSize = dir.length();
-
     private long getCacheSize(File workSpace) {
         long totalSize = 0;
         for (File file : workSpace.listFiles()) {
+            if (file.getName().equals("videos")) {
+                continue;
+            }
             if (!file.isDirectory()) {
                 totalSize = totalSize + file.length();
             } else {
@@ -156,15 +160,24 @@ public class SettingActivity extends ActionBarBaseActivity {
 
     private void clearCache() {
         deleteFile(app.getWorkSpace());
-        tvCache.setText("0M");
         mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
 
         SqliteUtil.getUtil(mContext).delete("lesson_resource", "", null);
+
+        float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
+        if (size == 0) {
+            tvCache.setText("0M");
+        } else {
+            tvCache.setText(String.format("%.1f%s", size, "M"));
+        }
     }
 
     private void deleteFile(File workSpace) {
         for (File file : workSpace.listFiles()) {
+            if (file.getName().equals("videos")) {
+                continue;
+            }
             if (file.isDirectory()) {
                 deleteFile(file);
                 file.delete();
