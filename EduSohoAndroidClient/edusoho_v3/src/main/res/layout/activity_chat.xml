@@ -21,7 +21,7 @@
             android:layout_toLeftOf="@+id/tv_send"
             android:layout_alignBottom="@+id/tv_send"
             android:maxLines="4"
-            android:background="@drawable/login_edt_bg_sel" />
+            android:background="@drawable/login_edt_bg_pressed" />
 
         <!--<EditText-->
         <!--android:id="@+id/et_send_content"-->
