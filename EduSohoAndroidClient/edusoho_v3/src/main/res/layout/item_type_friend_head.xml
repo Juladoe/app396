@@ -137,66 +137,66 @@
 
     <!--</LinearLayout>-->
 
-    <TextView
-        android:text="服务"
-        android:textSize="10sp"
-        android:paddingLeft="12dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <!--<TextView-->
+        <!--android:text="服务"-->
+        <!--android:textSize="10sp"-->
+        <!--android:paddingLeft="12dp"-->
+        <!--android:paddingTop="6dp"-->
+        <!--android:paddingBottom="6dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:background="@color/white"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/material_grey"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1px"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:background="@color/material_grey"-->
+        <!--/>-->
 
-    <LinearLayout
-        android:id="@+id/item_service_qiqiuyu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:background="@color/white"
-        android:padding="12dp"
-        >
+    <!--<LinearLayout-->
+        <!--android:id="@+id/item_service_qiqiuyu"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/white"-->
+        <!--android:padding="12dp"-->
+        <!-->-->
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/friend_avatar"
-            android:src="@drawable/icon_qiqiuyu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"/>
-        <TextView
-            android:layout_marginLeft="12dp"
-            android:id="@+id/friend_name"
-            android:text="气球鱼学院"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!--<de.hdodenhof.circleimageview.CircleImageView-->
+            <!--android:id="@+id/friend_avatar"-->
+            <!--android:src="@drawable/icon_qiqiuyu"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"/>-->
+        <!--<TextView-->
+            <!--android:layout_marginLeft="12dp"-->
+            <!--android:id="@+id/friend_name"-->
+            <!--android:text="气球鱼学院"-->
+            <!--android:textSize="16sp"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
-    <TextView
-        android:text="好友"
-        android:textSize="10sp"
-        android:paddingLeft="12dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <!--<TextView-->
+        <!--android:text="好友"-->
+        <!--android:textSize="10sp"-->
+        <!--android:paddingLeft="12dp"-->
+        <!--android:paddingTop="6dp"-->
+        <!--android:paddingBottom="6dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:background="@color/white"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/material_grey"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1px"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:background="@color/material_grey"-->
+        <!--/>-->
 
 </LinearLayout>

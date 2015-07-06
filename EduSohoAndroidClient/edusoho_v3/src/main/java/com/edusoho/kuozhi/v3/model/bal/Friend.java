@@ -36,4 +36,6 @@ public class Friend {
     public UserRole[] roles;
     public String friendship;
     public boolean isTeacher;
+
+    public boolean isTop = false;
 }

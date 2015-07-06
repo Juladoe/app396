@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/friend_item_tag"
+        android:id="@+id/school_app_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -14,7 +14,7 @@
         android:visibility="gone">
 
         <TextView
-            android:text="好友"
+            android:text="服务"
             android:textSize="10sp"
             android:paddingLeft="12dp"
             android:paddingTop="6dp"
@@ -31,7 +31,7 @@
             android:layout_marginRight="12dp"
             android:background="@color/material_grey"
             />
-        </LinearLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/friend_item"
@@ -52,25 +52,15 @@
         <TextView
             android:layout_marginLeft="12dp"
             android:id="@+id/friend_name"
-            android:text="好友姓名"
+            android:text="School"
             android:textSize="16sp"
             android:layout_toRightOf="@id/friend_avatar"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- 教师标签-->
-        <ImageView
-            android:id="@+id/teacher_tag"
-            android:src="@drawable/teacher_tag"
-            android:layout_marginLeft="12dp"
-            android:layout_width="36dp"
-            android:layout_height="24dp"
-            android:layout_toRightOf="@id/friend_name"
-            android:layout_centerVertical="true"/>
 
-
-        </RelativeLayout>
+    </RelativeLayout>
 
 
     <View
