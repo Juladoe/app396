@@ -45,11 +45,9 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class ChatActivity extends ActionBarBaseActivity {
     public static final String TAG = "ChatActivity";
-    public static final int COURSE_CHAT = 0x01;
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
     public static final String TITLE = "title";
-    public static final int UPDATE_UNREAD = 0x02;
 
     private EditText etSend;
     private ListView lvMessage;
