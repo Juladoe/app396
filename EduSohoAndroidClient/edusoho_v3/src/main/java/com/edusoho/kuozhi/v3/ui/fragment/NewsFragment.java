@@ -171,6 +171,7 @@ public class NewsFragment extends BaseFragment {
         } else {
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
+                    //收到消息更新消息列表的信息
                     try {
                         WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
                         New newModel = new New(wrapperMessage);

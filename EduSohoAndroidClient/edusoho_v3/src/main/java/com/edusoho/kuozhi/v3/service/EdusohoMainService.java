@@ -152,12 +152,14 @@ public class EdusohoMainService extends Service {
                     break;
                 case Const.ADD_CHAT_MSG:
                     try {
+                        //消息写入到Chat表中
                         WrapperXGPushTextMessage xgMessage = (WrapperXGPushTextMessage) msg.obj;
                         Chat chatModel = new Chat(xgMessage);
                         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).openWrite();
                         chatDataSource.create(chatModel);
                         chatDataSource.close();
                         if (!xgMessage.isForeground) {
+                            //如果ChatActivity不在最顶栈，显示通知
                             NotificationUtil.showNotification(xgMessage);
                         }
                     } catch (Exception e) {

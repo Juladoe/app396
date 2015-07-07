@@ -53,11 +53,12 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
 
             if (isForeground) {
+                //如果ChatActivity在最顶栈
                 wrapperMessage.isForeground = true;
                 EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, ChatActivity.class);
             }
             EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, EdusohoMainService.class);
+            //EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, EdusohoMainService.class);
             EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
 
         } catch (Exception e) {

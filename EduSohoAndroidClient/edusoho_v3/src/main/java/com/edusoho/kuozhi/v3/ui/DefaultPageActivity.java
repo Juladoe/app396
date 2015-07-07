@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
@@ -374,9 +375,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         ajaxPost(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
+                Log.d(TAG, "MOBILE_SCHOOL_LOGIN success!");
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("tag", "logSchoolInfoToServer failed");
+            }
+        });
     }
 
     private boolean checkSchoolHasLogined(String host) {

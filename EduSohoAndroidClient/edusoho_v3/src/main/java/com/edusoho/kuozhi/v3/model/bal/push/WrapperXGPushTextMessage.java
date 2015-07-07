@@ -49,6 +49,10 @@ public class WrapperXGPushTextMessage extends XGPushTextMessage implements Seria
 
     public String customContent;
 
+    public WrapperXGPushTextMessage() {
+
+    }
+
     public WrapperXGPushTextMessage(XGPushTextMessage xgPushTextMessage) {
         this.title = xgPushTextMessage.getTitle();
         this.content = xgPushTextMessage.getContent();

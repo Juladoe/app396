@@ -18,7 +18,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -114,7 +113,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     Bundle bundle = new Bundle();
                     bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                    EdusohoApp.app.pushRegister(bundle);
+                    app.pushRegister(bundle);
                     mActivity.finish();
                 }
             }, new Response.ErrorListener() {
