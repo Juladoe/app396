@@ -35,7 +35,10 @@ import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -133,12 +136,8 @@ public class FriendFragment extends BaseFragment {
                 if(schoolAppResult.length != 0){
                     mFriendAdapter.setSchoolListSize(schoolAppResult.length);
 
-                    SchoolApp firstApp = schoolAppResult[0];
-                    firstApp.isTop = true;
-                    mFriendAdapter.addItem(firstApp);
-                    for(int i = 1;i<schoolAppResult.length;i++){
-                        mFriendAdapter.addItem(schoolAppResult[i]);
-                    }
+                    List<SchoolApp> list = Arrays.asList(schoolAppResult);
+                    mFriendAdapter.addSchoolList(list);
                     loadFriend();
                 }else {
                     //TODO 空数据
@@ -160,7 +159,7 @@ public class FriendFragment extends BaseFragment {
 
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&milit=1000");
+        stringBuffer.append("?start=0&limit=1000");
         requestUrl.url = stringBuffer.toString();
         HashMap<String,String> heads= requestUrl.getHeads();
         heads.put("Auth-Token",app.token);
@@ -169,13 +168,9 @@ public class FriendFragment extends BaseFragment {
             public void onResponse(String response) {
                 FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
                 if(friendResult.data.length != 0){
-                    Friend firstFriend = friendResult.data[0];
-                    firstFriend.isTop = true;
-                    mFriendAdapter.addItem(firstFriend);
-                    for(int i = 1;i<friendResult.data.length;i++){
-                        mFriendAdapter.addItem(friendResult.data[i]);
-                    }
-                    mFriendAdapter.addItems();
+
+                    List<Friend> list = Arrays.asList(friendResult.data);
+                    mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
                 }else {
                     //TODO 空数据
