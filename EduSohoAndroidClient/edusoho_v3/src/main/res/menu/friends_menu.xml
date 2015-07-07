@@ -19,4 +19,13 @@
         <!--android:visible="true"-->
         <!--app:showAsAction="ifRoom" />-->
 
+    <item
+        android:id="@+id/empty_icon"
+        android:icon="@drawable/empty_icon"
+        android:orderInCategory="100"
+        android:enabled="false"
+        android:visible="true"
+        app:showAsAction="ifRoom"
+        android:title="@null" />
+
 </menu>

@@ -5,12 +5,41 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
+    <LinearLayout
+        android:id="@+id/friend_item_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/grey_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:text="好友"
+            android:textSize="10sp"
+            android:paddingLeft="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@color/material_grey"
+            />
+        </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/friend_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:padding="12dp"
+        android:background="@color/white"
         >
 
         <de.hdodenhof.circleimageview.CircleImageView

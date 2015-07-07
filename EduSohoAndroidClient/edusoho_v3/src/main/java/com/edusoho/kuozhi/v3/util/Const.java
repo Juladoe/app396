@@ -416,4 +416,5 @@ public class Const {
      */
     public static final String USERS = "/api/users/";
     public static final String MY_FRIEND = "/api/me/friends";
+    public static final String SCHOOL_APPS = "/api/mobileschools/apps";
 }

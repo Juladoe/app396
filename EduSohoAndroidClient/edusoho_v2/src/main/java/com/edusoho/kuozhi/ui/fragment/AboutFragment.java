@@ -49,7 +49,6 @@ public class AboutFragment extends BaseFragment {
             mTitle = bundle.getString(Const.ACTIONBAR_TITLE);
             mContent = bundle.getString(AboutFragment.CONTENT);
             mType = bundle.getInt(AboutFragment.TYPE, FROM_URL);
-
         }
     }
 

@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
@@ -277,7 +276,7 @@ public class AppUtil {
     }
 
     public static void checkUpateApp(
-            final ActionBarBaseActivity activity, final StatusCallback<AppUpdateInfo> callback) {
+            final BaseActivity activity, final StatusCallback<AppUpdateInfo> callback) {
         final EdusohoApp app = activity.app;
         RequestUrl requestUrl = app.bindUrl(Const.APP_UPDATE, false);
         String code = activity.getResources().getString(R.string.app_code);
@@ -285,7 +284,7 @@ public class AppUtil {
                 "code", code
         });
         Log.d(null, "code->" + code);
-        activity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
+        activity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 final AppUpdateInfo appUpdateInfo = activity.parseJsonValue(response.toString(), new TypeToken<AppUpdateInfo>() {
@@ -309,7 +308,7 @@ public class AppUtil {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }, null);
+        });
     }
 
     /**
