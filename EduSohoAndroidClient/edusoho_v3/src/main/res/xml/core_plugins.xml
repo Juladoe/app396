@@ -36,6 +36,11 @@
         version="1.0" />
 
     <plugin
+        name="SuggestionActivity"
+        package="com.edusoho.kuozhi.v3.ui.SuggestionActivity"
+        version="1.0" />
+
+    <plugin
         name="LoginActivity"
         package="com.edusoho.kuozhi.v3.ui.LoginActivity"
         version="1.0" />
