@@ -1173,4 +1173,8 @@ public class CommonUtil {
         Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
     }
 
+    public static void shortToast(Context context, String title) {
+        Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+    }
+
 }

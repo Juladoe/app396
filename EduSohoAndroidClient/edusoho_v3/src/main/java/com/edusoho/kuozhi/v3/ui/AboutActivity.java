@@ -33,6 +33,13 @@ public class AboutActivity extends ActionBarBaseActivity {
         });
 
         tvFeedback = (TextView) findViewById(R.id.tv_feedback);
+        tvFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("SuggestionActivity", mActivity, null);
+            }
+        });
+
         tvCheckUpdate = (TextView) findViewById(R.id.tv_check_update);
     }
 }
