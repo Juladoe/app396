@@ -12,13 +12,19 @@ create table if not exists new (
 );
 
 create table if not exists chat (
-    id integer primary key AutoIncrement,
+    id integer ,
     fromId integer,
     toId integer,
     nickname varchar(100),
     headimgurl varchar(255),
     content varchar(255),
     type varchar,
+    createdTime integer
+);
+
+create table if not exists bulletin(
+    id integer,
+    content varchar(255),
     createdTime integer
 );
 

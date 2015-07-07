@@ -201,7 +201,7 @@ public class ChatActivity extends ActionBarBaseActivity {
 
     private void sendMsg() {
         if (mChatDataSource == null) {
-            mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+            mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         final Chat chat = new Chat();
         mSendTime = (int) (System.currentTimeMillis() / 1000);
@@ -224,13 +224,32 @@ public class ChatActivity extends ActionBarBaseActivity {
                 PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
                 });
                 if (result.result.equals("success")) {
+                    mChatDataSource.openWrite();
                     mChatDataSource.create(chat);
+                    mChatDataSource.close();
                     mAdapter.addOneChat(chat);
                     etSend.setText("");
                     etSend.requestFocus();
+
+                    WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
+                    message.setTitle(chat.nickName);
+                    message.setContent(chat.content);
+                    CustomContent cc = getCustomContent();
+                    cc.fromId = mFromId;
+                    cc.imgUrl = mFromUserInfo.mediumAvatar;
+                    message.setCustomContent(gson.toJson(cc));
+                    message.isForeground = true;
+                    notifyNewList2Update(message);
                 }
             }
         }, null);
+    }
+
+    private void notifyNewList2Update(WrapperXGPushTextMessage message) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.CHAT_DATA, message);
+        app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
+
     }
 
     private CustomContent getCustomContent() {
