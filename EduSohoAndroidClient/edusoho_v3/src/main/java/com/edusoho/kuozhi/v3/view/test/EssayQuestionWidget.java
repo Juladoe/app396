@@ -83,6 +83,11 @@ public class EssayQuestionWidget extends BaseQuestionWidget
     }
 
     @Override
+    public int getMode() {
+        return REGIST_CLASS;
+    }
+
+    @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{

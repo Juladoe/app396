@@ -20,6 +20,8 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     private final static String TAG = "WebViewActivity";
     public final static String URL = "data";
     public final static int CLOSE = 0x01;
+    public final static int BACK = 0x02;
+
     private String url = "";
     private ESWebView mWebView;
 
@@ -47,7 +49,7 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (messageType.code == CLOSE) {
+        if (messageType.code == BACK) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -58,7 +60,14 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
                     finish();
                 }
             });
+        } else if (messageType.code == CLOSE) {
+            finish();
         }
+    }
+
+    @Override
+    public int getMode() {
+        return REGIST_OBJECT;
     }
 
     @Override

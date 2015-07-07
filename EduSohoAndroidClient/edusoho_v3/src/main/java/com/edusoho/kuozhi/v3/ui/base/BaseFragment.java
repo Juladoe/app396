@@ -52,7 +52,11 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     @Override
     public void invoke(WidgetMessage message) {
+    }
 
+    @Override
+    public int getMode() {
+        return REGIST_CLASS;
     }
 
     @Override

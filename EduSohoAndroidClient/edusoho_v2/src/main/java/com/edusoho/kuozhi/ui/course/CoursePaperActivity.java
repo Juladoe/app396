@@ -973,7 +973,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
                 .append(Const.SHARD_COURSE_URL)
                 .append("?courseId=")
                 .append(course.id);
-        ShareUtil shareUtil = new ShareUtil(mContext);
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
         shareUtil.initShareParams(
                 R.drawable.icon,
                 course.title,

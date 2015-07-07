@@ -95,6 +95,7 @@ public class ESWebViewRequestManager extends RequestManager {
     @Override
     public void destroy() {
         super.destroy();
+        instance = null;
         mHttpClient.getConnectionManager().shutdown();
     }
 

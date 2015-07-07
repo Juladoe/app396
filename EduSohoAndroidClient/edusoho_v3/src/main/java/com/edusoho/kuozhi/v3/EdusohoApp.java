@@ -242,7 +242,7 @@ public class EdusohoApp extends Application {
         mEngine.getMessageEngine().sendMsg(msgId, bundle);
     }
 
-    public void sendMsgToTarget(int msgType, Bundle body, Class target) {
+    public void sendMsgToTarget(int msgType, Bundle body, Object target) {
         mEngine.getMessageEngine().sendMsgToTaget(msgType, body, target);
     }
 

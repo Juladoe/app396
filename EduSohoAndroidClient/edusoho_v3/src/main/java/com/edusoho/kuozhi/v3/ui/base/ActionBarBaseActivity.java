@@ -93,4 +93,9 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     public MessageType[] getMsgTypes() {
         return new MessageType[0];
     }
+
+    @Override
+    public int getMode() {
+        return REGIST_CLASS;
+    }
 }
