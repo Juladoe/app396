@@ -34,7 +34,7 @@
     <string name="online_duration_content">设置消息接收时，会发出提醒的时间段。</string>
     <string name="online_duration_start">开始时间</string>
     <string name="online_duration_end">结束时间</string>
-    <string name="about_welcome">欢迎页</string>
+    <string name="about_welcome">关于网校</string>
     <string name="about_feedback">意见反馈</string>
     <string name="about_check_update">检查新版本</string>
     <string name="login_forget_password">忘记密码?</string>

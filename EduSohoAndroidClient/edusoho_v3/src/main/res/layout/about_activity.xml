@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tvWecome"
+        android:id="@+id/tv_about_school"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -19,7 +19,7 @@
         android:textSize="@dimen/medium_font_size" />
 
     <TextView
-        android:id="@+id/tvFeedback"
+        android:id="@+id/tv_feedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -42,7 +42,7 @@
         android:padding="12dp">
 
         <TextView
-            android:id="@+id/tvCheckUpdate"
+            android:id="@+id/tv_check_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -58,7 +58,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:id="@+id/tvVersion"
-            android:layout_toRightOf="@+id/tvCheckUpdate"
+            android:layout_toRightOf="@+id/tv_check_update"
             android:alpha="0.54"
             android:text="3.0.0"
             android:textColor="@android:color/black"
