@@ -85,7 +85,6 @@ public class SettingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             Log.d("setOfflineTypeListener", "setOfflineTypeListener");
-            //cbOfflineType.setChecked(!cbOfflineType.isChecked());
             app.config.offlineType = cbOfflineType.isChecked() ? 1 : 0;
             app.saveConfig();
         }

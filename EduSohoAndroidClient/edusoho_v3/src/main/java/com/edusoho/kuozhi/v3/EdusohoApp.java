@@ -52,7 +52,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
@@ -536,6 +535,8 @@ public class EdusohoApp extends Application {
         config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
         config.offlineType = sp.getInt("offlineType", 0);
+        config.msgSound = sp.getInt("msgSound", 0);
+        config.msgVibrate = sp.getInt("msgVibrate", 0);
         if (config.startWithSchool) {
             loadDefaultSchool();
         }
@@ -550,6 +551,8 @@ public class EdusohoApp extends Application {
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);
         edit.putInt("offlineType", config.offlineType);
+        edit.putInt("msgSound", config.msgSound);
+        edit.putInt("msgVibrate", config.msgVibrate);
         edit.apply();
     }
 
