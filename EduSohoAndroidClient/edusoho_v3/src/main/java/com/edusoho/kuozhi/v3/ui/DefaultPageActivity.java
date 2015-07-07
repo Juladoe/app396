@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,20 +17,28 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.listener.StatusCallback;
+import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,6 +75,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             //selectItem(0);
         }
         mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+
+        AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>() {
+            @Override
+            public void success(AppUpdateInfo obj) {
+                Log.d(null, "new verson" + obj.androidVersion);
+                if (obj.show) {
+                    showUpdateDlg(obj);
+                }
+                app.addNotify("app_update", null);
+            }
+        });
+
+        logSchoolInfoToServer();
     }
 
     @Override
@@ -318,5 +340,54 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         super.finish();
         //this.onDestroy();
         Log.d(TAG, "finish");
+    }
+
+    private void showUpdateDlg(final AppUpdateInfo result) {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                mActivity,
+                "版本更新",
+                "更新内容\n" + result.updateInfo, new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            app.startUpdateWebView(result.updateUrl);
+                            app.removeNotify("app_update");
+                        }
+                    }
+                });
+
+        popupDialog.setOkText("更新");
+        popupDialog.show();
+    }
+
+    private void logSchoolInfoToServer() {
+        HashMap<String, String> params = app.getPlatformInfo();
+        School school = app.defaultSchool;
+        params.put("siteHost", school.name);
+        params.put("siteName", school.host);
+        if (checkSchoolHasLogined(school.host)) {
+            params.put("firstInstall", "true");
+        }
+        RequestUrl url = app.bindUrl(Const.MOBILE_SCHOOL_LOGIN, false);
+        url.setParams(params);
+
+        ajaxPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, null);
+    }
+
+    private boolean checkSchoolHasLogined(String host) {
+        if (host.startsWith("http://")) {
+            host = host.substring(7);
+            Log.d(null, "host->" + host);
+        }
+        SharedPreferences sp = getSharedPreferences("search_history", MODE_PRIVATE);
+        if (sp.contains(host)) {
+            return true;
+        }
+        return false;
     }
 }
