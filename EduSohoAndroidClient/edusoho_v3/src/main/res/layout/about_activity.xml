@@ -58,7 +58,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:id="@+id/tvVersion"
-            android:layout_toRightOf="@+id/tv_check_update"F
+            android:layout_toRightOf="@+id/tv_check_update"
             android:alpha="0.54"
             android:text="3.0.0"
             android:textColor="@android:color/black"
