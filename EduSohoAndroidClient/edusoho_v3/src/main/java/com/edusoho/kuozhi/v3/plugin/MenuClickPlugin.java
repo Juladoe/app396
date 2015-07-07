@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.plugin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -38,6 +39,8 @@ public class MenuClickPlugin extends CordovaPlugin {
             if (message.equals("open")) {
                 EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
             }
+        } else if (action.equals("backWebView")) {
+            EdusohoApp.app.sendMsgToTarget(WebViewActivity.BACK, null, cordova.getActivity());
         } else if (action.equals("openWebView")) {
             final String strUrl = args.getString(0);
             EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", cordova.getActivity(), new PluginRunCallback() {
@@ -47,7 +50,7 @@ public class MenuClickPlugin extends CordovaPlugin {
                 }
             });
         } else if (action.equals("closeWebView")) {
-            EdusohoApp.app.sendMsgToTarget(WebViewActivity.CLOSE, null, WebViewActivity.class);
+            EdusohoApp.app.sendMsgToTarget(WebViewActivity.CLOSE, null, cordova.getActivity());
         } else if (action.equals("getUserToken")) {
             JSONObject result = new JSONObject();
             if (EdusohoApp.app.loginUser != null) {
@@ -67,11 +70,19 @@ public class MenuClickPlugin extends CordovaPlugin {
             bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
             EdusohoApp.app.pushRegister(bundle);
         } else if (action.equals("share")) {
-            String id = args.getString(0);
+            String url = args.getString(0);
             String title = args.getString(1);
             String about = args.getString(2);
             String pic = args.getString(3);
-            new ShareTool(cordova.getActivity(), id, title, about, pic).shardCourse();
+
+            final ShareTool shareTool = new ShareTool(cordova.getActivity(), url, title, about, pic);
+            new Handler((cordova.getActivity().getMainLooper())).post(new Runnable() {
+                @Override
+                public void run() {
+                    shareTool.shardCourse();
+                }
+            });
+
         } else if (action.equals("payCourse")) {
             final String mTitle = args.getString(0);
             final String payUrl = args.getString(1);

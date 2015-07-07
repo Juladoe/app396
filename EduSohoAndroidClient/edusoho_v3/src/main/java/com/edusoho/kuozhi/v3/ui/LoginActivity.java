@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
 
 import java.util.HashMap;
 
@@ -215,6 +216,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                         user.mediumAvatar = res.get("headimgurl").toString();
                         user.smallAvatar = res.get("headimgurl").toString();
                         user.thirdParty = platform.getDb().getPlatformNname();
+
                         app.saveToken(new UserResult(user, res.get("unionid").toString(), null));
                         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                         //TODO 获取userInfo

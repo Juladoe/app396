@@ -29,26 +29,21 @@ import java.io.File;
  */
 public class ShareTool {
     private Context mContext;
-    private String mId = "";
+    private String mUrl = "";
     private String mTitle = "";
     private String mAbout = "";
     private String mPic = "";
 
-    public ShareTool(Context ctx, String id, String title, String about, String pic) {
+    public ShareTool(Context ctx, String url, String title, String about, String pic) {
         mContext = ctx;
-        mId = id;
+        mUrl = url;
         mTitle = title;
         mAbout = about;
         mPic = pic;
     }
 
     public void shardCourse() {
-        final StringBuilder stringBuilder = new StringBuilder(EdusohoApp.app.schoolHost);
-        stringBuilder
-                .append(Const.SHARD_COURSE_URL)
-                .append("?courseId=")
-                .append(mId);
-        final ShareUtil shareUtil = new ShareUtil(mContext);
+        final ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
         ImageLoader.getInstance().loadImage(mPic, EdusohoApp.app.mOptions, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -66,7 +61,7 @@ public class ShareTool {
                 shareUtil.initShareParams(
                         R.mipmap.ic_launcher,
                         mTitle,
-                        stringBuilder.toString(),
+                        mUrl,
                         AppUtil.coverCourseAbout(mAbout),
                         file,
                         EdusohoApp.app.host
@@ -99,13 +94,8 @@ public class ShareTool {
         WXTextObject wXTextObject = new WXTextObject();
         wXTextObject.text = "分享课程";
         WXWebpageObject wxobj = new WXWebpageObject();
-        StringBuilder stringBuilder = new StringBuilder(EdusohoApp.app.schoolHost);
-        stringBuilder
-                .append(Const.SHARD_COURSE_URL)
-                .append("?courseId=")
-                .append(mId);
 
-        wxobj.webpageUrl = stringBuilder.toString();
+        wxobj.webpageUrl = mUrl;
         WXMediaMessage wXMediaMessage = new WXMediaMessage();
         wXMediaMessage.mediaObject = wxobj;
         wXMediaMessage.description = AppUtil.coverCourseAbout(mAbout);

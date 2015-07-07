@@ -34,17 +34,28 @@ public class ShareUtil {
     private AlertDialog mAlertDialog;
     private ShareHandler mShareHandler;
 
-    public ShareUtil(Context context) {
+    private static ShareUtil shareUtil;
+
+    private ShareUtil(Context context) {
         //添加应用信息
         ShareSDK.initSDK(context);
-        mOneKeyShare = new OnekeyShare();
         mContext = context;
-        initDialog();
+    }
+
+    public static ShareUtil getShareUtil(Context context) {
+        synchronized (ShareUtil.class) {
+            if (shareUtil == null) {
+                shareUtil = new ShareUtil(context);
+            }
+        }
+
+        return shareUtil;
     }
 
     public ShareUtil initShareParams(
             int icon, String shareTextTitle, String shareTitleUrl, String shareText, File imageFile, String ShareSite
     ) {
+        mOneKeyShare = new OnekeyShare();
         mNotification_icon = icon;
         mShareTextTitle = shareTextTitle;
         mShareTitleUrl = shareTitleUrl;
@@ -56,8 +67,8 @@ public class ShareUtil {
         }
 
         mShareSite = ShareSite;
-
         initOneKeyShare();
+        initDialog();
         return this;
     }
 
@@ -70,6 +81,10 @@ public class ShareUtil {
         }
 
         return false;
+    }
+
+    public Platform getPlatForm(String name) {
+        return ShareSDK.getPlatform(name);
     }
 
     public void initDialog() {

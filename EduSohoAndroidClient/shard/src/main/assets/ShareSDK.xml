@@ -14,17 +14,8 @@
     <WechatFavorite Id="3" SortId="3" AppId="wx19ab7886de802d96"
         AppSecret="bd67b637532eb9ddb5735bd8f325c386" Enable="true" />
 
-    <!--<SinaWeibo-->
-    <!--Id="4"-->
-    <!--SortId="4"-->
-    <!--AppKey="3283517414"-->
-    <!--AppSecret="b9500cb3ff5274769b2d4dd8fc878b81"-->
-    <!--RedirectUrl="http://demo.edusoho.com/mobile/"-->
-    <!--ShareByAppClient="false"-->
-    <!--Enable="true" />-->
-
     <!--demo站-->
-    <SinaWeibo Id="4" SortId="4" AppKey="1549269531" AppSecret="9e8a2e35f71b818812bf63f2018f06af"
+    <SinaWeibo Id="4" SortId="4" AppKey="3283517414" AppSecret="b9500cb3ff5274769b2d4dd8fc878b81"
         RedirectUrl="http://demo.edusoho.com/mobile/" ShareByAppClient="false" Enable="true" />
 
     <TencentWeibo Id="5" SortId="5" AppKey="801549953" AppSecret="390578fb32a81b577aa9794a42d2e970"
@@ -35,7 +26,7 @@
         Enable="true" />
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
-    <QQ Id="7" SortId="7" AppId="1103424113" AppKey="ZSJdqYxH7kSD6iuT" ShareByAppClient="true"
+    <QQ Id="7" SortId="7" AppId="1103424113"  ShareByAppClient="true"
         Enable="true" />
 
 </DevInfor>

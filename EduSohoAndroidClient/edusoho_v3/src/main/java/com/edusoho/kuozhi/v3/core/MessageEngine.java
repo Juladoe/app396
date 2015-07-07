@@ -41,8 +41,31 @@ public class MessageEngine {
         return messageEngine;
     }
 
-    public void sendMsgToTaget(int msgType, Bundle body, Class target) {
-        String targetName = target.getSimpleName();
+    private String getMsgTargetType(Object target) {
+        if (target instanceof Class) {
+            return ((Class) target).getSimpleName();
+        }
+
+        return getObjectType(target);
+    }
+
+    private String getRegitstSourceType(MessageCallback source) {
+        if (source.getMode() == MessageCallback.REGIST_CLASS) {
+            return source.getClass().getSimpleName();
+        }
+        return getObjectType(source);
+    }
+
+    private String getObjectType(Object target) {
+        return String.format(
+                "%s@%s",
+                target.getClass().getSimpleName(),
+                Integer.toHexString(target.hashCode())
+        );
+    }
+
+    public void sendMsgToTaget(int msgType, Bundle body, Object target) {
+        String targetName = getMsgTargetType(target);
         MessageType messageType = new MessageType(msgType, targetName);
 
         MessageCallback messageCallback = sourceMap.get(targetName);
@@ -87,7 +110,7 @@ public class MessageEngine {
         if (source == null) {
             return;
         }
-        String targetName = source.getClass().getSimpleName();
+        String targetName = getRegitstSourceType(source);
         sourceMap.remove(targetName);
     }
 
@@ -96,7 +119,7 @@ public class MessageEngine {
             return;
         }
         ArrayList<String> list = pubMsgMap.get(type.toString());
-        String targetName = source.getClass().getSimpleName();
+        String targetName = getRegitstSourceType(source);
         list.remove(targetName);
     }
 
@@ -104,7 +127,7 @@ public class MessageEngine {
         if (source == null) {
             return;
         }
-        String targetName = source.getClass().getSimpleName();
+        String targetName = getRegitstSourceType(source);
         sourceMap.put(targetName, source);
         MessageType[] msgTypes = source.getMsgTypes();
         if (msgTypes == null) {
@@ -121,7 +144,6 @@ public class MessageEngine {
                 msgList = new ArrayList<String>();
             }
 
-            Log.d(null, "regist_pub message-> " + msgType);
             if (!msgList.contains(targetName)) {
                 msgList.add(targetName);
             }
@@ -130,8 +152,13 @@ public class MessageEngine {
     }
 
     public static interface MessageCallback {
+        public static final int REGIST_CLASS = 0;
+        public static final int REGIST_OBJECT = 1;
+
         public void invoke(WidgetMessage message);
 
         public MessageType[] getMsgTypes();
+
+        public int getMode();
     }
 }
