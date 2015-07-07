@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -15,10 +16,12 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.cordova.CallbackContext;
@@ -33,12 +36,21 @@ import org.json.JSONObject;
 public class MenuClickPlugin extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Log.d("MenuClickPlugin-->", "MenuClickPlugin");
         if (action.equals("openDrawer")) {
             String message = args.getString(0);
             if (message.equals("open")) {
                 EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
             }
+        } else if (action.equals("openPlatformLogin")) {
+            String type = args.getString(0);
+            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) cordova.getActivity());
+            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
+                @Override
+                public void success(UserResult obj) {
+                    cordova.getActivity().finish();
+                }
+            });
+            openLoginUtil.login(type);
         } else if (action.equals("backWebView")) {
             EdusohoApp.app.sendMsgToTarget(WebViewActivity.BACK, null, cordova.getActivity());
         } else if (action.equals("openWebView")) {

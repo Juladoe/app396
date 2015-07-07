@@ -61,7 +61,7 @@ public class EdusohoMainService extends Service {
     }
 
     private void loginWithToken() {
-        Log.d(null, "send loginwithtoken message1 " + app.token);
+
         if (TextUtils.isEmpty(app.token)) {
             app.pushRegister(null);
             return;

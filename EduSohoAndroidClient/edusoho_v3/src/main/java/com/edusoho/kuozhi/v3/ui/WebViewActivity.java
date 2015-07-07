@@ -9,13 +9,14 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 /**
  * Created by JesseHuang on 15/6/17.
  */
-public class WebViewActivity extends BaseActivityWithCordova implements MessageEngine.MessageCallback {
+public class WebViewActivity extends ActionBarBaseActivity {
 
     private final static String TAG = "WebViewActivity";
     public final static String URL = "data";
@@ -32,7 +33,6 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
         super.onCreate(savedInstanceState);
         setContentView(R.layout.webview_activity);
         initCordovaWebView();
-        app.registMsgSource(this);
     }
 
     public void initCordovaWebView() {
@@ -74,7 +74,6 @@ public class WebViewActivity extends BaseActivityWithCordova implements MessageE
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
-        app.unRegistMsgSource(this);
         if (mWebView != null) {
             mWebView.destroy();
         }

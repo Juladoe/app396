@@ -246,8 +246,6 @@ public class Const {
     public static final String UNBIND = "/auth/unBind";
     public static final String SEND = "/message/%d/friend/%d/send";
 
-    public static final String BIND_LOGIN = "/bind_login";
-
     /**
      * "/message/:studentId/friend/:fid/send"
      */
@@ -417,4 +415,9 @@ public class Const {
     public static final String USERS = "/api/users/";
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
+
+    /**
+     * 绑定第三方登录
+     */
+    public static final String BIND_LOGIN = "/api/users/bind_login";
 }
