@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -46,6 +47,7 @@ import java.util.List;
 public class FriendFragment extends BaseFragment {
 
     private ListView mFriendList;
+    private TextView mFriendsCount;
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
 
@@ -70,6 +72,7 @@ public class FriendFragment extends BaseFragment {
         super.initView(view);
 
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
+        mFriendsCount = (TextView) mContainerView.findViewById(R.id.friends_count);
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head,app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
@@ -140,7 +143,6 @@ public class FriendFragment extends BaseFragment {
                     mFriendAdapter.addSchoolList(list);
                     loadFriend();
                 }else {
-                    //TODO 空数据
                     loadFriend();
                 }
 
@@ -173,10 +175,9 @@ public class FriendFragment extends BaseFragment {
                     mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
                 }else {
-                    //TODO 空数据
                     mLoadDialog.dismiss();
                 }
-
+                mFriendsCount.setText("共"+friendResult.total+"位好友");
             }
         },new Response.ErrorListener() {
             @Override
