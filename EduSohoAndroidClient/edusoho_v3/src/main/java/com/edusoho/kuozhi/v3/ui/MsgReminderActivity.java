@@ -36,7 +36,7 @@ public class MsgReminderActivity extends ActionBarBaseActivity {
         cbMsgVibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.config.msgVibrate = cbMsgVibrate.isChecked() ? 1 : 0;
+                app.config.msgVibrate = cbMsgVibrate.isChecked() ? 2 : 0;
                 app.saveConfig();
             }
         });
@@ -44,6 +44,6 @@ public class MsgReminderActivity extends ActionBarBaseActivity {
 
     private void initData() {
         cbMsgSound.setChecked(app.config.msgSound == 1);
-        cbMsgVibrate.setChecked(app.config.msgVibrate == 1);
+        cbMsgVibrate.setChecked(app.config.msgVibrate == 2);
     }
 }

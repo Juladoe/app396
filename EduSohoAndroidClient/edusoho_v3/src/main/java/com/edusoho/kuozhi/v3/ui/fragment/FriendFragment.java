@@ -4,9 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -15,18 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
-import com.edusoho.kuozhi.v3.model.result.SchoolAppResult;
-import com.edusoho.kuozhi.v3.model.result.SchoolResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -35,7 +32,6 @@ import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +42,10 @@ import java.util.List;
 public class FriendFragment extends BaseFragment {
 
     private ListView mFriendList;
+    private TextView mFriendsCount;
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
+    private String friendCount = "0";
 
     private LoadDialog mLoadDialog;
 
@@ -70,7 +68,8 @@ public class FriendFragment extends BaseFragment {
         super.initView(view);
 
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
-        mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head,app);
+        mFriendsCount = (TextView) mContainerView.findViewById(R.id.friends_count);
+        mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,34 +117,35 @@ public class FriendFragment extends BaseFragment {
         mLoadDialog.setMessage("正在载入数据");
         mLoadDialog.show();
         loadSchoolApps();
-
+        mFriendsCount.setText("共有"+friendCount+"位好友");
     }
 
-    public void loadSchoolApps(){
+    public void loadSchoolApps() {
         mFriendAdapter.setListViewLayout(R.layout.item_type_school_app);
 
+        mFriendAdapter.clearList();
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
-        HashMap<String,String> heads= requestUrl.getHeads();
-        heads.put("Auth-Token",app.token);
-        mActivity.ajaxGet(requestUrl,new Response.Listener<String>() {
+        HashMap<String, String> heads = requestUrl.getHeads();
+        heads.put("Auth-Token", app.token);
+        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response,new TypeToken<SchoolApp[]>(){});
-                if(schoolAppResult.length != 0){
+                SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
+                });
+                if (schoolAppResult.length != 0) {
                     mFriendAdapter.setSchoolListSize(schoolAppResult.length);
 
                     List<SchoolApp> list = Arrays.asList(schoolAppResult);
                     mFriendAdapter.addSchoolList(list);
                     loadFriend();
-                }else {
-                    //TODO 空数据
+                } else {
                     loadFriend();
                 }
 
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -161,24 +161,24 @@ public class FriendFragment extends BaseFragment {
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=1000");
         requestUrl.url = stringBuffer.toString();
-        HashMap<String,String> heads= requestUrl.getHeads();
-        heads.put("Auth-Token",app.token);
+        HashMap<String, String> heads = requestUrl.getHeads();
+        heads.put("Auth-Token", app.token);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
-                if(friendResult.data.length != 0){
+                FriendResult friendResult = mActivity.parseJsonValue(response, new TypeToken<FriendResult>() {
+                });
+                if (friendResult.data.length != 0) {
 
                     List<Friend> list = Arrays.asList(friendResult.data);
                     mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
-                }else {
-                    //TODO 空数据
+                } else {
                     mLoadDialog.dismiss();
                 }
-
+                friendCount = friendResult.total;
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -217,4 +217,17 @@ public class FriendFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
+            loadSchoolApps();
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS)};
+        return messageTypes;
+    }
 }
