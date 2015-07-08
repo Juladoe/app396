@@ -30,16 +30,12 @@ public class NotificationUtil {
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent notifyIntent = new Intent(context, ChatActivity.class);
-
-
-            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             //int requestCode = (int) SystemClock.uptimeMillis();
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
-                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
             mNotificationManager.notify(notificationId, mBuilder.build());

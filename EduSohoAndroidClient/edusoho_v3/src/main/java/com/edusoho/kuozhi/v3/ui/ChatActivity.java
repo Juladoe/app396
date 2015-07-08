@@ -94,12 +94,12 @@ public class ChatActivity extends ActionBarBaseActivity {
                 mStart = mAdapter.getCount();
                 mAdapter.addItems(getChatList(mStart));
                 mPtrFrame.refreshComplete();
-                lvMessage.post(new Runnable() {
+                lvMessage.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         lvMessage.setSelection(mStart);
                     }
-                });
+                }, 300);
             }
 
             @Override
