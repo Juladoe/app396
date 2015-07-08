@@ -183,7 +183,7 @@ public class NewsFragment extends BaseFragment {
                             newDataSource.create(newModel);
                             insertNew(newModel);
                         } else {
-                            newModel.unread = wrapperMessage.isForeground ? 0 : news.get(0).unread + 1;
+                            newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
                             newDataSource.update(newModel);
                             updateNew(newModel);
                         }

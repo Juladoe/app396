@@ -17,24 +17,28 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
  * Created by JesseHuang on 15/7/4.
  */
 public class NotificationUtil {
-    public static void showNotification(WrapperXGPushTextMessage xgMessage) {
+    public static void showNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
             NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(EdusohoApp.app.mContext).setWhen(System.currentTimeMillis())
+                    new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(xgMessage.title)
                             .setContentText(xgMessage.content).setAutoCancel(true);
-            NotificationManager mNotificationManager =
-                    (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
-
             Chat chat = new Chat(xgMessage);
             int notificationId = chat.fromId;
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent notifyIntent = new Intent(context, ChatActivity.class);
+
+
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
-            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             //int requestCode = (int) SystemClock.uptimeMillis();
-            PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, notificationId,
+            PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);

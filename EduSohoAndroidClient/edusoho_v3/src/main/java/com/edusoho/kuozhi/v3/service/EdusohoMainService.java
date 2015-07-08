@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
@@ -158,9 +159,9 @@ public class EdusohoMainService extends Service {
                         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).openWrite();
                         chatDataSource.create(chatModel);
                         chatDataSource.close();
-                        if (!xgMessage.isForeground) {
+                        if (!xgMessage.isForeground || (xgMessage.isForeground && ChatActivity.CurrentFromId != chatModel.fromId)) {
                             //如果ChatActivity不在最顶栈，显示通知
-                            NotificationUtil.showNotification(xgMessage);
+                            NotificationUtil.showNotification(EdusohoApp.app.mContext, xgMessage);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

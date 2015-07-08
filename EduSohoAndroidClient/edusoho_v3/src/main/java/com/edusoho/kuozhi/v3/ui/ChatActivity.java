@@ -60,6 +60,7 @@ public class ChatActivity extends ActionBarBaseActivity {
     private int mSendTime;
     private int mStart = 0;
     private static final int LIMIT = 15;
+    public static int CurrentFromId = 0;
 
     /**
      * 对方的userInfo信息;
@@ -129,6 +130,8 @@ public class ChatActivity extends ActionBarBaseActivity {
         mToId = app.loginUser.id;
         NotificationUtil.cancelById(mFromId);
         setBackMode(BACK, intent.getStringExtra(TITLE));
+        CurrentFromId = mFromId;
+        app.addTask(this.getPackageName(), this);
     }
 
     private ArrayList<Chat> getChatList(int start) {
