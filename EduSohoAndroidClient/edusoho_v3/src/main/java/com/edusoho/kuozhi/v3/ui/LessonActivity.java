@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -21,12 +22,15 @@ import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.model.bal.course.TestpaperStatus;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -42,8 +46,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String CONTENT = "content";
     public static final String FROM_CACHE = "from_cache";
     public static final String RESULT_ID = "resultId";
-    public static final String LESSON_MODEL = "lesson_MODEL";
-    public static final String LESSON_JSON = "lesson_JSON";
 
     private String mCurrentFragment;
     private Class mCurrentFragmentClass;
@@ -54,22 +56,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private int mLessonId;
     private String mLessonType;
     private String mTitle;
-    private String mLessonListJson;
-    private String mLessonJson;
     private Bundle fragmentData;
     private boolean mFromCache;
-    private boolean mIsLearn;
-    private LessonStatus mLessonStatus;
-
     private MsgHandler msgHandler;
-
     private static final int REQUEST_NOTE = 0010;
     private static final int REQUEST_QUESTION = 0020;
-
     private LessonItem mLessonItem;
-    private LessonItem mPreviousLessonItem;
-    private LessonItem mNextLessonItem;
-    private ArrayList<LessonItem> mCleanLessonList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,21 +111,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             Intent data = getIntent();
 
             if (data != null) {
-                mLessonItem = (LessonItem) data.getSerializableExtra(LESSON_MODEL);
-                mLessonJson = data.getStringExtra(LESSON_JSON);
+                mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
+                mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
             }
 
-
-            if (mLessonItem == null) {
+            if (mCourseId == 0 || mLessonId == 0) {
                 CommonUtil.longToast(mContext, "课程数据错误！");
                 return;
             }
 
-            mLessonItem = getLessonResultType(mLessonItem.type, mLessonJson);
-            if (mLessonItem == null) {
-                return;
-            }
-            setBackMode(BACK, mLessonItem.title);
             loadLesson(mLessonId);
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
@@ -179,14 +165,35 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
                 mContext, userId, lessonId, app.domain, M3U8Util.FINISH);
         if (m3U8DbModle != null) {
-            loadLessonFromCache(lessonId);
-        } else {
-            loadLessonFromNet();
+            try {
+                loadLessonFromCache(lessonId);
+            } catch (RuntimeException e) {
+                loadLessonFromNet();
+            }
+            return;
         }
+        loadLessonFromNet();
     }
 
     private void loadLessonFromNet() {
-        switchLoadLessonContent(mLessonItem);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.COURSELESSON, true);
+        requestUrl.setParams(new String[]{
+                "courseId", String.valueOf(mCourseId),
+                "lessonId", String.valueOf(mLessonId)
+        });
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mLessonItem = getLessonResultType("", response);
+                if (mLessonItem == null) {
+                    CommonUtil.longToast(mContext, "课程数据错误！");
+                    return;
+                }
+                setBackMode(BACK, mLessonItem.title);
+                switchLoadLessonContent(mLessonItem);
+            }
+        }, null);
+
     }
 
     private void loadLessonFromCache(int lessonId) {
@@ -201,32 +208,47 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         LessonItem lessonItem = getLessonResultType(mLessonType, object);
         if (lessonItem == null) {
-            return;
+            throw new RuntimeException("local lesson error");
         }
 
         mLessonItem = lessonItem;
+        setBackMode(BACK, mLessonItem.title);
         switchLoadLessonContent(mLessonItem);
     }
 
     private LessonItem getLessonResultType(String lessonType, String object) {
-        CourseLessonType courseLessonType = CourseLessonType.value(lessonType);
+        LessonItem lessonItem = parseJsonValue(
+                object, new TypeToken<LessonItem>() {
+        });
+        CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
+            case LIVE:
+                fragmentData.putString(Const.ACTIONBAR_TITLE, lessonItem.title);
+                fragmentData.putLong(LiveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
+                fragmentData.putLong(LiveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
+                fragmentData.putInt(Const.COURSE_ID, lessonItem.courseId);
+                fragmentData.putInt(Const.LESSON_ID, lessonItem.id);
+                fragmentData.putString(LiveLessonFragment.SUMMARY, lessonItem.summary);
+                fragmentData.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
+                return lessonItem;
             case PPT:
-                LessonItem<ArrayList<String>> pptLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<ArrayList<String>>>() {
-                        });
+                LessonItem<ArrayList<String>> pptLesson = lessonItem;
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
                 fragmentData.putStringArrayList(CONTENT, pptLesson.content);
                 return pptLesson;
             case TESTPAPER:
-                LessonItem<TestpaperStatus> testpaperLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<TestpaperStatus>>() {
-                        });
-                TestpaperStatus status = testpaperLesson.content;
+                LessonItem<LinkedTreeMap> testpaperLesson = lessonItem;
+                LinkedTreeMap status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
-                fragmentData.putInt(RESULT_ID, status.resultId);
-                fragmentData.putString(Const.STATUS, status.status);
+                Object resultId = status.get("resultId");
+                if (resultId instanceof Double) {
+                    fragmentData.putInt(RESULT_ID, ((Double)resultId).intValue());
+                } else {
+                    fragmentData.putInt(RESULT_ID, ((Integer)resultId));
+                }
+
+                fragmentData.putString(Const.STATUS, status.get("status").toString());
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
@@ -234,9 +256,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             case AUDIO:
             case TEXT:
             default:
-                LessonItem<String> normalLesson = parseJsonValue(
-                        object, new TypeToken<LessonItem<String>>() {
-                        });
+                LessonItem<String> normalLesson = lessonItem;
                 if (mFromCache) {
                     normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
                 }
@@ -316,9 +336,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // TODO 发送H5页面学习状态
-//        app.sendMsgToTarget(
-//                CourseLearningFragment.UPDATE_LEARN_STATUS, null, CourseLearningFragment.class);
     }
 
     @Override

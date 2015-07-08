@@ -2,7 +2,7 @@ package com.edusoho.kuozhi.v3.model.bal;
 
 public enum CourseLessonType {
 
-	DOCUMENT, VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY, CHAPTER, UNIT,LIVE, DEFAULT;
+	DOCUMENT, VIDEO, TEXT, TESTPAPER, AUDIO, PPT, EMPTY, CHAPTER, UNIT, LIVE, DEFAULT;
 
 	public static CourseLessonType value(String typeName)
 	{

@@ -139,41 +139,15 @@ public class MenuClickPlugin extends CoreBridge {
         final int courseId = args.getInt(0);
         final int lessonId = args.getInt(1);
 
-        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", courseId + "",
-                "lessonId", lessonId + ""
-        });
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(final String response) {
-                final LessonItem lessonItem = mActivity.parseJsonValue(response, new TypeToken<LessonItem>() {
-                });
-                if (lessonItem.type.equals("live")) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.ACTIONBAR_TITLE, lessonItem.title);
-                    bundle.putLong(LiveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
-                    bundle.putLong(LiveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
-                    bundle.putInt(Const.COURSE_ID, lessonItem.courseId);
-                    bundle.putInt(Const.LESSON_ID, lessonItem.id);
-                    bundle.putString(LiveLessonFragment.SUMMARY, lessonItem.summary);
-                    bundle.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
-                    bundle.putString(FragmentPageActivity.FRAGMENT, "LiveLessonFragment");
-                    EdusohoApp.app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
-                } else {
-                    EdusohoApp.app.mEngine.runNormalPlugin(
-                            LessonActivity.TAG, mActivity, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    final String lessonJson = response;
-                                    startIntent.putExtra(LessonActivity.LESSON_JSON, lessonJson);
-                                    startIntent.putExtra(LessonActivity.LESSON_MODEL, lessonItem);
-                                }
-                            }
-                    );
+        EdusohoApp.app.mEngine.runNormalPlugin(
+                LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.COURSE_ID, courseId);
+                        startIntent.putExtra(Const.LESSON_ID, lessonId);
+                    }
                 }
-            }
-        }, null);
+        );
     }
 
     @JavascriptInterface
