@@ -90,6 +90,7 @@ public class Const {
     public static final String THIRD_PARTY_LOGIN_SUCCESS = "third_party_login_success";
     public static final String LOGOUT_SUCCESS = "logout_success";
     public static final String REFRESH_REVIEWS = "refresh_review";
+    public static final String REFRESH_FRIEND_LIST = "refresh_friend_list";
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
