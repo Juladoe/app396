@@ -89,13 +89,13 @@ public class ChatActivity extends ActionBarBaseActivity {
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                mAdapter.addItems(getChatList(mStart));
                 mStart = mAdapter.getCount();
+                mAdapter.addItems(getChatList(mStart));
                 mPtrFrame.refreshComplete();
                 lvMessage.post(new Runnable() {
                     @Override
                     public void run() {
-                        lvMessage.setSelection(0);
+                        lvMessage.setSelection(mStart);
                     }
                 });
             }
@@ -225,6 +225,7 @@ public class ChatActivity extends ActionBarBaseActivity {
                 });
                 if (result.result.equals("success")) {
                     mChatDataSource.openWrite();
+                    chat.id = result.id;
                     mChatDataSource.create(chat);
                     mChatDataSource.close();
                     mAdapter.addOneChat(chat);

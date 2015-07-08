@@ -179,6 +179,9 @@ public class FriendFragmentAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
+    public void clearList(){
+        mList.clear();
+    }
     public View getCacheView(int index){
         if(!isCache){
             return null;
