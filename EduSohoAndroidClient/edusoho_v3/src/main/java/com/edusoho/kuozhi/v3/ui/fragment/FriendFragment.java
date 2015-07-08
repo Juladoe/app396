@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -45,6 +47,8 @@ import java.util.List;
 public class FriendFragment extends BaseFragment {
 
     private ListView mFriendList;
+    private View mFootView;
+    private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
 
@@ -68,6 +72,7 @@ public class FriendFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
@@ -111,6 +116,7 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
+        mFriendList.addFooterView(mFootView);
         mFriendList.setAdapter(mFriendAdapter);
 
         mLoadDialog = LoadDialog.create(mActivity);
@@ -121,7 +127,7 @@ public class FriendFragment extends BaseFragment {
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Friend friend = ((FriendFragmentAdapter) parent.getAdapter()).getFriendByPosition(position);
+                final Friend friend = (Friend) parent.getAdapter().getItem(position);
                 app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -132,11 +138,17 @@ public class FriendFragment extends BaseFragment {
             }
         });
 
+        mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
     }
 
     public void loadSchoolApps() {
         mFriendAdapter.setListViewLayout(R.layout.item_type_school_app);
 
+        mFriendAdapter.clearList();
+        if (!app.getNetIsConnect()) {
+            mLoadDialog.dismiss();
+            Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
+        }
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
@@ -154,7 +166,6 @@ public class FriendFragment extends BaseFragment {
                     mFriendAdapter.addSchoolList(list);
                     loadFriend();
                 } else {
-                    //TODO 空数据
                     loadFriend();
                 }
 
@@ -188,10 +199,9 @@ public class FriendFragment extends BaseFragment {
                     mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
                 } else {
-                    //TODO 空数据
                     mLoadDialog.dismiss();
                 }
-
+                setmFriendCount(friendResult.total);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -200,6 +210,10 @@ public class FriendFragment extends BaseFragment {
             }
         });
 
+    }
+
+    public void setmFriendCount(String count) {
+        mFriendCount.setText("共有" + count + "位好友");
     }
 
     @Override

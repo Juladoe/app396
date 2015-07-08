@@ -7,11 +7,12 @@
     <string name="channel_name">dowin365</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
+    <string name="app_id">wx07cc04a5392ff3ee</string>
+
 
     <string-array
         name="shard_filter"
         >
-        <item>SinaWeibo</item>
         <item>TencentWeibo</item>
         <item>QZone</item>
         <item>QQ</item>

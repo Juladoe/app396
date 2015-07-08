@@ -178,6 +178,11 @@ public class FriendFragmentAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void clearList() {
+        mList.clear();
+    }
+
+
     public View getCacheView(int index) {
         if (!isCache) {
             return null;
@@ -203,11 +208,19 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
+        Object obj = mList.get(position - 1);
+        if (mList.get(position - 1) instanceof Friend) {
+            return (Friend) obj;
+        }
         return null;
     }
 
     public Friend getFriendByPosition(int position) {
-        return (Friend) mList.get(position - 1);
+        Object obj = mList.get(position - 1);
+        if (mList.get(position - 1) instanceof Friend) {
+            return (Friend) obj;
+        }
+        return null;
     }
 
     @Override
