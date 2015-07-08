@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -42,10 +43,10 @@ import java.util.List;
 public class FriendFragment extends BaseFragment {
 
     private ListView mFriendList;
-    private TextView mFriendsCount;
+    private View mFootView;
+    private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
-    private String friendCount = "0";
 
     private LoadDialog mLoadDialog;
 
@@ -67,8 +68,8 @@ public class FriendFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot,null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
-        mFriendsCount = (TextView) mContainerView.findViewById(R.id.friends_count);
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
@@ -111,19 +112,25 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
+        mFriendList.addFooterView(mFootView);
         mFriendList.setAdapter(mFriendAdapter);
 
         mLoadDialog = LoadDialog.create(mActivity);
         mLoadDialog.setMessage("正在载入数据");
         mLoadDialog.show();
         loadSchoolApps();
-        mFriendsCount.setText("共有"+friendCount+"位好友");
+
+        mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
     }
 
     public void loadSchoolApps() {
         mFriendAdapter.setListViewLayout(R.layout.item_type_school_app);
 
         mFriendAdapter.clearList();
+        if (!app.getNetIsConnect()){
+            mLoadDialog.dismiss();
+            Toast.makeText(mContext,"无网络连接",Toast.LENGTH_LONG).show();
+        }
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
@@ -176,7 +183,7 @@ public class FriendFragment extends BaseFragment {
                 } else {
                     mLoadDialog.dismiss();
                 }
-                friendCount = friendResult.total;
+                setmFriendCount(friendResult.total);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -185,6 +192,10 @@ public class FriendFragment extends BaseFragment {
             }
         });
 
+    }
+
+    public void setmFriendCount(String count){
+        mFriendCount.setText("共有"+count+"位好友");
     }
 
     @Override
