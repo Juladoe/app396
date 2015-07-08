@@ -35,7 +35,7 @@ public class NotificationUtil {
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             //int requestCode = (int) SystemClock.uptimeMillis();
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
-                    notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
             mNotificationManager.notify(notificationId, mBuilder.build());

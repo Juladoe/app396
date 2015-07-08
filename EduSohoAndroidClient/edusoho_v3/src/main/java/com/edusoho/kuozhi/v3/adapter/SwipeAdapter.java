@@ -91,7 +91,7 @@ public class SwipeAdapter extends BaseAdapter {
 
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
-        viewHolder.tvPostTime.setText(AppUtil.getPostDays(String.valueOf(item.createdTime)));
+        viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
         return convertView;
 
     }
