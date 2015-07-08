@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.v3.plugin;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 
 import com.android.volley.Response;
@@ -132,6 +134,12 @@ public class MenuClickPlugin extends CoreBridge {
                 startIntent.putExtra("payurl", payUrl);
             }
         });
+    }
+
+    @JavascriptInterface
+    public void showKeyInput() {
+        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @JavascriptInterface
