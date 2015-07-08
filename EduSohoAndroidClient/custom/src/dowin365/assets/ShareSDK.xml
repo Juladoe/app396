@@ -5,6 +5,10 @@
 
     <!--demo站-->
     <SinaWeibo Id="4" SortId="4" AppKey="2771107316" AppSecret="81021fed08c255eb9642009bf88edba5"
-        RedirectUrl="" ShareByAppClient="false" Enable="true" />
+        RedirectUrl="http://www.dowin365.com" ShareByAppClient="false" Enable="true" />
+
+    <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
+    <QQ Id="7" SortId="5" AppId="1104684621"  ShareByAppClient="true"
+        Enable="true" />
 
 </DevInfor>
