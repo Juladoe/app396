@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
@@ -119,7 +120,12 @@ public class NewsFragment extends BaseFragment {
         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
             switch (index) {
                 case 0:
+                    New newModel = mSwipeAdapter.getItem(position);
                     mSwipeAdapter.removeItem(position);
+                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    newDataSource.delete(newModel.id);
+                    ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
                     mSwipeAdapter.notifyDataSetChanged();
                     break;
                 case 1:

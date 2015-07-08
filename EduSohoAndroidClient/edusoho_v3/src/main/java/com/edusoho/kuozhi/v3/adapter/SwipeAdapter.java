@@ -76,7 +76,7 @@ public class SwipeAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public New getItem(int position) {
         return mList.get(position) != null ? mList.get(position) : null;
     }
 
