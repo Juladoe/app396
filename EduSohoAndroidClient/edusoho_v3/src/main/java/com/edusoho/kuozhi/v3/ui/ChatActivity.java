@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.ChatTypeEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
+import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -59,6 +60,7 @@ public class ChatActivity extends ActionBarBaseActivity {
     private int mSendTime;
     private int mStart = 0;
     private static final int LIMIT = 15;
+    public static int CurrentFromId = 0;
 
     /**
      * 对方的userInfo信息;
@@ -128,6 +130,8 @@ public class ChatActivity extends ActionBarBaseActivity {
         mToId = app.loginUser.id;
         NotificationUtil.cancelById(mFromId);
         setBackMode(BACK, intent.getStringExtra(TITLE));
+        CurrentFromId = mFromId;
+        app.addTask(this.getPackageName(), this);
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -233,7 +237,7 @@ public class ChatActivity extends ActionBarBaseActivity {
                     etSend.requestFocus();
 
                     WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-                    message.setTitle(chat.nickName);
+                    message.setTitle(mFromUserInfo.nickname);
                     message.setContent(chat.content);
                     CustomContent cc = getCustomContent();
                     cc.fromId = mFromId;
@@ -268,10 +272,18 @@ public class ChatActivity extends ActionBarBaseActivity {
     public void invoke(WidgetMessage message) {
         try {
             MessageType messageType = message.type;
-            if (messageType.code == Const.ADD_CHAT_MSG) {
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
-                Chat chat = new Chat(wrapperMessage);
-                mAdapter.addOneChat(chat);
+            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
+            CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContent(), new TypeToken<CustomContent>() {
+            });
+            if (customContent.typeBusiness.equals(TypeBusinessEnum.BULLETIN.toString().toLowerCase())) {
+                //公告消息
+
+            } else if (customContent.typeBusiness.equals(TypeBusinessEnum.NORMAL.toString().toLowerCase())) {
+                //普通消息
+                if (messageType.code == Const.ADD_CHAT_MSG && mFromId == customContent.fromId) {
+                    Chat chat = new Chat(wrapperMessage);
+                    mAdapter.addOneChat(chat);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -11,19 +12,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -42,10 +47,10 @@ import java.util.List;
 public class FriendFragment extends BaseFragment {
 
     private ListView mFriendList;
-    private TextView mFriendsCount;
+    private View mFootView;
+    private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
-    private String friendCount = "0";
 
     private LoadDialog mLoadDialog;
 
@@ -67,8 +72,8 @@ public class FriendFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
-        mFriendsCount = (TextView) mContainerView.findViewById(R.id.friends_count);
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
@@ -111,19 +116,51 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
+        mFriendList.addFooterView(mFootView);
         mFriendList.setAdapter(mFriendAdapter);
 
         mLoadDialog = LoadDialog.create(mActivity);
         mLoadDialog.setMessage("正在载入数据");
         mLoadDialog.show();
         loadSchoolApps();
-        mFriendsCount.setText("共有"+friendCount+"位好友");
+
+        mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 1) {
+                    final Friend friend = (Friend) parent.getAdapter().getItem(position);
+                    app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
+                            startIntent.putExtra(ChatActivity.TITLE, friend.nickname);
+                        }
+                    });
+                } else {
+                    final SchoolApp shcoolApp = (SchoolApp) parent.getAdapter().getItem(position);
+                    app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ChatActivity.FROM_ID, shcoolApp.id);
+                            startIntent.putExtra(ChatActivity.TITLE, shcoolApp.name);
+                        }
+                    });
+                }
+
+            }
+        });
+
+        mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
     }
 
     public void loadSchoolApps() {
         mFriendAdapter.setListViewLayout(R.layout.item_type_school_app);
 
         mFriendAdapter.clearList();
+        if (!app.getNetIsConnect()) {
+            mLoadDialog.dismiss();
+            Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
+        }
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
@@ -176,7 +213,7 @@ public class FriendFragment extends BaseFragment {
                 } else {
                     mLoadDialog.dismiss();
                 }
-                friendCount = friendResult.total;
+                setmFriendCount(friendResult.total);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -185,6 +222,10 @@ public class FriendFragment extends BaseFragment {
             }
         });
 
+    }
+
+    public void setmFriendCount(String count) {
+        mFriendCount.setText("共有" + count + "位好友");
     }
 
     @Override

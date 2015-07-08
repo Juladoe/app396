@@ -45,7 +45,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
         try {
-            String text = "收到消息:" + message.toString();
             final boolean isForeground = EdusohoApp.app.isForeground(ChatActivity.class.getName());
             Log.d(TAG, isForeground + "");
             Bundle bundle = new Bundle();
@@ -58,7 +57,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
                 EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, ChatActivity.class);
             }
             EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
-            //EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, EdusohoMainService.class);
             EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
 
         } catch (Exception e) {

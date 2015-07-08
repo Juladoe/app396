@@ -76,8 +76,7 @@ public class CoreBridge extends CordovaPlugin {
         }
     }
 
-    public CallbackStatus<JSONObject> invoke(String action, JSONArray args)
-    {
+    public CallbackStatus<JSONObject> invoke(String action, JSONArray args) {
         this.args = args;
         CallbackStatus callbackStatus = new CallbackStatus();
         Method method = mMethodList.get(action);
@@ -97,19 +96,18 @@ public class CoreBridge extends CordovaPlugin {
     private JSONObject getInvokeError(Exception error) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("error" , error.getMessage());
-        }catch (Exception e) {
+            jsonObject.put("error", error.getMessage());
+        } catch (Exception e) {
         }
 
         return jsonObject;
     }
 
-    protected String[] JsonArrayToStringArray(JSONArray images)
-    {
+    protected String[] JsonArrayToStringArray(JSONArray images) {
         int length = images.length();
         String[] strs = new String[length];
         try {
-            for (int i=0; i < length; i++) {
+            for (int i = 0; i < length; i++) {
                 strs[i] = images.getString(i);
             }
         } catch (JSONException e) {
