@@ -3,15 +3,21 @@ package com.edusoho.kuozhi.v3.view.webview;
 import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-
+import com.android.volley.Response.*;
+import com.android.volley.Request.*;
+import com.android.volley.AuthFailureError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestHandler;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.VolleySingleton;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -27,9 +33,10 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -274,18 +281,62 @@ public class ESWebViewRequestManager extends RequestManager {
 
     public class ApiRequestHandler implements RequestHandler
     {
+        public ApiRequestHandler() {
+
+        }
+
         @Override
         public void handler(Request request, Response response) {
             Log.d(TAG, "api handler :" + request.url);
 
             if (request.getPath().endsWith(String.format(Const.MOBILE_APP_URL, "/", mWebView.getAppCode()))) {
                 File cache = getResourceFile(request.getHost(), "index.html");
-                if (! cache.exists()) {
-                    return;
+                if (cache.exists()) {
+                    handlerResponse(cache, response);
+                }
+                return;
+            }
+
+            handlerApiRequest(request, response);
+        }
+
+        private class ApiListener implements Listener<String>
+        {
+            private Response mResponse;
+            public ApiListener(Response proxyResponse) {
+                this.mResponse = proxyResponse;
+            }
+
+            @Override
+            public void onResponse(String response) {
+                mResponse.setEncoding("utf-8");
+                mResponse.setContent(new ByteArrayInputStream(response.getBytes()));
+                Log.d(TAG, "ApiListener");
+            }
+        }
+
+        private void handlerApiRequest(Request request, Response proxyResponse) {
+            VolleySingleton.getInstance(mContext).getRequestQueue();
+            ApiListener apiListener = new ApiListener(proxyResponse);
+
+            final RequestUrl requestUrl = new RequestUrl(request.url);
+            requestUrl.setHeads(new String[] {
+                    "token", mWebView.getActivity().app.token
+            });
+
+            StringRequest stringRequest = new StringRequest(Method.GET, requestUrl.url, apiListener, new ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
                 }
 
-                handlerResponse(cache, response);
-            }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    return requestUrl.getParams();
+                }
+            };
+            stringRequest.setTag(requestUrl.url);
+            VolleySingleton.getInstance(mContext).addToRequestQueue(stringRequest);
         }
     }
 
