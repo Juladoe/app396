@@ -10,19 +10,16 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
 import com.edusoho.kuozhi.R;
@@ -57,7 +54,6 @@ import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -283,7 +279,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 .append(Const.SHARD_COURSE_URL)
                 .append("?courseId=")
                 .append(course.id);
-        ShareUtil shareUtil = new ShareUtil(mContext);
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
         shareUtil.initShareParams(
                 R.drawable.icon,
                 course.title,
@@ -386,8 +382,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         return wxApi.sendReq(req);
     }
 
-    private void reloadCoruseInfo()
-    {
+    private void reloadCoruseInfo() {
         RequestUrl url = app.bindUrl(Const.COURSE, true);
         url.setParams(new String[]{
                 "courseId", mCourseId + ""
@@ -403,7 +398,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
 
                 mCourseDetailsResult = mActivity.parseJsonValue(
                         object, new TypeToken<CourseDetailsResult>() {
-                });
+                        });
 
                 if (mCourseDetailsResult == null) {
                     return;
@@ -450,7 +445,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
     private void updateRequestData(String object) {
         mCourseDetailsResult = mActivity.parseJsonValue(
                 object, new TypeToken<CourseDetailsResult>() {
-        });
+                });
         if (mCourseDetailsResult == null || mCourseDetailsResult.course == null) {
             longToast("加载课程信息出现错误！请尝试重新打开课程！");
             return;
@@ -471,7 +466,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         mLoadView.setVisibility(View.GONE);
         mCourseDetailsResult = mActivity.parseJsonValue(
                 object, new TypeToken<CourseDetailsResult>() {
-        });
+                });
         if (mCourseDetailsResult == null || mCourseDetailsResult.course == null) {
             longToast("加载课程信息出现错误！请尝试重新打开课程！");
             return;
@@ -503,14 +498,14 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 if (mPrice > 0) {
                     app.mEngine.runNormalPluginForResult(
                             "PayCourseActivity", mActivity, PAY_COURSE_REQUEST, new PluginRunCallback() {
-                        @Override
-                        public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra("price", mPrice);
-                            startIntent.putExtra("title", mTitle);
-                            startIntent.putExtra("payurl", mTitle);
-                            startIntent.putExtra("courseId", mCourseId);
-                        }
-                    });
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra("price", mPrice);
+                                    startIntent.putExtra("title", mTitle);
+                                    startIntent.putExtra("payurl", mTitle);
+                                    startIntent.putExtra("courseId", mCourseId);
+                                }
+                            });
                 } else {
                     learnCourse();
                 }
@@ -551,7 +546,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 setProgressBarIndeterminateVisibility(false);
                 boolean status = parseJsonValue(
                         object, new TypeToken<Boolean>() {
-                });
+                        });
 
                 if (status) {
                     loadCoureDetailsFragment("CourseLearningFragment");
@@ -573,7 +568,7 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
                 setProgressBarIndeterminateVisibility(false);
                 PayStatus payStatus = parseJsonValue(
                         object, new TypeToken<PayStatus>() {
-                });
+                        });
 
                 if (payStatus == null) {
                     longToast("加入学习失败！");
@@ -608,12 +603,12 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = app.mEngine.runPluginWithFragment(
                 fragmentName, mActivity, new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putInt(Const.COURSE_ID, mCourseId);
-                bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putInt(Const.COURSE_ID, mCourseId);
+                        bundle.putString(Const.ACTIONBAR_TITLE, mTitle);
+                    }
+                });
         fragmentTransaction.replace(android.R.id.list, fragment);
         fragmentTransaction.commit();
 
@@ -640,14 +635,13 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
         }
     }
 
-    private void checkUserMember()
-    {
+    private void checkUserMember() {
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.setMessage("正在获取课程信息...");
         loadDialog.show();
 
         RequestUrl requestUrl = app.bindUrl(Const.COURSE_MEMBER, true);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 Const.COURSE_ID, String.valueOf(mCourseId)
         });
 
@@ -655,11 +649,12 @@ public class CourseDetailsActivity extends ActionBarBaseActivity
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 loadDialog.dismiss();
-                Member member = mActivity.parseJsonValue(object, new TypeToken<Member>(){});
+                Member member = mActivity.parseJsonValue(object, new TypeToken<Member>() {
+                });
                 String fragment = member != null
                         ? "CourseLearningFragment" : "CourseDetailsFragment";
                 loadCoureDetailsFragment(fragment);
             }
-       });
+        });
     }
 }

@@ -49,6 +49,7 @@ import java.util.regex.Pattern;
 public class LessonDownloadingActivity extends ActionBarBaseActivity {
     public static final String LIST_JSON = "lessonListJsonStr";
     public static final String COURSE_JSON = "courseJsonStr";
+    public static final String CHAPTER_TOP = "";
     protected DownloadStatusReceiver mDownloadStatusReceiver;
 
     private TextView btnSelectAll;
@@ -109,7 +110,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 public void onResponse(String response) {
                     DownLessonItem downLessonItem = mActivity.parseJsonValue(
                             response, new TypeToken<DownLessonItem>() {
-                    });
+                            });
                     if (downLessonItem != null) {
                         mCourse = downLessonItem.course;
                         initDownLessons(downLessonItem.lessons);
@@ -135,7 +136,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             initData();
             if (mGroupItems.size() < mChildItems.size()) {
                 LessonItem group1 = new LessonItem();
-                group1.title = "第0章";
+                group1.title = CHAPTER_TOP;
                 mGroupItems.add(0, group1);
             }
             mAdapter = new DownloadLessonAdapter(mGroupItems, mChildItems);
@@ -502,6 +503,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
 
             LessonItem item = mGroupItems.get(groupPosition);
             groupPanel.tvGroupTitle.setText(item.title);
+            ExpandableListView tmpGroupList = (ExpandableListView) parent;
+            tmpGroupList.expandGroup(groupPosition);
             return convertView;
         }
 
