@@ -302,7 +302,9 @@ public class EdusohoApp extends Application {
 
     private void initImageLoaderConfig(File file) {
         if (file == null || !file.exists()) {
-            file = new File(getCacheDir() + "/" + getResources().getString(R.string.image_cache_path));
+            file = new File(getCacheDir(), getResources().getString(R.string.image_cache_path));
+        } else {
+            file = new File(file, getResources().getString(R.string.image_cache_path));
         }
         mImageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(this)
