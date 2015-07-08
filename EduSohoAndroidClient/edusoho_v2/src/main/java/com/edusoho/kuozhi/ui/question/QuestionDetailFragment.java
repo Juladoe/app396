@@ -120,7 +120,7 @@ public class QuestionDetailFragment extends BaseFragment {
     }
 
     public void shareQuestion() {
-        ShareUtil shareUtil = new ShareUtil(mActivity);
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mActivity);
         shareUtil.initShareParams(
                 R.drawable.icon,
                 mQuestionDetailModel.title,
