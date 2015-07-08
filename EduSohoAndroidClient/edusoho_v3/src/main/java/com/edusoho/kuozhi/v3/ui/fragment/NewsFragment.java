@@ -161,6 +161,11 @@ public class NewsFragment extends BaseFragment {
 
     private void updateNew(New newModel) {
         mSwipeAdapter.updateItem(newModel);
+
+    }
+
+    private void setItemToTop(New newModel) {
+        mSwipeAdapter.setItemToTop(newModel);
     }
 
     @Override
@@ -185,7 +190,7 @@ public class NewsFragment extends BaseFragment {
                         } else {
                             newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
                             newDataSource.update(newModel);
-                            updateNew(newModel);
+                            setItemToTop(newModel);
                         }
                         newDataSource.close();
                     } catch (Exception e) {
