@@ -503,6 +503,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
 
             LessonItem item = mGroupItems.get(groupPosition);
             groupPanel.tvGroupTitle.setText(item.title);
+            ExpandableListView tmpGroupList = (ExpandableListView) parent;
+            tmpGroupList.expandGroup(groupPosition);
             return convertView;
         }
 
