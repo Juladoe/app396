@@ -178,7 +178,7 @@ public class NewsFragment extends BaseFragment {
                         newModel.belongId = app.loginUser.id;
                         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
                         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
-                        if (news == null || news.size() == 0) {
+                        if (news.size() == 0) {
                             newModel.unread = 1;
                             newDataSource.create(newModel);
                             insertNew(newModel);
@@ -196,10 +196,12 @@ public class NewsFragment extends BaseFragment {
                     int fromId = message.data.getInt(Const.FROM_ID);
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
                     List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
-                    New newModel = news.get(0);
-                    newModel.unread = 0;
-                    newDataSource.update(newModel);
-                    updateNew(newModel);
+                    if (news.size() > 0) {
+                        New newModel = news.get(0);
+                        newModel.unread = 0;
+                        newDataSource.update(newModel);
+                        updateNew(newModel);
+                    }
                     break;
             }
         }

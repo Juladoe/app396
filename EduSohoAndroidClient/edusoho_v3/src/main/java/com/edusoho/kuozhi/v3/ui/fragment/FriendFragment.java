@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -11,18 +12,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -113,6 +117,20 @@ public class FriendFragment extends BaseFragment {
         mLoadDialog.setMessage("正在载入数据");
         mLoadDialog.show();
         loadSchoolApps();
+
+        mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final Friend friend = ((FriendFragmentAdapter) parent.getAdapter()).getFriendByPosition(position);
+                app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
+                        startIntent.putExtra(ChatActivity.TITLE, friend.nickname);
+                    }
+                });
+            }
+        });
 
     }
 
