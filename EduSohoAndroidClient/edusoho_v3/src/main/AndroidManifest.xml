@@ -122,7 +122,6 @@
         <activity
             android:name=".v3.ui.ChatActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
         <activity
