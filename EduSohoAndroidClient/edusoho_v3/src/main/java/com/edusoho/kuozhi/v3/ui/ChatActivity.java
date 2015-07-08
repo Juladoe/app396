@@ -225,6 +225,7 @@ public class ChatActivity extends ActionBarBaseActivity {
                 });
                 if (result.result.equals("success")) {
                     mChatDataSource.openWrite();
+                    chat.id = result.id;
                     mChatDataSource.create(chat);
                     mChatDataSource.close();
                     mAdapter.addOneChat(chat);

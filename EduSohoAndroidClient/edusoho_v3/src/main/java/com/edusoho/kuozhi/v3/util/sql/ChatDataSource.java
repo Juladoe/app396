@@ -60,7 +60,7 @@ public class ChatDataSource {
 
     public long create(Chat chat) {
         ContentValues cv = new ContentValues();
-//        cv.put(allColumns[0], chat.id);
+        cv.put(allColumns[0], chat.id);
         cv.put(allColumns[1], chat.fromId);
         cv.put(allColumns[2], chat.toId);
         cv.put(allColumns[3], chat.nickName);
