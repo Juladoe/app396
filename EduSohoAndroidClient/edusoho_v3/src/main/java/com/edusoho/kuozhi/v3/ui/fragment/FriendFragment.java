@@ -127,14 +127,26 @@ public class FriendFragment extends BaseFragment {
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Friend friend = (Friend) parent.getAdapter().getItem(position);
-                app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
-                        startIntent.putExtra(ChatActivity.TITLE, friend.nickname);
-                    }
-                });
+                if (position != 1) {
+                    final Friend friend = (Friend) parent.getAdapter().getItem(position);
+                    app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
+                            startIntent.putExtra(ChatActivity.TITLE, friend.nickname);
+                        }
+                    });
+                } else {
+                    final SchoolApp shcoolApp = (SchoolApp) parent.getAdapter().getItem(position);
+                    app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ChatActivity.FROM_ID, shcoolApp.id);
+                            startIntent.putExtra(ChatActivity.TITLE, shcoolApp.name);
+                        }
+                    });
+                }
+
             }
         });
 

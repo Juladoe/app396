@@ -234,7 +234,7 @@ public class ChatActivity extends ActionBarBaseActivity {
                     etSend.requestFocus();
 
                     WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-                    message.setTitle(chat.nickName);
+                    message.setTitle(mFromUserInfo.nickname);
                     message.setContent(chat.content);
                     CustomContent cc = getCustomContent();
                     cc.fromId = mFromId;

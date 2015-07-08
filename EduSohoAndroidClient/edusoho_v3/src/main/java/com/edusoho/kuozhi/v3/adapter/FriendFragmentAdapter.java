@@ -211,14 +211,8 @@ public class FriendFragmentAdapter extends BaseAdapter {
         Object obj = mList.get(position - 1);
         if (mList.get(position - 1) instanceof Friend) {
             return (Friend) obj;
-        }
-        return null;
-    }
-
-    public Friend getFriendByPosition(int position) {
-        Object obj = mList.get(position - 1);
-        if (mList.get(position - 1) instanceof Friend) {
-            return (Friend) obj;
+        } else if (mList.get(position - 1) instanceof SchoolApp) {
+            return (SchoolApp) obj;
         }
         return null;
     }
