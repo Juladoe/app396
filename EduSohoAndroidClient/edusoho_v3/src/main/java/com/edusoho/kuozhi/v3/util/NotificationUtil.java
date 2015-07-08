@@ -30,11 +30,7 @@ public class NotificationUtil {
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent notifyIntent = new Intent(context, ChatActivity.class);
-
-
-            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             //int requestCode = (int) SystemClock.uptimeMillis();

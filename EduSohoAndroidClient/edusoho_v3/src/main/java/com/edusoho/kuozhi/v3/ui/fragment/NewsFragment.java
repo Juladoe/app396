@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
@@ -119,7 +120,12 @@ public class NewsFragment extends BaseFragment {
         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
             switch (index) {
                 case 0:
+                    New newModel = mSwipeAdapter.getItem(position);
                     mSwipeAdapter.removeItem(position);
+                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    newDataSource.delete(newModel.id);
+                    ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
                     mSwipeAdapter.notifyDataSetChanged();
                     break;
                 case 1:
@@ -161,6 +167,11 @@ public class NewsFragment extends BaseFragment {
 
     private void updateNew(New newModel) {
         mSwipeAdapter.updateItem(newModel);
+
+    }
+
+    private void setItemToTop(New newModel) {
+        mSwipeAdapter.setItemToTop(newModel);
     }
 
     @Override
@@ -185,7 +196,7 @@ public class NewsFragment extends BaseFragment {
                         } else {
                             newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
                             newDataSource.update(newModel);
-                            updateNew(newModel);
+                            setItemToTop(newModel);
                         }
                         newDataSource.close();
                     } catch (Exception e) {

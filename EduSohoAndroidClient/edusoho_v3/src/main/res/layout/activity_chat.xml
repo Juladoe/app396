@@ -82,7 +82,6 @@
             android:smoothScrollbar="true"
             android:clickable="true"
             android:transcriptMode="alwaysScroll"
-            android:stackFromBottom="true"
             android:id="@+id/lv_messages" />
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 

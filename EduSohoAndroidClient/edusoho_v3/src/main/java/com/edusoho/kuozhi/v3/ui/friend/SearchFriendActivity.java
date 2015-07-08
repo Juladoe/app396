@@ -265,6 +265,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                             }
                             if(followResult.success){
                                 CommonUtil.longToast(mContext,"关注用户成功");
+                                app.sendMessage(Const.REFRESH_FRIEND_LIST,null);
                                 getRelationship();
                             }else {
                                 CommonUtil.longToast(mContext,"关注用户失败");

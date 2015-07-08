@@ -44,6 +44,21 @@ public class SwipeAdapter extends BaseAdapter {
 
     public void updateItem(New newModel) {
         Iterator<New> iterator = mList.iterator();
+        int pos = 0;
+        while (iterator.hasNext()) {
+            New item = iterator.next();
+            if (item.fromId == newModel.fromId) {
+                mList.remove(item);
+                mList.add(pos, newModel);
+                notifyDataSetChanged();
+                break;
+            }
+            pos++;
+        }
+    }
+
+    public void setItemToTop(New newModel) {
+        Iterator<New> iterator = mList.iterator();
         while (iterator.hasNext()) {
             New item = iterator.next();
             if (item.fromId == newModel.fromId) {
@@ -61,7 +76,7 @@ public class SwipeAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public New getItem(int position) {
         return mList.get(position) != null ? mList.get(position) : null;
     }
 
@@ -91,7 +106,7 @@ public class SwipeAdapter extends BaseAdapter {
 
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
-        viewHolder.tvPostTime.setText(AppUtil.getPostDays(String.valueOf(item.createdTime)));
+        viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
         return convertView;
 
     }

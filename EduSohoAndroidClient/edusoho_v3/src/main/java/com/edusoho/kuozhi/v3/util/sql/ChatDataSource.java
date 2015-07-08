@@ -84,4 +84,9 @@ public class ChatDataSource {
         chat.createdTime = cursor.getInt(7);
         return chat;
     }
+
+    public long delete(int fromId, int toId) {
+        return mDataBase.delete(TABLE_NAME, "(FROMID = ? AND TOID = ?) OR (TOID = ? AND FROMID = ?)",
+                new String[]{fromId + "", toId + "", fromId + "", toId + ""});
+    }
 }

@@ -110,4 +110,8 @@ public class NewDataSource {
         newModel.isTop = cursor.getInt(9);
         return newModel;
     }
+
+    public long delete(int id) {
+        return mDataBase.delete(TABLE_NAME, "ID = ?", new String[]{id + ""});
+    }
 }

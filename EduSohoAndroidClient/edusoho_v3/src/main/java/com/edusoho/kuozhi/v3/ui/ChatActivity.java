@@ -86,6 +86,7 @@ public class ChatActivity extends ActionBarBaseActivity {
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         lvMessage.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
+        lvMessage.post(mListViewSelectRunnable);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
@@ -94,12 +95,7 @@ public class ChatActivity extends ActionBarBaseActivity {
                 mStart = mAdapter.getCount();
                 mAdapter.addItems(getChatList(mStart));
                 mPtrFrame.refreshComplete();
-                lvMessage.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        lvMessage.setSelection(mStart);
-                    }
-                });
+                lvMessage.postDelayed(mListViewSelectRunnable, 300);
             }
 
             @Override
@@ -110,6 +106,13 @@ public class ChatActivity extends ActionBarBaseActivity {
         sendNewFragment2UpdateItem();
     }
 
+    private Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            lvMessage.setSelection(mStart);
+        }
+    };
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -117,6 +120,7 @@ public class ChatActivity extends ActionBarBaseActivity {
         mAdapter.clear();
         mAdapter.addItems(getChatList(0));
         mStart = mAdapter.getCount();
+        lvMessage.post(mListViewSelectRunnable);
         sendNewFragment2UpdateItem();
     }
 
@@ -131,7 +135,7 @@ public class ChatActivity extends ActionBarBaseActivity {
         NotificationUtil.cancelById(mFromId);
         setBackMode(BACK, intent.getStringExtra(TITLE));
         CurrentFromId = mFromId;
-        app.addTask(this.getPackageName(), this);
+
     }
 
     private ArrayList<Chat> getChatList(int start) {
