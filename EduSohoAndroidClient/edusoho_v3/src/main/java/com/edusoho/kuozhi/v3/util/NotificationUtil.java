@@ -27,6 +27,7 @@ public class NotificationUtil {
             NotificationManager mNotificationManager =
                     (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent notifyIntent = new Intent(EdusohoApp.app.mContext, ChatActivity.class);
+
             Chat chat = new Chat(xgMessage);
             int notificationId = chat.fromId;
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
@@ -36,6 +37,7 @@ public class NotificationUtil {
             PendingIntent pendIntent = PendingIntent.getActivity(EdusohoApp.app.mContext, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
+            mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
             mNotificationManager.notify(notificationId, mBuilder.build());
         } catch (Exception ex) {
             Log.d("showNotification-->", ex.getMessage());

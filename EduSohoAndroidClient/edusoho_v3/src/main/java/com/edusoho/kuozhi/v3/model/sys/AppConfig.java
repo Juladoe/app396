@@ -9,6 +9,14 @@ public class AppConfig {
     public boolean showSplash;
     public boolean isPublicRegistDevice;
     public int offlineType;
-    public int msgVibrate;
+
+    /**
+     * 默认0，开启1
+     */
     public int msgSound;
+    /**
+     * 默认0，开启2
+     */
+    public int msgVibrate;
+
 }
