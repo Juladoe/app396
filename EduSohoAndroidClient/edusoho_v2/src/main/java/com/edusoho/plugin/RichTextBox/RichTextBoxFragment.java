@@ -628,7 +628,10 @@ public class RichTextBoxFragment extends Fragment implements View.OnClickListene
         ContentResolver cr = mActivity.getContentResolver();
         Cursor cursor = cr.query(uri, null, null, null, null);
         cursor.moveToFirst();
-        return cursor.getString(1);
+        String imagePath = cursor.getString(1);
+        cursor.close();
+        cursor = null;
+        return imagePath;
     }
 
     /**
