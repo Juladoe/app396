@@ -571,14 +571,14 @@ public class AppUtil {
 
     public static String convertMills2Date(long millsTime) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
             String nowTime = sdf.format(System.currentTimeMillis());
             String showTime = sdf.format(millsTime);
-            if (nowTime.substring(0, 10).equals(
-                    showTime.substring(0, 10))) {
-                return showTime.substring(11);
+            if (nowTime.substring(0, 11).equals(
+                    showTime.substring(0, 11))) {
+                return showTime.substring(12);
             } else {
-                return showTime;
+                return showTime.substring(5, 11);
             }
         } catch (Exception ex) {
             Log.e("convertMills2Date", ex.getMessage());
