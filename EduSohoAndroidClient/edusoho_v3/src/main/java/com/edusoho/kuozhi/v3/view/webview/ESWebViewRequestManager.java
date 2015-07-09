@@ -7,6 +7,7 @@ import com.android.volley.Response.*;
 import com.android.volley.Request.*;
 import com.android.volley.AuthFailureError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestHandler;
@@ -18,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -281,8 +283,10 @@ public class ESWebViewRequestManager extends RequestManager {
 
     public class ApiRequestHandler implements RequestHandler
     {
-        public ApiRequestHandler() {
+        private VolleySingleton mVolley;
 
+        public ApiRequestHandler() {
+            this.mVolley = VolleySingleton.getInstance(mContext);
         }
 
         @Override
@@ -300,43 +304,25 @@ public class ESWebViewRequestManager extends RequestManager {
             handlerApiRequest(request, response);
         }
 
-        private class ApiListener implements Listener<String>
-        {
-            private Response mResponse;
-            public ApiListener(Response proxyResponse) {
-                this.mResponse = proxyResponse;
-            }
-
-            @Override
-            public void onResponse(String response) {
-                mResponse.setEncoding("utf-8");
-                mResponse.setContent(new ByteArrayInputStream(response.getBytes()));
-                Log.d(TAG, "ApiListener");
-            }
-        }
-
         private void handlerApiRequest(Request request, Response proxyResponse) {
-            VolleySingleton.getInstance(mContext).getRequestQueue();
-            ApiListener apiListener = new ApiListener(proxyResponse);
-
+            mVolley.getRequestQueue();
             final RequestUrl requestUrl = new RequestUrl(request.url);
             requestUrl.setHeads(new String[] {
                     "token", mWebView.getActivity().app.token
             });
 
-            StringRequest stringRequest = new StringRequest(Method.GET, requestUrl.url, apiListener, new ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    return requestUrl.getParams();
-                }
-            };
+            RequestFuture<String> future = RequestFuture.newFuture();
+            StringVolleyRequest stringRequest = new StringVolleyRequest(Method.GET, requestUrl, future, future);
             stringRequest.setTag(requestUrl.url);
-            VolleySingleton.getInstance(mContext).addToRequestQueue(stringRequest);
+            mVolley.addToRequestQueue(stringRequest);
+
+            String result = "";
+            try {
+                result = future.get();
+            } catch (Exception e) {
+            }
+            proxyResponse.setEncoding("utf-8");
+            proxyResponse.setContent(new ByteArrayInputStream(result.getBytes()));
         }
     }
 

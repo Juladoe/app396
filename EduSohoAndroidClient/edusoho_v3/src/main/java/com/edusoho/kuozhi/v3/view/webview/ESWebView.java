@@ -163,7 +163,7 @@ public class ESWebView extends RelativeLayout {
     public void updateApp(final String appCode) {
         RequestUrl appVersionUrl = mActivity.app.bindUrl(
                 String.format(Const.MOBILE_APP_VERSION, appCode), true);
-        mActivity.ajaxPost(appVersionUrl, new Listener<String>() {
+        mActivity.ajaxGet(appVersionUrl, new Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
