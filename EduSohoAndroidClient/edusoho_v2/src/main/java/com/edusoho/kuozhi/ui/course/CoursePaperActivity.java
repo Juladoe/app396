@@ -968,17 +968,16 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     private void shardCourse() {
 
         Course course = mCourseDetailsResult.course;
-        StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
+        StringBuilder stringBuilder = new StringBuilder(app.host);
         stringBuilder
                 .append(Const.SHARD_COURSE_URL)
-                .append("?courseId=")
                 .append(course.id);
-        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mActivity);
         shareUtil.initShareParams(
                 R.drawable.icon,
                 course.title,
                 stringBuilder.toString(),
-                AppUtil.coverCourseAbout(course.about),
+                AppUtil.coverCourseAbout(course.title+"："+course.about+"地址："+stringBuilder.toString()),
                 AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture),
                 app.host
         );

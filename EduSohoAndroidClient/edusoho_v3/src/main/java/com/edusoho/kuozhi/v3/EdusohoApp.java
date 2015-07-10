@@ -591,7 +591,7 @@ public class EdusohoApp extends Application {
         RequestUrl requestUrl = new RequestUrl(sb.toString());
 
         if (addToken) {
-            requestUrl.heads.put("token", token);
+            requestUrl.heads.put("Auth-Token", token);
         }
         return requestUrl;
     }

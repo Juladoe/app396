@@ -33,7 +33,6 @@ public class ShareUtil {
     private Context mContext;
     private AlertDialog mAlertDialog;
     private ShareHandler mShareHandler;
-
     private static ShareUtil shareUtil;
 
     private ShareUtil(Context context) {
@@ -43,13 +42,7 @@ public class ShareUtil {
     }
 
     public static ShareUtil getShareUtil(Context context) {
-        synchronized (ShareUtil.class) {
-            if (shareUtil == null) {
-                shareUtil = new ShareUtil(context);
-            }
-        }
-
-        return shareUtil;
+        return new ShareUtil(context);
     }
 
     public ShareUtil initShareParams(
