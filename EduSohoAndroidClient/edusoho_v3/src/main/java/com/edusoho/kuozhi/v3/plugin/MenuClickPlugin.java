@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.toolbox.RequestFuture;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -25,6 +27,8 @@ import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
+import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,6 +37,8 @@ import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * Created by JesseHuang on 15/6/2.
@@ -90,6 +96,43 @@ public class MenuClickPlugin extends CoreBridge {
         }
 
         return result;
+    }
+
+    @JavascriptInterface
+    public JSONObject post() throws JSONException {
+        String url = args.getString(0);
+        JSONObject heads = args.getJSONObject(1);
+        JSONObject params = args.getJSONObject(2);
+
+        RequestUrl requestUrl = new RequestUrl(url);
+
+        Iterator<String> itor = heads.keys();
+        while (itor.hasNext()) {
+            String key = itor.next();
+            requestUrl.heads.put(key, heads.getString(key));
+        }
+
+        itor = params.keys();
+        while (itor.hasNext()) {
+            String key = itor.next();
+            requestUrl.params.put(key, params.getString(key));
+        }
+
+        VolleySingleton volley = VolleySingleton.getInstance(mActivity.getBaseContext());
+        volley.getRequestQueue();
+        RequestFuture<String> future = RequestFuture.newFuture();
+        StringVolleyRequest request = new StringVolleyRequest(
+                Request.Method.POST, requestUrl, future, future);
+        request.setTag(requestUrl.url);
+        volley.addToRequestQueue(request);
+
+        String result = "";
+        try {
+            result = future.get();
+        } catch (Exception e) {
+        }
+
+        return new JSONObject(result);
     }
 
     @JavascriptInterface
