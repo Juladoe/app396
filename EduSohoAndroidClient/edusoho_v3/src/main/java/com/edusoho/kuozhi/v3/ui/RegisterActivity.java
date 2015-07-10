@@ -140,10 +140,8 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("code").equals("200")) {
                             CommonUtil.longToast(mContext, jsonObject.getString("msg"));
-                            mCookie = jsonObject.getString("Cookie");
                         }
                     } catch (JSONException e) {
-
                     }
                 }
             }, null);

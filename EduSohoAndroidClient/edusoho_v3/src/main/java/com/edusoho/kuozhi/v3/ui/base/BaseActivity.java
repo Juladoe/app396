@@ -192,7 +192,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void ajaxGet(final String url, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        app.getUrl(url, responseListener, errorListener);
+        app.getUrl(new RequestUrl(url), responseListener, errorListener);
     }
 
     public void ajaxGet(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {

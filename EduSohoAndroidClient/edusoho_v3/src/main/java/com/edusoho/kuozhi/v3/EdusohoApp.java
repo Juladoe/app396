@@ -22,6 +22,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -53,6 +54,7 @@ import com.edusoho.kuozhi.v3.util.MultipartRequest;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -153,47 +155,11 @@ public class EdusohoApp extends Application {
 
     public Request<String> postUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, requestUrl.url, responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return requestUrl.getParams();
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return requestUrl.getHeads();
-            }
-
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                try {
-                    Map<String, String> map = response.headers;
-                    String cookie = map.get("Set-Cookie");
-                    String data = new String(response.data, "UTF-8");
-                    if (TextUtils.isEmpty(cookie)) {
-                        return Response.success(data, HttpHeaderParser.parseCacheHeaders(response));
-                    } else {
-                        JSONObject jsonObject = new JSONObject(data);
-                        jsonObject.put("Cookie", cookie);
-                        return Response.success(jsonObject.toString(), HttpHeaderParser.parseCacheHeaders(response));
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    return Response.error(new ParseError(e));
-                } catch (JSONException e) {
-                    return Response.error(new ParseError(e));
-                }
-            }
-        };
-        jsonObjectRequest.setTag(requestUrl.url);
-        return mVolley.addToRequestQueue(jsonObjectRequest);
+        StringVolleyRequest request = new StringVolleyRequest(Request.Method.POST, requestUrl, responseListener, errorListener);
+        request.setTag(requestUrl.url);
+        return mVolley.addToRequestQueue(request);
     }
 
-    public void getUrl(final String url, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, url, responseListener, errorListener);
-        jsonObjectRequest.setTag(url);
-        mVolley.addToRequestQueue(jsonObjectRequest);
-    }
 
     /**
      * volley get 请求
@@ -204,14 +170,9 @@ public class EdusohoApp extends Application {
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, requestUrl.url, responseListener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return requestUrl.getHeads();
-            }
-        };
-        jsonObjectRequest.setTag(requestUrl.url);
-        mVolley.addToRequestQueue(jsonObjectRequest);
+        StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
+        request.setTag(requestUrl.url);
+        mVolley.addToRequestQueue(request);
     }
 
     public void addMessageListener(String msgId, CoreEngineMsgCallback callback) {
@@ -648,31 +609,6 @@ public class EdusohoApp extends Application {
         super.onLowMemory();
     }
 
-    public void checkToken() {
-        synchronized (this) {
-            if (loginUser != null) {
-                return;
-            }
-            String url = bindToken2Url(Const.CHECKTOKEN, true);
-            app.getUrl(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    UserResult result = app.gson.fromJson(
-                            response, new TypeToken<UserResult>() {
-                            }.getType());
-                    if (result != null) {
-                        saveToken(result);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-    }
-
     public static int tabLeftBtnSel;
     public static int tabRightBtnSel;
 
@@ -704,40 +640,6 @@ public class EdusohoApp extends Application {
     }
 
     private boolean mIsNotifyUpdate;
-
-    public void updateApp(String url, boolean isShowLoading, final NormalCallback callback) {
-        if (mIsNotifyUpdate) {
-            return;
-        }
-        mIsNotifyUpdate = true;
-
-        final LoadDialog loadDialog = LoadDialog.create(this);
-        if (isShowLoading) {
-            loadDialog.setMessage("正在检查版本更新");
-            loadDialog.show();
-        }
-
-        app.getUrl(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                loadDialog.dismiss();
-                final AppUpdateInfo appUpdateInfo = app.gson.fromJson(
-                        response, new TypeToken<AppUpdateInfo>() {
-                        }.getType());
-
-                if (appUpdateInfo == null || appUpdateInfo.androidVersion == null) {
-                    return;
-                }
-
-                callback.success(appUpdateInfo);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-    }
 
     public void addNotify(String type, Bundle bundle) {
         notifyMap.put(type, bundle);
