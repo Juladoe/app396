@@ -968,10 +968,9 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     private void shardCourse() {
 
         Course course = mCourseDetailsResult.course;
-        StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
+        StringBuilder stringBuilder = new StringBuilder(app.host);
         stringBuilder
                 .append(Const.SHARD_COURSE_URL)
-                .append("?courseId=")
                 .append(course.id);
         ShareUtil shareUtil = ShareUtil.getShareUtil(mActivity);
         shareUtil.initShareParams(
