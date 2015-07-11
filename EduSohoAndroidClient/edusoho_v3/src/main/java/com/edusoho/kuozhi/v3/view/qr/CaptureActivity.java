@@ -13,7 +13,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.QrSchoolActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -28,12 +27,11 @@ import com.edusoho.kuozhi.v3.view.qr.view.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-public final class CaptureActivity extends ActionBarBaseActivity implements
+public class CaptureActivity extends ActionBarBaseActivity implements
         SurfaceHolder.Callback {
 
     private String mTitle;

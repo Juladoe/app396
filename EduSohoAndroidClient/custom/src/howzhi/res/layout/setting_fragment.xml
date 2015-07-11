@@ -1,0 +1,153 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/system_normal_bg"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/setting_clear_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/more_setting_list_select"
+        android:clickable="true"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="17dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="18dp"
+            android:text="清理缓存"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/more_setting_text" />
+
+        <TextView
+            android:id="@+id/setting_cache_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="17dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="18dp"
+            android:text="0.0kb"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/more_setting_text" />
+
+        <ProgressBar
+            android:id="@+id/setting_load_progress"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/load"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/setting_app_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/more_setting_list_select2"
+            android:clickable="true"
+            android:paddingBottom="17dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="18dp"
+            android:text="应用中心"
+            android:visibility="gone"
+            android:layout_marginBottom="1dp"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/more_setting_text" />
+
+        <LinearLayout
+            android:layout_marginBottom="1dp"
+            android:gravity="center"
+            android:background="@drawable/more_setting_list_select2"
+            android:clickable="true"
+            android:id="@+id/setting_offline_set_btn"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:paddingBottom="17dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="18dp"
+                android:paddingRight="8dp"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="非WiFi下视频可以播放"
+                android:textColor="@color/system_light_text"
+                android:textSize="@dimen/more_setting_text" />
+
+            <CheckBox
+                android:clickable="false"
+                android:focusable="false"
+                android:button="@null"
+                android:background="@drawable/set_check_normal_sel"
+                android:layout_margin="8dp"
+                android:id="@+id/setting_offline_set_value"
+                android:textColor="@color/system_gray_text"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <com.edusoho.kuozhi.view.EduUpdateView
+            android:visibility="gone"
+            android:layout_marginBottom="1dp"
+            android:id="@+id/setting_check_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/more_setting_list_select2"
+            android:clickable="true"
+            android:drawablePadding="10dp"
+            android:paddingBottom="17dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="18dp"
+            android:text="版本更新"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/more_setting_text" />
+
+        <TextView
+            android:id="@+id/more_setting_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/more_setting_list_select2"
+            android:clickable="true"
+            android:drawableRight="@drawable/more_setting_right"
+            android:paddingBottom="16dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="16dp"
+            android:text="@string/school_about"
+            android:textColor="@color/system_light_text"
+            android:textSize="@dimen/medium_font_size" />
+    </LinearLayout>
+
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/setting_logout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/logout_btn_sel"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="退出登录"
+        android:textColor="@color/login_text"
+        android:textSize="@dimen/base_large_size"
+        android:visibility="gone" />
+</LinearLayout>

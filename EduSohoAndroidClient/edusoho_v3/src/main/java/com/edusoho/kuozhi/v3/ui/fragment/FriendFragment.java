@@ -164,8 +164,6 @@ public class FriendFragment extends BaseFragment {
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
-        HashMap<String, String> heads = requestUrl.getHeads();
-        heads.put("Auth-Token", app.token);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -196,10 +194,8 @@ public class FriendFragment extends BaseFragment {
 
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=1000");
+        stringBuffer.append("?start=0&limit=1000/");
         requestUrl.url = stringBuffer.toString();
-        HashMap<String, String> heads = requestUrl.getHeads();
-        heads.put("Auth-Token", app.token);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

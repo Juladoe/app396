@@ -7,6 +7,7 @@ import com.android.volley.Response.*;
 import com.android.volley.Request.*;
 import com.android.volley.AuthFailureError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestHandler;
@@ -16,8 +17,10 @@ import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -281,8 +284,10 @@ public class ESWebViewRequestManager extends RequestManager {
 
     public class ApiRequestHandler implements RequestHandler
     {
-        public ApiRequestHandler() {
+        private VolleySingleton mVolley;
 
+        public ApiRequestHandler() {
+            this.mVolley = VolleySingleton.getInstance(mContext);
         }
 
         @Override
@@ -300,43 +305,25 @@ public class ESWebViewRequestManager extends RequestManager {
             handlerApiRequest(request, response);
         }
 
-        private class ApiListener implements Listener<String>
-        {
-            private Response mResponse;
-            public ApiListener(Response proxyResponse) {
-                this.mResponse = proxyResponse;
-            }
-
-            @Override
-            public void onResponse(String response) {
-                mResponse.setEncoding("utf-8");
-                mResponse.setContent(new ByteArrayInputStream(response.getBytes()));
-                Log.d(TAG, "ApiListener");
-            }
-        }
-
         private void handlerApiRequest(Request request, Response proxyResponse) {
-            VolleySingleton.getInstance(mContext).getRequestQueue();
-            ApiListener apiListener = new ApiListener(proxyResponse);
-
+            mVolley.getRequestQueue();
             final RequestUrl requestUrl = new RequestUrl(request.url);
             requestUrl.setHeads(new String[] {
                     "token", mWebView.getActivity().app.token
             });
 
-            StringRequest stringRequest = new StringRequest(Method.GET, requestUrl.url, apiListener, new ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    return requestUrl.getParams();
-                }
-            };
+            RequestFuture<String> future = RequestFuture.newFuture();
+            StringVolleyRequest stringRequest = new StringVolleyRequest(Method.GET, requestUrl, future, future);
             stringRequest.setTag(requestUrl.url);
-            VolleySingleton.getInstance(mContext).addToRequestQueue(stringRequest);
+            mVolley.addToRequestQueue(stringRequest);
+
+            String result = "";
+            try {
+                result = future.get();
+            } catch (Exception e) {
+            }
+            proxyResponse.setEncoding("utf-8");
+            proxyResponse.setContent(new ByteArrayInputStream(result.getBytes()));
         }
     }
 
@@ -353,10 +340,17 @@ public class ESWebViewRequestManager extends RequestManager {
 
     public class WebViewRequestHandler implements RequestHandler
     {
+        private final String[] MIME_FILTERS = { "html", "js", "css" };
+
+        private boolean filterMime(String fileName) {
+            String extension = getFileExtension(fileName);
+            return CommonUtil.inArray(extension, MIME_FILTERS);
+        }
+
         @Override
         public void handler(Request request, Response response) {
 
-            String path = request.getPath(mWebView.getAppCode() + "/release");
+            String path = request.getPath(mWebView.getAppCode());
 
             Response cacheResponse = mResoucrCache.get(path);
             if (cacheResponse != null) {
@@ -372,6 +366,9 @@ public class ESWebViewRequestManager extends RequestManager {
 
             Log.d(TAG, "file cache :" + request.url);
             handlerResponse(cache, response);
+            if (! filterMime(cache.getName())) {
+                return;
+            }
             executeTask(new SaveResourceCacheTask(path, cache));
         }
     }
@@ -394,10 +391,12 @@ public class ESWebViewRequestManager extends RequestManager {
         private void setResourceCache(String path, File cache) {
             try {
                 String extension = getFileExtension(cache.getName());
+                String mime = getFileMime(extension);
+
                 byte[] fileData = EntityUtils.toByteArray(new FileEntity(cache, extension));
                 Response response = new ResourceResponse(fileData);
                 response.setEncoding("utf-8");
-                response.setMimeType(getFileMime(extension));
+                response.setMimeType(getFileMime(mime));
                 mResoucrCache.put(path, response);
                 Log.d(TAG, "set mem cache :" + path);
             } catch (Exception e) {

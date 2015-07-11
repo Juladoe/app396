@@ -11,10 +11,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -78,6 +76,10 @@ public class ESWebView extends RelativeLayout {
         return mWebView.getSettings().getUserAgentString();
     }
 
+    private void createWebView() {
+
+    }
+
     private void initWebView(AttributeSet attrs) {
         mWebView = new ESCordovaWebView(new CordovaContext(mActivity), attrs);
 
@@ -129,6 +131,10 @@ public class ESWebView extends RelativeLayout {
         return null;
     }
 
+    public void reload() {
+        mWebView.reload();
+    }
+
     public boolean canGoBack() {
         return mWebView.canGoBack();
     }
@@ -163,7 +169,7 @@ public class ESWebView extends RelativeLayout {
     public void updateApp(final String appCode) {
         RequestUrl appVersionUrl = mActivity.app.bindUrl(
                 String.format(Const.MOBILE_APP_VERSION, appCode), true);
-        mActivity.ajaxPost(appVersionUrl, new Listener<String>() {
+        mActivity.ajaxGet(appVersionUrl, new Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
@@ -194,6 +200,8 @@ public class ESWebView extends RelativeLayout {
         if (matcher.find()) {
             mAppCode = matcher.group(1);
             mLocalAppMeta = getLocalApp(mAppCode);
+        } else {
+            mActivity.showActionBar();
         }
 
         mWebView.loadUrl(url);
@@ -307,7 +315,6 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-
             if (mAppCode == null) {
                 return super.shouldInterceptRequest(view, url);
             }

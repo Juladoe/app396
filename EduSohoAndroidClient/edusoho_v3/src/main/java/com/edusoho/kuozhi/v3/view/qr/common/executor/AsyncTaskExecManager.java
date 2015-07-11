@@ -23,7 +23,7 @@ public final class AsyncTaskExecManager extends PlatformSupportManager<AsyncTask
 
   public AsyncTaskExecManager() {
     super(AsyncTaskExecInterface.class, new DefaultAsyncTaskExecInterface());
-    addImplementationClass(11, "com.edusoho.plugin.qr.common.executor.HoneycombAsyncTaskExecInterface");
+    addImplementationClass(11, "com.edusoho.kuozhi.v3.view.qr.common.executor.HoneycombAsyncTaskExecInterface");
   }
 
 }

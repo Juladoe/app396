@@ -50,6 +50,10 @@ public class Request {
      */
     public String getPath(String parentPath)
     {
+        if (parentPath == null) {
+            return "";
+        }
+
         String path = getPath();
         int lastDirPoint = path.lastIndexOf(parentPath);
         if (lastDirPoint != -1) {

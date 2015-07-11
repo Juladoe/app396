@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="0dp"
+    android:background="@drawable/lesson_more_tools_bg"
+    android:orientation="vertical">
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:visibility="gone"
+        android:drawablePadding="8dp"
+        android:padding="6dp"
+        app:es_alpha="0.87"
+        android:id="@+id/tv_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/iconfont_question"
+        android:gravity="center"
+        android:text="问答"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_x_large_size" />
+
+
+    <View
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/base_black_12"></View>
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:drawablePadding="8dp"
+        android:padding="6dp"
+        app:es_alpha="0.87"
+        android:id="@+id/tv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="资料"
+        android:drawableLeft="@drawable/iconfont_profile"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_x_large_size" />
+
+
+    <View
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:background="@color/base_black_12"></View>
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:visibility="gone"
+        android:drawablePadding="8dp"
+        android:padding="6dp"
+        app:es_alpha="0.87"
+        android:id="@+id/tv_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="笔记"
+        android:drawableLeft="@drawable/add_note"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_x_large_size" />
+
+    <View
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:background="@color/base_black_12"></View>
+
+    <com.edusoho.kuozhi.view.ESTextView
+        android:visibility="gone"
+        android:drawablePadding="4dp"
+        android:padding="6dp"
+        app:es_alpha="0.87"
+        android:id="@+id/tv_add_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="提问"
+        android:drawableLeft="@drawable/add_question"
+        android:textColor="@color/base_black_normal"
+        android:textSize="@dimen/base_x_large_size" />
+
+</LinearLayout>

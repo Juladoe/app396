@@ -75,6 +75,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
@@ -968,17 +969,16 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     private void shardCourse() {
 
         Course course = mCourseDetailsResult.course;
-        StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
+        StringBuilder stringBuilder = new StringBuilder(app.host);
         stringBuilder
                 .append(Const.SHARD_COURSE_URL)
-                .append("?courseId=")
                 .append(course.id);
-        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mActivity);
         shareUtil.initShareParams(
                 R.drawable.icon,
                 course.title,
                 stringBuilder.toString(),
-                AppUtil.coverCourseAbout(course.about),
+                AppUtil.coverCourseAbout(course.title+"："+course.about+"地址："+stringBuilder.toString()),
                 AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture),
                 app.host
         );
@@ -1011,10 +1011,9 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         WXTextObject wXTextObject = new WXTextObject();
         wXTextObject.text = "分享课程";
         WXWebpageObject wxobj = new WXWebpageObject();
-        StringBuilder stringBuilder = new StringBuilder(app.schoolHost);
+        StringBuilder stringBuilder = new StringBuilder(app.host);
         stringBuilder
                 .append(Const.SHARD_COURSE_URL)
-                .append("?courseId=")
                 .append(course.id);
 
         wxobj.webpageUrl = stringBuilder.toString();
@@ -1022,7 +1021,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         wXMediaMessage.mediaObject = wxobj;
         wXMediaMessage.description = AppUtil.coverCourseAbout(course.about);
         wXMediaMessage.title = course.title;
-        wXMediaMessage.setThumbImage(app.query.getCachedImage(mCoursePic, 99));
+        wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mCoursePic, new ImageSize(50, 50)));
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.scene = type;

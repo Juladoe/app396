@@ -13,6 +13,7 @@ import com.belladati.httpclientandroidlib.HttpEntity;
 import com.belladati.httpclientandroidlib.entity.ContentType;
 import com.belladati.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,7 +25,7 @@ import java.util.Map;
 /**
  * Created by JesseHuang on 15/6/28.
  */
-public class MultipartRequest extends Request<String> {
+public class MultipartRequest extends BaseVolleyRequest<String> {
     /**
      * 对应于服务端get('file')
      * requestUrl.setMuiltParams(new Object[]{"file", imageFile});
@@ -32,14 +33,13 @@ public class MultipartRequest extends Request<String> {
     public static final String KEY = "file";
     public static final String TAG = "MutlipartRequest";
     private HttpEntity mHttpEntity;
-    private Response.Listener<String> mListener;
     private RequestUrl mRequestUrl;
 
     public MultipartRequest(int method, RequestUrl requestUrl, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super(method, requestUrl.url, errorListener);
-        mListener = listener;
+        super(method, requestUrl, listener, errorListener);
         mRequestUrl = requestUrl;
         mHttpEntity = buildMultipartEntity();
+        mIsCache = CACHE_NONE;
     }
 
     private HttpEntity buildMultipartEntity() {
@@ -70,18 +70,13 @@ public class MultipartRequest extends Request<String> {
     }
 
     @Override
-    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+    protected String getResponseData(NetworkResponse response) {
+        String data = null;
         try {
-            String data = new String(response.data, "UTF-8");
-            return Response.success(data, HttpHeaderParser.parseCacheHeaders(response));
+            data = new String(response.data, "UTF-8");
         } catch (Exception e) {
             Log.e(TAG, String.format("Couldn't API parse JSON response. NetworkResponse:%s", response.toString()), e);
-            return Response.error(new ParseError(e));
         }
-    }
-
-    @Override
-    protected void deliverResponse(String response) {
-        mListener.onResponse(response);
+        return data;
     }
 }

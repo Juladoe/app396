@@ -42,7 +42,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
     private ViewGroup mNavBtnLayout;
     private NavBtnClickListener mNavBtnClickListener;
     private String mCurrentTag;
-    private int mSelectBtn;
+    protected int mSelectBtn;
 
     private EduSohoTextBtn mSchoolRoomBtn;
     private EduSohoTextBtn mRecommendBtn;
@@ -147,10 +147,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         super.onLowMemory();
     }
 
-    private void initView() {
+    protected void initView() {
         moreBtn = (EduSohoTextBtn) findViewById(R.id.nav_me_btn);
         mNavBtnClickListener = new NavBtnClickListener();
         bindNavOnClick();
+        initNavSelected();
+    }
+
+    protected void initNavSelected() {
         if (app.token == null || "".equals(app.token)) {
             mSelectBtn = R.id.nav_recommend_btn;
         } else {
@@ -200,7 +204,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity {
         startActivity(intent);
     }
 
-    private void selectNavBtn(int id) {
+    protected void selectNavBtn(int id) {
         String tag = null;
         boolean showIcon = false;
         BaseFragment fragment = null;
