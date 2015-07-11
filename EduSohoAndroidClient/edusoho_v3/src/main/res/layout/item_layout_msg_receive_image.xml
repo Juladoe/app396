@@ -37,21 +37,43 @@
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/myinfo_default_face" />
 
-            <TextView
-                android:id="@+id/tv_send_content"
+            <ImageView
+                android:id="@+id/iv_msg_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/ci_send_pic"
-                android:background="@drawable/other_box"
-                android:gravity="left|center_vertical"
+                android:background="@drawable/chat_from_layout"
+                android:clickable="true"
                 android:layout_centerInParent="true"
-                android:maxWidth="250dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="5dp"
-                android:textColor="@color/base_black_87"
-                android:textSize="@dimen/medium_font_size" />
+                android:layout_marginRight="6dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/iv_msg_image"
+                android:paddingTop="2dp"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:id="@+id/sendProgressPar" />
+
+                <ImageView
+                    android:id="@+id/msg_status"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:clickable="true"
+                    android:src="@drawable/msg_state_failed_resend"
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
         </RelativeLayout>
+
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -24,15 +24,43 @@ import java.util.regex.Pattern;
  */
 public class EduHtml {
 
-    private ArrayList<String> imageArray;
-    private Context mContext;
-
     private static Pattern IMAGE_FILTER = Pattern.compile("<[^>]+/?>", Pattern.DOTALL);
     private static Pattern IMAGE_URL_FILTER = Pattern.compile("<img src=['\"]([^>'\"]+)['\"][^>]+>", Pattern.DOTALL);
-
     private static boolean mIsClickable = true;
     private static boolean mIsMove = false;
     private static float mShiftDownY;
+    private static View.OnTouchListener tvTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    if (mIsMove) {
+                        mIsClickable = false;
+                        mIsMove = false;
+                    } else {
+                        mIsClickable = true;
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mShiftDownY != event.getY()) {
+                        mIsMove = true;
+                    }
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    mShiftDownY = event.getY();
+                    if (mIsMove) {
+                        mIsClickable = false;
+                        mIsMove = false;
+                    } else {
+                        mIsClickable = true;
+                    }
+                    break;
+            }
+            return false;
+        }
+    };
+    private ArrayList<String> imageArray;
+    private Context mContext;
 
     private EduHtml(Context context) {
         this.mContext = context;
@@ -52,6 +80,17 @@ public class EduHtml {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         spaned = instance.addImageClick(spaned, instance.imageArray);
 
+        return spaned;
+    }
+
+    public static SpannableStringBuilder addImageClickListener(
+            SpannableStringBuilder spaned, TextView textView, Context context) {
+        EduHtml instance = new EduHtml(context);
+        instance.imageArray = new ArrayList<String>();
+        textView.setClickable(true);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setOnTouchListener(tvTouchListener);
+        spaned = instance.addImageClick(spaned, null);
         return spaned;
     }
 
@@ -94,29 +133,6 @@ public class EduHtml {
         return stringBuffer.toString();
     }
 
-    public static SpannableStringBuilder addImageClickListener(
-            SpannableStringBuilder spaned, TextView textView, Context context) {
-        EduHtml instance = new EduHtml(context);
-        instance.imageArray = new ArrayList<String>();
-        textView.setClickable(true);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setOnTouchListener(tvTouchListener);
-        spaned = instance.addImageClick(spaned, null);
-        return spaned;
-    }
-
-    private class MyTextView extends TextView {
-        public MyTextView(Context context) {
-            super(context);
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-
-            return super.onTouchEvent(event);
-        }
-    }
-
     private SpannableStringBuilder addImageClick(
             SpannableStringBuilder spanned, ArrayList<String> array) {
         CharacterStyle[] characterStyles = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
@@ -137,6 +153,18 @@ public class EduHtml {
         }
 
         return spanned;
+    }
+
+    private class MyTextView extends TextView {
+        public MyTextView(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+
+            return super.onTouchEvent(event);
+        }
     }
 
     private class ImageClickSpan extends ClickableSpan {
@@ -160,35 +188,4 @@ public class EduHtml {
             }
         }
     }
-    
-    private static View.OnTouchListener tvTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_UP:
-                    if (mIsMove) {
-                        mIsClickable = false;
-                        mIsMove = false;
-                    } else {
-                        mIsClickable = true;
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (mShiftDownY != event.getY()) {
-                        mIsMove = true;
-                    }
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    mShiftDownY = event.getY();
-                    if (mIsMove) {
-                        mIsClickable = false;
-                        mIsMove = false;
-                    } else {
-                        mIsClickable = true;
-                    }
-                    break;
-            }
-            return false;
-        }
-    };
 }

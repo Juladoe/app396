@@ -15,11 +15,10 @@ import java.util.ArrayList;
  * Created by JesseHuang on 15/7/7.
  */
 public class BulletinDataSource {
+    private static final String TABLE_NAME = "BULLETIN";
+    public String[] allColumns = {"ID", "CONTENT", "CREATEDTIME"};
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
-    private static final String TABLE_NAME = "BULLETIN";
-
-    public String[] allColumns = {"ID", "CONTENT", "CREATEDTIME"};
 
     public BulletinDataSource(SqliteChatUtil sqliteChatUtil) {
         mDbHelper = sqliteChatUtil;

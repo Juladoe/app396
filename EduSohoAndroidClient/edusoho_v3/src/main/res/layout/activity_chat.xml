@@ -1,76 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.edusoho.kuozhi.v3.ui.ChatActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:layout_alignParentBottom="true"
-        android:padding="5dp"
-        android:id="@+id/ll_send_info">
+        android:id="@+id/ll_chat_dialog"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_send_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/grey_cccccc" />
+
+        <LinearLayout
+            android:id="@+id/rl_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:orientation="horizontal"
+            android:background="@android:color/white">
+
+            <!--语音切换按钮-->
+            <Button
+                android:id="@+id/btn_voice"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_chat_voice"
+                android:layout_marginLeft="6dp"
+                android:layout_gravity="center_vertical" />
+
+            <!--keyboard按钮-->
+            <Button
+                android:id="@+id/btn_set_mode_keyboard"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="6dp"
+                android:background="@drawable/chatting_set_mode_keyboard_btn"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone" />
+
+            <!--按住说话按钮-->
+            <LinearLayout
+                android:id="@+id/rl_btn_press_to_speak"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/chat_press_speak_btn"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textColor="@color/grey_666666"
+                    android:text="按住说话" />
+
+            </LinearLayout>
+
+            <!--文字输入框-->
+            <RelativeLayout
+                android:id="@+id/rl_msg_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:gravity="center_vertical"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/et_send_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="4"
+                    android:minHeight="40dp"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:textSize="@dimen/medium_font_size"
+                    android:background="@drawable/login_edt_bg_pressed" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="42dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="6dp"
+                android:orientation="vertical">
+
+                <!--弹出media_layout 十字按钮-->
+                <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_show_media_layout"
+                    android:textSize="33sp"
+                    android:visibility="visible"
+                    android:layout_gravity="center"
+                    android:text="@string/font_chat_add_media" />
+
+                <!--发送文字按钮-->
+                <Button
+                    android:textSize="@dimen/small_font_size"
+                    android:id="@+id/tv_send"
+                    android:layout_width="42dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/send_btn_click"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:text="发送"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/grey_cccccc" />
+
+        <LinearLayout
+            android:id="@+id/ll_media_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/tv_send"
-            android:layout_alignBottom="@+id/tv_send"
-            android:maxLines="4"
-            android:background="@drawable/login_edt_bg_pressed" />
+            android:visibility="gone"
+            android:background="@android:color/white"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:orientation="vertical">
 
-        <!--<EditText-->
-        <!--android:id="@+id/et_send_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:alpha="0.56"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:textColor="@color/green_alpha"-->
-        <!--android:maxLines="4"-->
-        <!--android:layout_toLeftOf="@+id/ll_send_button"-->
-        <!--android:background="@drawable/edit_select" />-->
-        <Button
-            android:textSize="@dimen/small_font_size"
-            android:id="@+id/tv_send"
-            android:layout_width="50dp"
-            android:layout_height="35dp"
-            android:layout_alignParentRight="true"
-            android:padding="8dp"
-            android:gravity="center"
-            android:background="@drawable/send_btn_unclick"
-            android:text="发送"
-            android:textColor="@color/grey_cccccc" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="5"
+                android:padding="6dp">
 
-        <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:id="@+id/tv_send"-->
-        <!--android:background="@drawable/edit_send_green"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:gravity="center"-->
-        <!--android:visibility="visible"-->
-        <!--android:padding="5dp"-->
-        <!--android:text="发送" />-->
-    </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/chat_media_stroke_bg">
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                            android:id="@+id/iv_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:layout_gravity="center"
+                            android:padding="12dp"
+                            android:textSize="@dimen/xxx_large_font_size"
+                            android:background="@drawable/chat_media_bg"
+                            android:text="@string/font_chat_media_photo" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="图片"
+                        android:textSize="@dimen/x_small_font_size" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/chat_media_stroke_bg">
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                            android:id="@+id/iv_camera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/font_chat_media_camera"
+                            android:layout_gravity="center"
+                            android:background="@drawable/chat_media_bg"
+                            android:padding="12dp"
+                            android:textSize="@dimen/xxx_large_font_size" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="拍照"
+                        android:textSize="@dimen/x_small_font_size" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <in.srain.cube.views.ptr.PtrClassicFrameLayout
         android:id="@+id/rotate_header_list_view_frame"
-        android:layout_above="@+id/ll_send_info"
-        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_above="@+id/ll_chat_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        cube_ptr:ptr_duration_to_close="200"
-        cube_ptr:ptr_duration_to_close_header="1000"
-        cube_ptr:ptr_keep_header_when_refresh="true"
-        cube_ptr:ptr_pull_to_fresh="false"
-        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
-        cube_ptr:ptr_resistance="1.7">
+        app:ptr_duration_to_close="200"
+        app:ptr_duration_to_close_header="1000"
+        app:ptr_keep_header_when_refresh="true"
+        app:ptr_pull_to_fresh="false"
+        app:ptr_ratio_of_header_height_to_refresh="1.2"
+        app:ptr_resistance="1.7">
 
         <ListView
             android:layout_width="match_parent"

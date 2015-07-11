@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -33,8 +34,10 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
@@ -309,6 +312,66 @@ public class AppUtil {
 
             }
         });
+    }
+
+    public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream baos, int size) {
+        image.compress(Bitmap.CompressFormat.JPEG, size, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+//        int options = 100;
+//        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+//            options -= 10;//每次都减少10
+//            baos.reset();//重置baos即清空baos
+//            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+//
+//        }
+        //ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        //Bitmap bitmap = BitmapFactory.decodeStream(isBm);//把ByteArrayInputStream数据生成图片
+        Bitmap bitmap = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
+        return bitmap;
+    }
+
+    /**
+     * bitmap转File
+     *
+     * @param bitmap
+     * @param path   file位置
+     * @return
+     */
+    public static File convertBitmap2File(Bitmap bitmap, String path) throws IOException {
+        File file = new File(path);
+        file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(file);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        fos.flush();
+        fos.close();
+        return file;
+    }
+
+    /**
+     * 获取图片旋转的角度
+     *
+     * @param imagePath
+     * @return
+     */
+    public static int getImageDegree(String imagePath) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(imagePath);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (Exception ex) {
+            Log.d("AppUtil.getImageDegree", ex.toString());
+        }
+        return degree;
     }
 
     /**
@@ -709,15 +772,14 @@ public class AppUtil {
     }
 
     /**
-     * 图片缩小
+     * 图片分辨率压缩
      *
      * @param bitmap    图片
      * @param imageSize 图片大小
      * @param degree    图片旋转的角度，如果没有旋转，则为0
-     * @param context   context
      * @return
      */
-    public static Bitmap scaleImage(Bitmap bitmap, float imageSize, int degree, Context context) {
+    public static Bitmap scaleImage(Bitmap bitmap, float imageSize, int degree) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 

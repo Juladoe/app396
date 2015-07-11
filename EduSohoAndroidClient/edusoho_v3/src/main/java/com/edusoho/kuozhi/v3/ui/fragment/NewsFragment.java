@@ -106,7 +106,6 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void initData() {
-
         if (app.loginUser != null) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
             List<New> news = newDataSource.getNews("WHERE BELONGID = ?", app.loginUser.id + "");

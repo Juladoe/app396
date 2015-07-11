@@ -3,14 +3,14 @@ package com.edusoho.kuozhi.v3.model.bal.push;
 /**
  * Created by JesseHuang on 15/7/2.
  */
-public enum ChatTypeEnum {
-    FRIEND("FRIEND", 1), TEACHER("TEACHER", 2),
-    COURSE("COURSE", 3), TEXT("TEXT", 4), SOUND("SOUND", 5), IMAGE("IMAGE", 6);
+public enum ObjectType {
+    FRIEND("friend", 1), TEACHER("teacher", 2),
+    COURSE("course", 3);
 
     private String name;
     private int index;
 
-    private ChatTypeEnum(String n, int i) {
+    private ObjectType(String n, int i) {
         this.name = n;
         this.index = i;
     }
@@ -23,8 +23,8 @@ public enum ChatTypeEnum {
         return this.index;
     }
 
-    public static ChatTypeEnum getName(int i) {
-        for (ChatTypeEnum type : ChatTypeEnum.values()) {
+    public static ObjectType getName(int i) {
+        for (ObjectType type : ObjectType.values()) {
             if (i == type.index) {
                 return type;
             }
@@ -32,8 +32,8 @@ public enum ChatTypeEnum {
         return null;
     }
 
-    public static ChatTypeEnum getName(String n) {
-        for (ChatTypeEnum type : ChatTypeEnum.values()) {
+    public static ObjectType getName(String n) {
+        for (ObjectType type : ObjectType.values()) {
             if (n.equals(type.getName())) {
                 return type;
             }

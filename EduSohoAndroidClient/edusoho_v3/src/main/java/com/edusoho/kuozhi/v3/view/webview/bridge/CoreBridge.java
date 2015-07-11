@@ -82,7 +82,7 @@ public class CoreBridge extends CordovaPlugin {
         Method method = mMethodList.get(action);
         if (method != null) {
             try {
-                JSONObject object = (JSONObject) method.invoke(this, null);
+                JSONObject object = (JSONObject) method.invoke(this, action);
                 callbackStatus.setSuccess(object);
             } catch (Exception e) {
                 callbackStatus.setError(getInvokeError(e));

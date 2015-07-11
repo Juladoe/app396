@@ -15,11 +15,10 @@ import java.util.ArrayList;
  * Created by JesseHuang on 15/7/2.
  */
 public class ChatDataSource {
+    private static final String TABLE_NAME = "CHAT";
+    public String[] allColumns = {"CHATID", "ID", "FROMID", "TOID", "NICKNAME", "HEADIMGURL", "CONTENT", "TYPE", "DELIVERY", "CREATEDTIME"};
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
-    private static final String TABLE_NAME = "CHAT";
-
-    public String[] allColumns = {"ID", "FROMID", "TOID", "NICKNAME", "HEADIMGURL", "CONTENT", "TYPE", "CREATEDTIME"};
 
     public ChatDataSource(SqliteChatUtil sqliteChatUtil) {
         mDbHelper = sqliteChatUtil;
@@ -36,17 +35,21 @@ public class ChatDataSource {
     }
 
     public void close() {
+        if (mDataBase.isOpen()) {
+            mDataBase.close();
+        }
         mDbHelper.close();
     }
 
     public ArrayList<Chat> getChats(int start, int limit, String sql) {
+        this.openRead();
         ArrayList<Chat> list = null;
         try {
             list = new ArrayList<>();
             if (TextUtils.isEmpty(sql)) {
                 sql = null;
             }
-            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "ID DESC",
+            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CHATID DESC",
                     String.format("%d, %d", start, limit));
             while (cursor.moveToNext()) {
                 list.add(cursorToComment(cursor));
@@ -55,38 +58,55 @@ public class ChatDataSource {
         } catch (Exception ex) {
             Log.d("-->", ex.getMessage());
         }
+        this.close();
         return list;
     }
 
     public long create(Chat chat) {
+        this.openWrite();
         ContentValues cv = new ContentValues();
-        cv.put(allColumns[0], chat.id);
-        cv.put(allColumns[1], chat.fromId);
-        cv.put(allColumns[2], chat.toId);
-        cv.put(allColumns[3], chat.nickName);
-        cv.put(allColumns[4], chat.headimgurl);
-        cv.put(allColumns[5], chat.content);
-        cv.put(allColumns[6], chat.type);
-        cv.put(allColumns[7], chat.createdTime);
-        long insertId = mDataBase.insert(TABLE_NAME, null, cv);
-        return insertId;
+        cv.put(allColumns[1], chat.id);
+        cv.put(allColumns[2], chat.fromId);
+        cv.put(allColumns[3], chat.toId);
+        cv.put(allColumns[4], chat.nickName);
+        cv.put(allColumns[5], chat.headimgurl);
+        cv.put(allColumns[6], chat.content);
+        cv.put(allColumns[7], chat.type);
+        cv.put(allColumns[8], chat.delivery);
+        cv.put(allColumns[9], chat.createdTime);
+        long effectRow = mDataBase.insert(TABLE_NAME, null, cv);
+        this.close();
+        return effectRow;
+    }
+
+    public int update(Chat chat) {
+        this.openWrite();
+        ContentValues cv = new ContentValues();
+        cv.put(allColumns[1], chat.id);
+        cv.put(allColumns[2], chat.fromId);
+        cv.put(allColumns[3], chat.toId);
+        cv.put(allColumns[4], chat.nickName);
+        cv.put(allColumns[5], chat.headimgurl);
+        cv.put(allColumns[6], chat.content);
+        cv.put(allColumns[7], chat.type);
+        cv.put(allColumns[8], chat.delivery);
+        cv.put(allColumns[9], chat.createdTime);
+        int effectRow = mDataBase.update(TABLE_NAME, cv, "CHATID = ?", new String[]{chat.chatId + ""});
+        this.close();
+        return effectRow;
     }
 
     public Chat cursorToComment(Cursor cursor) {
-        Chat chat = new Chat();
-        chat.id = cursor.getInt(0);
-        chat.fromId = cursor.getInt(1);
-        chat.toId = cursor.getInt(2);
-        chat.nickName = cursor.getString(3);
-        chat.headimgurl = cursor.getString(4);
-        chat.content = cursor.getString(5);
-        chat.type = cursor.getString(6);
-        chat.createdTime = cursor.getInt(7);
+        Chat chat = new Chat(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),
+                cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getInt(8), cursor.getInt(9));
         return chat;
     }
 
     public long delete(int fromId, int toId) {
-        return mDataBase.delete(TABLE_NAME, "(FROMID = ? AND TOID = ?) OR (TOID = ? AND FROMID = ?)",
+        this.openWrite();
+        long effectRow = mDataBase.delete(TABLE_NAME, "(FROMID = ? AND TOID = ?) OR (TOID = ? AND FROMID = ?)",
                 new String[]{fromId + "", toId + "", fromId + "", toId + ""});
+        this.close();
+        return effectRow;
     }
 }

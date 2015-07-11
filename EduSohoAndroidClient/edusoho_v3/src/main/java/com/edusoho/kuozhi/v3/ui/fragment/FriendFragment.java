@@ -264,14 +264,14 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
             loadSchoolApps();
         }
-        if(messageType.type.equals(Const.REFRESH_FRIEND_LIST)){
+        if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
             loadSchoolApps();
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
-        MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS),new MessageType(Const.REFRESH_FRIEND_LIST)};
+        MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.REFRESH_FRIEND_LIST)};
         return messageTypes;
     }
 }

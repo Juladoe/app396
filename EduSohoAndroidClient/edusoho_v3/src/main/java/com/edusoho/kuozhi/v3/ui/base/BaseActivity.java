@@ -150,14 +150,10 @@ public class BaseActivity extends ActionBarActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse == null) {
-                    CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                if (errorListener != null) {
+                    errorListener.onErrorResponse(error);
                 } else {
-                    if (errorListener != null) {
-                        errorListener.onErrorResponse(error);
-                    } else {
-                        CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                    }
+                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             }
         });

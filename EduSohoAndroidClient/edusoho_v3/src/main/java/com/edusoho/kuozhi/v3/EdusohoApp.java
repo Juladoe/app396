@@ -22,6 +22,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -148,6 +149,9 @@ public class EdusohoApp extends Application {
             }
         };
         multipartRequest.setTag(requestUrl.url);
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(Const.TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         return mVolley.addToRequestQueue(multipartRequest);
     }
 
@@ -182,6 +186,14 @@ public class EdusohoApp extends Application {
                 } catch (JSONException e) {
                     return Response.error(new ParseError(e));
                 }
+            }
+
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                    volleyError = new VolleyError(new String(volleyError.networkResponse.data));
+                }
+                return volleyError;
             }
         };
         jsonObjectRequest.setTag(requestUrl.url);
@@ -635,12 +647,20 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
+    public RequestUrl bindNewApiUrl(String url, boolean addToken) {
+        RequestUrl requestUrl = new RequestUrl(app.host + url);
+        if (addToken) {
+            requestUrl.heads.put("Auth-Token", token);
+        }
+        return requestUrl;
+    }
+
     public RequestUrl bindPushUrl(String url) {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);
-        RequestUrl pushRequesUrl = new RequestUrl(sb.toString());
-        pushRequesUrl.heads.put("Auth-Token", app.apiToken);
-        return pushRequesUrl;
+        RequestUrl requestUrl = new RequestUrl(sb.toString());
+        requestUrl.heads.put("Auth-Token", app.apiToken);
+        return requestUrl;
     }
 
     @Override
@@ -846,9 +866,9 @@ public class EdusohoApp extends Application {
                         PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
                         });
                         if (pushResult != null && pushResult.result.equals("success")) {
-                            Log.d(TAG, "cloud register success");
+                            Log.d(TAG, "cloud logout success");
                         } else {
-                            Log.d(TAG, "cloud register failed");
+                            Log.d(TAG, "cloud logout failed");
                         }
                     }
                 }, null);

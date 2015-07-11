@@ -21,11 +21,11 @@ import java.util.List;
  */
 public class SqliteChatUtil extends SQLiteOpenHelper {
 
-    private static String mCurDbName;
-    private Context mContext;
-    private static SqliteChatUtil instance;
     private static final int oldVersion = 1;
     private static final int newVersion = 2;
+    private static String mCurDbName;
+    private static SqliteChatUtil instance;
+    private Context mContext;
 
     public SqliteChatUtil(Context context, String name, SQLiteDatabase.CursorFactory factory) {
         super(context, name, null, oldVersion);

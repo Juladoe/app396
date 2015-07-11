@@ -14,9 +14,9 @@ import java.util.List;
  * Created by JesseHuang on 15/7/2.
  */
 public class NewDataSource {
+    private static final String TABLE_NAME = "NEW";
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
-    private static final String TABLE_NAME = "NEW";
     private String[] allColumns = {"ID", "FROMID", "TITLE", "CONTENT", "CREATEDTIME", "IMGURL", "UNREAD", "TYPE", "BELONGID", "ISTOP"};
 
     public NewDataSource(SqliteChatUtil sqliteChatUtil) {

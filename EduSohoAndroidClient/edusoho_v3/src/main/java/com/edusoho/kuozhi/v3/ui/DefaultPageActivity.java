@@ -369,7 +369,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (checkSchoolHasLogined(school.host)) {
             params.put("firstInstall", "true");
         }
-        RequestUrl url = app.bindUrl(Const.MOBILE_SCHOOL_LOGIN, false);
+        RequestUrl url = new RequestUrl(Const.MOBILE_SCHOOL_LOGIN);
         url.setParams(params);
 
         ajaxPost(url, new Response.Listener<String>() {

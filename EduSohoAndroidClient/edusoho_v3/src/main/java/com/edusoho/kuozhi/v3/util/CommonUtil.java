@@ -334,45 +334,6 @@ public class CommonUtil {
         }, 1, time);
     }
 
-    public static class MoveTimerTask extends TimerTask {
-        public static int LEFT = 0001;
-        public static int RIGHT = 0002;
-
-        public int DEF_SIZE;
-
-        private int step_def;
-        public int step;
-        public int mOffset;
-        private int type;
-
-        public MoveTimerTask(int offset, int type, int defsize) {
-            this.type = type;
-            this.step = offset;
-            this.mOffset = type == LEFT ? 0 : offset;
-            if (defsize == -1) {
-                DEF_SIZE = type == LEFT ? 5 : -5;
-            } else {
-                DEF_SIZE = type == LEFT ? defsize : -defsize;
-            }
-            step_def = Math.abs(DEF_SIZE);
-        }
-
-        public boolean step() {
-            if (step > 0 && step < step_def) {
-                DEF_SIZE = type == LEFT ? step : -step;
-                step = 0;
-                return true;
-            }
-            step -= step_def;
-            return step > 0;
-        }
-
-        @Override
-        public void run() {
-
-        }
-    }
-
     /**
      * @param v1
      * @param v2
@@ -865,7 +826,6 @@ public class CommonUtil {
         return intent;
     }
 
-
     /**
      * 获取系统图片路径
      */
@@ -968,7 +928,6 @@ public class CommonUtil {
         }
         return null;
     }
-
 
     /**
      * @param uri The Uri to check.
@@ -1175,6 +1134,44 @@ public class CommonUtil {
 
     public static void shortToast(Context context, String title) {
         Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+    }
+
+    public static class MoveTimerTask extends TimerTask {
+        public static int LEFT = 0001;
+        public static int RIGHT = 0002;
+
+        public int DEF_SIZE;
+        public int step;
+        public int mOffset;
+        private int step_def;
+        private int type;
+
+        public MoveTimerTask(int offset, int type, int defsize) {
+            this.type = type;
+            this.step = offset;
+            this.mOffset = type == LEFT ? 0 : offset;
+            if (defsize == -1) {
+                DEF_SIZE = type == LEFT ? 5 : -5;
+            } else {
+                DEF_SIZE = type == LEFT ? defsize : -defsize;
+            }
+            step_def = Math.abs(DEF_SIZE);
+        }
+
+        public boolean step() {
+            if (step > 0 && step < step_def) {
+                DEF_SIZE = type == LEFT ? step : -step;
+                step = 0;
+                return true;
+            }
+            step -= step_def;
+            return step > 0;
+        }
+
+        @Override
+        public void run() {
+
+        }
     }
 
 }

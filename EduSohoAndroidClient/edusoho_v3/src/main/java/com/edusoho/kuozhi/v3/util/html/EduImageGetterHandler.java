@@ -88,9 +88,9 @@ public class EduImageGetterHandler implements Html.ImageGetter {
                 showMinWidth = mImageSize * 0.9f;
             }
             if (showMaxWidth < loadedImage.getWidth()) {
-                loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0, mContext);
+                loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0);
             } else if (showMinWidth >= loadedImage.getWidth()) {
-                loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0, mContext);
+                loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0);
             }
 
             mDrawable.bitmap = loadedImage;
@@ -125,8 +125,8 @@ public class EduImageGetterHandler implements Html.ImageGetter {
     }
 
     private class CacheDrawable extends BitmapDrawable {
-        private Bitmap loadBitmap;
         public Bitmap bitmap;
+        private Bitmap loadBitmap;
 
         public CacheDrawable() {
             loadBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.html_image_loading);

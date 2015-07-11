@@ -8,13 +8,15 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.HashMap;
+
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by howzhi on 15/7/7.
@@ -26,14 +28,12 @@ public class OpenLoginUtil {
         public void success(UserResult obj) {
         }
     };
-
+    private ActionBarBaseActivity mActivity;
+    private String mAuthCancel;
     private OpenLoginUtil(ActionBarBaseActivity activity) {
         this.mActivity = activity;
         mAuthCancel = mActivity.getResources().getString(R.string.authorize_cancelled);
     }
-
-    private ActionBarBaseActivity mActivity;
-    private String mAuthCancel;
 
     public static OpenLoginUtil getUtil(ActionBarBaseActivity activity) {
         return new OpenLoginUtil(activity);
@@ -50,7 +50,7 @@ public class OpenLoginUtil {
         }
         EdusohoApp app = mActivity.app;
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "type", params[3],
                 "id", params[0],
                 "name", params[1],
@@ -61,7 +61,7 @@ public class OpenLoginUtil {
             public void onResponse(String response) {
                 UserResult userResult = mActivity.parseJsonValue(
                         response, new TypeToken<UserResult>() {
-                });
+                        });
                 mActivity.app.saveToken(userResult);
                 mActivity.app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
@@ -77,7 +77,7 @@ public class OpenLoginUtil {
         String name = res.get("nickname").toString();
         String avatar = res.get("headimgurl").toString();
 
-        return new String[] { id, name, avatar, "weixin" };
+        return new String[]{id, name, avatar, "weixin"};
     }
 
     private String[] getWeiboLoginResult(HashMap<String, Object> res) {
@@ -85,7 +85,7 @@ public class OpenLoginUtil {
         String name = res.get("name").toString();
         String avatar = res.get("avatar_large").toString();
 
-        return new String[] { id, name, avatar, "weibo" };
+        return new String[]{id, name, avatar, "weibo"};
     }
 
     private String[] getQQLoginResult(HashMap<String, Object> res, Platform platform) {
@@ -93,7 +93,7 @@ public class OpenLoginUtil {
         String name = res.get("nickname").toString();
         String avatar = res.get("figureurl_qq_2").toString();
 
-        return new String[] { id, name, avatar, "qq" };
+        return new String[]{id, name, avatar, "qq"};
     }
 
     private void startOpenLogin(final String type) {

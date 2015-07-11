@@ -7,9 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -25,13 +23,11 @@ import java.util.ArrayList;
 
 public class SqliteUtil extends SQLiteOpenHelper {
 
-    private Context mContext;
     private static final int dbVersion = 10;
     private static final int oldVersion = 9;
-
     private static SqliteUtil instance;
-
     private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql"};
+    private Context mContext;
 
     private SqliteUtil(Context context, String name, CursorFactory factory) {
         super(context, Const.DB_NAME, null, dbVersion);
@@ -46,6 +42,26 @@ public class SqliteUtil extends SQLiteOpenHelper {
             instance = new SqliteUtil(context, null, null);
         }
         return instance;
+    }
+
+    public static void saveUser(User user) {
+        //保存用户
+        EdusohoApp app = EdusohoApp.app;
+        ContentValues cv = new ContentValues();
+        cv.put("key", "data-" + user.id);
+        cv.put("value", app.gson.toJson(user));
+        cv.put("type", Const.CACHE_USER_TYPE);
+        SqliteUtil.getUtil(app).insert("data_cache", cv);
+    }
+
+    public static void clearUser(int userId) {
+        //保存用户
+        EdusohoApp app = EdusohoApp.app;
+        SqliteUtil.getUtil(app).delete(
+                "data_cache",
+                "key=?",
+                new String[]{"data-" + userId}
+        );
     }
 
     @Override
@@ -195,21 +211,6 @@ public class SqliteUtil extends SQLiteOpenHelper {
         return lastId;
     }
 
-    public static class QueryCallBack {
-        public void query(Cursor cursor) {
-        }
-    }
-
-    public static class QueryPaser<T> {
-        public T parse(Cursor cursor) {
-            return null;
-        }
-
-        public boolean isSignle() {
-            return false;
-        }
-    }
-
     public void close() {
         getReadableDatabase().close();
         getWritableDatabase().close();
@@ -245,23 +246,18 @@ public class SqliteUtil extends SQLiteOpenHelper {
         return obj;
     }
 
-    public static void saveUser(User user) {
-        //保存用户
-        EdusohoApp app = EdusohoApp.app;
-        ContentValues cv = new ContentValues();
-        cv.put("key", "data-" + user.id);
-        cv.put("value", app.gson.toJson(user));
-        cv.put("type", Const.CACHE_USER_TYPE);
-        SqliteUtil.getUtil(app).insert("data_cache", cv);
+    public static class QueryCallBack {
+        public void query(Cursor cursor) {
+        }
     }
 
-    public static void clearUser(int userId) {
-        //保存用户
-        EdusohoApp app = EdusohoApp.app;
-        SqliteUtil.getUtil(app).delete(
-                "data_cache",
-                "key=?",
-                new String[]{"data-" + userId}
-        );
+    public static class QueryPaser<T> {
+        public T parse(Cursor cursor) {
+            return null;
+        }
+
+        public boolean isSignle() {
+            return false;
+        }
     }
 }

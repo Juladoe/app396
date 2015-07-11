@@ -1,14 +1,14 @@
 package com.edusoho.kuozhi.v3.util.server;
 
 
-import java.io.IOException;
-
 import com.belladati.httpclientandroidlib.ConnectionClosedException;
 import com.belladati.httpclientandroidlib.HttpException;
 import com.belladati.httpclientandroidlib.HttpServerConnection;
 import com.belladati.httpclientandroidlib.protocol.BasicHttpContext;
 import com.belladati.httpclientandroidlib.protocol.HttpContext;
 import com.belladati.httpclientandroidlib.protocol.HttpService;
+
+import java.io.IOException;
 
 /**
  * Created by howzhi on 14-10-24.

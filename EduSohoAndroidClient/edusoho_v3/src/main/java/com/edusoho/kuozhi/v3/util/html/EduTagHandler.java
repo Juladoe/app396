@@ -23,6 +23,10 @@ import java.util.regex.Pattern;
  */
 public class EduTagHandler implements Html.TagHandler {
 
+    public static Pattern STYLE_PAT = Pattern.compile(
+            "([\\-\\w]+):([#\\-\\w]+);",
+            Pattern.DOTALL
+    );
     private int startIndex = 0;
     private int endIndex = 0;
     private HashMap<String, String> attributes;
@@ -41,8 +45,7 @@ public class EduTagHandler implements Html.TagHandler {
         }
     }
 
-    private int parseFontSize(String value)
-    {
+    private int parseFontSize(String value) {
         if (value == null) {
             return 0;
         }
@@ -52,8 +55,7 @@ public class EduTagHandler implements Html.TagHandler {
         return AppUtil.parseInt(value);
     }
 
-    private void setStyle(String style, Editable editable)
-    {
+    private void setStyle(String style, Editable editable) {
         if (style == null) {
             return;
         }
@@ -97,23 +99,17 @@ public class EduTagHandler implements Html.TagHandler {
             Object atts = attsField.get(element);
             Field dataField = atts.getClass().getDeclaredField("data");
             dataField.setAccessible(true);
-            String[] data = (String[])dataField.get(atts);
+            String[] data = (String[]) dataField.get(atts);
             Field lengthField = atts.getClass().getDeclaredField("length");
             lengthField.setAccessible(true);
-            int len = (Integer)lengthField.get(atts);
+            int len = (Integer) lengthField.get(atts);
 
-            for(int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++)
                 map.put(data[i * 5 + 1], data[i * 5 + 4]);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d(null, "Exception: " + e);
         }
 
         return map;
     }
-
-    public static Pattern STYLE_PAT = Pattern.compile(
-            "([\\-\\w]+):([#\\-\\w]+);",
-            Pattern.DOTALL
-    );
 }

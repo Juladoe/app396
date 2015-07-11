@@ -29,9 +29,9 @@ import java.net.Socket;
 
 public class CacheServer extends Thread {
 
+    public static final String TAG = "CacheServer";
     private int port = Const.CACHE_PROT;
     private boolean isLoop;
-    public static final String TAG = "CacheServer";
     private ActionBarBaseActivity mActivity;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;

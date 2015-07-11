@@ -96,6 +96,7 @@ public class Const {
     public static final int ERROR_200 = 200;
     public static final boolean memCacheNo = false;
     public static final boolean fileCacheYes = true;
+    public static final int TIMEOUT = 15000;
 
     public static final String RESULT_OK = "ok";
     public static final String SHOW_STUDENT_NUM = "opened";
@@ -246,6 +247,7 @@ public class Const {
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
     public static final String SEND = "/message/%d/friend/%d/send";
+    public static final String UPLOAD_MEDIA = "/api/files/";
 
     /**
      * "/message/:studentId/friend/:fid/send"
@@ -421,4 +423,8 @@ public class Const {
      * 绑定第三方登录
      */
     public static final String BIND_LOGIN = "/api/users/bind_login";
+
+    public static final String UPLOAD_AUDIO_CACHE_FILE = "/audio";
+    public static final String UPLOAD_IMAGE_CACHE_FILE = "/image";
+    public static final String UPLOAD_IMAGE_CACHE_THUMB_FILE = "/image/thumb";
 }

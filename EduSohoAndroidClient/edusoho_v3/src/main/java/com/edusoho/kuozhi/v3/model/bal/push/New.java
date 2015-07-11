@@ -120,13 +120,13 @@ public class New implements Serializable {
         //JSONObject jsonObject = new JSONObject(message.getCustomContent());
         CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContent(), new TypeToken<CustomContent>() {
         });
-        fromId = customContent.fromId;
+        fromId = customContent.getFromId();
         title = message.getTitle();
         content = message.getContent();
-        createdTime = customContent.createdTime;
-        imgUrl = customContent.imgUrl;
+        createdTime = customContent.getCreatedTime();
+        imgUrl = customContent.getImgUrl();
         //newModel.setUnread();
-        type = customContent.typeObject;
+        type = customContent.getTypeObject();
         belongId = EdusohoApp.app.loginUser.id;
     }
 }

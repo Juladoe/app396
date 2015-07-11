@@ -12,6 +12,7 @@ create table if not exists new (
 );
 
 create table if not exists chat (
+    chatId integer primary key AutoIncrement,
     id integer ,
     fromId integer,
     toId integer,
@@ -19,6 +20,7 @@ create table if not exists chat (
     headimgurl varchar(255),
     content varchar(255),
     type varchar,
+    delivery integer,
     createdTime integer
 );
 

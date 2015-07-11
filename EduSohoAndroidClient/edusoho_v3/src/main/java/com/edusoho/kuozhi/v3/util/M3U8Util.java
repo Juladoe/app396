@@ -57,6 +57,13 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class M3U8Util {
 
+    public static final int FINISH = 1;
+    public static final int UN_FINISH = 0;
+    public static final int ALL = 2;
+    public static final int START = -1;
+    public static final int KEY = 0;
+    public static final int URL = 1;
+    private static final String TAG = "M3U8Uitl";
     private static Pattern M3U8_STREAM_PAT = Pattern.compile(
             "#EXT-X-STREAM-INF:PROGRAM-ID=(\\d+),BANDWIDTH=(\\d+)", Pattern.DOTALL);
     private static Pattern M3U8_EXTINF_PAT = Pattern.compile(
@@ -64,15 +71,6 @@ public class M3U8Util {
     private static Pattern M3U8_EXT_X_KEY_PAT = Pattern.compile(
             "#EXT-X-KEY:METHOD=AES-128,URI=\"([^,\"]+)\",IV=(\\w+)", Pattern.DOTALL);
     private static Pattern URL_PAT = Pattern.compile("(#EXT-X-KEY:[^\n]+)?(http://[^\"\n]+)", Pattern.DOTALL);
-
-    public static final int FINISH = 1;
-    public static final int UN_FINISH = 0;
-    public static final int ALL = 2;
-    public static final int START = -1;
-
-    public static final int KEY = 0;
-    public static final int URL = 1;
-
     private Context mContext;
     private int mLessonId;
     private int mCourseId;
@@ -83,13 +81,9 @@ public class M3U8Util {
     private SqliteUtil mSqliteUtil;
     private String mTargetHost;
     private HttpClient mHttpClient;
-
     private boolean isCancel;
-
     private Hashtable<String, Integer> mTimeOutList;
     private ArrayList<HttpGet> mFutures;
-
-    private static final String TAG = "M3U8Uitl";
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
 
     public M3U8Util(Context context) {
@@ -107,35 +101,6 @@ public class M3U8Util {
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(3);
         mThreadPoolExecutor.setMaximumPoolSize(4);
         mSqliteUtil = SqliteUtil.getUtil(mContext);
-    }
-
-    public String getLessonTitle() {
-        return mLessonTitle;
-    }
-
-    private String readStringFromNet(String url) {
-        HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            HttpResponse response = client.execute(httpGet);
-            return EntityUtils.toString(response.getEntity());
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
-
-    private InputStream readStreamFromNet(String url) {
-        HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            Log.d(TAG, "get url " + url);
-            HttpResponse response = client.execute(httpGet);
-            return response.getEntity().getContent();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private static M3U8DbModle parseM3U8Modle(Cursor cursor) {
@@ -239,6 +204,74 @@ public class M3U8Util {
             );
         }
         return list;
+    }
+
+    private static void clearM3U8Db(SqliteUtil sqliteUtil, int lessonId) {
+        Log.d(TAG, "clear m3u8 db");
+        sqliteUtil.delete(
+                "data_m3u8",
+                "lessonId = ?",
+                new String[]{String.valueOf(lessonId)}
+        );
+        //清除以前的数据库缓存项
+        sqliteUtil.delete(
+                "data_m3u8_url",
+                "lessonId=?",
+                new String[]{String.valueOf(lessonId)}
+        );
+    }
+
+    public static M3U8DbModle saveM3U8Model(
+            Context context, int lessonId, String host, int userId) {
+        Log.d(TAG, "saveM3U8Model");
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(context);
+        clearM3U8Db(sqliteUtil, lessonId);
+        ContentValues cv = new ContentValues();
+        cv.put("finish", START);
+        cv.put("total_num", 0);
+        cv.put("download_num", 0);
+        cv.put("userId", userId);
+        cv.put("lessonId", lessonId);
+        cv.put("host", host);
+        cv.put("play_list", "");
+        sqliteUtil.insert("data_m3u8", cv);
+
+        M3U8DbModle m3U8DbModle = new M3U8DbModle();
+        m3U8DbModle.finish = START;
+        m3U8DbModle.lessonId = lessonId;
+        m3U8DbModle.host = host;
+        m3U8DbModle.userId = userId;
+
+        return m3U8DbModle;
+    }
+
+    public String getLessonTitle() {
+        return mLessonTitle;
+    }
+
+    private String readStringFromNet(String url) {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(url);
+        try {
+            HttpResponse response = client.execute(httpGet);
+            return EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    private InputStream readStreamFromNet(String url) {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(url);
+        try {
+            Log.d(TAG, "get url " + url);
+            HttpResponse response = client.execute(httpGet);
+            return response.getEntity().getContent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void loadLessonUrl(final int lessonId, int courseId) {
@@ -419,45 +452,6 @@ public class M3U8Util {
         } finally {
             httpGet.abort();
         }
-    }
-
-    private static void clearM3U8Db(SqliteUtil sqliteUtil, int lessonId) {
-        Log.d(TAG, "clear m3u8 db");
-        sqliteUtil.delete(
-                "data_m3u8",
-                "lessonId = ?",
-                new String[]{String.valueOf(lessonId)}
-        );
-        //清除以前的数据库缓存项
-        sqliteUtil.delete(
-                "data_m3u8_url",
-                "lessonId=?",
-                new String[]{String.valueOf(lessonId)}
-        );
-    }
-
-    public static M3U8DbModle saveM3U8Model(
-            Context context, int lessonId, String host, int userId) {
-        Log.d(TAG, "saveM3U8Model");
-        SqliteUtil sqliteUtil = SqliteUtil.getUtil(context);
-        clearM3U8Db(sqliteUtil, lessonId);
-        ContentValues cv = new ContentValues();
-        cv.put("finish", START);
-        cv.put("total_num", 0);
-        cv.put("download_num", 0);
-        cv.put("userId", userId);
-        cv.put("lessonId", lessonId);
-        cv.put("host", host);
-        cv.put("play_list", "");
-        sqliteUtil.insert("data_m3u8", cv);
-
-        M3U8DbModle m3U8DbModle = new M3U8DbModle();
-        m3U8DbModle.finish = START;
-        m3U8DbModle.lessonId = lessonId;
-        m3U8DbModle.host = host;
-        m3U8DbModle.userId = userId;
-
-        return m3U8DbModle;
     }
 
     /*
