@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi;
 
-import android.util.Log;
-
 import com.edusoho.kuozhi.model.SchoolRoom.SchoolRoomResult;
 import com.edusoho.kuozhi.ui.fragment.SchoolRoomFragment;
 
