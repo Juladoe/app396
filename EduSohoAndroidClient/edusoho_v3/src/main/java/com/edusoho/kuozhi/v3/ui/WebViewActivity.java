@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 /**
@@ -49,6 +50,10 @@ public class WebViewActivity extends ActionBarBaseActivity {
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
+        if (Const.LOGIN_SUCCESS.equals(messageType.type)) {
+            mWebView.reload();
+            return;
+        }
         if (messageType.code == BACK) {
             mHandler.post(new Runnable() {
                 @Override
@@ -82,7 +87,10 @@ public class WebViewActivity extends ActionBarBaseActivity {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(CLOSE, source)};
+        MessageType[] messageTypes = new MessageType[]{
+                new MessageType(CLOSE, source),
+                new MessageType(Const.LOGIN_SUCCESS)
+        };
         return messageTypes;
     }
 

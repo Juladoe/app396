@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.toolbox.RequestFuture;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -22,22 +19,17 @@ import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
-import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Iterator;
 
 /**
@@ -46,7 +38,7 @@ import java.util.Iterator;
 public class MenuClickPlugin extends CoreBridge {
 
     @JavascriptInterface
-    public void openDrawer() throws JSONException {
+    public void openDrawer(JSONArray args, CallbackContext callbackContext) throws JSONException {
         String message = args.getString(0);
         if (message.equals("open")) {
             EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
@@ -54,7 +46,7 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void openPlatformLogin() throws JSONException {
+    public void openPlatformLogin(JSONArray args, CallbackContext callbackContext) throws JSONException {
         String type = args.getString(0);
         OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
@@ -67,12 +59,12 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void backWebView() throws JSONException {
+    public void backWebView(JSONArray args, CallbackContext callbackContext) throws JSONException {
         mActivity.app.sendMsgToTarget(WebViewActivity.BACK, null, mActivity);
     }
 
     @JavascriptInterface
-    public void openWebView() throws JSONException {
+    public void openWebView(JSONArray args, CallbackContext callbackContext) throws JSONException {
         final String strUrl = args.getString(0);
         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
             @Override
@@ -83,12 +75,12 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void closeWebView() throws JSONException {
+    public void closeWebView(JSONArray args, CallbackContext callbackContext) throws JSONException {
         mActivity.app.sendMsgToTarget(WebViewActivity.CLOSE, null, mActivity);
     }
 
     @JavascriptInterface
-    public JSONObject getUserToken() throws JSONException {
+    public JSONObject getUserToken(JSONArray args, CallbackContext callbackContext) throws JSONException {
         JSONObject result = new JSONObject();
         if (EdusohoApp.app.loginUser != null) {
             result.put("user", EdusohoApp.app.loginUser);
@@ -99,12 +91,12 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public JSONObject post() throws JSONException {
+    public void post(JSONArray args, final CallbackContext callbackContext) throws JSONException {
         String url = args.getString(0);
         JSONObject heads = args.getJSONObject(1);
         JSONObject params = args.getJSONObject(2);
 
-        RequestUrl requestUrl = new RequestUrl(url);
+        final RequestUrl requestUrl = new RequestUrl(url);
 
         Iterator<String> itor = heads.keys();
         while (itor.hasNext()) {
@@ -118,25 +110,29 @@ public class MenuClickPlugin extends CoreBridge {
             requestUrl.params.put(key, params.getString(key));
         }
 
-        VolleySingleton volley = VolleySingleton.getInstance(mActivity.getBaseContext());
-        volley.getRequestQueue();
-        RequestFuture<String> future = RequestFuture.newFuture();
-        StringVolleyRequest request = new StringVolleyRequest(
-                Request.Method.POST, requestUrl, future, future);
-        request.setTag(requestUrl.url);
-        volley.addToRequestQueue(request);
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                VolleySingleton volley = VolleySingleton.getInstance(mActivity.getBaseContext());
+                volley.getRequestQueue();
+                RequestFuture<String> future = RequestFuture.newFuture();
+                StringVolleyRequest request = new StringVolleyRequest(
+                        Request.Method.POST, requestUrl, future, future);
+                request.setTag(requestUrl.url);
+                volley.addToRequestQueue(request);
 
-        String result = "";
-        try {
-            result = future.get();
-        } catch (Exception e) {
-        }
-
-        return new JSONObject(result);
+                String result = "";
+                try {
+                    result = future.get();
+                    callbackContext.success(result);
+                } catch (Exception e) {
+                }
+            }
+        });
     }
 
     @JavascriptInterface
-    public void saveUserToken() throws JSONException {
+    public void saveUserToken(JSONArray args, CallbackContext callbackContext) throws JSONException {
 
         UserResult userResult = new UserResult();
         userResult.token = args.length() > 1 ? args.getString(1) : "";
@@ -150,7 +146,7 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void share() throws JSONException {
+    public void share(JSONArray args, CallbackContext callbackContext) throws JSONException {
         String url = args.getString(0);
         String title = args.getString(1);
         String about = args.getString(2);
@@ -166,7 +162,7 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void pay() throws JSONException {
+    public void pay(JSONArray args, CallbackContext callbackContext) throws JSONException {
         final String mTitle = args.getString(0);
         final String payUrl = args.getString(1);
         mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
@@ -186,7 +182,7 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void learnCourseLesson() throws JSONException {
+    public void learnCourseLesson(JSONArray args, CallbackContext callbackContext) throws JSONException {
         final int courseId = args.getInt(0);
         final int lessonId = args.getInt(1);
 
@@ -202,7 +198,7 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void showImages() throws JSONException {
+    public void showImages(JSONArray args, CallbackContext callbackContext) throws JSONException {
         int index = args.getInt(0);
         JSONArray imageArray = args.getJSONArray(1);
         Bundle bundle = new Bundle();
@@ -216,14 +212,14 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void clearUserToken() throws JSONException {
+    public void clearUserToken(JSONArray args, CallbackContext callbackContext) throws JSONException {
         mActivity.app.removeToken();
         mActivity.app.sendMessage(Const.LOGOUT_SUCCESS, null);
         mActivity.app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
     }
 
     @JavascriptInterface
-    public void showDownLesson() throws JSONException {
+    public void showDownLesson(JSONArray args, CallbackContext callbackContext) throws JSONException {
         final int courseId = args.getInt(0);
         mActivity.app.mEngine.runNormalPlugin(
                 "LessonDownloadingActivity", mActivity, new PluginRunCallback() {

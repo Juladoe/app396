@@ -11,10 +11,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -127,6 +125,10 @@ public class ESWebView extends RelativeLayout {
         }
 
         return null;
+    }
+
+    public void reload() {
+        mWebView.reload();
     }
 
     public boolean canGoBack() {
@@ -307,7 +309,6 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-
             if (mAppCode == null) {
                 return super.shouldInterceptRequest(view, url);
             }

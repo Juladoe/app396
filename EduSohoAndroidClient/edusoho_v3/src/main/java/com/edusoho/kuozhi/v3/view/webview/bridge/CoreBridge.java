@@ -24,10 +24,10 @@ public class CoreBridge extends CordovaPlugin {
 
     public static final String TAG = "CoreBridge";
 
-    protected HashMap<String, Method> mMethodList;
+    private HashMap<String, Method> mMethodList;
     protected Context mContext;
-    protected JSONArray args;
     protected ActionBarBaseActivity mActivity;
+
 
     public CoreBridge() {
         super();
@@ -43,21 +43,22 @@ public class CoreBridge extends CordovaPlugin {
     @Override
     public boolean execute(
             String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        CallbackStatus<JSONObject> callbackStatus = invoke(action, args);
+        CallbackStatus<JSONObject> callbackStatus = invoke(action, args, callbackContext);
 
         JSONObject message = callbackStatus.getMessage();
         switch (callbackStatus.getStatus()) {
             case CallbackStatus.ERROR:
-                callbackContext.equals(message);
+                callbackContext.error(message);
                 break;
             case CallbackStatus.SUCCESS:
                 if (message != null) {
                     callbackContext.success(message);
                 }
                 break;
+            case CallbackStatus.ASYN:
         }
 
-        return super.execute(action, args, callbackContext);
+        return true;
     }
 
     private void initMethods() {
@@ -76,13 +77,12 @@ public class CoreBridge extends CordovaPlugin {
         }
     }
 
-    public CallbackStatus<JSONObject> invoke(String action, JSONArray args) {
-        this.args = args;
+    public CallbackStatus<JSONObject> invoke(String action, JSONArray args, CallbackContext callbackContext) {
         CallbackStatus callbackStatus = new CallbackStatus();
         Method method = mMethodList.get(action);
         if (method != null) {
             try {
-                JSONObject object = (JSONObject) method.invoke(this, null);
+                JSONObject object = (JSONObject) method.invoke(this, args, callbackContext);
                 callbackStatus.setSuccess(object);
             } catch (Exception e) {
                 callbackStatus.setError(getInvokeError(e));

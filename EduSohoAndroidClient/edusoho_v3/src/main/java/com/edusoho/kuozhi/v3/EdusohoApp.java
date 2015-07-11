@@ -232,7 +232,6 @@ public class EdusohoApp extends Application {
     }
 
     private void init() {
-        Log.i(null, "init");
         app = this;
         gson = new Gson();
         mVolley = VolleySingleton.getInstance(getApplicationContext());

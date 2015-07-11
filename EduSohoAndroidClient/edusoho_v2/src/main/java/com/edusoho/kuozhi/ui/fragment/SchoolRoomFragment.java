@@ -295,7 +295,7 @@ public class SchoolRoomFragment extends BaseFragment {
      *
      * @param list
      */
-    private void filterSchoolRoomDatas(List<SchoolRoomResult> list) {
+    protected void filterSchoolRoomDatas(List<SchoolRoomResult> list) {
         if (getString(R.string.show_live_in_school_room).equals("1")) {
             for (SchoolRoomResult item : list) {
                 if (item.title.equals("在学直播")) {
