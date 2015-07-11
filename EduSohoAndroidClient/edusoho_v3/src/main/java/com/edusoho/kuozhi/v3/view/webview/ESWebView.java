@@ -76,6 +76,10 @@ public class ESWebView extends RelativeLayout {
         return mWebView.getSettings().getUserAgentString();
     }
 
+    private void createWebView() {
+
+    }
+
     private void initWebView(AttributeSet attrs) {
         mWebView = new ESCordovaWebView(new CordovaContext(mActivity), attrs);
 
@@ -196,6 +200,8 @@ public class ESWebView extends RelativeLayout {
         if (matcher.find()) {
             mAppCode = matcher.group(1);
             mLocalAppMeta = getLocalApp(mAppCode);
+        } else {
+            mActivity.showActionBar();
         }
 
         mWebView.loadUrl(url);

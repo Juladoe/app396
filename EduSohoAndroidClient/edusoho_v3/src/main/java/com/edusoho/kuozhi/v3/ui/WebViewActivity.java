@@ -32,6 +32,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideActionBar();
+        setBackMode(super.BACK, "标题");
         setContentView(R.layout.webview_activity);
         initCordovaWebView();
     }
