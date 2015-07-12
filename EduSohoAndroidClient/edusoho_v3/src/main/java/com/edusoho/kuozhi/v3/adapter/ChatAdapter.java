@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -220,6 +221,7 @@ public class ChatAdapter extends BaseAdapter {
                 });
                 break;
         }
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage(getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
     }
@@ -253,6 +255,7 @@ public class ChatAdapter extends BaseAdapter {
                 return;
             }
         }
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
@@ -268,6 +271,22 @@ public class ChatAdapter extends BaseAdapter {
 
     private String getThumbFromImageName(String imageName) {
         return "file://" + EdusohoApp.app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
+    }
+
+    private class ImageMsgClick implements View.OnClickListener {
+        private String mImageUrl;
+
+        public ImageMsgClick(String url) {
+            this.mImageUrl = url;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", 1);
+            bundle.putStringArray("images", new String[]{mImageUrl});
+            EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+        }
     }
 
     private class MyImageLoadingListener implements ImageLoadingListener {
