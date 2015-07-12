@@ -122,7 +122,11 @@ public class New implements Serializable {
         });
         fromId = customContent.getFromId();
         title = message.getTitle();
-        content = message.getContent();
+        if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.toString().toLowerCase())) {
+            content = message.getContent();
+        } else {
+            content = "[图片]";
+        }
         createdTime = customContent.getCreatedTime();
         imgUrl = customContent.getImgUrl();
         //newModel.setUnread();
