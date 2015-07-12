@@ -424,7 +424,7 @@ public class Const {
      */
     public static final String BIND_LOGIN = "/api/users/bind_login";
 
-    public static final String UPLOAD_AUDIO_CACHE_FILE = "/audio";
+    //public static final String UPLOAD_AUDIO_CACHE_FILE = "/audio";
     public static final String UPLOAD_IMAGE_CACHE_FILE = "/image";
     public static final String UPLOAD_IMAGE_CACHE_THUMB_FILE = "/image/thumb";
 }
