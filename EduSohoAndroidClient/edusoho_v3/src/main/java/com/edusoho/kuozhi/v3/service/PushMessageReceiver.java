@@ -50,6 +50,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
+            bundle.putInt(Const.ADD_CHAT_MSG_TYPE, Const.HANDLE_RECEIVE_MSG);
 
             if (isForeground) {
                 //如果ChatActivity在最顶栈

@@ -278,6 +278,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void notifyNewList2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.CHAT_DATA, message);
+        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, Const.HANDLE_SEND_MSG);
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
