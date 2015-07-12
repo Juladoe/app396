@@ -73,8 +73,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public static final String TITLE = "title";
     private static final int IMAGE_SIZE = 1024 * 500;
 
-    private static final int SEND_VOICE = 0x02;
-    private static final int SEND_LOCAL_IMAGE = 0x01;
+    private static final int SEND_VOICE = 3;
+    private static final int SEND_IMAGE = 1;
+    private static final int SEND_CAMERA = 2;
 
     private Button btnVoice;
     private Button btnKeyBoard;
@@ -94,8 +95,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private int mSendTime;
     private int mStart = 0;
     private static final int LIMIT = 15;
-    public static int CurrentFromId = 0;
+    private File mCameraFile;
 
+    public static int CurrentFromId = 0;
     /**
      * 对方的userInfo信息;
      */
@@ -332,6 +334,21 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 } else if (clickView.getId() == R.id.iv_image) {
                     //选择图片
                     openPictureFromLocal();
+                } else if (clickView.getId() == R.id.iv_camera) {
+                    try {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        mCameraFile = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                        if (mCameraFile.createNewFile()) {
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("1", cameraFile.getPath());
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
+                            startActivityForResult(intent, SEND_CAMERA);
+                        } else {
+                            CommonUtil.shortToast(mContext, "照片生成失败");
+                        }
+                    } catch (Exception ex) {
+                        Log.e(TAG, ex.getMessage());
+                    }
                 }
             }
         };
@@ -374,9 +391,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         } else {
             intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         }
-        startActivityForResult(intent, SEND_LOCAL_IMAGE);
+        startActivityForResult(intent, SEND_IMAGE);
     }
 
+    /**
+     * 选择图片并压缩
+     *
+     * @param selectedImage
+     * @return
+     */
     private File selectPicture(Uri selectedImage) {
         Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
         String picturePath = null;
@@ -593,7 +616,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case SEND_LOCAL_IMAGE:
+            case SEND_IMAGE:
                 if (data != null) {
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
@@ -601,6 +624,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         uploadMedia(file, Chat.FileType.IMAGE);
                     }
                 }
+                break;
+            case SEND_CAMERA:
+                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath());
+                File compressedCameraFile = compressImage(bitmap, mCameraFile);
+                uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
                 break;
             case SEND_VOICE:
                 break;
