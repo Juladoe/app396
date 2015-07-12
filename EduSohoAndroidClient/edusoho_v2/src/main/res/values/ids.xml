@@ -43,7 +43,7 @@
     <item type="id" name="question_stem"></item>
     <item type="id" name="list_view"></item>
 
-
     <item type="id" name="expandable_text" />
     <item type="id" name="expand_collapse" />
+    <item type="id" name="my_help" />
 </resources>
