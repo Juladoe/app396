@@ -8,6 +8,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -110,25 +112,23 @@ public class MenuClickPlugin extends CoreBridge {
             requestUrl.params.put(key, params.getString(key));
         }
 
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                VolleySingleton volley = VolleySingleton.getInstance(mActivity.getBaseContext());
-                volley.getRequestQueue();
-                RequestFuture<String> future = RequestFuture.newFuture();
-                StringVolleyRequest request = new StringVolleyRequest(
-                        Request.Method.POST, requestUrl, future, future);
-                request.setTag(requestUrl.url);
-                volley.addToRequestQueue(request);
+        VolleySingleton volley = VolleySingleton.getInstance(mActivity.getBaseContext());
+        volley.getRequestQueue();
 
-                String result = "";
-                try {
-                    result = future.get();
-                    callbackContext.success(result);
-                } catch (Exception e) {
-                }
+        StringVolleyRequest request = new StringVolleyRequest(
+                Request.Method.POST, requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                callbackContext.success(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackContext.error(error.getMessage());
             }
         });
+        request.setTag(requestUrl.url);
+        volley.addToRequestQueue(request);
     }
 
     @JavascriptInterface

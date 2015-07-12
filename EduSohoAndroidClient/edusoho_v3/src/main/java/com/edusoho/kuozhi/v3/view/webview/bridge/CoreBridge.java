@@ -73,7 +73,7 @@ public class CoreBridge extends CordovaPlugin {
                 }
             }
         } catch (Exception e) {
-            Log.d(TAG, e.toString());
+            Log.d(TAG, e.getMessage());
         }
     }
 
@@ -85,8 +85,8 @@ public class CoreBridge extends CordovaPlugin {
                 JSONObject object = (JSONObject) method.invoke(this, args, callbackContext);
                 callbackStatus.setSuccess(object);
             } catch (Exception e) {
+                e.printStackTrace();
                 callbackStatus.setError(getInvokeError(e));
-                Log.d(TAG, e.toString());
             }
         }
 
