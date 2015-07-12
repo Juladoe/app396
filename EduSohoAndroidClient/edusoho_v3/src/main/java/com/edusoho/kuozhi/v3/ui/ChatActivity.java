@@ -73,8 +73,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public static final String TITLE = "title";
     private static final int IMAGE_SIZE = 1024 * 500;
 
-    private static final int SEND_VOICE = 0x02;
-    private static final int SEND_LOCAL_IMAGE = 0x01;
+    private static final int SEND_VOICE = 3;
+    private static final int SEND_IMAGE = 1;
+    private static final int SEND_CAMERA = 2;
 
     private Button btnVoice;
     private Button btnKeyBoard;
@@ -94,8 +95,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private int mSendTime;
     private int mStart = 0;
     private static final int LIMIT = 15;
-    public static int CurrentFromId = 0;
+    private File mCameraFile;
 
+    public static int CurrentFromId = 0;
     /**
      * 对方的userInfo信息;
      */
@@ -332,6 +334,21 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 } else if (clickView.getId() == R.id.iv_image) {
                     //选择图片
                     openPictureFromLocal();
+                } else if (clickView.getId() == R.id.iv_camera) {
+                    try {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        mCameraFile = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                        if (mCameraFile.createNewFile()) {
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("1", cameraFile.getPath());
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
+                            startActivityForResult(intent, SEND_CAMERA);
+                        } else {
+                            CommonUtil.shortToast(mContext, "照片生成失败");
+                        }
+                    } catch (Exception ex) {
+                        Log.e(TAG, ex.getMessage());
+                    }
                 }
             }
         };
@@ -374,9 +391,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         } else {
             intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         }
-        startActivityForResult(intent, SEND_LOCAL_IMAGE);
+        startActivityForResult(intent, SEND_IMAGE);
     }
 
+    /**
+     * 选择图片并压缩
+     *
+     * @param selectedImage
+     * @return
+     */
     private File selectPicture(Uri selectedImage) {
         Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
         String picturePath = null;
@@ -397,7 +420,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         try {
             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
         } catch (FileNotFoundException ex) {
-            Log.d(TAG, ex.getMessage());
+            Log.e(TAG, ex.getMessage());
         }
         return compressImage(bitmap, file);
     }
@@ -415,7 +438,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             if (file.length() > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap = AppUtil.compressImage(bitmap, baos, 50);
-                compressedFile = AppUtil.convertBitmap2File(bitmap, app.getWorkSpace() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" + System.currentTimeMillis());
+                compressedFile = AppUtil.convertBitmap2File(bitmap, app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
             } else {
                 compressedFile = copyFileToCache(file, Chat.FileType.IMAGE);
             }
@@ -425,9 +448,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 AppUtil.convertBitmap2File(bitmap, app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
             }
         } catch (IOException ex) {
-            Log.d(TAG, ex.getMessage());
+            Log.e(TAG, ex.getMessage());
+            return null;
         }
-
         return compressedFile;
     }
 
@@ -437,7 +460,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * @param file
      */
     private void uploadMedia(final File file, final Chat.FileType type) {
-
+        if (file == null && !file.exists()) {
+            CommonUtil.shortToast(mContext, "图片不存在");
+            return;
+        }
         mSendTime = (int) (System.currentTimeMillis() / 1000);
         final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 file.getPath(), Chat.FileType.IMAGE.toString().toLowerCase(), mSendTime);
@@ -468,7 +494,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     String createdTime = jsonObject.getString("createdTime");
                     sendImage(imageUrl, chat);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -543,7 +569,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             out.close();
             return targetFile;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }
@@ -590,7 +616,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case SEND_LOCAL_IMAGE:
+            case SEND_IMAGE:
                 if (data != null) {
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
@@ -598,6 +624,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         uploadMedia(file, Chat.FileType.IMAGE);
                     }
                 }
+                break;
+            case SEND_CAMERA:
+                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath());
+                File compressedCameraFile = compressImage(bitmap, mCameraFile);
+                uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
                 break;
             case SEND_VOICE:
                 break;
@@ -618,11 +649,16 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 //普通消息
                 if (messageType.code == Const.ADD_CHAT_MSG && mFromId == customContent.getFromId()) {
                     Chat chat = new Chat(wrapperMessage);
+//                    switch (chat.fileType) {
+//                        case IMAGE:
+//                            compressImage()
+//                            break;
+//                    }
                     mAdapter.addOneChat(chat);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
     }
 

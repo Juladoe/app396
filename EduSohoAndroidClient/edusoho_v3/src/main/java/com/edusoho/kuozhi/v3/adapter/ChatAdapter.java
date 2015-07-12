@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -218,7 +221,8 @@ public class ChatAdapter extends BaseAdapter {
                 });
                 break;
         }
-        ImageLoader.getInstance().displayImage(getThumbImage(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
+        ImageLoader.getInstance().displayImage(getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
     }
 
@@ -240,12 +244,49 @@ public class ChatAdapter extends BaseAdapter {
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(getThumbImage(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
+
+        File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
+        if (receiveImage.exists()) {
+            String thumbImagePath = getThumbFromImageName(receiveImage.getName());
+            File thumbImage = new File(thumbImagePath);
+            if (thumbImage.exists()) {
+                ImageLoader.getInstance().displayImage(thumbImagePath, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
+                return;
+            }
+        }
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
+        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
-    private String getThumbImage(String imagePath) {
+    /**
+     * 获取缩略图文件路径
+     *
+     * @param imagePath
+     * @return
+     */
+    private String getThumbFromOriginalImagePath(String imagePath) {
         return imagePath.replace(Const.UPLOAD_IMAGE_CACHE_FILE, Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+    }
+
+    private String getThumbFromImageName(String imageName) {
+        return "file://" + EdusohoApp.app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
+    }
+
+    private class ImageMsgClick implements View.OnClickListener {
+        private String mImageUrl;
+
+        public ImageMsgClick(String url) {
+            this.mImageUrl = url;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", 1);
+            bundle.putStringArray("images", new String[]{mImageUrl});
+            EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+        }
     }
 
     private class MyImageLoadingListener implements ImageLoadingListener {
@@ -269,6 +310,17 @@ public class ChatAdapter extends BaseAdapter {
 
         @Override
         public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+            //接受到以后进行分辨率压缩并缓存
+            if (bitmap.getWidth() > EdusohoApp.app.screenW * 0.4f) {
+                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.app.screenW * 0.4f, 0);
+            }
+            File receiveFile = ImageLoader.getInstance().getDiskCache().get(s);
+            try {
+                AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + receiveFile.getName());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             holder.pbLoading.setVisibility(View.GONE);
             holder.ivStateError.setVisibility(View.GONE);
             ((ImageView) view).setImageBitmap(bitmap);
