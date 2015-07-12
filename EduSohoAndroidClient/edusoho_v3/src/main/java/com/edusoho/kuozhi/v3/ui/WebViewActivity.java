@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.edusoho.kuozhi.R;
@@ -50,15 +51,26 @@ public class WebViewActivity extends ActionBarBaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void invoke(WidgetMessage message) {
+        super.invoke(message);
         MessageType messageType = message.type;
         if (Const.LOGIN_SUCCESS.equals(messageType.type)) {
-            mHandler.post(new Runnable() {
+            mHandler.postAtTime(new Runnable() {
                 @Override
                 public void run() {
                     mWebView.reload();
                 }
-            });
+            }, SystemClock.currentThreadTimeMillis() + 100);
             return;
         }
         if (messageType.code == BACK) {
@@ -95,7 +107,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
-                new MessageType(CLOSE, source)
+                new MessageType(CLOSE, source),
+                new MessageType(MessageType.NONE, Const.LOGIN_SUCCESS, MessageType.UI_THREAD)
         };
         return messageTypes;
     }

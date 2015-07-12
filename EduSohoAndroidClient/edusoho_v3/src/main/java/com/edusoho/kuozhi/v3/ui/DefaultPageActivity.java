@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -279,8 +280,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         }
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
             mLogoutFlag = true;
-            selectDownTab(R.id.nav_tab_news);
-            mLogoutFlag = false;
+            new Handler(getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    selectDownTab(R.id.nav_tab_news);
+                    mLogoutFlag = false;
+                }
+            });
         }
     }
 
