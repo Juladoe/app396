@@ -83,6 +83,9 @@ public class Const {
     public static final int ADD_CHAT_MSG = 0x05;
     public static final int SWITCH_TAB = 0x06;
     public static final int DRAWER_REGISTER = 0x07;
+    public static final int HANDLE_SEND_MSG = 0x08;
+    public static final int HANDLE_RECEIVE_MSG = 0x09;
+    public static final String ADD_CHAT_MSG_TYPE = "aad_chat_msg_type";
 
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";

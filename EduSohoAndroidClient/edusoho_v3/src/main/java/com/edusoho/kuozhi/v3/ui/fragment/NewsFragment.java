@@ -192,24 +192,11 @@ public class NewsFragment extends BaseFragment {
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     //收到消息更新消息列表的信息
-                    try {
-                        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
-                        New newModel = new New(wrapperMessage);
-                        newModel.belongId = app.loginUser.id;
-                        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
-                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
-                        if (news.size() == 0) {
-                            newModel.unread = 1;
-                            newDataSource.create(newModel);
-                            insertNew(newModel);
-                        } else {
-                            newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
-                            newDataSource.update(newModel);
-                            setItemToTop(newModel);
-                        }
-                        newDataSource.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
+                    if (handleType == Const.HANDLE_RECEIVE_MSG) {
+                        handleReceiveMsg(message);
+                    } else if (handleType == Const.HANDLE_SEND_MSG) {
+                        handleSendMsg(message);
                     }
                     break;
                 case UPDATE_UNREAD:
@@ -225,6 +212,42 @@ public class NewsFragment extends BaseFragment {
                     break;
             }
         }
+    }
+
+    private void handleReceiveMsg(WidgetMessage message) {
+        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+        New newModel = new New(wrapperMessage);
+        newModel.belongId = app.loginUser.id;
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        if (news.size() == 0) {
+            newModel.unread = 1;
+            newDataSource.create(newModel);
+            insertNew(newModel);
+        } else {
+            newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(newModel);
+            setItemToTop(newModel);
+        }
+        newDataSource.close();
+    }
+
+    private void handleSendMsg(WidgetMessage message) {
+        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+        New newModel = new New(wrapperMessage);
+        newModel.belongId = app.loginUser.id;
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        if (news.size() == 0) {
+            newModel.unread = 0;
+            newDataSource.create(newModel);
+            insertNew(newModel);
+        } else {
+            newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(newModel);
+            setItemToTop(newModel);
+        }
+        newDataSource.close();
     }
 
     @Override
