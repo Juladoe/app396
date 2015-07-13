@@ -72,6 +72,14 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     }
 
     @Override
+    public String getCacheKey() {
+        if (EdusohoApp.app == null || AppUtil.isNetConnect(EdusohoApp.app)) {
+            return null;
+        }
+        return super.getCacheKey();
+    }
+
+    @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         String cookie = response.headers.get("Set-Cookie");
         mRequestLocalManager.setCookie(cookie);
@@ -82,9 +90,6 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     protected abstract T getResponseData(NetworkResponse response);
 
     protected Cache.Entry handleResponseCache(NetworkResponse response) {
-        if (EdusohoApp.app == null || AppUtil.isNetConnect(EdusohoApp.app)) {
-            return null;
-        }
         switch (mIsCache) {
             case CACHE_ALWAYS :
                 return parseResponseCache(response);
