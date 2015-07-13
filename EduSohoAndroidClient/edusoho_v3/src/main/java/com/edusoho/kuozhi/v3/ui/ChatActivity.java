@@ -273,6 +273,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 Log.d(TAG, "推送图片信息失败");
             }
         });
+        viewMediaLayout.setVisibility(View.GONE);
     }
 
     private void notifyNewList2Update(WrapperXGPushTextMessage message) {
