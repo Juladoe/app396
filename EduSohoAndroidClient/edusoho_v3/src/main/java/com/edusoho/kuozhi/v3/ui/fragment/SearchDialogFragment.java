@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.renderscript.Script;
 import android.text.TextUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +13,12 @@ import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,8 +50,6 @@ public class SearchDialogFragment extends DialogFragment {
 
     private View view;
 
-    private final int CANCEL_STATE = 0;
-    private final int SEARCH_STATE = 1;
 
     private DialogInterface.OnDismissListener mOnDismissListener;
 
@@ -76,20 +77,23 @@ public class SearchDialogFragment extends DialogFragment {
         mSearchFrame.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
 
         mCancel = (TextView) view.findViewById(R.id.cancel_search_btn);
-        mCancel.setTag(CANCEL_STATE);
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if(mCancel.getTag().equals(CANCEL_STATE)){
-                    dismiss();
-                   }
-                if(mCancel.getTag().equals(SEARCH_STATE)){
-                    searchFriend(mSearchFrame.getText().toString());
-                }
-
+            public void onClick(View view) {
+                dismiss();
             }
         });
 
+        mSearchFrame.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_SEARCH){
+                    searchFriend(mSearchFrame.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
         mSearchFrame.setFocusableInTouchMode(true);
         mSearchFrame.requestFocus();
 
@@ -99,8 +103,7 @@ public class SearchDialogFragment extends DialogFragment {
                     InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(mSearchFrame, 0);
                 }
-        },500);
-        searchListener();
+        },300);
         return view;
     }
 
@@ -118,30 +121,6 @@ public class SearchDialogFragment extends DialogFragment {
         }
     }
 
-    public void searchListener() {
-        mSearchFrame.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    mCancel.setTag(SEARCH_STATE);
-                    mCancel.setText("搜索");
-                }
-                if (s.length() == 0) {
-                    mCancel.setTag(CANCEL_STATE);
-                    mCancel.setText("取消");
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
 
 
     public void getToolBar(EduToolBar eduToolBar) {

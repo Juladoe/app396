@@ -22,6 +22,7 @@
             android:textColor="@color/gray"
             android:textSize="16sp"
             android:drawableLeft="@drawable/icon_edittext_search"
+            android:imeOptions="actionSearch"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"

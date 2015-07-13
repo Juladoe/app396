@@ -82,7 +82,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     protected abstract T getResponseData(NetworkResponse response);
 
     protected Cache.Entry handleResponseCache(NetworkResponse response) {
-        if (EdusohoApp.app == null || AppUtil.isNetConnect(EdusohoApp.app)) {
+        if ( AppUtil.isNetConnect(EdusohoApp.app)) {
             return null;
         }
         switch (mIsCache) {
