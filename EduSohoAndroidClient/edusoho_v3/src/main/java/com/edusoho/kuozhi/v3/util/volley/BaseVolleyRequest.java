@@ -6,7 +6,9 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.Map;
  */
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
-    protected static final int CACHE_MAX_AGE = 2592000;
+    protected static final int CACHE_MAX_AGE = 604800;
 
     public static final int CACHE_AUTO = 0001;
     public static final int CACHE_ALWAYS = 0002;
@@ -80,6 +82,9 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     protected abstract T getResponseData(NetworkResponse response);
 
     protected Cache.Entry handleResponseCache(NetworkResponse response) {
+        if (EdusohoApp.app == null || AppUtil.isNetConnect(EdusohoApp.app)) {
+            return null;
+        }
         switch (mIsCache) {
             case CACHE_ALWAYS :
                 return parseResponseCache(response);
