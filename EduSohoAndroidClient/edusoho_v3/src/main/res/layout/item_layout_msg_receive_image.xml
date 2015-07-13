@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/ci_send_pic"
-                android:background="@drawable/chat_from_layout"
+                android:background="@drawable/other"
                 android:clickable="true"
                 android:layout_centerInParent="true"
                 android:layout_marginRight="6dp" />
