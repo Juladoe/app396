@@ -434,7 +434,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * @return
      */
     private File compressImage(Bitmap bitmap, File file) {
-        File compressedFile = null;
+        File compressedFile;
         try {
             if (file.length() > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -446,8 +446,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
             if (bitmap.getWidth() > app.screenW * 0.4f) {
                 bitmap = AppUtil.scaleImage(bitmap, app.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
-                AppUtil.convertBitmap2File(bitmap, app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
             }
+            AppUtil.convertBitmap2File(bitmap, app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
             return null;
@@ -479,7 +479,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         message.setCustomContent(gson.toJson(cc));
         message.isForeground = true;
         notifyNewList2Update(message);
-        chat.content = "file://" + file.getPath();
+        chat.content = file.getPath();
         addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
 
         RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
