@@ -29,7 +29,7 @@ public class EduSohoRoundButton extends Button {
 
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(4);
+        mPaint.setStrokeWidth(2);
         mPaint.setColor(Color.LTGRAY);
 
         setBackgroundColor(Color.TRANSPARENT);

@@ -32,26 +32,26 @@ public class EduSohoRoundedEditText extends EditText implements TextWatcher {
         init();
     }
 
-    public void init(){
+    public void init() {
         mClear = getCompoundDrawables()[2];
         mClear = getResources().getDrawable(R.drawable.icon_edittext_clear);
         mClear.setBounds(0, 0, mClear.getIntrinsicWidth(), mClear.getIntrinsicHeight());
         setClearIconVisible(false);
     }
 
-    public void setClearIconVisible(boolean visible){
-        Drawable iconRight = visible?mClear:null;
-        setCompoundDrawables(getCompoundDrawables()[0],getCompoundDrawables()[1],
-                iconRight,getCompoundDrawables()[3]);
+    public void setClearIconVisible(boolean visible) {
+        Drawable iconRight = visible ? mClear : null;
+        setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1],
+                iconRight, getCompoundDrawables()[3]);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_UP){
-            if (getCompoundDrawables()[2] != null){
-                boolean touchable = event.getX()>(getWidth()-getTotalPaddingRight())
-                        && event.getX()<(getWidth()-getPaddingRight());
-                if(touchable){
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (getCompoundDrawables()[2] != null) {
+                boolean touchable = event.getX() > (getWidth() - getTotalPaddingRight())
+                        && event.getX() < (getWidth() - getPaddingRight());
+                if (touchable) {
                     this.setText("");
                 }
             }
@@ -62,7 +62,7 @@ public class EduSohoRoundedEditText extends EditText implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        setClearIconVisible(getText().length()>0);
+        setClearIconVisible(getText().length() > 0);
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
     }
 
@@ -72,13 +72,13 @@ public class EduSohoRoundedEditText extends EditText implements TextWatcher {
 
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(4);
+        mPaint.setStrokeWidth(2);
         mPaint.setColor(Color.LTGRAY);
 
         setBackgroundColor(Color.TRANSPARENT);
 
-        canvas.drawRoundRect(new RectF(4+this.getScrollX(), 4+this.getScrollY(),
-                this.getWidth()-4+this.getScrollX(), this.getHeight()+ this.getScrollY()-4), 20,20, mPaint);
+        canvas.drawRoundRect(new RectF(4 + this.getScrollX(), 4 + this.getScrollY(),
+                this.getWidth() - 4 + this.getScrollX(), this.getHeight() + this.getScrollY() - 4), 20, 20, mPaint);
     }
 
     @Override
