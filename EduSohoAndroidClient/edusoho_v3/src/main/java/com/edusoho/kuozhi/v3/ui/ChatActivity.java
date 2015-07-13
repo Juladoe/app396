@@ -340,12 +340,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         mCameraFile = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
                         if (mCameraFile.createNewFile()) {
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("1", cameraFile.getPath());
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
                             startActivityForResult(intent, SEND_CAMERA);
                         } else {
                             CommonUtil.shortToast(mContext, "照片生成失败");
+                            return;
                         }
                     } catch (Exception ex) {
                         Log.e(TAG, ex.getMessage());
@@ -436,17 +435,18 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private File compressImage(Bitmap bitmap, File file) {
         File compressedFile;
         try {
-            if (file.length() > IMAGE_SIZE) {
+            if (bitmap.getWidth() > app.screenW * 0.4f) {
+                bitmap = AppUtil.scaleImage(bitmap, app.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
+            }
+
+            if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap = AppUtil.compressImage(bitmap, baos, 50);
+                bitmap = AppUtil.compressImage(bitmap, baos);
                 compressedFile = AppUtil.convertBitmap2File(bitmap, app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
             } else {
                 compressedFile = copyFileToCache(file, Chat.FileType.IMAGE);
             }
 
-            if (bitmap.getWidth() > app.screenW * 0.4f) {
-                bitmap = AppUtil.scaleImage(bitmap, app.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
-            }
             AppUtil.convertBitmap2File(bitmap, app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
@@ -627,9 +627,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 }
                 break;
             case SEND_CAMERA:
-                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath());
-                File compressedCameraFile = compressImage(bitmap, mCameraFile);
-                uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
+                if (bitmap != null) {
+                    File compressedCameraFile = compressImage(bitmap, mCameraFile);
+                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
+                }
                 break;
             case SEND_VOICE:
                 break;
