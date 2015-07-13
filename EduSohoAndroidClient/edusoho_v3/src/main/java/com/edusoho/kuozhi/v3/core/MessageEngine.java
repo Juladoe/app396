@@ -6,6 +6,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -97,13 +98,13 @@ public class MessageEngine {
             return;
         }
         MessageType messageType = new MessageType(msgType);
-        int size = msgList.size();
-        for (int i = 0; i < size; i++) {
-            String name = msgList.get(i);
+        Iterator<String> iterator = msgList.iterator();
+        while (iterator.hasNext()) {
+            String name = iterator.next();
             MessageCallback messageCallback = sourceMap.get(name);
             Log.d(null, "callback->" + messageCallback);
             if (messageCallback == null) {
-                msgList.remove(i);
+                iterator.remove();
                 continue;
             }
             messageCallback.invoke(new WidgetMessage(messageType, body));

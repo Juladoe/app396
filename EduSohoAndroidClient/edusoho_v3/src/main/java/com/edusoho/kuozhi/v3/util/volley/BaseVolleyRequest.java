@@ -25,6 +25,8 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public static final int CACHE_ALWAYS = 0002;
     public static final int CACHE_NONE = 0003;
 
+    public static final String PARSE_RESPONSE = "parseResponse";
+
     protected Response.Listener<T> mListener;
     protected RequestUrl mRequestUrl;
     protected int mIsCache = CACHE_NONE;
@@ -68,7 +70,16 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     @Override
     protected void deliverResponse(T response) {
+        setTag(null);
         mListener.onResponse(response);
+    }
+
+    @Override
+    public String getCacheKey() {
+        if (! PARSE_RESPONSE.equals(getTag()) && AppUtil.isNetConnect(EdusohoApp.app)) {
+            return null;
+        }
+        return super.getCacheKey();
     }
 
     @Override
@@ -76,15 +87,15 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         String cookie = response.headers.get("Set-Cookie");
         mRequestLocalManager.setCookie(cookie);
         Cache.Entry cache = handleResponseCache(response);
+
+        setTag(PARSE_RESPONSE);
         return Response.success(getResponseData(response), cache);
     }
 
     protected abstract T getResponseData(NetworkResponse response);
 
     protected Cache.Entry handleResponseCache(NetworkResponse response) {
-        if (EdusohoApp.app == null || AppUtil.isNetConnect(EdusohoApp.app)) {
-            return null;
-        }
+
         switch (mIsCache) {
             case CACHE_ALWAYS :
                 return parseResponseCache(response);
