@@ -85,6 +85,7 @@ public class Const {
     public static final int DRAWER_REGISTER = 0x07;
     public static final int HANDLE_SEND_MSG = 0x08;
     public static final int HANDLE_RECEIVE_MSG = 0x09;
+    public static final int NEW_FANS = 0x0A;
     public static final String ADD_CHAT_MSG_TYPE = "aad_chat_msg_type";
 
     //public message type

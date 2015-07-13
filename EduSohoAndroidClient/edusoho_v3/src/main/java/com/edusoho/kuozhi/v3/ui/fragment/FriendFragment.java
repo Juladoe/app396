@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -45,6 +46,8 @@ import java.util.List;
  * Created by JesseHuang on 15/4/26.
  */
 public class FriendFragment extends BaseFragment {
+
+    private boolean isNews = false;
 
     private ListView mFriendList;
     private View mFootView;
@@ -244,8 +247,21 @@ public class FriendFragment extends BaseFragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (isNews == true) {
+            menu.findItem(R.id.friends_news).setIcon(R.drawable.icon_menu_notification_news);
+        } else {
+            menu.findItem(R.id.friends_news).setIcon(R.drawable.icon_menu_notification);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.friends_news) {
+            isNews = false;
+            item.setIcon(R.drawable.icon_menu_notification);
+            mActivity.supportInvalidateOptionsMenu();
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
 //        }else if (item.getItemId() == R.id.friends_search) {
 //            //TODO 跳转到搜索页面 暂时不做
@@ -263,11 +279,18 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
             loadSchoolApps();
         }
+        if (messageType.code == Const.NEW_FANS){
+            isNews = true;
+            mActivity.supportInvalidateOptionsMenu();
+        }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
-        MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.REFRESH_FRIEND_LIST)};
+        String source = this.getClass().getSimpleName();
+        MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS)
+                , new MessageType(Const.REFRESH_FRIEND_LIST)
+                , new MessageType(Const.NEW_FANS, source)};
         return messageTypes;
     }
 }
