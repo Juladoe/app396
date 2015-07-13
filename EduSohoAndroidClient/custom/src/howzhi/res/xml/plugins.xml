@@ -5,4 +5,5 @@
 
     <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.HowzhiDefaultPageActivity"></plugin>
     <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.HowSchoolRoomFragment"></plugin>
+    <plugin name="MineFragment" version="1.0" package="com.edusoho.kuozhi.HowMineFragment"></plugin>
 </plugins>

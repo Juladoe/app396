@@ -331,10 +331,36 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/my_feedback"
+            android:id="@id/my_help"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@id/my_setting"
+            android:background="@drawable/normal_layout_bg"
+            android:layout_marginTop="1dp">
+
+            <ImageView
+                android:src="@drawable/my_help"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp" />
+
+            <com.edusoho.kuozhi.view.ESTextView
+                android:textColor="@android:color/black"
+                app:es_alpha="0.87"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="64dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="帮助"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/my_help"
             android:background="@drawable/normal_layout_bg"
             android:layout_marginTop="1dp">
 

@@ -4,6 +4,7 @@
     <string name="app_host">http://www.howzhi.com</string>
     <string name="school_about">关于好知</string>
     <string name="app_code">howzhi</string>
+    <string name="down_tab_school">在学</string>
 
     <string name="splash_num">3</string>
     <string name="splash_padding">0</string>

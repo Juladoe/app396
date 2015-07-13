@@ -2,11 +2,9 @@ package com.edusoho.kuozhi.v3.core;
 
 import android.os.Bundle;
 import android.util.Log;
-
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,6 +23,12 @@ public class MessageEngine {
     private MessageEngine() {
         pubMsgMap = new ConcurrentHashMap<String, ArrayList<String>>();
         sourceMap = new ConcurrentHashMap<String, MessageCallback>();
+    }
+
+    public void destory() {
+        messageEngine = null;
+        pubMsgMap.clear();
+        sourceMap.clear();
     }
 
     public ConcurrentHashMap<String, MessageCallback> getSourceMap() {
@@ -121,6 +125,14 @@ public class MessageEngine {
         ArrayList<String> list = pubMsgMap.get(type.toString());
         String targetName = getRegitstSourceType(source);
         list.remove(targetName);
+    }
+
+    public void stopRecvMessage(MessageCallback source) {
+
+    }
+
+    public void resumeRecvMessage(MessageCallback source) {
+
     }
 
     public void registMessageSource(MessageCallback source) {
