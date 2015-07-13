@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -314,18 +315,21 @@ public class AppUtil {
         });
     }
 
-    public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream baos, int size) {
-        image.compress(Bitmap.CompressFormat.JPEG, size, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-//        int options = 100;
-//        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
-//            options -= 10;//每次都减少10
-//            baos.reset();//重置baos即清空baos
-//            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
-//
-//        }
-        //ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
-        //Bitmap bitmap = BitmapFactory.decodeStream(isBm);//把ByteArrayInputStream数据生成图片
-        Bitmap bitmap = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
+    public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream bos) {
+        Bitmap bitmap = null;
+        try {
+            int options = 100;
+            image.compress(Bitmap.CompressFormat.JPEG, options, bos);
+            while (bos.toByteArray().length / 1024 > 200) {
+                options -= 10;
+                bos.reset();
+                image.compress(Bitmap.CompressFormat.JPEG, options, bos);
+            }
+            ByteArrayInputStream isBm = new ByteArrayInputStream(bos.toByteArray());
+            bitmap = BitmapFactory.decodeStream(isBm, null, null);
+        } catch (Exception e) {
+            Log.e("compressImage", e.getMessage());
+        }
         return bitmap;
     }
 
@@ -791,11 +795,25 @@ public class AppUtil {
         float scale = (xScale <= yScale) ? xScale : yScale;
 
         Matrix matrix = new Matrix();
-        matrix.postScale(xScale, xScale);
+        matrix.postScale(scale, scale);
         matrix.postRotate((float) degree);
 
         Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 
         return scaledBitmap;
+    }
+
+    /**
+     * 获取图片大小
+     *
+     * @param bitmap
+     * @return 返回字节
+     */
+    public static int getImageSize(Bitmap bitmap) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        } else {
+            return bitmap.getByteCount();
+        }
     }
 }
