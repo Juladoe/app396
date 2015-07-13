@@ -90,6 +90,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     protected abstract T getResponseData(NetworkResponse response);
 
     protected Cache.Entry handleResponseCache(NetworkResponse response) {
+
         switch (mIsCache) {
             case CACHE_ALWAYS :
                 return parseResponseCache(response);

@@ -220,8 +220,8 @@ public class ChatAdapter extends BaseAdapter {
                 });
                 break;
         }
-        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
-        ImageLoader.getInstance().displayImage(getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick("file://" + model.content));
+        ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
     }
 
@@ -248,15 +248,17 @@ public class ChatAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
 
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         if (receiveImage.exists()) {
             String thumbImagePath = getThumbFromImageName(receiveImage.getName());
             File thumbImage = new File(thumbImagePath);
             if (thumbImage.exists()) {
-                ImageLoader.getInstance().displayImage(thumbImagePath, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.GONE);
+                ImageLoader.getInstance().displayImage("file://" + thumbImagePath, holder.ivMsgImage);
                 return;
             }
         }
-        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
@@ -271,7 +273,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private String getThumbFromImageName(String imageName) {
-        return "file://" + EdusohoApp.app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
+        return EdusohoApp.app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
     }
 
     private class ImageMsgClick implements View.OnClickListener {
