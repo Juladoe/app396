@@ -52,9 +52,9 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
             bundle.putInt(Const.ADD_CHAT_MSG_TYPE, Const.HANDLE_RECEIVE_MSG);
-
-            if (wrapperMessage.title.equals("好友添加")){
-                EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS,bundle, FriendFragment.class);
+            if (wrapperMessage.title.equals("好友添加")) {
+                EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, bundle, FriendFragment.class);
+                return;
             }
             if (isForeground) {
                 //如果ChatActivity在最顶栈
