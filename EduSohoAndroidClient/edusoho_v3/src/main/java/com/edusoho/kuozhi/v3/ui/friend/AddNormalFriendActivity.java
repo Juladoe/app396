@@ -82,16 +82,6 @@ public class AddNormalFriendActivity extends ActionBarBaseActivity{
     }
 
     public void loadFriends(){
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_1,"花非花", Const.HAVE_ADD_FALSE,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_2,"扫地神僧",Const.HAVE_ADD_TRUE,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_3,"独孤求败",Const.HAVE_ADD_FALSE,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_4,"阮玲玉",Const.HAVE_ADD_FALSE,true));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_5,"西门吹雪",Const.HAVE_ADD_TRUE,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_6,"虚竹",Const.HAVE_ADD_FALSE,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_7,"段誉",Const.HAVE_ADD_WAIT,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_8,"乔峰",Const.HAVE_ADD_WAIT,false));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_9,"风清扬",Const.HAVE_ADD_WAIT,true));
-        mAdapter.addItem(new Friend(R.drawable.sample_avatar_10,"山鸡",Const.HAVE_ADD_WAIT,true));
 
     }
 

@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/course_pic"
-        android:src="@drawable/sample_avatar_1"
+        android:src="@drawable/default_avatar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:scaleType="centerCrop"
