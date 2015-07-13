@@ -641,7 +641,7 @@ public class AppUtil {
                     showTime.substring(0, 11))) {
                 return showTime.substring(12);
             } else {
-                return showTime.substring(5, 11);
+                return showTime.substring(5);
             }
         } catch (Exception ex) {
             Log.e("convertMills2Date", ex.getMessage());

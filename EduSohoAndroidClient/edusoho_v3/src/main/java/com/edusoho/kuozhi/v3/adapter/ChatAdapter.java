@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -36,8 +35,7 @@ public class ChatAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Chat> mList;
-    private User mLoginUser;
-    private static long TIME_INTERVAL = 1000 * 60 * 5;
+    private static long TIME_INTERVAL = 60 * 5;
 
     private static final int TYPE_COUNT = 6;
     private static final int SEND = 0;
@@ -58,7 +56,6 @@ public class ChatAdapter extends BaseAdapter {
     public ChatAdapter(Context ctx, List<Chat> list) {
         mContext = ctx;
         mList = list;
-        mLoginUser = EdusohoApp.app.loginUser;
     }
 
     public void addOneChat(Chat chat) {
@@ -196,6 +193,8 @@ public class ChatAdapter extends BaseAdapter {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
                 holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            } else {
+                holder.tvSendTime.setVisibility(View.GONE);
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
@@ -233,6 +232,8 @@ public class ChatAdapter extends BaseAdapter {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
                 holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            } else {
+                holder.tvSendTime.setVisibility(View.GONE);
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
