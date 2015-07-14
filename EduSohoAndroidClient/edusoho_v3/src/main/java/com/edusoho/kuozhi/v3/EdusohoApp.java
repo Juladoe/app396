@@ -56,6 +56,7 @@ import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
@@ -262,10 +263,11 @@ public class EdusohoApp extends Application {
         mImageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(this)
                 .memoryCacheExtraOptions((int) (screenW * 0.8f), (int) (screenH * 0.8f))
-                .diskCache(new UnlimitedDiscCache(file))
+                .diskCache(new UnlimitedDiscCache(file)).imageDownloader(new BaseImageDownloader(this, 1000, 1000))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
+                showImageOnFail(R.drawable.defaultpic).build();
     }
 
     public void startMainService() {
