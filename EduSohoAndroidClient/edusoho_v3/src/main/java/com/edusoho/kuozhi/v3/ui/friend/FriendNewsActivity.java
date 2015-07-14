@@ -45,7 +45,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBackMode(BACK,"新粉丝通知");
+        setBackMode(BACK,"粉丝通知");
         mList = new ArrayList<FollowerNotification>();
         setContentView(R.layout.friend_news_layout);
 
@@ -120,8 +120,12 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
             FollowerNotification fn = mList.get(position);
 
-            holder.content.setText("用户"+fn.content.userName+"关注了你！");
-            holder.time.setText(AppUtil.getPostDays(fn.createdTime));
+            if (fn.content.opration.equals("follow")){
+                holder.content.setText("用户"+fn.content.userName+"关注了你。");
+            }else {
+                holder.content.setText("用户"+fn.content.userName+"取消了对你的关注。");
+            }
+            holder.time.setText(AppUtil.getPostDaysZero(fn.createdTime));
             return convertView;
         }
 
