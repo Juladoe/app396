@@ -1,8 +1,5 @@
 package com.edusoho.kuozhi.model;
 
-import com.edusoho.kuozhi.model.LearnStatus;
-import com.edusoho.kuozhi.model.LessonItem;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 

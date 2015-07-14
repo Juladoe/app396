@@ -24,12 +24,15 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.webkit.MimeTypeMap;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -63,11 +66,13 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -1250,5 +1255,45 @@ public class AppUtil {
         );
         popupDialog.setOkText("去设置");
         popupDialog.show();
+    }
+
+    private static LinearLayout.LayoutParams getClassRoomServiceLayoutParams() {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.bottomMargin = 3;
+        layoutParams.topMargin = 3;
+        layoutParams.leftMargin = 3;
+        layoutParams.rightMargin = 3;
+
+        return layoutParams;
+    }
+
+    public static void createClassRoomServiceView(
+            Context context, ViewGroup layout, ArrayList<String> service) {
+        Map<String, String> mClassRoomServices = new HashMap<>();
+        mClassRoomServices.put("homeworkReview", "练");
+        mClassRoomServices.put("testpaperReview", "试");
+        mClassRoomServices.put("teacherAnswer", "问");
+        mClassRoomServices.put("liveAnswer", "疑");
+        mClassRoomServices.put("event", "动");
+        mClassRoomServices.put("workAdvise", "业");
+
+        int textViewIndex = 0;
+        TextView[] textViews = new TextView[mClassRoomServices.size()];
+        LinearLayout.LayoutParams layoutParams = getClassRoomServiceLayoutParams();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        for (String name : mClassRoomServices.keySet()) {
+            TextView textView = (TextView) inflater.inflate(R.layout.found_classroom_service, null);
+            textView.setEnabled(false);
+            textView.setText(mClassRoomServices.get(name));
+            layout.addView(textView, layoutParams);
+            textViews[textViewIndex++] = textView;
+        }
+
+        int size = service == null ? 0 : service.size();
+        for (int i = 0; i < size; i++) {
+            TextView textView = textViews[i];
+            textView.setEnabled(true);
+        }
     }
 }

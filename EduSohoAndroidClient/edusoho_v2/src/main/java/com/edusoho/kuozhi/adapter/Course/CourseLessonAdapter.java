@@ -158,6 +158,9 @@ public class CourseLessonAdapter
     }
 
     private void setLessonProgress(int lessonId, ImageView statusImageView) {
+        if (mUserLearns == null) {
+            return;
+        }
         LearnStatus status = mUserLearns.get(lessonId);
         if (status == null) {
             statusImageView.setImageResource(R.drawable.learn_status_normal);

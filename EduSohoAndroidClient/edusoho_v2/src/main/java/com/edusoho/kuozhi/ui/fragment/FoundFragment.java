@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.FoundCourseListAdapter;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.Category;
+import com.edusoho.kuozhi.model.ClassRoomResult;
 import com.edusoho.kuozhi.model.CourseResult;
 import com.edusoho.kuozhi.model.MessageType;
 import com.edusoho.kuozhi.model.WidgetMessage;
@@ -47,6 +48,7 @@ public class FoundFragment extends BaseFragment {
 
     public static final int HIDE_ACTION_BAR_CODE = 0001;
     private boolean mIsLive = false;
+    private boolean mIsClassRoom = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,8 @@ public class FoundFragment extends BaseFragment {
             public void update(PullToRefreshBase<ListView> refreshView) {
                 if (mIsLive) {
                     loadLiveAllCourseList(mCourseListView.getStart());
+                } else if (mIsClassRoom) {
+                    loadClassRooms(mCourseListView.getStart());
                 } else {
                     loadCourseList(mCurrentCategoryId, mCourseListView.getStart());
                 }
@@ -127,6 +131,8 @@ public class FoundFragment extends BaseFragment {
             public void refresh(PullToRefreshBase<ListView> refreshView) {
                 if (mIsLive) {
                     loadLiveAllCourseList(0);
+                } else if (mIsClassRoom) {
+                    loadClassRooms(0);
                 } else {
                     loadCourseList(mCurrentCategoryId, 0);
                 }
@@ -206,6 +212,32 @@ public class FoundFragment extends BaseFragment {
                 mCourseListView.pushData(courseResult.data);
                 mCourseListView.setStart(courseResult.start, courseResult.total);
                 mIsLive = false;
+                mIsClassRoom = false;
+            }
+        });
+    }
+
+    private void loadClassRooms(int start) {
+        RequestUrl url = app.bindUrl(Const.CLASSROOMS, false);
+        HashMap<String, String> params = url.getParams();
+        params.put("start", String.valueOf(start));
+        params.put("limit", String.valueOf(Const.LIMIT));
+        mActivity.ajaxPost(url, new ResultCallback() {
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                mCourseListView.onRefreshComplete();
+                ClassRoomResult courseResult = mActivity.gson.fromJson(
+                        object, new TypeToken<ClassRoomResult>() {
+                        }.getType());
+
+                if (courseResult == null) {
+                    return;
+                }
+
+                mCourseListView.pushData(courseResult.data);
+                mCourseListView.setStart(courseResult.start, courseResult.total);
+                mIsClassRoom = true;
+                mIsLive = false;
             }
         });
     }
@@ -230,6 +262,7 @@ public class FoundFragment extends BaseFragment {
                 mCourseListView.pushData(courseResult.data);
                 mCourseListView.setStart(courseResult.start, courseResult.total);
                 mIsLive = true;
+                mIsClassRoom = false;
             }
         });
     }
@@ -240,6 +273,7 @@ public class FoundFragment extends BaseFragment {
             if (checkedId == R.id.btn_video) {
                 mActivity.setLiveControlVisibility(View.VISIBLE);
                 mIsLive = false;
+                mIsClassRoom = false;
                 mCurrentCategoryId = 0;
                 mCourseListView.setRefreshing();
             } else if (checkedId == R.id.btn_live) {
@@ -248,6 +282,14 @@ public class FoundFragment extends BaseFragment {
                 }
                 mActivity.setLiveControlVisibility(View.INVISIBLE);
                 mIsLive = true;
+                mIsClassRoom = false;
+                mCourseListView.setRefreshing();
+            } else if (checkedId == R.id.btn_classroom) {
+                if (mCategoryListView.getHeight() > 0) {
+                    hideCategoryList();
+                }
+                mIsClassRoom = true;
+                mIsLive = false;
                 mCourseListView.setRefreshing();
             }
         }

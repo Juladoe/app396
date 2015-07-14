@@ -9,13 +9,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxEms="4"
+        android:maxEms="3"
         android:singleLine="true"
         android:layout_alignParentLeft="true"
         android:text=""
         android:layout_centerVertical="true"
         android:textColor="@color/action_bar_title"
-        android:textSize="@dimen/app_bar_title"></TextView>
+        android:textSize="@dimen/base_large_size"></TextView>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -48,7 +48,19 @@
             android:background="@drawable/found_video_btn"
             android:textColor="@android:color/white"
             android:gravity="center" />
-
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:id="@+id/btn_classroom"
+            android:text="@string/found_classroom"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:button="@null"
+            android:background="@drawable/found_classroom_btn"
+            android:textColor="@android:color/white"
+            android:gravity="center" />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="36dp"
