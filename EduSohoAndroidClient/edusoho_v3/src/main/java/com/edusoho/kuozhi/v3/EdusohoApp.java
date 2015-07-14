@@ -263,7 +263,7 @@ public class EdusohoApp extends Application {
         mImageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(this)
                 .memoryCacheExtraOptions((int) (screenW * 0.8f), (int) (screenH * 0.8f))
-                .diskCache(new UnlimitedDiscCache(file)).imageDownloader(new BaseImageDownloader(this, 1000, 1000))
+                .diskCache(new UnlimitedDiscCache(file)).imageDownloader(new BaseImageDownloader(this, Const.TIMEOUT, Const.TIMEOUT))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
