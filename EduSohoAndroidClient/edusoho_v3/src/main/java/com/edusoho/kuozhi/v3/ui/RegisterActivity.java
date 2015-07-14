@@ -111,26 +111,15 @@ public class RegisterActivity extends ActionBarBaseActivity {
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            btnSendCode.setEnabled(false);
-            btnSendCode.setBackgroundResource(R.drawable.reg_code_disable);
-            mClockTime = 10;
-            mTimer = new Timer();
-            mTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    Message message = mSmsCodeHandler.obtainMessage();
-                    message.what = 0;
-                    mSmsCodeHandler.sendMessage(message);
-
-                }
-            }, 0, 1000);
-
-            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
             String phoneNumber = etPhone.getText().toString().trim();
             if (TextUtils.isEmpty(phoneNumber)) {
                 CommonUtil.longToast(mContext, String.format("请输入%s", "手机号"));
                 return;
             }
+
+
+            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
+
             HashMap<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(phoneNumber));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -139,6 +128,19 @@ public class RegisterActivity extends ActionBarBaseActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("code").equals("200")) {
+                            btnSendCode.setEnabled(false);
+                            btnSendCode.setBackgroundResource(R.drawable.reg_code_disable);
+                            mClockTime = 60;
+                            mTimer = new Timer();
+                            mTimer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    Message message = mSmsCodeHandler.obtainMessage();
+                                    message.what = 0;
+                                    mSmsCodeHandler.sendMessage(message);
+
+                                }
+                            }, 0, 1000);
                             CommonUtil.longToast(mContext, jsonObject.getString("msg"));
                         }
                     } catch (JSONException e) {
