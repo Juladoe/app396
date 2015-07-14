@@ -97,8 +97,12 @@ public class Const {
     public static final String APP_UPDATE = "School/getClientVersion";
     public static final String COURSES = "Course/getCourses";
     public static final String COURSE = "Course/getCourse";
+    public static final String CLASSROOM = "ClassRoom/getClassRoom";
     public static final String LIVE_COURSES = "Course/getAllLiveCourses";
+    public static final String CLASSROOMS = "ClassRoom/getClassRooms";
+    public static final String CLASSROOM_COURSES = "ClassRoom/getClassRoomCourses";
     public static final String COURSE_MEMBER = "Course/getCourseMember";
+    public static final String CLASSROOM_MEMBER = "ClassRoom/getClassRoomMember";
     public static final String FLASH_APK = "School/getFlashApk";
     public static final String MY_TESTPAPER = "Testpaper/myTestpaper";
     public static final String COURSELESSON = "Lesson/getLesson";
@@ -161,6 +165,7 @@ public class Const {
      * 分享url
      */
     public static final String SHARD_COURSE_URL = "/course/";
+    public static final String SHARD_CLASSROOM_URL = "/classroom/";
 
     /**
      * 获取一个问题的详细信息（问题标题，内容，发问者，发问时间等）
@@ -180,6 +185,7 @@ public class Const {
     public static final String LEARNED = "Course/getLearnedCourse";
     public static final String FAVORITES = "Course/getFavoriteCoruse";
     public static final String PAYCOURSE = "Order/payCourse";
+    public static final String PAYCLASSROOM = "Order/payClassRoom";
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
@@ -207,11 +213,13 @@ public class Const {
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
     public static final String UN_LEARN_COURSE = "Course/unLearnCourse";
+    public static final String UN_LEARN_CLASSROOM = "ClassRoom/unLearn";
     public static final String LESSON_RESOURCE = "Lesson/getLessonMaterial";
     public static final String LEARN_LESSON = "Lesson/learnLesson";
     public static final String UNLEARN_LESSON = "Lesson/unLearnLesson";
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
+    public static final String VIP_LEARN_CLASSROOM = "ClassRoom/learnByVip";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
 
     /**
@@ -279,6 +287,8 @@ public class Const {
 
     public static final String QUESTION_URL = "question_url";
     public static final String COURSE_ID = "courseId";
+    public static final String ID = "id";
+    public static final String CLASSROOM_ID = "classRoomId";
     public static final String QUESTION_USER_ID = "question_user_id";
     public static final String TESTPAPER_DO_TYPE = "do_type";
     public static final String FREE = "free";

@@ -128,6 +128,11 @@
             android:name=".ui.course.CoursePaperActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:theme="@style/EdusohoTranslucentActionBar"
+            android:name=".ui.classRoom.ClassRoomPaperActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.edusoho.kuozhi.ui.questionDeprecated.QuestionActivity"

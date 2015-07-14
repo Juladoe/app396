@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.ui.classRoom.ClassRoomPaperActivity;
 import com.edusoho.kuozhi.ui.common.PayCourseActivity;
 import com.edusoho.kuozhi.util.Const;
 
@@ -74,6 +75,7 @@ public class AlipayFragment extends BaseFragment {
                     return;
                 }
                 if (url.startsWith(mHost) && ! isEqualsURl(mPayurl, url)) {
+                    app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, ClassRoomPaperActivity.class);
                     app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, PayCourseActivity.class);
                     mActivity.finish();
                     return;
@@ -98,6 +100,7 @@ public class AlipayFragment extends BaseFragment {
     {
         if (Const.RESULT_SUCCESS.equals(status)) {
             app.sendMsgToTarget(PayCourseActivity.PAY_SUCCESS, null, PayCourseActivity.class);
+            app.sendMsgToTarget(PayCourseActivity.PAY_SUCCESS, null, ClassRoomPaperActivity.class);
             mActivity.finish();
         }
     }

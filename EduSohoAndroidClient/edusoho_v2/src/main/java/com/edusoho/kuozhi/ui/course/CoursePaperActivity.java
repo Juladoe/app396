@@ -33,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 import com.edusoho.kuozhi.EdusohoApp;
@@ -82,7 +81,6 @@ import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 import cn.trinea.android.common.util.ToastUtils;
 import extensions.PagerSlidingTabStrip;
 
@@ -92,41 +90,45 @@ import extensions.PagerSlidingTabStrip;
 public class CoursePaperActivity extends ActionBarBaseActivity
         implements MessageEngine.MessageCallback {
 
+    public static final String FROM_TARGET = "fromTarget";
     public static final int PAY_COURSE_SUCCESS = 0005;
     public static final int PAY_COURSE_REQUEST = 0006;
+    public static final int FROM_NORMAL = 0010;
+    public static final int FROM_CLASSROOM = 0011;
 
-    private PagerSlidingTabStrip mTabs;
+    protected PagerSlidingTabStrip mTabs;
     protected FixHeightViewPager mFragmentPager;
-    private RelativeLayout mCourseScrollView;
-    private RelativeLayout mRootView;
-    private ImageView mCoursePicView;
-    private MyPagerAdapter fragmentAdapter;
+    protected RelativeLayout mCourseScrollView;
+    protected RelativeLayout mRootView;
+    protected ImageView mCoursePicView;
+    protected MyPagerAdapter fragmentAdapter;
     protected String[] fragmentArrayList;
     protected String[] titles;
+    private int mFromTarget;
 
     /**
      * Course info
      */
-    private TextView mCourseTitleView;
-    private TextView mCourseStudentNumView;
-    private TextView mCourseStarView;
-    private TextView mCoursePriceView;
+    protected TextView mCourseTitleView;
+    protected TextView mCourseStudentNumView;
+    protected TextView mCourseStarView;
+    protected TextView mCoursePriceView;
     private TextView mLiveFlag;
-    private View mPayBtn;
+    protected View mPayBtn;
 
-    private final Handler handler = new Handler();
+    protected final Handler handler = new Handler();
 
-    private DisplayImageOptions mOptions;
+    protected DisplayImageOptions mOptions;
     private Drawable oldBackground = null;
     private Drawable mColorDrawable = null;
     private Drawable mMarkDrawable = null;
     private int mAlpha = 0;
     private int mCourseScrollHeight;
-    private int currentColor = R.color.action_bar_bg;
+    protected int currentColor = R.color.action_bar_bg;
 
-    private String mTitle;
+    protected String mTitle;
     private int mCourseId;
-    private String mCoursePic;
+    protected String mCoursePic;
     private CourseDetailsResult mCourseDetailsResult;
 
     public static final String COURSE_PIC = "picture";
@@ -193,12 +195,13 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         return messageTypes;
     }
 
-    private void initIntentData() {
+    protected void initIntentData() {
         Intent data = getIntent();
         if (data != null) {
             mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
             mCoursePic = data.getStringExtra(COURSE_PIC);
             mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+            mFromTarget = data.getIntExtra(FROM_TARGET, FROM_NORMAL);
         }
 
         setBackMode(BACK, TextUtils.isEmpty(mTitle) ? "课程标题" : mTitle);
@@ -232,14 +235,14 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         loadCourseInfo();
     }
 
-    private void startPayBtnAnim(int start, int end) {
+    protected void startPayBtnAnim(int start, int end) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(mPayBtn, "rotation", start, end);
         animator.setDuration(200);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.start();
     }
 
-    private void initPayBtn(View contentView) {
+    protected void initPayBtn(View contentView) {
         TextView vipLearnBtn = (TextView) contentView.findViewById(R.id.course_details_vip_learnbtn);
         TextView learnBtn = (TextView) contentView.findViewById(R.id.course_details_learnbtn);
 
@@ -307,7 +310,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     /**
      * 更新课程会员信息
      */
-    private void loadCouseMember(final LoadDialog loadDialog) {
+    protected void loadCouseMember(final LoadDialog loadDialog) {
         RequestUrl url = app.bindUrl(Const.COURSE_MEMBER, true);
         url.setParams(new String[]{
                 "courseId", String.valueOf(mCourseId)
@@ -337,7 +340,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     /*
     学习课程
     */
-    private void learnCourse() {
+    protected void learnCourse() {
         final LoadDialog loadDialog = LoadDialog.create(mContext);
         loadDialog.show();
 
@@ -377,7 +380,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         });
     }
 
-    private void selectLessonFragment() {
+    protected void selectLessonFragment() {
         mFragmentPager.setCurrentItem(2, false);
         handler.postAtTime(new Runnable() {
             @Override
@@ -392,7 +395,10 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         mPayBtn.setVisibility(View.GONE);
     }
 
-    private String getVipLevelName(int level, VipLevel[] vipLevels) {
+    protected String getVipLevelName(int level, VipLevel[] vipLevels) {
+        if (vipLevels == null) {
+            return "";
+        }
         for (VipLevel vipLevel : vipLevels) {
             if (level == vipLevel.id) {
                 return vipLevel.name;
@@ -425,9 +431,9 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         });
     }
 
-    private PopupWindow mPayPopupWindow;
+    protected PopupWindow mPayPopupWindow;
 
-    private void showPayBtn(View parent) {
+    protected void showPayBtn(View parent) {
         View contentView = LayoutInflater.from(mContext).inflate(
                 R.layout.course_paybtn_layout, null);
         initPayBtn(contentView);
@@ -499,8 +505,13 @@ public class CoursePaperActivity extends ActionBarBaseActivity
                     ? R.drawable.course_favorited_icon : R.drawable.course_favorite_icon);
 
             MenuItem exitItem = menu.findItem(R.id.course_details_menu_exit);
-            if (exitItem != null && (mCourseDetailsResult.member == null
-                    || mCourseDetailsResult.member.role == Member.Role.teacher)) {
+            if (exitItem == null) {
+                return super.onPrepareOptionsMenu(menu);
+            }
+            if (mFromTarget == FROM_CLASSROOM) {
+                exitItem.setVisible(false);
+            } else if (mCourseDetailsResult.member == null
+                    || mCourseDetailsResult.member.role == Member.Role.teacher) {
                 exitItem.setVisible(false);
             }
         } else {
@@ -509,7 +520,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void hideCourseInfo() {
+    protected void hideCourseInfo() {
         int height = mCourseScrollView.getHeight();
         if (height <= mActionBar.getHeight() || height < mCourseScrollHeight) {
             return;
@@ -535,7 +546,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         heightAnimator.start();
     }
 
-    private void showCourseInfo() {
+    protected void showCourseInfo() {
         int height = mCourseScrollView.getHeight();
         if (height > mActionBar.getHeight()) {
             return;
@@ -569,7 +580,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         heightAnimator.start();
     }
 
-    private void addScrollListener() {
+    protected void addScrollListener() {
         final GestureDetector mGestureDetector = new GestureDetector(
                 new GestureDetector.SimpleOnGestureListener() {
                     @Override
@@ -606,7 +617,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         );
     }
 
-    private View getLoadView() {
+    protected View getLoadView() {
         View loadView = LayoutInflater.from(mContext).inflate(R.layout.page_loading_layout, null);
         return loadView;
     }
@@ -645,11 +656,11 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         });
     }
 
-    private void loadCoursePic() {
+    protected void loadCoursePic() {
         ImageLoader.getInstance().displayImage(mCoursePic, mCoursePicView, mOptions);
     }
 
-    private void parseRequestData(String object) {
+    protected void parseRequestData(String object) {
         addScrollListener();
         mCourseDetailsResult = mActivity.parseJsonValue(
                 object, new TypeToken<CourseDetailsResult>() {
@@ -736,7 +747,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         return mCourseDetailsResult;
     }
 
-    private void changeColor(int newColor) {
+    protected void changeColor(int newColor) {
         mTabs.setIndicatorColor(newColor);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -764,9 +775,9 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     }
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
-        private String[] fragments;
-        private String[] titles;
-        private SparseArray<ViewPagerBaseFragment> mList;
+        protected String[] fragments;
+        protected String[] titles;
+        protected SparseArray<ViewPagerBaseFragment> mList;
 
         public MyPagerAdapter(
                 FragmentManager fm, String[] fragments, String[] titles) {
@@ -805,7 +816,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         }
     }
 
-    private Bundle getBundle(String fragmentName) {
+    protected Bundle getBundle(String fragmentName) {
         Course course = mCourseDetailsResult.course;
         Bundle bundle = new Bundle();
         if (fragmentName.equals("CourseTeacherInfoFragment")) {
@@ -884,7 +895,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     /**
      * 退出学习
      */
-    private void unLearnCourse() {
+    protected void unLearnCourse() {
         ExitCoursePopupDialog.create(mActivity, new ExitCoursePopupDialog.PopupClickListener() {
             @Override
             public void onClick(int button, int position, String selStr) {
@@ -966,7 +977,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
     /**
      * 分享
      */
-    private void shardCourse() {
+    protected void shardCourse() {
 
         Course course = mCourseDetailsResult.course;
         StringBuilder stringBuilder = new StringBuilder(app.host);
@@ -1003,7 +1014,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
      * @param type
      * @return
      */
-    private boolean shardToMM(Course course, Context context, int type) {
+    protected boolean shardToMM(Course course, Context context, int type) {
         String APP_ID = getResources().getString(R.string.app_id);
         IWXAPI wxApi;
         wxApi = WXAPIFactory.createWXAPI(context, APP_ID, true);
