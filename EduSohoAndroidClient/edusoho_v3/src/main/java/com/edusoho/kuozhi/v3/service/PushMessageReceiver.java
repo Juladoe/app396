@@ -7,6 +7,7 @@ import android.util.Log;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.tencent.android.tpush.XGPushBaseReceiver;
@@ -51,7 +52,10 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
             bundle.putInt(Const.ADD_CHAT_MSG_TYPE, Const.HANDLE_RECEIVE_MSG);
-
+            if (wrapperMessage.title.equals("好友添加")) {
+                EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, bundle, FriendFragment.class);
+                return;
+            }
             if (isForeground) {
                 //如果ChatActivity在最顶栈
                 wrapperMessage.isForeground = true;

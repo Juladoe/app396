@@ -47,6 +47,11 @@ public class ChatAdapter extends BaseAdapter {
     private static final int MSG_SEND_AUDIO = 5;
     private static final int MSG_RECEIVE_AUDIO = 6;
 
+    ImageErrorClick mImageErrorClick;
+
+    public void setSendImageClickListener(ImageErrorClick imageErrorClick) {
+        mImageErrorClick = imageErrorClick;
+    }
 
     public void addItems(ArrayList<Chat> list) {
         mList.addAll(0, list);
@@ -187,6 +192,7 @@ public class ChatAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
     }
 
+
     private void handlerSendImage(final ViewHolder holder, int position) {
         final Chat model = mList.get(position);
         if (position > 0) {
@@ -215,7 +221,15 @@ public class ChatAdapter extends BaseAdapter {
                 holder.ivStateError.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if (mImageErrorClick != null) {
+                            File file = new File(model.content);
+                            if (file.exists()) {
+                                model.setDelivery(Chat.Delivery.UPLOADING);
+                                holder.pbLoading.setVisibility(View.VISIBLE);
+                                holder.ivStateError.setVisibility(View.GONE);
+                                mImageErrorClick.sendImageAgain(file, model);
+                            }
+                        }
                     }
                 });
                 break;
@@ -381,5 +395,9 @@ public class ChatAdapter extends BaseAdapter {
                     break;
             }
         }
+    }
+
+    public interface ImageErrorClick {
+        public void sendImageAgain(File file, Chat chat);
     }
 }

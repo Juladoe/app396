@@ -21,7 +21,7 @@
         <LinearLayout
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:orientation="horizontal"
             android:background="@android:color/white">
 
@@ -51,15 +51,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="@drawable/chat_press_speak_btn"
                 android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:textSize="@dimen/medium_font_size"
                     android:textColor="@color/grey_666666"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
                     android:text="按住说话" />
 
             </LinearLayout>
@@ -71,7 +74,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
-                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/chat_send_smd_select"
                 android:layout_weight="1">
 
                 <EditText
@@ -79,11 +83,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="4"
-                    android:minHeight="40dp"
-                    android:paddingBottom="3dp"
-                    android:paddingTop="3dp"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
                     android:textSize="@dimen/medium_font_size"
-                    android:background="@drawable/login_edt_bg_pressed" />
+                    android:background="@null" />
 
             </RelativeLayout>
 

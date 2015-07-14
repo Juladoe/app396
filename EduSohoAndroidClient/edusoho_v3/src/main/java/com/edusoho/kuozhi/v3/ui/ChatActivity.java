@@ -22,7 +22,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
@@ -66,7 +65,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 /**
  * Created by JesseHuang on 15/6/3.
  */
-public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener {
+public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener, ChatAdapter.ImageErrorClick {
     public static final String TAG = "ChatActivity";
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
@@ -134,6 +133,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         ivCamera.setOnClickListener(this);
         initData();
         mAdapter = new ChatAdapter(mContext, getChatList(0));
+        mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
@@ -180,6 +180,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mAdapter.addItems(getChatList(0));
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
+        mAdapter.setSendImageClickListener(this);
         sendNewFragment2UpdateItem();
     }
 
@@ -198,6 +199,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         initCacheFolder();
+        getFriendUserInfo();
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -295,65 +297,63 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     @Override
+    public void sendImageAgain(File file, Chat chat) {
+        uploadMediaAgain(file, chat, Chat.FileType.IMAGE);
+    }
+
+    @Override
     public void onClick(View v) {
         final View clickView = v;
-        NormalCallback callBack = new NormalCallback() {
-            @Override
-            public void success(Object obj) {
-                if (clickView.getId() == R.id.iv_show_media_layout) {
-                    //加号，显示多媒体框
-                    if (viewMediaLayout.getVisibility() == View.GONE) {
-                        viewMediaLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        viewMediaLayout.setVisibility(View.GONE);
-                    }
-                } else if (clickView.getId() == R.id.tv_send) {
-                    //发送消息
-                    if (etSend.getText().length() == 0) {
-                        return;
-                    }
-                    sendMsg(etSend.getText().toString());
-
-                } else if (clickView.getId() == R.id.btn_voice) {
-                    //语音
-                    viewMediaLayout.setVisibility(View.GONE);
-                    btnKeyBoard.setVisibility(View.VISIBLE);
-                    btnVoice.setVisibility(View.GONE);
-                    viewMsgInput.setVisibility(View.GONE);
-                    viewPressToSpeak.setVisibility(View.VISIBLE);
-
-                } else if (clickView.getId() == R.id.btn_set_mode_keyboard) {
-                    //键盘
-                    viewMediaLayout.setVisibility(View.GONE);
-                    btnVoice.setVisibility(View.VISIBLE);
-                    viewPressToSpeak.setVisibility(View.GONE);
-                    viewMsgInput.setVisibility(View.VISIBLE);
-                    btnKeyBoard.setVisibility(View.GONE);
-                } else if (clickView.getId() == R.id.rl_btn_press_to_speak) {
-                    //长按发送语音
-                    viewMediaLayout.setVisibility(View.GONE);
-                } else if (clickView.getId() == R.id.iv_image) {
-                    //选择图片
-                    openPictureFromLocal();
-                } else if (clickView.getId() == R.id.iv_camera) {
-                    try {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        mCameraFile = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-                        if (mCameraFile.createNewFile()) {
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("1", cameraFile.getPath());
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
-                            startActivityForResult(intent, SEND_CAMERA);
-                        } else {
-                            CommonUtil.shortToast(mContext, "照片生成失败");
-                        }
-                    } catch (Exception ex) {
-                        Log.e(TAG, ex.getMessage());
-                    }
-                }
+        if (clickView.getId() == R.id.iv_show_media_layout) {
+            //加号，显示多媒体框
+            if (viewMediaLayout.getVisibility() == View.GONE) {
+                viewMediaLayout.setVisibility(View.VISIBLE);
+            } else {
+                viewMediaLayout.setVisibility(View.GONE);
             }
-        };
-        getFriendUserInfo(callBack);
+        } else if (clickView.getId() == R.id.tv_send) {
+            //发送消息
+            if (etSend.getText().length() == 0) {
+                return;
+            }
+            sendMsg(etSend.getText().toString());
+
+        } else if (clickView.getId() == R.id.btn_voice) {
+            //语音
+            viewMediaLayout.setVisibility(View.GONE);
+            btnKeyBoard.setVisibility(View.VISIBLE);
+            btnVoice.setVisibility(View.GONE);
+            viewMsgInput.setVisibility(View.GONE);
+            viewPressToSpeak.setVisibility(View.VISIBLE);
+
+        } else if (clickView.getId() == R.id.btn_set_mode_keyboard) {
+            //键盘
+            viewMediaLayout.setVisibility(View.GONE);
+            btnVoice.setVisibility(View.VISIBLE);
+            viewPressToSpeak.setVisibility(View.GONE);
+            viewMsgInput.setVisibility(View.VISIBLE);
+            btnKeyBoard.setVisibility(View.GONE);
+        } else if (clickView.getId() == R.id.rl_btn_press_to_speak) {
+            //长按发送语音
+            viewMediaLayout.setVisibility(View.GONE);
+        } else if (clickView.getId() == R.id.iv_image) {
+            //选择图片
+            openPictureFromLocal();
+        } else if (clickView.getId() == R.id.iv_camera) {
+            try {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                mCameraFile = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                if (mCameraFile.createNewFile()) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
+                    startActivityForResult(intent, SEND_CAMERA);
+                } else {
+                    CommonUtil.shortToast(mContext, "照片生成失败");
+                    return;
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
+            }
+        }
     }
 
     TextWatcher msgTextWatcher = new TextWatcher() {
@@ -436,17 +436,18 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private File compressImage(Bitmap bitmap, File file) {
         File compressedFile;
         try {
-            if (file.length() > IMAGE_SIZE) {
+            if (bitmap.getWidth() > app.screenW * 0.4f) {
+                bitmap = AppUtil.scaleImage(bitmap, app.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
+            }
+
+            if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap = AppUtil.compressImage(bitmap, baos, 50);
+                bitmap = AppUtil.compressImage(bitmap, baos);
                 compressedFile = AppUtil.convertBitmap2File(bitmap, app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
             } else {
                 compressedFile = copyFileToCache(file, Chat.FileType.IMAGE);
             }
 
-            if (bitmap.getWidth() > app.screenW * 0.4f) {
-                bitmap = AppUtil.scaleImage(bitmap, app.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
-            }
             AppUtil.convertBitmap2File(bitmap, app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
@@ -467,19 +468,20 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         mSendTime = (int) (System.currentTimeMillis() / 1000);
         final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                file.getPath(), Chat.FileType.IMAGE.toString().toLowerCase(), mSendTime);
+                file.getPath(), type.toString().toLowerCase(), mSendTime);
+        chat.content = file.getPath();
 
         //生成New页面的消息并通知更改
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mFromUserInfo.nickname);
         message.setContent("[图片]");
-        CustomContent cc = getCustomContent(Chat.FileType.IMAGE);
+        CustomContent cc = getCustomContent(type.IMAGE);
         cc.setFromId(mFromId);
         cc.setImgUrl(mFromUserInfo.mediumAvatar);
         message.setCustomContent(gson.toJson(cc));
         message.isForeground = true;
         notifyNewList2Update(message);
-        chat.content = file.getPath();
+
         addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
 
         RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
@@ -492,7 +494,39 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String imageUrl = app.host + "/" + jsonObject.getString("uri");
-                    String createdTime = jsonObject.getString("createdTime");
+                    //String createdTime = jsonObject.getString("createdTime");
+                    sendImage(imageUrl, chat);
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                updateSendMsgInListView(Chat.Delivery.FAILED, chat);
+                CommonUtil.shortToast(mContext, "图片上传失败");
+            }
+        });
+        viewMediaLayout.setVisibility(View.GONE);
+    }
+
+    private void uploadMediaAgain(File file, final Chat chat, Chat.FileType type) {
+        if (file == null && !file.exists()) {
+            CommonUtil.shortToast(mContext, "图片不存在");
+            return;
+        }
+
+        RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
+        url.setMuiltParams(new Object[]{
+                "file", file
+        });
+        ajaxPostMultiUrl(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String imageUrl = app.host + "/" + jsonObject.getString("uri");
+                    //String createdTime = jsonObject.getString("createdTime");
                     sendImage(imageUrl, chat);
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
@@ -588,13 +622,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     /**
      * 获取对方信息
-     *
-     * @param callback
      */
-    private void getFriendUserInfo(final NormalCallback callback) {
-        if (mFromUserInfo != null) {
-            callback.success(null);
-        } else {
+    private void getFriendUserInfo() {
+        if (mFromUserInfo == null) {
             RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("userId", mFromId + "");
@@ -603,7 +633,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 public void onResponse(String response) {
                     mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
                     });
-                    callback.success(null);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -627,9 +656,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 }
                 break;
             case SEND_CAMERA:
-                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath());
-                File compressedCameraFile = compressImage(bitmap, mCameraFile);
-                uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
+                if (bitmap != null) {
+                    File compressedCameraFile = compressImage(bitmap, mCameraFile);
+                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
+                }
                 break;
             case SEND_VOICE:
                 break;

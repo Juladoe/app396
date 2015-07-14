@@ -13,7 +13,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="9-4 18:45"
             android:background="@drawable/message_time_bg"
             android:clickable="true"
             android:layout_marginTop="8dp"
@@ -44,12 +43,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/ci_send_pic"
-                android:background="@drawable/chat_to_layout"
-                android:gravity="left|center_vertical"
+                android:background="@drawable/chat_text_to_layout"
+                android:gravity="center"
                 android:layout_centerInParent="true"
                 android:maxWidth="250dp"
                 android:text="123"
-                android:layout_marginLeft="16dp"
                 android:textColor="@color/base_black_87"
                 android:textSize="@dimen/medium_font_size" />
         </RelativeLayout>

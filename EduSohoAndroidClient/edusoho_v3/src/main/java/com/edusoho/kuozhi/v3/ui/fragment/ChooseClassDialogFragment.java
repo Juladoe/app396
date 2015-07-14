@@ -84,7 +84,7 @@ public class ChooseClassDialogFragment extends DialogFragment{
                     +"简介"+i+" "+"简介"+i+" "+"简介"+i+" "
                     +"简介"+i+" "+"简介"+i+" "+"简介"+i+" "
                     +"简介"+i+" "+"简介"+i+" "+"简介"+i;
-            int id = R.drawable.sample_avatar_1;
+            int id = R.drawable.default_avatar;
             course.middlePicture = ""+id;
             mAdapter.addItem(course);
             i++;
