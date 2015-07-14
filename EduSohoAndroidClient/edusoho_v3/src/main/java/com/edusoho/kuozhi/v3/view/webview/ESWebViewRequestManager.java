@@ -396,7 +396,7 @@ public class ESWebViewRequestManager extends RequestManager {
                 byte[] fileData = EntityUtils.toByteArray(new FileEntity(cache, extension));
                 Response response = new ResourceResponse(fileData);
                 response.setEncoding("utf-8");
-                response.setMimeType(getFileMime(mime));
+                response.setMimeType(mime);
                 mResoucrCache.put(path, response);
                 Log.d(TAG, "set mem cache :" + path);
             } catch (Exception e) {

@@ -55,16 +55,6 @@
             android:textColor="@android:color/white"
             android:id="@+id/btn_login" />
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/login_forget_password"
-            android:textColor="@color/base_black_54"
-            android:layout_marginBottom="@dimen/login_control_margin_bottom"
-            android:layout_gravity="right"
-            android:layout_marginRight="10dp" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

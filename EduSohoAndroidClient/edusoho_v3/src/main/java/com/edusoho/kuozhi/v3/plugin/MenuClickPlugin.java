@@ -176,7 +176,7 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JavascriptInterface
-    public void showKeyInput() {
+    public void showKeyInput(JSONArray args, CallbackContext callbackContext) {
         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }

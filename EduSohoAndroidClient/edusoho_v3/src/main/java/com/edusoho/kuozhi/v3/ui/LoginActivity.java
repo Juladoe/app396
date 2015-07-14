@@ -18,12 +18,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 import cn.sharesdk.framework.Platform;
@@ -151,57 +153,28 @@ public class LoginActivity extends ActionBarBaseActivity {
 
         @Override
         public void onClick(View v) {
-            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
-
+            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
                 @Override
-                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
-                    if (action == Platform.ACTION_USER_INFOR) {
-                        try {
-                            String id = res.get("id").toString();
-                            String name = res.get("name").toString();
-                            String avatar = res.get("avatar_large").toString();
-                            bindOpenUser("weibo", id, name, avatar);
-                        } catch (Exception ex) {
-                            Log.e("ThirdPartyLogin-->", ex.getMessage());
-                        }
-                    }
+                public void success(UserResult obj) {
+                    mActivity.finish();
                 }
-
-                @Override
-                public void onError(Platform platform, int action, Throwable throwable) {
-                }
-
-                @Override
-                public void onCancel(Platform platform, int action) {
-                    CommonUtil.longToast(mContext, mAuthCancel);
-                }
-            }, SinaWeibo.NAME);
+            });
+            openLoginUtil.login("weibo");
         }
     };
 
     private View.OnClickListener mQQLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
+            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
                 @Override
-                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
-                    if (action == Platform.ACTION_USER_INFOR) {
-                        String id = platform.getDb().getToken();
-                        String name = res.get("nickname").toString();
-                        String avatar = res.get("figureurl_qq_2").toString();
-                        bindOpenUser("qq", id, name, avatar);
-                    }
+                public void success(UserResult obj) {
+                    mActivity.finish();
                 }
-
-                @Override
-                public void onError(Platform platform, int i, Throwable throwable) {
-                }
-
-                @Override
-                public void onCancel(Platform platform, int i) {
-                    CommonUtil.longToast(mContext, mAuthCancel);
-                }
-            }, QQ.NAME);
+            });
+            openLoginUtil.login("qq");
         }
     };
 
@@ -209,34 +182,14 @@ public class LoginActivity extends ActionBarBaseActivity {
     private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ThirdPartyLogin.getInstance(mContext).login(new PlatformActionListener() {
+            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
                 @Override
-                public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
-                    if (action == Platform.ACTION_USER_INFOR) {
-                        String id = res.get("unionid").toString();
-                        String name = res.get("nickname").toString();
-                        String avatar = res.get("headimgurl").toString();
-                        bindOpenUser("weixin", id, name, avatar);
-                    }
+                public void success(UserResult obj) {
+                    mActivity.finish();
                 }
-
-                @Override
-                public void onError(Platform platform, int i, Throwable throwable) {
-                    Looper.prepare();
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            CommonUtil.longToast(mContext, "您尚未安装微信客户端");
-                        }
-                    });
-                    Looper.loop();
-                }
-
-                @Override
-                public void onCancel(Platform platform, int i) {
-                    CommonUtil.longToast(mContext, mAuthCancel);
-                }
-            }, Wechat.NAME);
+            });
+            openLoginUtil.login("weixin");
         }
     };
 
