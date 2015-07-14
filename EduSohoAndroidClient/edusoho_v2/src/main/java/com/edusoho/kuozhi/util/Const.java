@@ -243,6 +243,7 @@ public class Const {
      * 获取考试课程详情
      */
     public static final String COURSE_CODE = "Course/coupon";
+    public static final String CHECK_COUPON = "Order/checkCoupon";
 
     //笔记列表
     public static final String USER_NOTES = "Course/getNoteList";

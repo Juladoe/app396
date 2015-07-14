@@ -110,7 +110,6 @@ public class ClassRoomPaperActivity extends CoursePaperActivity {
         int type = message.type.code;
         switch (type) {
             case PayCourseActivity.PAY_SUCCESS:
-                longToast("支付完成");
                 loadClassRoomMember(null);
                 break;
         }
@@ -262,14 +261,17 @@ public class ClassRoomPaperActivity extends CoursePaperActivity {
     }
 
     private void payClassRoom(final String payUrl) {
-        app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
-                startIntent.putExtra(Const.ACTIONBAR_TITLE, "支付班级-" + mTitle);
-                startIntent.putExtra("payurl", payUrl);
-            }
-        });
+        final ClassRoom classRoom = mClassRoomDetailsResult.classRoom;
+        app.mEngine.runNormalPluginForResult(
+                "PayClassRoomActivity", mActivity, PAY_COURSE_REQUEST, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra("price", classRoom.price);
+                        startIntent.putExtra("title", mTitle);
+                        startIntent.putExtra("payurl", payUrl);
+                        startIntent.putExtra(Const.CLASSROOM_ID, classRoom.id);
+                    }
+                });
     }
 
     protected void loadClassRoomMember(final LoadDialog loadDialog) {

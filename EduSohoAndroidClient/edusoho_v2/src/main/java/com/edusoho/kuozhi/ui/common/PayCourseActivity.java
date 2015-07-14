@@ -36,15 +36,15 @@ public class PayCourseActivity extends ActionBarBaseActivity
 
     private TextView mPriceView;
     private TextView mTitleView;
-    private TextView mCardNumber;
-    private TextView mCardEndPrice;
-    private View mCodeCheckBtn;
+    protected TextView mCardNumber;
+    protected TextView mCardEndPrice;
+    protected View mCodeCheckBtn;
     private View mPayBtn;
-    private EditText mCodeView;
+    protected EditText mCodeView;
 
-    private String mTitle;
+    protected String mTitle;
     private int mCourseId;
-    private double mPrice;
+    protected double mPrice;
 
     public static final int PAY_SUCCESS = 001;
     public static final int PAY_EXIT = 002;
@@ -117,15 +117,18 @@ public class PayCourseActivity extends ActionBarBaseActivity
         return messageTypes;
     }
 
-    private void initView()
-    {
+    protected void initIntentData() {
         Intent data = getIntent();
         mTitle = data.getStringExtra("title");
         mCourseId = data.getIntExtra("courseId", 0);
         mPrice = data.getDoubleExtra("price", 0.0);
 
         setBackMode(BACK, "购买课程");
+    }
 
+    private void initView()
+    {
+        initIntentData();
         mPayBtn = findViewById(R.id.pay_course_pay_btn);
         mTitleView = (TextView) findViewById(R.id.pay_course_title);
         mPriceView = (TextView) findViewById(R.id.pay_course_price);
@@ -151,42 +154,45 @@ public class PayCourseActivity extends ActionBarBaseActivity
         mPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final LoadDialog loadDialog = LoadDialog.create(mActivity);
-                loadDialog.show();
-
-                RequestUrl url = app.bindUrl(Const.PAYCOURSE, true);
-                url.setParams(new String[]{
-                        "payment", "alipay",
-                        "courseId", mCourseId + ""
-                });
-                ajaxPost(url, new ResultCallback(){
-                    @Override
-                    public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                        loadDialog.dismiss();
-                        final PayStatus payStatus = parseJsonValue(
-                                object, new TypeToken<PayStatus>() {
-                        });
-
-                        if (payStatus == null) {
-                            longToast("购买课程失败！！");
-                            return;
-                        }
-                        app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
-                                startIntent.putExtra(Const.ACTIONBAR_TITLE, "支付课程-" + mTitle);
-                                startIntent.putExtra("payurl", payStatus.payUrl);
-                            }
-                        });
-                    }
-                });
-
+                payBtnClick();
             }
         });
     }
 
-    private void checkCode(String code)
+    protected void payBtnClick() {
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
+
+        RequestUrl url = app.bindUrl(Const.PAYCOURSE, true);
+        url.setParams(new String[]{
+                "payment", "alipay",
+                "courseId", mCourseId + ""
+        });
+        ajaxPost(url, new ResultCallback(){
+            @Override
+            public void callback(String url, String object, AjaxStatus ajaxStatus) {
+                loadDialog.dismiss();
+                final PayStatus payStatus = parseJsonValue(
+                        object, new TypeToken<PayStatus>() {
+                        });
+
+                if (payStatus == null) {
+                    longToast("购买课程失败！！");
+                    return;
+                }
+                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, "支付课程-" + mTitle);
+                        startIntent.putExtra("payurl", payStatus.payUrl);
+                    }
+                });
+            }
+        });
+    }
+
+    protected void checkCode(String code)
     {
         RequestUrl requestUrl = app.bindUrl(Const.COURSE_CODE, false);
         requestUrl.setParams(new String[] {
@@ -238,7 +244,7 @@ public class PayCourseActivity extends ActionBarBaseActivity
         mTitleView.setText("课程名称：  " + mTitle);
     }
 
-    private void setColorText(TextView view, String base, String text, int color)
+    protected void setColorText(TextView view, String base, String text, int color)
     {
         StringBuilder oldText = new StringBuilder(base);
         int start = oldText.length();

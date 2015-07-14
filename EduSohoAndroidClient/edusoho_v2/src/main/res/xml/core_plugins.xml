@@ -147,5 +147,6 @@
 
     <plugin name="ClassRoomPaperActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.ClassRoomPaperActivity"></plugin>
     <plugin name="ClassRoomCourseFragment" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.ClassRoomCourseFragment"></plugin>
+    <plugin name="PayClassRoomActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.PayClassRoomActivity"></plugin>
 
 </plugins>

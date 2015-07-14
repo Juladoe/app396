@@ -9,6 +9,7 @@ import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.ui.classRoom.ClassRoomPaperActivity;
+import com.edusoho.kuozhi.ui.classRoom.PayClassRoomActivity;
 import com.edusoho.kuozhi.ui.common.PayCourseActivity;
 import com.edusoho.kuozhi.util.Const;
 
@@ -25,6 +26,7 @@ public class AlipayFragment extends BaseFragment {
     private String mHost;
 
     private WebView webView;
+    private boolean mIsCallback;
     public static final int ALIPAY_REQUEST = 0001;
     public static final int ALIPAY_SUCCESS = 0002;
     public static final int ALIPAY_EXIT = 0003;
@@ -74,12 +76,6 @@ public class AlipayFragment extends BaseFragment {
                     callMethod(callBack, param);
                     return;
                 }
-                if (url.startsWith(mHost) && ! isEqualsURl(mPayurl, url)) {
-                    app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, ClassRoomPaperActivity.class);
-                    app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, PayCourseActivity.class);
-                    mActivity.finish();
-                    return;
-                }
             }
         });
         webView.loadUrl(mPayurl);
@@ -96,11 +92,15 @@ public class AlipayFragment extends BaseFragment {
         }
     }
 
-    public void alipayCallback(String status)
+    public synchronized void alipayCallback(String status)
     {
+        if (mIsCallback) {
+            return;
+        }
         if (Const.RESULT_SUCCESS.equals(status)) {
+            mIsCallback = true;
+            app.sendMsgToTarget(PayCourseActivity.PAY_SUCCESS, null, PayClassRoomActivity.class);
             app.sendMsgToTarget(PayCourseActivity.PAY_SUCCESS, null, PayCourseActivity.class);
-            app.sendMsgToTarget(PayCourseActivity.PAY_SUCCESS, null, ClassRoomPaperActivity.class);
             mActivity.finish();
         }
     }

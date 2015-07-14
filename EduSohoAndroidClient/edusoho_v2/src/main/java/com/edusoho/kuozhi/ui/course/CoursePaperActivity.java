@@ -272,7 +272,6 @@ public class CoursePaperActivity extends ActionBarBaseActivity
                                 public void setIntentDate(Intent startIntent) {
                                     startIntent.putExtra("price", course.price);
                                     startIntent.putExtra("title", mTitle);
-                                    startIntent.putExtra("payurl", mTitle);
                                     startIntent.putExtra("courseId", mCourseId);
                                 }
                             });
