@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/course_info"
-            android:text="课程简介课程简介课程简介课程简介课程简介课程简介课程简介课程简介课程简介课程简介"
+            android:text="课程简介"
             android:layout_below="@id/course_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

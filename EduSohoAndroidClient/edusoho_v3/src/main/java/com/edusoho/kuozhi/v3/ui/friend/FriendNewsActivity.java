@@ -10,10 +10,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.bal.FollowerNotification;
+import com.edusoho.kuozhi.v3.model.bal.FollowerNotificationResult;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -28,7 +36,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     public String mTitle = "添加校友";
 
     private ListView newsList;
-    private ArrayList<Friend> mList;
+    private ArrayList<FollowerNotification> mList;
 
     private FriendNewsAdapter mAdapter;
     private LayoutInflater mInflater;
@@ -37,27 +45,36 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBackMode(BACK,"好友请求");
-        mList = new ArrayList<Friend>();
+        setBackMode(BACK,"粉丝通知");
+        mList = new ArrayList<FollowerNotification>();
         setContentView(R.layout.friend_news_layout);
 
         newsList = (ListView)findViewById(R.id.friend_news_list);
-        mAdapter = new FriendNewsAdapter(mContext,R.layout.add_friend_item);
+        mAdapter = new FriendNewsAdapter(mContext,R.layout.friend_news_item);
         newsList.setAdapter(mAdapter);
         loadFriend();
     }
 
     private void loadFriend(){
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_1,"花非花",Const.HAVE_ADD_FALSE));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_2,"扫地神僧",Const.HAVE_ADD_TRUE));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_3,"独孤求败",Const.HAVE_ADD_FALSE));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_4,"阮玲玉",Const.HAVE_ADD_FALSE));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_5,"西门吹雪",Const.HAVE_ADD_TRUE));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_6,"虚竹",Const.HAVE_ADD_FALSE));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_7,"段誉",Const.HAVE_ADD_WAIT));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_8,"乔峰",Const.HAVE_ADD_WAIT));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_9,"风清扬",Const.HAVE_ADD_WAIT));
-//        mAdapter.addItem(new Friend(R.drawable.sample_avatar_10,"山鸡",Const.HAVE_ADD_WAIT));
+        RequestUrl requestUrl = app.bindNewUrl(Const.NEW_FOLLOWER_NOTIFICATION, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        stringBuffer.append("?start=0&limit=1000&type=user-follow");
+        requestUrl.url = stringBuffer.toString();
+
+        ajaxGet(requestUrl,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                FollowerNotificationResult fnr = parseJsonValue(response,new TypeToken<FollowerNotificationResult>(){});
+                for(FollowerNotification fn:fnr.data){
+                    mAdapter.addItem(fn);
+                }
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
 
@@ -83,8 +100,8 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             return position;
         }
 
-        public void addItem(Friend friend){
-            mList.add(friend);
+        public void addItem(FollowerNotification fn){
+            mList.add(fn);
             notifyDataSetChanged();
         }
 
@@ -94,30 +111,27 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             if(convertView == null){
                 holder = new ItemHolder();
                 convertView = mInflater.inflate(mResource,null);
-                holder.mImage = (CircleImageView) convertView.findViewById(R.id.add_friend_image);
-                holder.mName = (TextView) convertView.findViewById(R.id.add_friend_name);
-                holder.mState = (ImageView) convertView.findViewById(R.id.add_friend_state);
+                holder.content = (TextView) convertView.findViewById(R.id.news_content);
+                holder.time = (TextView) convertView.findViewById(R.id.news_time);
                 convertView.setTag(holder);
             }else {
                 holder = (ItemHolder) convertView.getTag();
             }
 
-            holder.mImage.setImageResource(mList.get(position).avatarID);
-            holder.mName.setText(mList.get(position).nickname);
-            if(position == 3){
-                holder.mState.setImageResource(R.drawable.have_add_friend_wait);
-            }else if(position%3 == 0){
-                holder.mState.setImageResource(R.drawable.have_add_friend_true);
+            FollowerNotification fn = mList.get(position);
+
+            if (fn.content.opration.equals("follow")){
+                holder.content.setText("用户"+fn.content.userName+"关注了你。");
             }else {
-                holder.mState.setImageResource(R.drawable.add_friend_selector);
+                holder.content.setText("用户"+fn.content.userName+"取消了对你的关注。");
             }
+            holder.time.setText(AppUtil.getPostDaysZero(fn.createdTime));
             return convertView;
         }
 
         private class ItemHolder{
-            CircleImageView mImage;
-            TextView mName;
-            ImageView mState;
+            TextView content;
+            TextView time;
         }
     }
 

@@ -100,7 +100,7 @@ public class Const {
     public static final int ERROR_200 = 200;
     public static final boolean memCacheNo = false;
     public static final boolean fileCacheYes = true;
-    public static final int TIMEOUT = 15000;
+    public static final int TIMEOUT = 10000;
 
     public static final String RESULT_OK = "ok";
     public static final String SHOW_STUDENT_NUM = "opened";
@@ -422,6 +422,7 @@ public class Const {
     public static final String USERS = "/api/users/";
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
+    public static final String NEW_FOLLOWER_NOTIFICATION ="/api/me/notifications";
 
     /**
      * 绑定第三方登录
