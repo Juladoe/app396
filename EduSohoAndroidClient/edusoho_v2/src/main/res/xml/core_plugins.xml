@@ -145,5 +145,7 @@
     <plugin name="LivingCourseActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.LivingCourseActivity"></plugin>
     <plugin name="LiveLessonFragment" versrion="1.0" package="com.edusoho.kuozhi.ui.liveCourse.LiveLessonFragment"></plugin>
 
+    <plugin name="ClassRoomPaperActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.ClassRoomPaperActivity"></plugin>
+    <plugin name="ClassRoomCourseFragment" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.ClassRoomCourseFragment"></plugin>
 
 </plugins>

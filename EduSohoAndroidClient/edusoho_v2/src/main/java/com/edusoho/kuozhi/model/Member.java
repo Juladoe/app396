@@ -12,6 +12,7 @@ public class Member implements Serializable {
     public int userId;
     public int orderId;
     public long deadline;
+    public int classroomId;
     public String levelId;
     public String learnedNum;
     public String credit;

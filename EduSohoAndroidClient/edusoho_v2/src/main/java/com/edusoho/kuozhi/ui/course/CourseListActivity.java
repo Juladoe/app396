@@ -23,6 +23,7 @@ public class CourseListActivity extends ActionBarBaseActivity {
 
     public static final int RECOMMEND = 0001;
     public static final int LASTEST = 0002;
+    public static final int CLASSROOM = 0003;
 
     private String mTitle;
     private int mCategoryId;

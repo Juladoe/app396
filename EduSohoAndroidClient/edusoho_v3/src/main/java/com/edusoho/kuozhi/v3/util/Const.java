@@ -100,7 +100,7 @@ public class Const {
     public static final int ERROR_200 = 200;
     public static final boolean memCacheNo = false;
     public static final boolean fileCacheYes = true;
-    public static final int TIMEOUT = 15000;
+    public static final int TIMEOUT = 10000;
 
     public static final String RESULT_OK = "ok";
     public static final String SHOW_STUDENT_NUM = "opened";

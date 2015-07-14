@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -46,6 +47,7 @@ public class ChatAdapter extends BaseAdapter {
     private static final int MSG_RECEIVE_IMAGE = 5;
     private static final int MSG_SEND_AUDIO = 5;
     private static final int MSG_RECEIVE_AUDIO = 6;
+    private DisplayImageOptions mOptions;
 
     ImageErrorClick mImageErrorClick;
 
@@ -61,6 +63,10 @@ public class ChatAdapter extends BaseAdapter {
     public ChatAdapter(Context ctx, List<Chat> list) {
         mContext = ctx;
         mList = list;
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
+                showImageForEmptyUri(R.drawable.defaultpic).
+                showImageOnLoading(R.drawable.defaultpic).
+                showImageOnFail(R.drawable.defaultpic).build();
     }
 
     public void addOneChat(Chat chat) {
@@ -273,7 +279,8 @@ public class ChatAdapter extends BaseAdapter {
                 return;
             }
         }
-        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
+
+        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, mOptions, mMyImageLoadingListener);
     }
 
     /**
@@ -341,6 +348,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.pbLoading.setVisibility(View.GONE);
             holder.ivStateError.setVisibility(View.GONE);
             ((ImageView) view).setImageBitmap(bitmap);
+            //holder.ivMsgImage.setImageBitmap(bitmap);
         }
 
         @Override

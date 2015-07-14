@@ -5,7 +5,7 @@
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
     <string name="api_version">2.1.0</string>
-    <string name="apk_version">2.6.1</string>
+    <string name="apk_version">3.0.0</string>
     <string name="apk_code">13</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0.3</string>
@@ -72,7 +72,7 @@
     <string name="font_download_unselect">&#xe629;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
-    <string name="font_chat_add_media">&#xe60a;</string>
+    <string name="font_chat_add_media">&#xe62e;</string>
     <string name="font_chat_media_photo">&#xe62d;</string>
     <string name="font_chat_media_camera">&#xe62b;</string>
 

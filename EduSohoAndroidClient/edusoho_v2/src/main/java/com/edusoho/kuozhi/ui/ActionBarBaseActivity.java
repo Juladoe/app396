@@ -82,7 +82,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     public void setTitleClickListener(View.OnClickListener clickListener) {
         mTitleLiveTextView.setOnClickListener(clickListener);
         mTitleIconView.setOnClickListener(clickListener);
-        //mTitleLayoutView.setOnClickListener(clickListener);
     }
 
     private void initActivity() {
@@ -137,7 +136,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         app.mEngine.runService(serviceName, mActivity, null);
     }
 
-    public void log(String format, String... strs) {
+    public void log(String format, String[] strs) {
         if (EdusohoApp.debug) {
             System.out.println(String.format(format, strs));
         }

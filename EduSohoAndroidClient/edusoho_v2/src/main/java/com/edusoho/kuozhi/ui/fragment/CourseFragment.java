@@ -37,6 +37,7 @@ public class CourseFragment extends BaseFragment {
     private int mCategoryId;
     private String mTitle;
     private String mTagId;
+    private int mClassRoomId;
     private String mSearchText;
     private int mType;
     private String baseUrl;
@@ -82,6 +83,7 @@ public class CourseFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mType = bundle.getInt(CourseListActivity.TYPE);
+            mClassRoomId = bundle.getInt(Const.CLASSROOM_ID, 0);
             mSearchText = bundle.getString(CourseListActivity.SEARCH_TEXT);
             mTitle = bundle.getString(TITLE);
             mCategoryId = bundle.getInt(CourseListActivity.CATEGORY_ID, 0);
@@ -97,20 +99,31 @@ public class CourseFragment extends BaseFragment {
             baseUrl = Const.RECOMMEND_COURSES;
         } else if (mType == CourseListActivity.LASTEST) {
             baseUrl = Const.LASTEST_COURSES;
+        } else if (mType == CourseListActivity.CLASSROOM) {
+            baseUrl = Const.CLASSROOM_COURSES;
         }
 
         loadCourseFromNet(0);
     }
 
-    private void loadCourseFromNet(int start) {
-        RequestUrl url = app.bindUrl(baseUrl, true);
-        HashMap<String, String> params = url.getParams();
+    private void initRequestParams(HashMap<String, String> params) {
+        if (mType == CourseListActivity.CLASSROOM) {
+            params.put(Const.CLASSROOM_ID, String.valueOf(mClassRoomId));
+            return;
+        }
         if (mTagId != null && !TextUtils.isEmpty(mTagId)) {
             params.put(CourseListActivity.TAG_ID, mTagId);
         } else {
             params.put(CourseListActivity.SEARCH_TEXT, mSearchText);
         }
+
         params.put(CourseListActivity.CATEGORY_ID, mCategoryId + "");
+    }
+
+    private void loadCourseFromNet(int start) {
+        RequestUrl url = app.bindUrl(baseUrl, true);
+        HashMap<String, String> params = url.getParams();
+        initRequestParams(params);
         params.put("start", start + "");
         params.put("limit", Const.LIMIT + "");
 
