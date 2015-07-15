@@ -34,8 +34,7 @@
                 android:layout_height="@dimen/head_icon_40"
                 android:layout_alignParentLeft="true"
                 android:layout_marginRight="8dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/myinfo_default_face" />
+                android:layout_marginLeft="16dp" />
 
             <TextView
                 android:id="@+id/tv_send_content"

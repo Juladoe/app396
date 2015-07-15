@@ -6,18 +6,25 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -30,6 +37,7 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +47,14 @@ import java.util.List;
  * 动态列表
  */
 public class NewsFragment extends BaseFragment {
+    public static final int HANDLE_SEND_MSG = 1;
+    public static final int HANDLE_RECEIVE_MSG = 2;
+    public static final int UPDATE_UNREAD_MSG = 10;
+    public static final int UPDATE_UNREAD_BULLETIN = 11;
+
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
-    public static final int UPDATE_UNREAD = 0x01;
+    private String mSchoolAvatar;
 
     @Override
     public void onAttach(Activity activity) {
@@ -122,6 +135,21 @@ public class NewsFragment extends BaseFragment {
             mSwipeAdapter.update(news);
             newDataSource.close();
         }
+        if (TextUtils.isEmpty(mSchoolAvatar)) {
+            RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
+            StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+            requestUrl.url = stringBuffer.toString();
+            mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
+                    });
+                    if (schoolAppResult.length != 0) {
+                        mSchoolAvatar = schoolAppResult[0].avatar;
+                    }
+                }
+            }, null);
+        }
     }
 
     SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
@@ -149,6 +177,7 @@ public class NewsFragment extends BaseFragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final New newItem = (New) parent.getItemAtPosition(position);
+            TypeBusinessEnum.getName(newItem.type);
             switch (newItem.type) {
                 case "friend":
                 case "teacher":
@@ -162,6 +191,9 @@ public class NewsFragment extends BaseFragment {
                     if (newItem.unread > 0) {
 
                     }
+                    break;
+                case "bulletin":
+                    app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
                     break;
                 case "course":
                     // TODO 打开课程
@@ -193,13 +225,13 @@ public class NewsFragment extends BaseFragment {
                 case Const.ADD_CHAT_MSG:
                     //收到消息更新消息列表的信息
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
-                    if (handleType == Const.HANDLE_RECEIVE_MSG) {
+                    if (handleType == HANDLE_RECEIVE_MSG) {
                         handleReceiveMsg(message);
-                    } else if (handleType == Const.HANDLE_SEND_MSG) {
+                    } else if (handleType == HANDLE_SEND_MSG) {
                         handleSendMsg(message);
                     }
                     break;
-                case UPDATE_UNREAD:
+                case UPDATE_UNREAD_MSG:
                     int fromId = message.data.getInt(Const.FROM_ID);
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
                     List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
@@ -210,8 +242,54 @@ public class NewsFragment extends BaseFragment {
                         updateNew(newModel);
                     }
                     break;
+                case Const.ADD_BULLETIT_MSG:
+                    handleBulletinMsg(message);
+                    break;
+                case UPDATE_UNREAD_BULLETIN:
+                    NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    List<New> bulletins = bulletinDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
+                            TypeBusinessEnum.BULLETIN.getName());
+                    if (bulletins.size() > 0) {
+                        New newModel = bulletins.get(0);
+                        newModel.unread = 0;
+                        bulletinDataSource.update(newModel);
+                        updateNew(newModel);
+                    }
+                    bulletinDataSource.close();
+                    break;
             }
         }
+    }
+
+    /**
+     * 处理公告
+     *
+     * @param message
+     */
+    private void handleBulletinMsg(WidgetMessage message) {
+        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+        New newModel = new New();
+        newModel.belongId = app.loginUser.id;
+        newModel.title = wrapperMessage.title;
+        newModel.content = wrapperMessage.content;
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContent(), new TypeToken<CustomContent>() {
+        });
+        newModel.imgUrl = app.host + "/" + mSchoolAvatar;
+        newModel.createdTime = customContent.getCreatedTime();
+        newModel.setType(TypeBusinessEnum.BULLETIN.getName());
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        List<New> bulletins = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
+                TypeBusinessEnum.BULLETIN.getName());
+        if (bulletins.size() == 0) {
+            newModel.unread = 1;
+            newDataSource.create(newModel);
+            insertNew(newModel);
+        } else {
+            newModel.unread = wrapperMessage.isForeground ? 0 : bulletins.get(0).unread + 1;
+            newDataSource.updateBulletin(newModel);
+            setItemToTop(newModel);
+        }
+        newDataSource.close();
     }
 
     private void handleReceiveMsg(WidgetMessage message) {
@@ -253,8 +331,10 @@ public class NewsFragment extends BaseFragment {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.LOGIN_SUCCESS),
-                new MessageType(UPDATE_UNREAD, source)};
+        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_BULLETIT_MSG, source),
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(UPDATE_UNREAD_MSG, source),
+                new MessageType(UPDATE_UNREAD_BULLETIN, source)};
         return messageTypes;
     }
 

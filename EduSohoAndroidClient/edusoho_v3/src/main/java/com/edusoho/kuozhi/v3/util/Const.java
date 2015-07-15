@@ -74,17 +74,17 @@ public class Const {
     public static final String BIND_USER_ID = "bind_user_id";
 
     //Plugin事件
-    public static final int MAIN_MENU_CLOSE = 0x02;
-    public static final int MAIN_MENU_OPEN = 0x03;
-    public static final int OPEN_COURSE_CHAT = 0x04;
+    public static final int MAIN_MENU_CLOSE = 2;
+    public static final int MAIN_MENU_OPEN = 3;
+    public static final int OPEN_COURSE_CHAT = 4;
 
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
-    public static final int ADD_CHAT_MSG = 0x05;
-    public static final int SWITCH_TAB = 0x06;
-    public static final int DRAWER_REGISTER = 0x07;
-    public static final int HANDLE_SEND_MSG = 0x08;
-    public static final int HANDLE_RECEIVE_MSG = 0x09;
+    public static final int ADD_CHAT_MSG = 5;
+    public static final int ADD_BULLETIT_MSG = 6;
+    public static final int SWITCH_TAB = 7;
+    public static final int DRAWER_REGISTER = 8;
+
     public static final int NEW_FANS = 0x0A;
     public static final String ADD_CHAT_MSG_TYPE = "aad_chat_msg_type";
 

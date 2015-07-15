@@ -27,6 +27,7 @@ create table if not exists chat (
 create table if not exists bulletin(
     id integer,
     content varchar(255),
+    schoolDomain varchar(100),
     createdTime integer
 );
 

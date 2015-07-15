@@ -4,7 +4,6 @@ package com.edusoho.kuozhi.v3.model.bal.push;
  * Created by JesseHuang on 15/7/2.
  */
 public class CustomContent {
-    private int chatId;
     private int id;
     private int fromId;
     private String nickname;
@@ -22,14 +21,6 @@ public class CustomContent {
      */
     private String typeBusiness;
     private int createdTime;
-
-    public int getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(int chatId) {
-        this.chatId = chatId;
-    }
 
     public int getId() {
         return id;
@@ -93,33 +84,5 @@ public class CustomContent {
 
     public void setCreatedTime(int createdTime) {
         this.createdTime = createdTime;
-    }
-
-    public static enum TypeBusiness {
-        NORMAL("normal", 1), BULLETIN("bulletin", 2), COURSE("course", 3), VERIFIED("verified", 4);
-        private String name;
-        private int index;
-
-        private TypeBusiness(String n, int i) {
-            this.name = n;
-            this.index = i;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public int getIndex() {
-            return this.index;
-        }
-
-        public static TypeBusiness getType(String name) {
-            for (TypeBusiness typeObject : TypeBusiness.values()) {
-                if (name.equals(typeObject.getName())) {
-                    return typeObject;
-                }
-            }
-            return null;
-        }
     }
 }
