@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -32,8 +33,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendNewsActivity extends ActionBarBaseActivity {
 
-
-
     public String mTitle = "添加校友";
 
     private ListView newsList;
@@ -41,6 +40,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
     private FriendNewsAdapter mAdapter;
     private LayoutInflater mInflater;
+    private LoadDialog mLoadDialog;
 
 
     @Override
@@ -53,6 +53,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         newsList = (ListView)findViewById(R.id.friend_news_list);
         mAdapter = new FriendNewsAdapter(mContext,R.layout.friend_news_item);
         newsList.setAdapter(mAdapter);
+        mLoadDialog = LoadDialog.create(mActivity);
+        mLoadDialog.setMessage("正在载入数据");
+        mLoadDialog.show();
         loadFriend();
     }
 
@@ -69,6 +72,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 for(FollowerNotification fn:fnr.data){
                     mAdapter.addItem(fn);
                 }
+                mLoadDialog.dismiss();
             }
         },new Response.ErrorListener() {
             @Override
@@ -76,6 +80,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
             }
         });
+        if (!app.getNetIsConnect() && mLoadDialog != null){
+            mLoadDialog.dismiss();
+        }
     }
 
 
