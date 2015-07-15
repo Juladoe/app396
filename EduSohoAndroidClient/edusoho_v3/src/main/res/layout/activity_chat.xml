@@ -113,7 +113,7 @@
                     android:id="@+id/tv_send"
                     android:layout_width="42dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/send_btn_click"
+                    android:background="@drawable/sms_send_btn_bg"
                     android:visibility="gone"
                     android:layout_gravity="center"
                     android:text="发送"

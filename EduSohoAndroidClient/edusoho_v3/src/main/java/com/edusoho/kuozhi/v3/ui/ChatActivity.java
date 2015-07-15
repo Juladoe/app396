@@ -368,8 +368,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 tvSend.setVisibility(View.VISIBLE);
                 ivAddMedia.setVisibility(View.GONE);
             } else {
-                tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_click));
-                tvSend.setTextColor(getResources().getColor(android.R.color.white));
                 ivAddMedia.setVisibility(View.VISIBLE);
                 tvSend.setVisibility(View.GONE);
             }
