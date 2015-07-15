@@ -1,9 +1,6 @@
 package com.edusoho.kuozhi.v3.view.webview;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -32,12 +29,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import org.apache.cordova.Config;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.android.volley.Response.Listener;
@@ -76,12 +69,19 @@ public class ESWebView extends RelativeLayout {
         return mWebView.getSettings().getUserAgentString();
     }
 
-    private void createWebView() {
-
+    private ESCordovaWebView createWebView(AttributeSet attrs) {
+        ESCordovaWebView webView = ESWebViewFactory.getFactory().getWebView();
+        if (webView != null) {
+            webView.updateCordovaActivity(mActivity);
+            return webView;
+        }
+        webView =  ESCordovaWebView.create(mActivity, attrs);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        return webView;
     }
 
     private void initWebView(AttributeSet attrs) {
-        mWebView = new ESCordovaWebView(new CordovaContext(mActivity), attrs);
+        mWebView = createWebView(attrs);
 
         String userAgent = mWebView.getSettings().getUserAgentString();
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
@@ -89,7 +89,7 @@ public class ESWebView extends RelativeLayout {
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(mWebChromeClient);
 
-        pbLoading = (ProgressBar) LayoutInflater.from(new CordovaContext(mActivity)).inflate(R.layout.progress_bar, null);
+        pbLoading = (ProgressBar) LayoutInflater.from(mActivity).inflate(R.layout.progress_bar, null);
         RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
         paramProgressBar.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         pbLoading.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_status));
@@ -101,6 +101,7 @@ public class ESWebView extends RelativeLayout {
         addView(mWebView, webViewProgressBar);
 
         mRequestManager = ESWebViewRequestManager.getRequestManager(this);
+        ESWebViewFactory.getFactory().factoryWebView(attrs);
     }
 
     public RequestManager getRequestManager() {
@@ -213,35 +214,6 @@ public class ESWebView extends RelativeLayout {
         initWebView(mAttrs);
     }
 
-    private class CordovaContext extends ContextWrapper implements CordovaInterface {
-
-        Activity activity;
-        protected final ExecutorService threadPool = Executors.newCachedThreadPool();
-
-        public CordovaContext(Activity activity) {
-            super(activity.getBaseContext());
-            this.activity = activity;
-        }
-
-        public void startActivityForResult(CordovaPlugin command, Intent intent, int requestCode) {
-        }
-
-        public void setActivityResultCallback(CordovaPlugin plugin) {
-        }
-
-        public Activity getActivity() {
-            return activity;
-        }
-
-        public Object onMessage(String id, Object data) {
-            return null;
-        }
-
-        public ExecutorService getThreadPool() {
-            return threadPool;
-        }
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -251,6 +223,7 @@ public class ESWebView extends RelativeLayout {
         Log.d(TAG, "destroy");
 
         mWebView.stopLoading();
+        mWebView.updateCordovaActivity(null);
         mWebView.handleDestroy();
     }
 
@@ -343,33 +316,5 @@ public class ESWebView extends RelativeLayout {
 
     public CordovaWebView getWebView() {
         return mWebView;
-    }
-
-    private class ESCordovaWebView extends CordovaWebView
-    {
-        public ESCordovaWebView(Context context) {
-            super(context);
-        }
-
-        public ESCordovaWebView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        @Override
-        public boolean onKeyDown(int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
-                mWebView.goBack();
-                return true;
-            }
-            return super.onKeyDown(keyCode, event);
-        }
-
-        @Override
-        public boolean onKeyUp(int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                return false;
-            }
-            return super.onKeyUp(keyCode, event);
-        }
     }
 }

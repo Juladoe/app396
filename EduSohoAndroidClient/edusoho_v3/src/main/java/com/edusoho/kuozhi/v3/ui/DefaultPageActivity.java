@@ -39,6 +39,8 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.v3.view.webview.ESWebView;
+import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -73,6 +75,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         setContentView(R.layout.activity_default);
         initView();
 
+        ESWebViewFactory.init(mActivity);
         if (savedInstanceState == null) {
             //selectItem(0);
         }

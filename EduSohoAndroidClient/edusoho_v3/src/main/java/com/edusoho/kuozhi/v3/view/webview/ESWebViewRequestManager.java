@@ -349,7 +349,6 @@ public class ESWebViewRequestManager extends RequestManager {
 
         @Override
         public void handler(Request request, Response response) {
-
             String path = request.getPath(mWebView.getAppCode());
 
             Response cacheResponse = mResoucrCache.get(path);

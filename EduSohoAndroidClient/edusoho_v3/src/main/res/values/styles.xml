@@ -87,6 +87,7 @@
         <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
         <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
         <item name="android:windowAnimationStyle">@style/EdusohoActivityAnim</item>
+        <item name="android:actionBarSize">44dp</item>
         <item name="colorAccent">@color/material_green</item>
     </style>
 
