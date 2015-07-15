@@ -20,7 +20,9 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -31,8 +33,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendNewsActivity extends ActionBarBaseActivity {
 
-
-
     public String mTitle = "添加校友";
 
     private ListView newsList;
@@ -40,6 +40,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
     private FriendNewsAdapter mAdapter;
     private LayoutInflater mInflater;
+    private LoadDialog mLoadDialog;
 
 
     @Override
@@ -52,13 +53,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         newsList = (ListView)findViewById(R.id.friend_news_list);
         mAdapter = new FriendNewsAdapter(mContext,R.layout.friend_news_item);
         newsList.setAdapter(mAdapter);
+        mLoadDialog = LoadDialog.create(mActivity);
+        mLoadDialog.setMessage("正在载入数据");
+        mLoadDialog.show();
         loadFriend();
     }
 
     private void loadFriend(){
         RequestUrl requestUrl = app.bindNewUrl(Const.NEW_FOLLOWER_NOTIFICATION, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=1000&type=user-follow");
+        stringBuffer.append("?start=0&limit=10000&type=user-follow");
         requestUrl.url = stringBuffer.toString();
 
         ajaxGet(requestUrl,new Response.Listener<String>() {
@@ -68,6 +72,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 for(FollowerNotification fn:fnr.data){
                     mAdapter.addItem(fn);
                 }
+                mLoadDialog.dismiss();
             }
         },new Response.ErrorListener() {
             @Override
@@ -75,6 +80,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
             }
         });
+        if (!app.getNetIsConnect() && mLoadDialog != null){
+            mLoadDialog.dismiss();
+        }
     }
 
 
@@ -113,6 +121,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 convertView = mInflater.inflate(mResource,null);
                 holder.content = (TextView) convertView.findViewById(R.id.news_content);
                 holder.time = (TextView) convertView.findViewById(R.id.news_time);
+                holder.avatar = (CircleImageView) convertView.findViewById(R.id.new_follower_avatar);
                 convertView.setTag(holder);
             }else {
                 holder = (ItemHolder) convertView.getTag();
@@ -126,10 +135,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 holder.content.setText("用户"+fn.content.userName+"取消了对你的关注。");
             }
             holder.time.setText(AppUtil.getPostDaysZero(fn.createdTime));
+            if (fn.content.avatar != "") {
+                ImageLoader.getInstance().displayImage(app.host + "/" + fn.content.avatar, holder.avatar, app.mOptions);
+            }else {
+                holder.avatar.setImageResource(R.drawable.default_avatar);
+            }
             return convertView;
         }
 
         private class ItemHolder{
+            CircleImageView avatar;
             TextView content;
             TextView time;
         }

@@ -145,7 +145,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 mStart = mAdapter.getCount();
                 mAdapter.addItems(getChatList(mStart));
                 mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 300);
+                lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
 
             @Override
@@ -212,7 +212,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void sendNewFragment2UpdateItem() {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.FROM_ID, mFromId);
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD, bundle, NewsFragment.class);
+        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
     }
 
     private void sendMsg(String content) {
@@ -280,7 +280,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void notifyNewList2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.CHAT_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, Const.HANDLE_SEND_MSG);
+        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_MSG);
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
@@ -292,7 +292,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         customContent.setTypeMsg(fileType.getName());
         customContent.setTypeObject(ObjectType.FRIEND.getName());
         customContent.setCreatedTime(mSendTime);
-        customContent.setTypeBusiness(CustomContent.TypeBusiness.NORMAL.getName());
+        customContent.setTypeBusiness(TypeBusinessEnum.NORMAL.getName());
         return customContent;
     }
 

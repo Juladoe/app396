@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class BulletinDataSource {
     private static final String TABLE_NAME = "BULLETIN";
-    public String[] allColumns = {"ID", "CONTENT", "CREATEDTIME"};
+    public String[] allColumns = {"ID", "CONTENT", "SCHOOLDOMAIN", "CREATEDTIME"};
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
 
@@ -38,14 +38,15 @@ public class BulletinDataSource {
         mDbHelper.close();
     }
 
-    public ArrayList<Bulletin> getBulletins(int start, int limit, String sql) {
+    public ArrayList<Bulletin> getBulletins(int start, int limit, String sql, String order) {
+        this.openRead();
         ArrayList<Bulletin> list = null;
         try {
             list = new ArrayList<>();
             if (TextUtils.isEmpty(sql)) {
                 sql = null;
             }
-            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "ID DESC",
+            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, order,
                     String.format("%d, %d", start, limit));
             while (cursor.moveToNext()) {
                 list.add(cursorToBulletin(cursor));
@@ -54,15 +55,19 @@ public class BulletinDataSource {
         } catch (Exception ex) {
             Log.d("-->", ex.getMessage());
         }
+        this.close();
         return list;
     }
 
     public long create(Bulletin bulletin) {
+        this.openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[0], bulletin.id);
         cv.put(allColumns[1], bulletin.content);
-        cv.put(allColumns[2], bulletin.createdTime);
+        cv.put(allColumns[2], bulletin.schoolDomain);
+        cv.put(allColumns[3], bulletin.createdTime);
         long insertId = mDataBase.insert(TABLE_NAME, null, cv);
+        this.close();
         return insertId;
     }
 
@@ -70,9 +75,15 @@ public class BulletinDataSource {
         Bulletin bulletin = new Bulletin();
         bulletin.id = cursor.getInt(0);
         bulletin.content = cursor.getString(1);
-        bulletin.createdTime = cursor.getInt(0);
+        bulletin.schoolDomain = cursor.getString(2);
+        bulletin.createdTime = cursor.getInt(3);
         return bulletin;
+    }
 
+    public void delete() {
+        this.openWrite();
+        mDataBase.delete(TABLE_NAME, null, null);
+        this.close();
     }
 
 }

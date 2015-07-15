@@ -9,15 +9,17 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 
 /**
  * Created by JesseHuang on 15/7/4.
  */
 public class NotificationUtil {
-    public static void showNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+    public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
@@ -40,6 +42,30 @@ public class NotificationUtil {
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
             mNotificationManager.notify(notificationId, mBuilder.build());
         } catch (Exception ex) {
+            Log.d("showMsgNotification-->", ex.getMessage());
+        }
+    }
+
+    public static void showBulletinNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        try {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(xgMessage.title)
+                            .setContentText(xgMessage.content).setAutoCancel(true);
+            Bulletin bulletin = new Bulletin(xgMessage);
+            int notificationId = bulletin.id;
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent notifyIntent = new Intent(context, BulletinActivity.class);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
+                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendIntent);
+            mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+            mNotificationManager.notify(notificationId, mBuilder.build());
+        } catch (Exception ex) {
             Log.d("showNotification-->", ex.getMessage());
         }
     }
@@ -49,4 +75,6 @@ public class NotificationUtil {
                 (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(id);
     }
+
+
 }

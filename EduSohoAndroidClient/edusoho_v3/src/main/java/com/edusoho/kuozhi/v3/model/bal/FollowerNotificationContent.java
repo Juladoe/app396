@@ -7,5 +7,6 @@ public class FollowerNotificationContent {
     public String userId;
     public String userName;
     public String opration;
+    public String avatar;
 
 }
