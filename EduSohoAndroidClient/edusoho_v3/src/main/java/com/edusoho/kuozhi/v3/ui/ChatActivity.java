@@ -145,7 +145,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 mStart = mAdapter.getCount();
                 mAdapter.addItems(getChatList(mStart));
                 mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 300);
+                lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
 
             @Override

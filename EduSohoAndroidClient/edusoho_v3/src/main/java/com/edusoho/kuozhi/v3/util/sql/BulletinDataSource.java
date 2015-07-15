@@ -78,7 +78,12 @@ public class BulletinDataSource {
         bulletin.schoolDomain = cursor.getString(2);
         bulletin.createdTime = cursor.getInt(3);
         return bulletin;
+    }
 
+    public void delete() {
+        this.openWrite();
+        mDataBase.delete(TABLE_NAME, null, null);
+        this.close();
     }
 
 }

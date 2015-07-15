@@ -30,6 +30,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -161,8 +162,13 @@ public class NewsFragment extends BaseFragment {
                     mSwipeAdapter.removeItem(position);
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
                     newDataSource.delete(newModel.id);
-                    ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
-                    chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
+                    if (newModel.getType().equals(TypeBusinessEnum.BULLETIN.getName())) {
+                        BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                        bulletinDataSource.delete();
+                    } else {
+                        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                        chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
+                    }
                     mSwipeAdapter.notifyDataSetChanged();
                     break;
                 case 1:
