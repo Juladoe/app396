@@ -130,6 +130,8 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             holder.time.setText(AppUtil.getPostDaysZero(fn.createdTime));
             if (fn.content.avatar != "") {
                 ImageLoader.getInstance().displayImage(app.host + "/" + fn.content.avatar, holder.avatar, app.mOptions);
+            }else {
+                holder.avatar.setImageResource(R.drawable.default_avatar);
             }
             return convertView;
         }
