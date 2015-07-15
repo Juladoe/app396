@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -39,7 +38,6 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -141,13 +139,7 @@ public class FriendFragment extends BaseFragment {
                     });
                 } else {
                     final SchoolApp shcoolApp = (SchoolApp) parent.getAdapter().getItem(position);
-                    app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
-                        @Override
-                        public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(ChatActivity.FROM_ID, shcoolApp.id);
-                            startIntent.putExtra(ChatActivity.TITLE, shcoolApp.name);
-                        }
-                    });
+                    app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
                 }
 
             }
@@ -279,7 +271,7 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
             loadSchoolApps();
         }
-        if (messageType.code == Const.NEW_FANS){
+        if (messageType.code == Const.NEW_FANS) {
             isNews = true;
             mActivity.supportInvalidateOptionsMenu();
         }

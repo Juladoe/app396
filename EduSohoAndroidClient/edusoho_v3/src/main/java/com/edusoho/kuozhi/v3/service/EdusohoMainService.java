@@ -13,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -21,6 +22,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
@@ -143,7 +145,7 @@ public class EdusohoMainService extends Service {
             if (mEdusohoMainService == null) {
                 mEdusohoMainService = mWeakReference.get();
             }
-            super.handleMessage(msg);
+            WrapperXGPushTextMessage xgMessage = (WrapperXGPushTextMessage) msg.obj;
             switch (msg.what) {
                 case EXIT_USER:
                     mEdusohoMainService.app.loginUser = null;
@@ -152,19 +154,22 @@ public class EdusohoMainService extends Service {
                     mEdusohoMainService.loginWithToken();
                     break;
                 case Const.ADD_CHAT_MSG:
-                    try {
-                        //消息写入到Chat表中
-                        WrapperXGPushTextMessage xgMessage = (WrapperXGPushTextMessage) msg.obj;
-                        Chat chatModel = new Chat(xgMessage);
-                        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).openWrite();
-                        chatDataSource.create(chatModel);
-                        chatDataSource.close();
-                        if (!xgMessage.isForeground || (xgMessage.isForeground && ChatActivity.CurrentFromId != chatModel.fromId)) {
-                            //如果ChatActivity不在最顶栈，显示通知
-                            NotificationUtil.showNotification(EdusohoApp.app.mContext, xgMessage);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    //普通消息
+                    Chat chatModel = new Chat(xgMessage);
+                    ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
+                    chatDataSource.create(chatModel);
+                    if (!xgMessage.isForeground || (xgMessage.isForeground && ChatActivity.CurrentFromId != chatModel.fromId)) {
+                        //如果ChatActivity不在最顶栈，显示通知
+                        NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage);
+                    }
+                    break;
+                case Const.ADD_BULLETIT_MSG:
+                    //公告消息消息
+                    Bulletin bulletin = new Bulletin(xgMessage);
+                    BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
+                    bulletinDataSource.create(bulletin);
+                    if (!xgMessage.isForeground) {
+                        NotificationUtil.showBulletinNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
             }

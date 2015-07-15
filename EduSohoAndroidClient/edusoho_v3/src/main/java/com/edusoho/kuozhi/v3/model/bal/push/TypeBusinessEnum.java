@@ -4,7 +4,7 @@ package com.edusoho.kuozhi.v3.model.bal.push;
  * Created by JesseHuang on 15/7/7.
  */
 public enum TypeBusinessEnum {
-    NORMAL("NORMAL", 1), BULLETIN("BULLETIN", 2);
+    NORMAL("normal", 1), BULLETIN("bulletin", 2), VERIFIED("verified", 3);
 
     private String name;
     private int index;

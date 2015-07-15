@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -15,6 +17,8 @@ import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
 import com.tencent.android.tpush.XGPushShowedResult;
 import com.tencent.android.tpush.XGPushTextMessage;
+
+import org.json.JSONObject;
 
 /**
  * Created by JesseHuang on 15/5/16.
@@ -46,24 +50,34 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
         try {
-            final boolean isForeground = EdusohoApp.app.isForeground(ChatActivity.class.getName());
-            Log.d(TAG, isForeground + "");
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
-            bundle.putInt(Const.ADD_CHAT_MSG_TYPE, Const.HANDLE_RECEIVE_MSG);
-            if (wrapperMessage.title.equals("好友添加")) {
+
+            JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContent());
+            String typeBusiness = jsonObject.getString("typeBusiness");
+            if (typeBusiness.equals(TypeBusinessEnum.NORMAL.getName())) {
+                bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_RECEIVE_MSG);
+                boolean isForeground = EdusohoApp.app.isForeground(ChatActivity.class.getName());
+                if (isForeground) {
+                    wrapperMessage.isForeground = true;
+                    EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, ChatActivity.class);
+                }
+                EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
+                EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
+            } else if (typeBusiness.equals(TypeBusinessEnum.BULLETIN.getName())) {
+                boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
+
+                if (isForeground) {
+                    wrapperMessage.isForeground = true;
+                    EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, bundle, BulletinActivity.class);
+                }
+                EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, bundle, NewsFragment.class);
+                EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, wrapperMessage);
+            } else if (typeBusiness.equals(TypeBusinessEnum.VERIFIED.getName())) {
                 EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, bundle, FriendFragment.class);
                 return;
             }
-            if (isForeground) {
-                //如果ChatActivity在最顶栈
-                wrapperMessage.isForeground = true;
-                EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, ChatActivity.class);
-            }
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
-            EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

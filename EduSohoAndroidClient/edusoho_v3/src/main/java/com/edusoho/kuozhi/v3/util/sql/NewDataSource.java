@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,21 @@ public class NewDataSource {
         cv.put(allColumns[7], newModel.type);
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
-        return mDataBase.update(TABLE_NAME, cv, "FROMID = ? ", new String[]{newModel.getFromId() + ""});
+        return mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + ""});
+    }
+
+    public long updateBulletin(New newModel) {
+        ContentValues cv = new ContentValues();
+        cv.put(allColumns[1], newModel.fromId);
+        cv.put(allColumns[2], newModel.title);
+        cv.put(allColumns[3], newModel.content);
+        cv.put(allColumns[4], newModel.createdTime);
+        cv.put(allColumns[5], newModel.imgUrl);
+        cv.put(allColumns[6], newModel.unread);
+        cv.put(allColumns[7], newModel.type);
+        cv.put(allColumns[8], newModel.belongId);
+        cv.put(allColumns[9], newModel.isTop);
+        return mDataBase.update(TABLE_NAME, cv, "TYPE = ? AND BELONGID = ?", new String[]{TypeBusinessEnum.BULLETIN.getName(), EdusohoApp.app.loginUser.id + ""});
     }
 
     public long delete(String whereSql, String... whereArgs) {
