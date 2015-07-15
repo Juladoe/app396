@@ -90,16 +90,7 @@ public class LoginFragment extends BaseFragment {
                                 object, new TypeToken<TokenResult>() {
                                 }.getType());
                         if (result != null) {
-                            app.saveToken(result);
-                            mActivity.setResult(LoginActivity.OK);
-                            mActivity.finish();
-                            app.sendMessage(Const.LOGING_SUCCESS, null);
-
-                            app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
-                            app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
-
-                            //app.sendMsgToTarget(MyInfoFragment.REFRESH, null, MyInfoFragment.class);
-
+                            saveUserToken(result);
                         } else {
                             mActivity.longToast("用户名或密码错误！");
                         }
@@ -107,6 +98,16 @@ public class LoginFragment extends BaseFragment {
                 });
             }
         });
+    }
+
+    protected void saveUserToken(TokenResult result) {
+        app.saveToken(result);
+        mActivity.setResult(LoginActivity.OK);
+        mActivity.finish();
+        app.sendMessage(Const.LOGING_SUCCESS, null);
+
+        app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
+        app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
     }
 
     @Override

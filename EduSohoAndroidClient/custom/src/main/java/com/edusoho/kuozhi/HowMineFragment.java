@@ -3,7 +3,6 @@ package com.edusoho.kuozhi;
 import android.content.Intent;
 import android.view.View;
 import android.widget.RelativeLayout;
-
 import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.ui.common.FragmentPageActivity;
 import com.edusoho.kuozhi.ui.fragment.AboutFragment;

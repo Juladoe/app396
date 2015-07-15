@@ -139,11 +139,7 @@ public class RegistFragment extends BaseFragment {
                     return;
                 }
 
-                app.saveToken(tokenResult);
-                mActivity.setResult(RegistFragment.OK);
-                mActivity.finish();
-                app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
-                app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
+                saveUserToken(tokenResult);
             }
 
             @Override
@@ -154,5 +150,13 @@ public class RegistFragment extends BaseFragment {
         });
 
         return true;
+    }
+
+    protected void saveUserToken(TokenResult tokenResult) {
+        app.saveToken(tokenResult);
+        mActivity.setResult(RegistFragment.OK);
+        mActivity.finish();
+        app.sendMsgToTarget(MineFragment.REFRESH, null, MineFragment.class);
+        app.sendMsgToTarget(SchoolRoomFragment.REFRESH, null, SchoolRoomFragment.class);
     }
 }
