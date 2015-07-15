@@ -25,7 +25,6 @@ import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.ObjectType;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
@@ -225,7 +224,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         params.put("title", app.loginUser.nickname);
         params.put("type", "text");
         params.put("content", content);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT)));
+        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -241,7 +240,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
                     message.setTitle(mFromUserInfo.nickname);
                     message.setContent(chat.content);
-                    CustomContent cc = getCustomContent(Chat.FileType.TEXT);
+                    CustomContent cc = getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND);
                     cc.setFromId(mFromId);
                     cc.setImgUrl(mFromUserInfo.mediumAvatar);
                     message.setCustomContent(gson.toJson(cc));
@@ -258,7 +257,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         params.put("title", app.loginUser.nickname);
         params.put("type", "image");
         params.put("content", url);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.IMAGE)));
+        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.IMAGE, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -284,15 +283,14 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
-    private CustomContent getCustomContent(Chat.FileType fileType) {
+    private CustomContent getCustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness) {
         CustomContent customContent = new CustomContent();
         customContent.setFromId(app.loginUser.id);
         customContent.setNickname(app.loginUser.nickname);
         customContent.setImgUrl(app.loginUser.mediumAvatar);
         customContent.setTypeMsg(fileType.getName());
-        customContent.setTypeObject(ObjectType.FRIEND.getName());
         customContent.setCreatedTime(mSendTime);
-        customContent.setTypeBusiness(TypeBusinessEnum.NORMAL.getName());
+        customContent.setTypeBusiness(typeBusiness.getName());
         return customContent;
     }
 
@@ -473,7 +471,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mFromUserInfo.nickname);
         message.setContent("[图片]");
-        CustomContent cc = getCustomContent(type.IMAGE);
+        CustomContent cc = getCustomContent(type.IMAGE, TypeBusinessEnum.FRIEND);
         cc.setFromId(mFromId);
         cc.setImgUrl(mFromUserInfo.mediumAvatar);
         message.setCustomContent(gson.toJson(cc));
@@ -677,8 +675,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             if (customContent.getTypeBusiness().equals(TypeBusinessEnum.BULLETIN.toString().toLowerCase())) {
                 //公告消息
 
-            } else if (customContent.getTypeBusiness().equals(TypeBusinessEnum.NORMAL.toString().toLowerCase())) {
-                //普通消息
+            } else if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
+                    customContent.getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
                 if (messageType.code == Const.ADD_CHAT_MSG && mFromId == customContent.getFromId()) {
                     Chat chat = new Chat(wrapperMessage);
 //                    switch (chat.fileType) {
