@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -58,7 +59,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     private void loadFriend(){
         RequestUrl requestUrl = app.bindNewUrl(Const.NEW_FOLLOWER_NOTIFICATION, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=1000&type=user-follow");
+        stringBuffer.append("?start=0&limit=10000&type=user-follow");
         requestUrl.url = stringBuffer.toString();
 
         ajaxGet(requestUrl,new Response.Listener<String>() {
@@ -113,6 +114,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 convertView = mInflater.inflate(mResource,null);
                 holder.content = (TextView) convertView.findViewById(R.id.news_content);
                 holder.time = (TextView) convertView.findViewById(R.id.news_time);
+                holder.avatar = (CircleImageView) convertView.findViewById(R.id.new_follower_avatar);
                 convertView.setTag(holder);
             }else {
                 holder = (ItemHolder) convertView.getTag();
@@ -126,10 +128,14 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 holder.content.setText("用户"+fn.content.userName+"取消了对你的关注。");
             }
             holder.time.setText(AppUtil.getPostDaysZero(fn.createdTime));
+            if (fn.content.avatar != "") {
+                ImageLoader.getInstance().displayImage(app.host + "/" + fn.content.avatar, holder.avatar, app.mOptions);
+            }
             return convertView;
         }
 
         private class ItemHolder{
+            CircleImageView avatar;
             TextView content;
             TextView time;
         }

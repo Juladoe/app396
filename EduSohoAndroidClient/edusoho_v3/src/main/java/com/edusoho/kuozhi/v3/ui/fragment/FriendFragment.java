@@ -197,7 +197,7 @@ public class FriendFragment extends BaseFragment {
 
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=1000/");
+        stringBuffer.append("?start=0&limit=10000/");
         requestUrl.url = stringBuffer.toString();
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
