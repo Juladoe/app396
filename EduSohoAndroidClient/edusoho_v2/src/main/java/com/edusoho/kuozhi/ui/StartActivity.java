@@ -118,7 +118,7 @@ public class StartActivity extends ActionBarBaseActivity
      * 检测网校api版本
      */
     protected void checkSchoolApiVersion(String host) {
-        ajaxNormalGet(app.host + Const.VERIFYVERSION, new ResultCallback() {
+        ajaxNormalGet(host + Const.VERIFYVERSION, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
                 super.callback(url, object, ajaxStatus);
