@@ -89,6 +89,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private View viewMediaLayout;
     private View viewPressToSpeak;
     private View viewMsgInput;
+    private View mRecordingContainer;
     private ArrayList<Chat> mList;
     private ChatDataSource mChatDataSource;
     private int mSendTime;
@@ -131,6 +132,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         ivPhoto.setOnClickListener(this);
         ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
         ivCamera.setOnClickListener(this);
+        mRecordingContainer = findViewById(R.id.recording_container);
+        mRecordingContainer.setOnTouchListener(mVoiceRecordingTouchListener);
+
         initData();
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
@@ -301,6 +305,28 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         uploadMediaAgain(file, chat, Chat.FileType.IMAGE);
     }
 
+
+    //region Touch, Click Listener etc.
+    private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (!CommonUtil.isExitsSdcard()) {
+                        CommonUtil.longToast(mContext, "发送语音需要sdcard");
+                        return false;
+                    }
+
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_UP:
+                    break;
+            }
+            return true;
+        }
+    };
+
     @Override
     public void onClick(View v) {
         final View clickView = v;
@@ -380,6 +406,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
         }
     };
+    //endregion
 
     /**
      * 从图库获取图片
