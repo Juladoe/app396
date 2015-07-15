@@ -73,7 +73,9 @@ public class BulletinActivity extends ActionBarBaseActivity {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
             List<New> bulletins = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
                     TypeBusinessEnum.BULLETIN.getName());
-            mHeadImageUrl = bulletins.get(0).imgUrl;
+            if (bulletins.size() > 0) {
+                mHeadImageUrl = bulletins.get(0).imgUrl;
+            }
             if (TextUtils.isEmpty(mHeadImageUrl)) {
                 RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
                 StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
@@ -97,26 +99,29 @@ public class BulletinActivity extends ActionBarBaseActivity {
         NotificationUtil.cancelById(bulletinList.get(0).id);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);
+        mListView.post(mRunnable);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
-                mStart = mBulletinAdapter.getCount();
                 mBulletinAdapter.addItems(getBulletins(mStart));
                 mPtrFrame.refreshComplete();
-                mListView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mListView.setSelection(mStart);
-                    }
-                });
+                mListView.postDelayed(mRunnable, 100);
             }
         });
         notifyNewFragment2UpdateItem();
     }
 
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mListView.setSelection(mStart);
+        }
+    };
+
     private List<Bulletin> getBulletins(int start) {
         List<Bulletin> bulletinList = mBulletinDataSource.getBulletins(start, LIMIT, String.format("SCHOOLDOMAIN = '%s' ", app.domain), "CREATEDTIME DESC");
+        mStart = start + bulletinList.size();
         Collections.reverse(bulletinList);
         return bulletinList;
     }
@@ -127,12 +132,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
         mBulletinAdapter.clear();
         mStart = 0;
         mBulletinAdapter.addItems(getBulletins(mStart));
-        mListView.post(new Runnable() {
-            @Override
-            public void run() {
-                mListView.setSelection(mStart);
-            }
-        });
+        mListView.post(mRunnable);
         notifyNewFragment2UpdateItem();
     }
 
