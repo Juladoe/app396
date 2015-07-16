@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -69,25 +70,21 @@ public class ESWebView extends RelativeLayout {
         return mWebView.getSettings().getUserAgentString();
     }
 
-    private ESCordovaWebView createWebView(AttributeSet attrs) {
-        ESCordovaWebView webView = ESWebViewFactory.getFactory().getWebView();
-        if (webView != null) {
-            webView.updateCordovaActivity(mActivity);
-            return webView;
-        }
-        webView =  ESCordovaWebView.create(mActivity, attrs);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        return webView;
+    private ESCordovaWebView createWebView() {
+        return ESWebViewFactory.getFactory().getWebView(mActivity);
     }
 
-    private void initWebView(AttributeSet attrs) {
-        mWebView = createWebView(attrs);
-
+    private void setupWebView() {
         String userAgent = mWebView.getSettings().getUserAgentString();
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
 
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(mWebChromeClient);
+    }
+
+    private void initWebView() {
+        mWebView = createWebView();
+        setupWebView();
 
         pbLoading = (ProgressBar) LayoutInflater.from(mActivity).inflate(R.layout.progress_bar, null);
         RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
@@ -101,7 +98,6 @@ public class ESWebView extends RelativeLayout {
         addView(mWebView, webViewProgressBar);
 
         mRequestManager = ESWebViewRequestManager.getRequestManager(this);
-        ESWebViewFactory.getFactory().factoryWebView(attrs);
     }
 
     public RequestManager getRequestManager() {
@@ -210,8 +206,7 @@ public class ESWebView extends RelativeLayout {
 
     public void initPlugin(BaseActivity activity) {
         this.mActivity = activity;
-        Config.init(activity);
-        initWebView(mAttrs);
+        initWebView();
     }
 
     @Override
@@ -223,7 +218,8 @@ public class ESWebView extends RelativeLayout {
         Log.d(TAG, "destroy");
 
         mWebView.stopLoading();
-        mWebView.updateCordovaActivity(null);
+        mWebView.clearHistory();
+        mWebView.clearCache(true);
         mWebView.handleDestroy();
     }
 
@@ -274,6 +270,18 @@ public class ESWebView extends RelativeLayout {
     protected WebViewClient mWebViewClient = new ESWebViewClient();
 
     private class ESWebViewClient extends WebViewClient {
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            Log.d(TAG, "s->" + System.currentTimeMillis());
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            Log.d(TAG, "e->" + System.currentTimeMillis());
+        }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {

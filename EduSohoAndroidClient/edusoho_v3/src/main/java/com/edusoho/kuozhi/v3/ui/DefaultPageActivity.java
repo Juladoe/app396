@@ -75,7 +75,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         setContentView(R.layout.activity_default);
         initView();
 
-        ESWebViewFactory.init(mActivity);
         if (savedInstanceState == null) {
             //selectItem(0);
         }

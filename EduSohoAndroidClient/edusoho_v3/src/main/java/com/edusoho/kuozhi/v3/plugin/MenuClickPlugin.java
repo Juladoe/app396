@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
+import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebView;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
@@ -63,7 +64,7 @@ public class MenuClickPlugin extends CoreBridge {
 
     @JavascriptInterface
     public void backWebView(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        mActivity.app.sendMsgToTarget(WebViewActivity.BACK, null, mActivity);
+        mActivity.app.sendMsgToTarget(WebViewActivity.BACK, null, cordova.getActivity());
     }
 
     @JavascriptInterface
@@ -79,7 +80,7 @@ public class MenuClickPlugin extends CoreBridge {
 
     @JavascriptInterface
     public void closeWebView(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        mActivity.app.sendMsgToTarget(WebViewActivity.CLOSE, null, mActivity);
+        mActivity.app.sendMsgToTarget(WebViewActivity.CLOSE, null, cordova.getActivity());
     }
 
     @JavascriptInterface

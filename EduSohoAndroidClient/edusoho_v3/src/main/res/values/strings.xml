@@ -8,7 +8,7 @@
     <string name="apk_version">3.0.0</string>
     <string name="apk_code">13</string>
     <string name="splash_num">0</string>
-    <string name="splash_padding">0.3</string>
+    <string name="splash_padding">0</string>
     <string name="image_cache_path">ImageLoaderCache</string>
 
     <!--Button-->

@@ -24,7 +24,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
         initView();
     }
 
-    private void initView() {
+    protected void initView() {
         Intent data = getIntent();
         if (data != null) {
             mFragment = data.getStringExtra(FRAGMENT);
@@ -35,7 +35,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
         loadFragment(mFragment, data != null ? data.getExtras() : null);
     }
 
-    private void loadFragment(String fragmentName, Bundle bundle) {
+    protected void loadFragment(String fragmentName, Bundle bundle) {
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
@@ -43,7 +43,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
             fragmentTransaction.replace(android.R.id.content, fragment);
             fragmentTransaction.commit();
         } catch (Exception ex) {
-            Log.d("123", ex.toString());
+            Log.d("FragmentPageActivity", ex.toString());
         }
     }
 
