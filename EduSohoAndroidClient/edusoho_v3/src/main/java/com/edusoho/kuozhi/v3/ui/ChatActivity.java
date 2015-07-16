@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -89,7 +90,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private View viewMediaLayout;
     private View viewPressToSpeak;
     private View viewMsgInput;
-    private View mRecordingContainer;
+    private TextView tvSpeak;
+    private TextView tvSpeakHint;
+    private View mViewSpeakContainer;
+
     private ArrayList<Chat> mList;
     private ChatDataSource mChatDataSource;
     private int mSendTime;
@@ -132,9 +136,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         ivPhoto.setOnClickListener(this);
         ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
         ivCamera.setOnClickListener(this);
-        mRecordingContainer = findViewById(R.id.recording_container);
-        mRecordingContainer.setOnTouchListener(mVoiceRecordingTouchListener);
-
+        viewPressToSpeak.setOnTouchListener(mVoiceRecordingTouchListener);
+        tvSpeak = (TextView) findViewById(R.id.tv_speak);
+        tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
+        mViewSpeakContainer = findViewById(R.id.recording_container);
         initData();
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
@@ -305,6 +310,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         uploadMediaAgain(file, chat, Chat.FileType.IMAGE);
     }
 
+    private float mPressDownY;
+    private float mPressMoveY;
 
     //region Touch, Click Listener etc.
     private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
@@ -316,14 +323,29 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         CommonUtil.longToast(mContext, "发送语音需要sdcard");
                         return false;
                     }
-
+                    mPressDownY = event.getY();
+                    mViewSpeakContainer.setVisibility(View.VISIBLE);
+                    tvSpeak.setText(getString(R.string.hand_up_and_end));
+                    tvSpeakHint.setBackgroundResource(R.color.transparent);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    break;
+                    mPressMoveY = event.getY();
+                    if (Math.abs(mPressDownY - mPressMoveY) > app.screenH * 0.2) {
+                        tvSpeak.setText(getString(R.string.hand_up_and_exit));
+                        tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
+                    } else {
+                        tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
+                        tvSpeakHint.setBackgroundResource(R.color.transparent);
+                        tvSpeak.setText(getString(R.string.hand_up_and_end));
+                    }
+                    return true;
                 case MotionEvent.ACTION_UP:
+                    mViewSpeakContainer.setVisibility(View.GONE);
+                    tvSpeak.setText(getString(R.string.hand_press_and_speak));
                     break;
             }
-            return true;
+            return false;
         }
     };
 

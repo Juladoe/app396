@@ -57,13 +57,14 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tv_speak"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:textSize="@dimen/medium_font_size"
                     android:textColor="@color/grey_666666"
                     android:gravity="center_vertical"
                     android:layout_centerVertical="true"
-                    android:text="按住说话" />
+                    android:text="@string/hand_press_and_speak" />
 
             </LinearLayout>
 
@@ -223,20 +224,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/recoding_container_bg"
+            android:visibility="gone"
+            android:padding="10dp"
             android:layout_centerInParent="true">
 
             <ImageView
                 android:id="@+id/iv_voice_volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/record_animate_14"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
             <TextView
-                android:id="@+id/tv_"
+                android:id="@+id/tv_speak_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_below="@+id/iv_voice_volume"
+                android:layout_marginTop="10dp"
                 android:padding="2dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/speak_hint_bg"
+                android:text="@string/hand_move_up_and_send_cancel"
                 android:textSize="@dimen/small_font_size" />
 
 
