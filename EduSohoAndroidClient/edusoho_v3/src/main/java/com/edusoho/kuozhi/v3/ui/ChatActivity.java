@@ -139,6 +139,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         tvSpeak = (TextView) findViewById(R.id.tv_speak);
         tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
         mViewSpeakContainer = findViewById(R.id.recording_container);
+        mViewSpeakContainer.bringToFront();
         initData();
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
@@ -324,7 +325,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     mPressDownY = event.getY();
                     mViewSpeakContainer.setVisibility(View.VISIBLE);
                     tvSpeak.setText(getString(R.string.hand_up_and_end));
-                    tvSpeakHint.setBackgroundResource(R.color.transparent);
+                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mPressMoveY = event.getY();
@@ -334,7 +336,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
                     } else {
                         tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
-                        tvSpeakHint.setBackgroundResource(R.color.transparent);
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
                         tvSpeak.setText(getString(R.string.hand_up_and_end));
                     }
                     return true;
