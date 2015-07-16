@@ -9,15 +9,11 @@ public class CustomContent {
     private String nickname;
     private String imgUrl;
     /**
-     * 信息对象
-     */
-    private String typeObject;
-    /**
      * 资源类型：text, image, audio
      */
     private String typeMsg;
     /**
-     * 消息类型：normal, bulletin, verified, course
+     * 消息类型：friend,teacher, bulletin, verified, course
      */
     private String typeBusiness;
     private int createdTime;
@@ -52,14 +48,6 @@ public class CustomContent {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
-    }
-
-    public String getTypeObject() {
-        return typeObject;
-    }
-
-    public void setTypeObject(String typeObject) {
-        this.typeObject = typeObject;
     }
 
     public String getTypeMsg() {
