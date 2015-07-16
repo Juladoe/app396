@@ -35,6 +35,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.AudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
@@ -326,7 +327,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     mViewSpeakContainer.setVisibility(View.VISIBLE);
                     tvSpeak.setText(getString(R.string.hand_up_and_end));
                     tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-
+                    //录音
+                    AudioRecord.getInstance().start();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mPressMoveY = event.getY();
@@ -334,6 +336,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
+                        //取消录音
+                        AudioRecord.getInstance().stop(false);
                     } else {
                         tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
@@ -343,6 +347,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 case MotionEvent.ACTION_UP:
                     mViewSpeakContainer.setVisibility(View.GONE);
                     tvSpeak.setText(getString(R.string.hand_press_and_speak));
+                    //TODO 保存录音
+                    File mAudioRecord = AudioRecord.getInstance().stop(true);
                     break;
             }
             return false;
