@@ -292,6 +292,9 @@ public class EdusohoApp extends Application {
     }
 
     private String getDomain() {
+        if (TextUtils.isEmpty(app.host)) {
+            return "";
+        }
         Uri hostUri = Uri.parse(app.host);
         if (hostUri != null) {
             return hostUri.getHost();
@@ -452,7 +455,7 @@ public class EdusohoApp extends Application {
     private void loadConfig() {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         config = new AppConfig();
-        config.showSplash = sp.getBoolean("showSplash", true);
+        config.showSplash = sp.getBoolean("showSplashV2", true);
         config.isRegistDevice = sp.getBoolean("registDevice", false);
         config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
@@ -526,7 +529,7 @@ public class EdusohoApp extends Application {
     public void saveConfig() {
         SharedPreferences sp = getSharedPreferences("config", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putBoolean("showSplash", config.showSplash);
+        edit.putBoolean("showSplashV2", config.showSplash);
         edit.putBoolean("registDevice", config.isRegistDevice);
         edit.putBoolean("registPublicDevice", config.isPublicRegistDevice);
         edit.putBoolean("startWithSchool", config.startWithSchool);

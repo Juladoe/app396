@@ -137,9 +137,6 @@ public class ActionBarBaseActivity extends ActionBarActivity {
     }
 
     public void log(String format, String[] strs) {
-        if (EdusohoApp.debug) {
-            System.out.println(String.format(format, strs));
-        }
     }
 
     public void enableBtn(ViewGroup vg, boolean isEnable) {
@@ -619,7 +616,7 @@ public class ActionBarBaseActivity extends ActionBarActivity {
         });
     }
 
-    private boolean handlerError(String errorStr) {
+    protected boolean handlerError(String errorStr) {
         try {
             ErrorResult result = app.gson.fromJson(
                     errorStr, new TypeToken<ErrorResult>() {

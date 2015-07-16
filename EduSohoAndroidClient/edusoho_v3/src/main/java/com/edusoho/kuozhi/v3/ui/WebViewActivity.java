@@ -98,9 +98,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
-        if (mWebView != null) {
-            mWebView.destroy();
-        }
+        destoryWebView();
     }
 
     @Override
@@ -117,5 +115,12 @@ public class WebViewActivity extends ActionBarBaseActivity {
     public void finish() {
         Log.d(TAG, "finish");
         super.finish();
+    }
+
+    private void destoryWebView() {
+        if (mWebView != null) {
+            mWebView.destroy();
+            mWebView = null;
+        }
     }
 }
