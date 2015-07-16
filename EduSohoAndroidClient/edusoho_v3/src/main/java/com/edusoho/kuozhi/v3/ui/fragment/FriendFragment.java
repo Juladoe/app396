@@ -138,7 +138,6 @@ public class FriendFragment extends BaseFragment {
                         }
                     });
                 } else {
-                    final SchoolApp shcoolApp = (SchoolApp) parent.getAdapter().getItem(position);
                     app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
                 }
 

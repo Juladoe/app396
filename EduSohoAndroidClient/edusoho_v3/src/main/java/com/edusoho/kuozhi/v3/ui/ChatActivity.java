@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,7 +26,6 @@ import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.ObjectType;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
@@ -89,6 +89,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private View viewMediaLayout;
     private View viewPressToSpeak;
     private View viewMsgInput;
+    private TextView tvSpeak;
+    private TextView tvSpeakHint;
+    private View mViewSpeakContainer;
+
     private ArrayList<Chat> mList;
     private ChatDataSource mChatDataSource;
     private int mSendTime;
@@ -131,6 +135,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         ivPhoto.setOnClickListener(this);
         ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
         ivCamera.setOnClickListener(this);
+        viewPressToSpeak.setOnTouchListener(mVoiceRecordingTouchListener);
+        tvSpeak = (TextView) findViewById(R.id.tv_speak);
+        tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
+        mViewSpeakContainer = findViewById(R.id.recording_container);
+        mViewSpeakContainer.bringToFront();
         initData();
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
@@ -225,7 +234,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         params.put("title", app.loginUser.nickname);
         params.put("type", "text");
         params.put("content", content);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT)));
+        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -241,7 +250,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
                     message.setTitle(mFromUserInfo.nickname);
                     message.setContent(chat.content);
-                    CustomContent cc = getCustomContent(Chat.FileType.TEXT);
+                    CustomContent cc = getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND);
                     cc.setFromId(mFromId);
                     cc.setImgUrl(mFromUserInfo.mediumAvatar);
                     message.setCustomContent(gson.toJson(cc));
@@ -258,7 +267,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         params.put("title", app.loginUser.nickname);
         params.put("type", "image");
         params.put("content", url);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.IMAGE)));
+        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.IMAGE, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -284,15 +293,14 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
-    private CustomContent getCustomContent(Chat.FileType fileType) {
+    private CustomContent getCustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness) {
         CustomContent customContent = new CustomContent();
         customContent.setFromId(app.loginUser.id);
         customContent.setNickname(app.loginUser.nickname);
         customContent.setImgUrl(app.loginUser.mediumAvatar);
         customContent.setTypeMsg(fileType.getName());
-        customContent.setTypeObject(ObjectType.FRIEND.getName());
         customContent.setCreatedTime(mSendTime);
-        customContent.setTypeBusiness(TypeBusinessEnum.NORMAL.getName());
+        customContent.setTypeBusiness(typeBusiness.getName());
         return customContent;
     }
 
@@ -300,6 +308,46 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public void sendImageAgain(File file, Chat chat) {
         uploadMediaAgain(file, chat, Chat.FileType.IMAGE);
     }
+
+    private float mPressDownY;
+    private float mPressMoveY;
+
+    //region Touch, Click Listener etc.
+    private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (!CommonUtil.isExitsSdcard()) {
+                        CommonUtil.longToast(mContext, "发送语音需要sdcard");
+                        return false;
+                    }
+                    mPressDownY = event.getY();
+                    mViewSpeakContainer.setVisibility(View.VISIBLE);
+                    tvSpeak.setText(getString(R.string.hand_up_and_end));
+                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    mPressMoveY = event.getY();
+                    if (Math.abs(mPressDownY - mPressMoveY) > app.screenH * 0.2) {
+                        tvSpeak.setText(getString(R.string.hand_up_and_exit));
+                        tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
+                    } else {
+                        tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                        tvSpeak.setText(getString(R.string.hand_up_and_end));
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    mViewSpeakContainer.setVisibility(View.GONE);
+                    tvSpeak.setText(getString(R.string.hand_press_and_speak));
+                    break;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -368,8 +416,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 tvSend.setVisibility(View.VISIBLE);
                 ivAddMedia.setVisibility(View.GONE);
             } else {
-                tvSend.setBackground(getResources().getDrawable(R.drawable.send_btn_click));
-                tvSend.setTextColor(getResources().getColor(android.R.color.white));
                 ivAddMedia.setVisibility(View.VISIBLE);
                 tvSend.setVisibility(View.GONE);
             }
@@ -380,6 +426,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
         }
     };
+    //endregion
 
     /**
      * 从图库获取图片
@@ -475,7 +522,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mFromUserInfo.nickname);
         message.setContent("[图片]");
-        CustomContent cc = getCustomContent(type.IMAGE);
+        CustomContent cc = getCustomContent(type.IMAGE, TypeBusinessEnum.FRIEND);
         cc.setFromId(mFromId);
         cc.setImgUrl(mFromUserInfo.mediumAvatar);
         message.setCustomContent(gson.toJson(cc));
@@ -679,8 +726,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             if (customContent.getTypeBusiness().equals(TypeBusinessEnum.BULLETIN.toString().toLowerCase())) {
                 //公告消息
 
-            } else if (customContent.getTypeBusiness().equals(TypeBusinessEnum.NORMAL.toString().toLowerCase())) {
-                //普通消息
+            } else if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
+                    customContent.getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
                 if (messageType.code == Const.ADD_CHAT_MSG && mFromId == customContent.getFromId()) {
                     Chat chat = new Chat(wrapperMessage);
 //                    switch (chat.fileType) {

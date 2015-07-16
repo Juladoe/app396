@@ -36,6 +36,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     public String mTitle = "添加校友";
 
     private ListView newsList;
+    private TextView mEmptyNotice;
     private ArrayList<FollowerNotification> mList;
 
     private FriendNewsAdapter mAdapter;
@@ -46,11 +47,12 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBackMode(BACK,"粉丝通知");
+        setBackMode(BACK,"好友通知");
         mList = new ArrayList<FollowerNotification>();
         setContentView(R.layout.friend_news_layout);
 
         newsList = (ListView)findViewById(R.id.friend_news_list);
+        mEmptyNotice = (TextView) findViewById(R.id.empty_new_follower);
         mAdapter = new FriendNewsAdapter(mContext,R.layout.friend_news_item);
         newsList.setAdapter(mAdapter);
         mLoadDialog = LoadDialog.create(mActivity);
@@ -69,6 +71,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             @Override
             public void onResponse(String response) {
                 FollowerNotificationResult fnr = parseJsonValue(response,new TypeToken<FollowerNotificationResult>(){});
+                setEmptyNotice(fnr.data.length);
                 for(FollowerNotification fn:fnr.data){
                     mAdapter.addItem(fn);
                 }
@@ -82,6 +85,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         });
         if (!app.getNetIsConnect() && mLoadDialog != null){
             mLoadDialog.dismiss();
+        }
+    }
+
+    public void setEmptyNotice(int length){
+        if (length == 0){
+            mEmptyNotice.setVisibility(View.VISIBLE);
+            newsList.setVisibility(View.GONE);
+        }else {
+            mEmptyNotice.setVisibility(View.GONE);
+            newsList.setVisibility(View.VISIBLE);
         }
     }
 

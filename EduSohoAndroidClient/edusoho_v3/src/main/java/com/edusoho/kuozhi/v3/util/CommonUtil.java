@@ -22,7 +22,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -417,20 +416,6 @@ public class CommonUtil {
         }
     }
 
-    public static <T extends View> T getViewHolder(View convertView, int layoutId) {
-        SparseArray<View> viewHolder = (SparseArray<View>) convertView.getTag();
-        if (viewHolder == null) {
-            viewHolder = new SparseArray<View>();
-            convertView.setTag(viewHolder);
-        }
-        View childView = viewHolder.get(layoutId);
-        if (childView == null) {
-            childView = convertView.findViewById(layoutId);
-            viewHolder.put(layoutId, childView);
-        }
-        return (T) childView;
-    }
-
     /**
      * 将服务器端的时间格式转化为milli Second
      *
@@ -620,16 +605,7 @@ public class CommonUtil {
      * @return
      */
     public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream baos, int size) {
-        image.compress(Bitmap.CompressFormat.JPEG, size, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-//        int options = 100;
-//        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
-//            options -= 10;//每次都减少10
-//            baos.reset();//重置baos即清空baos
-//            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
-//
-//        }
-        //ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
-        //Bitmap bitmap = BitmapFactory.decodeStream(isBm);//把ByteArrayInputStream数据生成图片
+        image.compress(Bitmap.CompressFormat.JPEG, size, baos);
         Bitmap bitmap = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
         return bitmap;
     }
@@ -1172,6 +1148,10 @@ public class CommonUtil {
         public void run() {
 
         }
+    }
+
+    public static boolean isExitsSdcard() {
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? true : false;
     }
 
 }

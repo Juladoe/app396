@@ -130,7 +130,7 @@ public class New implements Serializable {
         createdTime = customContent.getCreatedTime();
         imgUrl = customContent.getImgUrl();
         //newModel.setUnread();
-        type = customContent.getTypeObject();
+        type = customContent.getTypeBusiness();
         belongId = EdusohoApp.app.loginUser.id;
     }
 }

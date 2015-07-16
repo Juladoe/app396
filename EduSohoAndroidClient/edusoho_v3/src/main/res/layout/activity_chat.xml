@@ -57,13 +57,14 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tv_speak"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:textSize="@dimen/medium_font_size"
                     android:textColor="@color/grey_666666"
                     android:gravity="center_vertical"
                     android:layout_centerVertical="true"
-                    android:text="按住说话" />
+                    android:text="@string/hand_press_and_speak" />
 
             </LinearLayout>
 
@@ -113,7 +114,7 @@
                     android:id="@+id/tv_send"
                     android:layout_width="42dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/send_btn_click"
+                    android:background="@drawable/sms_send_btn_bg"
                     android:visibility="gone"
                     android:layout_gravity="center"
                     android:text="发送"
@@ -213,30 +214,68 @@
 
     </LinearLayout>
 
-
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout
-        android:id="@+id/rotate_header_list_view_frame"
-        android:layout_above="@+id/ll_chat_dialog"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:ptr_duration_to_close="200"
-        app:ptr_duration_to_close_header="1000"
-        app:ptr_keep_header_when_refresh="true"
-        app:ptr_pull_to_fresh="false"
-        app:ptr_ratio_of_header_height_to_refresh="1.2"
-        app:ptr_resistance="1.7">
+        android:layout_above="@+id/ll_chat_dialog">
 
-        <ListView
+        <RelativeLayout
+            android:id="@+id/recording_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/recoding_container_bg"
+            android:visibility="gone"
+            android:padding="18dp"
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:id="@+id/iv_voice_volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/record_animate_14"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/tv_speak_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/iv_voice_volume"
+                android:layout_marginTop="15dp"
+                android:padding="2dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/speak_hint_bg"
+                android:text="@string/hand_move_up_and_send_cancel"
+                android:textSize="@dimen/medium_font_size" />
+
+
+        </RelativeLayout>
+
+        <in.srain.cube.views.ptr.PtrClassicFrameLayout
+            android:id="@+id/rotate_header_list_view_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:fadingEdge="none"
-            android:fastScrollEnabled="false"
-            android:scrollbars="none"
-            android:smoothScrollbar="true"
-            android:clickable="true"
-            android:transcriptMode="alwaysScroll"
-            android:id="@+id/lv_messages" />
-    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+            app:ptr_duration_to_close="200"
+            app:ptr_duration_to_close_header="1000"
+            app:ptr_keep_header_when_refresh="true"
+            app:ptr_pull_to_fresh="false"
+            app:ptr_ratio_of_header_height_to_refresh="1.2"
+            app:ptr_resistance="1.7">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:fadingEdge="none"
+                android:fastScrollEnabled="false"
+                android:scrollbars="none"
+                android:smoothScrollbar="true"
+                android:clickable="true"
+                android:transcriptMode="alwaysScroll"
+                android:id="@+id/lv_messages" />
+
+        </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

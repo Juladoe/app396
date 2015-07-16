@@ -56,7 +56,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
 
             JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContent());
             String typeBusiness = jsonObject.getString("typeBusiness");
-            if (typeBusiness.equals(TypeBusinessEnum.NORMAL.getName())) {
+            if (typeBusiness.equals(TypeBusinessEnum.FRIEND.getName()) || typeBusiness.equals(TypeBusinessEnum.TEACHER.getName())) {
                 bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_RECEIVE_MSG);
                 boolean isForeground = EdusohoApp.app.isForeground(ChatActivity.class.getName());
                 if (isForeground) {
