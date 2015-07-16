@@ -139,6 +139,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         tvSpeak = (TextView) findViewById(R.id.tv_speak);
         tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
         mViewSpeakContainer = findViewById(R.id.recording_container);
+        mViewSpeakContainer.bringToFront();
         initData();
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
