@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -20,8 +19,8 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.HashMap;
 
 
@@ -37,6 +36,8 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         app.registMsgSource(this);
         startSplash();
         registDevice();
+
+        ESWebViewFactory.init(mActivity);
     }
 
     public void startSplash() {

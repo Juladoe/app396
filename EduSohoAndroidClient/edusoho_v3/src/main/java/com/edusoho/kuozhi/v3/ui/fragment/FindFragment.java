@@ -3,24 +3,18 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 /**
  * Created by JesseHuang on 15/4/26.
  */
-public class FindFragment extends BaseFragment{
+public class FindFragment extends ESWebViewFragment{
 
     private static final String TAG = "FindFragment";
-
-    protected ESWebView webView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,14 +23,9 @@ public class FindFragment extends BaseFragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
-        LayoutInflater localInflater = inflater.cloneInContext(mContext);
-        View rootView = localInflater.inflate(R.layout.fragment_webview, container, false);
-        webView = (ESWebView) rootView.findViewById(R.id.webView);
-        webView.initPlugin(mActivity);
-        webView.loadApp("main");
-        return rootView;
+    protected void initView(View view) {
+        super.initView(view);
+        mWebView.loadApp("main");
     }
 
     @Override
@@ -68,14 +57,10 @@ public class FindFragment extends BaseFragment{
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView");
         super.onDestroyView();
-        if (webView != null) {
-            webView.getRequestManager().destroy();
-            webView.destroy();
+        if (mWebView != null) {
+            mWebView.getRequestManager().destroy();
+            mWebView.destroy();
         }
-    }
-
-    public ESWebView getView() {
-        return webView;
     }
 
 }

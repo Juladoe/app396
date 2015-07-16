@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
+import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 
 /**
  * Created by JesseHuang on 15/6/17.
@@ -38,6 +39,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
         setContentView(R.layout.webview_activity);
         initCordovaWebView();
     }
+
 
     public void initCordovaWebView() {
         Intent intent = getIntent();

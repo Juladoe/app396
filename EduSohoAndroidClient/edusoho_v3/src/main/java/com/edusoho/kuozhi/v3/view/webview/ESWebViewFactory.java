@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+
+import org.apache.cordova.Config;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -17,6 +20,7 @@ public class ESWebViewFactory {
     private Queue<ESCordovaWebView> mCacheQueue;
     private static ESWebViewFactory factory;
     private BaseActivity mActivity;
+    private boolean mIsCreateing;
     private Handler mHandler;
 
     private ESWebViewFactory(BaseActivity activity) {
@@ -26,8 +30,8 @@ public class ESWebViewFactory {
     }
 
     public static void init(BaseActivity activity) {
+        Config.init(activity);
         factory = new ESWebViewFactory(activity);
-        factory.factoryWebView(null);
     }
 
     public static ESWebViewFactory getFactory() {
@@ -49,11 +53,25 @@ public class ESWebViewFactory {
     }
 
     public ESCordovaWebView getWebView() {
-        Log.d(TAG, "get mCacheWebView");
-        return mCacheQueue.poll();
+        ESCordovaWebView webView = mCacheQueue.poll();
+        if (webView == null) {
+            Log.d(TAG, "create mCacheWebView");
+            webView = ESCordovaWebView.create(mActivity, null);
+        }
+        return webView;
+    }
+
+    public ESCordovaWebView getWebView(Activity activity) {
+        return ESCordovaWebView.create(activity, null);
+    }
+
+    public void addWebView(ESCordovaWebView webView) {
+        mCacheQueue.add(webView);
+        Log.d(TAG, "addWebView");
     }
 
     public void factoryWebView(AttributeSet attributeSet) {
+        Log.d(TAG, "post factoryWebView");
         mHandler.post(new FactoryRunnable(attributeSet));
     }
 
@@ -67,11 +85,12 @@ public class ESWebViewFactory {
 
         @Override
         public void run() {
-            Log.d(TAG, "create mCacheWebView");
+            mIsCreateing = true;
             ESCordovaWebView webView = ESCordovaWebView.create(mActivity, mAttributeSet);
             mCacheQueue.add(webView);
 
             Log.d(TAG, "mCacheQueue size:" + mCacheQueue.size());
+            mIsCreateing = false;
         }
     }
 }
