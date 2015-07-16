@@ -3,8 +3,8 @@ package com.edusoho.kuozhi.v3.view.webview;
 import android.app.Activity;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.api.CordovaInterface;
+import org.apache.cordova.api.CordovaPlugin;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

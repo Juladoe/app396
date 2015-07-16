@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.api.CordovaInterface;
+import org.apache.cordova.api.CordovaPlugin;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

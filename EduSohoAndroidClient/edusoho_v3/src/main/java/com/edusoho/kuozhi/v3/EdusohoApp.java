@@ -471,7 +471,6 @@ public class EdusohoApp extends Application {
         Log.d(null, "remove->token data->" + loginUser);
     }
 
-
     public boolean taskIsRun(String name) {
         Activity activity = runTask.get(name);
         return activity != null;

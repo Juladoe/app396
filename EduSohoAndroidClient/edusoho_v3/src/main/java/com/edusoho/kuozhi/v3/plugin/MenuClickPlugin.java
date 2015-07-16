@@ -30,7 +30,8 @@ import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebView;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
-import org.apache.cordova.CallbackContext;
+
+import org.apache.cordova.api.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

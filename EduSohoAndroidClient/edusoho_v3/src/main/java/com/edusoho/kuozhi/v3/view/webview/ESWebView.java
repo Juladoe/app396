@@ -22,6 +22,8 @@ import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
+import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
+import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -96,8 +98,6 @@ public class ESWebView extends RelativeLayout {
         webViewProgressBar.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         webViewProgressBar.addRule(RelativeLayout.BELOW, R.id.pb_loading);
         addView(mWebView, webViewProgressBar);
-
-        mRequestManager = ESWebViewRequestManager.getRequestManager(this);
     }
 
     public RequestManager getRequestManager() {
@@ -105,9 +105,14 @@ public class ESWebView extends RelativeLayout {
     }
 
     public void loadApp(String appCode) {
-        this.mAppCode = appCode;
+        updateCode(appCode);
         mLocalAppMeta = getLocalApp(appCode);
         updateApp(mAppCode);
+    }
+
+    private void updateCode(String code) {
+        this.mAppCode = code;
+        mRequestManager = ESWebViewRequestManager.getRequestManager(mContext, this.mAppCode);
     }
 
     private AppMeta getLocalApp(String appCode) {
@@ -166,36 +171,39 @@ public class ESWebView extends RelativeLayout {
     public void updateApp(final String appCode) {
         RequestUrl appVersionUrl = mActivity.app.bindUrl(
                 String.format(Const.MOBILE_APP_VERSION, appCode), true);
-        mActivity.ajaxGet(appVersionUrl, new Listener<String>() {
+        mRequestManager.updateApp(appVersionUrl, new RequestCallback<String>() {
             @Override
-            public void onResponse(String response) {
+            public String onResponse(Response<String> response) {
                 String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
-                AppMeta appMeta = mActivity.parseJsonValue(response, new TypeToken<AppMeta>(){});
+                UpdateAppMeta appMeta = mActivity.parseJsonValue(
+                        response.getData(), new TypeToken<UpdateAppMeta>(){});
                 if (appMeta == null) {
                     mWebView.loadUrl(url);
-                    return;
+                    return null;
                 }
 
                 if (mLocalAppMeta == null) {
                     updateAppResource(appMeta.resource);
-                    return;
+                    return null;
                 }
 
                 int result = CommonUtil.compareVersion(mLocalAppMeta.version, appMeta.version);
                 if (result == Const.LOW_VERSIO) {
                     updateAppResource(appMeta.resource);
-                    return;
+                    return null;
                 }
                 mWebView.loadUrl(url);
+
+                return null;
             }
-        }, null);
+        });
     }
 
     public void loadUrl(String url) {
 
         Matcher matcher = APPCODE_PAT.matcher(url);
         if (matcher.find()) {
-            mAppCode = matcher.group(1);
+            updateCode(matcher.group(1));
             mLocalAppMeta = getLocalApp(mAppCode);
         } else {
             mActivity.showActionBar();
@@ -219,7 +227,6 @@ public class ESWebView extends RelativeLayout {
 
         mWebView.stopLoading();
         mWebView.clearHistory();
-        mWebView.clearCache(true);
         mWebView.handleDestroy();
     }
 

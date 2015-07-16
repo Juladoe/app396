@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.api.CordovaInterface;
+import org.apache.cordova.api.CordovaPlugin;
 
 import java.util.concurrent.ExecutorService;
 

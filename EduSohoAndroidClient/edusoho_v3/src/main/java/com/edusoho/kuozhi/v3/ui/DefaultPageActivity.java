@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
+import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -341,6 +342,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             mExitTimer.cancel();
             mExitTimer = null;
         }
+        ESWebViewRequestManager.clear();
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
     }
 
