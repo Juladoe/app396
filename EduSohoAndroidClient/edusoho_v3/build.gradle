@@ -31,5 +31,5 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.15'
     compile 'de.hdodenhof:circleimageview:1.2.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile files('libs/cordova-2.9.0.jar')
+    compile files('libs/cordova-3.4.jar')
 }

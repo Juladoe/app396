@@ -1,14 +1,10 @@
 package com.edusoho.kuozhi.ui.htmlView.plugin;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.edusoho.kuozhi.EdusohoApp;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.HtmlApp.Menu;
 import com.edusoho.kuozhi.ui.htmlView.EduHtmlAppActivity;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;

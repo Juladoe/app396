@@ -31,7 +31,8 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,7 +123,7 @@ public class MenuClickPlugin extends CoreBridge {
                 Request.Method.POST, requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                callbackContext.success(response);
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, response));
             }
         }, new Response.ErrorListener() {
             @Override

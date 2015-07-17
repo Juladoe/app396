@@ -12,18 +12,15 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.model.HtmlApp.Menu;
 import com.edusoho.kuozhi.ui.ActionBarBaseActivity;
 import com.edusoho.kuozhi.util.server.CacheServer;
 import com.edusoho.kuozhi.util.server.handler.WebResourceHandler;
-
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
