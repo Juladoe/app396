@@ -146,7 +146,6 @@ public class RecommendFragment extends BaseFragment {
         mActivity.ajaxPost(url, new ResultCallback() {
             @Override
             public void callback(String url, String object, AjaxStatus ajaxStatus) {
-                Log.d(null, "object ->" + object);
                 ArrayList<SchoolBanner> schoolBanners = app.gson.fromJson(
                         object, new TypeToken<ArrayList<SchoolBanner>>() {
                         }.getType());
