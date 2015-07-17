@@ -145,4 +145,16 @@
     <string name="bugly_appid">900001729</string>
     <string name="channel_name">baidu</string>
 
+    <!-- v3 -->
+    <string name="reg_phone_reg">手机注册</string>
+    <string name="reg_mail_reg">邮箱注册</string>
+    <string name="reg_send_code">发送验证码</string>
+    <string name="login_username_hint">手机号/邮箱/昵称</string>
+    <string name="login_password_hint">密码</string>
+    <string name="login_line_text">其他方式登录</string>
+    <string name="reg_phone_hint">请输入手机号</string>
+    <string name="reg_mail_hint">请输入邮箱地址</string>
+    <string name="reg_code_hint">请输入验证码</string>
+    <string name="reg_password_hint">请输入密码</string>
+    <string name="register">注册</string>
 </resources>

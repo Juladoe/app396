@@ -57,8 +57,10 @@ public class LoginFragment extends BaseFragment {
         aq.id(R.id.login_regist_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginActivity loginActivity = (LoginActivity) getActivity();
-                loginActivity.showFragment(RegistFragment.TAG);
+                app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+                mActivity.finish();
+                //LoginActivity loginActivity = (LoginActivity) getActivity();
+                //loginActivity.showFragment(RegistFragment.TAG);
             }
         });
 

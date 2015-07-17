@@ -12,14 +12,14 @@ android {
 
     productFlavors {
         edianshagn {
-            applicationId "com.howzhi"
+            applicationId "com.edusoho_edianshang.kuozhi"
         }
     }
 
     sourceSets {
         edianshagn {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/howzhi/res']
+            res.srcDirs = ['src/edusoho_edianshang/res']
         }
     }
 

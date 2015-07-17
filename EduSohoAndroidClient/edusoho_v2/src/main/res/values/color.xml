@@ -374,4 +374,13 @@
 
     <!--直播-->
     <color name="live_course_button_focus">#259c54</color>
+
+    <!-- v3 -->
+    <color name="material_green_beta">#73cea5</color>
+    <color name="material_green_alpha">#dd37b97d</color>
+    <color name="green_alpha">#37b97d</color>
+    <color name="grey_cccccc">#cccccc</color>
+    <color name="green_feedback">#0e9e5c</color>
+    <color name="grey">#444444</color>
+    <color name="grey_alpha">#999999</color>
 </resources>
