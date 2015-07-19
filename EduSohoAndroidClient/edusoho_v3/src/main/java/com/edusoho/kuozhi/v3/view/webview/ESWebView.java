@@ -32,7 +32,11 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import org.apache.cordova.Config;
+import org.apache.cordova.CordovaChromeClient;
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.CordovaWebViewClient;
+
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,8 +84,9 @@ public class ESWebView extends RelativeLayout {
         String userAgent = mWebView.getSettings().getUserAgentString();
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
 
-        mWebView.setWebViewClient(mWebViewClient);
-        mWebView.setWebChromeClient(mWebChromeClient);
+        CordovaContext cordovaContext = mWebView.getCordovaContext();
+        mWebView.setWebViewClient(new ESWebViewClient(cordovaContext, mWebView));
+        mWebView.setWebChromeClient(new WebChromeClient(cordovaContext, mWebView));
     }
 
     private void initWebView() {
@@ -230,7 +235,16 @@ public class ESWebView extends RelativeLayout {
         mWebView.handleDestroy();
     }
 
-    protected WebChromeClient mWebChromeClient = new WebChromeClient() {
+    private class WebChromeClient extends CordovaChromeClient {
+
+        public WebChromeClient(CordovaInterface cordova) {
+            super(cordova);
+        }
+
+        public WebChromeClient(CordovaInterface ctx, CordovaWebView app) {
+            super(ctx, app);
+        }
+
         @Override
         public void onReceivedTitle(WebView view, String title) {
             mActivity.setTitle(title);
@@ -274,19 +288,23 @@ public class ESWebView extends RelativeLayout {
         return false;
     }
 
-    protected WebViewClient mWebViewClient = new ESWebViewClient();
+    private class ESWebViewClient extends CordovaWebViewClient {
 
-    private class ESWebViewClient extends WebViewClient {
+        public ESWebViewClient(CordovaInterface cordova) {
+            super(cordova);
+        }
+
+        public ESWebViewClient(CordovaInterface cordova, CordovaWebView view) {
+            super(cordova, view);
+        }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
             Log.d(TAG, "s->" + System.currentTimeMillis());
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
             Log.d(TAG, "e->" + System.currentTimeMillis());
         }
 

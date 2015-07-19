@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
+
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -65,7 +67,7 @@ public class CoreBridge extends CordovaPlugin {
             Method[] methods = this.getClass().getMethods();
             for (Method method : methods) {
                 method.setAccessible(true);
-                JavascriptInterface annotation = method.getAnnotation(JavascriptInterface.class);
+                JsAnnotation annotation = method.getAnnotation(JsAnnotation.class);
                 if (annotation != null) {
                     mMethodList.put(method.getName(), method);
                 }
