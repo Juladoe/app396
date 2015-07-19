@@ -119,7 +119,7 @@ public class EssayFragment extends SelectQuestionFragment {
                 CommonUtil.longToast(mContext, "上传失败!服务器暂不支持过大图片");
                 loadDialog.dismiss();
             }
-        });
+        }, Const.IMAGE_CONTENT_TYPE);
     }
 
     private void camera() {

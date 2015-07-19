@@ -132,13 +132,18 @@ public class EdusohoApp extends Application {
         return EdusohoMainService.getService();
     }
 
-    public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+    public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener, final String contentType) {
         mVolley.getRequestQueue();
         MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, requestUrl, responseListener, errorListener) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return requestUrl.getHeads();
+            }
+
+            @Override
+            public String getContentType() {
+                return contentType;
             }
         };
         multipartRequest.setTag(requestUrl.url);

@@ -232,13 +232,13 @@
                 android:id="@+id/iv_voice_volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/record_animate_14"
+                android:src="@drawable/record_animate_1"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
 
             <TextView
                 android:id="@+id/tv_speak_hint"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/iv_voice_volume"
@@ -246,6 +246,7 @@
                 android:padding="2dp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/speak_hint_bg"
+                android:gravity="center"
                 android:text="@string/hand_move_up_and_send_cancel"
                 android:textSize="@dimen/medium_font_size" />
 

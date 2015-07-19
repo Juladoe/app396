@@ -2,7 +2,10 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -24,7 +28,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,17 +39,18 @@ public class ChatAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Chat> mList;
+    private MediaPlayer mMediaPlayer;
+    private int mDurationMax = EdusohoApp.app.screenW * 1 / 2;
+    private int mDurationUnit = EdusohoApp.app.screenW * 1 / 40;
     private static long TIME_INTERVAL = 60 * 5;
 
     private static final int TYPE_COUNT = 6;
-    private static final int SEND = 0;
-    private static final int RECEIVE = 1;
-    private static final int MSG_SEND_TEXT = 2;
-    private static final int MSG_RECEIVE_TEXT = 3;
-    private static final int MSG_SEND_IMAGE = 4;
-    private static final int MSG_RECEIVE_IMAGE = 5;
-    private static final int MSG_SEND_AUDIO = 5;
-    private static final int MSG_RECEIVE_AUDIO = 6;
+    private static final int MSG_SEND_TEXT = 0;
+    private static final int MSG_RECEIVE_TEXT = 1;
+    private static final int MSG_SEND_IMAGE = 2;
+    private static final int MSG_RECEIVE_IMAGE = 3;
+    private static final int MSG_SEND_AUDIO = 4;
+    private static final int MSG_RECEIVE_AUDIO = 5;
     private DisplayImageOptions mOptions;
 
     ImageErrorClick mImageErrorClick;
@@ -74,18 +78,17 @@ public class ChatAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void updateItemByCreatedTime(Chat chat) {
-        int pos = 0;
-        Iterator<Chat> iterator = mList.iterator();
-        while (iterator.hasNext()) {
-            Chat tmpChat = iterator.next();
-            if (tmpChat.chatId == chat.chatId) {
-                mList.remove(tmpChat);
-                mList.add(pos, tmpChat);
-                notifyDataSetChanged();
-                break;
+    public void updateItemByChatId(Chat chat) {
+        try {
+            for (Chat c : mList) {
+                if (c.chatId == chat.chatId) {
+                    c.setDelivery(chat.getDelivery());
+                    notifyDataSetChanged();
+                    break;
+                }
             }
-            pos++;
+        } catch (Exception e) {
+            Log.e("updateItemByChatId", e.getMessage());
         }
     }
 
@@ -176,7 +179,13 @@ public class ChatAdapter extends BaseAdapter {
                 handlerSendImage(holder, position);
                 break;
             case MSG_RECEIVE_IMAGE:
-                handlerReceiveMsgImage(holder, position);
+                handlerReceiveImage(holder, position);
+                break;
+            case MSG_SEND_AUDIO:
+                handlerSendAudio(holder, position);
+                break;
+            case MSG_RECEIVE_AUDIO:
+                handlerSendAudio(holder, position);
                 break;
         }
         return convertView;
@@ -233,7 +242,9 @@ public class ChatAdapter extends BaseAdapter {
                                 model.setDelivery(Chat.Delivery.UPLOADING);
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.sendImageAgain(file, model);
+                                mImageErrorClick.sendImageAgain(file, model, Const.MEDIA_IMAGE);
+                            } else {
+                                CommonUtil.longToast(mContext, "图片不存在，无法上传");
                             }
                         }
                     }
@@ -245,7 +256,7 @@ public class ChatAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
     }
 
-    private void handlerReceiveMsgImage(final ViewHolder holder, int position) {
+    private void handlerReceiveImage(final ViewHolder holder, int position) {
         final Chat model = mList.get(position);
         final MyImageLoadingListener mMyImageLoadingListener = new MyImageLoadingListener(holder);
         if (position > 0) {
@@ -283,6 +294,86 @@ public class ChatAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, mOptions, mMyImageLoadingListener);
     }
 
+    private void handlerSendAudio(final ViewHolder holder, int position) {
+        final Chat model = mList.get(position);
+        if (position > 0) {
+            if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
+                holder.tvSendTime.setVisibility(View.VISIBLE);
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            } else {
+                holder.tvSendTime.setVisibility(View.GONE);
+            }
+        } else {
+            holder.tvSendTime.setVisibility(View.VISIBLE);
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+        }
+        switch (model.getDelivery()) {
+            case SUCCESS:
+                holder.ivStateError.setVisibility(View.GONE);
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.tvAudioLength.setVisibility(View.VISIBLE);
+                try {
+                    int duration = getAmrDuration(model.content);
+                    holder.tvAudioLength.setText(duration + "\"");
+
+                    holder.ivMsgImage.getLayoutParams().width = 50 + mDurationUnit * duration < mDurationMax ? 50 + mDurationUnit * duration : mDurationMax;
+                    holder.ivMsgImage.requestLayout();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case UPLOADING:
+                holder.pbLoading.setVisibility(View.VISIBLE);
+                holder.ivStateError.setVisibility(View.GONE);
+                holder.tvAudioLength.setVisibility(View.GONE);
+                break;
+            case FAILED:
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.VISIBLE);
+                holder.tvAudioLength.setVisibility(View.GONE);
+                holder.ivStateError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mImageErrorClick != null) {
+                            File file = new File(model.content);
+                            if (file.exists()) {
+                                model.setDelivery(Chat.Delivery.UPLOADING);
+                                holder.pbLoading.setVisibility(View.VISIBLE);
+                                holder.ivStateError.setVisibility(View.GONE);
+                                mImageErrorClick.sendImageAgain(file, model, Const.MEDIA_AUDIO);
+                            } else {
+                                CommonUtil.longToast(mContext, "音频不存在，无法上传");
+                            }
+                        }
+                    }
+                });
+                break;
+        }
+        //getAmrDuration();
+        holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content));
+    }
+
+    private int getAmrDuration(String filePath) {
+        mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
+        int duration = mMediaPlayer.getDuration();
+        return (int) Math.ceil(Float.valueOf(duration) / 1000);
+    }
+
+    private void handlerReceiveAudio(final ViewHolder holder, int position) {
+        final Chat model = mList.get(position);
+        if (position > 0) {
+            if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
+                holder.tvSendTime.setVisibility(View.VISIBLE);
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            } else {
+                holder.tvSendTime.setVisibility(View.GONE);
+            }
+        } else {
+            holder.tvSendTime.setVisibility(View.VISIBLE);
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+        }
+    }
+
     /**
      * 获取缩略图文件路径
      *
@@ -310,6 +401,45 @@ public class ChatAdapter extends BaseAdapter {
             bundle.putInt("index", 1);
             bundle.putStringArray("images", new String[]{mImageUrl});
             EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+        }
+    }
+
+    private String mCurrentAudioPath;
+
+    private class AudioMsgClick implements View.OnClickListener {
+        private File mAudioFile;
+
+        public AudioMsgClick(String filePath) {
+            mAudioFile = new File(filePath);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                if (mCurrentAudioPath.equals(mAudioFile.getPath())) {
+                    mMediaPlayer.stop();
+                    return;
+                } else {
+                    mMediaPlayer.stop();
+                }
+            }
+            if (mAudioFile != null && mAudioFile.exists()) {
+                //TODO play
+                if (mMediaPlayer == null) {
+                    mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(mAudioFile.getPath()));
+                    mMediaPlayer.getDuration();
+                } else {
+                    if (mMediaPlayer.isPlaying()) {
+                        mMediaPlayer.stop();
+                        mMediaPlayer.reset();
+                        mMediaPlayer.release();
+                    }
+                    mMediaPlayer = null;
+                    mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(mAudioFile.getPath()));
+                }
+                mMediaPlayer.start();
+                mCurrentAudioPath = mAudioFile.getPath();
+            }
         }
     }
 
@@ -372,6 +502,12 @@ public class ChatAdapter extends BaseAdapter {
             case MSG_RECEIVE_IMAGE:
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_image, null);
                 break;
+            case MSG_SEND_AUDIO:
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_send_audio, null);
+                break;
+            case MSG_RECEIVE_AUDIO:
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_image, null);
+                break;
         }
         return convertView;
     }
@@ -383,6 +519,7 @@ public class ChatAdapter extends BaseAdapter {
         public ImageView ivMsgImage;
         public ProgressBar pbLoading;
         public ImageView ivStateError;
+        public TextView tvAudioLength;
 
         public ViewHolder(View view, int type) {
             switch (type) {
@@ -401,11 +538,18 @@ public class ChatAdapter extends BaseAdapter {
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     break;
+                case MSG_SEND_AUDIO:
+                    tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
+                    ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+                    ivMsgImage = (ImageView) view.findViewById(R.id.iv_msg_image);
+                    pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
+                    ivStateError = (ImageView) view.findViewById(R.id.msg_status);
+                    tvAudioLength = (TextView) view.findViewById(R.id.tv_audio_length);
             }
         }
     }
 
     public interface ImageErrorClick {
-        public void sendImageAgain(File file, Chat chat);
+        public void sendImageAgain(File file, Chat chat, String strType);
     }
 }

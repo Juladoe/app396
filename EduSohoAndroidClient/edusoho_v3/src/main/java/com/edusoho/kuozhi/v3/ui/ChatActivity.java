@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -16,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
@@ -42,6 +46,7 @@ import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
@@ -67,6 +72,9 @@ import in.srain.cube.views.ptr.PtrHandler;
  * Created by JesseHuang on 15/6/3.
  */
 public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener, ChatAdapter.ImageErrorClick {
+
+
+    //region Field
     public static final String TAG = "ChatActivity";
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
@@ -93,6 +101,14 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private TextView tvSpeak;
     private TextView tvSpeakHint;
     private View mViewSpeakContainer;
+    private ImageView ivRecordImage;
+
+    private float mPressDownY;
+    private float mPressMoveY;
+    /**
+     * 根据手纸滑动距离是否保存
+     */
+    private boolean mIsSaveAudio;
 
     private ArrayList<Chat> mList;
     private ChatDataSource mChatDataSource;
@@ -108,6 +124,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private User mFromUserInfo;
     private int mFromId;
     private int mToId;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +156,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         viewPressToSpeak.setOnTouchListener(mVoiceRecordingTouchListener);
         tvSpeak = (TextView) findViewById(R.id.tv_speak);
         tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
+        ivRecordImage = (ImageView) findViewById(R.id.iv_voice_volume);
         mViewSpeakContainer = findViewById(R.id.recording_container);
         mViewSpeakContainer.bringToFront();
         initData();
@@ -172,7 +190,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }
         });
         sendNewFragment2UpdateItem();
-
+        mAudioLoadDialog = LoadDialog.create(mContext);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
@@ -262,13 +281,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }, null);
     }
 
-    private void sendImage(String url, final Chat chat) {
+    private void sendMediaMsg(String url, final Chat chat, Chat.FileType type) {
         RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("type", "image");
+        params.put("type", type.getName());
         params.put("content", url);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.IMAGE, TypeBusinessEnum.FRIEND)));
+        params.put("custom", gson.toJson(getCustomContent(type, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -276,13 +295,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 });
                 if (result.result.equals("success")) {
                     chat.id = result.id;
-                    updateSendMsgInListView(Chat.Delivery.SUCCESS, chat);
+                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "推送图片信息失败");
+                Log.d(TAG, "发送信息失败");
             }
         });
     }
@@ -306,49 +325,97 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     @Override
-    public void sendImageAgain(File file, Chat chat) {
-        uploadMediaAgain(file, chat, Chat.FileType.IMAGE);
+    public void sendImageAgain(File file, Chat chat, String strType) {
+        uploadMediaAgain(file, chat, Chat.FileType.IMAGE, strType);
     }
 
-    private float mPressDownY;
-    private float mPressMoveY;
+    private long mAudioStartTime;
+    private long mAudioEndTime;
+    private LoadDialog mAudioLoadDialog;
+    private Vibrator mVibrator;
 
     //region Touch, Click Listener etc.
     private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
+        public boolean onTouch(final View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (!CommonUtil.isExitsSdcard()) {
-                        CommonUtil.longToast(mContext, "发送语音需要sdcard");
-                        return false;
+                    try {
+                        if (!CommonUtil.isExitsSdcard()) {
+                            CommonUtil.longToast(mContext, "发送语音需要sdcard");
+                            v.setPressed(false);
+                            return false;
+                        }
+                        mPressDownY = event.getY();
+                        mAudioLoadDialog.show();
+
+                        //录音
+                        AudioRecord.getInstance(mContext).ready(new NormalCallback() {
+                            @Override
+                            public void success(Object obj) {
+                                mViewSpeakContainer.setVisibility(View.VISIBLE);
+                                tvSpeak.setText(getString(R.string.hand_up_and_end));
+                                tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                                ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                                mAudioLoadDialog.dismiss();
+                                mVibrator.vibrate(50);
+                                AudioRecord.getInstance(mContext).start();
+                            }
+                        });
+                    } catch (Exception e) {
+                        mAudioLoadDialog.dismiss();
+                        AudioRecord.getInstance(mContext).clear();
+                        e.printStackTrace();
+                        v.setPressed(false);
                     }
-                    mPressDownY = event.getY();
-                    mViewSpeakContainer.setVisibility(View.VISIBLE);
-                    tvSpeak.setText(getString(R.string.hand_up_and_end));
-                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                    //录音
-                    AudioRecord.getInstance().start();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mPressMoveY = event.getY();
-                    if (Math.abs(mPressDownY - mPressMoveY) > app.screenH * 0.2) {
+                    if (Math.abs(mPressDownY - mPressMoveY) > app.screenH * 0.15) {
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
-                        //取消录音
-                        AudioRecord.getInstance().stop(false);
+                        ivRecordImage.setImageResource(R.drawable.record_cancel);
+                        mIsSaveAudio = false;
                     } else {
                         tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
                         tvSpeak.setText(getString(R.string.hand_up_and_end));
+                        ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                        mIsSaveAudio = true;
                     }
                     return true;
                 case MotionEvent.ACTION_UP:
-                    mViewSpeakContainer.setVisibility(View.GONE);
-                    tvSpeak.setText(getString(R.string.hand_press_and_speak));
-                    //TODO 保存录音
-                    File mAudioRecord = AudioRecord.getInstance().stop(true);
+                    try {
+                        tvSpeak.setText(getString(R.string.hand_press_and_speak));
+                        //TODO 保存录音
+                        File mAudioRecord = AudioRecord.getInstance(mContext).stop(mIsSaveAudio);
+                        int audioLength = AudioRecord.getInstance(mContext).getAudioLength();
+                        if (mIsSaveAudio) {
+                            if (audioLength >= 1) {
+                                mViewSpeakContainer.setVisibility(View.GONE);
+                                uploadMedia(mAudioRecord, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                                Log.d(TAG, "上传成功");
+                            } else if (audioLength < 1) {
+                                tvSpeakHint.setText(getString(R.string.audio_length_too_short));
+                                tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                                ivRecordImage.setImageResource(R.drawable.record_duration_short);
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mViewSpeakContainer.setVisibility(View.GONE);
+                                    }
+                                }, 500);
+                                Log.d(TAG, "录音时间过短");
+                            }
+                        } else {
+                            mViewSpeakContainer.setVisibility(View.GONE);
+                        }
+                        mIsSaveAudio = true;
+                        AudioRecord.getInstance(mContext).clear();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
             return false;
@@ -514,58 +581,65 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      *
      * @param file
      */
-    private void uploadMedia(final File file, final Chat.FileType type) {
-        if (file == null && !file.exists()) {
-            CommonUtil.shortToast(mContext, "图片不存在");
-            return;
-        }
-        mSendTime = (int) (System.currentTimeMillis() / 1000);
-        final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                file.getPath(), type.toString().toLowerCase(), mSendTime);
-        chat.content = file.getPath();
+    private void uploadMedia(final File file, final Chat.FileType type, String strType) {
+        try {
+            if (file == null || !file.exists()) {
+                CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+                return;
+            }
+            mSendTime = (int) (System.currentTimeMillis() / 1000);
+            final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                    file.getPath(), type.getName(), mSendTime);
+            chat.content = file.getPath();
 
-        //生成New页面的消息并通知更改
-        WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-        message.setTitle(mFromUserInfo.nickname);
-        message.setContent("[图片]");
-        CustomContent cc = getCustomContent(type.IMAGE, TypeBusinessEnum.FRIEND);
-        cc.setFromId(mFromId);
-        cc.setImgUrl(mFromUserInfo.mediumAvatar);
-        message.setCustomContent(gson.toJson(cc));
-        message.isForeground = true;
-        notifyNewList2Update(message);
+            //生成New页面的消息并通知更改
+            WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
+            message.setTitle(mFromUserInfo.nickname);
+            message.setContent(String.format("[%s]", strType));
+            CustomContent cc = getCustomContent(type, TypeBusinessEnum.FRIEND);
+            cc.setFromId(mFromId);
+            cc.setImgUrl(mFromUserInfo.mediumAvatar);
+            message.setCustomContent(gson.toJson(cc));
+            message.isForeground = true;
+            notifyNewList2Update(message);
 
-        addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
+            addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
 
-        RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
-        url.setMuiltParams(new Object[]{
-                "file", file
-        });
-        ajaxPostMultiUrl(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    String imageUrl = app.host + "/" + jsonObject.getString("uri");
-                    //String createdTime = jsonObject.getString("createdTime");
-                    sendImage(imageUrl, chat);
-                } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage());
+            RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
+            url.setMuiltParams(new Object[]{
+                    "file", file
+            });
+            String contentType = type == Chat.FileType.IMAGE ? Const.IMAGE_CONTENT_TYPE : Const.AUDIO_CONTENT_TYPE;
+
+            ajaxPostMultiUrl(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String imageUrl = app.host + "/" + jsonObject.getString("uri");
+                        CommonUtil.shortToast(mContext, "音频上传成功");
+                        //String createdTime = jsonObject.getString("createdTime");
+                        sendMediaMsg(imageUrl, chat, type);
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgInListView(Chat.Delivery.FAILED, chat);
-                CommonUtil.shortToast(mContext, "图片上传失败");
-            }
-        });
-        viewMediaLayout.setVisibility(View.GONE);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+                    CommonUtil.shortToast(mContext, "发送失败");
+                }
+            }, contentType);
+            viewMediaLayout.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
-    private void uploadMediaAgain(File file, final Chat chat, Chat.FileType type) {
+    private void uploadMediaAgain(File file, final Chat chat, final Chat.FileType type, final String strType) {
         if (file == null && !file.exists()) {
-            CommonUtil.shortToast(mContext, "图片不存在");
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
         }
 
@@ -573,6 +647,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         url.setMuiltParams(new Object[]{
                 "file", file
         });
+        String contentType = type == Chat.FileType.IMAGE ? Const.IMAGE_CONTENT_TYPE : Const.AUDIO_CONTENT_TYPE;
         ajaxPostMultiUrl(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -580,7 +655,14 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     JSONObject jsonObject = new JSONObject(response);
                     String imageUrl = app.host + "/" + jsonObject.getString("uri");
                     //String createdTime = jsonObject.getString("createdTime");
-                    sendImage(imageUrl, chat);
+//                    switch (type) {
+//                        case IMAGE:
+//                            sendMediaMsg(imageUrl, chat);
+//                            break;
+//                        case AUDIO:
+//                            sendMediaMsg(imageUrl, chat);
+//                    }
+
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
                 }
@@ -588,10 +670,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                updateSendMsgInListView(Chat.Delivery.FAILED, chat);
-                CommonUtil.shortToast(mContext, "图片上传失败");
+                updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+                CommonUtil.shortToast(mContext, String.format("%s上传失败", strType));
             }
-        });
+        }, contentType);
     }
 
     /**
@@ -614,10 +696,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * @param delivery 是否送达
      * @param chat     一行聊天记录
      */
-    private void updateSendMsgInListView(Chat.Delivery delivery, Chat chat) {
+    private void updateSendMsgToListView(Chat.Delivery delivery, Chat chat) {
         chat.setDelivery(delivery);
         mChatDataSource.update(chat);
-        mAdapter.updateItemByCreatedTime(chat);
+        mAdapter.updateItemByChatId(chat);
     }
 
     /**
@@ -704,7 +786,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
                         File file = selectPicture(selectedImage);
-                        uploadMedia(file, Chat.FileType.IMAGE);
+                        uploadMedia(file, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
                     }
                 }
                 break;
@@ -714,7 +796,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
                 if (bitmap != null) {
                     File compressedCameraFile = compressImage(bitmap, mCameraFile);
-                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE);
+                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
                 }
                 break;
             case SEND_VOICE:

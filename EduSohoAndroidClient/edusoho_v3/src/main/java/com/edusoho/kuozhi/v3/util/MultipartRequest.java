@@ -4,11 +4,8 @@ import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.belladati.httpclientandroidlib.HttpEntity;
 import com.belladati.httpclientandroidlib.entity.ContentType;
 import com.belladati.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
@@ -34,6 +31,7 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
     public static final String TAG = "MutlipartRequest";
     private HttpEntity mHttpEntity;
     private RequestUrl mRequestUrl;
+    private String mContentType = Const.IMAGE_CONTENT_TYPE;
 
     public MultipartRequest(int method, RequestUrl requestUrl, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(method, requestUrl, listener, errorListener);
@@ -42,13 +40,17 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
         mIsCache = CACHE_NONE;
     }
 
+    public String getContentType() {
+        return mContentType;
+    }
+
     private HttpEntity buildMultipartEntity() {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         Iterator iterator = mRequestUrl.getAllParams().entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             File file = (File) entry.getValue();
-            builder.addBinaryBody(KEY, file, ContentType.create("image/jpeg"), file.getName());
+            builder.addBinaryBody(KEY, file, ContentType.create(getContentType()), file.getName());
         }
         return builder.build();
     }
