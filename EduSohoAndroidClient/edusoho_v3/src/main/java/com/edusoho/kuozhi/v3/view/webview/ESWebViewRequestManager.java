@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.v3.view.webview;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
+import android.util.SparseArray;
 import android.webkit.MimeTypeMap;
 import com.android.volley.Response.*;
 import com.android.volley.Request.*;
@@ -9,18 +11,21 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestHandler;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -39,6 +44,8 @@ import org.apache.http.util.EntityUtils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -51,26 +58,37 @@ public class ESWebViewRequestManager extends RequestManager {
     private static final String TAG = "ESWebViewRequestManager";
     private Context mContext;
     private String mUserAgent;
+    private String mCode;
     private HttpClient mHttpClient;
-    private ESWebView mWebView;
+    private static HashMap<String, RequestManager> mManagerMap;
 
-    private static ESWebViewRequestManager instance;
+    static {
+        mManagerMap = new HashMap<>(5);
+    }
 
-    public static RequestManager getRequestManager(ESWebView webView) {
-        synchronized (TAG) {
-            if (instance == null) {
-                instance = new ESWebViewRequestManager(webView);
-            }
+    public static void clear() {
+        for (RequestManager manager : mManagerMap.values()) {
+            manager.destroy();
         }
+        mManagerMap.clear();
+    }
+
+    public static RequestManager getRequestManager(Context context, String code) {
+        RequestManager instance = mManagerMap.get(code);
+        if (instance == null) {
+            instance = new ESWebViewRequestManager(context, code);
+            mManagerMap.put(code, instance);
+        }
+
         return instance;
     }
 
-    private ESWebViewRequestManager(ESWebView webView)
+    private ESWebViewRequestManager(Context context, String code)
     {
         super();
-        this.mContext = webView.getContext();
-        this.mWebView = webView;
-        this.mUserAgent = webView.getUserAgent();
+        this.mContext = context;
+        this.mCode = code;
+        this.mUserAgent = String.format("%s%s%s", Build.MODEL, " Android-kuozhi ", Build.VERSION.SDK);
         initHttpClient();
         registHandler(".+/mapi_v2/.+", new ApiRequestHandler());
         registHandler(".+", new WebViewRequestHandler());
@@ -103,9 +121,23 @@ public class ESWebViewRequestManager extends RequestManager {
     }
 
     @Override
+    public void updateApp(RequestUrl requestUrl, final RequestCallback<String> callback) {
+        VolleySingleton volley = VolleySingleton.getInstance(mContext);
+        volley.getRequestQueue();
+        StringVolleyRequest stringRequest = new StringVolleyRequest(
+                Method.GET, requestUrl, new Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                callback.onResponse(new Response<String>(response));
+            }
+        }, null);
+        stringRequest.setTag(requestUrl.url);
+        volley.addToRequestQueue(stringRequest);
+    }
+
+    @Override
     public void destroy() {
         super.destroy();
-        instance = null;
         mHttpClient.getConnectionManager().shutdown();
     }
 
@@ -122,21 +154,6 @@ public class ESWebViewRequestManager extends RequestManager {
         return callback.onResponse(response);
     }
 
-    private void saveApiRequestCache(Request request)
-    {
-        File apiStore = getApiStorage(request.getHost());
-        try {
-            HttpResponse response = mHttpClient.execute(getHttpGet(request.url));
-            AppUtil.saveStreamToFile(
-                    response.getEntity().getContent(),
-                    new File(apiStore, AppUtil.md5(request.url)),
-                    true
-            );
-
-        }catch (Exception e) {
-        }
-    }
-
     private File getApiStorage(String host)
     {
         File storage = AppUtil.getAppStorage();
@@ -145,18 +162,6 @@ public class ESWebViewRequestManager extends RequestManager {
             apiStore.mkdir();
         }
         return apiStore;
-    }
-
-    private File getApiRequestCache(Request request)
-    {
-        File apiStore = getApiStorage(request.getHost());
-        return new File(apiStore, AppUtil.md5(request.url));
-    }
-
-    private boolean isApiRequest(String urlPath)
-    {
-        Log.d(TAG, "urlPath " + urlPath);
-        return urlPath.startsWith("/mapi_v2");
     }
 
     private String getFileExtension(String filePath)
@@ -170,16 +175,10 @@ public class ESWebViewRequestManager extends RequestManager {
         return mimeType == null ? "text/html" : mimeType;
     }
 
-    private File getCacheStorage(Request request)
-    {
-        File storage = AppUtil.getSchoolStorage(request.getHost());
-        return storage;
-    }
-
     private File getResourceStorage(String host)
     {
         File storage = AppUtil.getSchoolStorage(host);
-        File srcDir = new File(storage, mWebView.getAppCode());
+        File srcDir = new File(storage, mCode);
         if (!srcDir.exists()) {
             srcDir.mkdirs();
         }
@@ -222,7 +221,7 @@ public class ESWebViewRequestManager extends RequestManager {
 
     private boolean unZipFile(String schoolHost, File zinFile) {
         File schoolStorage = AppUtil.getSchoolStorage(schoolHost);
-        File schoolAppStorage = new File(schoolStorage, mWebView.getAppCode());
+        File schoolAppStorage = new File(schoolStorage, mCode);
         if (! schoolAppStorage.exists()) {
             schoolAppStorage.mkdir();
         }
@@ -255,9 +254,10 @@ public class ESWebViewRequestManager extends RequestManager {
         mWorkExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                File storage = getResourceStorage(request.getHost());
+                String domain = EdusohoApp.app.domain;
+                File storage = getResourceStorage(domain);
                 File saveFile = saveFile(storage, request);
-                if (unZipFile(request.getHost(), saveFile)) {
+                if (unZipFile(domain, saveFile)) {
                     callback.onResponse(new Response(true));
                     return;
                 }
@@ -294,7 +294,7 @@ public class ESWebViewRequestManager extends RequestManager {
         public void handler(Request request, Response response) {
             Log.d(TAG, "api handler :" + request.url);
 
-            if (request.getPath().endsWith(String.format(Const.MOBILE_APP_URL, "/", mWebView.getAppCode()))) {
+            if (request.getPath().endsWith(String.format(Const.MOBILE_APP_URL, "/", mCode))) {
                 File cache = getResourceFile(request.getHost(), "index.html");
                 if (cache.exists()) {
                     handlerResponse(cache, response);
@@ -309,7 +309,7 @@ public class ESWebViewRequestManager extends RequestManager {
             mVolley.getRequestQueue();
             final RequestUrl requestUrl = new RequestUrl(request.url);
             requestUrl.setHeads(new String[] {
-                    "token", mWebView.getActivity().app.token
+                    "token", EdusohoApp.app == null ? "" : EdusohoApp.app.token
             });
 
             RequestFuture<String> future = RequestFuture.newFuture();
@@ -349,7 +349,7 @@ public class ESWebViewRequestManager extends RequestManager {
 
         @Override
         public void handler(Request request, Response response) {
-            String path = request.getPath(mWebView.getAppCode());
+            String path = request.getPath(mCode);
 
             Response cacheResponse = mResoucrCache.get(path);
             if (cacheResponse != null) {

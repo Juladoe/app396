@@ -21,7 +21,7 @@
             android:textColorHint="@color/login_edt_hit"
             android:singleLine="true"
             android:id="@+id/login_email_edt"
-            android:hint="输入用户名/Email地址"
+            android:hint="输入手机号/用户名/Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>

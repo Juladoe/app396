@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -161,13 +163,10 @@ public class FriendFragment extends BaseFragment {
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
-                });
-                if (schoolAppResult.length != 0) {
-                    mFriendAdapter.setSchoolListSize(schoolAppResult.length);
-
-                    List<SchoolApp> list = Arrays.asList(schoolAppResult);
-                    mFriendAdapter.addSchoolList(list);
+                List<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<List<SchoolApp>>(){});
+                if (schoolAppResult.size() != 0) {
+                    mFriendAdapter.setSchoolListSize(schoolAppResult.size());
+                    mFriendAdapter.addSchoolList(schoolAppResult);
                     loadFriend();
                 } else {
                     loadFriend();

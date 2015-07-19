@@ -21,6 +21,8 @@ import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by howzhi on 14-8-10.
@@ -78,6 +80,15 @@ public class SchoolBannerAdapter extends PagerAdapter {
             public void onClick(View view) {
                 SchoolBanner banner = mSchoolBanners.get(position);
                 if ("webview".equals(banner.action)) {
+                    Pattern CLASSROOM_PAT = Pattern.compile("/classroom/(\\d+)", Pattern.DOTALL);
+                    Matcher matcher = CLASSROOM_PAT.matcher(banner.params);
+                    if (matcher.find()) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(Const.ID, AppUtil.parseInt(matcher.group(1)));
+                        bundle.putString(Const.ACTIONBAR_TITLE, "班级标题");
+                        mActivity.app.mEngine.runNormalPluginWithBundle("ClassRoomPaperActivity", mActivity, bundle);
+                        return;
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putString(AboutFragment.URL, banner.params);
                     bundle.putString(FragmentPageActivity.FRAGMENT, "AboutFragment");

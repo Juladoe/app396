@@ -81,12 +81,7 @@ public class EmptyPageAdapter<T> extends EmptyAdapter<T> {
         holder.tvReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.app.mEngine.runNormalPluginForResult("FragmentPageActivity", mActivity, RegistFragment.OK, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, RegistFragment.TAG);
-                    }
-                });
+                mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
             }
         });
         holder.tvLogin.setOnClickListener(new View.OnClickListener() {

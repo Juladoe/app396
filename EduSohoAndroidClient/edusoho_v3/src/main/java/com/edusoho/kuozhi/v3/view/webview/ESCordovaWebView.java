@@ -12,6 +12,7 @@ import org.apache.cordova.CordovaWebView;
 public class ESCordovaWebView extends CordovaWebView{
 
     private CordovaContext mCordovaContext;
+
     public ESCordovaWebView(Context context) {
         super(context);
         mCordovaContext = (CordovaContext) context;
@@ -25,6 +26,10 @@ public class ESCordovaWebView extends CordovaWebView{
     public ESCordovaWebView(Context context, AttributeSet attrs, int defstyle) {
         super(context, attrs, defstyle);
         mCordovaContext = (CordovaContext) context;
+    }
+
+    public CordovaContext getCordovaContext() {
+        return mCordovaContext;
     }
 
     public void updateCordovaActivity(Activity activity) {

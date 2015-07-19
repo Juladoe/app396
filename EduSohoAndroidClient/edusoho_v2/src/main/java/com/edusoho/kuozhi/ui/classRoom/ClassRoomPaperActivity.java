@@ -306,7 +306,7 @@ public class ClassRoomPaperActivity extends CoursePaperActivity {
         if (mClassRoomDetailsResult != null) {
             MenuItem exitItem = menu.findItem(R.id.course_details_menu_exit);
             if (exitItem != null && (mClassRoomDetailsResult.member == null
-                    || mClassRoomDetailsResult.member.role == Member.Role.teacher)) {
+                    || mClassRoomDetailsResult.member.role != Member.Role.student)) {
                 exitItem.setVisible(false);
             }
         } else {

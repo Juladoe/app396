@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.edusoho"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 22
     }
 

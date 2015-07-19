@@ -4,6 +4,7 @@ package com.edusoho.kuozhi.v3.cache.request;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -48,6 +49,8 @@ public abstract class RequestManager {
         public void run() {
         }
     }
+
+    public abstract void updateApp(RequestUrl requestUrl, final RequestCallback<String> callback);
 
     public abstract void get(Request request, RequestCallback callback);
 

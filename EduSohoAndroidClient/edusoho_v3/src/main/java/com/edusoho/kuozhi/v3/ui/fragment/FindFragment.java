@@ -58,7 +58,6 @@ public class FindFragment extends ESWebViewFragment{
         Log.d(TAG, "onDestroyView");
         super.onDestroyView();
         if (mWebView != null) {
-            mWebView.getRequestManager().destroy();
             mWebView.destroy();
         }
     }

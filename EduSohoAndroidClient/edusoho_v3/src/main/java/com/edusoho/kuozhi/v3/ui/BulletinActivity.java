@@ -96,7 +96,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
             mBulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         List<Bulletin> bulletinList = getBulletins(mStart);
-        NotificationUtil.cancelById(bulletinList.get(0).id);
+        NotificationUtil.cancelById(bulletinList.isEmpty() ? 0 : bulletinList.get(0).id);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);
         mListView.post(mRunnable);

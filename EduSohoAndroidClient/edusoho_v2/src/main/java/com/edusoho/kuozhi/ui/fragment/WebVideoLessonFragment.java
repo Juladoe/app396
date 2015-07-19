@@ -31,8 +31,6 @@ import com.edusoho.kuozhi.util.Const;
 import com.edusoho.kuozhi.view.dialog.PopupDialog;
 import com.edusoho.listener.NormalCallback;
 
-import org.apache.cordova.LOG;
-
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -330,7 +328,7 @@ public class WebVideoLessonFragment extends BaseFragment {
 
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
-            LOG.d(TAG, "onShowCustomView");
+            Log.d(TAG, "onShowCustomView");
             if (mCustomViewCallback != null) {
                 mCustomViewCallback.onCustomViewHidden();
                 mCustomViewCallback = null;

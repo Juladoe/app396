@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.util;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -11,6 +12,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
@@ -56,9 +58,15 @@ public class OpenLoginUtil {
                 "name", params[1],
                 "avatar", params[2]
         });
+
+        Looper.prepare();
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.setMessage("登录中...");
+        loadDialog.show();
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                loadDialog.dismiss();
                 UserResult userResult = mActivity.parseJsonValue(
                         response, new TypeToken<UserResult>() {
                         });
@@ -70,6 +78,7 @@ public class OpenLoginUtil {
                 mLoginhandler.success(userResult);
             }
         }, null);
+        Looper.loop();
     }
 
     private String[] getWeixinLoginResult(HashMap<String, Object> res) {
@@ -77,7 +86,7 @@ public class OpenLoginUtil {
         String name = res.get("nickname").toString();
         String avatar = res.get("headimgurl").toString();
 
-        return new String[]{id, name, avatar, "weixin"};
+        return new String[]{id, name, avatar, "weixinmob"};
     }
 
     private String[] getWeiboLoginResult(HashMap<String, Object> res) {
