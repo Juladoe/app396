@@ -407,6 +407,7 @@ public class ChatAdapter extends BaseAdapter {
 
     private String mCurrentAudioPath;
     private AnimationDrawable mAnimDrawable;
+    private ImageView mPrev;
 
     private class AudioMsgClick implements View.OnClickListener {
         private File mAudioFile;
@@ -426,7 +427,6 @@ public class ChatAdapter extends BaseAdapter {
                     return;
                 } else {
                     mMediaPlayer.stop();
-                    stopVoiceAnim(holder);
                 }
             }
             if (mAudioFile != null && mAudioFile.exists()) {
@@ -437,7 +437,6 @@ public class ChatAdapter extends BaseAdapter {
                 } else {
                     if (mMediaPlayer.isPlaying()) {
                         mMediaPlayer.stop();
-                        stopVoiceAnim(holder);
                         mMediaPlayer.reset();
                         mMediaPlayer.release();
                     }
@@ -448,9 +447,15 @@ public class ChatAdapter extends BaseAdapter {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         stopVoiceAnim(holder);
+                        mPrev = null;
                     }
                 });
+                if (mPrev != null && mPrev.getBackground() instanceof AnimationDrawable) {
+                    ((AnimationDrawable) mPrev.getBackground()).stop();
+                    mPrev.setBackgroundResource(R.drawable.speak_voice);
+                }
                 mMediaPlayer.start();
+                mPrev = holder.ivVoiceAnim;
                 startVoiceAnim(holder);
                 mCurrentAudioPath = mAudioFile.getPath();
             }
