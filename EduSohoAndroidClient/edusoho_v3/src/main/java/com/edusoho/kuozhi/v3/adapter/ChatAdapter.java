@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -350,7 +351,7 @@ public class ChatAdapter extends BaseAdapter {
                 break;
         }
         //getAmrDuration();
-        holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content));
+        holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content, holder));
     }
 
     private int getAmrDuration(String filePath) {
@@ -405,12 +406,15 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private String mCurrentAudioPath;
+    private AnimationDrawable mAnimDrawable;
 
     private class AudioMsgClick implements View.OnClickListener {
         private File mAudioFile;
+        private ViewHolder holder;
 
-        public AudioMsgClick(String filePath) {
+        public AudioMsgClick(String filePath, ViewHolder h) {
             mAudioFile = new File(filePath);
+            holder = h;
         }
 
         @Override
@@ -418,9 +422,11 @@ public class ChatAdapter extends BaseAdapter {
             if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 if (mCurrentAudioPath.equals(mAudioFile.getPath())) {
                     mMediaPlayer.stop();
+                    stopVoiceAnim(holder);
                     return;
                 } else {
                     mMediaPlayer.stop();
+                    stopVoiceAnim(holder);
                 }
             }
             if (mAudioFile != null && mAudioFile.exists()) {
@@ -431,15 +437,42 @@ public class ChatAdapter extends BaseAdapter {
                 } else {
                     if (mMediaPlayer.isPlaying()) {
                         mMediaPlayer.stop();
+                        stopVoiceAnim(holder);
                         mMediaPlayer.reset();
                         mMediaPlayer.release();
                     }
                     mMediaPlayer = null;
                     mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(mAudioFile.getPath()));
                 }
+                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        stopVoiceAnim(holder);
+                    }
+                });
                 mMediaPlayer.start();
+                startVoiceAnim(holder);
                 mCurrentAudioPath = mAudioFile.getPath();
             }
+        }
+    }
+
+    private void startVoiceAnim(ViewHolder holder) {
+        if (holder.ivVoiceAnim.getBackground() instanceof AnimationDrawable) {
+            mAnimDrawable = (AnimationDrawable) holder.ivVoiceAnim.getBackground();
+            mAnimDrawable.stop();
+            mAnimDrawable.start();
+        } else {
+            holder.ivVoiceAnim.setBackgroundResource(R.drawable.voice_play_anim);
+            mAnimDrawable = (AnimationDrawable) holder.ivVoiceAnim.getBackground();
+            mAnimDrawable.start();
+        }
+    }
+
+    private void stopVoiceAnim(ViewHolder holder) {
+        if (mAnimDrawable != null) {
+            mAnimDrawable.stop();
+            holder.ivVoiceAnim.setBackgroundResource(R.drawable.speak_voice);
         }
     }
 
@@ -520,6 +553,7 @@ public class ChatAdapter extends BaseAdapter {
         public ProgressBar pbLoading;
         public ImageView ivStateError;
         public TextView tvAudioLength;
+        public ImageView ivVoiceAnim;
 
         public ViewHolder(View view, int type) {
             switch (type) {
@@ -545,6 +579,7 @@ public class ChatAdapter extends BaseAdapter {
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     tvAudioLength = (TextView) view.findViewById(R.id.tv_audio_length);
+                    ivVoiceAnim = (ImageView) view.findViewById(R.id.iv_voice_play_anim);
             }
         }
     }
