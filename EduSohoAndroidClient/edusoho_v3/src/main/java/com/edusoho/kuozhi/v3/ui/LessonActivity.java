@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -18,8 +17,6 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonStatus;
-import com.edusoho.kuozhi.v3.model.bal.course.TestpaperStatus;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -30,12 +27,12 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -237,8 +234,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putStringArrayList(CONTENT, pptLesson.content);
                 return pptLesson;
             case TESTPAPER:
-                LessonItem<LinkedTreeMap> testpaperLesson = lessonItem;
-                LinkedTreeMap status = testpaperLesson.content;
+                LessonItem<LinkedHashMap> testpaperLesson = lessonItem;
+                LinkedHashMap status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
                 Object resultId = status.get("resultId");

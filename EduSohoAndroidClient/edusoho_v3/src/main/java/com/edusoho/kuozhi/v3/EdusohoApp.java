@@ -62,7 +62,6 @@ import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.common.Constants;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;

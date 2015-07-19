@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui.test;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.android.volley.Response;
 import com.edusoho.kuozhi.v3.model.bal.test.TestpaperResultType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;

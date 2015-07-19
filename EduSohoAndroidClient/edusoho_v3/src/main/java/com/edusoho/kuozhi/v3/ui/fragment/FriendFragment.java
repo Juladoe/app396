@@ -163,9 +163,7 @@ public class FriendFragment extends BaseFragment {
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("SchoolApp:", response);
-                ArrayList<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<ArrayList<SchoolApp>>() {
-                });
+                List<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<List<SchoolApp>>(){});
                 if (schoolAppResult.size() != 0) {
                     mFriendAdapter.setSchoolListSize(schoolAppResult.size());
                     mFriendAdapter.addSchoolList(schoolAppResult);
