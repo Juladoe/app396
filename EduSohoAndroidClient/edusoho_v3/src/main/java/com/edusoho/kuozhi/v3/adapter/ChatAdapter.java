@@ -1,11 +1,14 @@
 package com.edusoho.kuozhi.v3.adapter;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,8 @@ import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -29,6 +34,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -40,11 +46,13 @@ public class ChatAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Chat> mList;
+    private HashMap<Long, Integer> mDownloadList;
     private MediaPlayer mMediaPlayer;
+    private ChatDataSource mChatDataSource;
+
     private int mDurationMax = EdusohoApp.app.screenW * 1 / 2;
     private int mDurationUnit = EdusohoApp.app.screenW * 1 / 40;
     private static long TIME_INTERVAL = 60 * 5;
-
     private static final int TYPE_COUNT = 6;
     private static final int MSG_SEND_TEXT = 0;
     private static final int MSG_RECEIVE_TEXT = 1;
@@ -68,6 +76,8 @@ public class ChatAdapter extends BaseAdapter {
     public ChatAdapter(Context ctx, List<Chat> list) {
         mContext = ctx;
         mList = list;
+        mDownloadList = new HashMap<>();
+        mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.defaultpic).
                 showImageOnLoading(R.drawable.defaultpic).
@@ -186,7 +196,7 @@ public class ChatAdapter extends BaseAdapter {
                 handlerSendAudio(holder, position);
                 break;
             case MSG_RECEIVE_AUDIO:
-                handlerSendAudio(holder, position);
+                handlerReceiveAudio(holder, position);
                 break;
         }
         return convertView;
@@ -322,6 +332,7 @@ public class ChatAdapter extends BaseAdapter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content, holder, R.drawable.chat_to_speak_voice, R.drawable.chat_to_voice_play_anim));
                 break;
             case UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
@@ -341,7 +352,7 @@ public class ChatAdapter extends BaseAdapter {
                                 model.setDelivery(Chat.Delivery.UPLOADING);
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.sendImageAgain(file, model, Const.MEDIA_AUDIO);
+                                notifyDataSetChanged();
                             } else {
                                 CommonUtil.longToast(mContext, "音频不存在，无法上传");
                             }
@@ -351,13 +362,6 @@ public class ChatAdapter extends BaseAdapter {
                 break;
         }
         //getAmrDuration();
-        holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content, holder));
-    }
-
-    private int getAmrDuration(String filePath) {
-        mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
-        int duration = mMediaPlayer.getDuration();
-        return (int) Math.ceil(Float.valueOf(duration) / 1000);
     }
 
     private void handlerReceiveAudio(final ViewHolder holder, int position) {
@@ -373,6 +377,66 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
+        switch (model.getDelivery()) {
+            case SUCCESS:
+                holder.ivStateError.setVisibility(View.GONE);
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.tvAudioLength.setVisibility(View.VISIBLE);
+                try {
+                    int duration = getAmrDuration(model.content);
+                    holder.tvAudioLength.setText(duration + "\"");
+
+                    holder.ivMsgImage.getLayoutParams().width = 50 + mDurationUnit * duration < mDurationMax ? 50 + mDurationUnit * duration : mDurationMax;
+                    holder.ivMsgImage.requestLayout();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String audioFileName = model.getContent().substring(model.getContent().lastIndexOf('/') + 1);
+                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(EdusohoApp.app.getWorkSpace() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" + audioFileName, holder,
+                        R.drawable.chat_from_speak_voice,
+                        R.drawable.chat_from_voice_play_anim));
+                break;
+            case UPLOADING:
+                holder.pbLoading.setVisibility(View.VISIBLE);
+                holder.ivStateError.setVisibility(View.GONE);
+                holder.tvAudioLength.setVisibility(View.GONE);
+                downloadAudio(model.content, model.chatId);
+                break;
+            case FAILED:
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.VISIBLE);
+                holder.tvAudioLength.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    private DownloadManager mDownloadManager;
+
+    private void downloadAudio(String url, int chatId) {
+        if (mDownloadManager == null) {
+            mDownloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
+        }
+        Uri uri = Uri.parse(url);
+        String filename = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+        request.setVisibleInDownloadsUi(false);
+        request.setDestinationInExternalPublicDir("/edusoho" + Const.UPLOAD_AUDIO_CACHE_FILE + "/", filename);
+        long downloadId = mDownloadManager.enqueue(request);
+        mDownloadList.put(downloadId, chatId);
+    }
+
+    /**
+     * 获取amr播放长度
+     *
+     * @param filePath
+     * @return
+     */
+    private int getAmrDuration(String filePath) {
+        mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
+        int duration = mMediaPlayer.getDuration();
+        return (int) Math.ceil(Float.valueOf(duration) / 1000);
     }
 
     /**
@@ -412,10 +476,14 @@ public class ChatAdapter extends BaseAdapter {
     private class AudioMsgClick implements View.OnClickListener {
         private File mAudioFile;
         private ViewHolder holder;
+        private int mChatSpeakResId;
+        private int mChatSpeakAnimResId;
 
-        public AudioMsgClick(String filePath, ViewHolder h) {
+        public AudioMsgClick(String filePath, ViewHolder h, int resId, int animResId) {
             mAudioFile = new File(filePath);
             holder = h;
+            mChatSpeakResId = resId;
+            mChatSpeakAnimResId = animResId;
         }
 
         @Override
@@ -423,7 +491,7 @@ public class ChatAdapter extends BaseAdapter {
             if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 if (mCurrentAudioPath.equals(mAudioFile.getPath())) {
                     mMediaPlayer.stop();
-                    stopVoiceAnim(holder);
+                    stopVoiceAnim(holder, mChatSpeakResId);
                     return;
                 } else {
                     mMediaPlayer.stop();
@@ -446,38 +514,38 @@ public class ChatAdapter extends BaseAdapter {
                 mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        stopVoiceAnim(holder);
+                        stopVoiceAnim(holder, mChatSpeakResId);
                         mPrev = null;
                     }
                 });
                 if (mPrev != null && mPrev.getBackground() instanceof AnimationDrawable) {
                     ((AnimationDrawable) mPrev.getBackground()).stop();
-                    mPrev.setBackgroundResource(R.drawable.speak_voice);
+                    mPrev.setBackgroundResource(mChatSpeakResId);
                 }
                 mMediaPlayer.start();
                 mPrev = holder.ivVoiceAnim;
-                startVoiceAnim(holder);
+                startVoiceAnim(holder, mChatSpeakAnimResId);
                 mCurrentAudioPath = mAudioFile.getPath();
             }
         }
     }
 
-    private void startVoiceAnim(ViewHolder holder) {
+    private void startVoiceAnim(ViewHolder holder, int resId) {
         if (holder.ivVoiceAnim.getBackground() instanceof AnimationDrawable) {
             mAnimDrawable = (AnimationDrawable) holder.ivVoiceAnim.getBackground();
             mAnimDrawable.stop();
             mAnimDrawable.start();
         } else {
-            holder.ivVoiceAnim.setBackgroundResource(R.drawable.voice_play_anim);
+            holder.ivVoiceAnim.setBackgroundResource(resId);
             mAnimDrawable = (AnimationDrawable) holder.ivVoiceAnim.getBackground();
             mAnimDrawable.start();
         }
     }
 
-    private void stopVoiceAnim(ViewHolder holder) {
+    private void stopVoiceAnim(ViewHolder holder, int resId) {
         if (mAnimDrawable != null) {
             mAnimDrawable.stop();
-            holder.ivVoiceAnim.setBackgroundResource(R.drawable.speak_voice);
+            holder.ivVoiceAnim.setBackgroundResource(resId);
         }
     }
 
@@ -544,7 +612,7 @@ public class ChatAdapter extends BaseAdapter {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_send_audio, null);
                 break;
             case MSG_RECEIVE_AUDIO:
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_image, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_audio, null);
                 break;
         }
         return convertView;
@@ -578,6 +646,7 @@ public class ChatAdapter extends BaseAdapter {
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     break;
                 case MSG_SEND_AUDIO:
+                case MSG_RECEIVE_AUDIO:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
                     ivMsgImage = (ImageView) view.findViewById(R.id.iv_msg_image);
@@ -585,11 +654,34 @@ public class ChatAdapter extends BaseAdapter {
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     tvAudioLength = (TextView) view.findViewById(R.id.tv_audio_length);
                     ivVoiceAnim = (ImageView) view.findViewById(R.id.iv_voice_play_anim);
+                    break;
             }
         }
     }
 
     public interface ImageErrorClick {
         public void sendImageAgain(File file, Chat chat, String strType);
+    }
+
+    public HashMap<Long, Integer> getDownloadList() {
+        return mDownloadList;
+    }
+
+    public void updateVoiceDownloadStatus(long downId) {
+        DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
+        Cursor c = mDownloadManager.query(query);
+        if (c != null && c.moveToFirst()) {
+            String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+            for (Chat chat : mList) {
+                if (chat.chatId == mDownloadList.get(downId)) {
+                    chat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
+                    mChatDataSource.update(chat);
+                    mDownloadList.remove(downId);
+                    notifyDataSetChanged();
+                    break;
+                }
+            }
+            c.close();
+        }
     }
 }

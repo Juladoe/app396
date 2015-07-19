@@ -36,54 +36,68 @@
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/myinfo_default_face" />
 
-            <ImageView
-                android:id="@+id/iv_msg_image"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/ci_send_pic"
-                android:background="@drawable/chat_image_from_layout"
-                android:clickable="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="6dp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/iv_msg_image"
-                android:paddingTop="2dp"
-                android:orientation="vertical">
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:visibility="gone"
-                    android:id="@+id/sendProgressPar" />
+                android:id="@+id/rl_voice_dialog"
+                android:layout_toRightOf="@+id/ci_send_pic">
 
                 <ImageView
-                    android:id="@+id/msg_status"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:clickable="true"
-                    android:src="@drawable/msg_state_failed_resend"
-                    android:scaleType="fitXY"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_audio_length"
-                    android:textSize="@dimen/small_font_size"
+                    android:id="@+id/iv_msg_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:text="12&apos;&apos;"
-                    android:textColor="@color/base_black_35"
-                    android:visibility="gone"
-                    android:gravity="center" />
+                    android:background="@drawable/chat_image_from_layout"
+                    android:clickable="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="6dp" />
 
-            </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:id="@+id/iv_voice_play_anim"
+                    android:background="@drawable/chat_from_speak_voice"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="12dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/iv_msg_image"
+                    android:paddingTop="2dp"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:visibility="gone"
+                        android:id="@+id/sendProgressPar" />
+
+                    <ImageView
+                        android:id="@+id/msg_status"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:clickable="true"
+                        android:src="@drawable/msg_state_failed_resend"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_audio_length"
+                        android:textSize="@dimen/small_font_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="12&apos;&apos;"
+                        android:textColor="@color/base_black_35"
+                        android:visibility="gone"
+                        android:gravity="center" />
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
 
     </RelativeLayout>
 

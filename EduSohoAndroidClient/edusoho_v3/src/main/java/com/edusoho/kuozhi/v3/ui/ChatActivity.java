@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
+import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -105,6 +108,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     private float mPressDownY;
     private float mPressMoveY;
+
+    private LoadDialog mAudioLoadDialog;
+    private Vibrator mVibrator;
+    private AudioDownloadReceiver mAudioDownloadReceiver;
     /**
      * 根据手纸滑动距离是否保存
      */
@@ -133,7 +140,16 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        registerReceiver(mAudioDownloadReceiver, intentFilter);
+    }
+
     private void initView() {
+        mAudioDownloadReceiver = new AudioDownloadReceiver();
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(msgTextWatcher);
         tvSend = (Button) findViewById(R.id.tv_send);
@@ -163,6 +179,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mAdapter = new ChatAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
+        mAudioDownloadReceiver.setChatAdapter(mAdapter);
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
@@ -328,11 +345,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public void sendImageAgain(File file, Chat chat, String strType) {
         uploadMediaAgain(file, chat, Chat.FileType.IMAGE, strType);
     }
-
-    private long mAudioStartTime;
-    private long mAudioEndTime;
-    private LoadDialog mAudioLoadDialog;
-    private Vibrator mVibrator;
 
     //region Touch, Click Listener etc.
     private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
@@ -811,18 +823,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
             CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContent(), new TypeToken<CustomContent>() {
             });
-            if (customContent.getTypeBusiness().equals(TypeBusinessEnum.BULLETIN.toString().toLowerCase())) {
-                //公告消息
-
-            } else if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
+            if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
                     customContent.getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
                 if (messageType.code == Const.ADD_CHAT_MSG && mFromId == customContent.getFromId()) {
                     Chat chat = new Chat(wrapperMessage);
-//                    switch (chat.fileType) {
-//                        case IMAGE:
-//                            compressImage()
-//                            break;
-//                    }
                     mAdapter.addOneChat(chat);
                 }
             }
@@ -845,5 +849,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         if (mChatDataSource != null) {
             mChatDataSource.close();
         }
+        unregisterReceiver(mAudioDownloadReceiver);
     }
 }

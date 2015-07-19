@@ -24,7 +24,6 @@ import org.json.JSONObject;
  * Created by JesseHuang on 15/5/16.
  */
 public class PushMessageReceiver extends XGPushBaseReceiver {
-    private static final String TAG = "PushMessageReceiver";
 
     @Override
     public void onRegisterResult(Context context, int i, XGPushRegisterResult xgPushRegisterResult) {

@@ -56,7 +56,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:id="@+id/iv_voice_play_anim"
-                    android:background="@drawable/speak_voice"
+                    android:background="@drawable/chat_to_speak_voice"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="12dp" />
