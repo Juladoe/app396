@@ -62,6 +62,10 @@ import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.common.Constants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -132,11 +136,10 @@ public class EdusohoApp extends Application {
     }
 
     /**
-     *
      * @param requestUrl
      * @param responseListener
      * @param errorListener
-     * @param contentType 图片 Const.IMAGE_CONTENT_TYPE，语音 Const.AUDIO_CONTENT_TYPE
+     * @param contentType      图片 Const.IMAGE_CONTENT_TYPE，语音 Const.AUDIO_CONTENT_TYPE
      * @return
      */
     public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener, final String contentType) {
@@ -722,12 +725,15 @@ public class EdusohoApp extends Application {
                 app.postUrl(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
-                        });
-                        if (pushResult != null && pushResult.result.equals("success")) {
-                            Log.d(TAG, "cloud register success");
-                        } else {
+                        try {
+                            JSONObject resultObject = new JSONObject(response);
+                            String result = resultObject.getString("result");
+                            if (result.equals("success")) {
+                                Log.d(TAG, "cloud register success");
+                            }
+                        } catch (JSONException e) {
                             Log.d(TAG, "cloud register failed");
+                            e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {

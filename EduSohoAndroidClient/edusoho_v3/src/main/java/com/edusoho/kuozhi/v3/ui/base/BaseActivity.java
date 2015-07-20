@@ -109,14 +109,8 @@ public class BaseActivity extends ActionBarActivity {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                try {
-                    loadDialog.dismiss();
-                    if (handleRequest(response) != null) {
-                        responseListener.onResponse(response);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                loadDialog.dismiss();
+                responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -139,13 +133,7 @@ public class BaseActivity extends ActionBarActivity {
         app.postMultiUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                try {
-                    if (handleRequest(response) != null) {
-                        responseListener.onResponse(response);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -163,13 +151,7 @@ public class BaseActivity extends ActionBarActivity {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                try {
-                    if (handleRequest(response) != null) {
-                        responseListener.onResponse(response);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -195,13 +177,7 @@ public class BaseActivity extends ActionBarActivity {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                try {
-                    if (handleRequest(response) != null) {
-                        responseListener.onResponse(response);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override

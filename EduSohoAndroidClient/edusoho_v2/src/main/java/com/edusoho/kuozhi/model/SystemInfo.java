@@ -5,6 +5,7 @@ package com.edusoho.kuozhi.model;
  */
 public class SystemInfo {
     public String version;
+    public String name;
     public String mobileApiVersion;
     public String mobileApiUrl;
 }
