@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -375,6 +376,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                                 mAudioLoadDialog.dismiss();
                                 mVibrator.vibrate(50);
                                 AudioRecord.getInstance(mContext).start();
+                                updateMicVolume();
                             }
                         });
                     } catch (Exception e) {
@@ -435,6 +437,37 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             return false;
         }
     };
+
+    private final Handler mHandler = new Handler();
+    private Runnable mUpdateMicVolumeTimer = new Runnable() {
+        public void run() {
+            updateMicVolume();
+        }
+    };
+
+    /**
+     * 更新音量图标
+     */
+    private void updateMicVolume() {
+        if (AudioRecord.getInstance(mContext).getMediaRecorder() != null) {
+            double ratio = (double) AudioRecord.getInstance(mContext).getMediaRecorder().getMaxAmplitude();
+            double db = 0;
+            if (ratio > 1) {
+                db = 20 * Math.log10(ratio);
+            }
+            if (db < 60) {
+                ivRecordImage.setImageResource(R.drawable.record_animate_1);
+            } else if (db < 70) {
+                ivRecordImage.setImageResource(R.drawable.record_animate_2);
+            } else if (db < 80) {
+                ivRecordImage.setImageResource(R.drawable.record_animate_3);
+            } else if (db < 90) {
+                ivRecordImage.setImageResource(R.drawable.record_animate_4);
+            }
+            Log.d(TAG, "分贝值：" + db);
+            mHandler.postDelayed(mUpdateMicVolumeTimer, 500);
+        }
+    }
 
     @Override
     public void onClick(View v) {

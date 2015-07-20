@@ -394,7 +394,7 @@ public class ChatAdapter extends BaseAdapter {
                 try {
                     int duration = getAmrDuration(audioFileName);
                     holder.tvAudioLength.setText(duration + "\"");
-                    holder.ivMsgImage.getLayoutParams().width = 50 + mDurationUnit * duration < mDurationMax ? 50 + mDurationUnit * duration : mDurationMax;
+                    holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 50 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();
                 } catch (Exception e) {
                     e.printStackTrace();

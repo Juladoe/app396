@@ -24,7 +24,7 @@ public class AudioRecord {
     private long mAudioStartTime;
     private long mAudioEndTime;
 
-    private AudioRecord(Context ctx) {
+    private AudioRecord() {
         mAudioFolderPath = new File(EdusohoApp.app.getWorkSpace() + "/audio");
         if (!mAudioFolderPath.exists()) {
             mAudioFolderPath.mkdir();
@@ -35,9 +35,13 @@ public class AudioRecord {
 
     public synchronized static AudioRecord getInstance(Context ctx) {
         if (instance == null) {
-            instance = new AudioRecord(ctx);
+            instance = new AudioRecord();
         }
         return instance;
+    }
+
+    public MediaRecorder getMediaRecorder() {
+        return mMediaRecorder;
     }
 
     public void ready(NormalCallback callback) {
@@ -73,6 +77,12 @@ public class AudioRecord {
             mMediaRecorder.stop();
             mMediaRecorder.reset();
             mMediaRecorder.release();
+            mMediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+                @Override
+                public void onInfo(MediaRecorder mr, int what, int extra) {
+
+                }
+            });
             if (!isSave) {
                 mAudioFile.delete();
             }
