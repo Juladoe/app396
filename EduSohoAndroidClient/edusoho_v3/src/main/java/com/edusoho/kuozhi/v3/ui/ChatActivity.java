@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -107,7 +108,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private ImageView ivRecordImage;
 
     private float mPressDownY;
-    private float mPressMoveY;
 
     private LoadDialog mAudioLoadDialog;
     private Vibrator mVibrator;
@@ -117,7 +117,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      */
     private boolean mIsSaveAudio;
 
-    private ArrayList<Chat> mList;
     private ChatDataSource mChatDataSource;
     private int mSendTime;
     private int mStart = 0;
@@ -250,7 +249,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     private ArrayList<Chat> getChatList(int start) {
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, mToId, mFromId, mToId);
-        mList = mChatDataSource.getChats(start, LIMIT, selectSql);
+        ArrayList<Chat> mList = mChatDataSource.getChats(start, LIMIT, selectSql);
         Collections.reverse(mList);
         return mList;
     }
@@ -326,7 +325,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     /**
      * 通知NewsFragment
      *
-     * @param message
+     * @param message xg消息
      */
     private void notifyNewList2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
@@ -387,8 +386,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    mPressMoveY = event.getY();
-                    if (Math.abs(mPressDownY - mPressMoveY) > app.screenH * 0.15) {
+                    float mPressMoveY = event.getY();
+                    if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.15) {
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
@@ -405,7 +404,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 case MotionEvent.ACTION_UP:
                     try {
                         tvSpeak.setText(getString(R.string.hand_press_and_speak));
-                        //TODO 保存录音
                         File mAudioRecord = AudioRecord.getInstance(mContext).stop(mIsSaveAudio);
                         int audioLength = AudioRecord.getInstance(mContext).getAudioLength();
                         if (mIsSaveAudio) {
@@ -441,22 +439,21 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        final View clickView = v;
-        if (clickView.getId() == R.id.iv_show_media_layout) {
+        if (v.getId() == R.id.iv_show_media_layout) {
             //加号，显示多媒体框
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }
-        } else if (clickView.getId() == R.id.tv_send) {
+        } else if (v.getId() == R.id.tv_send) {
             //发送消息
             if (etSend.getText().length() == 0) {
                 return;
             }
             sendMsg(etSend.getText().toString());
 
-        } else if (clickView.getId() == R.id.btn_voice) {
+        } else if (v.getId() == R.id.btn_voice) {
             //语音
             viewMediaLayout.setVisibility(View.GONE);
             btnKeyBoard.setVisibility(View.VISIBLE);
@@ -464,29 +461,28 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             viewMsgInput.setVisibility(View.GONE);
             viewPressToSpeak.setVisibility(View.VISIBLE);
 
-        } else if (clickView.getId() == R.id.btn_set_mode_keyboard) {
+        } else if (v.getId() == R.id.btn_set_mode_keyboard) {
             //键盘
             viewMediaLayout.setVisibility(View.GONE);
             btnVoice.setVisibility(View.VISIBLE);
             viewPressToSpeak.setVisibility(View.GONE);
             viewMsgInput.setVisibility(View.VISIBLE);
             btnKeyBoard.setVisibility(View.GONE);
-        } else if (clickView.getId() == R.id.rl_btn_press_to_speak) {
+        } else if (v.getId() == R.id.rl_btn_press_to_speak) {
             //长按发送语音
             viewMediaLayout.setVisibility(View.GONE);
-        } else if (clickView.getId() == R.id.iv_image) {
+        } else if (v.getId() == R.id.iv_image) {
             //选择图片
             openPictureFromLocal();
-        } else if (clickView.getId() == R.id.iv_camera) {
+        } else if (v.getId() == R.id.iv_camera) {
             try {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                mCameraFile = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                mCameraFile = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
                 if (mCameraFile.createNewFile()) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
                     startActivityForResult(intent, SEND_CAMERA);
                 } else {
                     CommonUtil.shortToast(mContext, "照片生成失败");
-                    return;
                 }
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
@@ -535,7 +531,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     /**
      * 选择图片并压缩
      *
-     * @param selectedImage
+     * @param selectedImage 原图
      * @return
      */
     private File selectPicture(Uri selectedImage) {
@@ -551,7 +547,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 CommonUtil.shortToast(mContext, "找不到图片");
                 return null;
             }
-
         }
         File file = new File(picturePath);
         Bitmap bitmap = null;
@@ -566,26 +561,26 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     /**
      * 图片压缩
      *
-     * @param bitmap
+     * @param bitmap original bitmap
      * @param file   original image file
-     * @return
+     * @return compressed image file
      */
     private File compressImage(Bitmap bitmap, File file) {
         File compressedFile;
         try {
-            if (bitmap.getWidth() > app.screenW * 0.4f) {
-                bitmap = AppUtil.scaleImage(bitmap, app.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
+            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
+                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
             }
 
             if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap = AppUtil.compressImage(bitmap, baos);
-                compressedFile = AppUtil.convertBitmap2File(bitmap, app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
             } else {
-                compressedFile = copyFileToCache(file, Chat.FileType.IMAGE);
+                compressedFile = copyImageFileToCache(file);
             }
 
-            AppUtil.convertBitmap2File(bitmap, app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
             return null;
@@ -596,7 +591,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     /**
      * 上传图片
      *
-     * @param file
+     * @param file upload file
      */
     private void uploadMedia(final File file, final Chat.FileType type, String strType) {
         try {
@@ -653,7 +648,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     private void uploadMediaAgain(File file, final Chat chat, final Chat.FileType type, final String strType) {
-        if (file == null && !file.exists()) {
+        if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
         }
@@ -711,22 +706,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * 上传的imageaudio复制到本地缓存
+     * 上传的Image复制到本地缓存
      *
-     * @param originFile
-     * @param type
+     * @param originFile 小于500k的原图
      */
-    private File copyFileToCache(File originFile, Chat.FileType type) {
-        String targetPath = null;
+    private File copyImageFileToCache(File originFile) {
+        String targetPath;
         String targetFileName = System.currentTimeMillis() + "";
 
-        switch (type) {
-            case IMAGE:
-                targetPath = app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE;
-                break;
-            case AUDIO:
-                break;
-        }
+        targetPath = EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE;
         File targetFile = new File(targetPath + "/" + targetFileName);
         if (targetFile.exists()) {
             targetFile.delete();
@@ -753,11 +741,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     private void initCacheFolder() {
-        File imageFolder = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE);
+        File imageFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {
             imageFolder.mkdir();
         }
-        File imageThumbFolder = new File(app.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        File imageThumbFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
         if (!imageThumbFolder.exists()) {
             imageThumbFolder.mkdir();
         }
@@ -834,8 +822,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source)};
-        return messageTypes;
+        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source)};
     }
 
 
