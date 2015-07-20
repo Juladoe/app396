@@ -11,15 +11,15 @@ android {
     }
 
     productFlavors {
-        edianshagn {
-            applicationId "com.edusoho_edianshang.kuozhi"
+        cuntom {
+            applicationId "com.dowin365.kuozhi"
         }
     }
 
     sourceSets {
-        edianshagn {
+        cuntom {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/edusoho_edianshang/res']
+            res.srcDirs = ['src/dowin365/res']
         }
     }
 

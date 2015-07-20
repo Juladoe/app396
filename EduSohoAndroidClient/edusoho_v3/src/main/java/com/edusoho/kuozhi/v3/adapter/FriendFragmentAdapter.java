@@ -149,7 +149,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                         itemHolder.teacherTag.setVisibility(View.GONE);
                     }
                     itemHolder.friendName.setText(friend.nickname);
-                    if (friend.smallAvatar != "") {
+                    if (!friend.smallAvatar.equals("")) {
                         ImageLoader.getInstance().displayImage(mApp.host + "/" + friend.smallAvatar, itemHolder.friendAvatar, mApp.mOptions);
                     }else {
                         itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
