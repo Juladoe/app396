@@ -323,6 +323,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         });
     }
 
+    /**
+     * 通知NewsFragment
+     *
+     * @param message
+     */
     private void notifyNewList2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.CHAT_DATA, message);
@@ -342,7 +347,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     @Override
-    public void sendImageAgain(File file, Chat chat, String strType) {
+    public void uploadMediaAgain(File file, Chat chat, String strType) {
         uploadMediaAgain(file, chat, Chat.FileType.IMAGE, strType);
     }
 
@@ -629,8 +634,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         String imageUrl = app.host + "/" + jsonObject.getString("uri");
-                        CommonUtil.shortToast(mContext, "音频上传成功");
-                        //String createdTime = jsonObject.getString("createdTime");
                         sendMediaMsg(imageUrl, chat, type);
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage());
@@ -667,14 +670,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     JSONObject jsonObject = new JSONObject(response);
                     String imageUrl = app.host + "/" + jsonObject.getString("uri");
                     //String createdTime = jsonObject.getString("createdTime");
-//                    switch (type) {
-//                        case IMAGE:
-//                            sendMediaMsg(imageUrl, chat);
-//                            break;
-//                        case AUDIO:
-//                            sendMediaMsg(imageUrl, chat);
-//                    }
-
+                    sendMediaMsg(imageUrl, chat, type);
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
                 }

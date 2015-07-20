@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.android.tpush.XGPushTextMessage;
 
@@ -122,10 +123,12 @@ public class New implements Serializable {
         });
         fromId = customContent.getFromId();
         title = message.getTitle();
-        if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.toString().toLowerCase())) {
-            content = message.getContent();
-        } else {
-            content = "[图片]";
+        if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.getName())) {
+
+        } else if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
+            content = String.format("[$s]", Const.MEDIA_IMAGE);
+        } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
+            content = String.format("[$s]", Const.MEDIA_AUDIO);
         }
         createdTime = customContent.getCreatedTime();
         imgUrl = customContent.getImgUrl();

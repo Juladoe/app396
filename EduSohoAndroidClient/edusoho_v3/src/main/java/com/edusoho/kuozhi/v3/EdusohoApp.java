@@ -131,6 +131,14 @@ public class EdusohoApp extends Application {
         return EdusohoMainService.getService();
     }
 
+    /**
+     *
+     * @param requestUrl
+     * @param responseListener
+     * @param errorListener
+     * @param contentType 图片 Const.IMAGE_CONTENT_TYPE，语音 Const.AUDIO_CONTENT_TYPE
+     * @return
+     */
     public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener, final String contentType) {
         mVolley.getRequestQueue();
         MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, requestUrl, responseListener, errorListener) {

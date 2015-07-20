@@ -253,7 +253,7 @@ public class ChatAdapter extends BaseAdapter {
                                 model.setDelivery(Chat.Delivery.UPLOADING);
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.sendImageAgain(file, model, Const.MEDIA_IMAGE);
+                                mImageErrorClick.uploadMediaAgain(file, model, Const.MEDIA_IMAGE);
                             } else {
                                 CommonUtil.longToast(mContext, "图片不存在，无法上传");
                             }
@@ -352,6 +352,8 @@ public class ChatAdapter extends BaseAdapter {
                                 model.setDelivery(Chat.Delivery.UPLOADING);
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
+                                mChatDataSource.update(model);
+                                mImageErrorClick.uploadMediaAgain(file, model, Const.MEDIA_IMAGE);
                                 notifyDataSetChanged();
                             } else {
                                 CommonUtil.longToast(mContext, "音频不存在，无法上传");
@@ -660,7 +662,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     public interface ImageErrorClick {
-        public void sendImageAgain(File file, Chat chat, String strType);
+        public void uploadMediaAgain(File file, Chat chat, String strType);
     }
 
     public HashMap<Long, Integer> getDownloadList() {
