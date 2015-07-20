@@ -124,11 +124,11 @@ public class New implements Serializable {
         fromId = customContent.getFromId();
         title = message.getTitle();
         if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.getName())) {
-
+            content = message.getContent();
         } else if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
             content = String.format("[%s]", Const.MEDIA_IMAGE);
         } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
-            content = String.format("[$%s]", Const.MEDIA_AUDIO);
+            content = String.format("[%s]", Const.MEDIA_AUDIO);
         }
         createdTime = customContent.getCreatedTime();
         imgUrl = customContent.getImgUrl();
