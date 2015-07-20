@@ -50,8 +50,8 @@ public class ChatAdapter extends BaseAdapter {
     private MediaPlayer mMediaPlayer;
     private ChatDataSource mChatDataSource;
 
-    private int mDurationMax = EdusohoApp.app.screenW * 1 / 2;
-    private int mDurationUnit = EdusohoApp.app.screenW * 1 / 40;
+    private int mDurationMax = EdusohoApp.screenW / 2;
+    private int mDurationUnit = EdusohoApp.screenW / 40;
     private static long TIME_INTERVAL = 60 * 5;
     private static final int TYPE_COUNT = 6;
     private static final int MSG_SEND_TEXT = 0;
@@ -384,17 +384,20 @@ public class ChatAdapter extends BaseAdapter {
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
+                String audioFileName = EdusohoApp.getWorkSpace() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
+                        model.getContent().substring(model.getContent().lastIndexOf('/') + 1);
                 try {
-                    int duration = getAmrDuration(model.content);
+                    Log.e("handlerReceiveAudio3", System.currentTimeMillis() + "");
+                    int duration = getAmrDuration(audioFileName);
+                    Log.e("handlerReceiveAudio4", System.currentTimeMillis() + "");
                     holder.tvAudioLength.setText(duration + "\"");
-
                     holder.ivMsgImage.getLayoutParams().width = 50 + mDurationUnit * duration < mDurationMax ? 50 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                String audioFileName = model.getContent().substring(model.getContent().lastIndexOf('/') + 1);
-                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(EdusohoApp.app.getWorkSpace() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" + audioFileName, holder,
+
+                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(audioFileName, holder,
                         R.drawable.chat_from_speak_voice,
                         R.drawable.chat_from_voice_play_anim));
                 break;
@@ -416,7 +419,7 @@ public class ChatAdapter extends BaseAdapter {
 
     private void downloadAudio(String url, int chatId) {
         if (mDownloadManager == null) {
-            mDownloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
+            mDownloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         }
         Uri uri = Uri.parse(url);
         String filename = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
@@ -432,27 +435,35 @@ public class ChatAdapter extends BaseAdapter {
     /**
      * 获取amr播放长度
      *
-     * @param filePath
-     * @return
+     * @param filePath 文件路径
+     * @return 音频长度
      */
     private int getAmrDuration(String filePath) {
+        long prev = System.currentTimeMillis();
+        Log.e("getAmrDuration1", filePath + "");
         mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
+        Log.e("getAmrDuration2", (System.currentTimeMillis() - prev) + "");
+        prev = System.currentTimeMillis();
         int duration = mMediaPlayer.getDuration();
-        return (int) Math.ceil(Float.valueOf(duration) / 1000);
+        Log.e("getAmrDuration3", (System.currentTimeMillis() - prev) + "");
+        prev = System.currentTimeMillis();
+        int i = (int) Math.ceil(Float.valueOf(duration) / 1000);
+        Log.e("getAmrDuration4", (System.currentTimeMillis() - prev) + "");
+        return i;
     }
 
     /**
      * 获取缩略图文件路径
      *
-     * @param imagePath
-     * @return
+     * @param imagePath 文件路径
+     * @return 文件路径
      */
     private String getThumbFromOriginalImagePath(String imagePath) {
         return imagePath.replace(Const.UPLOAD_IMAGE_CACHE_FILE, Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
     }
 
     private String getThumbFromImageName(String imageName) {
-        return EdusohoApp.app.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
+        return EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
     }
 
     private class ImageMsgClick implements View.OnClickListener {
@@ -500,7 +511,6 @@ public class ChatAdapter extends BaseAdapter {
                 }
             }
             if (mAudioFile != null && mAudioFile.exists()) {
-                //TODO play
                 if (mMediaPlayer == null) {
                     mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(mAudioFile.getPath()));
                     mMediaPlayer.getDuration();
@@ -572,9 +582,9 @@ public class ChatAdapter extends BaseAdapter {
 
         @Override
         public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-            //接受到以后进行分辨率压缩并缓存
-            if (bitmap.getWidth() > EdusohoApp.app.screenW * 0.4f) {
-                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.app.screenW * 0.4f, 0);
+            //分辨率压缩并缓存
+            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
+                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, 0);
             }
             File receiveFile = ImageLoader.getInstance().getDiskCache().get(s);
             try {
@@ -586,7 +596,6 @@ public class ChatAdapter extends BaseAdapter {
             holder.pbLoading.setVisibility(View.GONE);
             holder.ivStateError.setVisibility(View.GONE);
             ((ImageView) view).setImageBitmap(bitmap);
-            //holder.ivMsgImage.setImageBitmap(bitmap);
         }
 
         @Override
