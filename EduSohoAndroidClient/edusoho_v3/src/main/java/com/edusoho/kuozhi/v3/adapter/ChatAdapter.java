@@ -387,9 +387,7 @@ public class ChatAdapter extends BaseAdapter {
                 String audioFileName = EdusohoApp.getWorkSpace() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
                         model.getContent().substring(model.getContent().lastIndexOf('/') + 1);
                 try {
-                    Log.e("handlerReceiveAudio3", System.currentTimeMillis() + "");
                     int duration = getAmrDuration(audioFileName);
-                    Log.e("handlerReceiveAudio4", System.currentTimeMillis() + "");
                     holder.tvAudioLength.setText(duration + "\"");
                     holder.ivMsgImage.getLayoutParams().width = 50 + mDurationUnit * duration < mDurationMax ? 50 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();
@@ -440,15 +438,11 @@ public class ChatAdapter extends BaseAdapter {
      */
     private int getAmrDuration(String filePath) {
         long prev = System.currentTimeMillis();
-        Log.e("getAmrDuration1", filePath + "");
         mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
-        Log.e("getAmrDuration2", (System.currentTimeMillis() - prev) + "");
         prev = System.currentTimeMillis();
         int duration = mMediaPlayer.getDuration();
-        Log.e("getAmrDuration3", (System.currentTimeMillis() - prev) + "");
         prev = System.currentTimeMillis();
         int i = (int) Math.ceil(Float.valueOf(duration) / 1000);
-        Log.e("getAmrDuration4", (System.currentTimeMillis() - prev) + "");
         return i;
     }
 
