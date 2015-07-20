@@ -41,6 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JesseHuang on 15/6/3.
+ * Chat ListView Adapter
  */
 public class ChatAdapter extends BaseAdapter {
 
@@ -49,9 +50,16 @@ public class ChatAdapter extends BaseAdapter {
     private HashMap<Long, Integer> mDownloadList;
     private MediaPlayer mMediaPlayer;
     private ChatDataSource mChatDataSource;
+    private ImageView mPrevSpeakImageView;
+    private int mPrevImageViewBg;
+    private ImageErrorClick mImageErrorClick;
 
     private int mDurationMax = EdusohoApp.screenW / 2;
     private int mDurationUnit = EdusohoApp.screenW / 40;
+    private DisplayImageOptions mOptions;
+    private String mCurrentAudioPath;
+    private AnimationDrawable mAnimDrawable;
+
     private static long TIME_INTERVAL = 60 * 5;
     private static final int TYPE_COUNT = 6;
     private static final int MSG_SEND_TEXT = 0;
@@ -60,9 +68,6 @@ public class ChatAdapter extends BaseAdapter {
     private static final int MSG_RECEIVE_IMAGE = 3;
     private static final int MSG_SEND_AUDIO = 4;
     private static final int MSG_RECEIVE_AUDIO = 5;
-    private DisplayImageOptions mOptions;
-
-    ImageErrorClick mImageErrorClick;
 
     public void setSendImageClickListener(ImageErrorClick imageErrorClick) {
         mImageErrorClick = imageErrorClick;
@@ -437,13 +442,9 @@ public class ChatAdapter extends BaseAdapter {
      * @return 音频长度
      */
     private int getAmrDuration(String filePath) {
-        long prev = System.currentTimeMillis();
         mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
-        prev = System.currentTimeMillis();
         int duration = mMediaPlayer.getDuration();
-        prev = System.currentTimeMillis();
-        int i = (int) Math.ceil(Float.valueOf(duration) / 1000);
-        return i;
+        return (int) Math.ceil(Float.valueOf(duration) / 1000);
     }
 
     /**
@@ -476,9 +477,6 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private String mCurrentAudioPath;
-    private AnimationDrawable mAnimDrawable;
-    private ImageView mPrev;
 
     private class AudioMsgClick implements View.OnClickListener {
         private File mAudioFile;
@@ -521,15 +519,19 @@ public class ChatAdapter extends BaseAdapter {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         stopVoiceAnim(holder, mChatSpeakResId);
-                        mPrev = null;
+                        mPrevSpeakImageView = null;
+                        mPrevImageViewBg = 0;
                     }
                 });
-                if (mPrev != null && mPrev.getBackground() instanceof AnimationDrawable) {
-                    ((AnimationDrawable) mPrev.getBackground()).stop();
-                    mPrev.setBackgroundResource(mChatSpeakResId);
+                //判断之前Speaker动画效果是否start，是则需要先Stop，再设置之前Speaker的background
+                if (mPrevSpeakImageView != null && mPrevSpeakImageView.getBackground() instanceof AnimationDrawable) {
+                    ((AnimationDrawable) mPrevSpeakImageView.getBackground()).stop();
+                    mPrevSpeakImageView.setBackgroundResource(mPrevImageViewBg);
                 }
                 mMediaPlayer.start();
-                mPrev = holder.ivVoiceAnim;
+                //记住当前Speaker状态
+                mPrevSpeakImageView = holder.ivVoiceAnim;
+                mPrevImageViewBg = mChatSpeakResId;
                 startVoiceAnim(holder, mChatSpeakAnimResId);
                 mCurrentAudioPath = mAudioFile.getPath();
             }
