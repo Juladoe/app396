@@ -39,8 +39,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.edusoho.kuozhi.v3.view.webview.ESWebView;
-import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
 import java.util.HashMap;
@@ -382,17 +380,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         RequestUrl url = new RequestUrl(Const.MOBILE_SCHOOL_LOGIN);
         url.setParams(params);
 
-//        ajaxPost(url, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                Log.d(TAG, "MOBILE_SCHOOL_LOGIN success!");
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d("tag", "logSchoolInfoToServer failed");
-//            }
-//        });
+        ajaxPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "MOBILE_SCHOOL_LOGIN success!");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("tag", "logSchoolInfoToServer failed");
+            }
+        });
     }
 
     private boolean checkSchoolHasLogined(String host) {
