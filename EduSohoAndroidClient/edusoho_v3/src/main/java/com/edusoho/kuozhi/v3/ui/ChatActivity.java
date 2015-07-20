@@ -77,7 +77,6 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener, ChatAdapter.ImageErrorClick {
 
-
     //region Field
     public static final String TAG = "ChatActivity";
     public static final String CHAT_DATA = "chat_data";
