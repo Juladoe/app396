@@ -143,7 +143,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 holder.content.setText("用户"+fn.content.userName+"取消了对你的关注。");
             }
             holder.time.setText(AppUtil.getPostDaysZero(fn.createdTime));
-            if (fn.content.avatar != "") {
+            if (!fn.content.avatar.equals("")) {
                 ImageLoader.getInstance().displayImage(app.host + "/" + fn.content.avatar, holder.avatar, app.mOptions);
             }else {
                 holder.avatar.setImageResource(R.drawable.default_avatar);

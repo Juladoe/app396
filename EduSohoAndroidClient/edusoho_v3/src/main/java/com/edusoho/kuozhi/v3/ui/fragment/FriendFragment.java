@@ -167,10 +167,8 @@ public class FriendFragment extends BaseFragment {
                 if (schoolAppResult.size() != 0) {
                     mFriendAdapter.setSchoolListSize(schoolAppResult.size());
                     mFriendAdapter.addSchoolList(schoolAppResult);
-                    loadFriend();
-                } else {
-                    loadFriend();
                 }
+                loadFriend();
 
             }
         }, new Response.ErrorListener() {
