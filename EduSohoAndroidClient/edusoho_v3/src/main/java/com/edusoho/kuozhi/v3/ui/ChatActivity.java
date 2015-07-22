@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -111,7 +112,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     private float mPressDownY;
     private MediaRecorderTask mMediaRecorderTask;
-    private Handler mHandler;
+    private VolumeHandler mHandler;
 
     private Vibrator mVibrator;
     private AudioDownloadReceiver mAudioDownloadReceiver;
@@ -243,7 +244,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
-        mHandler = new Handler();
+        mHandler = new VolumeHandler();
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -430,6 +431,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             mVibrator.vibrate(50);
             while (true) {
                 if (mStopRecord) {
+                    //结束录音
                     mUploadAudio = mAudioRecord.stop(mCancelSave);
                     int audioLength = mAudioRecord.getAudioLength();
                     if (audioLength > 1) {
@@ -439,6 +441,30 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     }
                     mAudioRecord.clear();
                     break;
+                } else {
+                    //录音中动画
+                    double ratio = 0;
+                    if (mAudioRecord.getMediaRecorder() != null) {
+                        ratio = (double) mAudioRecord.getMediaRecorder().getMaxAmplitude();
+                    }
+                    double db = 0;
+                    if (ratio > 1) {
+                        db = 20 * Math.log10(ratio);
+                    }
+                    if (db < 60) {
+                        mHandler.sendEmptyMessage(0);
+                    } else if (db < 70) {
+                        mHandler.sendEmptyMessage(1);
+                    } else if (db < 80) {
+                        mHandler.sendEmptyMessage(2);
+                    } else if (db < 90) {
+                        mHandler.sendEmptyMessage(3);
+                    }
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return true;
@@ -482,6 +508,18 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     }
 
+    private class VolumeHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            ivRecordImage.setImageResource(mSpeakerAnimResId[msg.what]);
+        }
+    }
+
+    private int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
+            R.drawable.record_animate_2,
+            R.drawable.record_animate_3,
+            R.drawable.record_animate_4};
 
     @Override
     public void onClick(View v) {
