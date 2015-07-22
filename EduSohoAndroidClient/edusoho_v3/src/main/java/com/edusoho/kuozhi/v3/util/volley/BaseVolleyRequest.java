@@ -9,7 +9,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,15 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public static final int CACHE_ALWAYS = 0002;
     public static final int CACHE_NONE = 0003;
 
+    public static final int ALWAYS_USE_CACHE = 0010;
+    public static final int AUTO_USE_CACHE = 0020;
+
     public static final String PARSE_RESPONSE = "parseResponse";
 
     protected Response.Listener<T> mListener;
     protected RequestUrl mRequestUrl;
     protected int mIsCache = CACHE_NONE;
+    protected int mCacheUseMode = AUTO_USE_CACHE;
     private RequestLocalManager mRequestLocalManager;
 
     public BaseVolleyRequest(
@@ -50,6 +53,10 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         if (method == Method.GET) {
             mIsCache = CACHE_ALWAYS;
         }
+    }
+
+    public void setCacheUseMode(int mode) {
+        this.mCacheUseMode = mode;
     }
 
     public void setCacheMode(int mode) {
@@ -76,6 +83,9 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     @Override
     public String getCacheKey() {
+        if (mCacheUseMode == ALWAYS_USE_CACHE && mIsCache != CACHE_NONE) {
+            return super.getCacheKey();
+        }
         if (! PARSE_RESPONSE.equals(getTag()) && AppUtil.isNetConnect(EdusohoApp.app)) {
             return null;
         }

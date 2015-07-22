@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.google.gson.reflect.TypeToken;
 
@@ -314,6 +315,11 @@ public class ESWebViewRequestManager extends RequestManager {
 
             RequestFuture<String> future = RequestFuture.newFuture();
             StringVolleyRequest stringRequest = new StringVolleyRequest(Method.GET, requestUrl, future, future);
+
+            if (mWebView.isGoBack()) {
+                stringRequest.setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
+                Log.d(TAG, "use cache");
+            }
             stringRequest.setTag(requestUrl.url);
             mVolley.addToRequestQueue(stringRequest);
 
