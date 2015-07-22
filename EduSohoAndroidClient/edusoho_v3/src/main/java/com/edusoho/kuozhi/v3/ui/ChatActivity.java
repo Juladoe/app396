@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -366,7 +365,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         mAudioLoadDialog.show();
 
                         //录音
-                        AudioRecord.getInstance(mContext).ready(new NormalCallback() {
+                        AudioRecord.getInstance().ready(new NormalCallback() {
                             @Override
                             public void success(Object obj) {
                                 mViewSpeakContainer.setVisibility(View.VISIBLE);
@@ -375,13 +374,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                                 ivRecordImage.setImageResource(R.drawable.record_animate_1);
                                 mAudioLoadDialog.dismiss();
                                 mVibrator.vibrate(50);
-                                AudioRecord.getInstance(mContext).start();
-                                updateMicVolume();
+                                AudioRecord.getInstance().setSpeakerImageView(ivRecordImage).start();
+                                //mThread.start();
                             }
                         });
                     } catch (Exception e) {
                         mAudioLoadDialog.dismiss();
-                        AudioRecord.getInstance(mContext).clear();
+                        AudioRecord.getInstance().clear();
                         e.printStackTrace();
                         v.setPressed(false);
                     }
@@ -405,17 +404,22 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 case MotionEvent.ACTION_UP:
                     try {
                         tvSpeak.setText(getString(R.string.hand_press_and_speak));
-                        File mAudioRecord = AudioRecord.getInstance(mContext).stop(mIsSaveAudio);
-                        int audioLength = AudioRecord.getInstance(mContext).getAudioLength();
+                        File mAudioRecord = AudioRecord.getInstance().stop(mIsSaveAudio);
+                        int audioLength = AudioRecord.getInstance().getAudioLength();
                         if (mIsSaveAudio) {
                             if (audioLength >= 1) {
                                 mViewSpeakContainer.setVisibility(View.GONE);
-                                uploadMedia(mAudioRecord, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                                //uploadMedia(mAudioRecord, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
                                 Log.d(TAG, "上传成功");
                             } else if (audioLength < 1) {
-                                tvSpeakHint.setText(getString(R.string.audio_length_too_short));
-                                tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                                ivRecordImage.setImageResource(R.drawable.record_duration_short);
+                                ivRecordImage.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tvSpeakHint.setText(getString(R.string.audio_length_too_short));
+                                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                                        ivRecordImage.setImageResource(R.drawable.record_duration_short);
+                                    }
+                                }, 300);
                                 v.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -428,7 +432,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                             mViewSpeakContainer.setVisibility(View.GONE);
                         }
                         mIsSaveAudio = true;
-                        AudioRecord.getInstance(mContext).clear();
+                        AudioRecord.getInstance().clear();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -438,36 +442,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     };
 
-    private final Handler mHandler = new Handler();
-    private Runnable mUpdateMicVolumeTimer = new Runnable() {
-        public void run() {
-            updateMicVolume();
-        }
-    };
-
-    /**
-     * 更新音量图标
-     */
-    private void updateMicVolume() {
-        if (AudioRecord.getInstance(mContext).getMediaRecorder() != null) {
-            double ratio = (double) AudioRecord.getInstance(mContext).getMediaRecorder().getMaxAmplitude();
-            double db = 0;
-            if (ratio > 1) {
-                db = 20 * Math.log10(ratio);
-            }
-            if (db < 60) {
-                ivRecordImage.setImageResource(R.drawable.record_animate_1);
-            } else if (db < 70) {
-                ivRecordImage.setImageResource(R.drawable.record_animate_2);
-            } else if (db < 80) {
-                ivRecordImage.setImageResource(R.drawable.record_animate_3);
-            } else if (db < 90) {
-                ivRecordImage.setImageResource(R.drawable.record_animate_4);
-            }
-            Log.d(TAG, "分贝值：" + db);
-            mHandler.postDelayed(mUpdateMicVolumeTimer, 500);
-        }
-    }
 
     @Override
     public void onClick(View v) {
