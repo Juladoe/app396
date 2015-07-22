@@ -12,6 +12,7 @@ import android.view.View;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.core.listener.PluginRunCallback;
 import com.edusoho.kuozhi.core.model.RequestUrl;
 import com.edusoho.kuozhi.model.TokenResult;
 import com.edusoho.kuozhi.ui.common.LoginActivity;
@@ -57,10 +58,13 @@ public class LoginFragment extends BaseFragment {
         aq.id(R.id.login_regist_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+                mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(LoginActivity.FRAGMENT_TYPE, LoginActivity.REGIST_TYPE);
+                    }
+                });
                 mActivity.finish();
-                //LoginActivity loginActivity = (LoginActivity) getActivity();
-                //loginActivity.showFragment(RegistFragment.TAG);
             }
         });
 
