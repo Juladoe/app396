@@ -5,6 +5,8 @@ import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebView;
+import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -23,6 +25,7 @@ public abstract class RequestManager {
 
     protected ScheduledThreadPoolExecutor mWorkExecutor;
     private static final int MAX_POOL = 10;
+    protected ESCordovaWebView mWebView;
 
     public RequestManager() {
         mResoucrCache = new Hashtable<>();
@@ -48,6 +51,10 @@ public abstract class RequestManager {
         @Override
         public void run() {
         }
+    }
+
+    public void setWebView(ESCordovaWebView webView) {
+        this.mWebView = webView;
     }
 
     public abstract void updateApp(RequestUrl requestUrl, final RequestCallback<String> callback);

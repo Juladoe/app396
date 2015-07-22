@@ -8,12 +8,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.webkit.JsResult;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.edusoho.kuozhi.R;
@@ -23,7 +20,6 @@ import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
 import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
-import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -31,16 +27,13 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import org.apache.cordova.Config;
 import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewClient;
-
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.android.volley.Response.Listener;
 import com.google.gson.reflect.TypeToken;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -118,6 +111,7 @@ public class ESWebView extends RelativeLayout {
     private void updateCode(String code) {
         this.mAppCode = code;
         mRequestManager = ESWebViewRequestManager.getRequestManager(mContext, this.mAppCode);
+        mRequestManager.setWebView(mWebView);
     }
 
     private AppMeta getLocalApp(String appCode) {
@@ -151,6 +145,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     public void goBack() {
+        mWebView.setGoBackStatus(true);
         mWebView.goBack();
     }
 
@@ -282,7 +277,7 @@ public class ESWebView extends RelativeLayout {
         if (event.getAction() == KeyEvent.ACTION_DOWN
                 && keyCode == KeyEvent.KEYCODE_BACK
                 && mWebView.canGoBack()) {
-            mWebView.goBack();
+            goBack();
             return true;
         }
         return false;
@@ -306,6 +301,7 @@ public class ESWebView extends RelativeLayout {
         @Override
         public void onPageFinished(WebView view, String url) {
             Log.d(TAG, "e->" + System.currentTimeMillis());
+            mWebView.setGoBackStatus(false);
         }
 
         @Override

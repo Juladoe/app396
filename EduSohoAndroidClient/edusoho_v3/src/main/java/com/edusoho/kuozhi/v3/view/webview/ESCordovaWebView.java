@@ -11,6 +11,7 @@ import org.apache.cordova.CordovaWebView;
  */
 public class ESCordovaWebView extends CordovaWebView{
 
+    protected boolean mIsBackIng;
     private CordovaContext mCordovaContext;
 
     public ESCordovaWebView(Context context) {
@@ -26,6 +27,14 @@ public class ESCordovaWebView extends CordovaWebView{
     public ESCordovaWebView(Context context, AttributeSet attrs, int defstyle) {
         super(context, attrs, defstyle);
         mCordovaContext = (CordovaContext) context;
+    }
+
+    public boolean isGoBack() {
+        return mIsBackIng;
+    }
+
+    public void setGoBackStatus(boolean status) {
+        this.mIsBackIng = status;
     }
 
     public CordovaContext getCordovaContext() {

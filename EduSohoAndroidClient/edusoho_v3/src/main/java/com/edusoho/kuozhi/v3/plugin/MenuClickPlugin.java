@@ -232,4 +232,31 @@ public class MenuClickPlugin extends CoreBridge {
         );
     }
 
+    @JsAnnotation
+    public void startAppView(JSONArray args, CallbackContext callbackContext) throws JSONException {
+
+        String name = args.getString(0);
+        JSONObject data = args.getJSONObject(1);
+        String type = args.getString(2);
+
+        Bundle bundle = new Bundle();
+        Iterator<String> iterator = data.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = data.get(key);
+
+            if (value instanceof Integer) {
+                bundle.putInt(key, (Integer) value);
+            } else if (value instanceof Double) {
+                bundle.putInt(key, ((Double) value).intValue());
+            } else {
+                bundle.putString(key, value.toString());
+            }
+        }
+        if ("Fragment".equals(type)) {
+            mActivity.app.mEngine.runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
+        } else {
+            mActivity.app.mEngine.runNormalPluginWithBundle(name + "Activity", mActivity, bundle);
+        }
+    }
 }

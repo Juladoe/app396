@@ -149,4 +149,5 @@
     <plugin name="ClassRoomCourseFragment" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.ClassRoomCourseFragment"></plugin>
     <plugin name="PayClassRoomActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.classRoom.PayClassRoomActivity"></plugin>
 
+    <plugin name="RegisterActivity" versrion="1.0" package="com.edusoho.kuozhi.ui.common.LoginActivity"></plugin>
 </plugins>

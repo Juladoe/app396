@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-
 import com.androidquery.callback.AjaxStatus;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.adapter.Course.FoundCourseListAdapter;
@@ -29,9 +28,7 @@ import com.edusoho.listener.CourseListScrollListener;
 import com.edusoho.listener.ResultCallback;
 import com.google.gson.reflect.TypeToken;
 import com.nineoldandroids.animation.ObjectAnimator;
-
 import java.util.HashMap;
-
 import library.PullToRefreshBase;
 
 /**
@@ -113,7 +110,7 @@ public class FoundFragment extends BaseFragment {
         mActivity.setCompoundButtonClickListener(mRadioGroupOnCheckedChangeListener);
         mCategoryListView = (CategoryListView) view.findViewById(R.id.found_category_list);
         mCourseListView = (RefreshListWidget) view.findViewById(R.id.found_category_course_list);
-        mCourseListView.setEmptyText(new String[]{"没有搜到相关课程"}, R.drawable.icon_course_empty);
+        mCourseListView.setEmptyText(new String[]{ "没有搜到相关课程" }, R.drawable.icon_course_empty);
         mCourseListView.setAdapter(new FoundCourseListAdapter(mContext, R.layout.found_course_list_item));
         mCourseListView.setUpdateListener(new RefreshListWidget.UpdateListener() {
             @Override
