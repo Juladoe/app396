@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -16,9 +15,9 @@ import java.text.SimpleDateFormat;
 /**
  * Created by JesseHuang on 15/7/16.
  */
-public class AudioRecord {
+public class ChatAudioRecord {
     private static final String TAG = "AudioRecord";
-    private static AudioRecord instance;
+    private static ChatAudioRecord instance;
 
     private MediaRecorder mMediaRecorder;
     private File mAudioFolderPath;
@@ -35,7 +34,7 @@ public class AudioRecord {
             R.drawable.record_animate_3,
             R.drawable.record_animate_4};
 
-    private AudioRecord() {
+    public ChatAudioRecord() {
         mAudioFolderPath = new File(EdusohoApp.getWorkSpace() + "/audio");
         if (!mAudioFolderPath.exists()) {
             mAudioFolderPath.mkdir();
@@ -44,14 +43,14 @@ public class AudioRecord {
         mSDF = new SimpleDateFormat("yyyyMMddHHmmss");
     }
 
-    public synchronized static AudioRecord getInstance() {
+    public static ChatAudioRecord getInstance() {
         if (instance == null) {
-            instance = new AudioRecord();
+            instance = new ChatAudioRecord();
         }
         return instance;
     }
 
-    public AudioRecord setSpeakerImageView(ImageView imageView) {
+    public ChatAudioRecord setSpeakerImageView(ImageView imageView) {
         if (mSpeakerImageView == null) {
             mSpeakerImageView = imageView;
         }
@@ -62,7 +61,7 @@ public class AudioRecord {
         return mMediaRecorder;
     }
 
-    public void ready(NormalCallback callback) {
+    public void ready() {
         mAudioFile = new File(mAudioFolderPath + "/" + mSDF.format(System.currentTimeMillis()) + Const.AUDIO_EXTENSION);
         try {
             mAudioFile.createNewFile();
@@ -72,44 +71,42 @@ public class AudioRecord {
                 mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
                 mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
             }
-            callback.success(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized void start() {
+    public void start() {
         try {
             mMediaRecorder.setOutputFile(mAudioFile.getPath());
             mMediaRecorder.prepare();
-            mAudioStartTime = System.currentTimeMillis();
             mMediaRecorder.start();
-            mThread = new MediaRecordThread();
-            mThread.start();
+            mAudioStartTime = System.currentTimeMillis();
+            //mThread.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized File stop(boolean isSave) {
+    public File stop(boolean cancelSave) {
         if (mAudioFile != null && mAudioFile.exists()) {
             mMediaRecorder.stop();
+            mAudioEndTime = System.currentTimeMillis();
             mMediaRecorder.reset();
             mMediaRecorder.release();
-            mMediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
-                @Override
-                public void onInfo(MediaRecorder mr, int what, int extra) {
-
-                }
-            });
-            if (!isSave) {
+            if (cancelSave) {
                 mAudioFile.delete();
             }
-            mThread.exit();
+            //mThread.exit();
         }
-        mAudioEndTime = System.currentTimeMillis();
 
         return mAudioFile;
+    }
+
+    public void delete() {
+        if (mAudioFile != null && mAudioFile.exists()) {
+            mAudioFile.delete();
+        }
     }
 
     public int getAudioLength() {

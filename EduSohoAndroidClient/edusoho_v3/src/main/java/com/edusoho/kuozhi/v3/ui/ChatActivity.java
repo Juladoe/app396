@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -30,7 +32,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
@@ -43,14 +44,13 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.AudioRecord;
+import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
@@ -101,20 +101,20 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private View viewMediaLayout;
     private View viewPressToSpeak;
     private View viewMsgInput;
+    /**
+     * 语音录制按钮
+     */
     private TextView tvSpeak;
     private TextView tvSpeakHint;
     private View mViewSpeakContainer;
     private ImageView ivRecordImage;
 
     private float mPressDownY;
+    private MediaRecorderTask mMediaRecorderTask;
+    private Handler mHandler;
 
-    private LoadDialog mAudioLoadDialog;
     private Vibrator mVibrator;
     private AudioDownloadReceiver mAudioDownloadReceiver;
-    /**
-     * 根据手纸滑动距离是否保存
-     */
-    private boolean mIsSaveAudio;
 
     private ChatDataSource mChatDataSource;
     private int mSendTime;
@@ -205,7 +205,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }
         });
         sendNewFragment2UpdateItem();
-        mAudioLoadDialog = LoadDialog.create(mContext);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
@@ -244,6 +243,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
+        mHandler = new Handler();
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -353,94 +353,134 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(final View v, MotionEvent event) {
+            /**
+             * 根据手纸滑动距离是否保存
+             */
+            boolean mHandUpAndCancel;
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     try {
                         if (!CommonUtil.isExitsSdcard()) {
                             CommonUtil.longToast(mContext, "发送语音需要sdcard");
-                            v.setPressed(false);
                             return false;
                         }
                         mPressDownY = event.getY();
-                        mAudioLoadDialog.show();
-
+                        mMediaRecorderTask = new MediaRecorderTask();
+                        mMediaRecorderTask.execute();
                         //录音
-                        AudioRecord.getInstance().ready(new NormalCallback() {
-                            @Override
-                            public void success(Object obj) {
-                                mViewSpeakContainer.setVisibility(View.VISIBLE);
-                                tvSpeak.setText(getString(R.string.hand_up_and_end));
-                                tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                                ivRecordImage.setImageResource(R.drawable.record_animate_1);
-                                mAudioLoadDialog.dismiss();
-                                mVibrator.vibrate(50);
-                                AudioRecord.getInstance().setSpeakerImageView(ivRecordImage).start();
-                                //mThread.start();
-                            }
-                        });
+
+                        //mThread.start();
                     } catch (Exception e) {
-                        mAudioLoadDialog.dismiss();
-                        AudioRecord.getInstance().clear();
+                        //mAudioLoadDialog.dismiss();
+                        //ChatAudioRecord.getInstance().clear();
                         e.printStackTrace();
-                        v.setPressed(false);
+                        return false;
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     float mPressMoveY = event.getY();
-                    if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.15) {
+                    if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
                         ivRecordImage.setImageResource(R.drawable.record_cancel);
-                        mIsSaveAudio = false;
+                        mHandUpAndCancel = true;
                     } else {
                         tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
                         tvSpeak.setText(getString(R.string.hand_up_and_end));
                         ivRecordImage.setImageResource(R.drawable.record_animate_1);
-                        mIsSaveAudio = true;
+                        mHandUpAndCancel = false;
                     }
+                    mMediaRecorderTask.setCancel(mHandUpAndCancel);
                     return true;
                 case MotionEvent.ACTION_UP:
-                    try {
-                        tvSpeak.setText(getString(R.string.hand_press_and_speak));
-                        File mAudioRecord = AudioRecord.getInstance().stop(mIsSaveAudio);
-                        int audioLength = AudioRecord.getInstance().getAudioLength();
-                        if (mIsSaveAudio) {
-                            if (audioLength >= 1) {
-                                mViewSpeakContainer.setVisibility(View.GONE);
-                                //uploadMedia(mAudioRecord, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
-                                Log.d(TAG, "上传成功");
-                            } else if (audioLength < 1) {
-                                ivRecordImage.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tvSpeakHint.setText(getString(R.string.audio_length_too_short));
-                                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                                        ivRecordImage.setImageResource(R.drawable.record_duration_short);
-                                    }
-                                }, 300);
-                                v.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mViewSpeakContainer.setVisibility(View.GONE);
-                                    }
-                                }, 500);
-                                Log.d(TAG, "录音时间过短");
-                            }
-                        } else {
-                            mViewSpeakContainer.setVisibility(View.GONE);
-                        }
-                        mIsSaveAudio = true;
-                        AudioRecord.getInstance().clear();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
+                    mMediaRecorderTask.setAudioStop(true);
+                    return true;
             }
             return false;
         }
     };
+
+    /**
+     * 录音Task
+     */
+    public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
+        private ChatAudioRecord mAudioRecord;
+        private boolean mCancelSave = false;
+        private boolean mStopRecord = false;
+        private File mUploadAudio;
+
+        @Override
+        protected void onPreExecute() {
+            if (mAudioRecord == null) {
+                mAudioRecord = new ChatAudioRecord();
+            }
+            mViewSpeakContainer.setVisibility(View.VISIBLE);
+            tvSpeak.setText(getString(R.string.hand_up_and_end));
+            tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+            ivRecordImage.setImageResource(R.drawable.record_animate_1);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            mAudioRecord.ready();
+            mAudioRecord.start();
+            mVibrator.vibrate(50);
+            while (true) {
+                if (mStopRecord) {
+                    mUploadAudio = mAudioRecord.stop(mCancelSave);
+                    int audioLength = mAudioRecord.getAudioLength();
+                    if (audioLength > 1) {
+                        Log.d(TAG, "上传成功");
+                    } else {
+                        return false;
+                    }
+                    mAudioRecord.clear();
+                    break;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSave) {
+            if (mCancelSave) {
+                mViewSpeakContainer.setVisibility(View.GONE);
+                Log.d(TAG, "手指松开取消保存");
+            } else {
+                if (isSave) {
+                    Log.d(TAG, "正常保存上传");
+                    uploadMedia(mUploadAudio, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                    mViewSpeakContainer.setVisibility(View.GONE);
+                } else {
+                    Log.d(TAG, "录制时间太短");
+                    tvSpeakHint.setText(getString(R.string.audio_length_too_short));
+                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                    ivRecordImage.setImageResource(R.drawable.record_duration_short);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mViewSpeakContainer.setVisibility(View.GONE);
+                        }
+                    }, 200);
+                    mAudioRecord.delete();
+                }
+            }
+            tvSpeak.setText(getString(R.string.hand_press_and_speak));
+            viewPressToSpeak.setPressed(false);
+            super.onPostExecute(isSave);
+        }
+
+        public void setCancel(boolean cancel) {
+            mCancelSave = cancel;
+        }
+
+        public void setAudioStop(boolean stop) {
+            mStopRecord = stop;
+        }
+    }
 
 
     @Override
