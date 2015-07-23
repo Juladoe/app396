@@ -163,6 +163,22 @@ public class EdusohoApp extends Application {
         return mVolley.addToRequestQueue(multipartRequest);
     }
 
+    public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        mVolley.getRequestQueue();
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, requestUrl, responseListener, errorListener) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return requestUrl.getHeads();
+            }
+        };
+        multipartRequest.setTag(requestUrl.url);
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(Const.TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        return mVolley.addToRequestQueue(multipartRequest);
+    }
+
     public Request<String> postUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         StringVolleyRequest request = new StringVolleyRequest(Request.Method.POST, requestUrl, responseListener, errorListener);

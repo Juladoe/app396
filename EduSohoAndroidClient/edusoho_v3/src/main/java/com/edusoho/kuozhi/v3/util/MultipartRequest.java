@@ -7,7 +7,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.belladati.httpclientandroidlib.HttpEntity;
-import com.belladati.httpclientandroidlib.entity.ContentType;
 import com.belladati.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
@@ -50,7 +49,8 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             File file = (File) entry.getValue();
-            builder.addBinaryBody(KEY, file, ContentType.create(getContentType()), file.getName());
+            builder.addBinaryBody(KEY, file);
+            //builder.addBinaryBody(KEY, file, ContentType.create(getContentType()), file.getName());
         }
         return builder.build();
     }
