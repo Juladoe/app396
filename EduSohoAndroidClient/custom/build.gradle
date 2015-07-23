@@ -12,14 +12,14 @@ android {
 
     productFlavors {
         cuntom {
-            applicationId "com.dowin365.kuozhi"
+            applicationId "com.meishuhezi.kuozhi"
         }
     }
 
     sourceSets {
         cuntom {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/dowin365/res']
+            res.srcDirs = ['src/meishuhezi/res']
         }
     }
 
