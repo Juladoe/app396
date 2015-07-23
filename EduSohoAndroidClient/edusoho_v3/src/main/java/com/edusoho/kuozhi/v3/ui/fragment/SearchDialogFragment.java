@@ -75,6 +75,7 @@ public class SearchDialogFragment extends DialogFragment {
         view = inflater.inflate(R.layout.search_dialog, container, false);
         mSearchFrame = (EduSohoRoundedEditText) view.findViewById(R.id.search_dialog_frame);
         mSearchFrame.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        mSearchFrame.setCompoundDrawablePadding(20);
 
         mCancel = (TextView) view.findViewById(R.id.cancel_search_btn);
         mCancel.setOnClickListener(new View.OnClickListener() {
