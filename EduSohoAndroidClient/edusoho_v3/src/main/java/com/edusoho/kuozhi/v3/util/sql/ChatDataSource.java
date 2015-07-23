@@ -97,9 +97,8 @@ public class ChatDataSource {
     }
 
     public Chat cursorToComment(Cursor cursor) {
-        Chat chat = new Chat(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),
+        return new Chat(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getInt(8), cursor.getInt(9));
-        return chat;
     }
 
     public long delete(int fromId, int toId) {

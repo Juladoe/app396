@@ -143,14 +143,14 @@ public class Chat implements Serializable {
         this.fileType = FileType.getType(type);
     }
 
-    public Chat(int id, int fId, int tId, String name, String url, String content, String t, int cTime) {
-        this.id = id;
+    public Chat(int fId, int tId, String name, String url, String content, String t, int d, int cTime) {
         this.fromId = fId;
         this.toId = tId;
         this.nickName = name;
         this.headimgurl = url;
         this.content = content;
         this.type = t;
+        this.delivery = d;
         this.createdTime = cTime;
         this.direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
         this.fileType = FileType.getType(type);

@@ -186,10 +186,10 @@ public class ChatAdapter extends BaseAdapter {
 
         switch (type) {
             case MSG_SEND_TEXT:
-                handleMsgText(holder, position);
+                handleSendMsgText(holder, position);
                 break;
             case MSG_RECEIVE_TEXT:
-                handleMsgText(holder, position);
+                handleReceiveMsgText(holder, position);
                 break;
             case MSG_SEND_IMAGE:
                 handlerSendImage(holder, position);
@@ -207,7 +207,43 @@ public class ChatAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void handleMsgText(ViewHolder holder, int position) {
+    private void handleSendMsgText(ViewHolder holder, int position) {
+        final Chat model = mList.get(position);
+        holder.tvSendTime.setVisibility(View.GONE);
+        if (position > 0) {
+            if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
+                holder.tvSendTime.setVisibility(View.VISIBLE);
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            }
+        } else {
+            holder.tvSendTime.setVisibility(View.VISIBLE);
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+        }
+        holder.tvSendContent.setText(model.content);
+        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
+        switch (model.getDelivery()) {
+            case SUCCESS:
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.GONE);
+                break;
+            case UPLOADING:
+                holder.pbLoading.setVisibility(View.VISIBLE);
+                holder.ivStateError.setVisibility(View.GONE);
+                break;
+            case FAILED:
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.VISIBLE);
+                holder.ivStateError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mImageErrorClick.sendMsgAgain(model);
+                    }
+                });
+                break;
+        }
+    }
+
+    private void handleReceiveMsgText(ViewHolder holder, int position) {
         Chat model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
@@ -642,6 +678,8 @@ public class ChatAdapter extends BaseAdapter {
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
                     ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+                    pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
+                    ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     break;
                 case MSG_SEND_IMAGE:
                 case MSG_RECEIVE_IMAGE:
@@ -668,6 +706,8 @@ public class ChatAdapter extends BaseAdapter {
 
     public interface ImageErrorClick {
         public void uploadMediaAgain(File file, Chat chat, String strType);
+
+        public void sendMsgAgain(Chat chat);
     }
 
     public HashMap<Long, Integer> getDownloadList() {

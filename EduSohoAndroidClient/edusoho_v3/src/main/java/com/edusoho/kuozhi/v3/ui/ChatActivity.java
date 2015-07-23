@@ -63,6 +63,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,6 +125,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private File mCameraFile;
 
     public static int CurrentFromId = 0;
+
+    private int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
+            R.drawable.record_animate_2,
+            R.drawable.record_animate_3,
+            R.drawable.record_animate_4};
+
     /**
      * 对方的userInfo信息;
      */
@@ -244,7 +251,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
-        mHandler = new VolumeHandler();
+        mHandler = new VolumeHandler(this);
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -265,12 +272,28 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 etSend.getText().toString(), Chat.FileType.TEXT.toString().toLowerCase(), mSendTime);
 
+        addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
+
+        etSend.setText("");
+        etSend.requestFocus();
+
+        WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
+        message.setTitle(mFromUserInfo.nickname);
+        message.setContent(chat.content);
+        CustomContent cc = getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND);
+        cc.setFromId(mFromId);
+        cc.setImgUrl(mFromUserInfo.mediumAvatar);
+        message.setCustomContent(gson.toJson(cc));
+        message.isForeground = true;
+        notifyNewFragmentListView2Update(message);
+
         RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("type", "text");
         params.put("content", content);
         params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
+
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -278,23 +301,16 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 });
                 if (result.result.equals("success")) {
                     chat.id = result.id;
-                    mChatDataSource.create(chat);
-                    mAdapter.addOneChat(chat);
-                    etSend.setText("");
-                    etSend.requestFocus();
-
-                    WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-                    message.setTitle(mFromUserInfo.nickname);
-                    message.setContent(chat.content);
-                    CustomContent cc = getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND);
-                    cc.setFromId(mFromId);
-                    cc.setImgUrl(mFromUserInfo.mediumAvatar);
-                    message.setCustomContent(gson.toJson(cc));
-                    message.isForeground = true;
-                    notifyNewList2Update(message);
+                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
                 }
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+                CommonUtil.longToast(mActivity, "网络连接不可用请稍后再试");
+            }
+        });
     }
 
     private void sendMediaMsg(String url, final Chat chat, Chat.FileType type) {
@@ -323,11 +339,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * 通知NewsFragment
+     * notify the ListView of NewsFragment
      *
-     * @param message xg消息
+     * @param message xg message
      */
-    private void notifyNewList2Update(WrapperXGPushTextMessage message) {
+    private void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.CHAT_DATA, message);
         bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_MSG);
@@ -348,6 +364,33 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     @Override
     public void uploadMediaAgain(File file, Chat chat, String strType) {
         uploadMediaAgain(file, chat, Chat.FileType.IMAGE, strType);
+    }
+
+    @Override
+    public void sendMsgAgain(final Chat chat) {
+        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", app.loginUser.nickname);
+        params.put("type", "text");
+        params.put("content", chat.getContent());
+        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
+
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+                });
+                if (result.result.equals("success")) {
+                    chat.id = result.id;
+                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CommonUtil.longToast(mActivity, "网络连接不可用请稍后再试");
+            }
+        });
     }
 
     //region Touch, Click Listener etc.
@@ -508,18 +551,21 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     }
 
-    private class VolumeHandler extends Handler {
+    private static class VolumeHandler extends Handler {
+        private WeakReference<ChatActivity> mWeakReference;
+
+        private VolumeHandler(ChatActivity activity) {
+            if (this.mWeakReference == null) {
+                this.mWeakReference = new WeakReference<>(activity);
+            }
+        }
 
         @Override
         public void handleMessage(Message msg) {
-            ivRecordImage.setImageResource(mSpeakerAnimResId[msg.what]);
+            ChatActivity activity = this.mWeakReference.get();
+            activity.ivRecordImage.setImageResource(activity.mSpeakerAnimResId[msg.what]);
         }
     }
-
-    private int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
-            R.drawable.record_animate_2,
-            R.drawable.record_animate_3,
-            R.drawable.record_animate_4};
 
     @Override
     public void onClick(View v) {
@@ -673,7 +719,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * 上传图片
+     * 上传资源
      *
      * @param file upload file
      */
@@ -686,6 +732,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             mSendTime = (int) (System.currentTimeMillis() / 1000);
             final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                     file.getPath(), type.getName(), mSendTime);
+
             chat.content = file.getPath();
 
             //生成New页面的消息并通知更改
@@ -697,7 +744,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             cc.setImgUrl(mFromUserInfo.mediumAvatar);
             message.setCustomContent(gson.toJson(cc));
             message.isForeground = true;
-            notifyNewList2Update(message);
+            notifyNewFragmentListView2Update(message);
 
             addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
 
@@ -758,13 +805,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             @Override
             public void onErrorResponse(VolleyError error) {
                 updateSendMsgToListView(Chat.Delivery.FAILED, chat);
-                CommonUtil.shortToast(mContext, String.format("%s上传失败", strType));
+                CommonUtil.shortToast(mContext, String.format("%s发送失败", strType));
             }
         }, contentType);
     }
 
     /**
-     * 保持一条聊天记录并添加到ListView
+     * 保持一条聊天记录到数据库，并添加到ListView
      *
      * @param delivery 是否送达
      * @param chat     一行聊天记录
@@ -878,8 +925,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     File compressedCameraFile = compressImage(bitmap, mCameraFile);
                     uploadMedia(compressedCameraFile, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
                 }
-                break;
-            case SEND_VOICE:
                 break;
         }
     }

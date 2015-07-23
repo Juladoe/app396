@@ -45,14 +45,14 @@
                 android:background="@drawable/chat_image_to_layout"
                 android:layout_centerInParent="true"
                 android:scaleType="fitCenter"
-                android:clickable="true"
-                android:layout_marginLeft="6dp" />
+                android:clickable="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/iv_msg_image"
                 android:paddingTop="2dp"
+                android:layout_marginRight="4dp"
                 android:orientation="vertical">
 
                 <ProgressBar
@@ -60,7 +60,7 @@
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:id="@+id/sendProgressPar"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/msg_status"

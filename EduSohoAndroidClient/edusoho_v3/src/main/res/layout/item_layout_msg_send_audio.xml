@@ -49,8 +49,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/chat_image_to_layout"
                     android:layout_alignParentRight="true"
-                    android:clickable="true"
-                    android:layout_marginLeft="6dp" />
+                    android:scaleType="fitCenter"
+                    android:clickable="true" />
 
                 <ImageView
                     android:layout_width="16dp"
@@ -65,6 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/iv_msg_image"
+                    android:layout_marginRight="4dp"
                     android:orientation="vertical">
 
                     <ProgressBar
@@ -72,7 +73,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:id="@+id/sendProgressPar"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/msg_status"
