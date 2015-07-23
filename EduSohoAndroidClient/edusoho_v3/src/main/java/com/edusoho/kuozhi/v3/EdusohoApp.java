@@ -136,15 +136,17 @@ public class EdusohoApp extends Application {
     }
 
     /**
+     * PUT 上传图片
+     *
      * @param requestUrl
      * @param responseListener
      * @param errorListener
-     * @param contentType      图片 Const.IMAGE_CONTENT_TYPE，语音 Const.AUDIO_CONTENT_TYPE
+     * @param contentType
      * @return
      */
     public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener, final String contentType) {
         mVolley.getRequestQueue();
-        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, requestUrl, responseListener, errorListener) {
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.PUT, requestUrl, responseListener, errorListener) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
