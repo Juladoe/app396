@@ -119,7 +119,7 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
-        mFriendList.addFooterView(mFootView);
+        mFriendList.addFooterView(mFootView,null,false);
         mFriendList.setAdapter(mFriendAdapter);
 
         mLoadDialog = LoadDialog.create(mActivity);
