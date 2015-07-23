@@ -138,8 +138,6 @@ public class NewsFragment extends BaseFragment {
         }
         if (TextUtils.isEmpty(mSchoolAvatar)) {
             RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-            StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-            requestUrl.url = stringBuffer.toString();
             mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -192,6 +190,7 @@ public class NewsFragment extends BaseFragment {
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
                             startIntent.putExtra(ChatActivity.TITLE, newItem.title);
+                            startIntent.putExtra(ChatActivity.NEW_DATA, newItem);
                         }
                     });
                     if (newItem.unread > 0) {

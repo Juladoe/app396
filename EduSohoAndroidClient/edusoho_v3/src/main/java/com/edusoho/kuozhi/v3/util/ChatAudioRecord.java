@@ -1,12 +1,7 @@
 package com.edusoho.kuozhi.v3.util;
 
 import android.media.MediaRecorder;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.ImageView;
 
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.io.File;
@@ -25,21 +20,12 @@ public class ChatAudioRecord {
     private SimpleDateFormat mSDF;
     private long mAudioStartTime;
     private long mAudioEndTime;
-    private ImageView mSpeakerImageView;
-    private VolumeHandler mHandler;
-    private MediaRecordThread mThread;
-
-    private int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
-            R.drawable.record_animate_2,
-            R.drawable.record_animate_3,
-            R.drawable.record_animate_4};
 
     public ChatAudioRecord() {
         mAudioFolderPath = new File(EdusohoApp.getWorkSpace() + "/audio");
         if (!mAudioFolderPath.exists()) {
             mAudioFolderPath.mkdir();
         }
-        mHandler = new VolumeHandler();
         mSDF = new SimpleDateFormat("yyyyMMddHHmmss");
     }
 
@@ -48,13 +34,6 @@ public class ChatAudioRecord {
             instance = new ChatAudioRecord();
         }
         return instance;
-    }
-
-    public ChatAudioRecord setSpeakerImageView(ImageView imageView) {
-        if (mSpeakerImageView == null) {
-            mSpeakerImageView = imageView;
-        }
-        return this;
     }
 
     public MediaRecorder getMediaRecorder() {
@@ -82,7 +61,6 @@ public class ChatAudioRecord {
             mMediaRecorder.prepare();
             mMediaRecorder.start();
             mAudioStartTime = System.currentTimeMillis();
-            //mThread.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,9 +75,7 @@ public class ChatAudioRecord {
             if (cancelSave) {
                 mAudioFile.delete();
             }
-            //mThread.exit();
         }
-
         return mAudioFile;
     }
 
@@ -120,55 +96,6 @@ public class ChatAudioRecord {
     public void clear() {
         if (mMediaRecorder != null) {
             mMediaRecorder = null;
-        }
-    }
-
-    public class MediaRecordThread extends Thread {
-        private volatile boolean running = true;
-
-        public void exit() {
-            Log.d("MediaRecordThread", "stop");
-            running = false;
-        }
-
-        @Override
-        public void run() {
-            while (running) {
-                try {
-                    if (!running) {
-                        break;
-                    }
-                    double ratio = 0;
-                    if (mMediaRecorder != null) {
-                        ratio = (double) mMediaRecorder.getMaxAmplitude();
-                    }
-                    double db = 0;
-                    if (ratio > 1) {
-                        db = 20 * Math.log10(ratio);
-                    }
-
-                    if (db < 60) {
-                        mHandler.sendEmptyMessage(0);
-                    } else if (db < 70) {
-                        mHandler.sendEmptyMessage(1);
-                    } else if (db < 80) {
-                        mHandler.sendEmptyMessage(2);
-                    } else if (db < 90) {
-                        mHandler.sendEmptyMessage(3);
-                    }
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private class VolumeHandler extends Handler {
-
-        @Override
-        public void handleMessage(Message msg) {
-            mSpeakerImageView.setImageResource(mSpeakerAnimResId[msg.what]);
         }
     }
 }

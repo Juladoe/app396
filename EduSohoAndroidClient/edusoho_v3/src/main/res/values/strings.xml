@@ -56,7 +56,7 @@
 
 
     <!--system-->
-    <string name="request_fail_text">请求失败</string>
+    <string name="request_fail_text">网络连接不可用或请求失败</string>
     <string name="authorize_cancelled">取消授权</string>
 
     <!--ttf-->

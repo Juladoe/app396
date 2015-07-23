@@ -36,6 +36,7 @@ import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
@@ -82,6 +83,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     //region Field
     public static final String TAG = "ChatActivity";
     public static final String CHAT_DATA = "chat_data";
+    public static final String NEW_DATA = "new_data";
     public static final String FROM_ID = "from_id";
     public static final String TITLE = "title";
     private static final int IMAGE_SIZE = 1024 * 500;
@@ -899,7 +901,14 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    CommonUtil.longToast(mContext, "无法获取对方信息");
+                    Log.d(TAG, "无法获取对方信息");
+                    Intent intent = getIntent();
+                    if (intent != null) {
+                        New newItem = (New) intent.getSerializableExtra(NEW_DATA);
+                        mFromUserInfo = new User();
+                        mFromUserInfo.mediumAvatar = newItem.imgUrl;
+                        mFromUserInfo.nickname = newItem.title;
+                    }
                 }
             });
         }
