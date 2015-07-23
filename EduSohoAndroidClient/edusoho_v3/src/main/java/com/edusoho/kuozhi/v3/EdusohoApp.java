@@ -136,8 +136,6 @@ public class EdusohoApp extends Application {
     }
 
     /**
-     * PUT 上传图片
-     *
      * @param requestUrl
      * @param responseListener
      * @param errorListener
@@ -165,6 +163,14 @@ public class EdusohoApp extends Application {
         return mVolley.addToRequestQueue(multipartRequest);
     }
 
+    /**
+     * PUT 上传图片
+     *
+     * @param requestUrl
+     * @param responseListener
+     * @param errorListener
+     * @return
+     */
     public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, requestUrl, responseListener, errorListener) {
