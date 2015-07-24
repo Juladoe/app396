@@ -1,12 +1,15 @@
 package com.edusoho.kuozhi.v3.util;
 
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.belladati.httpclientandroidlib.HttpEntity;
+import com.belladati.httpclientandroidlib.entity.ContentType;
+import com.belladati.httpclientandroidlib.entity.FileEntity;
 import com.belladati.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
@@ -35,12 +38,30 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
     public MultipartRequest(int method, RequestUrl requestUrl, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(method, requestUrl, listener, errorListener);
         mRequestUrl = requestUrl;
-        mHttpEntity = buildMultipartEntity();
+        mHttpEntity = buildEntity();
         mIsCache = CACHE_NONE;
     }
 
     public String getContentType() {
         return mContentType;
+    }
+
+    private HttpEntity buildEntity() {
+        if (getMethod() == Method.PUT) {
+            Iterator iterator = mRequestUrl.getAllParams().entrySet().iterator();
+            if (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                File file = (File) entry.getValue();
+
+                String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
+                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+                return new FileEntity(file, mimeType == null ? ContentType.DEFAULT_BINARY : ContentType.parse(mimeType));
+            }
+            return null;
+        }
+
+        return buildMultipartEntity();
     }
 
     private HttpEntity buildMultipartEntity() {
@@ -50,7 +71,6 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
             Map.Entry entry = (Map.Entry) iterator.next();
             File file = (File) entry.getValue();
             builder.addBinaryBody(KEY, file);
-            //builder.addBinaryBody(KEY, file, ContentType.create(getContentType()), file.getName());
         }
         return builder.build();
     }
