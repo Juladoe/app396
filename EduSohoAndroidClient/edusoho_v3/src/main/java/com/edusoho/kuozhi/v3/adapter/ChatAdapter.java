@@ -674,12 +674,16 @@ public class ChatAdapter extends BaseAdapter {
         public ViewHolder(View view, int type) {
             switch (type) {
                 case MSG_SEND_TEXT:
-                case MSG_RECEIVE_TEXT:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
                     ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
+                    break;
+                case MSG_RECEIVE_TEXT:
+                    tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
+                    tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
+                    ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
                     break;
                 case MSG_SEND_IMAGE:
                 case MSG_RECEIVE_IMAGE:
