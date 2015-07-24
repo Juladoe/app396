@@ -340,7 +340,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * notify the ListView of NewsFragment
+     * update badgeview the ListView of NewsFragment
      *
      * @param message xg message
      */
@@ -363,8 +363,29 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     @Override
-    public void uploadMediaAgain(File file, Chat chat, String strType) {
-        uploadMediaAgain(file, chat, Chat.FileType.IMAGE, strType);
+    public void uploadMediaAgain(final File file, final Chat chat, final Chat.FileType type, String strType) {
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
+
+        if (TextUtils.isEmpty(chat.getUpyunMediaPutUrl())) {
+            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    if (result != null) {
+                        chat.setUpyunMediaPutUrl(result.putUrl);
+                        chat.setUpyunMediaGetUrl(result.getUrl);
+                        chat.setHeaders(result.getHeaders());
+                        uploadUnYunMedia(file, chat, type);
+                    } else {
+                        updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+                    }
+                }
+            });
+        } else {
+            uploadUnYunMedia(file, chat, type);
+        }
     }
 
     @Override
@@ -412,13 +433,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         mPressDownY = event.getY();
                         mMediaRecorderTask = new MediaRecorderTask();
                         mMediaRecorderTask.execute();
-                        //录音
-
-                        //mThread.start();
                     } catch (Exception e) {
                         //mAudioLoadDialog.dismiss();
                         //ChatAudioRecord.getInstance().clear();
-                        e.printStackTrace();
+                        mMediaRecorderTask.getAudioRecord().clear();
+                        Log.d(TAG, e.getMessage());
                         return false;
                     }
                     break;
@@ -549,6 +568,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
         public void setAudioStop(boolean stop) {
             mStopRecord = stop;
+        }
+
+        public ChatAudioRecord getAudioRecord() {
+            return mAudioRecord;
         }
     }
 
@@ -743,7 +766,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.success(null);
-                CommonUtil.longToast(mActivity, "获取上传信息失败");
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "get upload info from upyun failed");
             }
         });
     }
@@ -769,7 +793,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             @Override
             public void onErrorResponse(VolleyError error) {
                 updateSendMsgToListView(Chat.Delivery.FAILED, chat);
-                CommonUtil.longToast(mActivity, "上传失败");
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "upload media res to upyun failed");
             }
         }, Request.Method.PUT);
     }
@@ -807,10 +832,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
-                    chat.setUpyunMediaPutUrl(result.putUrl);
-                    chat.setUpyunMediaGetUrl(result.getUrl);
-                    chat.setHeaders(result.getHeaders());
                     if (result != null) {
+                        chat.setUpyunMediaPutUrl(result.putUrl);
+                        chat.setUpyunMediaGetUrl(result.getUrl);
+                        chat.setHeaders(result.getHeaders());
                         uploadUnYunMedia(file, chat, type);
                     } else {
                         updateSendMsgToListView(Chat.Delivery.FAILED, chat);
@@ -820,39 +845,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-        }
-    }
-
-    /**
-     * Upload again
-     *
-     * @param file    Upload file
-     * @param chat    ChatInfo
-     * @param type    Media Type
-     * @param strType type name
-     */
-    private void uploadMediaAgain(final File file, final Chat chat, final Chat.FileType type, final String strType) {
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
-
-        if (TextUtils.isEmpty(chat.getUpyunMediaPutUrl())) {
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    chat.setUpyunMediaPutUrl(result.putUrl);
-                    chat.setUpyunMediaGetUrl(result.getUrl);
-                    chat.setHeaders(result.getHeaders());
-                    if (result != null) {
-                        uploadUnYunMedia(file, chat, type);
-                    } else {
-                        updateSendMsgToListView(Chat.Delivery.FAILED, chat);
-                    }
-                }
-            });
-        } else {
-            uploadUnYunMedia(file, chat, type);
         }
     }
 
