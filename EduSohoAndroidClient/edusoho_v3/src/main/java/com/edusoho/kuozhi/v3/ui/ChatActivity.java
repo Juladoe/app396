@@ -320,7 +320,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("type", type.getName());
-        params.put("content", chat.getUpyunMediaPutUrl());
+        params.put("content", chat.getUpyunMediaGetUrl());
         params.put("custom", gson.toJson(getCustomContent(type, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
