@@ -6,6 +6,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by JesseHuang on 15/7/2.
@@ -24,6 +25,11 @@ public class Chat implements Serializable {
 
     public Direct direct;
     public FileType fileType;
+
+    private String upyunMediaPutUrl;
+    private String upyunMediaGetUrl;
+
+    private HashMap<String, String> headers;
 
     public int getChatId() {
         return chatId;
@@ -95,6 +101,30 @@ public class Chat implements Serializable {
 
     public void setCreatedTime(int createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public HashMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public String getUpyunMediaPutUrl() {
+        return upyunMediaPutUrl;
+    }
+
+    public void setUpyunMediaPutUrl(String upyunMediaPutUrl) {
+        this.upyunMediaPutUrl = upyunMediaPutUrl;
+    }
+
+    public String getUpyunMediaGetUrl() {
+        return upyunMediaGetUrl;
+    }
+
+    public void setUpyunMediaGetUrl(String upyunMediaGetUrl) {
+        this.upyunMediaGetUrl = upyunMediaGetUrl;
     }
 
     public Direct getDirect() {

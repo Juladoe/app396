@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -119,7 +120,7 @@ public class EssayFragment extends SelectQuestionFragment {
                 CommonUtil.longToast(mContext, "上传失败!服务器暂不支持过大图片");
                 loadDialog.dismiss();
             }
-        }, Const.IMAGE_CONTENT_TYPE);
+        }, Request.Method.POST);
     }
 
     private void camera() {

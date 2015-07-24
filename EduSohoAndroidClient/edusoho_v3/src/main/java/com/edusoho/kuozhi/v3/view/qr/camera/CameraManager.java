@@ -113,7 +113,7 @@ public final class CameraManager {
 			// Driver failed
 			Log.w(TAG,
 					"Camera rejected parameters. Setting only minimal safe-mode parameters");
-			Log.i(TAG, "Resetting to saved camera params: "
+			Log.i(TAG, "Resetting to saved camera headers: "
 					+ parametersFlattened);
 			// Reset:
 			if (parametersFlattened != null) {

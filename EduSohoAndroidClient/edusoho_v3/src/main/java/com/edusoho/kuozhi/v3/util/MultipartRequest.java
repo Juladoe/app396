@@ -33,7 +33,6 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
     public static final String TAG = "MutlipartRequest";
     private HttpEntity mHttpEntity;
     private RequestUrl mRequestUrl;
-    private String mContentType = Const.IMAGE_CONTENT_TYPE;
 
     public MultipartRequest(int method, RequestUrl requestUrl, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(method, requestUrl, listener, errorListener);
@@ -42,26 +41,26 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
         mIsCache = CACHE_NONE;
     }
 
-    public String getContentType() {
-        return mContentType;
-    }
-
     private HttpEntity buildEntity() {
         if (getMethod() == Method.PUT) {
-            Iterator iterator = mRequestUrl.getAllParams().entrySet().iterator();
-            if (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                File file = (File) entry.getValue();
-
-                String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
-                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-
-                return new FileEntity(file, mimeType == null ? ContentType.DEFAULT_BINARY : ContentType.parse(mimeType));
-            }
-            return null;
+            return buildFileEntity();
+        } else {
+            return buildMultipartEntity();
         }
+    }
 
-        return buildMultipartEntity();
+    private HttpEntity buildFileEntity() {
+        Iterator iterator = mRequestUrl.getAllParams().entrySet().iterator();
+        if (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            File file = (File) entry.getValue();
+
+            String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
+            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+            return new FileEntity(file, mimeType == null ? ContentType.DEFAULT_BINARY : ContentType.parse(mimeType));
+        }
+        return null;
     }
 
     private HttpEntity buildMultipartEntity() {

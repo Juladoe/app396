@@ -27,17 +27,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
+import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.PushResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -54,9 +57,6 @@ import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -315,12 +315,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         });
     }
 
-    private void sendMediaMsg(String url, final Chat chat, Chat.FileType type) {
+    private void sendMediaMsg(final Chat chat, Chat.FileType type) {
         RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("type", type.getName());
-        params.put("content", url);
+        params.put("content", chat.getUpyunMediaPutUrl());
         params.put("custom", gson.toJson(getCustomContent(type, TypeBusinessEnum.FRIEND)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -721,16 +721,67 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
+     * get upyun upload info from push server
+     *
+     * @param file     upload file
+     * @param callback callback
+     */
+    private void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback) {
+        String path = String.format(Const.GET_UPLOAD_INFO, mFromId, file.length(), file.getName());
+        RequestUrl url = app.bindPushUrl(path);
+        ajaxGet(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                UpYunUploadResult result = parseJsonValue(response, new TypeToken<UpYunUploadResult>() {
+                });
+                callback.success(result);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.success(null);
+                CommonUtil.longToast(mActivity, "获取上传信息失败");
+            }
+        });
+    }
+
+    /**
+     * Upload media resource to upyun
+     *
+     * @param file Upload file
+     * @param chat chatInfo
+     * @param type Media Type
+     */
+    private void uploadUnYunMedia(final File file, final Chat chat, final Chat.FileType type) {
+        RequestUrl putUrl = new RequestUrl(chat.getUpyunMediaPutUrl());
+        putUrl.setHeads(chat.getHeaders());
+        putUrl.setMuiltParams(new Object[]{"file", file});
+        ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "success");
+                sendMediaMsg(chat, type);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+                CommonUtil.longToast(mActivity, "上传失败");
+            }
+        }, Request.Method.PUT);
+    }
+
+    /**
      * 上传资源
      *
      * @param file upload file
      */
     private void uploadMedia(final File file, final Chat.FileType type, String strType) {
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
         try {
-            if (file == null || !file.exists()) {
-                CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-                return;
-            }
             mSendTime = (int) (System.currentTimeMillis() / 1000);
             final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                     file.getPath(), type.getName(), mSendTime);
@@ -750,66 +801,56 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
             addSendMsgToListView(Chat.Delivery.UPLOADING, chat);
 
-            RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
-            url.setMuiltParams(new Object[]{
-                    "file", file
-            });
-            String contentType = type == Chat.FileType.IMAGE ? Const.IMAGE_CONTENT_TYPE : Const.AUDIO_CONTENT_TYPE;
-
-            ajaxPostMultiUrl(url, new Response.Listener<String>() {
+            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
                 @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        String imageUrl = app.host + "/" + jsonObject.getString("uri");
-                        sendMediaMsg(imageUrl, chat, type);
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
+                public void success(final UpYunUploadResult result) {
+                    chat.setUpyunMediaPutUrl(result.putUrl);
+                    chat.setUpyunMediaGetUrl(result.getUrl);
+                    chat.setHeaders(result.getHeaders());
+                    if (result != null) {
+                        uploadUnYunMedia(file, chat, type);
+                    } else {
+                        updateSendMsgToListView(Chat.Delivery.FAILED, chat);
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    updateSendMsgToListView(Chat.Delivery.FAILED, chat);
-                    CommonUtil.shortToast(mContext, "发送失败");
-                }
-            }, contentType);
+            });
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
-    private void uploadMediaAgain(File file, final Chat chat, final Chat.FileType type, final String strType) {
+    /**
+     * Upload again
+     *
+     * @param file    Upload file
+     * @param chat    ChatInfo
+     * @param type    Media Type
+     * @param strType type name
+     */
+    private void uploadMediaAgain(final File file, final Chat chat, final Chat.FileType type, final String strType) {
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
         }
 
-        RequestUrl url = app.bindNewApiUrl(Const.UPLOAD_MEDIA, true);
-        url.setMuiltParams(new Object[]{
-                "file", file
-        });
-        String contentType = type == Chat.FileType.IMAGE ? Const.IMAGE_CONTENT_TYPE : Const.AUDIO_CONTENT_TYPE;
-        ajaxPostMultiUrl(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    String imageUrl = app.host + "/" + jsonObject.getString("uri");
-                    //String createdTime = jsonObject.getString("createdTime");
-                    sendMediaMsg(imageUrl, chat, type);
-                } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage());
+        if (TextUtils.isEmpty(chat.getUpyunMediaPutUrl())) {
+            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    chat.setUpyunMediaPutUrl(result.putUrl);
+                    chat.setUpyunMediaGetUrl(result.getUrl);
+                    chat.setHeaders(result.getHeaders());
+                    if (result != null) {
+                        uploadUnYunMedia(file, chat, type);
+                    } else {
+                        updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(Chat.Delivery.FAILED, chat);
-                CommonUtil.shortToast(mContext, String.format("%s发送失败", strType));
-            }
-        }, contentType);
+            });
+        } else {
+            uploadUnYunMedia(file, chat, type);
+        }
     }
 
     /**

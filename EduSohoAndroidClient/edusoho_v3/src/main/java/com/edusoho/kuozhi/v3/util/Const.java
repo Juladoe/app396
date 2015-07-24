@@ -254,9 +254,10 @@ public class Const {
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
     public static final String SEND = "/message/%d/friend/%d/send";
+    public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
+
+    @Deprecated
     public static final String UPLOAD_MEDIA = "/api/files/";
-    public static final String IMAGE_CONTENT_TYPE = "image/jpeg";
-    public static final String AUDIO_CONTENT_TYPE = "audio/amr";
 
     /**
      * "/message/:studentId/friend/:fid/send"

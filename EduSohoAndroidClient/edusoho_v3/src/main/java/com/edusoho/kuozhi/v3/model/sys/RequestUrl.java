@@ -80,6 +80,10 @@ public class RequestUrl {
         }
     }
 
+    public void setHeads(HashMap<String, String> headers) {
+        heads = headers;
+    }
+
     public HashMap<String, String> getParams() {
         return params;
     }

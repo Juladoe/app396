@@ -125,7 +125,7 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxPostMultiUrl(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener, String contentType) {
+    public void ajaxPostMultiUrl(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener, int method) {
         app.postMultiUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -140,7 +140,7 @@ public class BaseActivity extends ActionBarActivity {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             }
-        }, contentType);
+        }, method);
     }
 
     public void ajaxPost(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
