@@ -58,6 +58,9 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -378,6 +381,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         chat.setUpyunMediaGetUrl(result.getUrl);
                         chat.setHeaders(result.getHeaders());
                         uploadUnYunMedia(file, chat, type);
+                        saveUploadResult(result.putUrl, result.getUrl);
                     } else {
                         updateSendMsgToListView(Chat.Delivery.FAILED, chat);
                     }
@@ -837,6 +841,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         chat.setUpyunMediaGetUrl(result.getUrl);
                         chat.setHeaders(result.getHeaders());
                         uploadUnYunMedia(file, chat, type);
+                        saveUploadResult(result.putUrl, result.getUrl);
                     } else {
                         updateSendMsgToListView(Chat.Delivery.FAILED, chat);
                     }
@@ -846,6 +851,32 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
+    }
+
+    private void saveUploadResult(String putUrl, String getUrl) {
+        String path = String.format(Const.SAVE_UPLOAD_INFO, mFromId);
+        RequestUrl url = app.bindPushUrl(path);
+        HashMap<String, String> hashMap = url.getParams();
+        hashMap.put("putUrl", putUrl);
+        hashMap.put("getUrl", getUrl);
+        ajaxPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject result = new JSONObject(response);
+                    if ("success".equals(result.getString("result"))) {
+                        Log.d(TAG, "save upload result success");
+                    }
+                } catch (JSONException e) {
+                    Log.d(TAG, "convert json to obj error");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "save upload info error");
+            }
+        });
     }
 
     /**
@@ -909,6 +940,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 初始化Cache文件夹
+     */
     private void initCacheFolder() {
         File imageFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {

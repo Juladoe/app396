@@ -255,6 +255,7 @@ public class Const {
     public static final String UNBIND = "/auth/unBind";
     public static final String SEND = "/message/%d/friend/%d/send";
     public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
+    public static final String SAVE_UPLOAD_INFO = "/file/&d/upload/succeed";
 
     @Deprecated
     public static final String UPLOAD_MEDIA = "/api/files/";
