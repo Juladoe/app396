@@ -21,12 +21,23 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 public class NotificationUtil {
     public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
+            Chat chat = new Chat(xgMessage);
+            switch (chat.getFileType()) {
+                case IMAGE:
+                    xgMessage.content = String.format("[%s]", Const.MEDIA_IMAGE);
+                    break;
+                case AUDIO:
+                    xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                    break;
+
+            }
+
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(xgMessage.title)
                             .setContentText(xgMessage.content).setAutoCancel(true);
-            Chat chat = new Chat(xgMessage);
+
             int notificationId = chat.fromId;
 
             NotificationManager mNotificationManager =
