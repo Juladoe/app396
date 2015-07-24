@@ -88,7 +88,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public static final String TITLE = "title";
     private static final int IMAGE_SIZE = 1024 * 500;
 
-    private static final int SEND_VOICE = 3;
     private static final int SEND_IMAGE = 1;
     private static final int SEND_CAMERA = 2;
 
@@ -664,7 +663,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * 选择图片并压缩
      *
      * @param selectedImage 原图
-     * @return
+     * @return file
      */
     private File selectPicture(Uri selectedImage) {
         Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
@@ -679,6 +678,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 CommonUtil.shortToast(mContext, "找不到图片");
                 return null;
             }
+        }
+        if (TextUtils.isEmpty(picturePath)) {
+            CommonUtil.shortToast(mContext, "图片不存在");
+            return null;
         }
         File file = new File(picturePath);
         Bitmap bitmap = null;
