@@ -141,12 +141,15 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             }
             mAdapter = new DownloadLessonAdapter(mGroupItems, mChildItems);
             mListView.setAdapter(mAdapter);
+            for (int i = 0; i < mAdapter.getGroupCount(); i++) {
+                mListView.expandGroup(i);
+            }
         }
 
         mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-
+                Log.d(TAG, groupPosition + "");
             }
         });
 
@@ -503,8 +506,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
 
             LessonItem item = mGroupItems.get(groupPosition);
             groupPanel.tvGroupTitle.setText(item.title);
-            ExpandableListView tmpGroupList = (ExpandableListView) parent;
-            tmpGroupList.expandGroup(groupPosition);
             return convertView;
         }
 

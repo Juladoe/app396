@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +29,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendFragmentAdapter extends BaseAdapter {
 
+    private static final int MAX_TYPE_COUNT = 3;
     private static final int TYPE_SCHOOL_APP = 0;
     private static final int TYPE_FRIEND = 1;
+    private static final int TYPE_HEAD = 2;
 
     private int schoolListSize;
 
@@ -37,7 +40,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private Context mContext;
     private int mResource;
-    private SparseArray<View> mCacheArray;
     private boolean isCache;
     private int mListViewLayoutId;
     private ArrayList tmpSchoolList;
@@ -52,7 +54,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
         tmpSchoolList = new ArrayList();
         tmpFriendList = new ArrayList();
         mList = new ArrayList();
-        mCacheArray = new SparseArray<View>();
         mInflater = LayoutInflater.from(mContext);
         mApp = app;
 
@@ -68,95 +69,103 @@ public class FriendFragmentAdapter extends BaseAdapter {
         schoolListSize = size;
     }
 
+    @Override
+    public int getViewTypeCount() {
+        return MAX_TYPE_COUNT;
+    }
+
+    @Override
     public int getItemViewType(int position) {
-        return position < schoolListSize + 1 ? TYPE_SCHOOL_APP : TYPE_FRIEND;
+        if (position == 0) {
+            return TYPE_HEAD;
+        } else {
+            return position < schoolListSize + 1 ? TYPE_SCHOOL_APP : TYPE_FRIEND;
+        }
+
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = null;
-        if (position == 0) {
-            final HeadHolder headHolder;
-            if (mCacheArray.get(0) == null) {
-                v = mInflater.inflate(mResource, null);
-                headHolder = new HeadHolder();
-                headHolder.searchFriendBtn = (EduSohoRoundButton) v.findViewById(R.id.search_friend_btn);
-//                headHolder.addPhoneFriends = (LinearLayout) v.findViewById(R.id.item_add_phone_friend);
-//                headHolder.addLessonFriends = (LinearLayout) v.findViewById(R.id.item_add_lesson_friend);
-//                headHolder.addClassFriends = (LinearLayout) v.findViewById(R.id.item_add_class_friend);
-                v.setTag(headHolder);
-                setCacheView(0, v);
-            } else {
-                v = getCacheView(0);
-                headHolder = (HeadHolder) v.getTag();
-            }
-            headHolder.searchFriendBtn.setOnClickListener(mOnClickListener);
-//            headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
-//            headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
-//            headHolder.addClassFriends.setOnClickListener(mOnClickListener);
+        View v = convertView;
+        int type = getItemViewType(position);
+        switch (type) {
+            case TYPE_HEAD:
+                final HeadHolder headHolder;
+                if (convertView == null) {
+                    v = mInflater.inflate(R.layout.item_type_friend_head, null);
+                    headHolder = new HeadHolder();
+                    headHolder.searchFriendBtn = (EduSohoRoundButton) v.findViewById(R.id.search_friend_btn);
+//                  headHolder.addPhoneFriends = (LinearLayout) v.findViewById(R.id.item_add_phone_friend);
+//                  headHolder.addLessonFriends = (LinearLayout) v.findViewById(R.id.item_add_lesson_friend);
+//                  headHolder.addClassFriends = (LinearLayout) v.findViewById(R.id.item_add_class_friend);
+                    v.setTag(headHolder);
+                } else {
+                    headHolder = (HeadHolder) v.getTag();
+                }
+                headHolder.searchFriendBtn.setOnClickListener(mOnClickListener);
+//              headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
+//              headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
+//              headHolder.addClassFriends.setOnClickListener(mOnClickListener);
+                break;
 
-        } else {
-            switch (getItemViewType(position)) {
+            case TYPE_SCHOOL_APP:
+                final SchoolAppHolder schoolAppHolder;
+                if (convertView == null) {
+                    v = mInflater.inflate(R.layout.item_type_school_app, null);
+                    schoolAppHolder = new SchoolAppHolder();
+                    schoolAppHolder.SchoolAppName = (TextView) v.findViewById(R.id.friend_name);
+                    schoolAppHolder.schoolAppAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
+                    schoolAppHolder.schoolAppTag = (LinearLayout) v.findViewById(R.id.school_app_tag);
+                    v.setTag(schoolAppHolder);
+                } else {
+                    schoolAppHolder = (SchoolAppHolder) v.getTag();
+                }
 
-                case TYPE_SCHOOL_APP:
-                    final SchoolAppHolder schoolAppHolder;
-                    if (mCacheArray.get(position) == null) {
-                        v = mInflater.inflate(R.layout.item_type_school_app, null);
-                        schoolAppHolder = new SchoolAppHolder();
-                        schoolAppHolder.SchoolAppName = (TextView) v.findViewById(R.id.friend_name);
-                        schoolAppHolder.schoolAppAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
-                        schoolAppHolder.schoolAppTag = (LinearLayout) v.findViewById(R.id.school_app_tag);
-                        v.setTag(schoolAppHolder);
-                        setCacheView(position, v);
-                    } else {
-                        v = mCacheArray.get(position);
-                        schoolAppHolder = (SchoolAppHolder) v.getTag();
-                    }
+                final SchoolApp schoolApp = (SchoolApp) mList.get(position - 1);
+                if (schoolApp.isTop) {
+                    schoolAppHolder.schoolAppTag.setVisibility(View.VISIBLE);
+                } else {
+                    schoolAppHolder.schoolAppTag.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(schoolApp.avatar)) {
+                    ImageLoader.getInstance().displayImage(mApp.host + "/" + schoolApp.avatar, schoolAppHolder.schoolAppAvatar, mApp.mOptions);
+                }
+                schoolAppHolder.SchoolAppName.setText(schoolApp.name);
 
-                    final SchoolApp schoolApp = (SchoolApp) mList.get(position - 1);
-                    if (schoolApp.isTop) {
-                        schoolAppHolder.schoolAppTag.setVisibility(View.VISIBLE);
-                    }
-                    if (schoolApp.avatar != "") {
-                        ImageLoader.getInstance().displayImage(mApp.host + "/" + schoolApp.avatar, schoolAppHolder.schoolAppAvatar, mApp.mOptions);
-                    }
-                    schoolAppHolder.SchoolAppName.setText(schoolApp.name);
+                break;
 
-                    break;
-                case TYPE_FRIEND:
-                    final ItemHolder itemHolder;
-                    if (mCacheArray.get(position) == null) {
-                        v = mInflater.inflate(R.layout.item_type_friend, null);
-                        itemHolder = new ItemHolder();
-                        itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
-                        itemHolder.friendAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
-                        itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
-                        itemHolder.friendTag = (LinearLayout) v.findViewById(R.id.friend_item_tag);
-                        v.setTag(itemHolder);
-                        setCacheView(position, v);
-                    } else {
-                        v = mCacheArray.get(position);
-                        itemHolder = (ItemHolder) v.getTag();
-                    }
+            case TYPE_FRIEND:
+                final ItemHolder itemHolder;
+                if (convertView == null) {
+                    v = mInflater.inflate(R.layout.item_type_friend, null);
+                    itemHolder = new ItemHolder();
+                    itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
+                    itemHolder.friendAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
+                    itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
+                    itemHolder.friendTag = (LinearLayout) v.findViewById(R.id.friend_item_tag);
+                    v.setTag(itemHolder);
+                } else {
+                    itemHolder = (ItemHolder) v.getTag();
+                }
 
-                    final Friend friend = (Friend) mList.get(position - 1);
-                    if (friend.isTop) {
-                        itemHolder.friendTag.setVisibility(View.VISIBLE);
-                    }
-                    if (friend.isTeacher == true) {
-                        itemHolder.teacherTag.setVisibility(View.VISIBLE);
-                    } else {
-                        itemHolder.teacherTag.setVisibility(View.GONE);
-                    }
-                    itemHolder.friendName.setText(friend.nickname);
-                    if (!friend.smallAvatar.equals("")) {
-                        ImageLoader.getInstance().displayImage(mApp.host + "/" + friend.smallAvatar, itemHolder.friendAvatar, mApp.mOptions);
-                    }else {
-                        itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
-                    }
-                    break;
-            }
-
+                final Friend friend = (Friend) mList.get(position - 1);
+                if (friend.isTop) {
+                    itemHolder.friendTag.setVisibility(View.VISIBLE);
+                } else {
+                    itemHolder.friendTag.setVisibility(View.GONE);
+                }
+                if (friend.isTeacher == true) {
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                } else {
+                    itemHolder.teacherTag.setVisibility(View.GONE);
+                }
+                itemHolder.friendName.setText(friend.nickname);
+                if (!TextUtils.isEmpty(friend.smallAvatar)) {
+                    ImageLoader.getInstance().displayImage(mApp.host + "/" + friend.smallAvatar, itemHolder.friendAvatar, mApp.mOptions);
+                } else {
+                    itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
+                }
+                break;
         }
         return v;
     }
@@ -182,21 +191,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     public void clearList() {
         mList.clear();
-    }
-
-
-    public View getCacheView(int index) {
-        if (!isCache) {
-            return null;
-        }
-        return mCacheArray.get(index);
-    }
-
-    public void setCacheView(int index, View view) {
-        if (!isCache) {
-            return;
-        }
-        mCacheArray.put(index, view);
     }
 
     public void setHeadClickListener(OnClickListener onclickListener) {

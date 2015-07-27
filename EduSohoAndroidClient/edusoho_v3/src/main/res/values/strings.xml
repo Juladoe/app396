@@ -54,10 +54,10 @@
     <string name="reg_mail_reg">邮箱注册</string>
     <string name="reg_send_code">发送验证码</string>
 
-
     <!--system-->
     <string name="request_fail_text">网络连接不可用或请求失败</string>
     <string name="authorize_cancelled">取消授权</string>
+    <string name="user_not_exist">用户不存在</string>
 
     <!--ttf-->
     <string name="font_friends">&#xe628;</string>
