@@ -10,13 +10,13 @@ import com.edusoho.kuozhi.R;
 
 public class PopupDialog extends Dialog {
 
-    private TextView popTitle;
-    private TextView popMessage;
+    protected TextView popTitle;
+    protected TextView popMessage;
 
     public static final int CANCEL = 0001;
     public static final int OK = 0002;
 
-    private PopupClickListener mClickListener;
+    protected PopupClickListener mClickListener;
 
     public PopupDialog(Context context, int style, int theme, PopupClickListener clickListener) {
         super(context, theme);
@@ -28,7 +28,7 @@ public class PopupDialog extends Dialog {
     private TextView mPopupOkBtn;
     private TextView mPopupCancelBtn;
 
-    private void initView() {
+    protected void initView() {
         popTitle = (TextView) findViewById(R.id.popup_title);
         popMessage = (TextView) findViewById(R.id.popup_message);
         mPopupOkBtn = (TextView) findViewById(R.id.popup_ok_btn);
@@ -56,7 +56,6 @@ public class PopupDialog extends Dialog {
                 }
             });
         }
-
     }
 
     public void setOkListener(PopupClickListener clickListener) {

@@ -30,5 +30,4 @@
             android:id="@+id/lv_bulletin" />
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 
-
 </LinearLayout>

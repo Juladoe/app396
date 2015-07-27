@@ -42,10 +42,13 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 
 /**
  * Created by JesseHuang on 15/7/14.
+ * 公告
  */
 public class BulletinActivity extends ActionBarBaseActivity {
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
+    private View mHeaderView;
+    private TextView tvEmpty;
     private BulletinDataSource mBulletinDataSource;
     private BulletinAdapter mBulletinAdapter;
     private String mHeadImageUrl;
@@ -78,8 +81,6 @@ public class BulletinActivity extends ActionBarBaseActivity {
             }
             if (TextUtils.isEmpty(mHeadImageUrl)) {
                 RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-                StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-                requestUrl.url = stringBuffer.toString();
                 mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -98,6 +99,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
         List<Bulletin> bulletinList = getBulletins(mStart);
         NotificationUtil.cancelById(bulletinList.isEmpty() ? 0 : bulletinList.get(0).id);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
+        mListView.addHeaderView(initHeaderView());
         mListView.setAdapter(mBulletinAdapter);
         mListView.post(mRunnable);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
@@ -155,8 +157,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] getMsgTypes = new MessageType[]{new MessageType(Const.ADD_BULLETIT_MSG, source)};
-        return getMsgTypes;
+        return new MessageType[]{new MessageType(Const.ADD_BULLETIT_MSG, source)};
     }
 
     public class BulletinAdapter extends BaseAdapter {
@@ -201,6 +202,11 @@ public class BulletinActivity extends ActionBarBaseActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
+            if (getCount() > 0) {
+                tvEmpty.setVisibility(View.GONE);
+            } else {
+                tvEmpty.setVisibility(View.VISIBLE);
+            }
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_text, null);
                 holder = new ViewHolder(convertView);
@@ -235,5 +241,11 @@ public class BulletinActivity extends ActionBarBaseActivity {
             tvContent = (TextView) view.findViewById(R.id.tv_send_content);
             tvCreatedTime = (TextView) view.findViewById(R.id.tv_send_time);
         }
+    }
+
+    private View initHeaderView() {
+        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_empty, null);
+        tvEmpty = (TextView) mHeaderView.findViewById(R.id.tv_empty_for_list_view);
+        return mHeaderView;
     }
 }

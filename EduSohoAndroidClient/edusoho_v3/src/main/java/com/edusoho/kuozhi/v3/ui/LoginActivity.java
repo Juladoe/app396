@@ -3,8 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -17,9 +15,7 @@ import android.widget.ImageView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -27,12 +23,8 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.HashMap;
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.PlatformActionListener;
-import cn.sharesdk.sina.weibo.SinaWeibo;
-import cn.sharesdk.tencent.qq.QQ;
-import cn.sharesdk.wechat.friends.Wechat;
 
 /**
  * Created by JesseHuang on 15/5/22.
@@ -108,13 +100,17 @@ public class LoginActivity extends ActionBarBaseActivity {
                 public void onResponse(String response) {
                     UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
                     });
-                    mActivity.app.saveToken(userResult);
-                    mActivity.setResult(LoginActivity.OK);
-                    app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                    app.pushRegister(bundle);
-                    mActivity.finish();
+                    if (userResult.user != null) {
+                        mActivity.app.saveToken(userResult);
+                        mActivity.setResult(LoginActivity.OK);
+                        app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                        app.pushRegister(bundle);
+                        mActivity.finish();
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -127,7 +123,7 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     private void bindOpenUser(String type, String id, String name, String avatar) {
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "type", type,
                 "id", id,
                 "name", name,
@@ -138,7 +134,8 @@ public class LoginActivity extends ActionBarBaseActivity {
             public void onResponse(String response) {
                 Log.d(TAG, response);
                 UserResult userResult = mActivity.parseJsonValue(
-                        response, new TypeToken<UserResult>(){});
+                        response, new TypeToken<UserResult>() {
+                        });
                 app.saveToken(userResult);
                 app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
