@@ -37,6 +37,7 @@ public class CoreBridge extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         mActivity = (ActionBarBaseActivity) cordova.getActivity();
+        mContext = mActivity.getBaseContext();
         super.initialize(cordova, webView);
     }
 
