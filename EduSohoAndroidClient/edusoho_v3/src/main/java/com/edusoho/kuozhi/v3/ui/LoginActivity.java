@@ -160,7 +160,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                     mActivity.finish();
                 }
             });
-            openLoginUtil.login("weibo");
+            openLoginUtil.login("SinaWeibo");
         }
     };
 
@@ -174,7 +174,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                     mActivity.finish();
                 }
             });
-            openLoginUtil.login("qq");
+            openLoginUtil.login("QQ");
         }
     };
 
@@ -189,7 +189,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                     mActivity.finish();
                 }
             });
-            openLoginUtil.login("weixin");
+            openLoginUtil.login("Wechat");
         }
     };
 
