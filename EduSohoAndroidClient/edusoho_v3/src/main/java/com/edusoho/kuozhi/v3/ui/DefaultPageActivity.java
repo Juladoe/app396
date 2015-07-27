@@ -33,7 +33,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
@@ -43,7 +42,6 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
 import java.util.HashMap;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by JesseHuang on 15/4/24.
@@ -308,24 +306,29 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 return true;
             }
 
-            synchronized (mLock) {
-                if (mIsExit) {
-                    mIsExit = false;
-                    finish();
-                    app.exit();
-                }
-                CommonUtil.longToast(mActivity, getString(R.string.app_exit_msg));
-                mIsExit = true;
-                if (mExitTimer == null) {
-                    mExitTimer = new Timer();
-                }
-                mExitTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mIsExit = false;
-                    }
-                }, 2000);
-            }
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+
+
+//            synchronized (mLock) {
+//                if (mIsExit) {
+//                    mIsExit = false;
+//                    finish();
+//                    app.exit();
+//                }
+//                CommonUtil.longToast(mActivity, getString(R.string.app_exit_msg));
+//                mIsExit = true;
+//                if (mExitTimer == null) {
+//                    mExitTimer = new Timer();
+//                }
+//                mExitTimer.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        mIsExit = false;
+//                    }
+//                }, 2000);
+//            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
