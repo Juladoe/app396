@@ -164,6 +164,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //                mActivity.invalidateOptionsMenu();
             }
         };
+        mDrawerToggle.setHomeAsUpIndicator(R.drawable.drawer_open);
         mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {

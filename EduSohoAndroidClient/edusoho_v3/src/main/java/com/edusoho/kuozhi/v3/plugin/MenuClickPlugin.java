@@ -24,6 +24,8 @@ import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.edusoho.kuozhi.v3.view.dialog.PopupInputDialog;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -38,6 +40,21 @@ import java.util.Iterator;
  * Created by JesseHuang on 15/6/2.
  */
 public class MenuClickPlugin extends CoreBridge {
+
+    @JsAnnotation
+    public void showInput(JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        String title = args.getString(0);
+        String content = args.getString(1);
+        String type = args.getString(2);
+        final PopupInputDialog dlg = PopupInputDialog.create(mActivity, title, content, type);
+        dlg.setOkListener(new PopupDialog.PopupClickListener() {
+            @Override
+            public void onClick(int button) {
+                callbackContext.success(dlg.getInputString());
+            }
+        });
+        dlg.show();
+    }
 
     @JsAnnotation
     public void openDrawer(JSONArray args, CallbackContext callbackContext) throws JSONException {

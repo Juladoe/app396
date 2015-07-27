@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JsResult;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -74,7 +75,9 @@ public class ESWebView extends RelativeLayout {
     }
 
     private void setupWebView() {
+        Log.d(TAG, "isHardwareAccelerated:" + isHardwareAccelerated());
         String userAgent = mWebView.getSettings().getUserAgentString();
+        mWebView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
 
         CordovaContext cordovaContext = mWebView.getCordovaContext();
