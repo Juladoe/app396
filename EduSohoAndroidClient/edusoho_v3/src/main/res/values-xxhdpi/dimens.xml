@@ -23,4 +23,6 @@
 
     <dimen name="xx_small_font_size">10sp</dimen>
     <dimen name="xxx_small_font_size">8sp</dimen>
+
+    <dimen name="login_size">18sp</dimen>
 </resources>
