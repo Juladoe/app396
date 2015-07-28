@@ -89,7 +89,7 @@ public class ChatAdapter extends BaseAdapter {
                 showImageOnFail(R.drawable.defaultpic).build();
     }
 
-    public void addOneChat(Chat chat) {
+    public void addItem(Chat chat) {
         mList.add(chat);
         notifyDataSetChanged();
     }

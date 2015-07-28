@@ -66,7 +66,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
                 EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
             } else if (typeBusiness.equals(TypeBusinessEnum.BULLETIN.getName())) {
                 boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
-
                 if (isForeground) {
                     wrapperMessage.isForeground = true;
                     EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, bundle, BulletinActivity.class);

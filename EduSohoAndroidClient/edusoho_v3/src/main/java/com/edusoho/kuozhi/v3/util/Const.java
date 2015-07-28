@@ -87,6 +87,8 @@ public class Const {
     public static final int ADD_BULLETIT_MSG = 6;
     public static final int SWITCH_TAB = 7;
     public static final int DRAWER_REGISTER = 8;
+    public static final int ADD_CHAT_MSGS = 9;
+
 
     public static final int NEW_FANS = 0x0A;
     public static final String ADD_CHAT_MSG_TYPE = "aad_chat_msg_type";
@@ -255,7 +257,8 @@ public class Const {
     public static final String UNBIND = "/auth/unBind";
     public static final String SEND = "/message/%d/friend/%d/send";
     public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
-    public static final String SAVE_UPLOAD_INFO = "/file/&d/upload/succeed";
+    public static final String SAVE_UPLOAD_INFO = "/file/%d/upload/succeed";
+    public static final String GET_LASTEST_OFFLINE_MSG = "/message/%d/newest/list";
 
     @Deprecated
     public static final String UPLOAD_MEDIA = "/api/files/";

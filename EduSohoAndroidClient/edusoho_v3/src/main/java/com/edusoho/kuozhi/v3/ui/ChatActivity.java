@@ -893,7 +893,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         chat.setDelivery(delivery);
         long chatId = mChatDataSource.create(chat);
         chat.chatId = (int) chatId;
-        mAdapter.addOneChat(chat);
+        mAdapter.addItem(chat);
     }
 
     /**
@@ -1041,9 +1041,17 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             });
             if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
                     customContent.getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
-                if (messageType.code == Const.ADD_CHAT_MSG && mFromId == customContent.getFromId()) {
-                    Chat chat = new Chat(wrapperMessage);
-                    mAdapter.addOneChat(chat);
+                switch (messageType.code) {
+                    case Const.ADD_CHAT_MSG:
+                        if (mFromId == customContent.getFromId()) {
+                            Chat chat = new Chat(wrapperMessage);
+                            mAdapter.addItem(chat);
+                        }
+                        break;
+                    case Const.ADD_CHAT_MSGS:
+                        ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(CHAT_DATA);
+                        mAdapter.addItems(chats);
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -1054,7 +1062,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source)};
+        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_CHAT_MSGS, source)};
     }
 
 

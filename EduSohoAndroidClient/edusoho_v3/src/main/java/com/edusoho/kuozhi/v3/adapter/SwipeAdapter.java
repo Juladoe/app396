@@ -37,6 +37,15 @@ public class SwipeAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public boolean getContainItem(New compareModel) {
+        for (New newModel : mList) {
+            if (newModel.fromId == compareModel.fromId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addItem(New newModel) {
         mList.add(newModel);
         notifyDataSetChanged();

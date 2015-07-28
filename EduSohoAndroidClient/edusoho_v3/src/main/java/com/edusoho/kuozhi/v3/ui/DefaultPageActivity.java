@@ -75,7 +75,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (savedInstanceState == null) {
             //selectItem(0);
         }
-        mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+        if (mService != null) {
+            mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+        }
 
         AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>() {
             @Override

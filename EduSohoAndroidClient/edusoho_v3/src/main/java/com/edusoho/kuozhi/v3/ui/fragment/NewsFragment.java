@@ -52,6 +52,7 @@ public class NewsFragment extends BaseFragment {
     public static final int HANDLE_RECEIVE_MSG = 2;
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
+    public static final int UPDATE_UNREAD_MSGS = 12;
 
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
@@ -131,10 +132,9 @@ public class NewsFragment extends BaseFragment {
 
     private void initData() {
         if (app.loginUser != null) {
-            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openRead();
+            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             List<New> news = newDataSource.getNews("WHERE BELONGID = ?", app.loginUser.id + "");
             mSwipeAdapter.update(news);
-            newDataSource.close();
         }
         if (TextUtils.isEmpty(mSchoolAvatar)) {
             RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
@@ -158,7 +158,7 @@ public class NewsFragment extends BaseFragment {
                 case 0:
                     New newModel = mSwipeAdapter.getItem(position);
                     mSwipeAdapter.removeItem(position);
-                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                     newDataSource.delete(newModel.id);
                     if (newModel.getType().equals(TypeBusinessEnum.BULLETIN.getName())) {
                         BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -213,7 +213,6 @@ public class NewsFragment extends BaseFragment {
 
     private void updateNew(New newModel) {
         mSwipeAdapter.updateItem(newModel);
-
     }
 
     private void setItemToTop(New newModel) {
@@ -238,7 +237,7 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case UPDATE_UNREAD_MSG:
                     int fromId = message.data.getInt(Const.FROM_ID);
-                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                     List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
                     if (news.size() > 0) {
                         New newModel = news.get(0);
@@ -251,7 +250,7 @@ public class NewsFragment extends BaseFragment {
                     handleBulletinMsg(message);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
-                    NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+                    NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                     List<New> bulletins = bulletinDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
                             TypeBusinessEnum.BULLETIN.getName());
                     if (bulletins.size() > 0) {
@@ -260,7 +259,16 @@ public class NewsFragment extends BaseFragment {
                         bulletinDataSource.update(newModel);
                         updateNew(newModel);
                     }
-                    bulletinDataSource.close();
+                    break;
+                case Const.ADD_CHAT_MSGS:
+                    ArrayList<New> newArrayList = (ArrayList<New>) message.data.get(Const.CHAT_DATA);
+                    for (final New newModel : newArrayList) {
+                        if (mSwipeAdapter.getContainItem(newModel)) {
+                            updateNew(newModel);
+                        } else {
+                            insertNew(newModel);
+                        }
+                    }
                     break;
             }
         }
@@ -282,7 +290,7 @@ public class NewsFragment extends BaseFragment {
         newModel.imgUrl = app.host + "/" + mSchoolAvatar;
         newModel.createdTime = customContent.getCreatedTime();
         newModel.setType(TypeBusinessEnum.BULLETIN.getName());
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> bulletins = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
                 TypeBusinessEnum.BULLETIN.getName());
         if (bulletins.size() == 0) {
@@ -294,14 +302,13 @@ public class NewsFragment extends BaseFragment {
             newDataSource.updateBulletin(newModel);
             setItemToTop(newModel);
         }
-        newDataSource.close();
     }
 
     private void handleReceiveMsg(WidgetMessage message) {
         WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
         New newModel = new New(wrapperMessage);
         newModel.belongId = app.loginUser.id;
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 1;
@@ -312,14 +319,13 @@ public class NewsFragment extends BaseFragment {
             newDataSource.update(newModel);
             setItemToTop(newModel);
         }
-        newDataSource.close();
     }
 
     private void handleSendMsg(WidgetMessage message) {
         WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
         New newModel = new New(wrapperMessage);
         newModel.belongId = app.loginUser.id;
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 0;
@@ -330,17 +336,15 @@ public class NewsFragment extends BaseFragment {
             newDataSource.update(newModel);
             setItemToTop(newModel);
         }
-        newDataSource.close();
     }
 
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_BULLETIT_MSG, source),
+        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_BULLETIT_MSG, source), new MessageType(Const.ADD_CHAT_MSGS, source),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
                 new MessageType(UPDATE_UNREAD_BULLETIN, source)};
-        return messageTypes;
     }
 
     @Override
@@ -349,10 +353,9 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void updateUnreadFromLocalDB(New newItem) {
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         newItem.unread = 0;
         newDataSource.update(newItem);
-        newDataSource.close();
         updateNew(newItem);
     }
 }

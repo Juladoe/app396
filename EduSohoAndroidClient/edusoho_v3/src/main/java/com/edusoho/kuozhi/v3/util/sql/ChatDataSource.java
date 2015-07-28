@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 
 import java.util.ArrayList;
@@ -79,6 +80,24 @@ public class ChatDataSource {
         return effectRow;
     }
 
+    public void create(ArrayList<Chat> list) {
+        this.openWrite();
+        for (Chat chat : list) {
+            ContentValues cv = new ContentValues();
+            cv.put(allColumns[1], chat.id);
+            cv.put(allColumns[2], chat.fromId);
+            cv.put(allColumns[3], chat.toId);
+            cv.put(allColumns[4], chat.nickName);
+            cv.put(allColumns[5], chat.headimgurl);
+            cv.put(allColumns[6], chat.content);
+            cv.put(allColumns[7], chat.type);
+            cv.put(allColumns[8], chat.delivery);
+            cv.put(allColumns[9], chat.createdTime);
+            mDataBase.insert(TABLE_NAME, null, cv);
+        }
+        this.close();
+    }
+
     public int update(Chat chat) {
         this.openWrite();
         ContentValues cv = new ContentValues();
@@ -107,5 +126,16 @@ public class ChatDataSource {
                 new String[]{fromId + "", toId + "", fromId + "", toId + ""});
         this.close();
         return effectRow;
+    }
+
+    public long getMaxId() {
+        long maxId = 0;
+        this.openRead();
+        Cursor cursor = mDataBase.rawQuery("SELECT MAX(ID) FROM CHAT", null);
+        if (cursor.moveToNext()) {
+            maxId = cursor.getLong(0);
+        }
+        this.close();
+        return maxId;
     }
 }
