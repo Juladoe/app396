@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -46,5 +46,17 @@
         android:background="@color/material_grey">
 
         </View>
+
+    <ImageView
+        android:id="@+id/fans_relation"
+        android:src="@drawable/add_friend_selector"
+        android:clickable="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="64dp"
+        android:layout_height="24dp"
+        android:scaleType="centerInside"
+        android:layout_marginRight="16dp"
+        />
 
 </RelativeLayout>
