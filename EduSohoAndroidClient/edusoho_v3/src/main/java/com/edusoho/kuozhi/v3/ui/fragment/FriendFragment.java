@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -37,8 +35,6 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,6 +80,7 @@ public class FriendFragment extends BaseFragment {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
+                    mEduToolBar.setTag(mEduToolBar.getHeight());
                     animator.setDuration(300);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
@@ -91,31 +88,11 @@ public class FriendFragment extends BaseFragment {
                         public void onAnimationEnd(Animator animation) {
                             SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
                             searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
-                            searchDialogFragment.getToolBar(mEduToolBar);
+                            searchDialogFragment.setToolBar(mEduToolBar);
                         }
                     });
 
                     animator.start();
-
-
-//                } else if (i == R.id.item_add_phone_friend) {
-//                    app.mEngine.runNormalPlugin("AddPhoneContactActivity", mActivity, null);
-//
-//                } else if (i == R.id.item_add_lesson_friend) {
-//                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
-//                    Bundle arg = new Bundle();
-//                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_LESSEN);
-//                    chooseClassDialogFragment.setArguments(arg);
-//                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
-//
-//                } else if (i == R.id.item_add_class_friend) {
-//                    ChooseClassDialogFragment chooseClassDialogFragment = new ChooseClassDialogFragment();
-//                    Bundle arg = new Bundle();
-//                    arg.putInt("Type",ChooseClassDialogFragment.TYPE_CLASS);
-//                    chooseClassDialogFragment.setArguments(arg);
-//                    chooseClassDialogFragment.show(getChildFragmentManager(),"chooseClassDialogFragment");
-//                } else if (i == R.id.item_service_qiqiuyu){
-
                 }
             }
         });

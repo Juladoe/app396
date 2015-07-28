@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -30,9 +29,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.lang.ref.WeakReference;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -97,7 +94,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
         mDrawerLayout = drawerLayout;
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        ActionBar actionBar = mActivity.getSupportActionBar();
+        final ActionBar actionBar = mActivity.getSupportActionBar();
 
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
@@ -164,13 +161,14 @@ public class FragmentNavigationDrawer extends BaseFragment {
 //                mActivity.invalidateOptionsMenu();
             }
         };
-        mDrawerToggle.setHomeAsUpIndicator(R.drawable.drawer_open);
         mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {
                 mDrawerToggle.syncState();
+                actionBar.setHomeAsUpIndicator(R.drawable.drawer_open);
             }
         });
+
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
