@@ -249,12 +249,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return false;
     }
