@@ -298,12 +298,10 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            Log.d(TAG, "s->" + System.currentTimeMillis());
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            Log.d(TAG, "e->" + System.currentTimeMillis());
             mWebView.setGoBackStatus(false);
         }
 
