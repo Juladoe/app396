@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
-import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,22 +49,20 @@ public class NewDataSource {
      * @return
      */
     public List<New> getNews(String whereSql, String... whereArgs) {
+        openRead();
         List<New> news = new ArrayList<>();
         Cursor cursor = mDataBase.rawQuery("SELECT * FROM NEW " + whereSql, whereArgs);
         while (cursor.moveToNext()) {
             news.add(convertCursor2New(cursor));
         }
         cursor.close();
+        close();
         return news;
     }
 
     public long create(New newModel) {
-//        List<New> newList = getNews("WHERE FROMID = ?", new String[]{newModel.fromId + ""});
-//        if (newList == null || newList.size() == 0) {
-//
-//        }
+        openWrite();
         ContentValues cv = new ContentValues();
-//        cv.put(allColumns[0], newModel.id);
         cv.put(allColumns[1], newModel.fromId);
         cv.put(allColumns[2], newModel.title);
         cv.put(allColumns[3], newModel.content);
@@ -76,10 +73,12 @@ public class NewDataSource {
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
         long insertId = mDataBase.insert(TABLE_NAME, null, cv);
+        close();
         return insertId;
     }
 
     public long update(New newModel) {
+        openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[1], newModel.fromId);
         cv.put(allColumns[2], newModel.title);
@@ -90,10 +89,13 @@ public class NewDataSource {
         cv.put(allColumns[7], newModel.type);
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
-        return mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + ""});
+        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + ""});
+        close();
+        return id;
     }
 
     public long updateBulletin(New newModel) {
+        openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[1], newModel.fromId);
         cv.put(allColumns[2], newModel.title);
@@ -104,11 +106,16 @@ public class NewDataSource {
         cv.put(allColumns[7], newModel.type);
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
-        return mDataBase.update(TABLE_NAME, cv, "TYPE = ? AND BELONGID = ?", new String[]{TypeBusinessEnum.BULLETIN.getName(), EdusohoApp.app.loginUser.id + ""});
+        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + ""});
+        close();
+        return id;
     }
 
     public long delete(String whereSql, String... whereArgs) {
-        return mDataBase.delete(TABLE_NAME, whereSql, whereArgs);
+        openWrite();
+        long id = mDataBase.delete(TABLE_NAME, whereSql, whereArgs);
+        close();
+        return id;
     }
 
 
@@ -128,6 +135,9 @@ public class NewDataSource {
     }
 
     public long delete(int id) {
-        return mDataBase.delete(TABLE_NAME, "ID = ?", new String[]{id + ""});
+        openWrite();
+        long newId = mDataBase.delete(TABLE_NAME, "ID = ?", new String[]{id + ""});
+        close();
+        return newId;
     }
 }

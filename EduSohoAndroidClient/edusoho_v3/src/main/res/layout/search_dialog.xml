@@ -20,7 +20,7 @@
             android:singleLine="true"
             android:background="@null"
             android:textColor="@color/gray"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:drawableLeft="@drawable/icon_edittext_search"
             android:imeOptions="actionSearch"
             android:layout_marginRight="16dp"

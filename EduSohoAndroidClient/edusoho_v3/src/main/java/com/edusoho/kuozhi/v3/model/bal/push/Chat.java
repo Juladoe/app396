@@ -14,11 +14,13 @@ import java.util.HashMap;
 public class Chat implements Serializable {
     public int chatId;
     public int id;
+    public int userId;
     public int fromId;
     public int toId;
     public String nickName;
     public String headimgurl;
     public String content;
+    public String context;
     public String type;
     public int delivery = 2;
     public int createdTime;
@@ -28,6 +30,8 @@ public class Chat implements Serializable {
 
     private String upyunMediaPutUrl;
     private String upyunMediaGetUrl;
+
+    public String custom;
 
     private HashMap<String, String> headers;
 
@@ -173,19 +177,6 @@ public class Chat implements Serializable {
         this.fileType = FileType.getType(type);
     }
 
-    public Chat(int fId, int tId, String name, String url, String content, String t, int d, int cTime) {
-        this.fromId = fId;
-        this.toId = tId;
-        this.nickName = name;
-        this.headimgurl = url;
-        this.content = content;
-        this.type = t;
-        this.delivery = d;
-        this.createdTime = cTime;
-        this.direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        this.fileType = FileType.getType(type);
-    }
-
     public Chat(int chatId, int id, int fId, int tId, String name, String url, String content, String t, int d, int cTime) {
         this.chatId = chatId;
         this.id = id;
@@ -214,6 +205,31 @@ public class Chat implements Serializable {
         createdTime = customContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
         fileType = FileType.getType(type);
+    }
+
+    public Chat serializeCustomContent(Chat chat) {
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(this.custom, new TypeToken<CustomContent>() {
+        });
+        this.fromId = customContent.getFromId();
+        this.toId = EdusohoApp.app.loginUser.id;
+        this.nickName = customContent.getNickname();
+        this.content = chat.context;
+        this.headimgurl = customContent.getImgUrl();
+        this.type = customContent.getTypeMsg();
+        this.createdTime = chat.createdTime;
+        this.direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+        this.fileType = FileType.getType(type);
+        if (this.fileType == FileType.TEXT) {
+            this.delivery = Delivery.SUCCESS.getIndex();
+        } else {
+            this.delivery = Delivery.UPLOADING.getIndex();
+        }
+        return chat;
+    }
+
+    public CustomContent getCustomContent() {
+        return TextUtils.isEmpty(custom) ? null : EdusohoApp.app.parseJsonValue(this.custom, new TypeToken<CustomContent>() {
+        });
     }
 
     public static enum Direct {

@@ -721,6 +721,9 @@ public class EdusohoApp extends Application {
                     public void onResponse(String response) {
                         try {
                             JSONObject resultObject = new JSONObject(response);
+                            if (bundle != null) {
+                                getService().getOfflineMsgs();
+                            }
                             String result = resultObject.getString("result");
                             if (result.equals("success")) {
                                 Log.d(TAG, "cloud register success");
@@ -778,6 +781,7 @@ public class EdusohoApp extends Application {
         });
     }
 
+
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
         T value;
         try {
@@ -791,21 +795,17 @@ public class EdusohoApp extends Application {
         return value;
     }
 
-    public boolean isForeground(String PackageName) {
-        // Get the Activity Manager
+    /**
+     * 判断是否为当前Activity
+     *
+     * @param activityName ActivityName
+     * @return
+     */
+    public boolean isForeground(String activityName) {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-
-        // Get a list of running tasks, we are only interested in the last one,
-        // the top most so we give a 1 as parameter so we only get the topmost.
         List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
-
-        // Get the info we need for comparison.
         ComponentName componentInfo = task.get(0).topActivity;
-
-        // Check if it matches our package name.
-        if (componentInfo.getClassName().equals(PackageName)) return true;
-
-        // If not then our app is not on the foreground.
+        if (componentInfo.getClassName().equals(activityName)) return true;
         return false;
     }
 }

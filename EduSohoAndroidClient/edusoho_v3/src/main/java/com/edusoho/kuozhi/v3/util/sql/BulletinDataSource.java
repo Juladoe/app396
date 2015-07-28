@@ -85,5 +85,4 @@ public class BulletinDataSource {
         mDataBase.delete(TABLE_NAME, null, null);
         this.close();
     }
-
 }

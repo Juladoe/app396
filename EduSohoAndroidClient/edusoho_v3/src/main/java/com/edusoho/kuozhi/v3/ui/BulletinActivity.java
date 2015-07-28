@@ -73,7 +73,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private void initData() {
         setBackMode(BACK, "网校公告");
         if (TextUtils.isEmpty(mHeadImageUrl)) {
-            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
+            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             List<New> bulletins = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
                     TypeBusinessEnum.BULLETIN.getName());
             if (bulletins.size() > 0) {
@@ -97,7 +97,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
             mBulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         List<Bulletin> bulletinList = getBulletins(mStart);
-        NotificationUtil.cancelById(bulletinList.isEmpty() ? 0 : bulletinList.get(0).id);
+        NotificationUtil.cancelById(bulletinList.isEmpty() ? 0 : bulletinList.get(bulletinList.size() - 1).id);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.addHeaderView(initHeaderView());
         mListView.setAdapter(mBulletinAdapter);
