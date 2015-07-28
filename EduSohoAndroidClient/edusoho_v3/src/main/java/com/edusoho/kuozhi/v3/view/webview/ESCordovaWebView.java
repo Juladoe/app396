@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+
 import org.apache.cordova.CordovaWebView;
 
 /**
@@ -56,9 +59,9 @@ public class ESCordovaWebView extends CordovaWebView{
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && canGoBack()) {
-            goBack();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            ViewGroup parent = (ViewGroup) getParent();
+            return parent.onKeyDown(keyCode, event);
         }
         return super.onKeyDown(keyCode, event);
     }

@@ -124,7 +124,7 @@ public class SearchDialogFragment extends DialogFragment {
 
 
 
-    public void getToolBar(EduToolBar eduToolBar) {
+    public void setToolBar(EduToolBar eduToolBar) {
         this.mEduToolBar = eduToolBar;
     }
 
@@ -134,9 +134,9 @@ public class SearchDialogFragment extends DialogFragment {
         if (mEduToolBar.getVisibility() == View.GONE) {
         }
 
-        mEduToolBar.measure(0, 0);
-        int toolsBarHeight = mEduToolBar.getMeasuredHeight();
-        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", 0, toolsBarHeight);
+        int height = (Integer) mEduToolBar.getTag();
+
+        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", 0, height);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(300);
         animator.start();
