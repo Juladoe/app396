@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -97,7 +98,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.btnSendCode.setText(mActivity.mClockTime + "秒后重发");
+            mActivity.btnSendCode.setText(mActivity.mClockTime + "秒后重新发送");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();
@@ -131,7 +132,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         if (jsonObject.getString("code").equals("200")) {
                             btnSendCode.setEnabled(false);
                             btnSendCode.setBackgroundResource(R.drawable.reg_code_disable);
-                            mClockTime = 60;
+                            mClockTime = 120;
                             mTimer = new Timer();
                             mTimer.schedule(new TimerTask() {
                                 @Override
@@ -145,6 +146,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                             CommonUtil.longToast(mContext, jsonObject.getString("msg"));
                         }
                     } catch (JSONException e) {
+                        Log.d(TAG, "phone reg error");
                     }
                 }
             }, null);
