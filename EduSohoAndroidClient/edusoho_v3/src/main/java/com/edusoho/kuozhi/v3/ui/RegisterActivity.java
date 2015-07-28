@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
+import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -219,12 +220,23 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, "请输入密码");
                 return;
             }
+            if (strPass.length() < 5) {
+                CommonUtil.longToast(mContext, "密码不能小于5位");
+                return;
+            }
             params.put("password", strPass);
 
             mActivity.ajaxPostWithLoading(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
+                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
+                        });
+                        if (result != null && result.error != null) {
+                            CommonUtil.longToast(mActivity, result.error.message);
+                            return;
+                        }
+
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
