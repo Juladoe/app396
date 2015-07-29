@@ -128,6 +128,13 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
+                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
+                        });
+                        if (result != null && result.error != null) {
+                            CommonUtil.longToast(mActivity, result.error.message);
+                            return;
+                        }
+
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("code").equals("200")) {
                             btnSendCode.setEnabled(false);
