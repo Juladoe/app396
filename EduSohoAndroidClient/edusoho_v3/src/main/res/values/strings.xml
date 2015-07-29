@@ -60,9 +60,9 @@
     <string name="user_not_exist">用户不存在</string>
 
     <!--ttf-->
-    <string name="font_friends">&#xe628;</string>
-    <string name="font_news">&#xe607;</string>
-    <string name="font_find">&#xe604;</string>
+    <string name="font_friends">&#xe629;</string>
+    <string name="font_news">&#xe60a;</string>
+    <string name="font_find">&#xe608;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
     <string name="font_downloading">&#xe608;</string>
@@ -72,22 +72,22 @@
     <string name="font_download_unselect">&#xe629;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
-    <string name="font_chat_add_media">&#xe62e;</string>
-    <string name="font_chat_media_photo">&#xe62d;</string>
-    <string name="font_chat_media_camera">&#xe62b;</string>
+    <string name="font_chat_add_media">&#xe728;</string>
+    <string name="font_chat_media_photo">&#xe62e;</string>
+    <string name="font_chat_media_camera">&#xe6c5;</string>
 
     <string name="drawer_setting">&#xe60e;</string>
     <string name="font_favoirte">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
 
-    <string name="learned_status"></string>
+    <string name="learned_status">&#xe657;</string>
     <string name="course_paybtn"></string>
-    <string name="learning_status"></string>
+    <string name="learning_status">&#xe656;</string>
     <string name="learn_note"></string>
     <string name="learn_question"></string>
     <string name="learn_more"></string>
-    <string name="lesson_next"></string>
-    <string name="lesson_previous"></string>
+    <string name="lesson_next">&#xe688;</string>
+    <string name="lesson_previous">&#xe687;</string>
 
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>

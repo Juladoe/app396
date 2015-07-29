@@ -32,6 +32,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
+import cn.trinea.android.common.util.ToastUtils;
 import photoview.PhotoView;
 
 /**
@@ -93,6 +94,10 @@ public class PptLessonFragment extends BaseFragment {
         mStartPageView = (TextView) view.findViewById(R.id.ppt_page_start);
         pptViewPager = (HackyViewPager) view.findViewById(R.id.ppt_viewpager);
 
+        if (ppts == null || ppts.isEmpty()) {
+            ToastUtils.show(mContext, "课时暂无PPT!");
+            return;
+        }
         PptPagerAdapter adapter = new PptPagerAdapter(ppts);
         mStartPageView.setText("1/" + ppts.size());
         pptViewPager.setAdapter(adapter);
