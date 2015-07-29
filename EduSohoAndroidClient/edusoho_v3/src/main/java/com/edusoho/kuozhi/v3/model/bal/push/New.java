@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
-import android.text.TextUtils;
-
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
@@ -122,13 +120,12 @@ public class New implements Serializable {
     public New(Chat chat) {
         fromId = chat.fromId;
         title = chat.nickName;
-        content = TextUtils.isEmpty(chat.content) ? chat.context : chat.content;
         createdTime = chat.createdTime;
         imgUrl = chat.headimgurl;
         CustomContent customContent = chat.getCustomContent();
         type = chat.getCustomContent().getTypeBusiness();
         if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.getName())) {
-            content = chat.context;
+            content = chat.content;
         } else if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
             content = String.format("[%s]", Const.MEDIA_IMAGE);
         } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
