@@ -45,13 +45,8 @@ public class SearchDialogFragment extends DialogFragment {
     private ActionBarBaseActivity mActivity;
     private EduToolBar mEduToolBar;
     private Context mContext;
-
     private EdusohoApp mApp;
-
     private View view;
-
-
-    private DialogInterface.OnDismissListener mOnDismissListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

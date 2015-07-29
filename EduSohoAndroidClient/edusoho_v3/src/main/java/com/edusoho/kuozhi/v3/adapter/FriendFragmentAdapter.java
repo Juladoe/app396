@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,17 +10,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**

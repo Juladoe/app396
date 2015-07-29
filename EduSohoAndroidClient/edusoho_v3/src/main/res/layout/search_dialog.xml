@@ -62,7 +62,7 @@
         android:background="@color/white">
         <TextView
             android:text="你可能想找的人"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

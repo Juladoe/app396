@@ -44,13 +44,11 @@ import java.util.List;
 public class FriendFragment extends BaseFragment {
 
     private boolean isNews = false;
-
     private ListView mFriendList;
     private View mFootView;
     private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
-
     private LoadDialog mLoadDialog;
 
     @Override
