@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
+    private static final String TAG  = "BaseVolleyRequest";
+
     protected static final int CACHE_MAX_AGE = 604800;
 
     public static final int CACHE_AUTO = 0001;
@@ -118,7 +120,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     private Cache.Entry parseResponseCache(NetworkResponse response) {
         Map<String, String> map = response.headers;
-        map.put("Cache-Control", "max-age=" + CACHE_MAX_AGE);
+        map.put("Cache-Control", String.format("max-age=%d,stale-while-revalidate=%d",0, CACHE_MAX_AGE));
         NetworkResponse networkResponse = new NetworkResponse(response.statusCode, response.data, map, true);
         Cache.Entry cache = HttpHeaderParser.parseCacheHeaders(networkResponse);
 

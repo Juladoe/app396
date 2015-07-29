@@ -3,9 +3,10 @@ package com.edusoho.kuozhi.v3.view.webview;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import org.apache.cordova.CordovaWebView;
 
@@ -15,6 +16,7 @@ import org.apache.cordova.CordovaWebView;
 public class ESCordovaWebView extends CordovaWebView{
 
     protected boolean mIsBackIng;
+    protected int mOverScrollY;
     private CordovaContext mCordovaContext;
 
     public ESCordovaWebView(Context context) {
@@ -73,4 +75,15 @@ public class ESCordovaWebView extends CordovaWebView{
         }
         return super.onKeyUp(keyCode, event);
     }
+
+    @Override
+    protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+        mOverScrollY = scrollY;
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+    }
+
+    public int getOverScrollY() {
+        return mOverScrollY;
+    }
+
 }

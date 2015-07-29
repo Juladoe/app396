@@ -3,14 +3,10 @@ package com.edusoho.kuozhi.v3.view.webview;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-import android.util.SparseArray;
 import android.webkit.MimeTypeMap;
 import com.android.volley.Response.*;
 import com.android.volley.Request.*;
-import com.android.volley.AuthFailureError;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestHandler;
@@ -18,7 +14,6 @@ import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
-import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -26,8 +21,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
-import com.google.gson.reflect.TypeToken;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -46,8 +39,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -316,7 +307,8 @@ public class ESWebViewRequestManager extends RequestManager {
             RequestFuture<String> future = RequestFuture.newFuture();
             StringVolleyRequest stringRequest = new StringVolleyRequest(Method.GET, requestUrl, future, future);
 
-            if (mWebView.isGoBack()) {
+            if (mWebView.getLoadType() == ESWebView.LOAD_FROM_CACHE
+                    || mWebView.getWebView().isGoBack()) {
                 stringRequest.setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
                 Log.d(TAG, "use cache");
             }

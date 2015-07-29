@@ -25,7 +25,7 @@ public abstract class RequestManager {
 
     protected ScheduledThreadPoolExecutor mWorkExecutor;
     private static final int MAX_POOL = 10;
-    protected ESCordovaWebView mWebView;
+    protected ESWebView mWebView;
 
     public RequestManager() {
         mResoucrCache = new Hashtable<>();
@@ -53,7 +53,7 @@ public abstract class RequestManager {
         }
     }
 
-    public void setWebView(ESCordovaWebView webView) {
+    public void setWebView(ESWebView webView) {
         this.mWebView = webView;
     }
 

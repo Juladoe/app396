@@ -2,10 +2,12 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JsResult;
@@ -43,6 +45,11 @@ import cn.trinea.android.common.util.FileUtils;
  */
 public class ESWebView extends RelativeLayout {
 
+    public static final int LOAD_FROM_CACHE = 0001;
+    public static final int LOAD_FROM_NET = 0002;
+    public static final int LOAD_AUTO = 0003;
+
+    private int mLoadType;
     protected ESCordovaWebView mWebView;
     protected ProgressBar pbLoading;
     protected Context mContext;
@@ -58,12 +65,26 @@ public class ESWebView extends RelativeLayout {
     public ESWebView(Context context) {
         super(context);
         mContext = context;
+        init();
     }
 
     public ESWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         this.mAttrs = attrs;
+        init();
+    }
+
+    public void setLoadType(int type) {
+        this.mLoadType = type;
+    }
+
+    protected void init() {
+        mLoadType = LOAD_AUTO;
+    }
+
+    public int getLoadType() {
+        return mLoadType;
     }
 
     public String getUserAgent() {
@@ -75,7 +96,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     private void setupWebView() {
-        Log.d(TAG, "isHardwareAccelerated:" + isHardwareAccelerated());
+
         String userAgent = mWebView.getSettings().getUserAgentString();
         mWebView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
@@ -89,8 +110,8 @@ public class ESWebView extends RelativeLayout {
         mWebView = createWebView();
         setupWebView();
 
-        pbLoading = (ProgressBar) LayoutInflater.from(mActivity).inflate(R.layout.progress_bar, null);
-        RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mActivity, 2));
+        pbLoading = (ProgressBar) LayoutInflater.from(mContext).inflate(R.layout.progress_bar, null);
+        RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 2));
         paramProgressBar.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         pbLoading.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_status));
         addView(pbLoading, paramProgressBar);
@@ -108,13 +129,14 @@ public class ESWebView extends RelativeLayout {
     public void loadApp(String appCode) {
         updateCode(appCode);
         mLocalAppMeta = getLocalApp(appCode);
+        setLoadType(LOAD_FROM_CACHE);
         updateApp(mAppCode);
     }
 
     private void updateCode(String code) {
         this.mAppCode = code;
         mRequestManager = ESWebViewRequestManager.getRequestManager(mContext, this.mAppCode);
-        mRequestManager.setWebView(mWebView);
+        mRequestManager.setWebView(this);
     }
 
     private AppMeta getLocalApp(String appCode) {
@@ -344,7 +366,13 @@ public class ESWebView extends RelativeLayout {
         }
     }
 
-    public CordovaWebView getWebView() {
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(TAG, "onInterceptTouchEvent");
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    public ESCordovaWebView getWebView() {
         return mWebView;
     }
 }
