@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">上名校</string>
+    <string name="app_host">http://www.xp-edu.com</string>
+    <string name="school_about">关于上名校</string>
+    <string name="app_code">shangmingxiao</string>
+    <string name="channel_name">shangmingxiao</string>
+    <string name="splash_num">4</string>
+    <string name="splash_padding">0</string>
+    <!--weixin appid-->
+    <string name="app_id"></string>
+
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+
+    </string-array>
+</resources>

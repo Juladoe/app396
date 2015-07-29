@@ -425,6 +425,7 @@ public class Const {
     public static final String HAVE_ADD_FALSE = "none";
     public static final String HAVE_ADD_WAIT = "following";
     public static final String HAVE_ADD_ME = "follower";
+    public static final String NO_USER = "no-user";
 
     public static final String CLEAR_WEBVIEW_CACHE = "clear_webview_cache";
 
