@@ -128,6 +128,7 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
+        initData();
     }
 
     private void initData() {
