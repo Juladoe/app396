@@ -87,5 +87,9 @@ public class NotificationUtil {
         mNotificationManager.cancel(id);
     }
 
-
+    public static void cancelAll() {
+        NotificationManager mNotificationManager =
+                (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancelAll();
+    }
 }
