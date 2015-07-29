@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
+import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -96,7 +98,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.btnSendCode.setText(mActivity.mClockTime + "秒后重发");
+            mActivity.btnSendCode.setText(mActivity.mClockTime + "秒后重新发送");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();
@@ -126,11 +128,18 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
+                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
+                        });
+                        if (result != null && result.error != null) {
+                            CommonUtil.longToast(mActivity, result.error.message);
+                            return;
+                        }
+
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("code").equals("200")) {
                             btnSendCode.setEnabled(false);
                             btnSendCode.setBackgroundResource(R.drawable.reg_code_disable);
-                            mClockTime = 60;
+                            mClockTime = 120;
                             mTimer = new Timer();
                             mTimer.schedule(new TimerTask() {
                                 @Override
@@ -144,6 +153,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                             CommonUtil.longToast(mContext, jsonObject.getString("msg"));
                         }
                     } catch (JSONException e) {
+                        Log.d(TAG, "phone reg error");
                     }
                 }
             }, null);
@@ -219,12 +229,23 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, "请输入密码");
                 return;
             }
+            if (strPass.length() < 5) {
+                CommonUtil.longToast(mContext, "密码不能小于5位");
+                return;
+            }
             params.put("password", strPass);
 
             mActivity.ajaxPostWithLoading(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
+                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
+                        });
+                        if (result != null && result.error != null) {
+                            CommonUtil.longToast(mActivity, result.error.message);
+                            return;
+                        }
+
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });

@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
@@ -151,6 +152,7 @@ public class SettingActivity extends ActionBarBaseActivity {
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
                         app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+                        NotificationUtil.cancelAll();
                         finish();
                     }
                 }, new Response.ErrorListener() {
@@ -166,6 +168,7 @@ public class SettingActivity extends ActionBarBaseActivity {
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);
                 app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+                NotificationUtil.cancelAll();
                 finish();
             }
 

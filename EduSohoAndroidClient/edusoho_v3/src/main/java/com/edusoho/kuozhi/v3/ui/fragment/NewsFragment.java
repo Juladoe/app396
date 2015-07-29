@@ -133,7 +133,7 @@ public class NewsFragment extends BaseFragment {
     private void initData() {
         if (app.loginUser != null) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-            List<New> news = newDataSource.getNews("WHERE BELONGID = ?", app.loginUser.id + "");
+            List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
             mSwipeAdapter.update(news);
         }
         if (TextUtils.isEmpty(mSchoolAvatar)) {

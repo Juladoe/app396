@@ -20,7 +20,6 @@ public class Chat implements Serializable {
     public String nickName;
     public String headimgurl;
     public String content;
-    public String context;
     public String type;
     public int delivery = 2;
     public int createdTime;
@@ -213,7 +212,7 @@ public class Chat implements Serializable {
         this.fromId = customContent.getFromId();
         this.toId = EdusohoApp.app.loginUser.id;
         this.nickName = customContent.getNickname();
-        this.content = chat.context;
+        this.content = chat.content;
         this.headimgurl = customContent.getImgUrl();
         this.type = customContent.getTypeMsg();
         this.createdTime = chat.createdTime;
