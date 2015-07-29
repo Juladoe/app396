@@ -261,11 +261,11 @@ public class Chat implements Serializable {
 
         public static FileType getType(String name) {
             for (FileType type : FileType.values()) {
-                if (name.equals(type.getName())) {
+                if (type.getName().equals(name)) {
                     return type;
                 }
             }
-            return null;
+            return TEXT;
         }
     }
 
