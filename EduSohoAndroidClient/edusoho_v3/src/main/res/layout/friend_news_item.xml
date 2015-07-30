@@ -8,9 +8,9 @@
         android:id="@+id/new_follower_avatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/default_avatar" />
 
     <TextView
@@ -18,8 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/new_follower_avatar"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="80dp"
         android:layout_toRightOf="@id/new_follower_avatar"
         android:ellipsize="end"
@@ -32,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/news_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_toRightOf="@id/new_follower_avatar"
         android:text="2012年12月25日"
         android:textSize="10sp" />
@@ -41,10 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_below="@id/new_follower_avatar"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/material_grey">
-
     </View>
 
     <ImageView
