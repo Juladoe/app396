@@ -153,7 +153,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            CommonUtil.longToast(mContext, "无法获取网校Token");
+                            Log.d(TAG, "无法获取网校Token");
                         }
                     });
 
