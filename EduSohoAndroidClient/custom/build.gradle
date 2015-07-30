@@ -20,6 +20,7 @@ android {
         cuntom {
             manifest.srcFile 'AndroidManifest.xml'
             res.srcDirs = ['src/shangmingxiao/res']
+            assets.srcDirs = ['src/shangmingxiao/assets'];
         }
     }
 

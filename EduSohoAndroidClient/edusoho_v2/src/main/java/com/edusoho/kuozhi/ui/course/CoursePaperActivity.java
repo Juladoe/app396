@@ -988,7 +988,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
                 R.drawable.icon,
                 course.title,
                 stringBuilder.toString(),
-                AppUtil.coverCourseAbout(course.title+"："+course.about+"地址："+stringBuilder.toString()),
+                AppUtil.coverCourseAbout(course.title+"："+course.about.substring(0,80)+"...地址："+stringBuilder.toString()),
                 AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture),
                 app.host
         );
@@ -1029,7 +1029,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         wxobj.webpageUrl = stringBuilder.toString();
         WXMediaMessage wXMediaMessage = new WXMediaMessage();
         wXMediaMessage.mediaObject = wxobj;
-        wXMediaMessage.description = AppUtil.coverCourseAbout(course.about);
+        wXMediaMessage.description = AppUtil.coverCourseAbout(course.about).substring(0,40);
         wXMediaMessage.title = course.title;
         wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mCoursePic, new ImageSize(50, 50)));
 
