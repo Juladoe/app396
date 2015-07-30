@@ -57,7 +57,7 @@ public class BaseActivity extends ActionBarActivity {
         mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
         app.setDisplay(this);
-        setProgressBarIndeterminateVisibility(false);
+
         gson = app.gson;
         mService = app.getService();
         app.mActivity = mActivity;

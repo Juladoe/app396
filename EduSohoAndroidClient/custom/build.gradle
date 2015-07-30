@@ -12,14 +12,14 @@ android {
 
     productFlavors {
         cuntom {
-            applicationId "com.meishuhezi.kuozhi"
+            applicationId "com.shangmingxiao.kuozhi"
         }
     }
 
     sourceSets {
         cuntom {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/meishuhezi/res']
+            res.srcDirs = ['src/shangmingxiao/res']
         }
     }
 

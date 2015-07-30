@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,29 +11,39 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
+import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
+import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
+import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+
+import cn.trinea.android.common.util.AppUtils;
+import cn.trinea.android.common.util.ArrayUtils;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -42,6 +53,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String TAG = "LessonActivity";
     public static final String CONTENT = "content";
     public static final String FROM_CACHE = "from_cache";
+    public static final String LESSON_IDS = "lesson_ids";
     public static final String RESULT_ID = "resultId";
 
     private String mCurrentFragment;
@@ -53,12 +65,20 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private int mLessonId;
     private String mLessonType;
     private String mTitle;
+    private int[] mLessonIds;
+    private LessonStatus mLessonStatus;
     private Bundle fragmentData;
     private boolean mFromCache;
     private MsgHandler msgHandler;
-    private static final int REQUEST_NOTE = 0010;
-    private static final int REQUEST_QUESTION = 0020;
+
+    private int mNextLessonId;
+    private int mPreviousLessonId;
     private LessonItem mLessonItem;
+    private View mToolsLayout;
+    private EduSohoTextBtn mLearnBtn;
+    private EduSohoTextBtn mLessonNextBtn;
+    private EduSohoTextBtn mLessonPreviousBtn;
+    private EduSohoTextBtn mMoreBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +126,16 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void initView() {
         try {
             Intent data = getIntent();
+            mToolsLayout = findViewById(R.id.lesson_tools_layout);
+            mLessonNextBtn = (EduSohoTextBtn) findViewById(R.id.lesson_next);
+            mLessonPreviousBtn = (EduSohoTextBtn) findViewById(R.id.lesson_previous);
+            mMoreBtn = (EduSohoTextBtn) findViewById(R.id.lesson_more_btn);
+            mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
 
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+                mLessonIds = data.getIntArrayExtra(LESSON_IDS);
             }
 
             if (mCourseId == 0 || mLessonId == 0) {
@@ -117,7 +143,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 return;
             }
 
-            loadLesson(mLessonId);
+            loadLesson();
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
@@ -135,16 +161,124 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Log.d(null, "onSaveInstanceState");
-        super.onSaveInstanceState(outState);
+    /**
+     * 获取课时是否已学状态
+     */
+    private void loadLessonStatus() {
+        RequestUrl requestUrl = app.bindUrl(Const.LESSON_STATUS, true);
+        requestUrl.setParams(new String[]{
+                "courseId", mCourseId + "",
+                "lessonId", mLessonId + ""
+        });
+
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mLessonStatus = parseJsonValue(
+                        response, new TypeToken<LessonStatus>() {
+                        });
+                if (mLessonStatus.learnStatus != LearnStatus.finished) {
+                    mLessonStatus.learnStatus = LearnStatus.learning;
+                }
+                mToolsLayout.setVisibility(View.VISIBLE);
+                showToolsByAnim();
+                setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
+            }
+        }, null);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d(null, "onRestoreInstanceState");
-        super.onRestoreInstanceState(savedInstanceState);
+    private void changeLessonStatus(boolean isLearn) {
+        mLearnBtn.setEnabled(false);
+        RequestUrl requestUrl = app.bindUrl(
+                isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
+        requestUrl.setParams(new String[]{
+                Const.COURSE_ID, mCourseId + "",
+                Const.LESSON_ID, mLessonId + ""
+        });
+
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mLearnBtn.setEnabled(true);
+
+                LearnStatus result = parseJsonValue(response, new TypeToken<LearnStatus>() {
+                });
+                if (result == null) {
+                    return;
+                }
+
+                setLearnStatus(result);
+            }
+        }, null);
+
+    }
+
+    private void bindListener() {
+        mLearnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isLearn;
+                if (mLearnBtn.getTag() == null) {
+                    isLearn = true;
+                } else {
+                    isLearn = (Boolean) mLearnBtn.getTag();
+                }
+                changeLessonStatus(isLearn);
+            }
+        });
+
+        mLessonNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mNextLessonId != 0) {
+                    goToAnotherLesson(mNextLessonId);
+                }
+            }
+        });
+
+        mLessonPreviousBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPreviousLessonId != 0) {
+                    goToAnotherLesson(mPreviousLessonId);
+                }
+            }
+        });
+    }
+
+    private void goToAnotherLesson(int lessonId) {
+        mLessonId = lessonId;
+        hieToolsByAnim();
+        loadLesson();
+    }
+
+    private void initRedirectBtn() {
+        if (mNextLessonId == 0) {
+            mLessonNextBtn.setEnabled(false);
+        } else {
+            mLessonNextBtn.setEnabled(true);
+        }
+        if (mPreviousLessonId == 0) {
+            mLessonPreviousBtn.setEnabled(false);
+        } else {
+            mLessonPreviousBtn.setEnabled(true);
+        }
+    }
+
+    private void setLearnStatus(LearnStatus learnStatus) {
+        Resources resources = getResources();
+        switch (learnStatus) {
+            case learning:
+                mLearnBtn.setTag(true);
+                mLearnBtn.setIcon(R.string.learning_status);
+                mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learn_btn_normal));
+                break;
+            case finished:
+                mLearnBtn.setTag(false);
+                mLearnBtn.setIcon(R.string.learned_status);
+                mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learned_btn_normal));
+                break;
+        }
     }
 
     @Override
@@ -157,19 +291,40 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void loadLesson(int lessonId) {
+    private void loadLesson() {
+        initLessonIds();
+        initRedirectBtn();
         int userId = app.loginUser == null ? 0 : app.loginUser.id;
         M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
-                mContext, userId, lessonId, app.domain, M3U8Util.FINISH);
+                mContext, userId, mLessonId, app.domain, M3U8Util.FINISH);
         if (m3U8DbModle != null) {
             try {
-                loadLessonFromCache(lessonId);
+                loadLessonFromCache();
             } catch (RuntimeException e) {
                 loadLessonFromNet();
             }
             return;
         }
         loadLessonFromNet();
+    }
+
+    private void initLessonIds() {
+        if (mLessonIds == null || mLessonIds.length == 0) {
+            mNextLessonId = 0;
+            mPreviousLessonId = 0;
+            return;
+        }
+
+        int length = mLessonIds.length;
+        int index = Arrays.binarySearch(mLessonIds, mLessonId);
+        if (index < 0) {
+            mNextLessonId = 0;
+            mPreviousLessonId = 0;
+            return;
+        }
+
+        mNextLessonId = (index + 1) >= length ? 0 : mLessonIds[index + 1];
+        mPreviousLessonId = (index - 1) < 0 ? 0 : mLessonIds[index - 1];
     }
 
     private void loadLessonFromNet() {
@@ -181,39 +336,49 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mLessonItem = getLessonResultType("", response);
+                mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
                     CommonUtil.longToast(mContext, "课程数据错误！");
                     return;
                 }
+                mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
+                if (!mLessonType.equals("testpaper")) {
+                    loadLessonStatus();
+                    bindListener();
+                }
                 switchLoadLessonContent(mLessonItem);
             }
         }, null);
 
     }
 
-    private void loadLessonFromCache(int lessonId) {
+    private void loadLessonFromCache() {
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
         String object = sqliteUtil.query(
                 String.class,
                 "value",
                 "select * from data_cache where type=? and key=?",
                 Const.CACHE_LESSON_TYPE,
-                "lesson-" + lessonId
+                "lesson-" + mLessonId
         );
 
-        LessonItem lessonItem = getLessonResultType(mLessonType, object);
+        LessonItem lessonItem = getLessonResultType(object);
         if (lessonItem == null) {
             throw new RuntimeException("local lesson error");
         }
 
         mLessonItem = lessonItem;
+        mLessonType = mLessonItem.type;
         setBackMode(BACK, mLessonItem.title);
+        if (!mLessonType.equals("testpaper")) {
+            loadLessonStatus();
+            bindListener();
+        }
         switchLoadLessonContent(mLessonItem);
     }
 
-    private LessonItem getLessonResultType(String lessonType, String object) {
+    private LessonItem getLessonResultType(String object) {
         LessonItem lessonItem = parseJsonValue(
                 object, new TypeToken<LessonItem>() {
         });
@@ -335,19 +500,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         super.onDestroy();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_NOTE && resultCode == Const.OK) {
-            CommonUtil.longToast(mContext, "添加笔记成功!");
-            return;
-        }
-
-        if (requestCode == Const.EDIT_QUESTION && resultCode == Const.OK) {
-            CommonUtil.longToast(mContext, "添加问题成功!");
-            return;
-        }
-    }
-
     private boolean getM3U8Cache(int lessonId) {
         M3U8DbModle model = M3U8Util.queryM3U8Modle(mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.FINISH);
         return model != null;
@@ -369,12 +521,25 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             }
             switch (msg.what) {
                 case SHOW_TOOLS:
-                    //mActivity.showToolsByAnim();
+                    mActivity.showToolsByAnim();
                     break;
                 case HIDE_TOOLS:
-                    //mActivity.hieToolsByAnim();
+                    mActivity.hieToolsByAnim();
                     break;
             }
         }
+    }
+
+    private void showToolsByAnim() {
+        mToolsLayout.measure(0, 0);
+        int height = mToolsLayout.getMeasuredHeight();
+        Log.d(null, "height->" + height);
+        AppUtil.animForHeight(
+                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
+    }
+
+    private void hieToolsByAnim() {
+        AppUtil.animForHeight(
+                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 }

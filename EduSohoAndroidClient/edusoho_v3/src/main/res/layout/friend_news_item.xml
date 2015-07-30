@@ -6,45 +6,56 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/new_follower_avatar"
-        android:src="@drawable/default_avatar"
-        android:layout_marginTop="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginBottom="12dp"
         android:layout_width="40dp"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/default_avatar" />
 
     <TextView
         android:id="@+id/news_content"
-        android:textSize="14sp"
-        android:text="内容"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:layout_toRightOf="@id/new_follower_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@id/new_follower_avatar"
-        android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="80dp"
+        android:layout_toRightOf="@id/new_follower_avatar"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="内容"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/news_time"
-        android:textSize="10sp"
-        android:text="2012年12月25日"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@id/new_follower_avatar"
-        android:layout_below="@id/news_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_below="@id/news_content"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/new_follower_avatar"
+        android:text="2012年12月25日"
+        android:textSize="10sp" />
 
     <View
-        android:layout_below="@id/new_follower_avatar"
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_below="@id/new_follower_avatar"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:background="@color/material_grey">
 
-        </View>
+    </View>
+
+    <ImageView
+        android:id="@+id/fans_relation"
+        android:layout_width="64dp"
+        android:layout_height="24dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:clickable="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_friend_selector" />
 
 </RelativeLayout>

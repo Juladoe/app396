@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DevInfor>
+
+    <ShareSDK AppKey="41f51eeb5d88" />
+
+    <Wechat Id="1" SortId="1" AppId=""
+        AppSecret="" BypassApproval="false" Enable="true" />
+
+    <WechatMoments Id="2" SortId="2" AppId=""
+        AppSecret="" BypassApproval="true" Enable="true" />
+
+    <WechatFavorite Id="3" SortId="3" AppId=""
+        AppSecret="" Enable="true" />
+
+    <!--demo站-->
+    <SinaWeibo Id="4" SortId="4" AppKey="3046824102" AppSecret="13a86dfa506ad101becdb8e622162533"
+        RedirectUrl="http://www.xp-edu.com" ShareByAppClient="true" Enable="true" />
+
+    <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
+    <QQ Id="7" SortId="5" AppId="1104790910"  ShareByAppClient="true"
+        Enable="true" />
+
+</DevInfor>

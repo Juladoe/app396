@@ -262,4 +262,12 @@
         name="AboutFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.AboutFragment"
         version="1.0" />
+    <plugin
+        name="BDVideoLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
+        version="1.0"/>
+    <plugin
+        name="DocumentLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.DocumentLessonFragment"
+        version="1.0"/>
 </plugins>

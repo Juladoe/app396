@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -203,13 +204,14 @@ public class MenuClickPlugin extends CoreBridge {
     public void learnCourseLesson(JSONArray args, CallbackContext callbackContext) throws JSONException {
         final int courseId = args.getInt(0);
         final int lessonId = args.getInt(1);
-
+        final int[] lessonArray = coverJsonArrayToIntArray(args.getJSONArray(2));
         EdusohoApp.app.mEngine.runNormalPlugin(
                 LessonActivity.TAG, mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.COURSE_ID, courseId);
                         startIntent.putExtra(Const.LESSON_ID, lessonId);
+                        startIntent.putExtra(LessonActivity.LESSON_IDS, lessonArray);
                     }
                 }
         );
@@ -275,5 +277,19 @@ public class MenuClickPlugin extends CoreBridge {
         } else {
             mActivity.app.mEngine.runNormalPluginWithBundle(name + "Activity", mActivity, bundle);
         }
+    }
+
+    private int[] coverJsonArrayToIntArray(JSONArray jsonArray) {
+        int length = jsonArray.length();
+        int[] array = new int[length];
+        for (int i=0; i < length; i++) {
+            try {
+                array[i] = jsonArray.getInt(i);
+            } catch (Exception e) {
+                array[i] = 0;
+            }
+        }
+
+        return array;
     }
 }
