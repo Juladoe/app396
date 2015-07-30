@@ -5,17 +5,16 @@
     android:layout_height="52dp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginBottom="3dp"
-        android:layout_weight="10">
+        android:layout_marginBottom="3dp">
 
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/head_icon_large"
+            android:layout_height="@dimen/head_icon_large"
             android:src="@drawable/defaultpic"
             android:layout_centerVertical="true"
             android:layout_margin="4dp"
@@ -35,8 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_weight="2">
+        android:layout_marginRight="6dp">
 
         <TextView
             android:id="@+id/tv_title"

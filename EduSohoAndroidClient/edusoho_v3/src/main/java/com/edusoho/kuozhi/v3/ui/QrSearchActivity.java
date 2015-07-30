@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.ui;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -163,7 +165,7 @@ public class QrSearchActivity extends CaptureActivity {
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                CommonUtil.longToast(mContext, "无法获取网校Token");
+                                Log.d(TAG, "无法获取网校Token");
                             }
                         });
                         mActivity.finish();

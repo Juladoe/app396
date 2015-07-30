@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -198,7 +199,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                CommonUtil.longToast(mContext, "无法获取网校Token");
+                                Log.d(TAG, "无法获取网校Token");
                             }
                         });
                     }
@@ -207,7 +208,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                     public void onErrorResponse(VolleyError error) {
                         loading.dismiss();
                         if (error.networkResponse == null) {
-                            CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                            CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
                         } else {
                             CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                         }
@@ -219,7 +220,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
             public void onErrorResponse(VolleyError error) {
                 loading.dismiss();
                 if (error.networkResponse == null) {
-                    CommonUtil.longToast(mActivity, "无网络连接或请求失败");
+                    CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
                 } else {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
