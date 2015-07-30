@@ -25,4 +25,12 @@
     <dimen name="xxx_small_font_size">8sp</dimen>
 
     <dimen name="login_size">18sp</dimen>
+
+    <dimen name="chat_media_size">38dp</dimen>
+
+    <dimen name="head_icon_large">48dp</dimen>
+
+    <dimen name="head_icon_medium">40dp</dimen>
+
+    <dimen name="head_icon_small">32dp</dimen>
 </resources>

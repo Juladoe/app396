@@ -141,7 +141,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="5"
-                android:padding="6dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="6dp"
+                android:layout_marginRight="6dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -162,8 +165,8 @@
                             android:layout_height="wrap_content"
                             android:clickable="true"
                             android:layout_gravity="center"
-                            android:padding="12dp"
-                            android:textSize="@dimen/xxx_large_font_size"
+                            android:padding="10dp"
+                            android:textSize="@dimen/chat_media_size"
                             android:background="@drawable/chat_media_bg"
                             android:text="@string/font_chat_media_photo" />
                     </LinearLayout>
@@ -172,6 +175,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="4dp"
                         android:text="图片"
                         android:textSize="@dimen/x_small_font_size" />
                 </LinearLayout>
@@ -196,14 +200,15 @@
                             android:text="@string/font_chat_media_camera"
                             android:layout_gravity="center"
                             android:background="@drawable/chat_media_bg"
-                            android:padding="12dp"
-                            android:textSize="@dimen/xxx_large_font_size" />
+                            android:padding="10dp"
+                            android:textSize="@dimen/chat_media_size" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="4dp"
                         android:text="拍照"
                         android:textSize="@dimen/x_small_font_size" />
                 </LinearLayout>

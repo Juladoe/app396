@@ -38,8 +38,8 @@
             <!--android:src="@drawable/myinfo_default_face" />-->
             <ImageView
                 android:id="@+id/ci_send_pic"
-                android:layout_width="@dimen/head_icon_40"
-                android:layout_height="@dimen/head_icon_40"
+                android:layout_width="@dimen/head_icon_medium"
+                android:layout_height="@dimen/head_icon_medium"
                 android:layout_alignParentLeft="true"
                 android:layout_marginRight="8dp"
                 android:layout_marginLeft="16dp"

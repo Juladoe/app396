@@ -24,4 +24,11 @@
     <dimen name="xxx_small_font_size">6sp</dimen>
 
     <dimen name="login_size">16sp</dimen>
+
+    <dimen name="head_icon_large">46dp</dimen>
+
+    <dimen name="head_icon_medium">40dp</dimen>
+
+    <dimen name="head_icon_small">30dp</dimen>
+
 </resources>
