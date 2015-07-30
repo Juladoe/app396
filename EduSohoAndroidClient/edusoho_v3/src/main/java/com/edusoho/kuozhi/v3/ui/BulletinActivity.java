@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,7 +36,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.Collections;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -208,7 +208,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 tvEmpty.setVisibility(View.VISIBLE);
             }
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_text, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_bulletin, null);
                 holder = new ViewHolder(convertView);
                 convertView.setTag(holder);
             } else {
@@ -232,12 +232,12 @@ public class BulletinActivity extends ActionBarBaseActivity {
     }
 
     public static class ViewHolder {
-        public CircleImageView ivHeadImageUrl;
+        public ImageView ivHeadImageUrl;
         public TextView tvContent;
         public TextView tvCreatedTime;
 
         public ViewHolder(View view) {
-            ivHeadImageUrl = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+            ivHeadImageUrl = (ImageView) view.findViewById(R.id.ci_send_pic);
             tvContent = (TextView) view.findViewById(R.id.tv_send_content);
             tvCreatedTime = (TextView) view.findViewById(R.id.tv_send_time);
         }

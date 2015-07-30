@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
  * Created by JesseHuang on 15/6/3.
  * Chat ListView Adapter
@@ -664,7 +662,7 @@ public class ChatAdapter extends BaseAdapter {
     private static class ViewHolder {
         public TextView tvSendTime;
         public TextView tvSendContent;
-        public CircleImageView ciPic;
+        public ImageView ciPic;
         public ImageView ivMsgImage;
         public ProgressBar pbLoading;
         public ImageView ivStateError;
@@ -676,20 +674,20 @@ public class ChatAdapter extends BaseAdapter {
                 case MSG_SEND_TEXT:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
-                    ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     break;
                 case MSG_RECEIVE_TEXT:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
-                    ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
                     break;
                 case MSG_SEND_IMAGE:
                 case MSG_RECEIVE_IMAGE:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
-                    ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
                     ivMsgImage = (ImageView) view.findViewById(R.id.iv_msg_image);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
@@ -697,7 +695,7 @@ public class ChatAdapter extends BaseAdapter {
                 case MSG_SEND_AUDIO:
                 case MSG_RECEIVE_AUDIO:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
-                    ciPic = (CircleImageView) view.findViewById(R.id.ci_send_pic);
+                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
                     ivMsgImage = (ImageView) view.findViewById(R.id.iv_msg_image);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
