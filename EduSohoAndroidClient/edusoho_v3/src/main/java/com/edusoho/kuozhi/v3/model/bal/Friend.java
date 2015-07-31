@@ -33,9 +33,10 @@ public class Friend {
     public String smallAvatar;
     public String nickname;
     public String title;
-    public UserRole[] roles;
+    public String[] roles;
     public String friendship;
     public boolean isTeacher;
 
     public boolean isTop = false;
+    public boolean isBottom = false;
 }

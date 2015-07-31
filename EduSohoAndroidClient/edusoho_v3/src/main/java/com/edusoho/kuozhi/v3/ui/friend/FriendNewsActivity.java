@@ -188,7 +188,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 convertView = mInflater.inflate(mResource, null);
                 holder.content = (TextView) convertView.findViewById(R.id.news_content);
                 holder.time = (TextView) convertView.findViewById(R.id.news_time);
-                holder.avatar = (CircleImageView) convertView.findViewById(R.id.new_follower_avatar);
+                holder.avatar = (ImageView) convertView.findViewById(R.id.new_follower_avatar);
                 holder.relation = (ImageView) convertView.findViewById(R.id.fans_relation);
                 convertView.setTag(holder);
             } else {
@@ -286,7 +286,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         }
 
         private class ItemHolder {
-            CircleImageView avatar;
+            ImageView avatar;
             TextView content;
             TextView time;
             ImageView relation;

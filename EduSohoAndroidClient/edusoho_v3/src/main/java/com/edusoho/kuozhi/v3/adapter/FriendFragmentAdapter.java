@@ -14,6 +14,9 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.v3.model.bal.UserRole;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
@@ -110,8 +113,10 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     v = mInflater.inflate(R.layout.item_type_school_app, null);
                     schoolAppHolder = new SchoolAppHolder();
                     schoolAppHolder.SchoolAppName = (TextView) v.findViewById(R.id.friend_name);
-                    schoolAppHolder.schoolAppAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
+//                    schoolAppHolder.schoolAppAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
+                    schoolAppHolder.schoolAppAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
                     schoolAppHolder.schoolAppTag = (LinearLayout) v.findViewById(R.id.school_app_tag);
+                    schoolAppHolder.dividerLine = v.findViewById(R.id.divider_line);
                     v.setTag(schoolAppHolder);
                 } else {
                     schoolAppHolder = (SchoolAppHolder) v.getTag();
@@ -122,6 +127,11 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     schoolAppHolder.schoolAppTag.setVisibility(View.VISIBLE);
                 } else {
                     schoolAppHolder.schoolAppTag.setVisibility(View.GONE);
+                }
+                if (schoolApp.isBottom){
+                    schoolAppHolder.dividerLine.setVisibility(View.GONE);
+                }else {
+                    schoolAppHolder.dividerLine.setVisibility(View.VISIBLE);
                 }
                 if (!TextUtils.isEmpty(schoolApp.avatar)) {
                     ImageLoader.getInstance().displayImage(mApp.host + "/" + schoolApp.avatar, schoolAppHolder.schoolAppAvatar, mApp.mOptions);
@@ -136,9 +146,10 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     v = mInflater.inflate(R.layout.item_type_friend, null);
                     itemHolder = new ItemHolder();
                     itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
-                    itemHolder.friendAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
+                    itemHolder.friendAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
                     itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
                     itemHolder.friendTag = (LinearLayout) v.findViewById(R.id.friend_item_tag);
+                    itemHolder.dividerLine = v.findViewById(R.id.divider_line);
                     v.setTag(itemHolder);
                 } else {
                     itemHolder = (ItemHolder) v.getTag();
@@ -150,7 +161,12 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 } else {
                     itemHolder.friendTag.setVisibility(View.GONE);
                 }
-                if (friend.isTeacher == true) {
+                if (friend.isBottom){
+                    itemHolder.dividerLine.setVisibility(View.GONE);
+                }else {
+                    itemHolder.dividerLine.setVisibility(View.VISIBLE);
+                }
+                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(),friend.roles)) {
                     itemHolder.teacherTag.setVisibility(View.VISIBLE);
                 } else {
                     itemHolder.teacherTag.setVisibility(View.GONE);
@@ -168,12 +184,14 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     public void addSchoolList(List<SchoolApp> list) {
         list.get(0).isTop = true;
+        list.get(list.size()-1).isBottom = true;
         mList.addAll(list);
         notifyDataSetChanged();
     }
 
     public void addFriendList(List<Friend> list) {
         list.get(0).isTop = true;
+        list.get(list.size()-1).isBottom = true;
         mList.addAll(list);
         notifyDataSetChanged();
     }
@@ -226,15 +244,18 @@ public class FriendFragmentAdapter extends BaseAdapter {
     }
 
     private class ItemHolder {
-        private CircleImageView friendAvatar;
+        private ImageView friendAvatar;
         private TextView friendName;
         private ImageView teacherTag;
         private LinearLayout friendTag;
+        private View dividerLine;
     }
 
     private class SchoolAppHolder {
-        private CircleImageView schoolAppAvatar;
+        private ImageView schoolAppAvatar;
+//        private CircleImageView schoolAppAvatar;
         private TextView SchoolAppName;
         private LinearLayout schoolAppTag;
+        private View dividerLine;
     }
 }

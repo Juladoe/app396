@@ -12,4 +12,5 @@ public class SchoolApp {
     public String callback;
 
     public boolean isTop = false;
+    public boolean isBottom = false;
 }
