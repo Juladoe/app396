@@ -117,7 +117,6 @@ public class FriendFragment extends BaseFragment {
                 } else {
                     app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
                 }
-
             }
         });
 
@@ -125,8 +124,6 @@ public class FriendFragment extends BaseFragment {
     }
 
     public void loadSchoolApps() {
-        mFriendAdapter.setListViewLayout(R.layout.item_type_school_app);
-
         mFriendAdapter.clearList();
         if (!app.getNetIsConnect()) {
             mLoadDialog.dismiss();
@@ -144,15 +141,12 @@ public class FriendFragment extends BaseFragment {
                     mFriendAdapter.addSchoolList(schoolAppResult);
                 }
                 loadFriend();
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
-
     }
 
     public void loadFriend() {
@@ -168,7 +162,6 @@ public class FriendFragment extends BaseFragment {
                 FriendResult friendResult = mActivity.parseJsonValue(response, new TypeToken<FriendResult>() {
                 });
                 if (friendResult.data.length != 0) {
-
                     List<Friend> list = Arrays.asList(friendResult.data);
                     mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
@@ -226,9 +219,6 @@ public class FriendFragment extends BaseFragment {
             item.setIcon(R.drawable.icon_menu_notification);
             mActivity.supportInvalidateOptionsMenu();
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
-//        }else if (item.getItemId() == R.id.friends_search) {
-//            //TODO 跳转到搜索页面 暂时不做
-//            System.out.println("搜索");
         }
         return super.onOptionsItemSelected(item);
     }

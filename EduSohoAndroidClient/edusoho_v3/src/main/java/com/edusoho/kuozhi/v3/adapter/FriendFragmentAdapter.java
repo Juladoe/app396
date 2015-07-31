@@ -15,13 +15,11 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Melomelon on 2015/5/26.
@@ -37,31 +35,15 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
 
     private LayoutInflater mInflater;
-    private Context mContext;
-    private int mResource;
-    private boolean isCache;
-    private int mListViewLayoutId;
-    private ArrayList tmpSchoolList;
-    private ArrayList tmpFriendList;
     private ArrayList mList;
     private OnClickListener mOnClickListener;
     private EdusohoApp mApp;
 
     public FriendFragmentAdapter(Context mContext, int mResource, EdusohoApp app) {
-        this.mContext = mContext;
-        this.mResource = mResource;
-        tmpSchoolList = new ArrayList();
-        tmpFriendList = new ArrayList();
         mList = new ArrayList();
         mInflater = LayoutInflater.from(mContext);
         mApp = app;
 
-    }
-
-    public FriendFragmentAdapter(Context mContext, int mResource, boolean isCache) {
-        this.mContext = mContext;
-        this.mResource = mResource;
-        this.isCache = isCache;
     }
 
     public void setSchoolListSize(int size) {
@@ -94,17 +76,11 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     v = mInflater.inflate(R.layout.item_type_friend_head, null);
                     headHolder = new HeadHolder();
                     headHolder.searchFriendBtn = (EduSohoRoundButton) v.findViewById(R.id.search_friend_btn);
-//                  headHolder.addPhoneFriends = (LinearLayout) v.findViewById(R.id.item_add_phone_friend);
-//                  headHolder.addLessonFriends = (LinearLayout) v.findViewById(R.id.item_add_lesson_friend);
-//                  headHolder.addClassFriends = (LinearLayout) v.findViewById(R.id.item_add_class_friend);
                     v.setTag(headHolder);
                 } else {
                     headHolder = (HeadHolder) v.getTag();
                 }
                 headHolder.searchFriendBtn.setOnClickListener(mOnClickListener);
-//              headHolder.addPhoneFriends.setOnClickListener(mOnClickListener);
-//              headHolder.addLessonFriends.setOnClickListener(mOnClickListener);
-//              headHolder.addClassFriends.setOnClickListener(mOnClickListener);
                 break;
 
             case TYPE_SCHOOL_APP:
@@ -113,7 +89,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     v = mInflater.inflate(R.layout.item_type_school_app, null);
                     schoolAppHolder = new SchoolAppHolder();
                     schoolAppHolder.SchoolAppName = (TextView) v.findViewById(R.id.friend_name);
-//                    schoolAppHolder.schoolAppAvatar = (CircleImageView) v.findViewById(R.id.friend_avatar);
                     schoolAppHolder.schoolAppAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
                     schoolAppHolder.schoolAppTag = (LinearLayout) v.findViewById(R.id.school_app_tag);
                     schoolAppHolder.dividerLine = v.findViewById(R.id.divider_line);
@@ -197,12 +172,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
     }
 
 
-    public void addItems() {
-        mList.addAll(tmpSchoolList);
-        mList.addAll(tmpFriendList);
-        notifyDataSetChanged();
-    }
-
     public void clearList() {
         mList.clear();
     }
@@ -219,10 +188,12 @@ public class FriendFragmentAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         Object obj = mList.get(position - 1);
-        if (mList.get(position - 1) instanceof Friend) {
-            return (Friend) obj;
-        } else if (mList.get(position - 1) instanceof SchoolApp) {
-            return (SchoolApp) obj;
+        int type = getItemViewType(position);
+        switch (type){
+            case TYPE_SCHOOL_APP:
+                return (Friend) obj;
+            case TYPE_FRIEND:
+                return (SchoolApp) obj;
         }
         return null;
     }
@@ -232,15 +203,8 @@ public class FriendFragmentAdapter extends BaseAdapter {
         return 0;
     }
 
-    public void setListViewLayout(int layoutId) {
-        mListViewLayoutId = layoutId;
-    }
-
     private class HeadHolder {
         EduSohoRoundButton searchFriendBtn;
-        LinearLayout addPhoneFriends;
-        LinearLayout addLessonFriends;
-        LinearLayout addClassFriends;
     }
 
     private class ItemHolder {
@@ -253,7 +217,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     private class SchoolAppHolder {
         private ImageView schoolAppAvatar;
-//        private CircleImageView schoolAppAvatar;
         private TextView SchoolAppName;
         private LinearLayout schoolAppTag;
         private View dividerLine;
