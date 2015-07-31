@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
@@ -433,6 +434,29 @@ public class EdusohoApp extends Application {
         return url;
     }
 
+    public void SaveUser2Local(User user) {
+        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
+        SharedPreferences.Editor edit = sp.edit();
+        if (user != null) {
+            edit.putString("userInfo", gson.toJson(user));
+        } else {
+            edit.putString("userInfo", "");
+        }
+
+        edit.apply();
+    }
+
+    public User loadUserInfo() {
+        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
+        String strUser = sp.getString("userInfo", "");
+        User user = null;
+        if (!TextUtils.isEmpty(strUser)) {
+            user = parseJsonValue(AppUtil.encode2(strUser), new TypeToken<User>() {
+            });
+        }
+        return user;
+    }
+
     private void loadToken() {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         token = sp.getString("token", "");
@@ -451,7 +475,8 @@ public class EdusohoApp extends Application {
         SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", userResult.token);
-        edit.commit();
+        edit.putString("userInfo", AppUtil.encode2(gson.toJson(userResult.user)));
+        edit.apply();
 
         token = userResult.token == null || "".equals(userResult.token) ? "" : userResult.token;
         if (TextUtils.isEmpty(token)) {
@@ -466,6 +491,7 @@ public class EdusohoApp extends Application {
         SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", "");
+        edit.putString("userInfo", "");
         edit.apply();
 
         SqliteUtil.clearUser(loginUser == null ? 0 : loginUser.id);
