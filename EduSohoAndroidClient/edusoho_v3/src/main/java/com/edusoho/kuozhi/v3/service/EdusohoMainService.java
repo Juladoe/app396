@@ -78,6 +78,14 @@ public class EdusohoMainService extends Service {
             return;
         }
         synchronized (this) {
+            if (!app.getNetIsConnect()) {
+                try {
+                    app.loginUser = app.loadUserInfo();
+                } catch (Exception e) {
+                    Log.d(TAG, e.getMessage());
+                }
+            }
+
             if (app.loginUser != null) {
                 app.sendMessage(Const.LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();

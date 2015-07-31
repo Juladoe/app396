@@ -589,6 +589,14 @@ public class AppUtil {
         return out;
     }
 
+    public static String encode2(String str) {
+        char[] a = str.toCharArray();
+        for (int i = 0; i < a.length; i++) {
+            a[i] = (char) (a[i] ^ 0x2ff);
+        }
+        return new String(a);
+    }
+
     public static long convertMilliSec(int time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long returnTime = 0;
