@@ -191,9 +191,9 @@ public class FriendFragmentAdapter extends BaseAdapter {
         int type = getItemViewType(position);
         switch (type){
             case TYPE_SCHOOL_APP:
-                return (Friend) obj;
-            case TYPE_FRIEND:
                 return (SchoolApp) obj;
+            case TYPE_FRIEND:
+                return (Friend) obj;
         }
         return null;
     }

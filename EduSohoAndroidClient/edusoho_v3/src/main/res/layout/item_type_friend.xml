@@ -68,7 +68,7 @@
             android:src="@drawable/teacher_tag"
             android:layout_marginLeft="4dp"
             android:layout_width="36dp"
-            android:layout_height="24dp"
+            android:layout_height="20dp"
             android:layout_toRightOf="@id/friend_name"
             android:layout_alignTop="@id/friend_name"
             />

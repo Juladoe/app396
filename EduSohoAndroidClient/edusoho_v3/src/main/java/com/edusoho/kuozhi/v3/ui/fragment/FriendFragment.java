@@ -150,7 +150,6 @@ public class FriendFragment extends BaseFragment {
     }
 
     public void loadFriend() {
-        mFriendAdapter.setListViewLayout(R.layout.item_type_friend);
 
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
