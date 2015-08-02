@@ -67,7 +67,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
 
         for (int i = 0; i < tabWidget.getChildCount(); i++) {
             TextView tv = (TextView) tabWidget.getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextSize(AppUtil.px2sp(this, getResources().getDimension(R.dimen.large_font_size)));
+            tv.setTextSize(AppUtil.px2sp(this, getResources().getDimension(R.dimen.medium_font_size)));
             tv.setTypeface(null, Typeface.NORMAL);
             tv.setTextColor(this.getResources().getColor(R.color.green_alpha));
             tabWidget.getChildAt(i).setBackgroundResource(R.drawable.register_tab_bg);

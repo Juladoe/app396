@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="base_size">12sp</dimen>
-    <dimen name="base_small_size">10sp</dimen>
-    <dimen name="base_x_small_size">8sp</dimen>
-    <dimen name="base_large_size">14sp</dimen>
-    <dimen name="base_x_large_size">18sp</dimen>
-    <dimen name="base_xx_large_size">22sp</dimen>
+    <!-- base size -->
+    <dimen name="base_size">14sp</dimen>
+    <dimen name="base_small_size">12sp</dimen>
+    <dimen name="base_x_small_size">10sp</dimen>
+    <dimen name="base_large_size">16sp</dimen>
+    <dimen name="base_x_large_size">20sp</dimen>
+    <dimen name="base_xx_large_size">24sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="xxx_large_font_size">30sp</dimen>
-    <dimen name="xx_large_font_size">26sp</dimen>
-    <dimen name="x_large_font_size">22sp</dimen>
+    <dimen name="xxxx_large_font_size">32sp</dimen>
+    <dimen name="xxx_large_font_size">28sp</dimen>
+    <dimen name="xx_large_font_size">24sp</dimen>
+    <dimen name="x_large_font_size">20sp</dimen>
     <!--大字-->
     <dimen name="large_font_size">18sp</dimen>
     <!--中字-->
-    <dimen name="medium_font_size">14sp</dimen>
+    <dimen name="medium_font_size">16sp</dimen>
     <!--小一/二字-->
-    <dimen name="small_font_size">12sp</dimen>
+    <dimen name="small_font_size">14sp</dimen>
     <!--超小字-->
-    <dimen name="x_small_font_size">10sp</dimen>
+    <dimen name="x_small_font_size">12sp</dimen>
 
-    <dimen name="xx_small_font_size">8sp</dimen>
-    <dimen name="xxx_small_font_size">6sp</dimen>
+    <dimen name="xx_small_font_size">10sp</dimen>
+    <dimen name="xxx_small_font_size">8sp</dimen>
 
-    <dimen name="login_size">16sp</dimen>
+    <dimen name="chat_media_size">38sp</dimen>
 
-    <dimen name="head_icon_large">46dp</dimen>
+    <dimen name="head_icon_large">48sp</dimen>
 
-    <dimen name="head_icon_medium">40dp</dimen>
+    <dimen name="head_icon_medium">40sp</dimen>
 
-    <dimen name="head_icon_small">30dp</dimen>
+    <dimen name="head_icon_small">32sp</dimen>
+
+    <dimen name="new_item_title_size">16sp</dimen>
+    <dimen name="new_item_time_size">13sp</dimen>
+    <dimen name="chat_item_content_size">16sp</dimen>
 
 </resources>

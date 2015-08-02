@@ -50,7 +50,7 @@
                     android:layout_toRightOf="@+id/circleLayout"
                     android:layout_toEndOf="@+id/circleLayout"
                     android:textColor="@color/grey_alpha"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/medium_font_size"
                     android:visibility="gone"
                     android:id="@+id/tv_login" />
 
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/drawer_nickname"
                     android:textColor="@color/grey_alpha"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/medium_font_size"
                     android:layout_alignTop="@+id/circleLayout"
                     android:layout_toRightOf="@+id/circleLayout"
                     android:layout_toEndOf="@+id/circleLayout"
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:text="UI设计师"
                     android:textColor="@color/grey_beta"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/medium_font_size"
                     android:layout_alignBottom="@+id/circleLayout"
                     android:layout_alignLeft="@+id/tv_nickname"
                     android:layout_alignStart="@+id/tv_nickname"
@@ -112,7 +112,7 @@
                         android:paddingRight="0dp"
                         android:text="@string/drawer_items_learn"
                         android:textColor="@drawable/drawer_selector_font"
-                        android:textSize="17sp" />
+                        android:textSize="@dimen/large_font_size" />
 
                 </RelativeLayout>
 
@@ -132,7 +132,7 @@
                         android:paddingRight="0dp"
                         android:text="@string/drawer_items_download"
                         android:textColor="@drawable/drawer_selector_font"
-                        android:textSize="17sp" />
+                        android:textSize="@dimen/large_font_size" />
 
                 </RelativeLayout>
 
@@ -152,7 +152,7 @@
                         android:paddingRight="0dp"
                         android:text="@string/drawer_items_buy_vip"
                         android:textColor="@drawable/drawer_selector_font"
-                        android:textSize="17sp" />
+                        android:textSize="@dimen/large_font_size" />
 
                 </RelativeLayout>
 
@@ -169,7 +169,7 @@
                     android:paddingRight="0dp"
                     android:text="@string/drawer_items_collection"
                     android:textColor="@drawable/drawer_selector_font"
-                    android:textSize="17sp" />
+                    android:textSize="@dimen/large_font_size" />
 
                 <RadioButton
                     android:id="@+id/radio4"
@@ -184,7 +184,7 @@
                     android:paddingRight="0dp"
                     android:text="@string/drawer_items_setting"
                     android:textColor="@drawable/drawer_selector_font"
-                    android:textSize="17sp" />
+                    android:textSize="@dimen/large_font_size" />
             </LinearLayout>
 
             <LinearLayout
@@ -203,7 +203,7 @@
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/login_btn_bg"
                     android:text="@string/login"
-                    android:textSize="@dimen/large_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:textColor="@android:color/white"
                     android:id="@+id/btn_login" />
 
@@ -214,7 +214,7 @@
                     android:layout_marginLeft="30dp"
                     android:background="@drawable/register_btn_bg"
                     android:text="@string/register"
-                    android:textSize="@dimen/large_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:textColor="@android:color/white"
                     android:id="@+id/btn_register" />
 

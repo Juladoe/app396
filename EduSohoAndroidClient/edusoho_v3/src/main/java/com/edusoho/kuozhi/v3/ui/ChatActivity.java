@@ -102,9 +102,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private EditText etSend;
     private ListView lvMessage;
     private Button tvSend;
-    private EduSohoIconView ivAddMedia;
-    private EduSohoIconView ivPhoto;
-    private EduSohoIconView ivCamera;
+    private Button ivAddMedia;
     private ChatAdapter mAdapter;
     private PtrClassicFrameLayout mPtrFrame;
     private View viewMediaLayout;
@@ -168,7 +166,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         tvSend = (Button) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(this);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
-        ivAddMedia = (EduSohoIconView) findViewById(R.id.iv_show_media_layout);
+        ivAddMedia = (Button) findViewById(R.id.iv_show_media_layout);
         ivAddMedia.setOnClickListener(this);
         viewMediaLayout = findViewById(R.id.ll_media_layout);
         btnVoice = (Button) findViewById(R.id.btn_voice);
@@ -178,9 +176,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         viewPressToSpeak = findViewById(R.id.rl_btn_press_to_speak);
         viewPressToSpeak.setOnClickListener(this);
         viewMsgInput = findViewById(R.id.rl_msg_input);
-        ivPhoto = (EduSohoIconView) findViewById(R.id.iv_image);
+        EduSohoIconView ivPhoto = (EduSohoIconView) findViewById(R.id.iv_image);
         ivPhoto.setOnClickListener(this);
-        ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
+        EduSohoIconView ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
         ivCamera.setOnClickListener(this);
         viewPressToSpeak.setOnTouchListener(mVoiceRecordingTouchListener);
         tvSpeak = (TextView) findViewById(R.id.tv_speak);
