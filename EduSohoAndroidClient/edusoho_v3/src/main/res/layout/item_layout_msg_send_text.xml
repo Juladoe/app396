@@ -60,7 +60,7 @@
                 android:maxWidth="250dp"
                 android:text="EduSoho全新直播节目全全新上线Edu1S3oh21o2全新直播节目全新上线"
                 android:textColor="@color/base_black_87"
-                android:textSize="@dimen/small_font_size" />
+                android:textSize="@dimen/medium_font_size" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
