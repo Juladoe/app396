@@ -1034,7 +1034,11 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         wxobj.webpageUrl = stringBuilder.toString();
         WXMediaMessage wXMediaMessage = new WXMediaMessage();
         wXMediaMessage.mediaObject = wxobj;
-        wXMediaMessage.description = AppUtil.coverCourseAbout(course.about).substring(0,40);
+        if (course.about.length()>40){
+            wXMediaMessage.description = AppUtil.coverCourseAbout(course.about).substring(0,39);
+        }else {
+            wXMediaMessage.description = AppUtil.coverCourseAbout(course.about);
+        }
         wXMediaMessage.title = course.title;
         wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mCoursePic, new ImageSize(50, 50)));
 
