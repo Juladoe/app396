@@ -97,6 +97,8 @@ public class NewsFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     protected void initView(View view) {
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);

@@ -6,6 +6,6 @@
         android:enabled="true"
         android:icon="@drawable/iconfont_scan"
         android:orderInCategory="100"
-        android:title="@null"
+        android:title="扫描"
         app:showAsAction="ifRoom" />
 </menu>

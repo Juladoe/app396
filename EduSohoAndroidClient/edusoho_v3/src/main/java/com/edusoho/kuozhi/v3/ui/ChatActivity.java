@@ -97,12 +97,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private static final int SEND_IMAGE = 1;
     private static final int SEND_CAMERA = 2;
 
-    private Button btnVoice;
-    private Button btnKeyBoard;
+    private EduSohoIconView btnVoice;
+    private EduSohoIconView btnKeyBoard;
     private EditText etSend;
     private ListView lvMessage;
     private Button tvSend;
-    private Button ivAddMedia;
+    private EduSohoIconView ivAddMedia;
     private ChatAdapter mAdapter;
     private PtrClassicFrameLayout mPtrFrame;
     private View viewMediaLayout;
@@ -166,12 +166,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         tvSend = (Button) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(this);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
-        ivAddMedia = (Button) findViewById(R.id.iv_show_media_layout);
+        ivAddMedia = (EduSohoIconView) findViewById(R.id.iv_show_media_layout);
         ivAddMedia.setOnClickListener(this);
         viewMediaLayout = findViewById(R.id.ll_media_layout);
-        btnVoice = (Button) findViewById(R.id.btn_voice);
+        btnVoice = (EduSohoIconView) findViewById(R.id.btn_voice);
         btnVoice.setOnClickListener(this);
-        btnKeyBoard = (Button) findViewById(R.id.btn_set_mode_keyboard);
+        btnKeyBoard = (EduSohoIconView) findViewById(R.id.btn_set_mode_keyboard);
         btnKeyBoard.setOnClickListener(this);
         viewPressToSpeak = findViewById(R.id.rl_btn_press_to_speak);
         viewPressToSpeak.setOnClickListener(this);

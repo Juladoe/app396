@@ -23,24 +23,28 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:background="@android:color/white">
 
             <!--语音切换按钮-->
-            <Button
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/btn_voice"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:background="@drawable/chat_voice_btn_bg"
-                android:layout_marginLeft="6dp"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/font_chat_voice"
+                android:background="@drawable/chat_btn_bg"
+                android:textSize="@dimen/chat_btn_size"
                 android:layout_gravity="center_vertical" />
 
             <!--keyboard按钮-->
-            <Button
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/btn_set_mode_keyboard"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginLeft="6dp"
-                android:background="@drawable/chatting_set_mode_keyboard_btn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/font_chat_keyboard"
+                android:background="@drawable/chat_btn_bg"
+                android:textSize="@dimen/chat_btn_size"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone" />
 
@@ -72,8 +76,6 @@
                 android:id="@+id/rl_msg_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/chat_send_smd_select"
                 android:layout_weight="1">
@@ -92,18 +94,20 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="42dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="6dp"
                 android:orientation="vertical">
 
                 <!--弹出media_layout 十字按钮-->
-                <Button
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/iv_show_media_layout"
-                    android:background="@drawable/chat_btn_plus_bg" />
+                    android:background="@drawable/chat_btn_bg"
+                    android:text="@string/font_chat_add_media"
+                    android:textSize="@dimen/chat_btn_size" />
 
                 <!--发送文字按钮-->
                 <Button
@@ -113,7 +117,6 @@
                     android:layout_height="32dp"
                     android:background="@drawable/sms_send_btn_bg"
                     android:visibility="gone"
-                    android:layout_gravity="center"
                     android:text="发送"
                     android:textColor="@color/white" />
             </LinearLayout>

@@ -73,10 +73,11 @@
     <string name="font_download_unselect">&#xe629;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
-    <string name="font_chat_add_media">&#xe63f;</string>
+    <string name="font_chat_add_media">&#xe608;</string>
+    <string name="font_chat_keyboard">&#xe609;</string>
+    <string name="font_chat_voice">&#xe60c;</string>
     <string name="font_chat_media_photo">&#xe64b;</string>
     <string name="font_chat_media_camera">&#xe64a;</string>
-
     <string name="drawer_setting">&#xe60e;</string>
     <string name="font_favoirte">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
