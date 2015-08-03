@@ -61,6 +61,7 @@ import com.edusoho.kuozhi.ui.fragment.course.ViewPagerBaseFragment;
 import com.edusoho.kuozhi.ui.widget.EduSohoListView;
 import com.edusoho.kuozhi.util.AppUtil;
 import com.edusoho.kuozhi.util.Const;
+import com.edusoho.kuozhi.util.server.handler.StringHandler;
 import com.edusoho.kuozhi.view.EdusohoAnimWrap;
 import com.edusoho.kuozhi.view.FixHeightViewPager;
 import com.edusoho.kuozhi.view.dialog.ExitCoursePopupDialog;
@@ -980,15 +981,19 @@ public class CoursePaperActivity extends ActionBarBaseActivity
 
         Course course = mCourseDetailsResult.course;
         StringBuilder stringBuilder = new StringBuilder(app.host);
+        String courseAbout = course.about;
+        if (courseAbout.length()>80){
+            courseAbout = courseAbout.substring(0,79);
+        }
         stringBuilder
                 .append(Const.SHARD_COURSE_URL)
                 .append(course.id);
-        ShareUtil shareUtil = ShareUtil.getShareUtil(mActivity);
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
         shareUtil.initShareParams(
                 R.drawable.icon,
                 course.title,
                 stringBuilder.toString(),
-                AppUtil.coverCourseAbout(course.title+"："+course.about.substring(0,80)+"...地址："+stringBuilder.toString()),
+                AppUtil.coverCourseAbout(course.title+"："+courseAbout+"...地址："+stringBuilder.toString()),
                 AQUtility.getCacheFile(AQUtility.getCacheDir(mContext), course.largePicture),
                 app.host
         );
