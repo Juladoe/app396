@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,10 +131,14 @@ public class SwipeAdapter extends BaseAdapter {
         public TextView tvTitle;
         public TextView tvContent;
         public TextView tvPostTime;
+        public View viewAvatar;
 
         public ViewHolder(View view) {
             ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
+            viewAvatar = view.findViewById(R.id.view_avatar);
             bvUnread = (EduBadgeView) view.findViewById(R.id.bv_unread);
+            bvUnread.setTargetView(viewAvatar);
+            bvUnread.setBadgeGravity(Gravity.RIGHT | Gravity.TOP);
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
             tvContent = (TextView) view.findViewById(R.id.tv_content);
             tvPostTime = (TextView) view.findViewById(R.id.tv_post_time);

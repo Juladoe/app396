@@ -398,7 +398,9 @@
     <color name="grey_cccccc">#cccccc</color>
     <color name="grey_alpha">#999999</color>
     <color name="grey_beta">#97989a</color>
-    <color name="grey_feedback">#f0f0f0</color>
+    <color name="grey_btn_color">#7c7c7c</color>
+    <color name="grey_feedback1">#f0f0f0</color>
+    <color name="grey_feedback">#e5e5e5</color>
     <color name="grey_bg">#f7f7f7</color>
 
     <color name="badge_red">#ff0000</color>

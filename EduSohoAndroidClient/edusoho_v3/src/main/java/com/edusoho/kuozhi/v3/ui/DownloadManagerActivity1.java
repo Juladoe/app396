@@ -98,19 +98,9 @@ public class DownloadManagerActivity1 extends ActionBarBaseActivity {
         @Override
         public void invoke(Intent intent) {
             int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
-            //int courseId = intent.getIntExtra(Const.COURSE_ID, 0);
-//            M3U8DbModle m3u8model = M3U8Util.queryM3U8Modle(
-//                    mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
             Bundle bundle = new Bundle();
             bundle.putInt(Const.LESSON_ID, lessonId);
             app.sendMessage(DownloadingFragment.UPDATE, bundle);
-
-//            if (m3u8model.finish == M3U8Util.FINISH) {
-//                updateLocalCourseList(M3U8Util.FINISH, mDownloadedAdapter);
-//                updateLocalCourseList(M3U8Util.UN_FINISH, mDownloadingAdapter);
-//            } else {
-//                mDownloadingAdapter.updateProgress(lessonId, m3u8model);
-//            }
         }
     };
 
