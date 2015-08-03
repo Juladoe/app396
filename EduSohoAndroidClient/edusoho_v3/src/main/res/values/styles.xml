@@ -159,7 +159,7 @@
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@drawable/action_bar_bg</item>
+        <item name="colorPrimary">@color/action_bar_bg</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="actionBarSize">44dp</item>
