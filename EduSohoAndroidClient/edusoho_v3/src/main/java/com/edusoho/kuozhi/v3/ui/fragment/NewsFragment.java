@@ -52,7 +52,6 @@ public class NewsFragment extends BaseFragment {
     public static final int HANDLE_RECEIVE_MSG = 2;
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
-    public static final int UPDATE_UNREAD_MSGS = 12;
 
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
@@ -76,6 +75,11 @@ public class NewsFragment extends BaseFragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
             mActivity.setTitle(getString(R.string.title_news));
@@ -96,8 +100,6 @@ public class NewsFragment extends BaseFragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void initView(View view) {

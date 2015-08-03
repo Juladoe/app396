@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -228,5 +229,15 @@ public class SettingActivity extends ActionBarBaseActivity {
     public void finish() {
         Log.d("setting--->", "finish");
         super.finish();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return super.onKeyDown(keyCode, event);
     }
 }

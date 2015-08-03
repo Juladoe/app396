@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 21
     buildToolsVersion '21.1.1'
 
     defaultConfig {
 //        applicationId "com.plugin.edusoho.bdvideoplayer"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 21
     }
 }
 
@@ -23,7 +23,7 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.0'
     compile files('libs/cyberplayer-sdk.jar')
     compile files('libs/Baidu_CyberPlayer_SDK_1.4.jar')
 }

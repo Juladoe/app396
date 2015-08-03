@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -55,6 +56,11 @@ public class EduToolBar extends Toolbar {
         centerTitleSize = (int) typedArray.getDimension(R.styleable.EduToolBar_centerTitleSize, 14);
         centerTitleColor = typedArray.getColor(R.styleable.EduToolBar_centerTitleColor, Color.WHITE);
         this.setNavigationIcon(R.drawable.buy_vip_icon_normal);
+    }
+
+    @Override
+    protected void onCreateContextMenu(ContextMenu menu) {
+        super.onCreateContextMenu(menu);
     }
 
     @Override

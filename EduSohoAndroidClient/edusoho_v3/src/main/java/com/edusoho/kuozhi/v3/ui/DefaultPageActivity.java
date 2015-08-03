@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -296,36 +295,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mFragmentNavigationDrawer.isDrawerOpen()) {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (mFragmentNavigationDrawer.isDrawerOpen()) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                    return true;
+                }
+
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                startActivity(intent);
                 return true;
-            }
-
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            startActivity(intent);
-
-
-//            synchronized (mLock) {
-//                if (mIsExit) {
-//                    mIsExit = false;
-//                    finish();
-//                    app.exit();
-//                }
-//                CommonUtil.longToast(mActivity, getString(R.string.app_exit_msg));
-//                mIsExit = true;
-//                if (mExitTimer == null) {
-//                    mExitTimer = new Timer();
-//                }
-//                mExitTimer.schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        mIsExit = false;
-//                    }
-//                }, 2000);
-//            }
-            return true;
+            case KeyEvent.KEYCODE_MENU:
+                return true;
         }
         return super.onKeyDown(keyCode, event);
     }
