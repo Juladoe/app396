@@ -403,12 +403,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 LinkedHashMap status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
-                Object resultId = status.get("resultId");
-                if (resultId instanceof Double) {
-                    fragmentData.putInt(RESULT_ID, ((Double)resultId).intValue());
-                } else {
-                    fragmentData.putInt(RESULT_ID, ((Integer)resultId));
-                }
+                int resultId = AppUtil.parseInt(status.get("resultId").toString());
+                fragmentData.putInt(RESULT_ID, resultId);
 
                 fragmentData.putString(Const.STATUS, status.get("status").toString());
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
