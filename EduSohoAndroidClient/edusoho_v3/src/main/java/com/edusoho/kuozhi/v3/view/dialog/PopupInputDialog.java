@@ -27,7 +27,7 @@ public class PopupInputDialog extends PopupDialog {
     public void setInputType(String type) {
         if ("password".equals(type)) {
             mInputEdit.setHint("请输入密码");
-            mInputEdit.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+            mInputEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
     }
 

@@ -190,8 +190,19 @@ public class LiveCourseLessonsFragment extends ViewPagerBaseFragment {
 
         Bundle bundle = new Bundle();
         bundle.putString(Const.ACTIONBAR_TITLE, lessonItem.title);
-        bundle.putLong(LiveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
-        bundle.putLong(LiveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long startTime = 0, endTime = 0;
+        try {
+            lessonItem.startTime = lessonItem.startTime.replace('T', ' ');
+            lessonItem.endTime = lessonItem.endTime.replace('T', ' ');
+            startTime = sdf.parse(lessonItem.startTime).getTime();
+            endTime = sdf.parse(lessonItem.endTime).getTime();
+        } catch (Exception e) {
+        }
+
+        bundle.putLong(LiveLessonFragment.STARTTIME, startTime);
+        bundle.putLong(LiveLessonFragment.ENDTIME, endTime);
         bundle.putInt(Const.COURSE_ID, lessonItem.courseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         bundle.putString(LiveLessonFragment.SUMMARY, lessonItem.summary);
