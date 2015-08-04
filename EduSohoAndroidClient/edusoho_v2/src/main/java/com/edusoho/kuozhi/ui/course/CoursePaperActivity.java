@@ -981,7 +981,7 @@ public class CoursePaperActivity extends ActionBarBaseActivity
 
         Course course = mCourseDetailsResult.course;
         StringBuilder stringBuilder = new StringBuilder(app.host);
-        String courseAbout = course.about;
+        String courseAbout = AppUtil.coverCourseAbout(course.about);;
         if (courseAbout.length()>80){
             courseAbout = courseAbout.substring(0,79);
         }
@@ -1034,10 +1034,11 @@ public class CoursePaperActivity extends ActionBarBaseActivity
         wxobj.webpageUrl = stringBuilder.toString();
         WXMediaMessage wXMediaMessage = new WXMediaMessage();
         wXMediaMessage.mediaObject = wxobj;
+        course.about = AppUtil.coverCourseAbout(course.about);
         if (course.about.length()>40){
-            wXMediaMessage.description = AppUtil.coverCourseAbout(course.about).substring(0,39);
+            wXMediaMessage.description = course.about.substring(0,39);
         }else {
-            wXMediaMessage.description = AppUtil.coverCourseAbout(course.about);
+            wXMediaMessage.description = course.about;
         }
         wXMediaMessage.title = course.title;
         wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mCoursePic, new ImageSize(50, 50)));
