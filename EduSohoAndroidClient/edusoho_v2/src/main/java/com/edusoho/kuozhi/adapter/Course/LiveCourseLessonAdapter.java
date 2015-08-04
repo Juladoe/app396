@@ -136,8 +136,13 @@ public class LiveCourseLessonAdapter
 
     private String getLiveStatus(LessonItem lessonItem) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        int st = Integer.parseInt(lessonItem.startTime);
-        int et = Integer.parseInt(lessonItem.endTime);
+        int st = 0, et = 0;
+        try {
+            et = (int) sdf.parse(lessonItem.endTime).getTime();
+            st = (int) sdf.parse(lessonItem.startTime).getTime();
+        } catch (Exception e) {
+        }
+
         String s = "";
 
         String endTime = sdf.format(new Date(et * 1000L));
@@ -160,6 +165,9 @@ public class LiveCourseLessonAdapter
     }
 
     private void setLessonProgress(int lessonId, ImageView statusImageView) {
+        if (mUserLearns == null) {
+            return;
+        }
         LearnStatus status = mUserLearns.get(lessonId);
         if (status == null) {
             statusImageView.setImageResource(R.drawable.learn_status_normal);
