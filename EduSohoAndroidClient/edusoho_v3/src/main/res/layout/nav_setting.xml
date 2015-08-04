@@ -17,9 +17,9 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.0"
+        app:iconSizeScale="2.2"
         app:image="@string/font_news"
-        app:size="@dimen/nav_layout_btn"
+        app:size="@dimen/nav_layout_btn_size"
         app:text="@string/down_tab_news" />
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
@@ -29,9 +29,9 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.0"
+        app:iconSizeScale="2.2"
         app:image="@string/font_find"
-        app:size="@dimen/nav_layout_btn"
+        app:size="@dimen/nav_layout_btn_size"
         app:text="@string/down_tab_find" />
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
@@ -41,8 +41,8 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.0"
+        app:iconSizeScale="2.2"
         app:image="@string/font_friends"
-        app:size="@dimen/nav_layout_btn"
+        app:size="@dimen/nav_layout_btn_size"
         app:text="@string/down_tab_friends" />
 </LinearLayout>
