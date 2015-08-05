@@ -144,7 +144,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
             loadLesson();
 
-            app.startPlayCacheServer(this);
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
