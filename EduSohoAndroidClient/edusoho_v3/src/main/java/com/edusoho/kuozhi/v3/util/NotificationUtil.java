@@ -45,7 +45,7 @@ public class NotificationUtil {
             Intent notifyIntent = new Intent(context, ChatActivity.class);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
-            notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);g
+            notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
