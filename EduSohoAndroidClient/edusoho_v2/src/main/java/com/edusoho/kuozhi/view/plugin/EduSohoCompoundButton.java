@@ -22,7 +22,7 @@ public class EduSohoCompoundButton extends RadioGroup {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        setBackground(getResources().getDrawable(R.drawable.found_compound_btn));
+        setBackgroundResource(R.drawable.found_compound_btn);
         changeButtonsImages();
     }
 
