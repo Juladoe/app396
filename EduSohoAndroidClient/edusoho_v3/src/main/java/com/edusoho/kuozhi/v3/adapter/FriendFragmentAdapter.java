@@ -46,6 +46,30 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     }
 
+    public void updateList(){
+        notifyDataSetChanged();
+    }
+
+    public int getSectionForPosition(int position) {
+        Friend friend = (Friend)(mList.get(position));
+        return friend.getSortLetters().charAt(0);
+    }
+
+    public int getPositionForSection(int section) {
+        for (int i = 0; i < mList.size(); i++) {
+            if(getItemViewType(i+1)!=TYPE_FRIEND){
+                continue;
+            }
+            Friend friend = (Friend)(mList.get(i));
+            String sortStr = friend.getSortLetters();
+            char firstChar = sortStr.toUpperCase().charAt(0);
+            if (firstChar == section) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void setSchoolListSize(int size) {
         schoolListSize = size;
     }
@@ -125,10 +149,12 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
                     itemHolder.friendTag = (LinearLayout) v.findViewById(R.id.friend_item_tag);
                     itemHolder.dividerLine = v.findViewById(R.id.divider_line);
+                    itemHolder.catelog = (TextView) v.findViewById(R.id.catalog);
                     v.setTag(itemHolder);
                 } else {
                     itemHolder = (ItemHolder) v.getTag();
                 }
+
 
                 final Friend friend = (Friend) mList.get(position - 1);
                 if (friend.isTop) {
@@ -146,6 +172,16 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 } else {
                     itemHolder.teacherTag.setVisibility(View.GONE);
                 }
+
+                position--;
+                int section = getSectionForPosition(position);
+                if(position == getPositionForSection(section)){
+                    itemHolder.catelog.setVisibility(View.VISIBLE);
+                    itemHolder.catelog.setText(friend.getSortLetters());
+                }else{
+                    itemHolder.catelog.setVisibility(View.GONE);
+                }
+
                 itemHolder.friendName.setText(friend.nickname);
                 if (!TextUtils.isEmpty(friend.smallAvatar)) {
                     ImageLoader.getInstance().displayImage(mApp.host + "/" + friend.smallAvatar, itemHolder.friendAvatar, mApp.mOptions);
@@ -161,14 +197,14 @@ public class FriendFragmentAdapter extends BaseAdapter {
         list.get(0).isTop = true;
         list.get(list.size()-1).isBottom = true;
         mList.addAll(list);
-        notifyDataSetChanged();
+        updateList();
     }
 
     public void addFriendList(List<Friend> list) {
         list.get(0).isTop = true;
         list.get(list.size()-1).isBottom = true;
         mList.addAll(list);
-        notifyDataSetChanged();
+        updateList();
     }
 
 
@@ -213,6 +249,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
         private ImageView teacherTag;
         private LinearLayout friendTag;
         private View dividerLine;
+        private TextView catelog;
     }
 
     private class SchoolAppHolder {

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,12 +31,16 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
+import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduToolBar;
+import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,6 +55,10 @@ public class FriendFragment extends BaseFragment {
     private FriendFragmentAdapter mFriendAdapter;
     private EduToolBar mEduToolBar;
     private LoadDialog mLoadDialog;
+    private SideBar mSidebar;
+    private CharacterParser characterParser;
+    private FriendComparator friendComparator;
+    private TextView dialog;
 
     @Override
     public void onAttach(Activity activity) {
@@ -69,8 +78,23 @@ public class FriendFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        characterParser = CharacterParser.getInstance();
+        friendComparator = new FriendComparator();
+
         mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
+        mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
+        dialog = (TextView) mContainerView.findViewById(R.id.dialog);
+        mSidebar.setTextView(dialog);  // TODO: 2015/8/4
+        mSidebar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
+            @Override
+            public void onTouchingLetterChangedListener(String string) {
+                int postion = mFriendAdapter.getPositionForSection(string.charAt(0));
+                if (postion != -1) {
+                    mFriendList.setSelection(postion+1);
+                }
+            }
+        });
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +186,8 @@ public class FriendFragment extends BaseFragment {
                 });
                 if (friendResult.data.length != 0) {
                     List<Friend> list = Arrays.asList(friendResult.data);
+                    setChar(list);
+                    Collections.sort(list,friendComparator);
                     mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
                 } else {
@@ -176,6 +202,18 @@ public class FriendFragment extends BaseFragment {
             }
         });
 
+    }
+
+    public void setChar(List<Friend> list){
+        for (Friend friend:list){
+            String pinyin = characterParser.getSelling(friend.nickname);
+            String sortString = pinyin.substring(0,1).toUpperCase();
+            if(sortString.matches("[A-Z]")){
+                friend.setSortLetters(sortString.toUpperCase());
+            }else{
+                friend.setSortLetters("#");
+            }
+        }
     }
 
     public void setmFriendCount(String count) {

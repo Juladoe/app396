@@ -32,6 +32,18 @@
             />
         </LinearLayout>
 
+    <TextView
+        android:id="@+id/catalog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_cccccc"
+        android:textColor="@color/grey"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="A"
+        />
+
     <RelativeLayout
         android:id="@+id/friend_item"
         android:layout_width="match_parent"

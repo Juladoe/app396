@@ -4,27 +4,6 @@ package com.edusoho.kuozhi.v3.model.bal;
  * Created by Melomelon on 2015/6/2.
  */
 public class Friend {
-    public Friend(String name) {
-        this.nickname = name;
-    }
-
-    public Friend(int avatarID, String name) {
-        this.avatarID = avatarID;
-        this.nickname = name;
-    }
-
-    public Friend(int avatarID, String name, String state) {
-        this.avatarID = avatarID;
-        this.nickname = name;
-        this.friendship = state;
-    }
-
-    public Friend(int avatarID, String name, String state,boolean isTeacher) {
-        this.avatarID = avatarID;
-        this.nickname = name;
-        this.friendship = state;
-        this.isTeacher = isTeacher;
-    }
 
     public int id;
     public int avatarID;
@@ -39,4 +18,13 @@ public class Friend {
 
     public boolean isTop = false;
     public boolean isBottom = false;
+
+    private String sortLetters;
+
+    public String getSortLetters() {
+        return sortLetters;
+    }
+    public void setSortLetters(String sortLetters) {
+        this.sortLetters = sortLetters;
+    }
 }
