@@ -48,7 +48,7 @@ public class SwipeAdapter extends BaseAdapter {
     }
 
     public void addItem(New newModel) {
-        mList.add(newModel);
+        mList.add(0, newModel);
         notifyDataSetChanged();
     }
 

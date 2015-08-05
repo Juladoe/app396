@@ -80,9 +80,10 @@ public class BulletinDataSource {
         return bulletin;
     }
 
-    public void delete() {
+    public int delete() {
         this.openWrite();
-        mDataBase.delete(TABLE_NAME, null, null);
+        int bulletinId = mDataBase.delete(TABLE_NAME, null, null);
         this.close();
+        return bulletinId;
     }
 }
