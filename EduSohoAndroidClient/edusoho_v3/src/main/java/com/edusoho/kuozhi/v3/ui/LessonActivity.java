@@ -85,6 +85,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         msgHandler = new MsgHandler(this);
         fragmentData = new Bundle();
         initView();
+        app.startPlayCacheServer(this);
     }
 
     @Override
@@ -354,6 +355,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void loadLessonFromCache() {
+        mFromCache = true;
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
         String object = sqliteUtil.query(
                 String.class,
