@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/base_gray">
@@ -11,6 +11,22 @@
         android:divider="@null">
         </ListView>
 
+    <TextView
+        android:id="@+id/dialog"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:background="@color/material_grey"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="A"
+        android:textSize="36sp"
+        android:visibility="invisible"/>
 
+    <com.edusoho.kuozhi.v3.view.SideBar
+        android:id="@+id/sidebar"
+        android:layout_width="28dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|center"/>
 
-</RelativeLayout>
+</FrameLayout>
