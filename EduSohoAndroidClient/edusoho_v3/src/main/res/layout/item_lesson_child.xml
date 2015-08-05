@@ -95,7 +95,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_download_selected"
             android:text="@string/font_download_unselect"
-            android:textSize="@dimen/x_large_font_size"
+            android:textSize="@dimen/downloading_select_size"
             android:clickable="true"
             android:textColor="@color/green_alpha"
             android:background="@android:color/white"

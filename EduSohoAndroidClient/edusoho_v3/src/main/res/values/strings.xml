@@ -66,11 +66,11 @@
     <string name="font_find">&#xe604;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
-    <string name="font_downloading">&#xe643;</string>
-    <string name="font_stop_downloading">&#xe649;</string>
-    <string name="font_wait_downloading">&#xe60b;</string>
-    <string name="font_download_select">&#xe648;</string>
-    <string name="font_download_unselect">&#xe629;</string>
+    <string name="font_downloading">&#xe612;</string>
+    <string name="font_stop_downloading">&#xe614;</string>
+    <string name="font_wait_downloading">&#xe60f;</string>
+    <string name="font_download_select">&#xe610;</string>
+    <string name="font_download_unselect">&#xe613;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
     <string name="font_chat_add_media">&#xe608;</string>
