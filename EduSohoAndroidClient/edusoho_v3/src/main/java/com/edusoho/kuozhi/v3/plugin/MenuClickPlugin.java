@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,13 +28,14 @@ import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupInputDialog;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Iterator;
 
 /**
@@ -282,7 +283,7 @@ public class MenuClickPlugin extends CoreBridge {
     private int[] coverJsonArrayToIntArray(JSONArray jsonArray) {
         int length = jsonArray.length();
         int[] array = new int[length];
-        for (int i=0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             try {
                 array[i] = jsonArray.getInt(i);
             } catch (Exception e) {

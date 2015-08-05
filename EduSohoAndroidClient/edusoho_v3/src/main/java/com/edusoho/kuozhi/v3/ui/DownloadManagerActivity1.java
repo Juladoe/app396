@@ -50,6 +50,7 @@ import extensions.PagerSlidingTabStrip;
 
 /**
  * Created by JesseHuang on 15/6/22.
+ * 下载管理
  */
 public class DownloadManagerActivity1 extends ActionBarBaseActivity {
     public static final String[] DOWNLOAD_FRAGMENTS = {"DownloadedFragment", "DownloadingFragment"};

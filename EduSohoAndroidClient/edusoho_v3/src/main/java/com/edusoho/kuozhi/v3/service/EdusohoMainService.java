@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -206,7 +207,6 @@ public class EdusohoMainService extends Service {
                 if (latestChat.size() > 0) {
                     //Collections.reverse(latestChat);
                     HashMap<Integer, ArrayList<Chat>> latestHashMap = filterLatestChats(latestChat);
-                    //TODO 把latestHashMap分别插入Chat和New表
                     Iterator<Map.Entry<Integer, ArrayList<Chat>>> iterators = latestHashMap.entrySet().iterator();
                     ArrayList<New> newArrayList = new ArrayList<>();
                     while (iterators.hasNext()) {
@@ -243,13 +243,17 @@ public class EdusohoMainService extends Service {
         for (int i = 0; i < size; i++) {
             Chat latestChat = latestChats.get(i);
             latestChat = latestChat.serializeCustomContent(latestChat);
-            int fromId = latestChat.getFromId();
-            if (chatHashMaps.containsKey(fromId)) {
-                chatHashMaps.get(fromId).add(latestChat);
-            } else {
-                ArrayList<Chat> tmpLatestChat = new ArrayList<>();
-                tmpLatestChat.add(latestChat);
-                chatHashMaps.put(fromId, tmpLatestChat);
+            if (latestChat.getCustomContent().getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName())
+                    || latestChat.getCustomContent().getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
+                //只增加校友或者教师的信息
+                int fromId = latestChat.getFromId();
+                if (chatHashMaps.containsKey(fromId)) {
+                    chatHashMaps.get(fromId).add(latestChat);
+                } else {
+                    ArrayList<Chat> tmpLatestChat = new ArrayList<>();
+                    tmpLatestChat.add(latestChat);
+                    chatHashMaps.put(fromId, tmpLatestChat);
+                }
             }
         }
         return chatHashMaps;

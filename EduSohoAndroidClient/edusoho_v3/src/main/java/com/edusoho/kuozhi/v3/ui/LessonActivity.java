@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -35,15 +36,12 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-
-import cn.trinea.android.common.util.AppUtils;
-import cn.trinea.android.common.util.ArrayUtils;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -87,6 +85,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         msgHandler = new MsgHandler(this);
         fragmentData = new Bundle();
         initView();
+        app.startPlayCacheServer(this);
     }
 
     @Override
@@ -144,6 +143,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             }
 
             loadLesson();
+
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
@@ -354,6 +354,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void loadLessonFromCache() {
+        mFromCache = true;
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
         String object = sqliteUtil.query(
                 String.class,
@@ -381,7 +382,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private LessonItem getLessonResultType(String object) {
         LessonItem lessonItem = parseJsonValue(
                 object, new TypeToken<LessonItem>() {
-        });
+                });
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
             case LIVE:
@@ -403,12 +404,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 LinkedHashMap status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
-                Object resultId = status.get("resultId");
-                if (resultId instanceof Double) {
-                    fragmentData.putInt(RESULT_ID, ((Double)resultId).intValue());
-                } else {
-                    fragmentData.putInt(RESULT_ID, ((Integer)resultId));
-                }
+                int resultId = AppUtil.parseInt(status.get("resultId").toString());
+                fragmentData.putInt(RESULT_ID, resultId);
 
                 fragmentData.putString(Const.STATUS, status.get("status").toString());
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);

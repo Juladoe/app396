@@ -39,6 +39,7 @@ import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -642,6 +643,36 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
+    private void bindPushUrl(String url, final NormalCallback<RequestUrl> normalCallback) {
+        final StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
+        sb.append(url);
+        if (TextUtils.isEmpty(app.apiToken)) {
+            final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
+            app.getUrl(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Token token = parseJsonValue(response, new TypeToken<Token>() {
+                    });
+                    if (token != null) {
+                        RequestUrl requestUrl = new RequestUrl(sb.toString());
+                        requestUrl.heads.put("Auth-Token", app.apiToken);
+                        app.saveApiToken(token.token);
+                        normalCallback.success(requestUrl);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "无法获取网校Token");
+                }
+            });
+        } else {
+            RequestUrl requestUrl = new RequestUrl(sb.toString());
+            requestUrl.heads.put("Auth-Token", app.apiToken);
+            normalCallback.success(requestUrl);
+        }
+    }
+
     @Override
     public void onLowMemory() {
         super.onLowMemory();
@@ -727,44 +758,43 @@ public class EdusohoApp extends Application {
         XGPushConfig.enableDebug(this, true);
         XGPushManager.registerPush(mContext, new XGIOperateCallback() {
             @Override
-            public void onSuccess(Object data, int flag) {
+            public void onSuccess(final Object data, int flag) {
                 Log.w(Constants.LogTag, "+++ register push success. token:" + data);
-                RequestUrl requestUrl;
-                if (bundle != null) {
-                    requestUrl = app.bindPushUrl(Const.BIND);
-                    HashMap<String, String> params = requestUrl.getParams();
-                    params.put("appToken", data.toString());
-                    params.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                    params.put("euqip", Const.EQUIP_TYPE);
-                } else {
-                    requestUrl = app.bindPushUrl(Const.ANONYMOUS_BIND);
-                    HashMap<String, String> params = requestUrl.getParams();
-                    params.put("appToken", data.toString());
-                    params.put("euqip", Const.EQUIP_TYPE);
-                }
-                app.postUrl(requestUrl, new Response.Listener<String>() {
+                NormalCallback<RequestUrl> normalCallback = new NormalCallback<RequestUrl>() {
                     @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject resultObject = new JSONObject(response);
-                            if (bundle != null) {
-                                getService().getOfflineMsgs();
-                            }
-                            String result = resultObject.getString("result");
-                            if (result.equals("success")) {
-                                Log.d(TAG, "cloud register success");
-                            }
-                        } catch (JSONException e) {
-                            Log.d(TAG, "cloud register failed");
-                            e.printStackTrace();
+                    public void success(RequestUrl requestUrl) {
+                        HashMap<String, String> params = requestUrl.getParams();
+                        params.put("appToken", data.toString());
+                        if (bundle != null) {
+                            params.put("studentId", bundle.getString(Const.BIND_USER_ID));
                         }
+                        params.put("euqip", Const.EQUIP_TYPE);
+                        app.postUrl(requestUrl, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject resultObject = new JSONObject(response);
+                                    if (bundle != null) {
+                                        getService().getOfflineMsgs();
+                                    }
+                                    String result = resultObject.getString("result");
+                                    if (result.equals("success")) {
+                                        Log.d(TAG, "cloud register success");
+                                    }
+                                } catch (JSONException e) {
+                                    Log.d(TAG, "cloud register failed");
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d(TAG, error.toString());
+                            }
+                        });
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, error.toString());
-                    }
-                });
+                };
+                app.bindPushUrl(bundle == null ? Const.ANONYMOUS_BIND : Const.BIND, normalCallback);
             }
 
             @Override

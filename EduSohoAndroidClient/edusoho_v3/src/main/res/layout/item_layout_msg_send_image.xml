@@ -28,29 +28,20 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
 
-            <!--<de.hdodenhof.circleimageview.CircleImageView-->
-            <!--android:id="@+id/ci_send_pic"-->
-            <!--android:layout_width="@dimen/head_icon_40"-->
-            <!--android:layout_height="@dimen/head_icon_40"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:layout_marginLeft="8dp"-->
-            <!--android:src="@drawable/myinfo_default_face" />-->
-
             <ImageView
                 android:id="@+id/ci_send_pic"
                 android:layout_width="@dimen/head_icon_medium"
                 android:layout_height="@dimen/head_icon_medium"
-                android:layout_alignParentLeft="true"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="8dp"
                 android:src="@drawable/default_avatar" />
 
             <ImageView
                 android:id="@+id/iv_msg_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/ci_send_pic"
+                android:layout_toLeftOf="@+id/ci_send_pic"
                 android:background="@drawable/chat_image_to_layout"
                 android:layout_centerInParent="true"
                 android:scaleType="fitCenter"

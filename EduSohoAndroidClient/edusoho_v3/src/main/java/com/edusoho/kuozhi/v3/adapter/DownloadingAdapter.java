@@ -90,12 +90,12 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
+    public Course getGroup(int groupPosition) {
         return mGroupItems.get(groupPosition);
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition) {
+    public LessonItem getChild(int groupPosition, int childPosition) {
         return mChildItems.get(groupPosition).get(childPosition);
     }
 
@@ -239,7 +239,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 
     @Override

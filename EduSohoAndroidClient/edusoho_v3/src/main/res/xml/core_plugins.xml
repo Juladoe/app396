@@ -122,7 +122,7 @@
 
     <plugin
         name="VideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.VideoLessonFragment"
+        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
         version="1.0" />
 
     <plugin

@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,11 +15,15 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity1;
+import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 
@@ -49,9 +55,9 @@ public class DownloadedFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        if (mActivityContainer != null) {
-            app.startPlayCacheServer(mActivityContainer);
-        }
+//        if (mActivityContainer != null) {
+//            app.startPlayCacheServer(mActivityContainer);
+//        }
     }
 
     @Override
@@ -90,10 +96,30 @@ public class DownloadedFragment extends BaseFragment {
             }
         });
 
+        mListview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
+                app.mEngine.runNormalPlugin(
+                        LessonActivity.TAG, mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
+                                startIntent.putExtra(LessonActivity.FROM_CACHE, true);
+                                startIntent.putExtra(Const.FREE, lessonItem.free);
+                                startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+                                startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
+                            }
+                        }
+                );
+                return false;
+            }
+        });
         mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Log.d("setOnItemClickListener", "1");
             }
         });
     }

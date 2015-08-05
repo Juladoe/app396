@@ -45,11 +45,12 @@ import java.util.regex.Pattern;
 
 /**
  * Created by JesseHuang on 15/6/14.
+ * 课时下载
  */
 public class LessonDownloadingActivity extends ActionBarBaseActivity {
     public static final String LIST_JSON = "lessonListJsonStr";
     public static final String COURSE_JSON = "courseJsonStr";
-    public static final String CHAPTER_TOP = "";
+    public static final String CHAPTER_TOP = "前言";
     protected DownloadStatusReceiver mDownloadStatusReceiver;
 
     private TextView btnSelectAll;
@@ -135,9 +136,9 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         if (mLessonList != null) {
             initData();
             if (mGroupItems.size() < mChildItems.size()) {
-                LessonItem group1 = new LessonItem();
-                group1.title = CHAPTER_TOP;
-                mGroupItems.add(0, group1);
+                LessonItem group = new LessonItem();
+                group.title = CHAPTER_TOP;
+                mGroupItems.add(0, group);
             }
             mAdapter = new DownloadLessonAdapter(mGroupItems, mChildItems);
             mListView.setAdapter(mAdapter);
@@ -213,8 +214,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                     break;
                 }
                 LessonItem nextLessonItem = mLessonList.get(i + 1);
-                if (nextLessonItem.itemType.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())
-                        && nextLessonItem.type.toString().toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
+                if (nextLessonItem.itemType.toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())
+                        && nextLessonItem.type.toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
                     mChildItems.add(tempArray);
                     tempArray = new ArrayList<>();
                 }
