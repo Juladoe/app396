@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -40,7 +41,6 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
 import java.util.HashMap;
-import java.util.Timer;
 
 /**
  * Created by JesseHuang on 15/4/24.
@@ -49,9 +49,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     public static final String TAG = "DefaultPageActivity";
 
     private String mCurrentTag;
-    private boolean mIsExit;
     private int mSelectBtn;
-    private Timer mExitTimer;
     private LinearLayout mNavLayout;
     private EduSohoTextBtn mDownTabNews;
     private EduSohoTextBtn mDownTabFind;
@@ -61,7 +59,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private DrawerLayout mDrawerLayout;
     private FragmentNavigationDrawer mFragmentNavigationDrawer;
-    private final byte[] mLock = new byte[1];
     private boolean mLogoutFlag = false;
 
     @Override
@@ -130,7 +127,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
-
+        mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
     }
 
     public EduToolBar getToolBar() {
@@ -293,6 +290,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         return messageTypes;
     }
 
+    private Toast mToast;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -302,9 +301,12 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                     return true;
                 }
 
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                startActivity(intent);
+                if (null == mToast.getView().getParent()) {
+                    mToast.show();
+                } else {
+                    finish();
+                    app.exit();
+                }
                 return true;
             case KeyEvent.KEYCODE_MENU:
                 return true;
@@ -316,11 +318,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-        if (mExitTimer != null) {
-            Log.d(TAG, "mExitTimer.cancel()");
-            mExitTimer.cancel();
-            mExitTimer = null;
-        }
         ESWebViewRequestManager.clear();
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
     }
