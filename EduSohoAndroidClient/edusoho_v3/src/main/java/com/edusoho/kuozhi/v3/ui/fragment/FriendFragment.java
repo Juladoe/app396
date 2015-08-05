@@ -193,7 +193,7 @@ public class FriendFragment extends BaseFragment {
                 } else {
                     mLoadDialog.dismiss();
                 }
-                setmFriendCount(friendResult.total);
+                setmFriendCount(friendResult.data.length+"");
             }
         }, new Response.ErrorListener() {
             @Override
