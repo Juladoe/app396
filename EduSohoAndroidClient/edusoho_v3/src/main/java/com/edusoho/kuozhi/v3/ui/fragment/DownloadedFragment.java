@@ -55,9 +55,9 @@ public class DownloadedFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        if (mActivityContainer != null) {
-            app.startPlayCacheServer(mActivityContainer);
-        }
+//        if (mActivityContainer != null) {
+//            app.startPlayCacheServer(mActivityContainer);
+//        }
     }
 
     @Override
