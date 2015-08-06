@@ -49,12 +49,12 @@ public class SideBar extends View {
         int letterHeight = height / index.length;
 
         for (int i = 0; i < index.length; i++) {
-            mPaint.setColor(Color.BLACK);   // TODO: 2015/8/4
+            mPaint.setColor(Color.BLACK);
             mPaint.setAntiAlias(true);
             mPaint.setTextSize(28);
 
             if (i == choose) {
-                mPaint.setColor(Color.parseColor("#3399ff"));  // TODO: 2015/8/4
+                mPaint.setColor(Color.parseColor("#3399ff"));
                 mPaint.setFakeBoldText(true);
             }
             float posX = width / 2 - mPaint.measureText(index[i]) / 2;

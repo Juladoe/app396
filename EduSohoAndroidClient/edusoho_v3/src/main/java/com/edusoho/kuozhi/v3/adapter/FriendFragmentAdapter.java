@@ -155,18 +155,23 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder = (ItemHolder) v.getTag();
                 }
 
-
                 final Friend friend = (Friend) mList.get(position - 1);
                 if (friend.isTop) {
                     itemHolder.friendTag.setVisibility(View.VISIBLE);
                 } else {
                     itemHolder.friendTag.setVisibility(View.GONE);
                 }
-                if (friend.isBottom){
-                    itemHolder.dividerLine.setVisibility(View.GONE);
+
+                if (position != mList.size()){
+                    if (getSectionForPosition(position-1)!=getSectionForPosition(position)){
+                        itemHolder.dividerLine.setVisibility(View.GONE);
+                    }else {
+                        itemHolder.dividerLine.setVisibility(View.VISIBLE);
+                    }
                 }else {
-                    itemHolder.dividerLine.setVisibility(View.VISIBLE);
+                    itemHolder.dividerLine.setVisibility(View.GONE);
                 }
+
                 if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(),friend.roles)) {
                     itemHolder.teacherTag.setVisibility(View.VISIBLE);
                 } else {
