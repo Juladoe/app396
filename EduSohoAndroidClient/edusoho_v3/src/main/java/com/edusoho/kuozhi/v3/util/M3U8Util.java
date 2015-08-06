@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -19,7 +18,6 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -34,9 +32,9 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -47,7 +45,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ToastUtils;
@@ -303,10 +300,8 @@ public class M3U8Util {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
-
     }
 
     public void download(int lessonId, int courseId, int userId) {
@@ -598,7 +593,8 @@ public class M3U8Util {
                             Log.d(TAG, "file download error" + url);
                             return;
                         }
-                        FileUtils.writeFile(file, response.getEntity().getContent());
+
+                        FileUtils.writeFile(file, new DegestInputStream(response.getEntity().getContent()));
                     }
 
                     updateDownloadStatus(url, 1);
@@ -650,7 +646,6 @@ public class M3U8Util {
         for (String url : urlList) {
             getResourceFromNet(url, URL);
         }
-
     }
 
     private File getLocalM3U8Dir() {
@@ -766,5 +761,50 @@ public class M3U8Util {
         m3U8File.content = stringBuilder.toString();
         Log.d(TAG, "end parse m3u8 file ");
         return m3U8File;
+    }
+
+    public static class DegestInputStream extends InputStream
+    {
+        private static final String TAG = "DegestInputStream";
+
+        private InputStream mTargetInputStream;
+
+        public DegestInputStream(InputStream target)
+        {
+            this.mTargetInputStream = target;
+        }
+
+        @Override
+        public int read() throws IOException {
+            Log.d(TAG, "read");
+            return mTargetInputStream.read();
+        }
+
+        @Override
+        public int read(byte[] buffer) throws IOException {
+            Log.d(TAG, "read buffer");
+            int length = mTargetInputStream.read(buffer);
+            for (int i = 0; i < length; i++) {
+                byte b = buffer[i];
+                b = (byte)(b ^ 107);
+                buffer[i] = b;
+            }
+            return length;
+        }
+
+        @Override
+        public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
+            Log.d(TAG, "read buffer byteOffset");
+            int result = mTargetInputStream.read(buffer, byteOffset, byteCount);
+
+            result = result ^ 107;
+            return result;
+        }
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+            mTargetInputStream.close();
+        }
     }
 }

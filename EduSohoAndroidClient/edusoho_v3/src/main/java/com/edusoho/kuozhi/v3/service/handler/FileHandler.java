@@ -2,15 +2,15 @@ package com.edusoho.kuozhi.v3.service.handler;
 
 import android.net.Uri;
 import android.util.Log;
-
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
-
 import com.belladati.httpclientandroidlib.HttpEntity;
 import com.belladati.httpclientandroidlib.HttpException;
 import com.belladati.httpclientandroidlib.HttpHost;
@@ -32,6 +32,7 @@ import com.belladati.httpclientandroidlib.protocol.RequestConnControl;
 import com.belladati.httpclientandroidlib.protocol.RequestContent;
 import com.belladati.httpclientandroidlib.protocol.RequestTargetHost;
 import com.belladati.httpclientandroidlib.protocol.RequestUserAgent;
+import com.belladati.httpclientandroidlib.util.Args;
 import com.belladati.httpclientandroidlib.util.EntityUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -107,7 +108,7 @@ public class FileHandler implements HttpRequestHandler {
         File videoFile = getLocalFile(queryName.toString());
         if (videoFile.exists()) {
             Log.d(null, "cache->" + videoFile);
-            FileEntity fileEntity = new FileEntity(videoFile);
+            FileEntity fileEntity = new WrapFileEntity(videoFile);
             //httpResponse.setHeader("Content-Type", "video/mp2t; charset=UTF-8");
             httpResponse.setEntity(fileEntity);
             return;
@@ -165,6 +166,32 @@ public class FileHandler implements HttpRequestHandler {
 
     private static String reEncodeM3U8File(String text) {
         return text.replaceAll("http://", "http://localhost:5820/http://");
+    }
+
+    private class WrapFileEntity extends FileEntity {
+
+        public WrapFileEntity(File file) {
+            super(file);
+        }
+
+        @Override
+        public void writeTo(OutputStream outstream) throws IOException {
+            Log.d("WrapFileEntity", "writeTo");
+            Args.notNull(outstream, "Output stream");
+            M3U8Util.DegestInputStream instream = new M3U8Util.DegestInputStream(
+                    new FileInputStream(this.file)
+            );
+            try {
+                byte[] tmp = new byte[4096];
+                int l;
+                while((l = instream.read(tmp)) != -1) {
+                    outstream.write(tmp, 0, l);
+                }
+                outstream.flush();
+            } finally {
+                instream.close();
+            }
+        }
     }
 
     public class WrapInputStream extends BufferedInputStream {
