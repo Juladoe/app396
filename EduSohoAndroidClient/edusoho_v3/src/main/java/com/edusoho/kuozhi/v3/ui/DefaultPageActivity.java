@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -32,6 +33,7 @@ import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
@@ -87,23 +89,26 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         logSchoolInfoToServer();
-        procressIntent(getIntent());
+        processIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.d(TAG, "onNewIntent");
-        procressIntent(intent);
+        processIntent(intent);
         setIntent(intent);
     }
 
-    private void procressIntent(Intent intent) {
+    private void processIntent(Intent intent) {
         if (intent != null && intent.hasExtra(Const.INTENT_TARGET)) {
             Class target = (Class) intent.getSerializableExtra(Const.INTENT_TARGET);
             Intent targetIntent = new Intent(mContext, target);
             targetIntent.putExtras(intent.getExtras());
             targetIntent.setFlags(intent.getFlags());
+//            if (intent.getExtras().getBoolean(Const.INTENT_APP_EXIT_PUSH, false)) {
+//                NewsFragment newsFragment = (NewsFragment) mFragmentManager.findFragmentByTag("NewsFragment");
+//            }
             startActivity(targetIntent);
         }
     }
@@ -297,10 +302,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{
+        return new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
                 new MessageType(Const.SWITCH_TAB, source), new MessageType(Const.LOGIN_SUCCESS)};
-        return messageTypes;
     }
 
     private Toast mToast;

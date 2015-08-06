@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -14,11 +15,16 @@ import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/7/4.
  */
 public class NotificationUtil {
+    public static WrapperXGPushTextMessage mMessage = null;
+
     public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
             Chat chat = new Chat(xgMessage);
@@ -47,6 +53,10 @@ public class NotificationUtil {
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
+            if (isAppExit(context)) {
+                mMessage = xgMessage;
+                //notifyIntent.putExtra(Const.CHAT_DATA, xgMessage);
+            }
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -94,5 +104,24 @@ public class NotificationUtil {
         NotificationManager mNotificationManager =
                 (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancelAll();
+    }
+
+    /**
+     * 判断应用是否在退出状态下接收到消息
+     *
+     * @param context Context
+     * @return 是 true ，否 false
+     */
+    public static boolean isAppExit(Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
+        int size = task.size();
+        for (int i = 0; i < size; i++) {
+            if (task.get(i).baseActivity.getClassName().equals(DefaultPageActivity.class.getName()) ||
+                    task.get(i).topActivity.getClassName().equals(DefaultPageActivity.class.getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -74,7 +74,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
                 EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, wrapperMessage);
             } else if (typeBusiness.equals(TypeBusinessEnum.VERIFIED.getName())) {
                 EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, bundle, FriendFragment.class);
-                return;
             }
         } catch (Exception e) {
             e.printStackTrace();

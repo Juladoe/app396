@@ -134,6 +134,10 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
         initData();
+        if (NotificationUtil.mMessage != null) {
+            getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
+            NotificationUtil.mMessage = null;
+        }
     }
 
     private void initData() {
@@ -236,13 +240,9 @@ public class NewsFragment extends BaseFragment {
         } else {
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
-                    //收到消息更新消息列表的信息
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
-                    if (handleType == HANDLE_RECEIVE_MSG) {
-                        handleReceiveMsg(message);
-                    } else if (handleType == HANDLE_SEND_MSG) {
-                        handleSendMsg(message);
-                    }
+                    WrapperXGPushTextMessage chatMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                    getNewChatMsg(handleType, chatMessage);
                     break;
                 case UPDATE_UNREAD_MSG:
                     int fromId = message.data.getInt(Const.FROM_ID);
@@ -256,7 +256,8 @@ public class NewsFragment extends BaseFragment {
                     }
                     break;
                 case Const.ADD_BULLETIT_MSG:
-                    handleBulletinMsg(message);
+                    WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                    handleBulletinMsg(bulletinMessage);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
                     NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -284,12 +285,25 @@ public class NewsFragment extends BaseFragment {
     }
 
     /**
-     * 处理公告
+     * 添加一条新消息
      *
-     * @param message
+     * @param chatType          消息处理方式：1发送，2接收
+     * @param xgPushTextMessage 消息结构
      */
-    private void handleBulletinMsg(WidgetMessage message) {
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+    private void getNewChatMsg(int chatType, WrapperXGPushTextMessage xgPushTextMessage) {
+        if (chatType == HANDLE_RECEIVE_MSG) {
+            handleReceiveMsg(xgPushTextMessage);
+        } else if (chatType == HANDLE_SEND_MSG) {
+            handleSendMsg(xgPushTextMessage);
+        }
+    }
+
+    /**
+     * 添加一条公告
+     *
+     * @param wrapperMessage 消息结构
+     */
+    private void handleBulletinMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
@@ -313,8 +327,7 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleReceiveMsg(WidgetMessage message) {
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+    private void handleReceiveMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New(wrapperMessage);
         newModel.belongId = app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -330,8 +343,7 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleSendMsg(WidgetMessage message) {
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+    private void handleSendMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New(wrapperMessage);
         newModel.belongId = app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));

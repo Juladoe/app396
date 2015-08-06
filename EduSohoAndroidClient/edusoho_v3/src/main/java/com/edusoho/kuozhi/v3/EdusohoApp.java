@@ -861,7 +861,9 @@ public class EdusohoApp extends Application {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
         ComponentName componentInfo = task.get(0).topActivity;
-        if (componentInfo.getClassName().equals(activityName)) return true;
+        if (componentInfo.getClassName().equals(activityName)) {
+            return true;
+        }
         return false;
     }
 }
