@@ -85,7 +85,7 @@ public class FriendFragment extends BaseFragment {
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
         dialog = (TextView) mContainerView.findViewById(R.id.dialog);
-        mSidebar.setTextView(dialog);  // TODO: 2015/8/4
+        mSidebar.setTextView(dialog);
         mSidebar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChangedListener(String string) {

@@ -15,8 +15,9 @@
         android:id="@+id/dialog"
         android:layout_width="80dp"
         android:layout_height="80dp"
+
         android:layout_gravity="center"
-        android:background="@color/material_grey"
+        android:background="@drawable/radius_tv_bg"
         android:gravity="center"
         android:textColor="@color/white"
         android:text="A"
@@ -25,7 +26,9 @@
 
     <com.edusoho.kuozhi.v3.view.SideBar
         android:id="@+id/sidebar"
-        android:layout_width="28dp"
+        android:layout_width="24dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginBottom="68dp"
         android:layout_height="match_parent"
         android:layout_gravity="right|center"/>
 
