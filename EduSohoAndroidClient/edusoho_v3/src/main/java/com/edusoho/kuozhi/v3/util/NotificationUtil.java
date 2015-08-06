@@ -42,9 +42,11 @@ public class NotificationUtil {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Intent notifyIntent = new Intent(context, ChatActivity.class);
+            Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+            notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
+            notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
             notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -68,8 +70,10 @@ public class NotificationUtil {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Intent notifyIntent = new Intent(context, BulletinActivity.class);
+            Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+            notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            notifyIntent.putExtra(Const.INTENT_TARGET, BulletinActivity.class);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);

@@ -28,10 +28,15 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     public static final String INIT_APP = "init_app";
 
+    protected Intent mCurrentIntent;
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCurrentIntent = getIntent();
+        if (mCurrentIntent != null && !mCurrentIntent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
+            startApp();
+            return;
+        }
         setContentView(R.layout.activity_start);
         app.registMsgSource(this);
         startSplash();
@@ -205,7 +210,10 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             app.mEngine.runNormalPlugin("DefaultPageActivity", this, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    if (mCurrentIntent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
+                        startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    }
+                    startIntent.putExtras(mCurrentIntent);
                 }
             });
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

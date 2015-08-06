@@ -19,24 +19,19 @@ public class ESWebViewFactory {
     private static final String TAG = "ESWebViewFactory";
     private Queue<ESCordovaWebView> mCacheQueue;
     private static ESWebViewFactory factory;
-    private BaseActivity mActivity;
-    private boolean mIsCreateing;
-    private Handler mHandler;
 
-    private ESWebViewFactory(BaseActivity activity) {
-        mActivity = activity;
-        mHandler = new Handler(activity.getMainLooper());
+    private ESWebViewFactory() {
         mCacheQueue = new ArrayDeque<ESCordovaWebView>();
     }
 
     public static void init(BaseActivity activity) {
         Config.init(activity);
-        factory = new ESWebViewFactory(activity);
+        factory = new ESWebViewFactory();
     }
 
     public static ESWebViewFactory getFactory() {
         if (factory == null) {
-            throw new RuntimeException("ESWebViewFactory not init");
+            init(null);
         }
         return factory;
     }
@@ -52,45 +47,8 @@ public class ESWebViewFactory {
         factory = null;
     }
 
-    public ESCordovaWebView getWebView() {
-        ESCordovaWebView webView = mCacheQueue.poll();
-        if (webView == null) {
-            Log.d(TAG, "create mCacheWebView");
-            webView = ESCordovaWebView.create(mActivity, null);
-        }
-        return webView;
-    }
-
     public ESCordovaWebView getWebView(Activity activity) {
         return ESCordovaWebView.create(activity, null);
     }
 
-    public void addWebView(ESCordovaWebView webView) {
-        mCacheQueue.add(webView);
-        Log.d(TAG, "addWebView");
-    }
-
-    public void factoryWebView(AttributeSet attributeSet) {
-        Log.d(TAG, "post factoryWebView");
-        mHandler.post(new FactoryRunnable(attributeSet));
-    }
-
-    private class FactoryRunnable implements Runnable {
-
-        private AttributeSet mAttributeSet;
-
-        public FactoryRunnable(AttributeSet attributeSet) {
-            this.mAttributeSet = attributeSet;
-        }
-
-        @Override
-        public void run() {
-            mIsCreateing = true;
-            ESCordovaWebView webView = ESCordovaWebView.create(mActivity, mAttributeSet);
-            mCacheQueue.add(webView);
-
-            Log.d(TAG, "mCacheQueue size:" + mCacheQueue.size());
-            mIsCreateing = false;
-        }
-    }
 }

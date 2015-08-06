@@ -87,12 +87,25 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         logSchoolInfoToServer();
+        procressIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.d(TAG, "onNewIntent");
+        procressIntent(intent);
         setIntent(intent);
+    }
+
+    private void procressIntent(Intent intent) {
+        if (intent != null && intent.hasExtra(Const.INTENT_TARGET)) {
+            Class target = (Class) intent.getSerializableExtra(Const.INTENT_TARGET);
+            Intent targetIntent = new Intent(mContext, target);
+            targetIntent.putExtras(intent.getExtras());
+            targetIntent.setFlags(intent.getFlags());
+            startActivity(targetIntent);
+        }
     }
 
     @Override
