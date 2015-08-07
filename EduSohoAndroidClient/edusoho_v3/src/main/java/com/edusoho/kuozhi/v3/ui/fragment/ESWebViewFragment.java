@@ -15,7 +15,6 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 public class ESWebViewFragment extends BaseFragment {
     private static final String TAG = "ESWebViewFragment";
     protected ESWebView mWebView;
-    private PtrClassicFrameLayout mRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,22 +25,8 @@ public class ESWebViewFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-        mRefreshLayout = (PtrClassicFrameLayout)view;
         mWebView = (ESWebView) view.findViewById(R.id.webView);
         mWebView.initPlugin(mActivity);
-
-        mRefreshLayout.setPtrHandler(new PtrDefaultHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
-                mWebView.reload();
-                mRefreshLayout.refreshComplete();
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return mWebView.getWebView().getOverScrollY() <= 0;
-            }
-        });
     }
 
     public ESWebView getView() {
