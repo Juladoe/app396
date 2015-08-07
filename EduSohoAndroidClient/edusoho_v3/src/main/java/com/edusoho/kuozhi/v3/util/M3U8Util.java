@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import com.android.volley.Response;
@@ -594,7 +595,10 @@ public class M3U8Util {
                             return;
                         }
 
-                        FileUtils.writeFile(file, new DegestInputStream(response.getEntity().getContent()));
+                        FileUtils.writeFile(
+                                file,
+                                new DegestInputStream(response.getEntity().getContent(), mTargetHost)
+                        );
                     }
 
                     updateDownloadStatus(url, 1);
@@ -768,43 +772,61 @@ public class M3U8Util {
         private static final String TAG = "DegestInputStream";
 
         private InputStream mTargetInputStream;
+        private int mCurrentDesgetIndex;
+        private byte[] mDesgetKey;
 
-        public DegestInputStream(InputStream target)
+        public DegestInputStream(InputStream target, String host)
         {
+            initDesgetKey(host);
             this.mTargetInputStream = target;
+        }
+
+        private void initDesgetKey(String host) {
+
+            String desgetStr = "";
+            if (! TextUtils.isEmpty(host)) {
+                desgetStr = DigestUtils.md5(host);
+            }
+
+            this.mCurrentDesgetIndex = 0;
+            this.mDesgetKey = desgetStr.getBytes();
         }
 
         @Override
         public int read() throws IOException {
-            Log.d(TAG, "read");
             return mTargetInputStream.read();
         }
 
         @Override
         public int read(byte[] buffer) throws IOException {
-            Log.d(TAG, "read buffer");
             int length = mTargetInputStream.read(buffer);
-            for (int i = 0; i < length; i++) {
-                byte b = buffer[i];
-                b = (byte)(b ^ 107);
-                buffer[i] = b;
-            }
+            processorByteArray(length, buffer);
             return length;
         }
 
         @Override
         public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-            Log.d(TAG, "read buffer byteOffset");
-            int result = mTargetInputStream.read(buffer, byteOffset, byteCount);
-
-            result = result ^ 107;
-            return result;
+            return mTargetInputStream.read(buffer, byteOffset, byteCount);
         }
 
         @Override
         public void close() throws IOException {
             super.close();
             mTargetInputStream.close();
+        }
+
+        private void processorByteArray(int length, byte[] buffer) {
+            if (length <= 0 || this.mDesgetKey.length == 0) {
+                return;
+            }
+
+            int keyLength = mDesgetKey.length - 1;
+            for (int i = 0; i < length; i++) {
+                byte b = buffer[i];
+                mCurrentDesgetIndex = mCurrentDesgetIndex > keyLength ? 0 : mCurrentDesgetIndex;
+                b = (byte)(b ^ mDesgetKey[mCurrentDesgetIndex++]);
+                buffer[i] = b;
+            }
         }
     }
 }

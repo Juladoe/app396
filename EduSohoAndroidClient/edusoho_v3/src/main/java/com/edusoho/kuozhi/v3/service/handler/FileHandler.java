@@ -108,7 +108,7 @@ public class FileHandler implements HttpRequestHandler {
         File videoFile = getLocalFile(queryName.toString());
         if (videoFile.exists()) {
             Log.d(null, "cache->" + videoFile);
-            FileEntity fileEntity = new WrapFileEntity(videoFile);
+            FileEntity fileEntity = new WrapFileEntity(videoFile, mTargetHost);
             //httpResponse.setHeader("Content-Type", "video/mp2t; charset=UTF-8");
             httpResponse.setEntity(fileEntity);
             return;
@@ -170,16 +170,19 @@ public class FileHandler implements HttpRequestHandler {
 
     private class WrapFileEntity extends FileEntity {
 
-        public WrapFileEntity(File file) {
+        private String mHost;
+
+        public WrapFileEntity(File file, String host) {
             super(file);
+            this.mHost = host;
         }
 
         @Override
         public void writeTo(OutputStream outstream) throws IOException {
-            Log.d("WrapFileEntity", "writeTo");
             Args.notNull(outstream, "Output stream");
             M3U8Util.DegestInputStream instream = new M3U8Util.DegestInputStream(
                     new FileInputStream(this.file)
+                    ,mHost
             );
             try {
                 byte[] tmp = new byte[4096];
