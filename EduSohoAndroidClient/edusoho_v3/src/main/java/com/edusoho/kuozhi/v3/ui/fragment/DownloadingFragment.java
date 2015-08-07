@@ -27,7 +27,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
  * 下载中
  */
 public class DownloadingFragment extends BaseFragment {
-    private ExpandableListView mListview;
+    private ExpandableListView mListView;
     private View mToolsLayout;
     private TextView mSelectAllBtn;
     private View mDelBtn;
@@ -57,12 +57,12 @@ public class DownloadingFragment extends BaseFragment {
         mToolsLayout = view.findViewById(R.id.download_tools_layout);
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
-        mListview = (ExpandableListView) view.findViewById(R.id.el_downloading);
+        mListView = (ExpandableListView) view.findViewById(R.id.el_downloading);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel unFinishModel = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
         mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModles, unFinishModel.mLocalCourses,
                 unFinishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADING, R.layout.item_downloading_manager_lesson_child);
-        mListview.setAdapter(mDownloadingAdapter);
+        mListView.setAdapter(mDownloadingAdapter);
 
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,17 +89,24 @@ public class DownloadingFragment extends BaseFragment {
             }
         });
 
-//        mListview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//            @Override
-//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-//                if (mToolsLayout.getHeight() == 0) {
-//
-//                } else {
-//                    mDownloadingAdapter.setItemDownloadStatus(groupPosition, childPosition);
-//                }
-//                return false;
-//            }
-//        });
+        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                    DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
+                    if (parent.isGroupExpanded(groupPosition)) {
+                        gp.ivIndicator.setText(getString(R.string.font_less));
+                    } else {
+                        gp.ivIndicator.setText(getString(R.string.font_more));
+                    }
+                }
+                return false;
+            }
+        });
+
+        for (int i = 0; i < mDownloadingAdapter.getGroupCount(); i++) {
+            mListView.expandGroup(i);
+        }
     }
 
     @Override

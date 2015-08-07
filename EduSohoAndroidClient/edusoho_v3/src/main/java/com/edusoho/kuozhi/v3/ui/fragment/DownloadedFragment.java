@@ -31,7 +31,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
  * Created by JesseHuang on 15/6/22.
  */
 public class DownloadedFragment extends BaseFragment {
-    private ExpandableListView mListview;
+    private ExpandableListView mListView;
     private View mToolsLayout;
     private TextView mSelectAllBtn;
     private View mDelBtn;
@@ -65,12 +65,12 @@ public class DownloadedFragment extends BaseFragment {
         mToolsLayout = view.findViewById(R.id.download_tools_layout);
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
-        mListview = (ExpandableListView) view.findViewById(R.id.el_downloaded);
+        mListView = (ExpandableListView) view.findViewById(R.id.el_downloaded);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
         mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModles, finishModel.mLocalCourses, finishModel.mLocalLessons,
                 DownloadingAdapter.DownloadType.DOWNLOADED, R.layout.item_downloaded_manager_lesson_child);
-        mListview.setAdapter(mDownloadedAdapter);
+        mListView.setAdapter(mDownloadedAdapter);
 
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +97,7 @@ public class DownloadedFragment extends BaseFragment {
             }
         });
 
-        mListview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 if (mToolsLayout.getHeight() == 0) {
@@ -121,12 +121,31 @@ public class DownloadedFragment extends BaseFragment {
                 return false;
             }
         });
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("setOnItemClickListener", "1");
             }
         });
+
+        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                    DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
+                    if (parent.isGroupExpanded(groupPosition)) {
+                        gp.ivIndicator.setText(getString(R.string.font_less));
+                    } else {
+                        gp.ivIndicator.setText(getString(R.string.font_more));
+                    }
+                }
+                return false;
+            }
+        });
+
+        for (int i = 0; i < mDownloadedAdapter.getGroupCount(); i++) {
+            mListView.expandGroup(i);
+        }
     }
 
     @Override
@@ -180,7 +199,7 @@ public class DownloadedFragment extends BaseFragment {
             if (mActivityContainer != null) {
                 DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
                 if (model.mLocalCourses.isEmpty()) {
-                    //mListview.setAdapter(getEmptyAdapter());
+                    //mListView.setAdapter(getEmptyAdapter());
                     return;
                 } else {
                     mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
