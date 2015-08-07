@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity1;
+import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -36,7 +36,7 @@ public class DownloadedFragment extends BaseFragment {
     private TextView mSelectAllBtn;
     private View mDelBtn;
     private DownloadingAdapter mDownloadedAdapter;
-    private DownloadManagerActivity1 mActivityContainer;
+    private DownloadManagerActivity mActivityContainer;
     public static final String FINISH = "finish";
 
 
@@ -66,8 +66,8 @@ public class DownloadedFragment extends BaseFragment {
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
         mListview = (ExpandableListView) view.findViewById(R.id.el_downloaded);
-        mActivityContainer = (DownloadManagerActivity1) getActivity();
-        DownloadManagerActivity1.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
+        mActivityContainer = (DownloadManagerActivity) getActivity();
+        DownloadManagerActivity.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
         mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModles, finishModel.mLocalCourses, finishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADED);
         mListview.setAdapter(mDownloadedAdapter);
 
@@ -90,7 +90,7 @@ public class DownloadedFragment extends BaseFragment {
             public void onClick(View v) {
                 if (mActivityContainer != null) {
                     mActivityContainer.clearLocalCache(mDownloadedAdapter.getSelectLessonId());
-                    DownloadManagerActivity1.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
+                    DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
                     mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
                 }
             }
@@ -173,7 +173,7 @@ public class DownloadedFragment extends BaseFragment {
         String type = message.type.type;
         if (FINISH.equals(type)) {
             if (mActivityContainer != null) {
-                DownloadManagerActivity1.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
+                DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
                 if (model.mLocalCourses.isEmpty()) {
                     //mListview.setAdapter(getEmptyAdapter());
                     return;

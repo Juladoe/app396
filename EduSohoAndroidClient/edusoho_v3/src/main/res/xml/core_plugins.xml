@@ -176,13 +176,8 @@
         version="1.0" />
 
     <plugin
-        name="DownloadManagerActivity"
-        package="com.edusoho.kuozhi.v3.ui.DownloadManagerActivity"
-        version="1.0" />
-
-    <plugin
         name="DownloadManagerActivity1"
-        package="com.edusoho.kuozhi.v3.ui.DownloadManagerActivity1"
+        package="com.edusoho.kuozhi.v3.ui.DownloadManagerActivity"
         version="1.0" />
 
     <plugin
