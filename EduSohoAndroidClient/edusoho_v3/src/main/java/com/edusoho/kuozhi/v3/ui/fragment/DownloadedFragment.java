@@ -68,7 +68,8 @@ public class DownloadedFragment extends BaseFragment {
         mListview = (ExpandableListView) view.findViewById(R.id.el_downloaded);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-        mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModles, finishModel.mLocalCourses, finishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADED);
+        mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModles, finishModel.mLocalCourses, finishModel.mLocalLessons,
+                DownloadingAdapter.DownloadType.DOWNLOADED, R.layout.item_downloaded_manager_lesson_child);
         mListview.setAdapter(mDownloadedAdapter);
 
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
@@ -99,20 +100,24 @@ public class DownloadedFragment extends BaseFragment {
         mListview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
-                app.mEngine.runNormalPlugin(
-                        LessonActivity.TAG, mContext, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
-                                startIntent.putExtra(LessonActivity.FROM_CACHE, true);
-                                startIntent.putExtra(Const.FREE, lessonItem.free);
-                                startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-                                startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-                                startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
+                if (mToolsLayout.getHeight() == 0) {
+                    final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
+                    app.mEngine.runNormalPlugin(
+                            LessonActivity.TAG, mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
+                                    startIntent.putExtra(LessonActivity.FROM_CACHE, true);
+                                    startIntent.putExtra(Const.FREE, lessonItem.free);
+                                    startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+                                    startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
+                                }
                             }
-                        }
-                );
+                    );
+                } else {
+                    mDownloadedAdapter.setItemDownloadStatus(groupPosition, childPosition);
+                }
                 return false;
             }
         });

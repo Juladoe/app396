@@ -60,7 +60,8 @@ public class DownloadingFragment extends BaseFragment {
         mListview = (ExpandableListView) view.findViewById(R.id.el_downloading);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel unFinishModel = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
-        mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModles, unFinishModel.mLocalCourses, unFinishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADING);
+        mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModles, unFinishModel.mLocalCourses,
+                unFinishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADING, R.layout.item_downloading_manager_lesson_child);
         mListview.setAdapter(mDownloadingAdapter);
 
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
@@ -87,14 +88,25 @@ public class DownloadingFragment extends BaseFragment {
                 }
             }
         });
+
+//        mListview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//                if (mToolsLayout.getHeight() == 0) {
+//
+//                } else {
+//                    mDownloadingAdapter.setItemDownloadStatus(groupPosition, childPosition);
+//                }
+//                return false;
+//            }
+//        });
     }
 
     @Override
     public MessageType[] getMsgTypes() {
-        MessageType[] messageTypes = new MessageType[]{
+        return new MessageType[]{
                 new MessageType(UPDATE)
         };
-        return messageTypes;
     }
 
     @Override

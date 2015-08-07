@@ -42,9 +42,10 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     private List<List<LessonItem>> mChildItems;
     private boolean mSelectedShow = false;
     private DownloadType mType;
+    private int mChildLayoutId;
 
     public DownloadingAdapter(Context ctx, BaseActivity activity, SparseArray<M3U8DbModle> m3u8List,
-                              List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons, DownloadType type) {
+                              List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons, DownloadType type, int childResId) {
         mContex = ctx;
         mActivity = activity;
         m3u8ModelList = m3u8List;
@@ -59,6 +60,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         }
         mChildItems = lessonItems;
         mType = type;
+        mChildLayoutId = childResId;
     }
 
     public void updateLocalData(List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons) {
@@ -128,11 +130,50 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
+    public class DownloadSignClick implements View.OnClickListener {
+
+        private ChildPanel mChildPanel;
+        private LessonItem mLessonItem;
+
+        public DownloadSignClick(ChildPanel childPanel, LessonItem lessonItem) {
+            mChildPanel = childPanel;
+            mLessonItem = lessonItem;
+        }
+
+        @Override
+        public void onClick(View v) {
+            M3U8DownService service = M3U8DownService.getService();
+            if (mChildPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
+                mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
+                if (service != null) {
+                    service.cancleDownloadTask(mLessonItem.id);
+                }
+            } else {
+                if (!mActivity.app.getNetIsConnect()) {
+                    ToastUtils.show(mActivity, "当前无网络连接!");
+                    return;
+                }
+                int offlineType = mActivity.app.config.offlineType;
+                if (offlineType == Const.NET_NONE) {
+                    showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
+                    return;
+                }
+                if (offlineType == Const.NET_WIFI && !mActivity.app.getNetIsWiFi()) {
+                    showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
+                    return;
+                }
+                mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
+                M3U8DownService.startDown(
+                        mActivity, mLessonItem.id, mLessonItem.courseId, mLessonItem.title);
+            }
+        }
+    }
+
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final ChildPanel childPanel;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContex).inflate(R.layout.item_download_manager_lesson_child, null);
+            convertView = LayoutInflater.from(mContex).inflate(mChildLayoutId, null);
             childPanel = new ChildPanel(convertView, mType);
             convertView.setTag(childPanel);
         } else {
@@ -144,44 +185,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
             childPanel.tvVideoLength.setText(AppUtil.convertCNTime(lessonItem.length));
         } else {
             final M3U8DbModle model = m3u8ModelList.get(lessonItem.id);
-//            switch (model.finish) {
-//                case M3U8Util.UN_FINISH:
-//                    childPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
-//                    break;
-//                case M3U8Util.START:
-//                    childPanel.ivDownloadSign.setText(mContex.getString(R.string.font_wait_downloading));
-//                    break;
-//            }
-            childPanel.ivDownloadSign.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    M3U8DownService service = M3U8DownService.getService();
-                    if (childPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
-                        childPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
-                        if (service != null) {
-                            service.cancleDownloadTask(lessonItem.id);
-                        }
-                    } else {
-                        if (!mActivity.app.getNetIsConnect()) {
-                            ToastUtils.show(mActivity, "当前无网络连接!");
-                            return;
-                        }
-                        int offlineType = mActivity.app.config.offlineType;
-                        if (offlineType == Const.NET_NONE) {
-                            showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
-                            return;
-                        }
-                        if (offlineType == Const.NET_WIFI && !mActivity.app.getNetIsWiFi()) {
-                            showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
-                            return;
-                        }
-                        childPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
-                        M3U8DownService.startDown(
-                                mActivity, lessonItem.id, lessonItem.courseId, lessonItem.title);
-                    }
-                }
-            });
+            childPanel.ivDownloadSign.setOnClickListener(new DownloadSignClick(childPanel, lessonItem));
             childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
         }
         //选择框是否显示
@@ -209,6 +213,12 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         }
 
         return convertView;
+    }
+
+    public void setItemDownloadStatus(int groupPosition, int childPosition) {
+        LessonItem lessonItem = mChildItems.get(groupPosition).get(childPosition);
+        lessonItem.isSelected = !lessonItem.isSelected;
+        notifyDataSetChanged();
     }
 
     public void setSelectShow(boolean b) {
