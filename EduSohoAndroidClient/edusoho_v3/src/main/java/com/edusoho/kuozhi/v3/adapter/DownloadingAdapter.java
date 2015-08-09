@@ -143,28 +143,32 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         @Override
         public void onClick(View v) {
             M3U8DownService service = M3U8DownService.getService();
-            if (mChildPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
-                mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
-                if (service != null) {
-                    service.cancleDownloadTask(mLessonItem.id);
+            try {
+                if (mChildPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
+                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
+                    if (service != null) {
+                        service.cancleDownloadTask(mLessonItem.id);
+                    }
+                } else {
+                    if (!mActivity.app.getNetIsConnect()) {
+                        ToastUtils.show(mActivity, "当前无网络连接!");
+                        return;
+                    }
+                    int offlineType = mActivity.app.config.offlineType;
+                    if (offlineType == Const.NET_NONE) {
+                        showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
+                        return;
+                    }
+                    if (offlineType == Const.NET_WIFI && !mActivity.app.getNetIsWiFi()) {
+                        showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
+                        return;
+                    }
+                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
+                    M3U8DownService.startDown(
+                            mActivity, mLessonItem.id, mLessonItem.courseId, mLessonItem.title);
                 }
-            } else {
-                if (!mActivity.app.getNetIsConnect()) {
-                    ToastUtils.show(mActivity, "当前无网络连接!");
-                    return;
-                }
-                int offlineType = mActivity.app.config.offlineType;
-                if (offlineType == Const.NET_NONE) {
-                    showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
-                    return;
-                }
-                if (offlineType == Const.NET_WIFI && !mActivity.app.getNetIsWiFi()) {
-                    showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
-                    return;
-                }
-                mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
-                M3U8DownService.startDown(
-                        mActivity, mLessonItem.id, mLessonItem.courseId, mLessonItem.title);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         }
     }
