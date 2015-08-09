@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by JesseHuang on 15/6/14.
- * 课时下载
+ * 下载列表
  */
 public class LessonDownloadingActivity extends ActionBarBaseActivity {
     public static final String LIST_JSON = "lessonListJsonStr";

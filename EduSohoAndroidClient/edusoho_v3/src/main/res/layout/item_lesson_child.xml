@@ -4,12 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_unit_title"
-        android:background="@android:color/white">
+        android:id="@+id/rl_unit_title">
 
         <TextView
             android:layout_width="match_parent"
@@ -35,7 +33,6 @@
             android:textSize="@dimen/x_small_font_size" />
 
     </RelativeLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
