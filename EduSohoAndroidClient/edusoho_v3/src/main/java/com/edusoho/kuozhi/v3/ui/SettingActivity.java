@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.edusoho.kuozhi.v3.view.CleanCacheTextView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
 import java.io.File;
@@ -34,6 +35,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View tvAbout;
     private View viewClearCache;
     private TextView tvCache;
+    private CleanCacheTextView tvCleanCache;
     private Button btnLogout;
     private CheckBox cbOfflineType;
 
@@ -58,10 +60,11 @@ public class SettingActivity extends ActionBarBaseActivity {
         tvAbout.setOnClickListener(aboutClickListener);
         cbOfflineType = (CheckBox) findViewById(R.id.cb_offline_type);
         cbOfflineType.setOnClickListener(setOfflineTypeListener);
-
+        tvCleanCache = (CleanCacheTextView) findViewById(R.id.tv_clean_cache);
+        //tvCleanCache.setOnClickListener(cleanCacheListener);
         tvCache = (TextView) findViewById(R.id.tv_cache);
         viewClearCache = findViewById(R.id.rl_clear_cache);
-        viewClearCache.setOnClickListener(clearCacheListener);
+        viewClearCache.setOnClickListener(cleanCacheListener);
 
         btnLogout = (Button) findViewById(R.id.setting_logout_btn);
         btnLogout.setOnClickListener(logoutClickLister);
@@ -92,7 +95,7 @@ public class SettingActivity extends ActionBarBaseActivity {
         }
     };
 
-    private View.OnClickListener clearCacheListener = new View.OnClickListener() {
+    private View.OnClickListener cleanCacheListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             PopupDialog.createMuilt(
