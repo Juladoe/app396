@@ -69,6 +69,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
     private View vLogin;
     private Button btnLogin;
     private Button btnRegister;
+    private View userInfoLayout;
     private EduSohoIconView ivSetting;
 
     private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
@@ -177,6 +178,8 @@ public class FragmentNavigationDrawer extends BaseFragment {
             mRadioButtons[i] = (RadioButton) getView().findViewById(mRadioIds[i]);
             mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
         }
+
+        userInfoLayout = mActivity.findViewById(R.id.navigation_userinfo_layout);
         tvNickname = (TextView) mActivity.findViewById(R.id.tv_nickname);
         tvTitle = (TextView) mActivity.findViewById(R.id.tv_user_title);
         tvLogin = (TextView) mActivity.findViewById(R.id.tv_login);
@@ -199,6 +202,23 @@ public class FragmentNavigationDrawer extends BaseFragment {
         } else {
             setLoginStatus(Const.LOGIN_SUCCESS);
         }
+
+        userInfoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (app.loginUser == null) {
+                    return;
+                }
+
+                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
+                        startIntent.putExtra(WebViewActivity.URL, url);
+                    }
+                });
+            }
+        });
     }
 
     View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
