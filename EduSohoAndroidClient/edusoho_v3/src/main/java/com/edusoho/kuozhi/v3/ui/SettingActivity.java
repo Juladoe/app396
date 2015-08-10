@@ -61,7 +61,6 @@ public class SettingActivity extends ActionBarBaseActivity {
         cbOfflineType = (CheckBox) findViewById(R.id.cb_offline_type);
         cbOfflineType.setOnClickListener(setOfflineTypeListener);
         tvCleanCache = (CleanCacheTextView) findViewById(R.id.tv_clean_cache);
-        //tvCleanCache.setOnClickListener(cleanCacheListener);
         tvCache = (TextView) findViewById(R.id.tv_cache);
         viewClearCache = findViewById(R.id.rl_clear_cache);
         viewClearCache.setOnClickListener(cleanCacheListener);
