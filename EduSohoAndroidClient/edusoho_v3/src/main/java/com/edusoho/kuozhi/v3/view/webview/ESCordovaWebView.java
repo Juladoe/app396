@@ -46,10 +46,6 @@ public class ESCordovaWebView extends CordovaWebView{
         return mCordovaContext;
     }
 
-    public void updateCordovaActivity(Activity activity) {
-        mCordovaContext.updateTargetActivity(activity);
-    }
-
     public static ESCordovaWebView create(Activity activity, AttributeSet attrs) {
         CordovaContext cordovaContext = new CordovaContext(activity);
         if (attrs == null) {

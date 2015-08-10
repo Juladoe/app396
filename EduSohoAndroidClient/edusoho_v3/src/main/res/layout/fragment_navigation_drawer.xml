@@ -18,6 +18,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/navigation_userinfo_layout"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_height="100dp">
@@ -70,7 +71,7 @@
                     android:id="@+id/tv_user_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="UI设计师"
+                    android:text="神马都没有"
                     android:textColor="@color/grey_beta"
                     android:textSize="@dimen/medium_font_size"
                     android:layout_alignBottom="@+id/circleLayout"

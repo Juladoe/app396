@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivityWithCordova;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.webview.CordovaContext;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
-import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
+
+import org.apache.cordova.CordovaPlugin;
 
 /**
  * Created by JesseHuang on 15/6/17.
@@ -124,5 +123,11 @@ public class WebViewActivity extends ActionBarBaseActivity {
             mWebView.destroy();
             mWebView = null;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        CordovaContext cordovaContext = mWebView.getWebView().getCordovaContext();
+        cordovaContext.onActivityResult(requestCode, resultCode, data);
     }
 }
