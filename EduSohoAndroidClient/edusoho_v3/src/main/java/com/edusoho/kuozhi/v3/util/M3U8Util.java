@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -33,6 +35,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +49,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ToastUtils;
@@ -533,7 +537,10 @@ public class M3U8Util {
         }
 
         mThreadPoolExecutor.shutdown();
-        ClientConnectionManager manager = mHttpClient.getConnectionManager();
+        ClientConnectionManager manager = null;
+        if (mHttpClient != null) {
+            manager = mHttpClient.getConnectionManager();
+        }
         if (manager != null) {
             manager.shutdown();
         }
@@ -767,16 +774,14 @@ public class M3U8Util {
         return m3U8File;
     }
 
-    public static class DegestInputStream extends InputStream
-    {
+    public static class DegestInputStream extends InputStream {
         private static final String TAG = "DegestInputStream";
 
         private InputStream mTargetInputStream;
         private int mCurrentDesgetIndex;
         private byte[] mDesgetKey;
 
-        public DegestInputStream(InputStream target, String host)
-        {
+        public DegestInputStream(InputStream target, String host) {
             initDesgetKey(host);
             this.mTargetInputStream = target;
         }
@@ -784,7 +789,7 @@ public class M3U8Util {
         private void initDesgetKey(String host) {
 
             String desgetStr = "";
-            if (! TextUtils.isEmpty(host)) {
+            if (!TextUtils.isEmpty(host)) {
                 desgetStr = DigestUtils.md5(host);
             }
 
@@ -824,7 +829,7 @@ public class M3U8Util {
             for (int i = 0; i < length; i++) {
                 byte b = buffer[i];
                 mCurrentDesgetIndex = mCurrentDesgetIndex > keyLength ? 0 : mCurrentDesgetIndex;
-                b = (byte)(b ^ mDesgetKey[mCurrentDesgetIndex++]);
+                b = (byte) (b ^ mDesgetKey[mCurrentDesgetIndex++]);
                 buffer[i] = b;
             }
         }

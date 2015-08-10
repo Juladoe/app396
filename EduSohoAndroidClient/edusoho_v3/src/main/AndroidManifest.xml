@@ -148,11 +148,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.DownloadManagerActivity1"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".v3.ui.LessonActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />

@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity1;
+import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -31,12 +31,12 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
  * Created by JesseHuang on 15/6/22.
  */
 public class DownloadedFragment extends BaseFragment {
-    private ExpandableListView mListview;
+    private ExpandableListView mListView;
     private View mToolsLayout;
     private TextView mSelectAllBtn;
     private View mDelBtn;
     private DownloadingAdapter mDownloadedAdapter;
-    private DownloadManagerActivity1 mActivityContainer;
+    private DownloadManagerActivity mActivityContainer;
     public static final String FINISH = "finish";
 
 
@@ -65,11 +65,12 @@ public class DownloadedFragment extends BaseFragment {
         mToolsLayout = view.findViewById(R.id.download_tools_layout);
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
-        mListview = (ExpandableListView) view.findViewById(R.id.el_downloaded);
-        mActivityContainer = (DownloadManagerActivity1) getActivity();
-        DownloadManagerActivity1.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-        mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModles, finishModel.mLocalCourses, finishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADED);
-        mListview.setAdapter(mDownloadedAdapter);
+        mListView = (ExpandableListView) view.findViewById(R.id.el_downloaded);
+        mActivityContainer = (DownloadManagerActivity) getActivity();
+        DownloadManagerActivity.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
+        mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModles, finishModel.mLocalCourses, finishModel.mLocalLessons,
+                DownloadingAdapter.DownloadType.DOWNLOADED, R.layout.item_downloaded_manager_lesson_child);
+        mListView.setAdapter(mDownloadedAdapter);
 
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,38 +91,61 @@ public class DownloadedFragment extends BaseFragment {
             public void onClick(View v) {
                 if (mActivityContainer != null) {
                     mActivityContainer.clearLocalCache(mDownloadedAdapter.getSelectLessonId());
-                    DownloadManagerActivity1.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
+                    DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
                     mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
                 }
             }
         });
 
-        mListview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
-                app.mEngine.runNormalPlugin(
-                        LessonActivity.TAG, mContext, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
-                                startIntent.putExtra(LessonActivity.FROM_CACHE, true);
-                                startIntent.putExtra(Const.FREE, lessonItem.free);
-                                startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-                                startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-                                startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
+                if (mToolsLayout.getHeight() == 0) {
+                    final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
+                    app.mEngine.runNormalPlugin(
+                            LessonActivity.TAG, mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
+                                    startIntent.putExtra(LessonActivity.FROM_CACHE, true);
+                                    startIntent.putExtra(Const.FREE, lessonItem.free);
+                                    startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+                                    startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
+                                }
                             }
-                        }
-                );
+                    );
+                } else {
+                    mDownloadedAdapter.setItemDownloadStatus(groupPosition, childPosition);
+                }
                 return false;
             }
         });
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("setOnItemClickListener", "1");
             }
         });
+
+        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                    DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
+                    if (parent.isGroupExpanded(groupPosition)) {
+                        gp.ivIndicator.setText(getString(R.string.font_less));
+                    } else {
+                        gp.ivIndicator.setText(getString(R.string.font_more));
+                    }
+                }
+                return false;
+            }
+        });
+
+        for (int i = 0; i < mDownloadedAdapter.getGroupCount(); i++) {
+            mListView.expandGroup(i);
+        }
     }
 
     @Override
@@ -173,9 +197,9 @@ public class DownloadedFragment extends BaseFragment {
         String type = message.type.type;
         if (FINISH.equals(type)) {
             if (mActivityContainer != null) {
-                DownloadManagerActivity1.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
+                DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
                 if (model.mLocalCourses.isEmpty()) {
-                    //mListview.setAdapter(getEmptyAdapter());
+                    //mListView.setAdapter(getEmptyAdapter());
                     return;
                 } else {
                     mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);

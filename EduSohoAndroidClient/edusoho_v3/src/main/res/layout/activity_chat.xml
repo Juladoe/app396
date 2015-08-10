@@ -30,22 +30,26 @@
             <!--语音切换按钮-->
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/btn_voice"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/font_chat_voice"
                 android:background="@drawable/chat_btn_bg"
                 android:textSize="@dimen/chat_btn_size"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_gravity="center_vertical" />
 
             <!--keyboard按钮-->
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/btn_set_mode_keyboard"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/font_chat_keyboard"
                 android:background="@drawable/chat_btn_bg"
                 android:textSize="@dimen/chat_btn_size"
                 android:layout_gravity="center_vertical"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
                 android:visibility="gone" />
 
             <!--按住说话按钮-->

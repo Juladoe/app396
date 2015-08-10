@@ -112,8 +112,8 @@
                 android:id="@+id/rl_clear_cache"
                 android:layout_marginTop="1dp">
 
-                <TextView
-                    android:id="@+id/tvCleanCache"
+                <com.edusoho.kuozhi.v3.view.CleanCacheTextView
+                    android:id="@+id/tv_clean_cache"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"

@@ -15,7 +15,7 @@ import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity1;
+import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -27,12 +27,12 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
  * 下载中
  */
 public class DownloadingFragment extends BaseFragment {
-    private ExpandableListView mListview;
+    private ExpandableListView mListView;
     private View mToolsLayout;
     private TextView mSelectAllBtn;
     private View mDelBtn;
     private DownloadingAdapter mDownloadingAdapter;
-    private DownloadManagerActivity1 mActivityContainer;
+    private DownloadManagerActivity mActivityContainer;
     public static final String UPDATE = "update";
 
     @Override
@@ -57,11 +57,12 @@ public class DownloadingFragment extends BaseFragment {
         mToolsLayout = view.findViewById(R.id.download_tools_layout);
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
-        mListview = (ExpandableListView) view.findViewById(R.id.el_downloading);
-        mActivityContainer = (DownloadManagerActivity1) getActivity();
-        DownloadManagerActivity1.LocalCourseModel unFinishModel = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
-        mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModles, unFinishModel.mLocalCourses, unFinishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADING);
-        mListview.setAdapter(mDownloadingAdapter);
+        mListView = (ExpandableListView) view.findViewById(R.id.el_downloading);
+        mActivityContainer = (DownloadManagerActivity) getActivity();
+        DownloadManagerActivity.LocalCourseModel unFinishModel = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
+        mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModles, unFinishModel.mLocalCourses,
+                unFinishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADING, R.layout.item_downloading_manager_lesson_child);
+        mListView.setAdapter(mDownloadingAdapter);
 
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,19 +83,37 @@ public class DownloadingFragment extends BaseFragment {
             public void onClick(View v) {
                 if (mActivityContainer != null) {
                     mActivityContainer.clearLocalCache(mDownloadingAdapter.getSelectLessonId());
-                    DownloadManagerActivity1.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
+                    DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
                     mDownloadingAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
                 }
             }
         });
+
+        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                    DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
+                    if (parent.isGroupExpanded(groupPosition)) {
+                        gp.ivIndicator.setText(getString(R.string.font_less));
+                    } else {
+                        gp.ivIndicator.setText(getString(R.string.font_more));
+                    }
+                }
+                return false;
+            }
+        });
+
+        for (int i = 0; i < mDownloadingAdapter.getGroupCount(); i++) {
+            mListView.expandGroup(i);
+        }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
-        MessageType[] messageTypes = new MessageType[]{
+        return new MessageType[]{
                 new MessageType(UPDATE)
         };
-        return messageTypes;
     }
 
     @Override
@@ -111,7 +130,7 @@ public class DownloadingFragment extends BaseFragment {
                 mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
         if (m3u8Model.finish == M3U8Util.FINISH) {
             if (mActivityContainer != null) {
-                DownloadManagerActivity1.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
+                DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
                 mDownloadingAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.LESSON_ID, lessonId);
