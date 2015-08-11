@@ -331,6 +331,12 @@ public class FragmentNavigationDrawer extends BaseFragment {
         }
 
         private void updateUserInfo(FragmentNavigationDrawer mFragment, User user) {
+            if (user == null) {
+                mFragment.tvNickname.setText(mFragment.getString(R.string.drawer_nickname));
+                mFragment.civAvatar.setImageResource(R.drawable.user_avatar);
+                mFragment.tvTitle.setText("");
+                return;
+            }
             mFragment.tvNickname.setText(user.nickname);
             mFragment.tvTitle.setText(user.signature);
             ImageLoader.getInstance().displayImage(user.mediumAvatar, mFragment.civAvatar, mFragment.mActivity.app.mOptions);
