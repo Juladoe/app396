@@ -96,6 +96,7 @@ public class Const {
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
+    public static final String USER_UPDATE = "user_update";
     public static final String THIRD_PARTY_LOGIN_SUCCESS = "third_party_login_success";
     public static final String LOGOUT_SUCCESS = "logout_success";
     public static final String REFRESH_REVIEWS = "refresh_review";
