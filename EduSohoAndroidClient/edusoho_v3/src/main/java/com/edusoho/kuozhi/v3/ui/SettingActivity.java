@@ -211,6 +211,8 @@ public class SettingActivity extends ActionBarBaseActivity {
         } else {
             tvCache.setText(String.format("%.1f%s", size, "M"));
         }
+
+        app.sendMessage(Const.CLEAR_APP_CACHE, null);
     }
 
     private void deleteFile(File workSpace) {
