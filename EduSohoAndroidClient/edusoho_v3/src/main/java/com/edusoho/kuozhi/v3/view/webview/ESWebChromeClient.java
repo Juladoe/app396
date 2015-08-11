@@ -21,10 +21,12 @@ public class ESWebChromeClient extends CordovaChromeClient {
 
     public ESWebChromeClient(CordovaInterface cordova) {
         super(cordova);
+        init();
     }
 
     public ESWebChromeClient(CordovaInterface ctx, CordovaWebView app) {
         super(ctx, app);
+        init();
     }
 
     private void init() {
