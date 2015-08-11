@@ -97,6 +97,7 @@ public class Const {
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
     public static final String USER_UPDATE = "user_update";
+    public static final String CLEAR_APP_CACHE = "clear_app_cache";
     public static final String THIRD_PARTY_LOGIN_SUCCESS = "third_party_login_success";
     public static final String LOGOUT_SUCCESS = "logout_success";
     public static final String REFRESH_REVIEWS = "refresh_review";
@@ -252,7 +253,7 @@ public class Const {
 
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     //public static final String PUSH_HOST = "https://tui.edusoho.net/";
-    public static final String PUSH_HOST = "http://115.29.78.158:94";
+    public static final String PUSH_HOST = "http://115.29.78.158:94/v1";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";

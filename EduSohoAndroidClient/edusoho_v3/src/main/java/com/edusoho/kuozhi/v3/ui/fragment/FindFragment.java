@@ -8,6 +8,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+
+import java.io.File;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -29,6 +35,22 @@ public class FindFragment extends ESWebViewFragment{
     }
 
     @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{
+                new MessageType(MessageType.NONE, Const.CLEAR_APP_CACHE, MessageType.UI_THREAD)
+        };
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        MessageType messageType = message.type;
+        if (Const.CLEAR_APP_CACHE.equals(messageType.type)) {
+            checkLocalResourceStatus();
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
@@ -41,6 +63,15 @@ public class FindFragment extends ESWebViewFragment{
             mActivity.setTitle(getString(R.string.title_find));
         }
         super.onHiddenChanged(hidden);
+    }
+
+    private void checkLocalResourceStatus() {
+        File schoolStorage = AppUtil.getSchoolStorage(app.domain);
+        File appDir = new File(schoolStorage, "main");
+
+        if (!appDir.exists()) {
+            mWebView.loadApp("main");
+        }
     }
 
     @Override

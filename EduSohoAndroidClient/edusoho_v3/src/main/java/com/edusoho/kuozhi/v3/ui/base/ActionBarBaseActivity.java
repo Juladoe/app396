@@ -94,6 +94,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected void onDestroy() {
         super.onDestroy();
         app.unRegistMsgSource(this);
+        mUIMessageQueue.clear();
     }
 
     protected void invokeUIMessage() {

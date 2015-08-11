@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -18,20 +17,26 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.ViewUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
-
 import java.lang.reflect.Field;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Created by JesseHuang on 15/4/24.
  */
 public abstract class BaseFragment extends Fragment implements MessageEngine.MessageCallback {
 
+    public static final int PAUSE = 0001;
+    public static final int RESUME = 0010;
+
     protected BaseActivity mActivity;
     protected EdusohoApp app;
     protected int mViewId;
     protected View mContainerView;
     public String mTitle;
+    protected int mRunStatus;
     protected Context mContext;
+    private Queue<WidgetMessage> mUIMessageQueue;
 
     @Override
     public void onAttach(Activity activity) {
@@ -39,6 +44,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         mActivity = (BaseActivity) activity;
         mContext = mActivity.getBaseContext();
         app = mActivity.app;
+        mUIMessageQueue = new ArrayDeque<>();
     }
 
     @Override
@@ -50,8 +56,36 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         app.registMsgSource(this);
     }
 
+    protected void invokeUIMessage() {
+        WidgetMessage message = null;
+        while ((message = mUIMessageQueue.peek()) != null) {
+            invoke(message);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mRunStatus = RESUME;
+        invokeUIMessage();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mRunStatus = PAUSE;
+    }
+
     @Override
     public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (mRunStatus == PAUSE && messageType.runType == MessageType.UI_THREAD) {
+            mUIMessageQueue.add(message);
+
+            message.type.type = "";
+            message.type.code = MessageType.NONE;
+            return;
+        }
     }
 
     @Override
