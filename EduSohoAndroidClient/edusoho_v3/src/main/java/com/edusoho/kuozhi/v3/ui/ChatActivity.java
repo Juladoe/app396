@@ -415,7 +415,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                CommonUtil.longToast(mActivity, "网络连接不可用请稍后再试");
+                CommonUtil.longToast(mActivity, getString(R.string.request_failed));
             }
         });
     }
