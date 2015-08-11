@@ -84,7 +84,6 @@ public class SideBar extends View {
                 break;
 
             default:
-                setBackgroundResource(R.drawable.sidebar_bg);
                 if (oldChoose != letter) {
                     if (letter >= 0 && letter < index.length) {
                         if (listener != null) {
