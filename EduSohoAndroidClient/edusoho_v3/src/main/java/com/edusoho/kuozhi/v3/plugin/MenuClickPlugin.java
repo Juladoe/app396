@@ -166,6 +166,20 @@ public class MenuClickPlugin extends CoreBridge {
     }
 
     @JsAnnotation
+    public void updateUser(JSONArray args, CallbackContext callbackContext) throws JSONException {
+
+        UserResult userResult = new UserResult();
+        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        });
+        userResult.token = mActivity.app.token;
+        mActivity.app.saveToken(userResult);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", userResult.user.id);
+        mActivity.app.sendMessage(Const.USER_UPDATE, bundle);
+    }
+
+    @JsAnnotation
     public void share(JSONArray args, CallbackContext callbackContext) throws JSONException {
         String url = args.getString(0);
         String title = args.getString(1);

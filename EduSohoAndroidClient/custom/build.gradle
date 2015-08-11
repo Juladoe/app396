@@ -12,15 +12,15 @@ android {
 
     productFlavors {
         cuntom {
-            applicationId "com.shangmingxiao.kuozhi"
+            applicationId "com.edusoho_edianshang.kuozhi"
         }
     }
 
     sourceSets {
         cuntom {
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['src/shangmingxiao/res']
-            assets.srcDirs = ['src/shangmingxiao/assets'];
+            res.srcDirs = ['src/edusoho_edianshang/res']
+            assets.srcDirs = ['src/edusoho_edianshang/assets'];
         }
     }
 

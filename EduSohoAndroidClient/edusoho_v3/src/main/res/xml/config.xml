@@ -12,12 +12,7 @@
     <preference name="loglevel" value="DEBUG" />
     <preference name="useBrowserHistory" value="true" />
     <preference name="exit-on-suspend" value="false" />
-    <feature name="Activity">
-        <param name="android-package" value="org.apache.cordova.test.ActivityPlugin" />
-    </feature>
-    <feature name="PluginStub">
-        <param name="android-package" value="org.apache.cordova.pluginApi.pluginStub" />
-    </feature>
+
     <feature name="App">
         <param name="android-package" value="org.apache.cordova.App" />
     </feature>

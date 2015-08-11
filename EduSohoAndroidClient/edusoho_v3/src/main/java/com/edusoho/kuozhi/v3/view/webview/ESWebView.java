@@ -1,16 +1,18 @@
 package com.edusoho.kuozhi.v3.view.webview;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -32,6 +34,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewClient;
 import java.io.File;
@@ -98,12 +101,15 @@ public class ESWebView extends RelativeLayout {
     private void setupWebView() {
 
         String userAgent = mWebView.getSettings().getUserAgentString();
-        mWebView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        mWebView.getSettings().setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
+
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setAllowFileAccess(true);
+        webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webSettings.setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
 
         CordovaContext cordovaContext = mWebView.getCordovaContext();
         mWebView.setWebViewClient(new ESWebViewClient(cordovaContext, mWebView));
-        mWebView.setWebChromeClient(new WebChromeClient(cordovaContext, mWebView));
+        mWebView.setWebChromeClient(new ESPrivateWebChromeClient(cordovaContext));
     }
 
     private void initWebView() {
@@ -255,37 +261,15 @@ public class ESWebView extends RelativeLayout {
         mWebView.handleDestroy();
     }
 
-    private class WebChromeClient extends CordovaChromeClient {
+    private class ESPrivateWebChromeClient extends ESWebChromeClient {
 
-        public WebChromeClient(CordovaInterface cordova) {
+        public ESPrivateWebChromeClient(CordovaInterface cordova) {
             super(cordova);
-        }
-
-        public WebChromeClient(CordovaInterface ctx, CordovaWebView app) {
-            super(ctx, app);
-        }
-
-        @Override
-        public void onReceivedTitle(WebView view, String title) {
-            mActivity.setTitle(title);
-        }
-
-        @Override
-        public void onReceivedIcon(WebView view, Bitmap icon) {
-            //mActivity.getActionBar().setIcon(new BitmapDrawable(icon));
-        }
-
-        @Override
-        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-            PopupDialog.createNormal(mActivity, "提示:", message).show();
-            result.cancel();
-            return true;
         }
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
-                //ESWebView.this.pbLoading.setProgress(newProgress);
                 ESWebView.this.pbLoading.setVisibility(View.GONE);
             } else {
                 if (ESWebView.this.pbLoading.getVisibility() == View.GONE) {
@@ -364,12 +348,6 @@ public class ESWebView extends RelativeLayout {
 
             return resourceResponse;
         }
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "onInterceptTouchEvent");
-        return super.onInterceptTouchEvent(ev);
     }
 
     public ESCordovaWebView getWebView() {

@@ -146,16 +146,6 @@ public class ESWebViewRequestManager extends RequestManager {
         return callback.onResponse(response);
     }
 
-    private File getApiStorage(String host)
-    {
-        File storage = AppUtil.getAppStorage();
-        File apiStore = new File(storage, String.format("%s/%s", host, "apirequest"));
-        if (!apiStore.exists()) {
-            apiStore.mkdir();
-        }
-        return apiStore;
-    }
-
     private String getFileExtension(String filePath)
     {
         return MimeTypeMap.getFileExtensionFromUrl(filePath);
@@ -277,6 +267,7 @@ public class ESWebViewRequestManager extends RequestManager {
     public class ApiRequestHandler implements RequestHandler
     {
         private VolleySingleton mVolley;
+        private String[] API_FILTERS = new String[]{ "/mapi_v2/User/uploadAvatar" };
 
         public ApiRequestHandler() {
             this.mVolley = VolleySingleton.getInstance(mContext);
@@ -285,7 +276,11 @@ public class ESWebViewRequestManager extends RequestManager {
         @Override
         public void handler(Request request, Response response) {
             Log.d(TAG, "api handler :" + request.url);
+            String path = request.getPath();
 
+            if (filter(path)) {
+                return;
+            }
             if (request.getPath().endsWith(String.format(Const.MOBILE_APP_URL, "/", mCode))) {
                 File cache = getResourceFile(request.getHost(), "index.html");
                 if (cache.exists()) {
@@ -295,6 +290,10 @@ public class ESWebViewRequestManager extends RequestManager {
             }
 
             handlerApiRequest(request, response);
+        }
+
+        private boolean filter(String url) {
+            return CommonUtil.inArray(url, API_FILTERS);
         }
 
         private void handlerApiRequest(Request request, Response proxyResponse) {
