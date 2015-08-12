@@ -12,7 +12,7 @@ import java.util.Queue;
  */
 public class ESCordovaWebViewFactory {
 
-    private static final String TAG = "ESWebViewFactory";
+    private static final String TAG = "ESCordovaWebViewFactory";
     private Queue<ESCordovaWebView> mCacheQueue;
     private static ESCordovaWebViewFactory factory;
 
@@ -33,7 +33,6 @@ public class ESCordovaWebViewFactory {
     }
 
     public void destory() {
-        Log.d(TAG, "ESWebViewFactory destory");
         ESCordovaWebView webView;
         while ( (webView = mCacheQueue.poll()) != null) {
             Log.d(TAG, "mCacheQueue destory");

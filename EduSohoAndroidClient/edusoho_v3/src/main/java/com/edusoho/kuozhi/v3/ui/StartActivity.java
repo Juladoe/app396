@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
+import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 
@@ -42,7 +42,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         startSplash();
         registDevice();
 
-        ESWebViewFactory.init(mActivity);
+        ESCordovaWebViewFactory.init(mActivity);
     }
 
     public void startSplash() {
