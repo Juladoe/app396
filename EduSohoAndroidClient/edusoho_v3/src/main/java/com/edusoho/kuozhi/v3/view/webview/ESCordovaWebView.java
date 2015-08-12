@@ -2,12 +2,10 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
-
 import org.apache.cordova.CordovaWebView;
 
 /**
@@ -21,17 +19,22 @@ public class ESCordovaWebView extends CordovaWebView{
 
     public ESCordovaWebView(Context context) {
         super(context);
-        mCordovaContext = (CordovaContext) context;
+        init(context);
     }
 
     public ESCordovaWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mCordovaContext = (CordovaContext) context;
+        init(context);
     }
 
     public ESCordovaWebView(Context context, AttributeSet attrs, int defstyle) {
         super(context, attrs, defstyle);
+        init(context);
+    }
+
+    private void init(Context context) {
         mCordovaContext = (CordovaContext) context;
+        setBackgroundColor(Color.TRANSPARENT);
     }
 
     public boolean isGoBack() {

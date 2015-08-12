@@ -26,9 +26,6 @@ import java.util.Queue;
  */
 public abstract class BaseFragment extends Fragment implements MessageEngine.MessageCallback {
 
-    public static final int PAUSE = 0001;
-    public static final int RESUME = 0010;
-
     protected BaseActivity mActivity;
     protected EdusohoApp app;
     protected int mViewId;
@@ -64,28 +61,27 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
     }
 
     @Override
+    public void invoke(WidgetMessage message) {
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mRunStatus = RESUME;
-        invokeUIMessage();
+        mRunStatus = MSG_RESUME;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mRunStatus = PAUSE;
+        mRunStatus = MSG_PAUSE;
     }
 
-    @Override
-    public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        if (mRunStatus == PAUSE && messageType.runType == MessageType.UI_THREAD) {
-            mUIMessageQueue.add(message);
+    protected int getRunStatus() {
+        return mRunStatus;
+    }
 
-            message.type.type = "";
-            message.type.code = MessageType.NONE;
-            return;
-        }
+    protected void saveMessage(WidgetMessage message) {
+        mUIMessageQueue.add(message);
     }
 
     @Override
