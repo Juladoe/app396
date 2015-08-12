@@ -37,15 +37,24 @@ public class FindFragment extends ESWebViewFragment{
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{
-                new MessageType(MessageType.NONE, Const.CLEAR_APP_CACHE, MessageType.UI_THREAD)
+                new MessageType(Const.CLEAR_APP_CACHE)
         };
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        invokeUIMessage();
+    }
+
+    @Override
     public void invoke(WidgetMessage message) {
-        super.invoke(message);
         MessageType messageType = message.type;
         if (Const.CLEAR_APP_CACHE.equals(messageType.type)) {
+            if (getRunStatus() == MSG_PAUSE) {
+                saveMessage(message);
+                return;
+            }
             checkLocalResourceStatus();
         }
     }
