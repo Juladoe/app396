@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_host">http://trymob.edusoho.cn</string>
+    <string name="app_domain">trymob.edusoho.cn</string>
+    <string name="app_name">test</string>
+    <string name="api_version">2.1.0</string>
+    <string name="apk_version">3.0.0</string>
+    <string name="apk_code">13</string>
+    <string name="splash_num">0</string>
+    <string name="splash_padding">0</string>
+
+</resources>
