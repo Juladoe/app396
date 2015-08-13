@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by howzhi on 15/7/9.
@@ -133,7 +134,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         private static RequestLocalManager instace;
 
         private RequestLocalManager() {
-            cookie = new ArrayList<>();
+            cookie = new CopyOnWriteArrayList<>();
         }
 
         public static RequestLocalManager getManager() {
