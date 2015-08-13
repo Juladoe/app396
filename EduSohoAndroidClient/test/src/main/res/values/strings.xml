@@ -10,4 +10,9 @@
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
 
+    <!-- default school -->
+    <string name="school_name">edusoho</string>
+    <string name="school_url">http://trymob.edusoho.cn/mapi_v2</string>
+    <string name="school_host">http://trymob.edusoho.cn</string>
+    <string name="school_logo"></string>
 </resources>

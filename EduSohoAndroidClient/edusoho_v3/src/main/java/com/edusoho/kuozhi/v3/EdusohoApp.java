@@ -109,7 +109,6 @@ public class EdusohoApp extends Application {
     public static final String PLUGIN_CONFIG = "plugin_config";
     public static final String INSTALL_PLUGIN = "install_plugin";
 
-    private android.os.Handler mWorkHandler;
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
     public VolleySingleton mVolley;
@@ -122,7 +121,6 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        mWorkHandler = new android.os.Handler();
         //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
@@ -373,14 +371,6 @@ public class EdusohoApp extends Application {
         if (sp.contains(INSTALL_PLUGIN)) {
             return;
         }
-        mWorkHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "installPlugin");
-                mEngine.installApkPlugin();
-                sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
-            }
-        });
     }
 
     public String getApkVersion() {

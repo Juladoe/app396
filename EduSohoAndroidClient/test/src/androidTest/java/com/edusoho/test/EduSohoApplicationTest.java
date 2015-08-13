@@ -7,6 +7,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import org.junit.Test;
 
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 15/8/13.
@@ -23,18 +24,29 @@ public class EduSohoApplicationTest extends ApplicationTestCase<EdusohoApp> {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        SharedPreferences sp = getContext().getSharedPreferences("config", Context.MODE_APPEND);
+        init();
+        createApplication();
+        mEdusohoApp = getApplication();
+    }
+
+    private void init() {
+        Context context = getContext();
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_APPEND);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("showSplash", false);
         editor.putBoolean("registPublicDevice", false);
-        editor.putBoolean("startWithSchool", false);
         editor.putBoolean("startWithSchool", false);
         editor.putInt("msgSound", 1);
         editor.putInt("msgVibrate", 1);
         editor.commit();
 
-        createApplication();
-        mEdusohoApp = getApplication();
+        sp = context.getSharedPreferences("defaultSchool", Context.MODE_APPEND);
+        editor = sp.edit();
+        editor.putString("name", context.getString(R.string.school_name));
+        editor.putString("url", context.getString(R.string.school_url));
+        editor.putString("host", context.getString(R.string.school_host));
+        editor.putString("logo", context.getString(R.string.school_logo));
+        editor.commit();
     }
 
     @Test
@@ -56,8 +68,29 @@ public class EduSohoApplicationTest extends ApplicationTestCase<EdusohoApp> {
     }
 
     @Test
+    public void testAppVersion() {
+        String apiVersion = getContext().getString(R.string.api_version);
+        assertEquals(apiVersion, mEdusohoApp.apiVersion);
+    }
+
+    @Test
+    public void testGetPlatformInfo() {
+        HashMap<String, String> param = mEdusohoApp.getPlatformInfo();
+        assertNotNull(param);
+    }
+
+    @Test
+    public void testAppSchool() {
+        assertNull(mEdusohoApp.defaultSchool);
+    }
+
+    @Test
     public void testAppConfit() {
         assertNotNull(mEdusohoApp.config);
         assertEquals(false, mEdusohoApp.config.showSplash);
+        assertEquals(false, mEdusohoApp.config.startWithSchool);
+        assertEquals(false, mEdusohoApp.config.isPublicRegistDevice);
+        assertEquals(1, mEdusohoApp.config.msgSound);
+        assertEquals(1, mEdusohoApp.config.msgVibrate);
     }
 }
