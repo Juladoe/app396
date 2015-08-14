@@ -1,15 +1,10 @@
 package com.edusoho.kuozhi.v3.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.HttpClientStack;
-import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
-
-import java.io.File;
 
 /**
  * Created by JesseHuang on 15/4/23.
@@ -26,7 +21,7 @@ public class VolleySingleton {
 
     public static synchronized VolleySingleton getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new VolleySingleton(context);
+            mInstance = new VolleySingleton(context.getApplicationContext());
         }
         return mInstance;
     }
