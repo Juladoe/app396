@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -12,8 +11,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.CordovaContext;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
-
-import org.apache.cordova.CordovaPlugin;
 
 /**
  * Created by JesseHuang on 15/6/17.
@@ -39,7 +36,6 @@ public class WebViewActivity extends ActionBarBaseActivity {
         initCordovaWebView();
     }
 
-
     public void initCordovaWebView() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -52,26 +48,19 @@ public class WebViewActivity extends ActionBarBaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void invoke(WidgetMessage message) {
-        super.invoke(message);
         MessageType messageType = message.type;
         if (Const.LOGIN_SUCCESS.equals(messageType.type)) {
-            mHandler.postAtTime(new Runnable() {
+            if (getRunStatus() == MSG_PAUSE) {
+                saveMessage(message);
+                return;
+            }
+            mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mWebView.reload();
                 }
-            }, SystemClock.currentThreadTimeMillis() + 100);
+            });
             return;
         }
         if (messageType.code == BACK) {
@@ -91,6 +80,12 @@ public class WebViewActivity extends ActionBarBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        invokeUIMessage();
+    }
+
+    @Override
     public int getMode() {
         return REGIST_OBJECT;
     }
@@ -107,7 +102,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(CLOSE, source),
-                new MessageType(MessageType.NONE, Const.LOGIN_SUCCESS, MessageType.UI_THREAD)
+                new MessageType(Const.LOGIN_SUCCESS)
         };
         return messageTypes;
     }

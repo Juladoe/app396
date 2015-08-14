@@ -1,18 +1,12 @@
 package com.edusoho.kuozhi.v3.view.webview;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JsResult;
-import android.webkit.ValueCallback;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -31,10 +25,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewClient;
 import java.io.File;
@@ -95,7 +86,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     private ESCordovaWebView createWebView() {
-        return ESWebViewFactory.getFactory().getWebView(mActivity);
+        return ESCordovaWebViewFactory.getFactory().getWebView(mActivity);
     }
 
     private void setupWebView() {
@@ -116,16 +107,15 @@ public class ESWebView extends RelativeLayout {
         mWebView = createWebView();
         setupWebView();
 
-        pbLoading = (ProgressBar) LayoutInflater.from(mContext).inflate(R.layout.progress_bar, null);
-        RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 2));
-        paramProgressBar.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-        pbLoading.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_status));
-        addView(pbLoading, paramProgressBar);
-
         RelativeLayout.LayoutParams webViewProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         webViewProgressBar.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        webViewProgressBar.addRule(RelativeLayout.BELOW, R.id.pb_loading);
         addView(mWebView, webViewProgressBar);
+
+        pbLoading = (ProgressBar) LayoutInflater.from(mContext).inflate(R.layout.progress_bar, null);
+        RelativeLayout.LayoutParams paramProgressBar = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramProgressBar.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        paramProgressBar.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+        addView(pbLoading, paramProgressBar);
     }
 
     public RequestManager getRequestManager() {
@@ -267,18 +257,6 @@ public class ESWebView extends RelativeLayout {
             super(cordova);
         }
 
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            if (newProgress == 100) {
-                ESWebView.this.pbLoading.setVisibility(View.GONE);
-            } else {
-                if (ESWebView.this.pbLoading.getVisibility() == View.GONE) {
-                    ESWebView.this.pbLoading.setVisibility(View.VISIBLE);
-                }
-                ESWebView.this.pbLoading.setProgress(newProgress);
-            }
-            super.onProgressChanged(view, newProgress);
-        }
     };
 
     @Override
@@ -309,6 +287,7 @@ public class ESWebView extends RelativeLayout {
         @Override
         public void onPageFinished(WebView view, String url) {
             mWebView.setGoBackStatus(false);
+            pbLoading.setVisibility(GONE);
         }
 
         @Override

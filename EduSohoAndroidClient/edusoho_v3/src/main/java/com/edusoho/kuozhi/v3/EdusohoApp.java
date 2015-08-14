@@ -52,7 +52,7 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
-import com.edusoho.kuozhi.v3.view.webview.ESWebViewFactory;
+import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -235,7 +235,7 @@ public class EdusohoApp extends Application {
         }
 
         SqliteUtil.getUtil(this).close();
-        ESWebViewFactory.getFactory().destory();
+        ESCordovaWebViewFactory.getFactory().destory();
     }
 
     private void init() {
