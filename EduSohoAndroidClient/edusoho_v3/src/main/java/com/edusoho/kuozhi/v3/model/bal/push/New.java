@@ -135,7 +135,6 @@ public class New implements Serializable {
     }
 
     public New(XGPushTextMessage message) {
-        //JSONObject jsonObject = new JSONObject(message.getCustomContent());
         CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContent(), new TypeToken<CustomContent>() {
         });
         fromId = customContent.getFromId();
