@@ -20,7 +20,7 @@
         android:label="@string/app_name" >
 
         <activity
-            android:name=".MainActivity">
+            android:name="com.edusoho.test.FragmentTestActivity">
         </activity>
     </application>
 
