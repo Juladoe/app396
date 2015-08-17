@@ -109,7 +109,6 @@ public class EdusohoApp extends Application {
     public static final String PLUGIN_CONFIG = "plugin_config";
     public static final String INSTALL_PLUGIN = "install_plugin";
 
-    private android.os.Handler mWorkHandler;
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
     public VolleySingleton mVolley;
@@ -122,7 +121,6 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        mWorkHandler = new android.os.Handler();
         //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
@@ -263,11 +261,10 @@ public class EdusohoApp extends Application {
         loadConfig();
 
         mEngine = CoreEngine.create(this);
-        installPlugin();
         startMainService();
     }
 
-    private void initImageLoaderConfig(File file) {
+    protected void initImageLoaderConfig(File file) {
         if (file == null || !file.exists()) {
             file = new File(getCacheDir(), getResources().getString(R.string.image_cache_path));
         } else {
@@ -366,21 +363,6 @@ public class EdusohoApp extends Application {
         intent.setDataAndType(Uri.parse("file://" + file),
                 "application/vnd.android.package-archive");
         this.startActivity(intent);
-    }
-
-    private void installPlugin() {
-        final SharedPreferences sp = getSharedPreferences(PLUGIN_CONFIG, MODE_APPEND);
-        if (sp.contains(INSTALL_PLUGIN)) {
-            return;
-        }
-        mWorkHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "installPlugin");
-                mEngine.installApkPlugin();
-                sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
-            }
-        });
     }
 
     public String getApkVersion() {
