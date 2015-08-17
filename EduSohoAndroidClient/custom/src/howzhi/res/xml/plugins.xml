@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<plugins>
-    <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.KuozhiSplashActivity"></plugin>
-    <plugin name="QrSchoolActivity" version="1.0" package="com.edusoho.kuozhi.ui.common.QrLoginActivity"></plugin>
-
-    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.kuozhi.HowzhiDefaultPageActivity"></plugin>
-    <plugin name="SchoolRoomFragment" version="1.0" package="com.edusoho.kuozhi.HowSchoolRoomFragment"></plugin>
-</plugins>
