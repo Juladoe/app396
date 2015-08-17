@@ -11,10 +11,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.ContextThemeWrapper;
 import android.widget.LinearLayout;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
-import com.edusoho.kuozhi.v3.view.EduToolBar;
-
-import org.junit.Test;
 /**
  * Created by howzhi on 15/8/13.
  */
@@ -91,11 +87,8 @@ public class DefaultPageActivityTest extends ActivityUnitTestCase<DefaultPageAct
         assertNotNull(navLayout);
         assertEquals(3, navLayout.getChildCount());
 
-        /*EduSohoTextBtn mDownTabNews = (EduSohoTextBtn) mActivity.findViewById(com.edusoho.kuozhi.R.id.nav_tab_news);
-        EduSohoTextBtn mDownTabFind = (EduSohoTextBtn) mActivity.findViewById(com.edusoho.kuozhi.R.id.nav_tab_find);
-        EduSohoTextBtn mDownTabFriends = (EduSohoTextBtn) mActivity.findViewById(com.edusoho.kuozhi.R.id.nav_tab_friends);
-        EduToolBar mToolBar = (EduToolBar) mActivity.findViewById(com.edusoho.kuozhi.R.id.toolbar);
-        DrawerLayout mDrawerLayout = (DrawerLayout) mActivity.findViewById(com.edusoho.kuozhi.R.id.drawer_layout);
-*/
+        assertEquals(R.id.nav_tab_news, navLayout.getChildAt(0).getId());
+        assertEquals(R.id.nav_tab_find, navLayout.getChildAt(1).getId());
+        assertEquals(R.id.nav_tab_friends, navLayout.getChildAt(2).getId());
     }
 }
