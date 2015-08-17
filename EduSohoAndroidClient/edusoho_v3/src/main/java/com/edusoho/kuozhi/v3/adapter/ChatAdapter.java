@@ -402,7 +402,6 @@ public class ChatAdapter extends BaseAdapter {
                 });
                 break;
         }
-        //getAmrDuration();
     }
 
     private void handlerReceiveAudio(final ViewHolder holder, int position) {

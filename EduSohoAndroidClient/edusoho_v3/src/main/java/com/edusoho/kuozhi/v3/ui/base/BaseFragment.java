@@ -55,7 +55,7 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
 
     protected void invokeUIMessage() {
         WidgetMessage message = null;
-        while ((message = mUIMessageQueue.peek()) != null) {
+        while ((message = mUIMessageQueue.poll()) != null) {
             invoke(message);
         }
     }

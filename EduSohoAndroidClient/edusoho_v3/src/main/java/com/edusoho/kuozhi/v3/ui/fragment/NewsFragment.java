@@ -329,7 +329,6 @@ public class NewsFragment extends BaseFragment {
 
     private void handleReceiveMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New(wrapperMessage);
-        newModel.belongId = app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
         if (news.size() == 0) {
@@ -345,7 +344,6 @@ public class NewsFragment extends BaseFragment {
 
     private void handleSendMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New(wrapperMessage);
-        newModel.belongId = app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
         if (news.size() == 0) {

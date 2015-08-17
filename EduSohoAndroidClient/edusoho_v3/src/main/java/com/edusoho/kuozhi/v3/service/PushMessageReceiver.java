@@ -90,12 +90,9 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
         if (message.getActionType() == XGPushClickedResult.NOTIFACTION_CLICKED_TYPE) {
             text = "通知被打开 :" + message;
         } else if (message.getActionType() == XGPushClickedResult.NOTIFACTION_DELETED_TYPE) {
-            // 通知被清除啦。。。。
-            // APP自己处理通知被清除后的相关动作
             text = "通知被清除 :" + message;
         }
         Log.d("PushMessageReceiver", text);
-        //CommonUtil.longToast(context, message.toString());
     }
 
     @Override
