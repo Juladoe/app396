@@ -292,39 +292,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         message.isForeground = true;
         notifyNewFragmentListView2Update(message);
 
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+        RequestUrl requestUrl = app.bindNewUrl(Const.SEND, true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("type", "text");
+        params.put("nickname", app.loginUser.nickname);
         params.put("content", content);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
-
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
-                });
-                if (result.result.equals("success")) {
-                    chat.id = result.id;
-                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(Chat.Delivery.FAILED, chat);
-                CommonUtil.longToast(mActivity, "网络连接不可用请稍后再试");
-            }
-        });
-    }
-
-    private void sendMediaMsg(final Chat chat, Chat.FileType type) {
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("type", type.getName());
-        params.put("content", chat.getUpyunMediaGetUrl());
-        params.put("custom", gson.toJson(getCustomContent(type, TypeBusinessEnum.FRIEND)));
+        params.put("type", "text");
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -341,6 +313,79 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 Log.d(TAG, "发送信息失败");
             }
         });
+
+//        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+//        HashMap<String, String> params = requestUrl.getParams();
+//        params.put("title", app.loginUser.nickname);
+//        params.put("type", "text");
+//        params.put("content", content);
+//        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
+//
+//        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+//                });
+//                if (result.result.equals("success")) {
+//                    chat.id = result.id;
+//                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                updateSendMsgToListView(Chat.Delivery.FAILED, chat);
+//                CommonUtil.longToast(mActivity, "网络连接不可用请稍后再试");
+//            }
+//        });
+    }
+
+    private void sendMediaMsg(final Chat chat, Chat.FileType type) {
+        RequestUrl requestUrl = app.bindNewUrl(Const.SEND, true);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("nickname", app.loginUser.nickname);
+        params.put("content", chat.getUpyunMediaGetUrl());
+        params.put("type", type.getName());
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+                });
+                if (result.result.equals("success")) {
+                    chat.id = result.id;
+                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "发送信息失败");
+            }
+        });
+//
+//
+//        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+//        HashMap<String, String> params = requestUrl.getParams();
+//        params.put("title", app.loginUser.nickname);
+//        params.put("type", type.getName());
+//        params.put("content", chat.getUpyunMediaGetUrl());
+//        params.put("custom", gson.toJson(getCustomContent(type, TypeBusinessEnum.FRIEND)));
+//        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+//                });
+//                if (result.result.equals("success")) {
+//                    chat.id = result.id;
+//                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d(TAG, "发送信息失败");
+//            }
+//        });
     }
 
     /**
@@ -395,13 +440,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     @Override
     public void sendMsgAgain(final Chat chat) {
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+        RequestUrl requestUrl = app.bindNewUrl(Const.SEND, true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("type", "text");
+        params.put("nickname", app.loginUser.nickname);
         params.put("content", chat.getContent());
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
-
+        params.put("type", "text");
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -415,9 +458,33 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                CommonUtil.longToast(mActivity, getString(R.string.request_failed));
+                Log.d(TAG, "发送信息失败");
             }
         });
+
+//        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+//        HashMap<String, String> params = requestUrl.getParams();
+//        params.put("title", app.loginUser.nickname);
+//        params.put("type", "text");
+//        params.put("content", chat.getContent());
+//        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
+//
+//        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+//                });
+//                if (result.result.equals("success")) {
+//                    chat.id = result.id;
+//                    updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                CommonUtil.longToast(mActivity, getString(R.string.request_failed));
+//            }
+//        });
     }
 
     //region Touch, Click Listener etc.
