@@ -124,7 +124,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         break;
                     case 1:
                         //我的下载
-                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity1", mContext, null);
+                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity", mContext, null);
                         break;
                     case 2:
                         //开通会员
