@@ -42,6 +42,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -285,6 +287,19 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
 
         if (lessonItems != null) {
             int[] ids = getLessonIds(lessonItems);
+            Collections.sort(lessonItems, new Comparator<LessonItem>() {
+                @Override
+                public int compare(LessonItem lhs, LessonItem rhs) {
+                    if (lhs.courseId > rhs.courseId) {
+                        return 1;
+                    } else if (lhs.courseId == rhs.courseId) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+
             model.m3U8DbModles = M3U8Util.getM3U8ModleList(
                     mContext, ids, app.loginUser.id, this.host, isFinish);
             for (LessonItem lessonItem : lessonItems) {
