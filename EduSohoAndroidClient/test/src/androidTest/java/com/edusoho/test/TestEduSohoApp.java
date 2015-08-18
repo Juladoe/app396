@@ -13,9 +13,4 @@ public class TestEduSohoApp extends EdusohoApp {
     public void startMainService() {
 
     }
-
-    @Override
-    protected void initImageLoaderConfig(File file) {
-
-    }
 }

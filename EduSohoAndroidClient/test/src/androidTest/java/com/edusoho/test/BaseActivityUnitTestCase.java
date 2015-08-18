@@ -39,11 +39,11 @@ public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTe
         mInstrumentation = getInstrumentation();
         ContextThemeWrapper context = new ContextThemeWrapper(
                 mInstrumentation.getTargetContext(), R.style.AppThemeNoActionBar);
-        Context targetContext = context.createPackageContext("com.edusoho.kuozhi", Context.CONTEXT_IGNORE_SECURITY);
+        //Context targetContext = context.createPackageContext("com.edusoho.kuozhi", Context.CONTEXT_IGNORE_SECURITY);
         setActivityContext(context);
         initApplicationConfig();
         TestEduSohoApp app = (TestEduSohoApp) mInstrumentation.newApplication(
-                getClass().getClassLoader(), TestEduSohoApp.class.getName(), targetContext);
+                getClass().getClassLoader(), TestEduSohoApp.class.getName(), context);
         mInstrumentation.callApplicationOnCreate(app);
         setApplication(app);
     }
