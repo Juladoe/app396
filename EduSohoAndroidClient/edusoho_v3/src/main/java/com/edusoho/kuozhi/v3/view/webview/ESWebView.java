@@ -99,6 +99,7 @@ public class ESWebView extends RelativeLayout {
         webSettings.setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
 
         CordovaContext cordovaContext = mWebView.getCordovaContext();
+        mWebView.setScrollBarStyle(SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setWebViewClient(new ESWebViewClient(cordovaContext, mWebView));
         mWebView.setWebChromeClient(new ESPrivateWebChromeClient(cordovaContext));
     }
