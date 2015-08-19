@@ -272,6 +272,9 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
             loadSchoolApps();
         }
+        if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
+            loadSchoolApps();
+        }
         if (messageType.code == Const.NEW_FANS) {
             isNews = true;
             mActivity.supportInvalidateOptionsMenu();
@@ -283,7 +286,8 @@ public class FriendFragment extends BaseFragment {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS)
                 , new MessageType(Const.REFRESH_FRIEND_LIST)
-                , new MessageType(Const.NEW_FANS, source)};
+                , new MessageType(Const.NEW_FANS, source)
+                , new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)};
         return messageTypes;
     }
 }

@@ -226,7 +226,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             if(friend.smallAvatar.equals("")){
                 holder.image.setImageResource(R.drawable.default_avatar);
             }else {
-                ImageLoader.getInstance().displayImage(app.host+"/"+friend.smallAvatar, holder.image, mActivity.app.mOptions);
+                ImageLoader.getInstance().displayImage(friend.smallAvatar, holder.image, mActivity.app.mOptions);
             }
             holder.name.setText(friend.nickname);
             if (friend.friendship == null){
