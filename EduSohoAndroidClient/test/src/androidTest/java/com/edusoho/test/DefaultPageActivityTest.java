@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.widget.LinearLayout;
+
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 
 /**
@@ -45,7 +46,7 @@ public class DefaultPageActivityTest extends BaseActivityUnitTestCase<DefaultPag
     }
 
     @UiThreadTest
-    public void testActivityDestory() {
+    public void testActivityDestroy() {
         mActivity = getActivity();
         mInstrumentation.callActivityOnDestroy(mActivity);
     }
