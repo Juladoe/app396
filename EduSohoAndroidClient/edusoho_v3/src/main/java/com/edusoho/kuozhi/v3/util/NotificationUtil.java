@@ -57,7 +57,7 @@ public class NotificationUtil {
                 mMessage = xgMessage;
                 //notifyIntent.putExtra(Const.CHAT_DATA, xgMessage);
             }
-            notifyIntent.putExtra(ChatActivity.TITLE, xgMessage.title);
+            notifyIntent.putExtra(ChatActivity.NICKNAME, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);

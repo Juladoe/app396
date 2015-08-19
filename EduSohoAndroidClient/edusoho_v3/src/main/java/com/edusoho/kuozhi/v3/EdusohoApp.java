@@ -33,7 +33,7 @@ import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.result.PushResult;
+import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -793,7 +793,7 @@ public class EdusohoApp extends Application {
                 postUrl(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        PushResult pushResult = app.parseJsonValue(response, new TypeToken<PushResult>() {
+                        CloudResult pushResult = app.parseJsonValue(response, new TypeToken<CloudResult>() {
                         });
                         if (pushResult != null && pushResult.result.equals("success")) {
                             Log.d(TAG, "cloud logout success");
