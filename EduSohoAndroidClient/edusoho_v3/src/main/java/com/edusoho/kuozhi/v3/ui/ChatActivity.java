@@ -41,11 +41,10 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
-import com.edusoho.kuozhi.v3.model.result.PushResult;
+import com.edusoho.kuozhi.v3.model.result.NewApiResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -83,15 +82,20 @@ import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by JesseHuang on 15/6/3.
+ * input params:
+ * 1. FROM_ID 对方userId
+ * 2. NICKNAME 对方昵称
+ * 3. HEAD_IMAGE_URL 对方头像
  */
 public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener, ChatAdapter.ImageErrorClick {
 
     //region Field
     public static final String TAG = "ChatActivity";
     public static final String CHAT_DATA = "chat_data";
-    public static final String NEW_DATA = "new_data";
     public static final String FROM_ID = "from_id";
-    public static final String TITLE = "title";
+    public static final String NICKNAME = "nickname";
+    public static final String HEAD_IMAGE_URL = "head_image_url";
+
     private static final int IMAGE_SIZE = 1024 * 500;
 
     private static final int SEND_IMAGE = 1;
@@ -248,8 +252,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mToId = app.loginUser.id;
+        mFromUserInfo = new User();
+        mFromUserInfo.id = mFromId;
+        mFromUserInfo.mediumAvatar = intent.getStringExtra(HEAD_IMAGE_URL);
+        mFromUserInfo.nickname = intent.getStringExtra(NICKNAME);
+
         NotificationUtil.cancelById(mFromId);
-        setBackMode(BACK, intent.getStringExtra(TITLE));
+        setBackMode(BACK, intent.getStringExtra(NICKNAME));
         CurrentFromId = mFromId;
         if (mChatDataSource == null) {
             mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -294,15 +303,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
         RequestUrl requestUrl = app.bindNewUrl(Const.SEND, true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("nickname", app.loginUser.nickname);
+        params.put("nickname", mFromUserInfo.nickname);
         params.put("content", content);
         params.put("type", "text");
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+                NewApiResult result = parseJsonValue(response, new TypeToken<NewApiResult>() {
                 });
-                if (result.result.equals("success")) {
+                if ("true".equals(result.success)) {
                     chat.id = result.id;
                     updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
                 }
@@ -343,15 +352,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void sendMediaMsg(final Chat chat, Chat.FileType type) {
         RequestUrl requestUrl = app.bindNewUrl(Const.SEND, true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("nickname", app.loginUser.nickname);
+        params.put("nickname", mFromUserInfo.nickname);
         params.put("content", chat.getUpyunMediaGetUrl());
         params.put("type", type.getName());
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+                NewApiResult result = parseJsonValue(response, new TypeToken<NewApiResult>() {
                 });
-                if (result.result.equals("success")) {
+                if ("true".equals(result.success)) {
                     chat.id = result.id;
                     updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
                 }
@@ -442,15 +451,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public void sendMsgAgain(final Chat chat) {
         RequestUrl requestUrl = app.bindNewUrl(Const.SEND, true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("nickname", app.loginUser.nickname);
+        params.put("nickname", mFromUserInfo.nickname);
         params.put("content", chat.getContent());
         params.put("type", "text");
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PushResult result = parseJsonValue(response, new TypeToken<PushResult>() {
+                NewApiResult result = parseJsonValue(response, new TypeToken<NewApiResult>() {
                 });
-                if (result.result.equals("success")) {
+                if ("true".equals(result.success)) {
                     chat.id = result.id;
                     updateSendMsgToListView(Chat.Delivery.SUCCESS, chat);
                 }
@@ -1040,13 +1049,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "无法获取对方信息");
-                    Intent intent = getIntent();
-                    if (intent != null) {
-                        New newItem = (New) intent.getSerializableExtra(NEW_DATA);
-                        mFromUserInfo = new User();
-                        mFromUserInfo.mediumAvatar = newItem.imgUrl;
-                        mFromUserInfo.nickname = newItem.title;
-                    }
                 }
             });
         }
