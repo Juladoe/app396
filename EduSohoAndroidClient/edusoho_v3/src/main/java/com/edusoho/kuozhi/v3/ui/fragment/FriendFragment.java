@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -39,6 +40,7 @@ import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -91,7 +93,7 @@ public class FriendFragment extends BaseFragment {
             public void onTouchingLetterChangedListener(String string) {
                 int postion = mFriendAdapter.getPositionForSection(string.charAt(0));
                 if (postion != -1) {
-                    mFriendList.setSelection(postion+1);
+                    mFriendList.setSelection(postion + 1);
                 }
             }
         });
@@ -118,7 +120,7 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
-        mFriendList.addFooterView(mFootView,null,false);
+        mFriendList.addFooterView(mFootView, null, false);
         mFriendList.setAdapter(mFriendAdapter);
 
         mLoadDialog = LoadDialog.create(mActivity);
@@ -159,7 +161,8 @@ public class FriendFragment extends BaseFragment {
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                List<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<List<SchoolApp>>(){});
+                List<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<List<SchoolApp>>() {
+                });
                 if (schoolAppResult.size() != 0) {
                     mFriendAdapter.setSchoolListSize(schoolAppResult.size());
                     mFriendAdapter.addSchoolList(schoolAppResult);
@@ -187,13 +190,13 @@ public class FriendFragment extends BaseFragment {
                 if (friendResult.data.length != 0) {
                     List<Friend> list = Arrays.asList(friendResult.data);
                     setChar(list);
-                    Collections.sort(list,friendComparator);
+                    Collections.sort(list, friendComparator);
                     mFriendAdapter.addFriendList(list);
                     mLoadDialog.dismiss();
                 } else {
                     mLoadDialog.dismiss();
                 }
-                setmFriendCount(friendResult.data.length+"");
+                setmFriendCount(friendResult.data.length + "");
             }
         }, new Response.ErrorListener() {
             @Override
@@ -204,13 +207,13 @@ public class FriendFragment extends BaseFragment {
 
     }
 
-    public void setChar(List<Friend> list){
-        for (Friend friend:list){
+    public void setChar(List<Friend> list) {
+        for (Friend friend : list) {
             String pinyin = characterParser.getSelling(friend.nickname);
-            String sortString = pinyin.substring(0,1).toUpperCase();
-            if(sortString.matches("[A-Z]")){
+            String sortString = pinyin.substring(0, 1).toUpperCase();
+            if (sortString.matches("[A-Z]")) {
                 friend.setSortLetters(sortString.toUpperCase());
-            }else{
+            } else {
                 friend.setSortLetters("#");
             }
         }
@@ -269,6 +272,9 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
             loadSchoolApps();
         }
+        if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
+            loadSchoolApps();
+        }
         if (messageType.code == Const.NEW_FANS) {
             isNews = true;
             mActivity.supportInvalidateOptionsMenu();
@@ -280,7 +286,8 @@ public class FriendFragment extends BaseFragment {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS)
                 , new MessageType(Const.REFRESH_FRIEND_LIST)
-                , new MessageType(Const.NEW_FANS, source)};
+                , new MessageType(Const.NEW_FANS, source)
+                , new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)};
         return messageTypes;
     }
 }
