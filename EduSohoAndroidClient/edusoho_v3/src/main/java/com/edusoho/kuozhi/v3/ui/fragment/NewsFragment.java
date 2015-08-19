@@ -202,8 +202,8 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
-                            startIntent.putExtra(ChatActivity.TITLE, newItem.title);
-                            startIntent.putExtra(ChatActivity.NEW_DATA, newItem);
+                            startIntent.putExtra(ChatActivity.NICKNAME, newItem.title);
+                            startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });
                     if (newItem.unread > 0) {

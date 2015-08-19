@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -137,7 +136,8 @@ public class FriendFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
-                            startIntent.putExtra(ChatActivity.TITLE, friend.nickname);
+                            startIntent.putExtra(ChatActivity.NICKNAME, friend.nickname);
+                            startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
                         }
                     });
                 } else {
