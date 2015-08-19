@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.view.circleimageview;
+package com.edusoho.kuozhi.v3.view.circleImageView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

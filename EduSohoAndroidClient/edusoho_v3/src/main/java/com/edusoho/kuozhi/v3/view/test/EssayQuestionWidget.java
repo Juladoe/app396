@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
@@ -231,6 +232,9 @@ public class EssayQuestionWidget extends BaseQuestionWidget
 
         @Override
         public Drawable getDrawable(String s) {
+            if (TextUtils.isEmpty(s)) {
+                return getResources().getDrawable(R.drawable.html_image_fail);
+            }
             Drawable drawable = getResources().getDrawable(R.drawable.load);
             File file = ImageLoader.getInstance().getDiskCache().get(s);
 
@@ -244,12 +248,10 @@ public class EssayQuestionWidget extends BaseQuestionWidget
             ImageLoader.getInstance().loadImage(s, EdusohoApp.app.mOptions, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
-
                 }
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason failReason) {
-
                 }
 
                 @Override
@@ -259,7 +261,6 @@ public class EssayQuestionWidget extends BaseQuestionWidget
 
                 @Override
                 public void onLoadingCancelled(String s, View view) {
-
                 }
             });
 

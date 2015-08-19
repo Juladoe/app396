@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -30,7 +31,9 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.lang.ref.WeakReference;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -124,7 +127,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                         break;
                     case 1:
                         //我的下载
-                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity1", mContext, null);
+                        mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity", mContext, null);
                         break;
                     case 2:
                         //开通会员
