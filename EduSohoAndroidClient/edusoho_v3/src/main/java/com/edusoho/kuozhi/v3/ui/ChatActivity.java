@@ -522,19 +522,21 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     if (ratio > 1) {
                         db = 20 * Math.log10(ratio);
                     }
-                    if (db < 60) {
-                        mHandler.sendEmptyMessage(0);
-                    } else if (db < 70) {
-                        mHandler.sendEmptyMessage(1);
-                    } else if (db < 80) {
-                        mHandler.sendEmptyMessage(2);
-                    } else if (db < 90) {
-                        mHandler.sendEmptyMessage(3);
-                    }
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (!mCancelSave) {
+                        if (db < 60) {
+                            mHandler.sendEmptyMessage(0);
+                        } else if (db < 70) {
+                            mHandler.sendEmptyMessage(1);
+                        } else if (db < 80) {
+                            mHandler.sendEmptyMessage(2);
+                        } else if (db < 90) {
+                            mHandler.sendEmptyMessage(3);
+                        }
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
