@@ -2,15 +2,22 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
+
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
+
+import java.io.File;
 
 /**
  * Created by howzhi on 15/8/10.
@@ -59,11 +66,29 @@ public class ESWebChromeClient extends CordovaChromeClient {
                     @Override
                     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
                         Uri result = intent == null || resultCode != Activity.RESULT_OK ? null : intent.getData();
-                        uploadMsg.onReceiveValue(result);
+                        uploadMsg.onReceiveValue(compressImage(result));
                     }
                 },
                 Intent.createChooser(i, "File Browser"),
                 FILECHOOSER_RESULTCODE);
+    }
+
+    private Uri compressImage(Uri uri) {
+        if (uri == null || TextUtils.isEmpty(uri.getPath())) {
+            return null;
+        }
+        String path = AppUtil.getPath(mActivity.getApplicationContext(), uri);
+        Bitmap bitmap = AppUtil.getBitmapFromFile(new File(path));
+        if (bitmap == null) {
+            return uri;
+        }
+        bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW, 0);
+
+        File cacheDir = AppUtil.getAppCacheDir();
+        File newUriFile = new File(cacheDir, "uploadAvatarTemp.png");
+        AppUtil.saveBitmap2FileWithQuality(bitmap, newUriFile.getAbsolutePath(), 80);
+
+        return Uri.fromFile(newUriFile);
     }
 
     @Override
