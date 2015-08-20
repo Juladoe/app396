@@ -536,6 +536,16 @@ public class AppUtil {
         return schoolStorage;
     }
 
+    public static File getAppCacheDir() {
+        File store = getAppStorage();
+        File cacheDir = new File(store, "cache");
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
+
+        return cacheDir;
+    }
+
     public static File getSystemStorage() {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             return Environment.getDataDirectory();
@@ -786,18 +796,30 @@ public class AppUtil {
         return about.replaceAll("<[^>]+>", "");
     }
 
-    public static boolean saveBitmap2File(Bitmap bmp, String filename) {
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
-        int quality = 100;
+    public static boolean saveBitmap2FileWithQuality(Bitmap bmp, String filename, int quality) {
+        Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
         OutputStream stream = null;
         try {
             stream = new FileOutputStream(filename);
+            bmp.compress(format, quality, stream);
             stream.flush();
-            stream.close();
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (Exception e) {
+
+                }
+            }
         }
-        return bmp.compress(format, quality, stream);
+        return true;
+    }
+
+    public static boolean saveBitmap2File(Bitmap bmp, String filename) {
+        return saveBitmap2FileWithQuality(bmp, filename, 100);
     }
 
     public static void showAlertDialog(final BaseActivity activity, String content) {
