@@ -48,8 +48,8 @@ public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTe
         setApplication(app);
     }
 
-    private void initApplicationConfig() {
-        Context context = mInstrumentation.getContext();
+    private void initApplicationConfig() throws Exception {
+        Context context = mInstrumentation.getTargetContext();
         SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_APPEND);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("showSplash", false);
@@ -58,6 +58,7 @@ public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTe
         editor.putInt("msgSound", 1);
         editor.putInt("msgVibrate", 1);
         editor.commit();
+        editor.apply();
 
         sp = context.getSharedPreferences("defaultSchool", Context.MODE_APPEND);
         editor = sp.edit();
@@ -66,5 +67,6 @@ public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTe
         editor.putString("host", "http://trymob.edusoho.cn");
         editor.putString("logo", "");
         editor.commit();
+        editor.apply();
     }
 }
