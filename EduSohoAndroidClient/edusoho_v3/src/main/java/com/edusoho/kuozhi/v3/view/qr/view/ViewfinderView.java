@@ -4,17 +4,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.view.qr.camera.CameraManager;
 import com.google.zxing.ResultPoint;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +26,7 @@ public final class ViewfinderView extends View {
     private static final long ANIMATION_DELAY = 80L;
     private CameraManager cameraManager;
     private final Paint paint;
+    private Paint fontPaint;
     private Bitmap resultBitmap;
     private final int maskColor;
     private final int resultColor;
@@ -40,6 +40,7 @@ public final class ViewfinderView extends View {
 
     public ViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        fontPaint = getFontPaint();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.viewfinder_mask);
@@ -56,6 +57,24 @@ public final class ViewfinderView extends View {
 
         scannerAlpha = 0;
         possibleResultPoints = new ArrayList<ResultPoint>(5);
+    }
+
+    private Paint getFontPaint() {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.base_size));
+
+        return paint;
+    }
+
+    private void drawQrNotice(Canvas canvas, Rect frame) {
+        String qrNoticeStr = getResources().getString(R.string.qr_search_notice);
+
+        Rect qrNoticeRect = new Rect();
+        fontPaint.getTextBounds(qrNoticeStr, 0, qrNoticeStr.length(), qrNoticeRect);
+        int x = (frame.width() - qrNoticeRect.width()) / 2 + frame.left;
+        int y = frame.bottom + qrNoticeRect.height() * 2;
+        canvas.drawText(qrNoticeStr, x, y, fontPaint);
     }
 
     public void setCameraManager(CameraManager cameraManager) {
@@ -79,13 +98,11 @@ public final class ViewfinderView extends View {
         paint.setColor(resultBitmap != null ? resultColor : maskColor);
 
         canvas.drawRect(0, 0, width, frame.top, paint);
-
         canvas.drawRect(0, frame.top, frame.left, frame.bottom, paint);
-
         canvas.drawRect(frame.right, frame.top, width, frame.bottom, paint);
-
         canvas.drawRect(0, frame.bottom, width, height, paint);
 
+        drawQrNotice(canvas, frame);
         if (resultBitmap != null) {
             paint.setAlpha(CURRENT_POINT_OPACITY);
             canvas.drawBitmap(resultBitmap, null, frame, paint);
