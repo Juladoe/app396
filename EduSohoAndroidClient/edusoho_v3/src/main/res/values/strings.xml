@@ -149,5 +149,7 @@
     <string name="drawer_items_publish">我的发表</string>
     <string name="drawer_items_setting">我的设置</string>
 
+    <string name="qr_search_notice">将二维码放入框内，即可自动扫描</string>
+
 
 </resources>
