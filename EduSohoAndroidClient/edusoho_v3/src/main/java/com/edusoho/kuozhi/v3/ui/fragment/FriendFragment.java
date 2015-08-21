@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.internal.widget.DecorToolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,17 +31,16 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
-import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,14 +53,15 @@ public class FriendFragment extends BaseFragment {
     private boolean isNews = false;
     private ListView mFriendList;
     private View mFootView;
+    private View mToolbarView;
     private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
-    private EduToolBar mEduToolBar;
     private LoadDialog mLoadDialog;
     private SideBar mSidebar;
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
+    private ActionBar mActionBar;
 
     @Override
     public void onAttach(Activity activity) {
@@ -71,7 +73,7 @@ public class FriendFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_friends);
         mActivity.setTitle(getString(R.string.title_friends));
-        mEduToolBar = ((DefaultPageActivity) mActivity).getToolBar();
+        mActionBar = mActivity.getSupportActionBar();
         setHasOptionsMenu(true);
     }
 
@@ -96,14 +98,15 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
+        mToolbarView = getToolbarView();
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
-                    ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", mEduToolBar.getHeight(), 0);
-                    mEduToolBar.setTag(mEduToolBar.getHeight());
+                    ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", mToolbarView.getHeight(), 0);
+                    mToolbarView.setTag(mToolbarView.getHeight());
                     animator.setDuration(300);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());
                     animator.addListener(new AnimatorListenerAdapter() {
@@ -111,7 +114,7 @@ public class FriendFragment extends BaseFragment {
                         public void onAnimationEnd(Animator animation) {
                             SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
                             searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
-                            searchDialogFragment.setToolBar(mEduToolBar);
+                            searchDialogFragment.setToolBarView(mToolbarView);
                         }
                     });
 
@@ -289,5 +292,21 @@ public class FriendFragment extends BaseFragment {
                 , new MessageType(Const.NEW_FANS, source)
                 , new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)};
         return messageTypes;
+    }
+
+    public View getToolbarView(){
+
+        View view = null;
+        try {
+            Field toolbarField = mActionBar.getClass().getDeclaredField("mDecorToolbar");
+            toolbarField.setAccessible(true);
+            DecorToolbar toolbar = (DecorToolbar) toolbarField.get(mActionBar);
+            view = toolbar.getViewGroup();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return view;
     }
 }
