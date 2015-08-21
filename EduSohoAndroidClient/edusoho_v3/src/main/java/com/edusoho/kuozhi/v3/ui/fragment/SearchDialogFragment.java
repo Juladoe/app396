@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.edusoho.kuozhi.v3.ui.friend.SearchFriendActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundedEditText;
-import com.edusoho.kuozhi.v3.view.EduToolBar;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,10 +41,10 @@ public class SearchDialogFragment extends DialogFragment {
     private EduSohoRoundedEditText mSearchFrame;
     private TextView mCancel;
     private ActionBarBaseActivity mActivity;
-    private EduToolBar mEduToolBar;
     private Context mContext;
     private EdusohoApp mApp;
     private View view;
+    private View mToolbarView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,23 +117,20 @@ public class SearchDialogFragment extends DialogFragment {
 
 
 
-    public void setToolBar(EduToolBar eduToolBar) {
-        this.mEduToolBar = eduToolBar;
+    public void setToolBarView(View view) {
+        this.mToolbarView = view;
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (mEduToolBar.getVisibility() == View.GONE) {
+        if (mToolbarView.getVisibility() == View.GONE) {
         }
-
-        int height = (Integer) mEduToolBar.getTag();
-
-        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mEduToolBar), "height", 0, height);
+        int height = (Integer) mToolbarView.getTag();
+        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", 0, height);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(300);
         animator.start();
-
     }
 
 }

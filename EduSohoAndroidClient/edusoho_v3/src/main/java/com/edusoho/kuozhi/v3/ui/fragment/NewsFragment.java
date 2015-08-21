@@ -173,7 +173,7 @@ public class NewsFragment extends BaseFragment {
                     int notificationId;
                     if (newModel.getType().equals(TypeBusinessEnum.BULLETIN.getName())) {
                         BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        notificationId = (int) bulletinDataSource.delete();
+                        notificationId = bulletinDataSource.delete();
                     } else {
                         ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
                         chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
@@ -348,7 +348,7 @@ public class NewsFragment extends BaseFragment {
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 0;
-            newDataSource.create(newModel);
+            newModel.id = (int) newDataSource.create(newModel);
             insertNew(newModel);
         } else {
             newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
