@@ -259,8 +259,8 @@ public class Const {
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
-    //public static final String SEND = "/message/%d/friend/%d/send";
-    public static final String SEND = "/api/messages/";
+    public static final String SEND = "/message/%d/friend/%d/send";
+    //public static final String SEND = "/api/messages/";
     public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
     public static final String SAVE_UPLOAD_INFO = "/file/%d/upload/succeed";
     public static final String GET_LASTEST_OFFLINE_MSG = "/message/%d/newest/list";

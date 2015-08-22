@@ -6,4 +6,8 @@ package com.edusoho.kuozhi.v3.model.result;
 public class CloudResult {
     public int id;
     public String result;
+
+    public boolean getResult() {
+        return "success".equals(this.result) ? true : false;
+    }
 }
