@@ -186,6 +186,5 @@ public class ChatActivityTest extends ActivityUnitTestCase<ChatActivity> {
         viewPressToSpeak.dispatchTouchEvent(motionEvent);
         View viewSpeakContainer = mChatActivity.findViewById(R.id.recording_container);
         assertEquals(View.VISIBLE, viewSpeakContainer.getVisibility());
-
     }
 }
