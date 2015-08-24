@@ -1,11 +1,7 @@
 package com.edusoho.test;
 
-import android.app.Instrumentation;
-import android.content.Intent;
 import android.os.SystemClock;
-import android.test.ActivityUnitTestCase;
 import android.test.UiThreadTest;
-import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -22,51 +18,21 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 /**
  * Created by JesseHuang on 15/8/18.
  */
-public class ChatActivityTest extends ActivityUnitTestCase<ChatActivity> {
-    private ChatActivity mChatActivity;
-    protected Instrumentation mInstrumentation;
-    protected Intent mLaunchIntent;
+public class ChatActivityTest extends BaseActivityUnitTestCase<ChatActivity> {
 
     public ChatActivityTest() {
         super(ChatActivity.class);
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mInstrumentation = getInstrumentation();
-        ContextThemeWrapper context = new ContextThemeWrapper(
-                mInstrumentation.getTargetContext(), R.style.Theme_AppCompat);
-        setActivityContext(context);
-
-        TestEduSohoApp app = (TestEduSohoApp) mInstrumentation.newApplication(
-                getClass().getClassLoader(), TestEduSohoApp.class.getName(), context);
-        TestUtils.initApplication(app, mInstrumentation.getTargetContext());
-        mInstrumentation.callApplicationOnCreate(app);
-        setApplication(app);
-        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
-                ChatActivity.class);
-    }
-
-    @Override
-    public ChatActivity getActivity() {
-        mChatActivity = super.getActivity();
-        if (mChatActivity == null) {
-            mChatActivity = startActivity(mLaunchIntent, null, null);
-        }
-
-        return mChatActivity;
-    }
-
     @UiThreadTest
     public void testActivity() {
-        mChatActivity = getActivity();
+        ChatActivity mChatActivity = getActivity();
         assertNotNull(mChatActivity);
     }
 
     @UiThreadTest
     public void testInitUI() {
-        mChatActivity = getActivity();
+        ChatActivity mChatActivity = getActivity();
         ListView listView = (ListView) mChatActivity.findViewById(R.id.lv_messages);
         assertNotNull(listView);
 
@@ -137,7 +103,7 @@ public class ChatActivityTest extends ActivityUnitTestCase<ChatActivity> {
 
     @UiThreadTest
     public void testMsgButton() {
-        mChatActivity = getActivity();
+        ChatActivity mChatActivity = getActivity();
         EditText etSend = (EditText) mChatActivity.findViewById(R.id.et_send_content);
         etSend.setText("This is a text.");
         assertEquals(View.VISIBLE, etSend.getVisibility());
@@ -147,7 +113,7 @@ public class ChatActivityTest extends ActivityUnitTestCase<ChatActivity> {
 
     @UiThreadTest
     public void testMediaButtonShow() {
-        mChatActivity = getActivity();
+        ChatActivity mChatActivity = getActivity();
         EduSohoIconView ivAddMedia = (EduSohoIconView) mChatActivity.findViewById(R.id.iv_show_media_layout);
         ivAddMedia.performClick();
         View viewMediaLayout = mChatActivity.findViewById(R.id.ll_media_layout);
@@ -161,7 +127,7 @@ public class ChatActivityTest extends ActivityUnitTestCase<ChatActivity> {
 
     @UiThreadTest
     public void testVoiceSpeaker() throws Throwable {
-        mChatActivity = getActivity();
+        ChatActivity mChatActivity = getActivity();
         EduSohoIconView btnVoice = (EduSohoIconView) mChatActivity.findViewById(R.id.btn_voice);
         btnVoice.performClick();
         assertEquals(View.GONE, btnVoice.getVisibility());

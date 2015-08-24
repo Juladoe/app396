@@ -6,16 +6,36 @@ import android.content.Intent;
 import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
 
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
+
 /**
- * Created by howzhi on 15/8/17.
+ * Created by JesseHuang on 15/8/24.
  */
 public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTestCase<T> {
 
     protected Intent mLaunchIntent;
     protected Instrumentation mInstrumentation;
+    protected TestEduSohoApp mApp;
 
     public BaseActivityUnitTestCase(Class<T> activityClass) {
         super(activityClass);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mInstrumentation = getInstrumentation();
+        ContextThemeWrapper context = new ContextThemeWrapper(
+                mInstrumentation.getTargetContext(), R.style.Theme_AppCompat);
+        setActivityContext(context);
+
+        mApp = (TestEduSohoApp) mInstrumentation.newApplication(
+                getClass().getClassLoader(), TestEduSohoApp.class.getName(), context);
+        TestUtils.initApplication(mApp, mInstrumentation.getTargetContext());
+        mInstrumentation.callApplicationOnCreate(mApp);
+        setApplication(mApp);
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                ChatActivity.class);
     }
 
     @Override
@@ -24,23 +44,8 @@ public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTe
         if (mActivity == null) {
             mActivity = startActivity(mLaunchIntent, null, null);
         }
-
         return mActivity;
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mInstrumentation = getInstrumentation();
-        ContextThemeWrapper context = new ContextThemeWrapper(
-                mInstrumentation.getTargetContext(), R.style.AppThemeNoActionBar);
-        //Context targetContext = context.createPackageContext("com.edusoho.kuozhi", Context.CONTEXT_IGNORE_SECURITY);
-        setActivityContext(context);
 
-        TestEduSohoApp app = (TestEduSohoApp) mInstrumentation.newApplication(
-                getClass().getClassLoader(), TestEduSohoApp.class.getName(), context);
-        TestUtils.initApplication(app, mInstrumentation.getTargetContext());
-        mInstrumentation.callApplicationOnCreate(app);
-        setApplication(app);
-    }
 }

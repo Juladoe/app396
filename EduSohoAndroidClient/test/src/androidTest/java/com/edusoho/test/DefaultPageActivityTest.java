@@ -20,7 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 @MediumTest
-public class DefaultPageActivityTest extends BaseActivityUnitTestCase<DefaultPageActivity> {
+public class DefaultPageActivityTest extends BaseActivityNoActionBarUnitTestCase<DefaultPageActivity> {
 
     private DefaultPageActivity mActivity;
 
