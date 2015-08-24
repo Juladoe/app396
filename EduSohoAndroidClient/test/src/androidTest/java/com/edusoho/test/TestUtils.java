@@ -18,7 +18,7 @@ public class TestUtils {
         editor.putBoolean("registPublicDevice", false);
         editor.putBoolean("startWithSchool", true);
         editor.putInt("msgSound", 1);
-        editor.putInt("msgVibrate", 1);
+        editor.putInt("msgVibrate", 2);
         editor.commit();
         editor.apply();
 

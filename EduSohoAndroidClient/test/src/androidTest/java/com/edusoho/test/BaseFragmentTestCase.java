@@ -6,7 +6,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 /**
  * Created by howzhi on 15/8/17.
  */
-public class BaseFragmentTestCase<K extends BaseFragment> extends BaseActivityUnitTestCase<FragmentTestActivity> {
+public class BaseFragmentTestCase<K extends BaseFragment> extends BaseActivityNoActionBarUnitTestCase<FragmentTestActivity> {
 
     protected K mFragment;
     private Class<K> mFragmentClass;

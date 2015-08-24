@@ -32,7 +32,6 @@ public class DefaultPageActivityWithLogoutTest extends ActivityUnitTestCase<Defa
         mInstrumentation = getInstrumentation();
         ContextThemeWrapper context = new ContextThemeWrapper(
                 mInstrumentation.getTargetContext(), R.style.AppThemeNoActionBar);
-        //Context targetContext = context.createPackageContext("com.edusoho.kuozhi", Context.CONTEXT_IGNORE_SECURITY);
         setActivityContext(context);
 
         TestEduSohoApp app = (TestEduSohoApp) mInstrumentation.newApplication(
