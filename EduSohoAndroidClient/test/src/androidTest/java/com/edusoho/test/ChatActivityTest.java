@@ -25,7 +25,7 @@ public class ChatActivityTest extends BaseActivityUnitTestCase<ChatActivity> {
     }
 
     @UiThreadTest
-    public void testActivity() {
+    public void testChatActivity() {
         ChatActivity mChatActivity = getActivity();
         assertNotNull(mChatActivity);
     }
