@@ -40,6 +40,5 @@ public class TestUtils {
                 "\"title\":\"\",\"type\":\"default\",\"id\":268,\"dataType\":0}";
         app.gson = new Gson();
         app.loginUser = app.gson.fromJson(loginUserJson, User.class);
-
     }
 }

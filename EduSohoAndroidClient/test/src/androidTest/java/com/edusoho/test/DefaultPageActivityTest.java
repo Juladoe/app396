@@ -1,11 +1,19 @@
 package com.edusoho.test;
 
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.MediumTest;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
+import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by howzhi on 15/8/13.
@@ -49,5 +57,51 @@ public class DefaultPageActivityTest extends BaseActivityUnitTestCase<DefaultPag
     public void testActivityDestroy() {
         mActivity = getActivity();
         mInstrumentation.callActivityOnDestroy(mActivity);
+    }
+
+    @UiThreadTest
+    public void testFragmentNavigationDrawer() {
+        mActivity = getActivity();
+        DrawerLayout mDrawerLayout = (DrawerLayout) mActivity.findViewById(R.id.drawer_layout);
+        assertNotNull(mDrawerLayout);
+        FragmentNavigationDrawer mFragmentNavigationDrawer = (FragmentNavigationDrawer) mActivity.getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        assertNotNull(mFragmentNavigationDrawer);
+        final int mRadioIds[] = {
+                com.edusoho.kuozhi.R.id.radio0,
+                com.edusoho.kuozhi.R.id.radio1,
+                com.edusoho.kuozhi.R.id.radio2,
+                com.edusoho.kuozhi.R.id.radio3,
+                com.edusoho.kuozhi.R.id.radio4,
+        };
+        final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
+        for (int i = 0; i < mRadioButtons.length; i++) {
+            mRadioButtons[i] = (RadioButton) mActivity.findViewById(mRadioIds[i]);
+            assertNotNull(mRadioButtons[i]);
+        }
+    }
+
+    @UiThreadTest
+    public void testLoginDrawerUI() {
+        mActivity = getActivity();
+        //Visible
+        EduSohoIconView ivSetting = (EduSohoIconView) mActivity.findViewById(R.id.iv_setting);
+        assertNotNull(ivSetting);
+        assertEquals(View.GONE, ivSetting.getVisibility());
+        CircleImageView civAvatar = (CircleImageView) mActivity.findViewById(R.id.circleIcon);
+        assertNotNull(civAvatar);
+        TextView tvNickname = (TextView) mActivity.findViewById(R.id.tv_nickname);
+        assertNotNull(tvNickname);
+        assertEquals(View.VISIBLE, tvNickname.getVisibility());
+        TextView tvTitle = (TextView) mActivity.findViewById(R.id.tv_user_title);
+        assertNotNull(tvTitle);
+        assertEquals(View.VISIBLE, tvTitle.getVisibility());
+        View vItems = mActivity.findViewById(R.id.ll_item);
+        assertNotNull(vItems);
+        assertEquals(View.VISIBLE, vItems.getVisibility());
+
+        //gone
+        TextView tvLogin = (TextView) mActivity.findViewById(R.id.tv_login);
+        assertNotNull(tvLogin);
+        assertEquals(View.GONE, tvLogin.getVisibility());
     }
 }
