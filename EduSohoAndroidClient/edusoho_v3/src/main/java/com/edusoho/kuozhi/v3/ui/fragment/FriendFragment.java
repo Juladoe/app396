@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
@@ -73,7 +74,6 @@ public class FriendFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_friends);
         mActivity.setTitle(getString(R.string.title_friends));
-        mActionBar = mActivity.getSupportActionBar();
         setHasOptionsMenu(true);
     }
 
@@ -98,13 +98,13 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
-        mToolbarView = getToolbarView();
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
+                    getBar();
                     ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", mToolbarView.getHeight(), 0);
                     mToolbarView.setTag(mToolbarView.getHeight());
                     animator.setDuration(300);
@@ -308,5 +308,10 @@ public class FriendFragment extends BaseFragment {
             e.printStackTrace();
         }
         return view;
+    }
+
+    private void getBar(){
+        mActionBar = mActivity.getSupportActionBar();
+        mToolbarView = getToolbarView();
     }
 }
