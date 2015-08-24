@@ -7,12 +7,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-
 import java.io.File;
 
 /**
@@ -99,6 +99,8 @@ public class FindFragment extends ESWebViewFragment{
         super.onDestroyView();
         if (mWebView != null) {
             mWebView.destroy();
+            ((ViewGroup)getView()).removeView(mWebView);
+            mWebView = null;
         }
     }
 

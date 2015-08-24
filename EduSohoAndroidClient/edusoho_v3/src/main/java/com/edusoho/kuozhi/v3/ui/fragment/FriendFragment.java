@@ -23,9 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -39,7 +41,6 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,7 +54,6 @@ public class FriendFragment extends BaseFragment {
     private boolean isNews = false;
     private ListView mFriendList;
     private View mFootView;
-    private View mToolbarView;
     private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
     private LoadDialog mLoadDialog;
@@ -61,7 +61,7 @@ public class FriendFragment extends BaseFragment {
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
-    private ActionBar mActionBar;
+    private FriendProvider mProvider;
 
     @Override
     public void onAttach(Activity activity) {
@@ -73,8 +73,8 @@ public class FriendFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_friends);
         mActivity.setTitle(getString(R.string.title_friends));
-        mActionBar = mActivity.getSupportActionBar();
         setHasOptionsMenu(true);
+        mProvider = new FriendProvider(mContext);
     }
 
     @Override
@@ -98,38 +98,19 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
-        mToolbarView = getToolbarView();
+
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
-                    ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", mToolbarView.getHeight(), 0);
-                    mToolbarView.setTag(mToolbarView.getHeight());
-                    animator.setDuration(300);
-                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
-                            searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
-                            searchDialogFragment.setToolBarView(mToolbarView);
-                        }
-                    });
-
-                    animator.start();
+                    showSearchDialog();
                 }
             }
         });
         mFriendList.addFooterView(mFootView, null, false);
         mFriendList.setAdapter(mFriendAdapter);
-
-        mLoadDialog = LoadDialog.create(mActivity);
-        mLoadDialog.setMessage("正在载入数据");
-        mLoadDialog.show();
-        loadSchoolApps();
-
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -150,64 +131,80 @@ public class FriendFragment extends BaseFragment {
         });
 
         mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
+        initViewData();
     }
 
-    public void loadSchoolApps() {
-        mFriendAdapter.clearList();
+    private void showSearchDialog() {
+        final View toolbarView = getToolbarView();
+        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(toolbarView), "height", toolbarView.getHeight(), 0);
+        toolbarView.setTag(toolbarView.getHeight());
+        animator.setDuration(300);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+                searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
+                searchDialogFragment.setToolBarView(toolbarView);
+            }
+        });
+
+        animator.start();
+    }
+
+    private void initViewData() {
+        mLoadDialog = LoadDialog.create(mActivity);
+        mLoadDialog.setMessage("正在载入数据");
+        mLoadDialog.show();
         if (!app.getNetIsConnect()) {
             mLoadDialog.dismiss();
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
+
+        loadSchoolApps();
+    }
+
+    protected void loadSchoolApps() {
+        mFriendAdapter.clearList();
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
-        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                List<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<List<SchoolApp>>() {
+
+        mProvider.getSchoolApps(requestUrl, new TypeToken<List<SchoolApp>>() {
+        })
+                .then(new NormalCallback<List<SchoolApp>>() {
+                    @Override
+                    public void success(List<SchoolApp> schoolAppResult) {
+                        if (schoolAppResult.size() != 0) {
+                            mFriendAdapter.setSchoolListSize(schoolAppResult.size());
+                            mFriendAdapter.addSchoolList(schoolAppResult);
+                        }
+
+                        loadFriend();
+                    }
                 });
-                if (schoolAppResult.size() != 0) {
-                    mFriendAdapter.setSchoolListSize(schoolAppResult.size());
-                    mFriendAdapter.addSchoolList(schoolAppResult);
-                }
-                loadFriend();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
     }
 
-    public void loadFriend() {
-
+    private void loadFriend() {
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=10000/");
         requestUrl.url = stringBuffer.toString();
-        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                FriendResult friendResult = mActivity.parseJsonValue(response, new TypeToken<FriendResult>() {
-                });
-                if (friendResult.data.length != 0) {
-                    List<Friend> list = Arrays.asList(friendResult.data);
-                    setChar(list);
-                    Collections.sort(list, friendComparator);
-                    mFriendAdapter.addFriendList(list);
-                    mLoadDialog.dismiss();
-                } else {
-                    mLoadDialog.dismiss();
-                }
-                setmFriendCount(friendResult.data.length + "");
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
+        mProvider.getFriend(requestUrl, new TypeToken<FriendResult>(){})
+                .then(new NormalCallback<FriendResult>() {
+                    @Override
+                    public void success(FriendResult friendResult) {
+                        if (friendResult.data.length != 0) {
+                            List<Friend> list = Arrays.asList(friendResult.data);
+                            setChar(list);
+                            Collections.sort(list, friendComparator);
+                            mFriendAdapter.addFriendList(list);
+                        }
+                        setmFriendCount(friendResult.data.length + "");
+                        mLoadDialog.dismiss();
+                    }
         });
-
     }
 
     public void setChar(List<Friend> list) {
@@ -298,9 +295,10 @@ public class FriendFragment extends BaseFragment {
 
         View view = null;
         try {
-            Field toolbarField = mActionBar.getClass().getDeclaredField("mDecorToolbar");
+            ActionBar actionBar = mActivity.getSupportActionBar();
+            Field toolbarField = actionBar.getClass().getDeclaredField("mDecorToolbar");
             toolbarField.setAccessible(true);
-            DecorToolbar toolbar = (DecorToolbar) toolbarField.get(mActionBar);
+            DecorToolbar toolbar = (DecorToolbar) toolbarField.get(actionBar);
             view = toolbar.getViewGroup();
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
