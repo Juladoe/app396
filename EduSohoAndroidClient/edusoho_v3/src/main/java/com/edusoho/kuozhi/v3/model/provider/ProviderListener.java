@@ -11,6 +11,8 @@ public abstract class ProviderListener<T> implements Response.Listener<T>, Respo
 
     private NormalCallback<T> mCallabck;
     private NormalCallback mFailCallabck;
+    private NormalCallback<T> mThenCallabck;
+    private ProviderListener mThenProviderListener;
 
     @Override
     public void onErrorResponse(VolleyError error) {
@@ -20,15 +22,26 @@ public abstract class ProviderListener<T> implements Response.Listener<T>, Respo
     @Override
     public void onResponse(T response) {
         mCallabck.success(response);
+        if (mThenCallabck != null) {
+            mThenCallabck.success(response);
+        }
     }
 
-    public void fail(NormalCallback callback)
+    public ProviderListener fail(NormalCallback callback)
     {
         this.mFailCallabck = callback;
+        return this;
     }
 
-    public void then(NormalCallback<T> callabck)
+    public ProviderListener success(NormalCallback<T> callabck)
     {
         this.mCallabck = callabck;
+        return this;
+    }
+
+    public ProviderListener then(NormalCallback<T> callabck) {
+        this.mThenCallabck = callabck;
+        mThenProviderListener = new ProviderListener() {};
+        return mThenProviderListener;
     }
 }

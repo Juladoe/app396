@@ -22,7 +22,6 @@ import java.util.List;
  */
 public abstract class ModelProvider {
 
-    private Context mContext;
     protected VolleySingleton mVolley;
     protected Gson mGson;
 
@@ -35,14 +34,6 @@ public abstract class ModelProvider {
     public <T> void addRequest(
             RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        if (errorListener == null) {
-            errorListener = new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
-                }
-            };
-        }
         BaseVolleyRequest request = new BaseVolleyRequest(
                 Request.Method.GET, requestUrl, responseListener, errorListener) {
             @Override

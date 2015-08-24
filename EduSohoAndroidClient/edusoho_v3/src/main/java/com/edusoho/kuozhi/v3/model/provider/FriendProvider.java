@@ -20,17 +20,15 @@ public class FriendProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener getSchoolApps(
-            RequestUrl requestUrl, TypeToken typeToken) {
-
-        ProviderListener responseListener = new ProviderListener(){};
-        addRequest(requestUrl, typeToken, responseListener, null);
+    public ProviderListener getSchoolApps(RequestUrl requestUrl) {
+        ProviderListener<List<SchoolApp>> responseListener = new ProviderListener<List<SchoolApp>>(){};
+        addRequest(requestUrl, new TypeToken<List<SchoolApp>>(){}, responseListener, responseListener);
         return responseListener;
     }
 
-    public ProviderListener getFriend(RequestUrl requestUrl, TypeToken typeToken) {
-        ProviderListener responseListener = new ProviderListener(){};
-        addRequest(requestUrl, typeToken, responseListener, null);
+    public ProviderListener getFriend(RequestUrl requestUrl) {
+        ProviderListener<FriendResult> responseListener = new ProviderListener<FriendResult>(){};
+        addRequest(requestUrl, new TypeToken<FriendResult>(){}, responseListener, responseListener);
         return responseListener;
     }
 }
