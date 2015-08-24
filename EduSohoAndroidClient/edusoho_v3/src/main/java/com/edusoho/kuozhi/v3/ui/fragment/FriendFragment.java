@@ -23,9 +23,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
+import com.edusoho.kuozhi.v3.model.provider.ProviderListener;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -64,6 +67,8 @@ public class FriendFragment extends BaseFragment {
     private TextView dialog;
     private ActionBar mActionBar;
 
+    private FriendProvider mFriendProvider;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -74,6 +79,7 @@ public class FriendFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_friends);
         mActivity.setTitle(getString(R.string.title_friends));
+        mFriendProvider = new FriendProvider(mContext);
         setHasOptionsMenu(true);
     }
 
@@ -124,12 +130,6 @@ public class FriendFragment extends BaseFragment {
         });
         mFriendList.addFooterView(mFootView, null, false);
         mFriendList.setAdapter(mFriendAdapter);
-
-        mLoadDialog = LoadDialog.create(mActivity);
-        mLoadDialog.setMessage("正在载入数据");
-        mLoadDialog.show();
-        loadSchoolApps();
-
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -150,64 +150,62 @@ public class FriendFragment extends BaseFragment {
         });
 
         mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
+        initViewData();
     }
 
-    public void loadSchoolApps() {
-        mFriendAdapter.clearList();
+    private void initViewData() {
+        mLoadDialog = LoadDialog.create(mActivity);
+        mLoadDialog.setMessage("正在载入数据");
+        mLoadDialog.show();
         if (!app.getNetIsConnect()) {
             mLoadDialog.dismiss();
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
-        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        requestUrl.url = stringBuffer.toString();
-        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+        loadSchoolApps().then(new NormalCallback() {
             @Override
-            public void onResponse(String response) {
-                List<SchoolApp> schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<List<SchoolApp>>() {
-                });
-                if (schoolAppResult.size() != 0) {
-                    mFriendAdapter.setSchoolListSize(schoolAppResult.size());
-                    mFriendAdapter.addSchoolList(schoolAppResult);
-                }
+            public void success(Object obj) {
                 loadFriend();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
             }
         });
     }
 
-    public void loadFriend() {
+    public ProviderListener loadSchoolApps() {
+        mFriendAdapter.clearList();
+        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        requestUrl.url = stringBuffer.toString();
 
+        return mFriendProvider.getSchoolApps(requestUrl)
+        .success(new NormalCallback<List<SchoolApp>>() {
+            @Override
+            public void success(List<SchoolApp> schoolAppResult) {
+                if (schoolAppResult.size() != 0) {
+                    mFriendAdapter.setSchoolListSize(schoolAppResult.size());
+                    mFriendAdapter.addSchoolList(schoolAppResult);
+                }
+            }
+        });
+    }
+
+    public ProviderListener loadFriend() {
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=10000/");
         requestUrl.url = stringBuffer.toString();
-        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+
+        return mFriendProvider.getFriend(requestUrl)
+        .success(new NormalCallback<FriendResult>() {
             @Override
-            public void onResponse(String response) {
-                FriendResult friendResult = mActivity.parseJsonValue(response, new TypeToken<FriendResult>() {
-                });
+            public void success(FriendResult friendResult) {
                 if (friendResult.data.length != 0) {
                     List<Friend> list = Arrays.asList(friendResult.data);
                     setChar(list);
                     Collections.sort(list, friendComparator);
                     mFriendAdapter.addFriendList(list);
-                    mLoadDialog.dismiss();
-                } else {
-                    mLoadDialog.dismiss();
                 }
                 setmFriendCount(friendResult.data.length + "");
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
         });
-
     }
 
     public void setChar(List<Friend> list) {
