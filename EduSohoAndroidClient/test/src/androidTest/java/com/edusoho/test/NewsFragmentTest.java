@@ -12,9 +12,9 @@ import junit.framework.Assert;
 /**
  * Created by JesseHuang on 15/8/19.
  */
-public class NewsFragmentTestCase extends BaseFragmentTestCase<NewsFragment> {
+public class NewsFragmentTest extends BaseFragmentTestCase<NewsFragment> {
 
-    public NewsFragmentTestCase() {
+    public NewsFragmentTest() {
         super(NewsFragment.class);
     }
 
