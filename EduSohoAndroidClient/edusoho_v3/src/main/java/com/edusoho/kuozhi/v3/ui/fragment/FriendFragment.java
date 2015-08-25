@@ -210,8 +210,9 @@ public class FriendFragment extends BaseFragment {
                     Collections.sort(list, friendComparator);
                     mFriendAdapter.addFriendList(list);
                 }
-                setmFriendCount(friendResult.data.length + "");
+                setFriendsCount(friendResult.data.length + "");
                 promise.resolve(friendResult);
+
             }
         });
 
@@ -230,7 +231,7 @@ public class FriendFragment extends BaseFragment {
         }
     }
 
-    public void setmFriendCount(String count) {
+    public void setFriendsCount(String count) {
         mFriendCount.setText("共有" + count + "位好友");
     }
 
