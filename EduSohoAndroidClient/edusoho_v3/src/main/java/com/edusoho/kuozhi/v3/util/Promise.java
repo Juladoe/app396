@@ -1,0 +1,40 @@
+package com.edusoho.kuozhi.v3.util;
+
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+/**
+ * Created by howzhi on 15/8/25.
+ */
+public class Promise {
+
+    private Queue<PromiseCallback> mInvokeQueue;
+
+    public Promise()
+    {
+        mInvokeQueue = new ArrayDeque<PromiseCallback>();
+    }
+
+    public Promise then(PromiseCallback callback) {
+        if (callback != null) {
+            mInvokeQueue.add(callback);
+        }
+
+        return this;
+    }
+
+    public void resolve(Object obj) {
+        PromiseCallback callback = mInvokeQueue.poll();
+        if (callback == null) {
+            return;
+        }
+        Promise promise = callback.invoke(obj);
+        if (promise == null) {
+            promise = this;
+        }
+        promise.then(mInvokeQueue.poll());
+    }
+}

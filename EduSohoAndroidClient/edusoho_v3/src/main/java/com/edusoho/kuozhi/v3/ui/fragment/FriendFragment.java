@@ -18,13 +18,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
@@ -37,6 +35,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -160,16 +159,28 @@ public class FriendFragment extends BaseFragment {
             mLoadDialog.dismiss();
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
-        loadSchoolApps();
-        mLoadDialog.dismiss();
+
+        loadSchoolApps().then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object obj) {
+                return loadFriend();
+            }
+        }).then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object obj) {
+                mLoadDialog.dismiss();
+                return null;
+            }
+        });
     }
 
-    protected void loadSchoolApps() {
+    public Promise loadSchoolApps() {
         mFriendAdapter.clearList();
         RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
 
+        final Promise promise = new Promise();
         mFriendProvider.getSchoolApps(requestUrl)
         .success(new NormalCallback<List<SchoolApp>>() {
             @Override
@@ -178,18 +189,20 @@ public class FriendFragment extends BaseFragment {
                     mFriendAdapter.setSchoolListSize(schoolAppResult.size());
                     mFriendAdapter.addSchoolList(schoolAppResult);
                 }
-
-                loadFriend();
+                promise.resolve(schoolAppResult);
             }
         });
+
+        return promise;
     }
 
-    private void loadFriend() {
+    public Promise loadFriend() {
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=10000/");
         requestUrl.url = stringBuffer.toString();
 
+        final Promise promise = new Promise();
         mFriendProvider.getFriend(requestUrl)
         .success(new NormalCallback<FriendResult>() {
             @Override
@@ -200,9 +213,12 @@ public class FriendFragment extends BaseFragment {
                     Collections.sort(list, friendComparator);
                     mFriendAdapter.addFriendList(list);
                 }
-                setFriendCount(friendResult.data.length + "");
+                setFriendsCount(friendResult.data.length + "");
+                promise.resolve(friendResult);
             }
         });
+
+        return promise;
     }
 
     public void setChar(List<Friend> list) {
@@ -217,7 +233,7 @@ public class FriendFragment extends BaseFragment {
         }
     }
 
-    private void setFriendCount(String count) {
+    public void setFriendsCount(String count) {
         mFriendCount.setText("共有" + count + "位好友");
     }
 
