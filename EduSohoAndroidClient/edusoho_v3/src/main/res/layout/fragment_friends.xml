@@ -32,4 +32,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="right|center"/>
 
+    <ProgressBar
+        android:id="@+id/content_load"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/load"
+        android:layout_width="@dimen/xxx_large_font_size"
+        android:layout_height="@dimen/xxx_large_font_size" />
 </FrameLayout>
