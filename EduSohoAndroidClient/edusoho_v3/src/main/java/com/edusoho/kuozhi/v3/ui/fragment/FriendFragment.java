@@ -40,7 +40,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,6 +62,8 @@ public class FriendFragment extends BaseFragment {
     private TextView dialog;
     private FriendProvider mProvider;
 
+    private FriendProvider mFriendProvider;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -73,8 +74,8 @@ public class FriendFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_friends);
         mActivity.setTitle(getString(R.string.title_friends));
+        mFriendProvider = new FriendProvider(mContext);
         setHasOptionsMenu(true);
-        mProvider = new FriendProvider(mContext);
     }
 
     @Override
@@ -98,7 +99,6 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
-
         mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
         mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
             @Override
@@ -160,8 +160,8 @@ public class FriendFragment extends BaseFragment {
             mLoadDialog.dismiss();
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
-
         loadSchoolApps();
+        mLoadDialog.dismiss();
     }
 
     protected void loadSchoolApps() {
@@ -170,19 +170,18 @@ public class FriendFragment extends BaseFragment {
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         requestUrl.url = stringBuffer.toString();
 
-        mProvider.getSchoolApps(requestUrl, new TypeToken<List<SchoolApp>>() {
-        })
-                .then(new NormalCallback<List<SchoolApp>>() {
-                    @Override
-                    public void success(List<SchoolApp> schoolAppResult) {
-                        if (schoolAppResult.size() != 0) {
-                            mFriendAdapter.setSchoolListSize(schoolAppResult.size());
-                            mFriendAdapter.addSchoolList(schoolAppResult);
-                        }
+        mFriendProvider.getSchoolApps(requestUrl)
+        .success(new NormalCallback<List<SchoolApp>>() {
+            @Override
+            public void success(List<SchoolApp> schoolAppResult) {
+                if (schoolAppResult.size() != 0) {
+                    mFriendAdapter.setSchoolListSize(schoolAppResult.size());
+                    mFriendAdapter.addSchoolList(schoolAppResult);
+                }
 
-                        loadFriend();
-                    }
-                });
+                loadFriend();
+            }
+        });
     }
 
     private void loadFriend() {
@@ -191,19 +190,18 @@ public class FriendFragment extends BaseFragment {
         stringBuffer.append("?start=0&limit=10000/");
         requestUrl.url = stringBuffer.toString();
 
-        mProvider.getFriend(requestUrl, new TypeToken<FriendResult>(){})
-                .then(new NormalCallback<FriendResult>() {
-                    @Override
-                    public void success(FriendResult friendResult) {
-                        if (friendResult.data.length != 0) {
-                            List<Friend> list = Arrays.asList(friendResult.data);
-                            setChar(list);
-                            Collections.sort(list, friendComparator);
-                            mFriendAdapter.addFriendList(list);
-                        }
-                        setmFriendCount(friendResult.data.length + "");
-                        mLoadDialog.dismiss();
-                    }
+        mFriendProvider.getFriend(requestUrl)
+        .success(new NormalCallback<FriendResult>() {
+            @Override
+            public void success(FriendResult friendResult) {
+                if (friendResult.data.length != 0) {
+                    List<Friend> list = Arrays.asList(friendResult.data);
+                    setChar(list);
+                    Collections.sort(list, friendComparator);
+                    mFriendAdapter.addFriendList(list);
+                }
+                setFriendCount(friendResult.data.length + "");
+            }
         });
     }
 
@@ -219,7 +217,7 @@ public class FriendFragment extends BaseFragment {
         }
     }
 
-    public void setmFriendCount(String count) {
+    private void setFriendCount(String count) {
         mFriendCount.setText("共有" + count + "位好友");
     }
 
@@ -307,4 +305,5 @@ public class FriendFragment extends BaseFragment {
         }
         return view;
     }
+
 }
