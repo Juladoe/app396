@@ -341,7 +341,7 @@ public class FragmentNavigationDrawer extends BaseFragment {
                 return;
             }
             mFragment.tvNickname.setText(user.nickname);
-            mFragment.tvTitle.setText(user.signature);
+            mFragment.tvTitle.setText(user.title);
             ImageLoader.getInstance().displayImage(user.mediumAvatar, mFragment.civAvatar, mFragment.mActivity.app.mOptions);
         }
 
