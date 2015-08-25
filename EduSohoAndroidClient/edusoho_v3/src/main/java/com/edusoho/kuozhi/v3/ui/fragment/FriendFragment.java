@@ -60,7 +60,7 @@ public class FriendFragment extends BaseFragment {
     private FriendComparator friendComparator;
     private TextView dialog;
     private ProgressBar mContentLoadingProgressBar;
-    private FriendProvider mFriendProvider;
+    protected FriendProvider mFriendProvider;
 
     @Override
     public void onAttach(Activity activity) {
