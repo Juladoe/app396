@@ -16,8 +16,11 @@ import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.provider.ProviderListener;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.test.base.BaseFragmentTestCase;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -52,51 +55,54 @@ public class FriendFragmentTest extends BaseFragmentTestCase<FriendFragmentTest.
         assertNotNull(friendList);
 
         HeaderViewListAdapter headAdapter = (HeaderViewListAdapter)friendList.getAdapter();
-        assertNotNull(headAdapter);
-    }
+        ListAdapter adapter = headAdapter.getWrappedAdapter();
+        assertNotNull(adapter);
 
+        assertEquals(2, adapter.getCount());
+        SchoolApp app = (SchoolApp) adapter.getItem(1);
+        assertNotNull(app);
+        assertEquals("edusoho", app.name);
+    }
 
     public static class TestFriendFragment extends FriendFragment
     {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mFriendProvider = new FriendProvider(mContext) {
-
-                @Override
-                public ProviderListener getSchoolApps(RequestUrl requestUrl) {
-                    final ProviderListener<List<SchoolApp>> responseListener = new ProviderListener<List<SchoolApp>>(){};
-
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            ArrayList<SchoolApp> list = new ArrayList<SchoolApp>();
-                            SchoolApp app = new SchoolApp();
-                            app.name = "edusoho";
-                            app.avatar = "avatar";
-                            app.id = 1;
-
-                            list.add(app);
-                            responseListener.onResponse(list);
-                        }
-                    }, SystemClock.currentThreadTimeMillis() + 1);
-                    return responseListener;
-                }
-
-                @Override
-                public ProviderListener getFriend(RequestUrl requestUrl) {
-                    final ProviderListener<FriendResult> responseListener = new ProviderListener<FriendResult>(){};
-
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            responseListener.onResponse(new FriendResult());
-                        }
-                    }, SystemClock.currentThreadTimeMillis() + 1);
-                    return responseListener;
-                }
-            };
+            setFriendProvider();
         }
 
+        private void setFriendProvider() {
+            try {
+                Field field = FriendFragment.class.getDeclaredField("mFriendProvider");
+                field.setAccessible(true);
+                field.set(this, new FriendProvider(mContext) {
+
+                    @Override
+                    public ProviderListener getSchoolApps(RequestUrl requestUrl) {
+                        final ProviderListener<List<SchoolApp>> responseListener = new ProviderListener<List<SchoolApp>>(){};
+
+                        ArrayList<SchoolApp> list = new ArrayList<SchoolApp>();
+                        SchoolApp app = new SchoolApp();
+                        app.name = "edusoho";
+                        app.avatar = "avatar";
+                        app.id = 1;
+
+                        list.add(app);
+                        responseListener.onResponse(list);
+                        return responseListener;
+                    }
+
+                    @Override
+                    public ProviderListener getFriend(RequestUrl requestUrl) {
+                        final ProviderListener<FriendResult> responseListener = new ProviderListener<FriendResult>(){};
+                        responseListener.onResponse(new FriendResult());
+                        return responseListener;
+                    }
+                });
+            }catch (Exception e) {
+
+            }
+        }
     }
 }
