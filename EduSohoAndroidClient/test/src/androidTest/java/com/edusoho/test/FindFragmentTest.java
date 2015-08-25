@@ -16,9 +16,9 @@ import com.edusoho.test.base.BaseFragmentTestCase;
  * Created by howzhi on 15/8/17.
  */
 
-public class FindFragmentTestCase extends BaseFragmentTestCase<FindFragment> {
+public class FindFragmentTest extends BaseFragmentTestCase<FindFragment> {
 
-    public FindFragmentTestCase()
+    public FindFragmentTest()
     {
         super(FindFragment.class);
     }
