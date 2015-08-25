@@ -5,23 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.inputmethod.InputMethodManager;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
@@ -29,13 +29,11 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupInputDialog;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Iterator;
 
 /**
@@ -69,14 +67,20 @@ public class MenuClickPlugin extends CoreBridge {
     @JsAnnotation
     public void openPlatformLogin(JSONArray args, CallbackContext callbackContext) throws JSONException {
         String type = args.getString(0);
-        OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+        final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mContext);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override
             public void success(UserResult obj) {
                 mActivity.finish();
             }
         });
-        openLoginUtil.login(type);
+        openLoginUtil.login(type).then(new PromiseCallback<String[]>() {
+            @Override
+            public Promise invoke(String[] obj) {
+                openLoginUtil.bindOpenUser(mActivity, obj);
+                return null;
+            }
+        });
     }
 
     @JsAnnotation
