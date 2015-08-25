@@ -19,8 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -34,7 +32,6 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
@@ -42,7 +39,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -203,7 +199,7 @@ public class FriendFragment extends BaseFragment {
                     Collections.sort(list, friendComparator);
                     mFriendAdapter.addFriendList(list);
                 }
-                setmFriendCount(friendResult.data.length + "");
+                setFriendsCount(friendResult.data.length + "");
             }
         });
     }
@@ -220,7 +216,7 @@ public class FriendFragment extends BaseFragment {
         }
     }
 
-    public void setmFriendCount(String count) {
+    public void setFriendsCount(String count) {
         mFriendCount.setText("共有" + count + "位好友");
     }
 
