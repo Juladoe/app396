@@ -11,6 +11,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.provider.ProviderListener;
@@ -33,8 +34,7 @@ import java.util.TimerTask;
 @LargeTest
 public class FriendFragmentTest extends BaseFragmentTestCase<FriendFragmentTest.TestFriendFragment> {
 
-    public FriendFragmentTest()
-    {
+    public FriendFragmentTest() {
         super(TestFriendFragment.class);
     }
 
@@ -54,18 +54,23 @@ public class FriendFragmentTest extends BaseFragmentTestCase<FriendFragmentTest.
         ListView friendList = (ListView) rootView.findViewById(com.edusoho.kuozhi.R.id.friends_list);
         assertNotNull(friendList);
 
-        HeaderViewListAdapter headAdapter = (HeaderViewListAdapter)friendList.getAdapter();
+        HeaderViewListAdapter headAdapter = (HeaderViewListAdapter) friendList.getAdapter();
         ListAdapter adapter = headAdapter.getWrappedAdapter();
         assertNotNull(adapter);
 
-        assertEquals(2, adapter.getCount());
+        assertEquals(12, adapter.getCount());
         SchoolApp app = (SchoolApp) adapter.getItem(1);
         assertNotNull(app);
         assertEquals("edusoho", app.name);
+
+        Friend friend1 = (Friend) adapter.getItem(2);
+        assertNotNull(friend1);
+        assertEquals("nickname-1",friend1.nickname);
+        assertEquals(1,friend1.id);
+
     }
 
-    public static class TestFriendFragment extends FriendFragment
-    {
+    public static class TestFriendFragment extends FriendFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -74,13 +79,14 @@ public class FriendFragmentTest extends BaseFragmentTestCase<FriendFragmentTest.
 
         private void setFriendProvider() {
             try {
-                Field field = FriendFragment.class.getDeclaredField("mFriendProvider");
+                final Field field = FriendFragment.class.getDeclaredField("mFriendProvider");
                 field.setAccessible(true);
                 field.set(this, new FriendProvider(mContext) {
 
                     @Override
                     public ProviderListener getSchoolApps(RequestUrl requestUrl) {
-                        final ProviderListener<List<SchoolApp>> responseListener = new ProviderListener<List<SchoolApp>>(){};
+                        final ProviderListener<List<SchoolApp>> responseListener = new ProviderListener<List<SchoolApp>>() {
+                        };
 
                         ArrayList<SchoolApp> list = new ArrayList<SchoolApp>();
                         SchoolApp app = new SchoolApp();
@@ -95,12 +101,23 @@ public class FriendFragmentTest extends BaseFragmentTestCase<FriendFragmentTest.
 
                     @Override
                     public ProviderListener getFriend(RequestUrl requestUrl) {
-                        final ProviderListener<FriendResult> responseListener = new ProviderListener<FriendResult>(){};
-                        responseListener.onResponse(new FriendResult());
+                        final ProviderListener<FriendResult> responseListener = new ProviderListener<FriendResult>() {
+                        };
+                        FriendResult friendResult = new FriendResult();
+                        friendResult.data = new Friend[10];
+                        for (int i = 1; i < 11; i++) {
+                            Friend friend = new Friend();
+                            friend.nickname = "nickname-" + i;
+                            friend.mediumAvatar = "avatar";
+                            friend.id = i;
+                            friendResult.data[i-1] = friend;
+                        }
+                        friendResult.total = "10";
+                        responseListener.onResponse(friendResult);
                         return responseListener;
                     }
                 });
-            }catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }

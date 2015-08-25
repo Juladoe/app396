@@ -279,12 +279,15 @@ public class FriendFragment extends BaseFragment {
         MessageType messageType = message.type;
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
             loadSchoolApps();
+            loadFriend();
         }
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
             loadSchoolApps();
+            loadFriend();
         }
         if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
             loadSchoolApps();
+            loadFriend();
         }
         if (messageType.code == Const.NEW_FANS) {
             isNews = true;
