@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.AboutActivity;
 import com.edusoho.kuozhi.v3.view.EduUpdateView;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 /**
  * Created by JesseHuang on 15/8/24.

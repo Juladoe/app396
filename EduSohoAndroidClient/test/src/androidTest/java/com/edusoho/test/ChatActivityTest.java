@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.SettingActivity;
 import com.edusoho.kuozhi.v3.view.CleanCacheTextView;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 /**
  * Created by JesseHuang on 15/8/24.

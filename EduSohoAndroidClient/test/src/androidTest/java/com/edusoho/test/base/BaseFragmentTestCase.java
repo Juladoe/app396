@@ -1,7 +1,8 @@
-package com.edusoho.test;
+package com.edusoho.test.base;
 
 import android.content.Intent;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.test.FragmentTestActivity;
 
 /**
  * Created by howzhi on 15/8/17.

@@ -1,10 +1,14 @@
-package com.edusoho.test;
+package com.edusoho.test.base;
 
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
+
+import com.edusoho.test.R;
+import com.edusoho.test.TestEduSohoApp;
+import com.edusoho.test.utils.TestUtils;
 
 /**
  * Created by howzhi on 15/8/17.

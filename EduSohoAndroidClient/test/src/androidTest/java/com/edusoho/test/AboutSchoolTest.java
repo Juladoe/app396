@@ -4,6 +4,7 @@ import android.test.UiThreadTest;
 import android.webkit.WebView;
 
 import com.edusoho.kuozhi.v3.ui.AboutSchool;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 /**
  * Created by JesseHuang on 15/8/24.

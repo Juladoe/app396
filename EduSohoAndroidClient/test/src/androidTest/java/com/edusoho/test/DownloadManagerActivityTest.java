@@ -6,6 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 import extensions.PagerSlidingTabStrip;
 

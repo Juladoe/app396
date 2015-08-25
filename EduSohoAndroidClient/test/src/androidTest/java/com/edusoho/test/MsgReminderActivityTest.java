@@ -4,6 +4,7 @@ import android.test.UiThreadTest;
 import android.widget.CheckBox;
 
 import com.edusoho.kuozhi.v3.ui.MsgReminderActivity;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 /**
  * Created by JesseHuang on 15/8/24.

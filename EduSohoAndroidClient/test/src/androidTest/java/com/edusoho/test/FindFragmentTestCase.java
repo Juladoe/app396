@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import com.edusoho.kuozhi.v3.ui.fragment.FindFragment;
 import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebView;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
+import com.edusoho.test.base.BaseFragmentTestCase;
 
 /**
  * Created by howzhi on 15/8/17.

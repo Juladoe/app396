@@ -1,9 +1,10 @@
-package com.edusoho.test;
+package com.edusoho.test.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.test.TestEduSohoApp;
 import com.google.gson.Gson;
 
 /**

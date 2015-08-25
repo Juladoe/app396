@@ -7,6 +7,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.edusoho.kuozhi.v3.ui.SuggestionActivity;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 /**
  * Created by JesseHuang on 15/8/24.

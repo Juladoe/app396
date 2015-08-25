@@ -6,6 +6,8 @@ import android.view.ContextThemeWrapper;
 
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
+import com.edusoho.test.utils.TestUtils;
 
 /**
  * Created by JesseHuang on 15/8/24.

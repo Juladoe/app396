@@ -5,6 +5,7 @@ import android.test.UiThreadTest;
 
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
+import com.edusoho.test.base.BaseFragmentTestCase;
 
 import junit.framework.Assert;
 

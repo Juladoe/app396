@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.v3.ui.NetSchoolActivity;
 import com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView;
+import com.edusoho.test.base.BaseActivityUnitTestCase;
 
 /**
  * Created by JesseHuang on 15/8/24.
