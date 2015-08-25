@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
-import com.android.volley.Response;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
