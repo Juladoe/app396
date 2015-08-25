@@ -11,19 +11,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.HashMap;
 
 /**
@@ -146,32 +146,36 @@ public class LoginActivity extends ActionBarBaseActivity {
         }, null);
     }
 
+    private void loginByPlatform(String type) {
+        final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+        openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
+            @Override
+            public void success(UserResult obj) {
+                mActivity.finish();
+            }
+        });
+
+        openLoginUtil.login(type).then(new PromiseCallback<String[]>() {
+            @Override
+            public Promise invoke(String[] obj) {
+                openLoginUtil.bindOpenUser(LoginActivity.this, obj);
+                return null;
+            }
+        });
+    }
+
     private View.OnClickListener mWeiboLoginClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
-            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
-            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
-                @Override
-                public void success(UserResult obj) {
-                    mActivity.finish();
-                }
-            });
-            openLoginUtil.login("SinaWeibo");
+            loginByPlatform("SinaWeibo");
         }
     };
 
     private View.OnClickListener mQQLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
-            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
-                @Override
-                public void success(UserResult obj) {
-                    mActivity.finish();
-                }
-            });
-            openLoginUtil.login("QQ");
+            loginByPlatform("QQ");
         }
     };
 
@@ -179,14 +183,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
-            openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
-                @Override
-                public void success(UserResult obj) {
-                    mActivity.finish();
-                }
-            });
-            openLoginUtil.login("Wechat");
+            loginByPlatform("Wechat");
         }
     };
 
