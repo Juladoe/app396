@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.edusoho.kuozhi.R;
@@ -54,13 +55,11 @@ public class FriendFragment extends BaseFragment {
     private View mFootView;
     private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
-    private LoadDialog mLoadDialog;
     private SideBar mSidebar;
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
-    private FriendProvider mProvider;
-
+    private ProgressBar mContentLoadingProgressBar;
     private FriendProvider mFriendProvider;
 
     @Override
@@ -84,6 +83,7 @@ public class FriendFragment extends BaseFragment {
         characterParser = CharacterParser.getInstance();
         friendComparator = new FriendComparator();
 
+        mContentLoadingProgressBar = (ProgressBar) view.findViewById(R.id.content_load);
         mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
@@ -152,11 +152,8 @@ public class FriendFragment extends BaseFragment {
     }
 
     private void initViewData() {
-        mLoadDialog = LoadDialog.create(mActivity);
-        mLoadDialog.setMessage("正在载入数据");
-        mLoadDialog.show();
         if (!app.getNetIsConnect()) {
-            mLoadDialog.dismiss();
+            mContentLoadingProgressBar.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
 
@@ -168,7 +165,7 @@ public class FriendFragment extends BaseFragment {
         }).then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
-                mLoadDialog.dismiss();
+                mContentLoadingProgressBar.setVisibility(View.GONE);
                 return null;
             }
         });

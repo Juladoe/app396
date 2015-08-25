@@ -14,7 +14,9 @@ public abstract class ProviderListener<T> implements Response.Listener<T>, Respo
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        mFailCallabck.success(error);
+        if (mFailCallabck != null) {
+            mFailCallabck.success(error);
+        }
     }
 
     @Override
