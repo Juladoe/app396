@@ -19,13 +19,13 @@ public class NewsFragmentTest extends BaseFragmentTestCase<NewsFragment> {
     }
 
     @UiThreadTest
-    public void testGetFragment() {
+    public void testNewsFragment() {
         Fragment mFragment = getFragment();
         assertNotNull(mFragment);
     }
 
     @UiThreadTest
-    public void testInitWidget() {
+    public void testNewsFragmentLayout() {
         SwipeMenuListView swipeMenuListView = (SwipeMenuListView) getFragment().getView().findViewById(R.id.lv_news_list);
         Assert.assertNotNull(swipeMenuListView);
     }

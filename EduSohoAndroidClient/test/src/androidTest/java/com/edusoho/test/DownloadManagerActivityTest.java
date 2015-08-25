@@ -1,7 +1,10 @@
 package com.edusoho.test;
 
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.test.UiThreadTest;
+import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -50,6 +53,19 @@ public class DownloadManagerActivityTest extends BaseActivityUnitTestCase<Downlo
         assertNotNull(mDeviceSpaceInfo);
         ProgressBar pbDownloadDeviceInfo = (ProgressBar) mActivity.findViewById(R.id.pb_download_device_info);
         assertNotNull(pbDownloadDeviceInfo);
+
+        ActionBar actionBar = mActivity.getSupportActionBar();
+        assertNotNull(actionBar);
+
+        View mToolsLayout = mActivity.findViewById(R.id.download_tools_layout);
+        assertNotNull(mToolsLayout);
+        assertEquals(0, mToolsLayout.getHeight());
+        TextView mSelectAllBtn = (TextView) mActivity.findViewById(R.id.tv_select_all);
+        assertNotNull(mSelectAllBtn);
+        TextView mDelBtn = (TextView) mActivity.findViewById(R.id.tv_delete);
+        assertNotNull(mDelBtn);
+        ExpandableListView mListView = (ExpandableListView) mActivity.findViewById(R.id.el_downloaded);
+        assertNotNull(mListView);
     }
 
 }
