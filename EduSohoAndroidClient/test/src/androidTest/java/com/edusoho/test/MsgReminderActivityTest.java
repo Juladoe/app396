@@ -1,5 +1,6 @@
 package com.edusoho.test;
 
+import android.content.Intent;
 import android.test.UiThreadTest;
 import android.widget.CheckBox;
 
@@ -12,6 +13,13 @@ import com.edusoho.test.base.BaseActivityUnitTestCase;
 public class MsgReminderActivityTest extends BaseActivityUnitTestCase<MsgReminderActivity> {
     public MsgReminderActivityTest() {
         super(MsgReminderActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                MsgReminderActivity.class);
     }
 
     @UiThreadTest

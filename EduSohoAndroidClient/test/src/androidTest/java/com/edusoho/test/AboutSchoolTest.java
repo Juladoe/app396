@@ -1,5 +1,6 @@
 package com.edusoho.test;
 
+import android.content.Intent;
 import android.test.UiThreadTest;
 import android.webkit.WebView;
 
@@ -12,6 +13,13 @@ import com.edusoho.test.base.BaseActivityUnitTestCase;
 public class AboutSchoolTest extends BaseActivityUnitTestCase<AboutSchool> {
     public AboutSchoolTest() {
         super(AboutSchool.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                AboutSchool.class);
     }
 
     @UiThreadTest

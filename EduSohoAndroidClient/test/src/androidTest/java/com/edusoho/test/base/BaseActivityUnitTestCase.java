@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
 
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.test.R;
 import com.edusoho.test.TestEduSohoApp;
 import com.edusoho.test.utils.TestUtils;
@@ -37,8 +36,6 @@ public class BaseActivityUnitTestCase<T extends Activity> extends ActivityUnitTe
         TestUtils.initApplication(mApp, mInstrumentation.getTargetContext());
         mInstrumentation.callApplicationOnCreate(mApp);
         setApplication(mApp);
-        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
-                ChatActivity.class);
     }
 
     @Override

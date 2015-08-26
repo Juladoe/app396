@@ -1,5 +1,6 @@
 package com.edusoho.test;
 
+import android.content.Intent;
 import android.test.UiThreadTest;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +16,13 @@ import com.edusoho.test.base.BaseActivityUnitTestCase;
 public class SuggestionActivityTest extends BaseActivityUnitTestCase<SuggestionActivity> {
     public SuggestionActivityTest() {
         super(SuggestionActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                SuggestionActivity.class);
     }
 
     @UiThreadTest
