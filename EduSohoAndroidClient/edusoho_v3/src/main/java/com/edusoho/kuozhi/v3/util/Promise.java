@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
-
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -10,6 +8,8 @@ import java.util.Queue;
  * Created by howzhi on 15/8/25.
  */
 public class Promise {
+
+    private Object mLastResolveObj;
 
     private Queue<PromiseCallback> mInvokeQueue;
 
@@ -19,6 +19,10 @@ public class Promise {
     }
 
     public Promise then(PromiseCallback callback) {
+        if (mLastResolveObj != null) {
+            callback.invoke(mLastResolveObj);
+            return this;
+        }
         if (callback != null) {
             mInvokeQueue.add(callback);
         }
@@ -29,6 +33,7 @@ public class Promise {
     public void resolve(Object obj) {
         PromiseCallback callback = mInvokeQueue.poll();
         if (callback == null) {
+            mLastResolveObj = obj;
             return;
         }
         Promise promise = callback.invoke(obj);
