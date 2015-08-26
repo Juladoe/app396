@@ -1,5 +1,6 @@
 package com.edusoho.test;
 
+import android.content.Intent;
 import android.test.UiThreadTest;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -13,6 +14,13 @@ import com.edusoho.test.base.BaseActivityUnitTestCase;
 public class LessonDownloadingActivityTest extends BaseActivityUnitTestCase<LessonDownloadingActivity> {
     public LessonDownloadingActivityTest() {
         super(LessonDownloadingActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                LessonDownloadingActivity.class);
     }
 
     @UiThreadTest

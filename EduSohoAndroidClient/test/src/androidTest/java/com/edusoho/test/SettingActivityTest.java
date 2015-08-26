@@ -1,5 +1,6 @@
 package com.edusoho.test;
 
+import android.content.Intent;
 import android.test.UiThreadTest;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,13 @@ import com.edusoho.test.base.BaseActivityUnitTestCase;
 public class SettingActivityTest extends BaseActivityUnitTestCase<SettingActivity> {
     public SettingActivityTest() {
         super(SettingActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                SettingActivity.class);
     }
 
     @UiThreadTest

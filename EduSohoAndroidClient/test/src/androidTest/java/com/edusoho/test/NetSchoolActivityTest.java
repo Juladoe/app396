@@ -1,5 +1,6 @@
 package com.edusoho.test;
 
+import android.content.Intent;
 import android.test.UiThreadTest;
 import android.view.View;
 
@@ -13,6 +14,13 @@ import com.edusoho.test.base.BaseActivityUnitTestCase;
 public class NetSchoolActivityTest extends BaseActivityUnitTestCase<NetSchoolActivity> {
     public NetSchoolActivityTest() {
         super(NetSchoolActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                NetSchoolActivity.class);
     }
 
     @UiThreadTest

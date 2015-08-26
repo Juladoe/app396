@@ -22,5 +22,7 @@ android {
 dependencies {
     androidTestCompile 'com.android.support.test:runner:0.2'
     androidTestCompile 'com.android.support.test:rules:0.2'
-    compile project(":edusoho_v3")
+    compile project(':edusoho_v3')
+    compile files('libs/easymock-3.3.1.jar')
+    compile files('libs/robotium-solo-5.4.1.jar')
 }
