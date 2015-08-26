@@ -1,4 +1,4 @@
-package com.edusoho.test.util;
+package com.edusoho.test.utils;
 
 import android.app.Instrumentation;
 import android.content.Intent;
