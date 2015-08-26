@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,7 +57,8 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     private int count;
 
     private LoadHandler mHandler;
-    private LoadDialog mLoadDialog;
+    //    private LoadDialog mLoadDialog;
+    private FrameLayout mLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,79 +66,84 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         setContentView(R.layout.search_friend_layout);
         mList = (ListView) findViewById(R.id.search_friend_list);
         mNotice = (TextView) findViewById(R.id.search_friend_empty);
+        mLoading = (FrameLayout) findViewById(R.id.search_friend_loading);
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             name = intent.getStringExtra(NAME);
         }
-        setBackMode(BACK,"搜索"+"“"+name+"”");
+        setBackMode(BACK, "搜索" + "“" + name + "”");
         mResultList = new ArrayList<Friend>();
         mAdapter = new SearchFriendAdapter();
         mList.setAdapter(mAdapter);
 
         mHandler = new LoadHandler();
-        mLoadDialog = LoadDialog.create(this);
-        mLoadDialog.setMessage("请等待");
-        mLoadDialog.show();
+//        mLoadDialog = LoadDialog.create(this);
+//        mLoadDialog.setMessage("请等待");
+//        mLoadDialog.show();
         loadResultFriends();
 
     }
 
-    public void getRelationship(){
+    public void getRelationship() {
         RequestUrl requestUrl = setRelationParams(mResultList);
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String[] relationReults = mActivity.parseJsonValue(response,new TypeToken<String[]>(){});
-                for(int i = 0;i<mResultList.size();i++){
+                String[] relationReults = mActivity.parseJsonValue(response, new TypeToken<String[]>() {
+                });
+                for (int i = 0; i < mResultList.size(); i++) {
                     mResultList.get(i).friendship = relationReults[i];
                 }
                 mAdapter.notifyDataSetChanged();
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
         });
 
-    };
+    }
 
-    public RequestUrl setRelationParams(ArrayList<Friend> list){
+    ;
+
+    public RequestUrl setRelationParams(ArrayList<Friend> list) {
         RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
         StringBuffer sb = new StringBuffer(requestUrl.url.toString());
-        sb.append(app.loginUser.id+"/"+"friendship?toIds=");
-        for(Friend friend:list){
-            sb.append(friend.id+",");
+        sb.append(app.loginUser.id + "/" + "friendship?toIds=");
+        for (Friend friend : list) {
+            sb.append(friend.id + ",");
         }
-        sb.deleteCharAt(sb.length()-1);
+        sb.deleteCharAt(sb.length() - 1);
         requestUrl.url = sb.toString();
 
         return requestUrl;
     }
 
-    public void loadResultFriends(){
+    public void loadResultFriends() {
         RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
-        requestUrl.setGetParams(new String[]{"q",name});
-        ajaxGet(requestUrl,new Response.Listener<String>() {
+        requestUrl.setGetParams(new String[]{"q", name});
+        ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                FriendResult friendResult = mActivity.parseJsonValue(response,new TypeToken<FriendResult>(){});
+                FriendResult friendResult = mActivity.parseJsonValue(response, new TypeToken<FriendResult>() {
+                });
 
                 boolean isEmpty;
-                if((friendResult.mobile.length == 0)&&(friendResult.nickname.length == 0)&&(friendResult.qq.length == 0)){
+                if ((friendResult.mobile.length == 0) && (friendResult.nickname.length == 0) && (friendResult.qq.length == 0)) {
                     isEmpty = true;
                     mList.setVisibility(View.GONE);
                     mNotice.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     isEmpty = false;
                     mList.setVisibility(View.VISIBLE);
                     mNotice.setVisibility(View.GONE);
                 }
 
                 count = 0;
-                if(friendResult.mobile != null){
-                    for(Friend friend:friendResult.mobile){
-                        if(friend.id == app.loginUser.id){
+                if (friendResult.mobile != null) {
+                    for (Friend friend : friendResult.mobile) {
+                        if (friend.id == app.loginUser.id) {
                             continue;
                         }
                         mAdapter.addItem(friend);
@@ -144,34 +152,34 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
                     }
                 }
-                if(friendResult.qq != null){
-                    for(Friend friend:friendResult.qq){
-                        if((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)){
+                if (friendResult.qq != null) {
+                    for (Friend friend : friendResult.qq) {
+                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)) {
                             continue;
-                        }else {
+                        } else {
                             friendIds[count] = friend.id;
                             mAdapter.addItem(friend);
                             count++;
                         }
                     }
                 }
-                if(friendResult.nickname != null){
-                    for(Friend friend:friendResult.nickname){
-                        if((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)){
+                if (friendResult.nickname != null) {
+                    for (Friend friend : friendResult.nickname) {
+                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)) {
                             continue;
-                        }else {
+                        } else {
                             friendIds[count] = friend.id;
                             mAdapter.addItem(friend);
                             count++;
                         }
                     }
                 }
-                if(!isEmpty){
+                if (!isEmpty) {
                     getRelationship();
                 }
                 mHandler.sendEmptyMessage(END);
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -180,19 +188,22 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     }
 
 
-    public class LoadHandler extends android.os.Handler{
+    public class LoadHandler extends android.os.Handler {
         @Override
         public void handleMessage(Message msg) {
-            if(msg.what == END){
-                if(mLoadDialog != null){
-                    mLoadDialog.dismiss();
-                }
+            if (msg.what == END) {
+//                if(mLoadDialog != null){
+//                    mLoadDialog.dismiss();
+//                }
+                mLoading.setVisibility(View.GONE);
             }
         }
-    };
+    }
+
+    ;
 
 
-    public class SearchFriendAdapter extends BaseAdapter{
+    public class SearchFriendAdapter extends BaseAdapter {
         @Override
         public int getCount() {
             return mResultList.size();
@@ -211,28 +222,28 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ItemHolder holder;
-            if(convertView == null){
+            if (convertView == null) {
                 holder = new ItemHolder();
-                convertView = getLayoutInflater().inflate(R.layout.add_friend_item,null);
+                convertView = getLayoutInflater().inflate(R.layout.add_friend_item, null);
                 holder.image = (CircleImageView) convertView.findViewById(R.id.add_friend_image);
                 holder.name = (TextView) convertView.findViewById(R.id.add_friend_name);
                 holder.state = (ImageView) convertView.findViewById(R.id.add_friend_state);
                 convertView.setTag(holder);
-            }else {
+            } else {
                 holder = (ItemHolder) convertView.getTag();
             }
 
             final Friend friend = mResultList.get(position);
-            if(friend.smallAvatar.equals("")){
+            if (friend.smallAvatar.equals("")) {
                 holder.image.setImageResource(R.drawable.default_avatar);
-            }else {
+            } else {
                 ImageLoader.getInstance().displayImage(friend.smallAvatar, holder.image, mActivity.app.mOptions);
             }
             holder.name.setText(friend.nickname);
-            if (friend.friendship == null){
+            if (friend.friendship == null) {
                 return convertView;
             }
-            switch (friend.friendship){
+            switch (friend.friendship) {
                 case Const.HAVE_ADD_TRUE:
                     holder.state.setImageResource(R.drawable.have_add_friend_true);
                     break;
@@ -246,31 +257,33 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             holder.state.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS,false);
+                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
                     StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-                    stringBuffer.append(friend.id+"/followers");
+                    stringBuffer.append(friend.id + "/followers");
                     requestUrl.url = stringBuffer.toString();
                     HashMap<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
-                    params.put("userId", app.loginUser.id+"");
-                    ajaxPost(requestUrl,new Response.Listener<String>() {
+                    params.put("userId", app.loginUser.id + "");
+                    ajaxPost(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            FollowResult followResult = mActivity.parseJsonValue(response,new TypeToken<FollowResult>(){});
-                            if(followResult==null){
-                                Error error = mActivity.parseJsonValue(response,new TypeToken<Error>(){});
+                            FollowResult followResult = mActivity.parseJsonValue(response, new TypeToken<FollowResult>() {
+                            });
+                            if (followResult == null) {
+                                Error error = mActivity.parseJsonValue(response, new TypeToken<Error>() {
+                                });
                                 CommonUtil.longToast(mContext, error.message);
                             }
-                            if(followResult.success){
-                                CommonUtil.longToast(mContext,"关注用户成功");
-                                app.sendMessage(Const.REFRESH_FRIEND_LIST,null);
+                            if (followResult.success) {
+                                CommonUtil.longToast(mContext, "关注用户成功");
+                                app.sendMessage(Const.REFRESH_FRIEND_LIST, null);
                                 getRelationship();
-                            }else {
-                                CommonUtil.longToast(mContext,"关注用户失败");
+                            } else {
+                                CommonUtil.longToast(mContext, "关注用户失败");
                             }
 
                         }
-                    },new Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
 
@@ -278,20 +291,20 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                     });
                 }
             });
-            if(!(friend.friendship.equals(Const.HAVE_ADD_TRUE) || friend.friendship.equals(Const.HAVE_ADD_WAIT))){
+            if (!(friend.friendship.equals(Const.HAVE_ADD_TRUE) || friend.friendship.equals(Const.HAVE_ADD_WAIT))) {
                 holder.state.setClickable(true);
-            }else {
+            } else {
                 holder.state.setClickable(false);
             }
             return convertView;
         }
 
-        public void addItem(Friend friend){
+        public void addItem(Friend friend) {
             mResultList.add(friend);
             notifyDataSetChanged();
         }
 
-        private class ItemHolder{
+        private class ItemHolder {
             CircleImageView image;
             TextView name;
             ImageView state;
