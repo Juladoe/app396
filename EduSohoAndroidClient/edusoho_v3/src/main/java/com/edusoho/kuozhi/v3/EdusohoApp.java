@@ -550,6 +550,10 @@ public class EdusohoApp extends Application {
         return file != null ? file : null;
     }
 
+    public static File getChatCacheFile() {
+        return app.getExternalCacheDir();
+    }
+
     public void setDisplay(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         screenH = display.getHeight();

@@ -422,7 +422,7 @@ public class ChatAdapter extends BaseAdapter {
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
-                String audioFileName = EdusohoApp.getWorkSpace() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
+                String audioFileName = EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
                         model.getContent().substring(model.getContent().lastIndexOf('/') + 1);
                 try {
                     int duration = getAmrDuration(audioFileName);
@@ -463,7 +463,7 @@ public class ChatAdapter extends BaseAdapter {
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
         request.setVisibleInDownloadsUi(false);
-        request.setDestinationInExternalPublicDir("/edusoho" + Const.UPLOAD_AUDIO_CACHE_FILE + "/", filename);
+        request.setDestinationUri(Uri.fromFile(new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/", filename)));
         long downloadId = mDownloadManager.enqueue(request);
         mDownloadList.put(downloadId, chatId);
     }
@@ -491,7 +491,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private String getThumbFromImageName(String imageName) {
-        return EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
+        return EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
     }
 
     private class ImageMsgClick implements View.OnClickListener {
@@ -617,7 +617,7 @@ public class ChatAdapter extends BaseAdapter {
             }
             File receiveFile = ImageLoader.getInstance().getDiskCache().get(s);
             try {
-                AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + receiveFile.getName());
+                AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + receiveFile.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
