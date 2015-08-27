@@ -67,21 +67,29 @@ public class ChatAudioRecord {
     }
 
     public File stop(boolean cancelSave) {
-        if (mAudioFile != null && mAudioFile.exists()) {
-            mMediaRecorder.stop();
-            mAudioEndTime = System.currentTimeMillis();
-            mMediaRecorder.reset();
-            mMediaRecorder.release();
-            if (cancelSave) {
-                mAudioFile.delete();
+        try {
+            if (mAudioFile != null && mAudioFile.exists()) {
+                mMediaRecorder.stop();
+                mAudioEndTime = System.currentTimeMillis();
+                mMediaRecorder.reset();
+                mMediaRecorder.release();
+                if (cancelSave) {
+                    mAudioFile.delete();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return mAudioFile;
     }
 
     public void delete() {
-        if (mAudioFile != null && mAudioFile.exists()) {
-            mAudioFile.delete();
+        try {
+            if (mAudioFile != null && mAudioFile.exists()) {
+                mAudioFile.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
