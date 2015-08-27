@@ -22,7 +22,7 @@ public class ChatAudioRecord {
     private long mAudioEndTime;
 
     public ChatAudioRecord() {
-        mAudioFolderPath = new File(EdusohoApp.getWorkSpace() + "/audio");
+        mAudioFolderPath = new File(EdusohoApp.getChatCacheFile() + "/audio");
         if (!mAudioFolderPath.exists()) {
             mAudioFolderPath.mkdir();
         }

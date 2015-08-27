@@ -647,7 +647,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         } else if (v.getId() == R.id.iv_camera) {
             try {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                mCameraFile = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
                 if (mCameraFile.createNewFile()) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
                     startActivityForResult(intent, SEND_CAMERA);
@@ -749,12 +749,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap = AppUtil.compressImage(bitmap, baos);
-                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
             } else {
                 compressedFile = copyImageFileToCache(file);
             }
 
-            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
             return null;
@@ -926,7 +926,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         String targetPath;
         String targetFileName = System.currentTimeMillis() + "";
 
-        targetPath = EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE;
+        targetPath = EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE;
         File targetFile = new File(targetPath + "/" + targetFileName);
         if (targetFile.exists()) {
             targetFile.delete();
@@ -956,11 +956,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * 初始化Cache文件夹
      */
     private void initCacheFolder() {
-        File imageFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE);
+        File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {
             imageFolder.mkdir();
         }
-        File imageThumbFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
         if (!imageThumbFolder.exists()) {
             imageThumbFolder.mkdir();
         }
