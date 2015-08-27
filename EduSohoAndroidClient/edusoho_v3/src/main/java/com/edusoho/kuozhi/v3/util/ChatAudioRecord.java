@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
+import android.content.Context;
 import android.media.MediaRecorder;
+import android.os.Vibrator;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
@@ -11,29 +13,21 @@ import java.text.SimpleDateFormat;
  * Created by JesseHuang on 15/7/16.
  */
 public class ChatAudioRecord {
-    private static final String TAG = "AudioRecord";
-    private static ChatAudioRecord instance;
-
     private MediaRecorder mMediaRecorder;
     private File mAudioFolderPath;
     private File mAudioFile;
     private SimpleDateFormat mSDF;
     private long mAudioStartTime;
     private long mAudioEndTime;
+    private Vibrator mVibrator;
 
-    public ChatAudioRecord() {
+    public ChatAudioRecord(Context ctx) {
+        mVibrator = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
         mAudioFolderPath = new File(EdusohoApp.getChatCacheFile() + "/audio");
         if (!mAudioFolderPath.exists()) {
             mAudioFolderPath.mkdir();
         }
         mSDF = new SimpleDateFormat("yyyyMMddHHmmss");
-    }
-
-    public static ChatAudioRecord getInstance() {
-        if (instance == null) {
-            instance = new ChatAudioRecord();
-        }
-        return instance;
     }
 
     public MediaRecorder getMediaRecorder() {
@@ -57,6 +51,7 @@ public class ChatAudioRecord {
 
     public void start() {
         try {
+            mVibrator.vibrate(50);
             mMediaRecorder.setOutputFile(mAudioFile.getPath());
             mMediaRecorder.prepare();
             mMediaRecorder.start();
