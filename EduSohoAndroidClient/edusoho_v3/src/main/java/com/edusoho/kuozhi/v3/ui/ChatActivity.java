@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -13,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -124,7 +122,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private MediaRecorderTask mMediaRecorderTask;
     private VolumeHandler mHandler;
 
-    private Vibrator mVibrator;
+
     private AudioDownloadReceiver mAudioDownloadReceiver;
 
     private ChatDataSource mChatDataSource;
@@ -222,7 +220,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }
         });
         sendNewFragment2UpdateItem();
-        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
@@ -448,8 +446,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         mMediaRecorderTask = new MediaRecorderTask();
                         mMediaRecorderTask.execute();
                     } catch (Exception e) {
-                        //mAudioLoadDialog.dismiss();
-                        //ChatAudioRecord.getInstance().clear();
                         mMediaRecorderTask.getAudioRecord().clear();
                         Log.d(TAG, e.getMessage());
                         return false;
@@ -492,7 +488,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         @Override
         protected void onPreExecute() {
             if (mAudioRecord == null) {
-                mAudioRecord = new ChatAudioRecord();
+                mAudioRecord = new ChatAudioRecord(mContext);
             }
             mViewSpeakContainer.setVisibility(View.VISIBLE);
             tvSpeak.setText(getString(R.string.hand_up_and_end));
@@ -506,13 +502,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         protected Boolean doInBackground(Void... params) {
             mAudioRecord.ready();
             mAudioRecord.start();
-            mVibrator.vibrate(50);
             while (true) {
                 if (mStopRecord) {
                     //结束录音
                     mUploadAudio = mAudioRecord.stop(mCancelSave);
                     int audioLength = mAudioRecord.getAudioLength();
-                    if (audioLength > 1) {
+                    if (audioLength >= 1) {
                         Log.d(TAG, "上传成功");
                     } else {
                         return false;
