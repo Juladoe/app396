@@ -64,7 +64,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -719,11 +718,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             return null;
         }
         File file = new File(picturePath);
-        Bitmap bitmap = null;
-        try {
-            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
-        } catch (FileNotFoundException ex) {
-            Log.e(TAG, ex.getMessage());
+        Bitmap bitmap = AppUtil.getBitmapFromFile(file);
+        if (bitmap == null) {
+            return null;
         }
         return compressImage(bitmap, file);
     }
@@ -738,19 +735,40 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private File compressImage(Bitmap bitmap, File file) {
         File compressedFile;
         try {
-            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
-                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
-            }
+//            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
+//                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
+//            }
+//
+//            if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                bitmap = AppUtil.compressImage(bitmap, baos);
+//                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+//            } else {
+//                compressedFile = copyImageFileToCache(file);
+//            }
+//
+//            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
 
+            //分辨率压缩到屏幕的0.4
+            Bitmap compressWidthBitmap = null;
+            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
+                compressWidthBitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
+                if (AppUtil.getImageSize(compressWidthBitmap) > IMAGE_SIZE) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap = AppUtil.compressImage(compressWidthBitmap, baos);
+                }
+            }
+            //大于500K质量压缩
             if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap = AppUtil.compressImage(bitmap, baos);
-                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-            } else {
-                compressedFile = copyImageFileToCache(file);
             }
+            compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
 
-            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+
+            AppUtil.convertBitmap2File(compressWidthBitmap != null ? compressWidthBitmap : bitmap, EdusohoApp.getChatCacheFile() +
+                    Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
             return null;

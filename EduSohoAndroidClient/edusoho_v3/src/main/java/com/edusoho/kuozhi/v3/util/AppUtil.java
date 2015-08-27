@@ -82,7 +82,7 @@ public class AppUtil {
     }
 
     public static Bitmap getBitmapFromFile(File file) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         BitmapFactory.Options option = new BitmapFactory.Options();
         option.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(file.getAbsolutePath(), option);
