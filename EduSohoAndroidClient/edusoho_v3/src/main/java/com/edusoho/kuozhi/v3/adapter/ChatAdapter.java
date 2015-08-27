@@ -357,6 +357,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
+        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
         switch (model.getDelivery()) {
             case SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -417,6 +418,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
+        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
         switch (model.getDelivery()) {
             case SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -447,6 +449,14 @@ public class ChatAdapter extends BaseAdapter {
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.tvAudioLength.setVisibility(View.GONE);
+                holder.ivStateError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.pbLoading.setVisibility(View.VISIBLE);
+                        holder.ivStateError.setVisibility(View.GONE);
+                        downloadAudio(model.content, model.chatId);
+                    }
+                });
                 break;
         }
     }
