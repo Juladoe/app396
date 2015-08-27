@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.HashMap;
 
 /**
@@ -100,7 +102,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                 public void onResponse(String response) {
                     UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
                     });
-                    if (userResult.user != null) {
+                    if (userResult != null && userResult.user != null) {
                         mActivity.app.saveToken(userResult);
                         mActivity.setResult(LoginActivity.OK);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
