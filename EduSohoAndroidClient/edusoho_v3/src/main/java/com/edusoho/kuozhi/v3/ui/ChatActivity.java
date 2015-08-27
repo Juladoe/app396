@@ -916,8 +916,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         chat.setDelivery(delivery);
         long chatId = mChatDataSource.create(chat);
         chat.chatId = (int) chatId;
-        if (mFromUserInfo != null) {
-            chat.headimgurl = mFromUserInfo.mediumAvatar;
+        if (app.loginUser != null) {
+            chat.headimgurl = app.loginUser.mediumAvatar;
         }
         mAdapter.addItem(chat);
     }
