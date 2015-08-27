@@ -72,7 +72,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         newsList.setAdapter(mAdapter);
 
         mFriendProvider = new FriendProvider(mContext);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         loadData();
+    }
+
+    public void setProvider(FriendProvider provider){
+        this.mFriendProvider = provider;
     }
 
     public void loadData(){

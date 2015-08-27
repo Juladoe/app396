@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -13,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -124,7 +122,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private MediaRecorderTask mMediaRecorderTask;
     private VolumeHandler mHandler;
 
-    private Vibrator mVibrator;
+
     private AudioDownloadReceiver mAudioDownloadReceiver;
 
     private ChatDataSource mChatDataSource;
@@ -222,7 +220,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }
         });
         sendNewFragment2UpdateItem();
-        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
@@ -448,8 +446,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         mMediaRecorderTask = new MediaRecorderTask();
                         mMediaRecorderTask.execute();
                     } catch (Exception e) {
-                        //mAudioLoadDialog.dismiss();
-                        //ChatAudioRecord.getInstance().clear();
                         mMediaRecorderTask.getAudioRecord().clear();
                         Log.d(TAG, e.getMessage());
                         return false;
@@ -492,10 +488,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         @Override
         protected void onPreExecute() {
             if (mAudioRecord == null) {
-                mAudioRecord = new ChatAudioRecord();
+                mAudioRecord = new ChatAudioRecord(mContext);
             }
             mViewSpeakContainer.setVisibility(View.VISIBLE);
             tvSpeak.setText(getString(R.string.hand_up_and_end));
+            tvSpeakHint.setText(getResources().getString(R.string.hand_move_up_and_send_cancel));
             tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
             ivRecordImage.setImageResource(R.drawable.record_animate_1);
             super.onPreExecute();
@@ -505,13 +502,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         protected Boolean doInBackground(Void... params) {
             mAudioRecord.ready();
             mAudioRecord.start();
-            mVibrator.vibrate(50);
             while (true) {
                 if (mStopRecord) {
                     //结束录音
                     mUploadAudio = mAudioRecord.stop(mCancelSave);
                     int audioLength = mAudioRecord.getAudioLength();
-                    if (audioLength > 1) {
+                    if (audioLength >= 1) {
                         Log.d(TAG, "上传成功");
                     } else {
                         return false;
@@ -647,7 +643,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         } else if (v.getId() == R.id.iv_camera) {
             try {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                mCameraFile = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
                 if (mCameraFile.createNewFile()) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
                     startActivityForResult(intent, SEND_CAMERA);
@@ -749,12 +745,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap = AppUtil.compressImage(bitmap, baos);
-                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
             } else {
                 compressedFile = copyImageFileToCache(file);
             }
 
-            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
             return null;
@@ -926,7 +922,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         String targetPath;
         String targetFileName = System.currentTimeMillis() + "";
 
-        targetPath = EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE;
+        targetPath = EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE;
         File targetFile = new File(targetPath + "/" + targetFileName);
         if (targetFile.exists()) {
             targetFile.delete();
@@ -956,11 +952,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * 初始化Cache文件夹
      */
     private void initCacheFolder() {
-        File imageFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_FILE);
+        File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {
             imageFolder.mkdir();
         }
-        File imageThumbFolder = new File(EdusohoApp.getWorkSpace().getPath() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
         if (!imageThumbFolder.exists()) {
             imageThumbFolder.mkdir();
         }
