@@ -265,4 +265,8 @@
         name="DocumentLessonFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.DocumentLessonFragment"
         version="1.0"/>
+    <plugin
+        name="DefaultLessonFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.DefaultLessonFragment"
+        version="1.0"/>
 </plugins>
