@@ -496,6 +496,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }
             mViewSpeakContainer.setVisibility(View.VISIBLE);
             tvSpeak.setText(getString(R.string.hand_up_and_end));
+            tvSpeakHint.setText(getResources().getString(R.string.hand_move_up_and_send_cancel));
             tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
             ivRecordImage.setImageResource(R.drawable.record_animate_1);
             super.onPreExecute();
