@@ -188,7 +188,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mViewSpeakContainer = findViewById(R.id.recording_container);
         mViewSpeakContainer.bringToFront();
         initData();
-        mAdapter = new ChatAdapter(mContext, getChatList(0));
+        mAdapter = new ChatAdapter(mContext, getChatList(0), mFromUserInfo);
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
         mAudioDownloadReceiver.setChatAdapter(mAdapter);
