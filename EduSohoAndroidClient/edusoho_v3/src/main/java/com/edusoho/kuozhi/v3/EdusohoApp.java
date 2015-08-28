@@ -733,7 +733,7 @@ public class EdusohoApp extends Application {
      * @param bundle
      */
     public void pushRegister(final Bundle bundle) {
-        XGPushConfig.enableDebug(this, true);
+        XGPushConfig.enableDebug(this, false);
         XGPushManager.registerPush(mContext, new XGIOperateCallback() {
             @Override
             public void onSuccess(final Object data, int flag) {
