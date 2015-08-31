@@ -11,12 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
@@ -26,23 +21,21 @@ import com.soooner.EplayerPluginLibary.util.LogUtil;
 import com.soooner.EplayerPluginLibary.util.TaskType;
 import com.soooner.EplayerSetting;
 import com.soooner.playback.entity.PlayList;
+import com.soooner.playback.entity.PlaySplice;
 import com.soooner.playback.entity.PlaybackSegment;
 import com.soooner.playback.entity.SpliceInfo;
-import com.soooner.source.common.util.DeviceUtil;
-import com.soooner.source.common.util.JSONUtils;
-import com.soooner.source.common.util.MyHttpUtils;
+import com.soooner.source.common.util.*;
 import com.soooner.source.entity.SessionData.LivaRoomInfo.LiveRoomInfoData;
 import com.soooner.source.entity.SessionEmun.LiveRoomStreamType;
 import com.soooner.source.system.PlaySpliceLoader;
 import com.soooner.ws.event.LiveRoomEvent.NextSegmentEvent;
-
-import org.json.JSONObject;
-
-import java.io.File;
-
 import de.greenrobot.event.EventBus;
+import org.json.JSONObject;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.widget.VideoView;
+
+import java.io.File;
+import java.util.Map;
 
 /**
  * Created by zhaoxu2014 on 14-12-25.
@@ -52,17 +45,17 @@ public class MyVideoView extends FrameLayout {
     public static final double IMG_MIDDLE_CHANGPIAN_SCALE = (double) 186 / 435;
     public static final double CHANGPIAN_MAGIN_BOTTOM_SCALE = (double) 50 / 435;
 
-    public double BASE_SCREEN_WIDTH_SCALE = 0;
-    public double BASE_SCREEN_HEIGHT_SCALE = 0;
+    public double BASE_SCREEN_WIDTH_SCALE=0;
+    public double BASE_SCREEN_HEIGHT_SCALE=0;
     EplayerPluginBaseActivity activity;
     public static int DEVICE_TYPE = DeviceUtil.DEVICE_TYPE_PHONE;
     VideoViewListener listener;
     int videoViewWidth = 0;
     int vidwoViewHeight = 0;
 
-    public boolean is_avio_done;
+    public  boolean is_avio_done;
 
-    public boolean is_avio_data;
+    public  boolean is_avio_data;
 
     Animation chanpian_rotate;
 
@@ -92,8 +85,9 @@ public class MyVideoView extends FrameLayout {
 
 
     public enum SCREENSTATE {
-        NORMAL, FULLSCREEN_DRAWPADVIEW, FULLSCREEN_VIDEOVIEW
+        NORMAL,FULLSCREEN_DRAWPADVIEW, FULLSCREEN_VIDEOVIEW
     }
+
 
 
     FrameLayout fl_video;
@@ -110,7 +104,6 @@ public class MyVideoView extends FrameLayout {
     MyProgressBar myprogressbar;
 
     IMediaPlayer.OnAvioContentPacketListener onAvioContentPacketListener;
-
     public boolean isPlayMuiceState() {
         if (palyTypeState == PalyTypeState.STATE_PLAY_MUICE) {
             return true;
@@ -136,7 +129,7 @@ public class MyVideoView extends FrameLayout {
         View view = null;
         view = View.inflate(activity, R.layout.video_view, this);
         initView(view);
-        this.is_avio_data = false;
+         this.is_avio_data = false;
         showViewBystate(PalyTypeState.STATE_NONE);
     }
 
@@ -210,39 +203,39 @@ public class MyVideoView extends FrameLayout {
 
 
     //当只有视频时会去取消点击事件
-    public void clearVideoviewOnclick() {
+    public void clearVideoviewOnclick(){
         my_videoview_onclick.setOnClickListener(null);
     }
 
-    public void resetVideoSize() {
-        if (videoViewWidth > 0 && vidwoViewHeight > 0) {
+    public void resetVideoSize(){
+        if(videoViewWidth>0&&vidwoViewHeight>0){
             my_videoview.setVideoLayout(videoViewWidth, vidwoViewHeight);
         }
 
     }
 
     public void resetSize(int width, int height, int magin) {
-        if (width <= 0 || height <= 0) {
+        if(width<=0||height<=0){
             return;
         }
         videoViewWidth = width;
         vidwoViewHeight = height;
 
-        switch (DEVICE_TYPE) {
-            case DeviceUtil.DEVICE_TYPE_PHONE: {
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(videoViewWidth, vidwoViewHeight);
-                lp.setMargins(magin, magin, magin, magin);
-                this.setLayoutParams(lp);
-                break;
-            }
-            case DeviceUtil.DEVICE_TYPE_PAD: {
-                RelativeLayout.LayoutParams sclp = (RelativeLayout.LayoutParams) this.getLayoutParams();
+         switch (DEVICE_TYPE){
+             case DeviceUtil.DEVICE_TYPE_PHONE:{
+                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(videoViewWidth, vidwoViewHeight);
+                 lp.setMargins(magin, magin, magin, magin);
+                 this.setLayoutParams(lp);
+                 break;
+             }
+             case DeviceUtil.DEVICE_TYPE_PAD:{
+                 RelativeLayout.LayoutParams sclp=  (RelativeLayout.LayoutParams)this.getLayoutParams();
 
-                sclp.width = width;
-                sclp.height = height;
-                break;
-            }
-        }
+                 sclp.width = width;
+                 sclp.height = height;
+                 break;
+             }
+         }
 
 
         my_videoview.setVideoLayout(videoViewWidth, vidwoViewHeight);
@@ -258,7 +251,7 @@ public class MyVideoView extends FrameLayout {
     }
 
     public void resetSize(RelativeLayout.LayoutParams lp) {
-        this.setLayoutParams(lp);
+       this.setLayoutParams(lp);
         ((VideoView) my_videoview).setVideoLayout(lp.width, lp.height);
 
         LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) img_changpian.getLayoutParams();
@@ -271,20 +264,20 @@ public class MyVideoView extends FrameLayout {
 
     public void init_li_playstate() {
         ViewGroup.LayoutParams lp = img_video_logo.getLayoutParams();
-        int img_video_logo_width = (int) ((int) this.getResources().getDimension(R.dimen.img_video_logo_width) * BASE_SCREEN_WIDTH_SCALE);
-        int img_video_logo_height = (int) ((int) this.getResources().getDimension(R.dimen.img_video_logo_height) * BASE_SCREEN_WIDTH_SCALE);
+        int img_video_logo_width= (int) ((int)this.getResources().getDimension(R.dimen.img_video_logo_width)*BASE_SCREEN_WIDTH_SCALE);
+        int img_video_logo_height= (int) ((int) this.getResources().getDimension(R.dimen.img_video_logo_height)*BASE_SCREEN_WIDTH_SCALE);
         int title1_textsize = 20;
-        switch (activity.screenstate) {
-            case NORMAL: {
-                lp.width = img_video_logo_width;
-                lp.height = img_video_logo_height;
+        switch (activity.screenstate){
+            case  NORMAL:{
+                lp.width=img_video_logo_width;
+                lp.height=img_video_logo_height;
                 tv_top_state.setTextSize(title1_textsize);
                 break;
             }
-            default: {
-                lp.width = img_video_logo_width * 2;
-                lp.height = img_video_logo_height * 2;
-                tv_top_state.setTextSize(title1_textsize * 2);
+            default:{
+                lp.width=img_video_logo_width*2;
+                lp.height=img_video_logo_height*2;
+                tv_top_state.setTextSize(title1_textsize*2);
                 break;
             }
         }
@@ -300,7 +293,7 @@ public class MyVideoView extends FrameLayout {
         } else {
             switch (typeState) {
                 case STATE_NONE: {
-                    if (activity.screenstate == SCREENSTATE.FULLSCREEN_VIDEOVIEW) {
+                    if (activity.screenstate==SCREENSTATE.FULLSCREEN_VIDEOVIEW) {
                         listener.onChangedVideoViewScreen();
                     }
                     fl_videoview.setVisibility(View.INVISIBLE);
@@ -391,35 +384,36 @@ public class MyVideoView extends FrameLayout {
     }
 
 
+
     public void notIgronVideo(boolean _notIgronVideo) {
         my_videoview.notIgronVideo(_notIgronVideo);
     }
 
     public void setVideoURI(final LiveRoomInfoData data) {
 
-        if (null == data) {
+        if(null==data){
             return;
         }
-        if (!data.canSplice) {
+        if(!data.canSplice){
             this.is_avio_data = false;
             my_videoview.setVideoURI(Uri.parse(data.getPlayUrl()));
-        } else {
+        }else{
             //todo
             this.is_avio_data = true;
             this.is_avio_done = false;
             try {
 
-                final PlaybackSegment currentPlaybackSegment = data.currentPlaybackSegment;
-                final PlayList info = currentPlaybackSegment.info;
-                if (info.isexists()) {
-                    initPlayBackVideoView(info.type, currentPlaybackSegment.endTime, currentPlaybackSegment.startTime - currentPlaybackSegment.allSegmentStartTime, currentPlaybackSegment.seq, data.getPlayUrl(), info.getDownLocationPath(), info.endfiletime, info.getSuffix());
-                } else {
-                    String downUrl = EplayerSetting.spliceVideoPlayBaseUrl + info.getSuffix() + "/" + info.getDownSpliceUrl() + "/index.list";
-                    MyHttpUtils.getHttpUtils().download(downUrl, info.getDownLocationPath(), new RequestCallBack<File>() {
+                final   PlaybackSegment currentPlaybackSegment= data.currentPlaybackSegment;
+                final PlayList info=currentPlaybackSegment.info;
+                if(info.isexists()){
+                    initPlayBackVideoView(info.type,currentPlaybackSegment.endTime,currentPlaybackSegment.startTime-currentPlaybackSegment.allSegmentStartTime,currentPlaybackSegment.seq,data.getPlayUrl(),info.getDownLocationPath(),info.endfiletime,info.getSuffix());
+                }else{
+                    String downUrl=  EplayerSetting.spliceVideoPlayBaseUrl+ info.getSuffix()+"/"+info.getDownSpliceUrl()+"/index.list";
+                    MyHttpUtils.getHttpUtils().download(downUrl,info.getDownLocationPath(),new RequestCallBack<File>(){
 
                         @Override
                         public void onSuccess(ResponseInfo<File> responseInfo) {
-                            initPlayBackVideoView(info.type, currentPlaybackSegment.endTime, currentPlaybackSegment.startTime - currentPlaybackSegment.allSegmentStartTime, currentPlaybackSegment.seq, data.getPlayUrl(), responseInfo.result.getPath(), info.endfiletime, info.getSuffix());
+                            initPlayBackVideoView(info.type,currentPlaybackSegment.endTime,currentPlaybackSegment.startTime-currentPlaybackSegment.allSegmentStartTime,currentPlaybackSegment.seq,data.getPlayUrl(),responseInfo.result.getPath(),info.endfiletime,info.getSuffix());
                         }
 
                         @Override
@@ -430,7 +424,7 @@ public class MyVideoView extends FrameLayout {
                 }
 
 
-            } catch (Exception e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
 
@@ -441,12 +435,12 @@ public class MyVideoView extends FrameLayout {
     /*
     allseq //有可能当段视频是由一整个视频切成多个的，此处记录下当前片段在整个视频的偏移量
      */
-    public void initPlayBackVideoView(LiveRoomStreamType type, long endTime, long allseq, long seq, String palyUrl, String path, String endfiletime, String suffix) {
-        new ParseThread(type, endTime, allseq, seq, palyUrl, path, endfiletime, suffix).start();
+    public void initPlayBackVideoView(LiveRoomStreamType type,long endTime,long allseq,long seq,String palyUrl,String path,String endfiletime,String suffix) {
+        new ParseThread(type,endTime, allseq, seq,palyUrl, path, endfiletime, suffix).start();
     }
 
 
-    public class ParseThread extends Thread {
+    public class ParseThread extends Thread{
         LiveRoomStreamType type;
         long endTime;
         long allseq;
@@ -456,28 +450,28 @@ public class MyVideoView extends FrameLayout {
         String endfiletime;
         String suffix;
 
-        public ParseThread(LiveRoomStreamType type, long endTime, long allseq, long seq, String palyUrl, String path, String endfiletime, String suffix) {
-            this.type = type;
-            this.endTime = endTime;
-            this.allseq = allseq;
-            this.seq = seq;
-            this.palyUrl = palyUrl;
-            this.path = path;
-            this.endfiletime = endfiletime;
-            this.suffix = suffix;
+        public ParseThread(LiveRoomStreamType type,long endTime,long allseq,long seq,String palyUrl,String path,String endfiletime,String suffix){
+            this.type=type;
+            this.endTime=endTime;
+            this.allseq=allseq;
+            this.seq=seq;
+            this.palyUrl=palyUrl;
+            this.path=path;
+            this.endfiletime=endfiletime;
+            this.suffix=suffix;
         }
 
         @Override
         public void run() {
             try {
                 JSONObject jsonObject = JSONUtils.getJSONFromFile(path);
-                SpliceInfo spliceInfo = SpliceInfo.fromJson(jsonObject, suffix, endfiletime, endTime, allseq + seq, type);
-                spliceInfo.palyurl = palyUrl;
-                Message message = Message.obtain();
-                message.what = TaskType.MESSAGE_PARSETHREAD;
-                message.obj = spliceInfo;
+                SpliceInfo spliceInfo = SpliceInfo.fromJson(jsonObject,suffix,endfiletime,endTime,allseq+seq, type);
+                spliceInfo.palyurl=palyUrl;
+                Message message=Message.obtain();
+                message.what= TaskType.MESSAGE_PARSETHREAD;
+                message.obj=spliceInfo;
                 handler.sendMessage(message);
-            } catch (Exception e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
 
@@ -486,25 +480,25 @@ public class MyVideoView extends FrameLayout {
     }
 
 
-    public static final int MESSAGE_LOADOUTTIME = 2000127;
-    public static final int LOAD_OUT_TIME = 20 * 1000;
-    private int playIndex = -1;
-    private boolean streamEOF = false;
+    public static final int MESSAGE_LOADOUTTIME= 2000127;
+    public static final int LOAD_OUT_TIME=20*1000;
+    private int playIndex=-1;
+    private boolean streamEOF=false;
 
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MESSAGE_LOADOUTTIME: {
-                    streamEOF = true;
+                case MESSAGE_LOADOUTTIME:{
+                    streamEOF=true;
                     break;
                 }
                 case TaskType.MESSAGE_PARSETHREAD: {
                     try {
-                        final SpliceInfo spliceInfo = (SpliceInfo) msg.obj;
+                        final SpliceInfo spliceInfo= (SpliceInfo) msg.obj;
                         PlaySpliceLoader.load(spliceInfo);
 
-                        if (spliceInfo.playSplicelist.size() <= 1) {
+                        if(spliceInfo.playSplicelist.size()<=1){
                             bus.post(new NextSegmentEvent());
                             return;
                         }
@@ -519,35 +513,35 @@ public class MyVideoView extends FrameLayout {
 
                             @Override
                             public boolean getAvioStreamEOF(IMediaPlayer mp) {
-                                LogUtil.d("streamEOF", "getAvioStreamEOF streamEOF:" + streamEOF);
+                                LogUtil.d("streamEOF","getAvioStreamEOF streamEOF:"+streamEOF);
                                 return streamEOF;
                             }
 
                             @Override
                             public String getAvioPath(IMediaPlayer mp, int currentIndex) {
                                 //已经播放到最后了，要停止播放
-                                if (currentIndex >= spliceInfo.playSplicelist.size()) {
-                                    MyVideoView.this.is_avio_done = true;
+                                if(currentIndex>=spliceInfo.playSplicelist.size()){
+                                   MyVideoView.this.is_avio_done = true;
                                     return null;
                                 }
-                                String key = spliceInfo.endfiletime + "_" + currentIndex;
-                                String spliceLocation = PlaySpliceLoader.getPlaySpliceLocation("" + key);
+                                String key=spliceInfo.endfiletime+"_"+currentIndex;
+                                String spliceLocation= PlaySpliceLoader.getPlaySpliceLocation(""+key);
 
-                                if (null != spliceLocation) {
+                                if(null!=spliceLocation){
                                     handler.removeMessages(MESSAGE_LOADOUTTIME);
-                                    playIndex = -1;
-                                    //    LogUtil.d("streamEOF","removeMessages");
-                                } else {
+                                    playIndex=-1;
+                                //    LogUtil.d("streamEOF","removeMessages");
+                                }else{
                                     //如果已经全部下载完成，并缓冲区已经没有数据了，认为播放结束
-                                    if (PlaySpliceLoader.isDownEnd && null != PlaySpliceLoader.playSpliceMap && PlaySpliceLoader.playSpliceMap.size() == 0) {
+                                    if(PlaySpliceLoader.isDownEnd&&null!=PlaySpliceLoader.playSpliceMap&&PlaySpliceLoader.playSpliceMap.size()==0){
                                         handler.removeMessages(MESSAGE_LOADOUTTIME);
-                                        //     LogUtil.d("streamEOF","end removeMessages");
-                                    } else {
-                                        if (playIndex != currentIndex) {
-                                            //      LogUtil.d("streamEOF","add Messages playIndex:"+playIndex+" currentIndex: "+currentIndex);
-                                            playIndex = currentIndex;
+                                   //     LogUtil.d("streamEOF","end removeMessages");
+                                    }else{
+                                        if (playIndex!=currentIndex){
+                                      //      LogUtil.d("streamEOF","add Messages playIndex:"+playIndex+" currentIndex: "+currentIndex);
+                                            playIndex=currentIndex;
                                             handler.removeMessages(MESSAGE_LOADOUTTIME);
-                                            handler.sendEmptyMessageDelayed(MESSAGE_LOADOUTTIME, LOAD_OUT_TIME);
+                                            handler.sendEmptyMessageDelayed(MESSAGE_LOADOUTTIME,LOAD_OUT_TIME);
 
                                         }
                                     }
@@ -558,7 +552,7 @@ public class MyVideoView extends FrameLayout {
                             }
                         });
                         my_videoview.setVideoURI(Uri.parse(spliceInfo.palyurl));
-                    } catch (Exception e) {
+                    }catch (Exception e){
                         e.printStackTrace();
                     }
                     break;
@@ -567,6 +561,7 @@ public class MyVideoView extends FrameLayout {
             super.handleMessage(msg);
         }
     };
+
 
 
     public void setMusicURI(String url) {
@@ -605,7 +600,7 @@ public class MyVideoView extends FrameLayout {
 
     public boolean playDoneIfHasMedia() {
 
-        if (!this.is_avio_data)
+        if(!this.is_avio_data)
             return my_videoview.isFinished();
         return this.is_avio_done;
 
@@ -613,7 +608,7 @@ public class MyVideoView extends FrameLayout {
 
 
     public long playTimeIfHasMedia() {
-        return my_videoview.getCurrentPosition();
+            return my_videoview.getCurrentPosition();
 
     }
 

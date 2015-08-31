@@ -8,10 +8,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
 import java.io.File;
 
@@ -55,6 +57,7 @@ public class FindFragment extends ESWebViewFragment{
                 saveMessage(message);
                 return;
             }
+            ESWebViewRequestManager.clear();
             checkLocalResourceStatus();
         }
     }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -58,6 +59,8 @@ public class ChatAdapter extends BaseAdapter {
     private String mCurrentAudioPath;
     private AnimationDrawable mAnimDrawable;
 
+    private User mChatOpposite;
+
     private static long TIME_INTERVAL = 60 * 5;
     private static final int TYPE_COUNT = 6;
     private static final int MSG_SEND_TEXT = 0;
@@ -76,7 +79,7 @@ public class ChatAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public ChatAdapter(Context ctx, List<Chat> list) {
+    public ChatAdapter(Context ctx, List<Chat> list, User user) {
         mContext = ctx;
         mList = list;
         mDownloadList = new HashMap<>();
@@ -85,6 +88,7 @@ public class ChatAdapter extends BaseAdapter {
                 showImageForEmptyUri(R.drawable.defaultpic).
                 showImageOnLoading(R.drawable.defaultpic).
                 showImageOnFail(R.drawable.defaultpic).build();
+        mChatOpposite = user;
     }
 
     public void addItem(Chat chat) {
@@ -254,7 +258,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
     }
 
 
@@ -326,7 +330,7 @@ public class ChatAdapter extends BaseAdapter {
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
 
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
@@ -418,7 +422,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
-        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, EdusohoApp.app.mOptions);
         switch (model.getDelivery()) {
             case SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);

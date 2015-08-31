@@ -231,7 +231,6 @@ public class SettingActivity extends ActionBarBaseActivity {
 
     @Override
     public void finish() {
-        Log.d("setting--->", "finish");
         super.finish();
     }
 
