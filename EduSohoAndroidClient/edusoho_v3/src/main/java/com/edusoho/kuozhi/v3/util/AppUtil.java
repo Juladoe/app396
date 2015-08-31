@@ -863,9 +863,7 @@ public class AppUtil {
         matrix.postScale(scale, scale);
         matrix.postRotate((float) degree);
 
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-
-        return scaledBitmap;
+        return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
     }
 
     /**
