@@ -8,8 +8,7 @@
         android:id="@+id/friends_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null">
-        </ListView>
+        android:divider="@null"></ListView>
 
     <TextView
         android:id="@+id/dialog"
@@ -19,23 +18,42 @@
         android:layout_gravity="center"
         android:background="@drawable/radius_tv_bg"
         android:gravity="center"
-        android:textColor="@color/white"
         android:text="A"
+        android:textColor="@color/white"
         android:textSize="36sp"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <com.edusoho.kuozhi.v3.view.SideBar
         android:id="@+id/sidebar"
         android:layout_width="24dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginBottom="32dp"
         android:layout_height="match_parent"
-        android:layout_gravity="right|center"/>
+        android:layout_gravity="right|center"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="52dp" />
 
-    <ProgressBar
-        android:id="@+id/content_load"
-        android:layout_gravity="center"
-        android:indeterminateDrawable="@drawable/load"
-        android:layout_width="@dimen/xxx_large_font_size"
-        android:layout_height="@dimen/xxx_large_font_size" />
+    <FrameLayout
+        android:id="@+id/friend_fragment_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="@dimen/xxx_large_font_size"
+            android:layout_height="@dimen/xxx_large_font_size"
+            android:layout_gravity="center"
+
+
+            android:indeterminateDrawable="@drawable/load" />
+
+        <TextView
+            android:layout_below="@id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="好友加载中..."
+            android:textSize="@dimen/base_large_size"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
 </FrameLayout>

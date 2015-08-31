@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.internal.widget.DecorToolbar;
 import android.view.Menu;
@@ -16,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.edusoho.kuozhi.R;
@@ -36,11 +35,11 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
+import com.edusoho.kuozhi.v3.ui.friend.FriendNewsActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,19 +50,18 @@ import java.util.List;
  */
 public class FriendFragment extends BaseFragment {
 
-    private boolean isNews = false;
+    public static boolean isNews = false;
     private ListView mFriendList;
     private View mFootView;
     private View mToolbarView;
     private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
-    private LoadDialog mLoadDialog;
     private SideBar mSidebar;
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
     private ActionBar mActionBar;
-    private ProgressBar mContentLoadingProgressBar;
+    private FrameLayout mLoading;
 
     private FriendProvider mFriendProvider;
 
@@ -88,7 +86,7 @@ public class FriendFragment extends BaseFragment {
         characterParser = CharacterParser.getInstance();
         friendComparator = new FriendComparator();
 
-        mContentLoadingProgressBar = (ProgressBar) view.findViewById(R.id.content_load);
+        mLoading = (FrameLayout) view.findViewById(R.id.friend_fragment_loading);
         mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
@@ -154,7 +152,7 @@ public class FriendFragment extends BaseFragment {
 
     private void initViewData() {
         if (!app.getNetIsConnect()) {
-            mContentLoadingProgressBar.setVisibility(View.GONE);
+            mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
 
@@ -166,7 +164,7 @@ public class FriendFragment extends BaseFragment {
         }).then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
-                mContentLoadingProgressBar.setVisibility(View.GONE);
+                mLoading.setVisibility(View.GONE);
                 return null;
             }
         });
@@ -280,19 +278,17 @@ public class FriendFragment extends BaseFragment {
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
-            loadSchoolApps();
-            loadFriend();
+            initViewData();
         }
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
-            loadSchoolApps();
-            loadFriend();
+            initViewData();
         }
         if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
-            loadSchoolApps();
-            loadFriend();
+            initViewData();
         }
         if (messageType.code == Const.NEW_FANS) {
             isNews = true;
+            FriendNewsActivity.isNews = true;
             mActivity.supportInvalidateOptionsMenu();
         }
     }
