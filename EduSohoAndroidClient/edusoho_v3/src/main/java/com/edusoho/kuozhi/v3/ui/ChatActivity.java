@@ -735,20 +735,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private File compressImage(Bitmap bitmap, File file) {
         File compressedFile;
         try {
-//            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
-//                bitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
-//            }
-//
-//            if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                bitmap = AppUtil.compressImage(bitmap, baos);
-//                compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-//            } else {
-//                compressedFile = copyImageFileToCache(file);
-//            }
-//
-//            AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
-
             //分辨率压缩到屏幕的0.4
             Bitmap compressWidthBitmap = null;
             if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
