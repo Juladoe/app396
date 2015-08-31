@@ -287,6 +287,9 @@ public class VoteControllerView extends LinearLayout {
         }
     }
     public void voteStatistic(VoteStatisticMsgInfo msgInfo) {
+        if(null==msgInfo||null==msgInfo.voteType){
+            return;
+        }
         if(this.getVisibility()!=View.VISIBLE){
             return;
         }

@@ -897,7 +897,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
         voteControllerView= (VoteControllerView) findViewById(R.id.voteControllerView);
         voteControllerView.init(this,DeviceUtil.DEVICE_TYPE_PAD);
-        EplayerSetting.context = this.getApplicationContext();
+        EplayerSetting.setContext( this.getApplicationContext());
 
         li_teacher_area= (LinearLayout) findViewById(R.id.li_teacher_area);
         li_line_line_num = (LinearLayout) findViewById(R.id.li_line_line_num);
