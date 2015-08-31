@@ -42,8 +42,6 @@
             android:layout_width="@dimen/xxx_large_font_size"
             android:layout_height="@dimen/xxx_large_font_size"
             android:layout_gravity="center"
-
-
             android:indeterminateDrawable="@drawable/load" />
 
         <TextView

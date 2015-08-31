@@ -513,6 +513,7 @@ public class EdusohoApp extends Application {
         config.offlineType = sp.getInt("offlineType", 0);
         config.msgSound = sp.getInt("msgSound", 0);
         config.msgVibrate = sp.getInt("msgVibrate", 0);
+        config.newVerifiedNotify = sp.getBoolean("newVerifiedNotify", false);
         if (config.startWithSchool) {
             loadDefaultSchool();
         }
@@ -529,6 +530,7 @@ public class EdusohoApp extends Application {
         edit.putInt("offlineType", config.offlineType);
         edit.putInt("msgSound", config.msgSound);
         edit.putInt("msgVibrate", config.msgVibrate);
+        edit.putBoolean("newVerifiedNotify", config.newVerifiedNotify);
         edit.apply();
     }
 
