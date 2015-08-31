@@ -511,8 +511,8 @@ public class EdusohoApp extends Application {
         config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
         config.offlineType = sp.getInt("offlineType", 0);
-        config.msgSound = sp.getInt("msgSound", 0);
-        config.msgVibrate = sp.getInt("msgVibrate", 0);
+        config.msgSound = sp.getInt("msgSound", 1);
+        config.msgVibrate = sp.getInt("msgVibrate", 2);
         if (config.startWithSchool) {
             loadDefaultSchool();
         }
