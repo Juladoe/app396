@@ -233,7 +233,7 @@ public class FriendFragment extends BaseFragment {
     }
 
     public void setFriendsCount(String count) {
-        mFriendCount.setText("共有" + count + "位好友");
+        mFriendCount.setText(count + "位好友");
     }
 
     @Override
