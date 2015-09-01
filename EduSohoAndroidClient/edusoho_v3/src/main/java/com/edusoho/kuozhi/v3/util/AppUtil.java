@@ -320,7 +320,7 @@ public class AppUtil {
             int options = 100;
             image.compress(Bitmap.CompressFormat.JPEG, options, bos);
             while (bos.toByteArray().length / 1024 > 200) {
-                options -= 10;
+                options -= 2;
                 bos.reset();
                 image.compress(Bitmap.CompressFormat.JPEG, options, bos);
             }
