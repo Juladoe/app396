@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.v3.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -12,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -257,5 +260,10 @@ public class EdusohoMainService extends Service {
             }
         }
         return chatHashMaps;
+    }
+
+    public void setNewNotification() {
+        app.config.newVerifiedNotify = true;
+        app.saveConfig();
     }
 }

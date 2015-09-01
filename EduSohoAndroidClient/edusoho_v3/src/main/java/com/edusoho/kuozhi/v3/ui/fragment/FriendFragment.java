@@ -77,6 +77,7 @@ public class FriendFragment extends BaseFragment {
         mActivity.setTitle(getString(R.string.title_friends));
         mFriendProvider = new FriendProvider(mContext);
         setHasOptionsMenu(true);
+        isNews = app.config.newVerifiedNotify;
     }
 
     @Override
@@ -151,6 +152,7 @@ public class FriendFragment extends BaseFragment {
     }
 
     private void initViewData() {
+        mLoading.setVisibility(View.VISIBLE);
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
@@ -267,6 +269,8 @@ public class FriendFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.friends_news) {
             isNews = false;
+            app.config.newVerifiedNotify = false;
+            app.saveConfig();
             item.setIcon(R.drawable.icon_menu_notification);
             mActivity.supportInvalidateOptionsMenu();
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
