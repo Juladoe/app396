@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -46,17 +47,16 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected void onResume() {
         super.onResume();
         mRunStatus = MSG_RESUME;
+        MobclickAgent.onResume(mContext);
         mXGClick = XGPushManager.onActivityStarted(this);
         Log.d("TPush", "onResumeXGPushClickedResult:" + mXGClick);
-//        if (mXGClick != null) { // 判断是否来自信鸽的打开方式
-//            CommonUtil.longToast(this, "通知被点击:" + mXGClick.toString());
-//        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mRunStatus = MSG_PAUSE;
+        MobclickAgent.onPause(mContext);
         Log.d("MainActivity-->", "onPause");
         XGPushManager.onActivityStoped(this);
         mXGClick = null;
