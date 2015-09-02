@@ -175,6 +175,7 @@ public class EdusohoApp extends Application {
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
+        request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
         mVolley.addToRequestQueue(request);
     }
