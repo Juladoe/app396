@@ -409,7 +409,13 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                         app.gson.toJson(mCourse)
                 );
 
-                M3U8DbModle m3U8DbModle = M3U8Util.saveM3U8Model(
+                M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
+                        mContext, app.loginUser.id, lessonItem.id, app.domain, M3U8Util.ALL);
+                if (m3U8DbModle != null) {
+                    return;
+                }
+
+                m3U8DbModle = M3U8Util.saveM3U8Model(
                         mContext, lessonItem.id, app.domain, app.loginUser.id);
                 M3U8DownService.startDown(
                         mContext, lessonItem.id, lessonItem.courseId, lessonItem.title);

@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -56,6 +55,7 @@ public class QrSearchActivity extends CaptureActivity {
     }
 
     protected boolean parseResult(String result) {
+        Log.d(TAG, result);
         if (! (result.startsWith("http://") || result.startsWith("https://")) ) {
             showDataInWebView(result);
             return true;
@@ -69,14 +69,14 @@ public class QrSearchActivity extends CaptureActivity {
             return true;
         }
 
-        if (! resultUrl.getHost().equals(app.domain)) {
-            showUrlInWebView(result);
-            return true;
-        }
-
         Matcher typeMatcher = TYPE_PAT.matcher(resultUrl.getPath());
         if (typeMatcher.find() && urlcanMatch(typeMatcher)) {
             return false;
+        }
+
+        if (! resultUrl.getHost().equals(app.domain)) {
+            showUrlInWebView(result);
+            return true;
         }
 
         showUrlInESWebView(result);
@@ -120,72 +120,14 @@ public class QrSearchActivity extends CaptureActivity {
 
         @Override
         public void match() {
-            loginWithUrl();
-        }
-
-        private void loginWithUrl() {
-            final LoadDialog loading = LoadDialog.create(mContext);
-            loading.show();
-
-            RequestUrl requestUrl = new RequestUrl(this.mUrl);
-            ajaxGet(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    loading.dismiss();
-                    try {
-                        final UserResult userResult = app.gson.fromJson(
-                                response, new TypeToken<UserResult>() {
-                                }.getType());
-
-                        if (userResult == null) {
-                            ToastUtils.show(mContext, "二维码信息错误!");
-                            return;
-                        }
-
-                        if (TextUtils.isEmpty(userResult.token)) {
-                            ToastUtils.show(mContext, "二维码登录信息已过期或失效");
-                        } else {
-                            app.saveToken(userResult);
-                            app.sendMessage(Const.LOGIN_SUCCESS, null);
-                        }
-
-                        RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
-                        app.getUrl(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Token token = parseJsonValue(response, new TypeToken<Token>() {
-                                });
-                                if (token != null) {
-                                    app.saveApiToken(token.token);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(Const.BIND_USER_ID, String.valueOf(userResult.user.id));
-                                    app.pushRegister(bundle);
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d(TAG, "无法获取网校Token");
-                            }
-                        });
-                        mActivity.finish();
-                    } catch (Exception e) {
-                        CommonUtil.longToast(mActivity, "二维码信息错误!");
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    loading.dismiss();
-                    CommonUtil.longToast(mActivity, "二维码访问错误!");
-                }
-            });
+            new QrSchoolActivity.SchoolChangeHandler(mActivity).change(this.mUrl + "&version=2");
         }
     }
 
     private boolean urlcanMatch(Matcher typeMatcher) {
         String apiType = typeMatcher.group(1);
         String apiMethod = typeMatcher.group(2);
+        Log.d(TAG, String.format("%s %s", apiType, apiMethod));
         for (URLMatchType matchType : mURLMatchTypes) {
             if (matchType.handle(apiType, apiMethod) ) {
                 return true;

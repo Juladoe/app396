@@ -163,8 +163,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             switch (msg.what) {
                 case EVENT_START:
                     Log.d(TAG, "EVENT_START");
-                    if (mVideoHead == null
-                            || mPlayHeadStatus == PLAYER_HEAD_STATUS.PLAYER_END) {
+                    if (isCacheVideo || mVideoHead == null || mPlayHeadStatus == PLAYER_HEAD_STATUS.PLAYER_END) {
                         playVideo();
                     } else {
                         playHeadUrl();
