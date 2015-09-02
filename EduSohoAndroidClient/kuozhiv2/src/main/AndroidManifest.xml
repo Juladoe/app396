@@ -26,7 +26,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             android:name=".kuozhi.KuozhiSplashActivity"
-            android:configChanges="keyboardHidden|orientation"></activity>
+            android:configChanges="keyboardHidden|orientation" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
