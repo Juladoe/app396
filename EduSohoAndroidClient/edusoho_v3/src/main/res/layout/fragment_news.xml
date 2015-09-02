@@ -6,7 +6,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bottom_edge_height"
+        android:layout_height="@dimen/item_edge_height"
         android:src="@drawable/login_line_bg" />
 
     <com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView
