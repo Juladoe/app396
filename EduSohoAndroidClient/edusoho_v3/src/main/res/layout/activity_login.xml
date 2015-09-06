@@ -8,7 +8,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bottom_edge_height"
+        android:layout_height="@dimen/item_edge_height"
         android:src="@drawable/login_line_bg" />
 
     <LinearLayout
@@ -20,41 +20,65 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
-        <EditText
-            android:singleLine="true"
-            android:alpha="0.56"
-            android:drawableLeft="@drawable/icon_user"
-            android:layout_marginBottom="@dimen/login_control_margin_bottom"
-            android:id="@+id/et_username"
-            android:textSize="@dimen/medium_font_size"
-            android:hint="@string/login_username_hint"
-            android:textCursorDrawable="@null"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-        <EditText
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/login_control_margin_bottom"
-            android:singleLine="true"
-            android:drawableLeft="@drawable/icon_pass"
-            android:id="@+id/et_password"
-            android:hint="@string/login_password_hint"
-            android:alpha="0.56"
-            android:textSize="@dimen/medium_font_size"
-            android:inputType="textPassword"
-            android:textCursorDrawable="@null"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_edittext_bg"
+            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp">
 
-        <!--<Button-->
-        <!--android:layout_marginBottom="@dimen/login_control_margin_bottom"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@drawable/login_btn_bg"-->
-        <!--android:text="@string/login"-->
-        <!--android:textSize="@dimen/medium_font_size"-->
-        <!--android:textColor="@android:color/white"-->
-        <!--android:id="@+id/btn_login" />-->
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/font_login_username"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/grey_main"
+                android:id="@+id/iv_username"
+                android:textSize="@dimen/x_large_font_size"
+                android:layout_marginRight="15dp" />
+
+            <EditText
+                style="@style/edittext_style"
+                android:id="@+id/et_username"
+                android:hint="@string/login_username_hint"
+                android:layout_toRightOf="@+id/iv_username"
+                android:layout_toEndOf="@+id/iv_username"
+                android:layout_alignBaseline="@+id/iv_username" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_edittext_bg"
+            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp">
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/font_login_password"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/grey_main"
+                android:id="@+id/iv_password"
+                android:textSize="@dimen/x_large_font_size"
+                android:layout_marginRight="15dp" />
+
+            <EditText
+                style="@style/edittext_style"
+                android:id="@+id/et_password"
+                android:hint="@string/login_password_hint"
+                android:gravity="center_vertical"
+                android:inputType="textPassword"
+                android:layout_toRightOf="@+id/iv_password"
+                android:layout_toEndOf="@+id/iv_password"
+                android:layout_alignBaseline="@+id/iv_password" />
+        </RelativeLayout>
 
         <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
             android:layout_width="match_parent"
@@ -64,8 +88,7 @@
             app:loading_text="@string/login_loading"
             app:success_text="@string/login_success"
             app:init_background="@drawable/login_btn_normal"
-            app:loading_background="@drawable/login_btn_press"
-            android:layout_marginBottom="@dimen/login_control_margin_bottom" />
+            app:loading_background="@drawable/login_btn_press" />
 
         <RelativeLayout
             android:layout_width="match_parent"

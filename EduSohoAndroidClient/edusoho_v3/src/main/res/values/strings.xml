@@ -83,6 +83,8 @@
     <string name="drawer_setting">&#xe60e;</string>
     <string name="font_favorite">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
+    <string name="font_login_username">&#xe619;</string>
+    <string name="font_login_password">&#xe616;</string>
 
     <string name="learned_status">&#xe639;</string>
     <string name="course_paybtn"></string>

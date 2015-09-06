@@ -54,7 +54,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:id="@+id/v_code"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom">
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom">
 
                             <EditText
                                 android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/et_code"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
                             android:textColorHint="@color/base_black_26"
                             android:singleLine="true"
                             android:alpha="0.56"
@@ -109,7 +109,7 @@
                             android:textSize="@dimen/medium_font_size"
                             android:inputType="textPassword"
                             android:id="@+id/et_phone_pass"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom" />
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom" />
 
                         <Button
                             android:layout_width="match_parent"
@@ -147,7 +147,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/et_mail"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
                             android:textColorHint="@color/base_black_26"
                             android:singleLine="true"
                             android:textSize="@dimen/medium_font_size"
@@ -164,7 +164,7 @@
                             android:hint="@string/reg_password_hint"
                             android:textSize="@dimen/medium_font_size"
                             android:id="@+id/et_mail_pass"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom" />
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom" />
 
                         <Button
                             android:layout_width="match_parent"
