@@ -16,19 +16,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:background="@color/white">
+        android:background="@color/base_gray">
 
-        <com.edusoho.kuozhi.v3.view.EduSohoRoundButton
+        <TextView
             android:id="@+id/search_friend_btn"
             android:textColor="@color/gray"
             android:text="搜索昵称/手机/QQ号"
+            android:drawableLeft="@drawable/icon_edittext_search"
+            android:drawablePadding="8dp"
+            android:paddingLeft="96dp"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:background="@null"
+            android:background="@drawable/search_friend_bg"
             android:textSize="14sp"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
             />
         </RelativeLayout>
 

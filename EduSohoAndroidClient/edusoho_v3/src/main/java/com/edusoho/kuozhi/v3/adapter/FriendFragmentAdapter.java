@@ -99,12 +99,12 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 if (convertView == null) {
                     v = mInflater.inflate(R.layout.item_type_friend_head, null);
                     headHolder = new HeadHolder();
-                    headHolder.searchFriendBtn = (EduSohoRoundButton) v.findViewById(R.id.search_friend_btn);
+                    headHolder.tvSearchFriend = (TextView) v.findViewById(R.id.search_friend_btn);
                     v.setTag(headHolder);
                 } else {
                     headHolder = (HeadHolder) v.getTag();
                 }
-                headHolder.searchFriendBtn.setOnClickListener(mOnClickListener);
+                headHolder.tvSearchFriend.setOnClickListener(mOnClickListener);
                 break;
 
             case TYPE_SCHOOL_APP:
@@ -245,7 +245,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
     }
 
     private class HeadHolder {
-        EduSohoRoundButton searchFriendBtn;
+        TextView tvSearchFriend;
     }
 
     private class ItemHolder {
