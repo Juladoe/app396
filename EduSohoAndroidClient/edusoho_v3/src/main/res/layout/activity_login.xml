@@ -83,6 +83,7 @@
         <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
             android:id="@+id/btn_login"
             app:init_text="@string/login"
             app:loading_text="@string/login_loading"

@@ -31,4 +31,6 @@
     <dimen name="head_icon_medium">40dp</dimen>
 
     <dimen name="head_icon_small">30dp</dimen>
+
+    <dimen name="btn_loading_margin">28dp</dimen>
 </resources>

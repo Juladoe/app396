@@ -37,4 +37,6 @@
     <dimen name="new_item_time_size">13sp</dimen>
     <dimen name="chat_item_content_size">16sp</dimen>
 
+    <dimen name="btn_loading_margin">24dp</dimen>
+
 </resources>
