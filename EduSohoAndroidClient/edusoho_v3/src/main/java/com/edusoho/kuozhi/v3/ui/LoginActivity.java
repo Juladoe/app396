@@ -119,12 +119,14 @@ public class LoginActivity extends ActionBarBaseActivity {
                             }
                         }, 500);
                     } else {
+                        mBtnLogin.setInitState();
                         CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    mBtnLogin.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });

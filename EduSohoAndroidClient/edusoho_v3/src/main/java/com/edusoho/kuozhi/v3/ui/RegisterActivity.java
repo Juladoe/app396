@@ -14,6 +14,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
@@ -22,6 +23,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
@@ -39,11 +41,11 @@ public class RegisterActivity extends ActionBarBaseActivity {
     private EditText etPhone;
     private EditText etCode;
     private EditText etPhonePass;
-    private Button btnPhoneReg;
+    private EduSohoLoadingButton btnPhoneReg;
     private Button btnSendCode;
     private EditText etMail;
     private EditText etMailPass;
-    private Button btnMailReg;
+    private EduSohoLoadingButton btnMailReg;
     private String mCookie = "";
 
     private int mClockTime;
@@ -78,13 +80,14 @@ public class RegisterActivity extends ActionBarBaseActivity {
         etPhonePass = (EditText) findViewById(R.id.et_phone_pass);
         btnSendCode = (Button) findViewById(R.id.btn_send_code);
         btnSendCode.setOnClickListener(mSmsSendClickListener);
-        btnPhoneReg = (Button) findViewById(R.id.btn_phone_reg);
+        btnPhoneReg = (EduSohoLoadingButton) findViewById(R.id.btn_phone_reg);
         btnPhoneReg.setOnClickListener(mPhoneRegClickListener);
         etMail = (EditText) findViewById(R.id.et_mail);
         etMailPass = (EditText) findViewById(R.id.et_mail_pass);
-        btnMailReg = (Button) findViewById(R.id.btn_mail_reg);
+        btnMailReg = (EduSohoLoadingButton) findViewById(R.id.btn_mail_reg);
         btnMailReg.setOnClickListener(mMailRegClickListener);
         mSmsCodeHandler = new SmsCodeHandler(this);
+        Log.d("test", etCode.getMeasuredHeight() + "");
     }
 
     public static class SmsCodeHandler extends Handler {
@@ -98,14 +101,14 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.btnSendCode.setText(mActivity.mClockTime + "秒后重新发送");
+            mActivity.btnSendCode.setText(mActivity.mClockTime + "秒后重发");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();
                 mActivity.mTimer = null;
                 mActivity.btnSendCode.setText(mActivity.getResources().getString(R.string.reg_send_code));
                 mActivity.btnSendCode.setEnabled(true);
-                mActivity.btnSendCode.setBackgroundResource(R.drawable.reg_code_press);
+                mActivity.btnSendCode.setBackgroundColor(mActivity.getResources().getColor(R.color.green_alpha));
             }
         }
     }
@@ -138,7 +141,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("code").equals("200")) {
                             btnSendCode.setEnabled(false);
-                            btnSendCode.setBackgroundResource(R.drawable.reg_code_disable);
+                            btnSendCode.setBackgroundColor(getResources().getColor(R.color.grey_main));
                             mClockTime = 120;
                             mTimer = new Timer();
                             mTimer.schedule(new TimerTask() {
@@ -193,7 +196,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 headers.put("Cookie", mCookie);
             }
 
-            mActivity.ajaxPostWithLoading(url, new Response.Listener<String>() {
+            btnPhoneReg.setLoadingState();
+
+            mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -201,13 +206,26 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 response, new TypeToken<UserResult>() {
                                 });
                         app.saveToken(userResult);
-                        mActivity.finish();
-                        app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        btnPhoneReg.setSuccessState();
+                        btnPhoneReg.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mActivity.finish();
+                                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                            }
+                        }, 500);
                     } catch (Exception e) {
+                        btnPhoneReg.setInitState();
                         e.printStackTrace();
                     }
                 }
-            }, null, "注册中...");
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    btnPhoneReg.setInitState();
+                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                }
+            });
         }
     };
 
@@ -235,7 +253,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }
             params.put("password", strPass);
 
-            mActivity.ajaxPostWithLoading(url, new Response.Listener<String>() {
+            btnMailReg.setLoadingState();
+
+            mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -250,13 +270,26 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 response, new TypeToken<UserResult>() {
                                 });
                         app.saveToken(userResult);
-                        mActivity.finish();
-                        app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        btnMailReg.setSuccessState();
+                        btnMailReg.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mActivity.finish();
+                                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                            }
+                        }, 500);
                     } catch (Exception e) {
+                        btnMailReg.setInitState();
                         e.printStackTrace();
                     }
                 }
-            }, null, "注册中...");
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    btnMailReg.setInitState();
+                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                }
+            });
         }
     };
 

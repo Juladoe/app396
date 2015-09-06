@@ -62,4 +62,9 @@ public class EduSohoLoadingButton extends FrameLayout {
         setBackgroundDrawable(mLoadingBackground);
     }
 
+    public void setInitState() {
+        tvLoading.setText(mInitText);
+        setBackgroundDrawable(mLoadingBackground);
+    }
+
 }
