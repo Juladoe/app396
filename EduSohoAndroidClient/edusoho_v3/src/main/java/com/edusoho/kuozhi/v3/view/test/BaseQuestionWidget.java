@@ -247,7 +247,7 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
                     btn.setIcon(R.string.font_favorited);
                     btn.setTextColor(getResources().getColor(R.color.course_favorited));
                 } else {
-                    btn.setIcon(R.string.font_favoirte);
+                    btn.setIcon(R.string.font_favorite);
                     btn.setTextColor(getResources().getColor(R.color.base_black_normal));
                 }
             }
