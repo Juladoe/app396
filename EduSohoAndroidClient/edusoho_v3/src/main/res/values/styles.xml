@@ -79,8 +79,8 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
         <item name="actionMenuTextAppearance">@style/EdusohoActionBarMenuTextStyle</item>
-        <item name="actionMenuTextColor">@color/green_alpha</item>
-        <item name="android:actionMenuTextColor">@color/green_alpha</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
         <item name="titleTextStyle">@style/CustomTitleTextStyle</item>
         <item name="android:actionBarStyle">@style/EdusohoActionBarStyle</item>
         <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>
@@ -103,8 +103,8 @@
 
     <style name="EdusohoActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="android:indeterminateProgressStyle">@style/EdusohoIndeterminateProgress</item>
-        <item name="android:background">@drawable/action_bar_bg</item>
-        <item name="background">@drawable/action_bar_bg</item>
+        <item name="android:background">@color/primary_color</item>
+        <item name="background">@color/primary_color</item>
         <item name="android:titleTextStyle">@style/EdusohoActionBarTextStyle</item>
         <item name="titleTextStyle">@style/EdusohoActionBarTextStyle</item>
         <item name="android:displayOptions">showCustom|showHome</item>
@@ -122,13 +122,13 @@
     </style>
 
     <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/green_alpha</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/large_font_size</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/titleTextColor</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/course_content_head</item>
     </style>
 
@@ -159,7 +159,7 @@
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/action_bar_bg</item>
+        <item name="colorPrimary">@android:color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="actionBarSize">44dp</item>
@@ -167,7 +167,7 @@
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@color/action_bar_bg</item>
+        <item name="color">@android:color/white</item>
     </style>
 
     <style name="edittext_style">

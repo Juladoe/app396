@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:layout_alignParentTop="true"
-            android:background="@android:color/white"
+            android:background="@color/primary_color"
             app:centerTitle="@string/toolbar_title"
             app:centerTitleSize="@dimen/large_font_size"
-            app:centerTitleColor="@color/primary_color"
+            app:centerTitleColor="@android:color/white"
             tools:layout="@layout/toolbar_custom"
             android:visibility="gone" />
 

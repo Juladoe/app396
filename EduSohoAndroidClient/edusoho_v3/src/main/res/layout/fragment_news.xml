@@ -4,11 +4,6 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_edge_height"
-        android:src="@drawable/login_line_bg" />
-
     <com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
