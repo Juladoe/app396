@@ -1,13 +1,20 @@
 package com.edusoho.kuozhi.v3.plugin;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.RequestFuture;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -19,22 +26,36 @@ import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.MultipartRequest;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupInputDialog;
+import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaChromeClient;
+import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Iterator;
+
+import cn.trinea.android.common.util.ArrayUtils;
+import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by JesseHuang on 15/6/2.
@@ -54,6 +75,89 @@ public class MenuClickPlugin extends CoreBridge {
             }
         });
         dlg.show();
+    }
+
+    @JsAnnotation
+    public void uploadImage(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        String acceptType = args.getString(3);
+
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType(acceptType);
+        CordovaPlugin cordovaPlugin = new CordovaPlugin() {
+            @Override
+            public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+                Uri result = intent == null || resultCode != Activity.RESULT_OK ? null : intent.getData();
+                if (result == null) {
+                    return;
+                }
+                try {
+                    String url = args.getString(0);
+                    JSONObject heads = args.getJSONObject(1);
+                    JSONObject params = args.getJSONObject(2);
+
+                    Uri imageUri = ESWebChromeClient.compressImage(mActivity.getBaseContext(), result);
+                    if (imageUri != null) {
+                        String key = params.keys().next();
+                        params.put(key, new File(imageUri.getPath()));
+                        upload(url, heads, params, callbackContext);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        cordova.startActivityForResult(
+                cordovaPlugin,
+                Intent.createChooser(i, "File Browser"),
+                CordovaChromeClient.FILECHOOSER_RESULTCODE);
+    }
+
+    private void upload(String url, JSONObject heads, JSONObject params, final CallbackContext callbackContext) throws Exception{
+        RequestUrl requestUrl = new RequestUrl(url);
+        Iterator<String> itor = heads.keys();
+        while (itor.hasNext()) {
+            String key = itor.next();
+            requestUrl.heads.put(key, heads.getString(key));
+        }
+
+        itor = params.keys();
+        while (itor.hasNext()) {
+            String key = itor.next();
+            requestUrl.muiltParams.put(key, params.get(key));
+        }
+
+        VolleySingleton volley = VolleySingleton.getInstance(mActivity.getBaseContext());
+        volley.getRequestQueue();
+
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        MultipartRequest request = new MultipartRequest(
+                Request.Method.POST,
+                requestUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loadDialog.dismiss();
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                        } catch (Exception e) {
+                        }
+                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loadDialog.dismiss();
+                        CommonUtil.longToast(mActivity.getBaseContext(), "上传图片失败!");
+                    }
+                }
+        );
+        request.setTag(requestUrl.url);
+        volley.addToRequestQueue(request);
+
+        loadDialog.show();
     }
 
     @JsAnnotation
