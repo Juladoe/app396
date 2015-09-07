@@ -50,7 +50,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (Const.LOGIN_SUCCESS.equals(messageType.type)) {
+        if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
             if (getRunStatus() == MSG_PAUSE) {
                 saveMessage(message);
                 return;
@@ -102,7 +102,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(CLOSE, source),
-                new MessageType(Const.LOGIN_SUCCESS)
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
         };
         return messageTypes;
     }
