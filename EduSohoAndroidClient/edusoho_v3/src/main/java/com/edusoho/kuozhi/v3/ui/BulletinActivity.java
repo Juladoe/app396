@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
@@ -31,6 +30,7 @@ import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Collections;
@@ -169,9 +169,12 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     public class BulletinAdapter extends BaseAdapter {
         private List<Bulletin> mList;
+        private DisplayImageOptions mOptions;
 
         public BulletinAdapter(List<Bulletin> list) {
             mList = list;
+            mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_avatar).
+                    showImageOnFail(R.drawable.default_avatar).build();
         }
 
         public void addItems(List<Bulletin> list) {
@@ -228,7 +231,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.createdTime) * 1000));
             }
             holder.tvContent.setText(bulletin.content);
-            ImageLoader.getInstance().displayImage(mHeadImageUrl, holder.ivHeadImageUrl, EdusohoApp.app.mOptions);
+            ImageLoader.getInstance().displayImage(mHeadImageUrl, holder.ivHeadImageUrl, mOptions);
             return convertView;
         }
     }

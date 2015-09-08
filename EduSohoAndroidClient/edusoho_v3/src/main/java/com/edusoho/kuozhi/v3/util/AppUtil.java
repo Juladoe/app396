@@ -879,4 +879,18 @@ public class AppUtil {
             return bitmap.getByteCount();
         }
     }
+
+    public static int searchInArray(int[] array, int search) {
+
+        if (array == null || array.length == 0) {
+            return  -1;
+        }
+        for (int i=0; i < array.length; i++) {
+            if (search == array[i]) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 }

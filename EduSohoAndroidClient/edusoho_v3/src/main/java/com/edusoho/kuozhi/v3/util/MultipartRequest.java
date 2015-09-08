@@ -11,12 +11,14 @@ import com.belladati.httpclientandroidlib.HttpEntity;
 import com.belladati.httpclientandroidlib.entity.ContentType;
 import com.belladati.httpclientandroidlib.entity.FileEntity;
 import com.belladati.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
+import com.belladati.httpclientandroidlib.entity.mime.content.FileBody;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -65,11 +67,12 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
 
     private HttpEntity buildMultipartEntity() {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setCharset(Charset.forName("UTF-8"));
         Iterator iterator = mRequestUrl.getAllParams().entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             File file = (File) entry.getValue();
-            builder.addBinaryBody(KEY, file);
+            builder.addPart(KEY, new FileBody(file));
         }
         return builder.build();
     }
