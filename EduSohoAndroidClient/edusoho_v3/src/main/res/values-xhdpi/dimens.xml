@@ -38,5 +38,5 @@
     <dimen name="chat_item_content_size">16sp</dimen>
 
     <dimen name="btn_loading_margin">24dp</dimen>
-
+    <dimen name="empty_list_icon">80sp</dimen>
 </resources>

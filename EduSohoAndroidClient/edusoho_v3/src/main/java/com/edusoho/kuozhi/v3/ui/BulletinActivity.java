@@ -47,8 +47,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 public class BulletinActivity extends ActionBarBaseActivity {
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
-    private View mHeaderView;
-    private TextView tvEmpty;
+    private View mEmptyView;
     private BulletinDataSource mBulletinDataSource;
     private BulletinAdapter mBulletinAdapter;
     private String mHeadImageUrl;
@@ -68,6 +67,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private void initView() {
         mListView = (ListView) findViewById(R.id.lv_bulletin);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
+        mEmptyView = findViewById(R.id.view_empty);
     }
 
     private void initData() {
@@ -96,21 +96,29 @@ public class BulletinActivity extends ActionBarBaseActivity {
             mBulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         List<Bulletin> bulletinList = getBulletins(mStart);
-        NotificationUtil.cancelById(bulletinList.isEmpty() ? 0 : bulletinList.get(bulletinList.size() - 1).id);
-        mBulletinAdapter = new BulletinAdapter(bulletinList);
-        mListView.addHeaderView(initHeaderView());
-        mListView.setAdapter(mBulletinAdapter);
-        mListView.post(mRunnable);
-        mPtrFrame.setLastUpdateTimeRelateObject(this);
-        mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
-                mBulletinAdapter.addItems(getBulletins(mStart));
-                mPtrFrame.refreshComplete();
-                mListView.postDelayed(mRunnable, 100);
+        if (bulletinList != null) {
+            if (bulletinList.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+                mPtrFrame.setVisibility(View.GONE);
+            } else {
+                NotificationUtil.cancelById(bulletinList.size() == 0 ? 0 : bulletinList.get(bulletinList.size() - 1).id);
+                mBulletinAdapter = new BulletinAdapter(bulletinList);
+                mListView.setAdapter(mBulletinAdapter);
+                mListView.post(mRunnable);
+                mPtrFrame.setLastUpdateTimeRelateObject(this);
+                mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
+                    @Override
+                    public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
+                        mBulletinAdapter.addItems(getBulletins(mStart));
+                        mPtrFrame.refreshComplete();
+                        mListView.postDelayed(mRunnable, 100);
+                    }
+                });
+                notifyNewFragment2UpdateItem();
+                mEmptyView.setVisibility(View.GONE);
+                mPtrFrame.setVisibility(View.VISIBLE);
             }
-        });
-        notifyNewFragment2UpdateItem();
+        }
     }
 
     private Runnable mRunnable = new Runnable() {
@@ -201,11 +209,6 @@ public class BulletinActivity extends ActionBarBaseActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
-            if (getCount() > 0) {
-                tvEmpty.setVisibility(View.GONE);
-            } else {
-                tvEmpty.setVisibility(View.VISIBLE);
-            }
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_bulletin, null);
                 holder = new ViewHolder(convertView);
@@ -240,11 +243,5 @@ public class BulletinActivity extends ActionBarBaseActivity {
             tvContent = (TextView) view.findViewById(R.id.tv_send_content);
             tvCreatedTime = (TextView) view.findViewById(R.id.tv_send_time);
         }
-    }
-
-    private View initHeaderView() {
-        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_empty, null);
-        tvEmpty = (TextView) mHeaderView.findViewById(R.id.tv_empty_for_list_view);
-        return mHeaderView;
     }
 }

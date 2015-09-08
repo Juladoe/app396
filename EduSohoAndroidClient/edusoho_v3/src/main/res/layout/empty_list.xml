@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.edusoho.kuozhi.v3.view.EduSohoIconView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_empty_logo"
+        android:text="@string/font_news"
+        android:textColor="@color/grey_beta"
+        android:textSize="@dimen/empty_list_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:id="@+id/tv_empty_text"
+        android:text="暂无公告哦~"
+        android:textColor="@color/grey_main" />
+
+</LinearLayout>
