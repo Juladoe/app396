@@ -101,6 +101,9 @@
     <string name="learn_more"></string>
     <string name="lesson_next">&#xe63b;</string>
     <string name="lesson_previous">&#xe63a;</string>
+    
+    <string name="font_group">&#xe643;</string>
+    <string name="font_service">&#xe60c;</string>
 
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>

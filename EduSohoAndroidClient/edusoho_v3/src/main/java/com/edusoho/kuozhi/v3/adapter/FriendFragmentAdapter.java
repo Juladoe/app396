@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -100,11 +101,15 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     v = mInflater.inflate(R.layout.item_type_friend_head, null);
                     headHolder = new HeadHolder();
                     headHolder.tvSearchFriend = (TextView) v.findViewById(R.id.search_friend_btn);
-                    v.setTag(headHolder);
+                    headHolder.discussionGroup = (RelativeLayout) v.findViewById(R.id.discussion_group);
+                    headHolder.service = (RelativeLayout) v.findViewById(R.id.service)
+;                    v.setTag(headHolder);
                 } else {
                     headHolder = (HeadHolder) v.getTag();
                 }
                 headHolder.tvSearchFriend.setOnClickListener(mOnClickListener);
+                headHolder.discussionGroup.setOnClickListener(mOnClickListener);
+                headHolder.service.setOnClickListener(mOnClickListener);
                 break;
 
             case TYPE_SCHOOL_APP:
@@ -114,7 +119,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     schoolAppHolder = new SchoolAppHolder();
                     schoolAppHolder.SchoolAppName = (TextView) v.findViewById(R.id.friend_name);
                     schoolAppHolder.schoolAppAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
-                    schoolAppHolder.schoolAppTag = (LinearLayout) v.findViewById(R.id.school_app_tag);
+//                    schoolAppHolder.schoolAppTag = (LinearLayout) v.findViewById(R.id.school_app_tag);
                     schoolAppHolder.dividerLine = v.findViewById(R.id.divider_line);
                     v.setTag(schoolAppHolder);
                 } else {
@@ -122,11 +127,11 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 }
 
                 final SchoolApp schoolApp = (SchoolApp) mList.get(position - 1);
-                if (schoolApp.isTop) {
-                    schoolAppHolder.schoolAppTag.setVisibility(View.VISIBLE);
-                } else {
-                    schoolAppHolder.schoolAppTag.setVisibility(View.GONE);
-                }
+//                if (schoolApp.isTop) {
+//                    schoolAppHolder.schoolAppTag.setVisibility(View.VISIBLE);
+//                } else {
+//                    schoolAppHolder.schoolAppTag.setVisibility(View.GONE);
+//                }
                 if (schoolApp.isBottom){
                     schoolAppHolder.dividerLine.setVisibility(View.GONE);
                 }else {
@@ -147,7 +152,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
                     itemHolder.friendAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
                     itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
-                    itemHolder.friendTag = (LinearLayout) v.findViewById(R.id.friend_item_tag);
+//                    itemHolder.friendTag = (LinearLayout) v.findViewById(R.id.friend_item_tag);
                     itemHolder.dividerLine = v.findViewById(R.id.divider_line);
                     itemHolder.catelog = (TextView) v.findViewById(R.id.catalog);
                     v.setTag(itemHolder);
@@ -156,11 +161,11 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 }
 
                 final Friend friend = (Friend) mList.get(position - 1);
-                if (friend.isTop) {
-                    itemHolder.friendTag.setVisibility(View.VISIBLE);
-                } else {
-                    itemHolder.friendTag.setVisibility(View.GONE);
-                }
+//                if (friend.isTop) {
+//                    itemHolder.friendTag.setVisibility(View.VISIBLE);
+//                } else {
+//                    itemHolder.friendTag.setVisibility(View.GONE);
+//                }
 
                 if (position != mList.size()){
                     if (getSectionForPosition(position-1)!=getSectionForPosition(position)){
@@ -246,13 +251,15 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     private class HeadHolder {
         TextView tvSearchFriend;
+        RelativeLayout discussionGroup;
+        RelativeLayout service;
     }
 
     private class ItemHolder {
         private ImageView friendAvatar;
         private TextView friendName;
         private ImageView teacherTag;
-        private LinearLayout friendTag;
+//        private LinearLayout friendTag;
         private View dividerLine;
         private TextView catelog;
     }
@@ -260,7 +267,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
     private class SchoolAppHolder {
         private ImageView schoolAppAvatar;
         private TextView SchoolAppName;
-        private LinearLayout schoolAppTag;
+//        private LinearLayout schoolAppTag;
         private View dividerLine;
     }
 }

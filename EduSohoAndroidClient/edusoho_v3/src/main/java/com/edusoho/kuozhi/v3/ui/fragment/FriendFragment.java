@@ -108,6 +108,13 @@ public class FriendFragment extends BaseFragment {
                 if (i == R.id.search_friend_btn) {
                     showSearchDialog();
                 }
+                if (i == R.id.discussion_group){
+                    Toast.makeText(mContext,"Discussion",Toast.LENGTH_SHORT).show();  //todo
+                }
+                if (i == R.id.service){
+                    Toast.makeText(mContext,"service",Toast.LENGTH_SHORT).show();     //todo
+
+                }
             }
         });
         mFriendList.addFooterView(mFootView, null, false);
@@ -115,7 +122,7 @@ public class FriendFragment extends BaseFragment {
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 1) {
+//                if (position != 1) {
                     final Friend friend = (Friend) parent.getAdapter().getItem(position);
                     app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
                         @Override
@@ -125,9 +132,9 @@ public class FriendFragment extends BaseFragment {
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
                         }
                     });
-                } else {
-                    app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
-                }
+//                } else {
+//                    app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
+//                }
             }
         });
 
@@ -158,14 +165,23 @@ public class FriendFragment extends BaseFragment {
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
+        }else {
+            mFriendAdapter.clearList();
         }
 
-        loadSchoolApps().then(new PromiseCallback() {
-            @Override
-            public Promise invoke(Object obj) {
-                return loadFriend();
-            }
-        }).then(new PromiseCallback() {
+//        loadSchoolApps().then(new PromiseCallback() {
+//            @Override
+//            public Promise invoke(Object obj) {
+//                return loadFriend();
+//            }
+//        }).then(new PromiseCallback() {
+//            @Override
+//            public Promise invoke(Object obj) {
+//                mLoading.setVisibility(View.GONE);
+//                return null;
+//            }
+//        });
+        loadFriend().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
                 mLoading.setVisibility(View.GONE);
