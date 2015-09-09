@@ -59,15 +59,9 @@ public class FriendFragment extends BaseFragment {
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
-<<<<<<< HEAD
-    private ProgressBar mContentLoadingProgressBar;
-    protected FriendProvider mFriendProvider;
-=======
-    private ActionBar mActionBar;
     private FrameLayout mLoading;
 
     private FriendProvider mFriendProvider;
->>>>>>> develop
 
     @Override
     public void onAttach(Activity activity) {
