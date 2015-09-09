@@ -13,9 +13,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -23,7 +21,6 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -33,7 +30,6 @@ import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
@@ -106,9 +102,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             Intent targetIntent = new Intent(mContext, target);
             targetIntent.putExtras(intent.getExtras());
             targetIntent.setFlags(intent.getFlags());
-//            if (intent.getExtras().getBoolean(Const.INTENT_APP_EXIT_PUSH, false)) {
-//                NewsFragment newsFragment = (NewsFragment) mFragmentManager.findFragmentByTag("NewsFragment");
-//            }
             startActivity(targetIntent);
         }
     }
@@ -148,29 +141,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
     }
 
-    public EduToolBar getToolBar() {
-        return mToolBar;
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-
     private void selectItem(int position) {
-//        Fragment fragment = new PlanetFragment();
-//        Bundle args = new Bundle();
-//        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-//        fragment.setArguments(args);
-//
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-//
-//        mDrawerList.setItemChecked(position, true);
-//        setTitle(mPlanetTitles[position]);
-//        mDrawerLayout.closeDrawer(mDrawerList);
+
     }
 
     private class NavDownTabClickListener implements View.OnClickListener {
@@ -255,11 +227,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+        mDownTabNews.setIcon(getResources().getString(R.string.font_news));
+        mDownTabFind.setIcon(getResources().getString(R.string.font_find));
+        mDownTabFriends.setIcon(getResources().getString(R.string.font_friends));
         if (id == R.id.nav_tab_news) {
+            mDownTabNews.setIcon(getResources().getString(R.string.font_news_pressed));
             mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_find) {
+            mDownTabFind.setIcon(getResources().getString(R.string.font_find_pressed));
             mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_friends) {
+            mDownTabFriends.setIcon(getResources().getString(R.string.font_friends_pressed));
             mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         }
     }

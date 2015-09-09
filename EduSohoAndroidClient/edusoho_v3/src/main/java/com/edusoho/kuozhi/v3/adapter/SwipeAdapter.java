@@ -123,6 +123,7 @@ public class SwipeAdapter extends BaseAdapter {
 
     public void removeItem(int position) {
         mList.remove(position);
+        notifyDataSetChanged();
     }
 
     static class ViewHolder {

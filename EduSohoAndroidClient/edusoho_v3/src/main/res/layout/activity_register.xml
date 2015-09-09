@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,23 +53,16 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:id="@+id/v_code"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom">
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/login_edittext_bg"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:paddingLeft="15dp">
 
                             <EditText
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                style="@style/edittext_style"
+                                android:id="@+id/et_phone"
                                 android:hint="@string/reg_phone_hint"
-                                android:layout_marginRight="4dp"
-                                android:layout_alignParentBottom="true"
-                                android:textColorHint="@color/base_black_26"
-                                android:layout_toLeftOf="@+id/btn_send_code"
-                                android:alpha="0.56"
-                                android:singleLine="true"
-                                android:textSize="@dimen/medium_font_size"
-                                android:inputType="number"
-                                android:id="@+id/et_phone" />
+                                android:gravity="center_vertical" />
 
                             <Button
                                 android:layout_width="wrap_content"
@@ -78,47 +72,54 @@
                                 android:textSize="@dimen/small_font_size"
                                 android:lineSpacingExtra="2sp"
                                 android:layout_alignParentRight="true"
-                                android:layout_marginBottom="4dp"
-                                android:layout_marginRight="4dp"
                                 android:paddingLeft="5dp"
                                 android:paddingRight="5dp"
                                 android:textColor="@android:color/white"
-                                android:background="@drawable/login_btn_bg"
+                                android:background="@color/green_alpha"
                                 android:id="@+id/btn_send_code" />
-
                         </RelativeLayout>
 
-                        <EditText
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/et_code"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom"
-                            android:textColorHint="@color/base_black_26"
-                            android:singleLine="true"
-                            android:alpha="0.56"
-                            android:textSize="@dimen/medium_font_size"
-                            android:hint="@string/reg_code_hint" />
+                            android:background="@drawable/login_edittext_bg"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:paddingRight="15dp"
+                            android:paddingLeft="15dp">
 
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColorHint="@color/base_black_26"
-                            android:alpha="0.56"
-                            android:singleLine="true"
-                            android:hint="@string/reg_password_hint"
-                            android:textSize="@dimen/medium_font_size"
-                            android:inputType="textPassword"
-                            android:id="@+id/et_phone_pass"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom" />
+                            <EditText
+                                style="@style/edittext_style"
+                                android:id="@+id/et_code"
+                                android:hint="@string/reg_code_hint"
+                                android:gravity="center_vertical" />
+                        </RelativeLayout>
 
-                        <Button
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/login_btn_bg"
-                            android:text="@string/register"
-                            android:textSize="@dimen/medium_font_size"
-                            android:textColor="@android:color/white"
-                            android:id="@+id/btn_phone_reg" />
+                            android:background="@drawable/login_edittext_bg"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:paddingRight="15dp"
+                            android:paddingLeft="15dp">
+
+                            <EditText
+                                style="@style/edittext_style"
+                                android:id="@+id/et_phone_pass"
+                                android:hint="@string/reg_password_hint"
+                                android:gravity="center_vertical"
+                                android:inputType="textPassword" />
+                        </RelativeLayout>
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:id="@+id/btn_phone_reg"
+                            app:init_text="@string/register"
+                            app:loading_text="@string/register_loading"
+                            app:success_text="@string/register_success"
+                            app:init_background="@drawable/login_btn_normal"
+                            app:loading_background="@drawable/login_btn_press" />
 
                     </LinearLayout>
 
@@ -143,37 +144,55 @@
                         android:layout_marginTop="20dp"
                         android:orientation="vertical">
 
-                        <EditText
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/et_mail"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom"
-                            android:textColorHint="@color/base_black_26"
-                            android:singleLine="true"
-                            android:textSize="@dimen/medium_font_size"
-                            android:alpha="0.56"
-                            android:hint="@string/reg_mail_hint" />
+                            android:background="@drawable/login_edittext_bg"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:paddingRight="15dp"
+                            android:paddingLeft="15dp">
 
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColorHint="@color/base_black_26"
-                            android:alpha="0.56"
-                            android:singleLine="true"
-                            android:inputType="textPassword"
-                            android:hint="@string/reg_password_hint"
-                            android:textSize="@dimen/medium_font_size"
-                            android:id="@+id/et_mail_pass"
-                            android:layout_marginBottom="@dimen/login_control_margin_bottom" />
+                            <EditText
+                                style="@style/edittext_style"
+                                android:id="@+id/et_mail"
+                                android:hint="@string/reg_mail_hint"
+                                android:gravity="center_vertical" />
+                        </RelativeLayout>
 
-                        <Button
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/login_btn_bg"
-                            android:text="@string/register"
-                            android:textSize="@dimen/medium_font_size"
-                            android:textColor="@android:color/white"
-                            android:id="@+id/btn_mail_reg" />
+                            android:background="@drawable/login_edittext_bg"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:paddingRight="15dp"
+                            android:paddingLeft="15dp">
+
+                            <EditText
+                                style="@style/edittext_style"
+                                android:id="@+id/et_mail_pass"
+                                android:hint="@string/reg_password_hint"
+                                android:gravity="center_vertical" />
+                        </RelativeLayout>
+
+                        <!--<Button-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:background="@drawable/login_btn_bg"-->
+                            <!--android:text="@string/register"-->
+                            <!--android:textSize="@dimen/medium_font_size"-->
+                            <!--android:textColor="@android:color/white"-->
+                            <!--android:id="@+id/btn_mail_reg" />-->
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+                            android:id="@+id/btn_mail_reg"
+                            app:init_text="@string/register"
+                            app:loading_text="@string/register_loading"
+                            app:success_text="@string/register_success"
+                            app:init_background="@drawable/login_btn_normal"
+                            app:loading_background="@drawable/login_btn_press" />
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

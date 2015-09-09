@@ -7,7 +7,7 @@
         <attr name="fontColor" format="color" />
         <attr name="iconSizeScale" format="float" />
     </declare-styleable>
-
+    EduSohoLoadingButton
     <declare-styleable name="EduToolBar">
         <attr name="centerTitle" format="string" />
         <attr name="centerTitleSize" format="dimension" />
@@ -22,6 +22,14 @@
         <attr name="collapseDrawable" format="reference" />
         <attr name="expandText" format="string" />
         <attr name="collapseText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="EduSohoLoadingButton">
+        <attr name="init_text" format="string" />
+        <attr name="loading_text" format="string" />
+        <attr name="success_text" format="string" />
+        <attr name="init_background" format="integer" />
+        <attr name="loading_background" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="MuiltTextView">

@@ -82,7 +82,7 @@ public class AppUtil {
     }
 
     public static Bitmap getBitmapFromFile(File file) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         BitmapFactory.Options option = new BitmapFactory.Options();
         option.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(file.getAbsolutePath(), option);
@@ -320,7 +320,7 @@ public class AppUtil {
             int options = 100;
             image.compress(Bitmap.CompressFormat.JPEG, options, bos);
             while (bos.toByteArray().length / 1024 > 200) {
-                options -= 10;
+                options -= 2;
                 bos.reset();
                 image.compress(Bitmap.CompressFormat.JPEG, options, bos);
             }
@@ -863,9 +863,7 @@ public class AppUtil {
         matrix.postScale(scale, scale);
         matrix.postRotate((float) degree);
 
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-
-        return scaledBitmap;
+        return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
     }
 
     /**
@@ -880,5 +878,19 @@ public class AppUtil {
         } else {
             return bitmap.getByteCount();
         }
+    }
+
+    public static int searchInArray(int[] array, int search) {
+
+        if (array == null || array.length == 0) {
+            return  -1;
+        }
+        for (int i=0; i < array.length; i++) {
+            if (search == array[i]) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

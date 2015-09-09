@@ -68,6 +68,8 @@
             android:text="好友姓名"
             android:textSize="@dimen/medium_font_size"
             android:textColor="@color/grey"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:layout_toRightOf="@id/friend_avatar"
             android:layout_alignTop="@id/friend_avatar"
             android:layout_marginTop="8dp"

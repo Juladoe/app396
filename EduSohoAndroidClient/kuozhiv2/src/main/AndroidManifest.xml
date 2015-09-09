@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="13"
+    android:versionCode="20"
     android:versionName="@string/apk_version"
     package="com.edusoho">
 
@@ -26,42 +26,19 @@
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             android:name=".kuozhi.KuozhiSplashActivity"
-            android:configChanges="keyboardHidden|orientation"></activity>
+            android:configChanges="keyboardHidden|orientation" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
 
         <meta-data
-            android:name="BaiduMobAd_CHANNEL"
-            android:value="baidu" />
+            android:name="UMENG_APPKEY"
+            android:value="550f8dacfd98c56a3200084f" />
+
         <meta-data
-            android:name="BaiduMobAd_STAT_ID"
-            android:value="8f1996ac26" />
-        <!-- 是否开启错误日志统计，默认为false -->
-        <meta-data
-            android:name="BaiduMobAd_EXCEPTION_LOG"
-            android:value="true" />
-        <!-- 日志发送策略，可选值：APP_START、ONCE_A_DAY、SET_TIME_INTERVAL，默认为APP_START -->
-        <meta-data
-            android:name="BaiduMobAd_SEND_STRATEGY"
-            android:value="APP_START" />
-        <!-- 日志仅在wifi网络下发送，默认为false -->
-        <meta-data
-            android:name="BaiduMobAd_ONLY_WIFI"
-            android:value="false" />
-        <!-- 是否获取基站位置信息 ,默认为true -->
-        <meta-data
-            android:name="BaiduMobAd_CELL_LOCATION"
-            android:value="true" />
-        <!-- 是否获取GPS位置信息，默认为true -->
-        <meta-data
-            android:name="BaiduMobAd_GPS_LOCATION"
-            android:value="true" />
-        <!-- 是否获取WIFI位置信息，默认为true -->
-        <meta-data
-            android:name="BaiduMobAd_WIFI_LOCATION"
-            android:value="true" />
+            android:name="UMENG_CHANNEL"
+            android:value="Official" />
 
     </application>
 

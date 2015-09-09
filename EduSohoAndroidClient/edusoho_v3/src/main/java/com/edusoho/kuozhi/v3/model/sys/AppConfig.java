@@ -19,4 +19,6 @@ public class AppConfig {
      */
     public int msgVibrate;
 
+    public boolean newVerifiedNotify;
+
 }

@@ -125,7 +125,8 @@
     <dimen name="message_head_icon">30dp</dimen>
 
     <!--3.0-->
-    <dimen name="login_control_margin_bottom">20dp</dimen>
+    <dimen name="login_widget_margin_bottom">20dp</dimen>
+    <dimen name="btn_loading_margin">20dp</dimen>
     <dimen name="title_bottom_edge_height">2px</dimen>
     <dimen name="item_edge_height">1dp</dimen>
 
@@ -134,4 +135,6 @@
     <dimen name="head_icon_medium">40dp</dimen>
 
     <dimen name="head_icon_small">32dp</dimen>
+
+    <dimen name="empty_list_icon">40sp</dimen>
 </resources>

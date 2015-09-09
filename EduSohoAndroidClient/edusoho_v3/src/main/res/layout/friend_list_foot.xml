@@ -5,7 +5,7 @@
         android:id="@+id/friends_count"
         android:layout_below="@id/friends_list"
         android:text="网校好友数量"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:padding="12dp"
         android:gravity="center"
         android:layout_width="match_parent"

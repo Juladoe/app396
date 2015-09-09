@@ -15,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.edusoho.kuozhi.R;
@@ -35,11 +35,11 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
+import com.edusoho.kuozhi.v3.ui.friend.FriendNewsActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,7 +50,7 @@ import java.util.List;
  */
 public class FriendFragment extends BaseFragment {
 
-    private boolean isNews = false;
+    public static boolean isNews = false;
     private ListView mFriendList;
     private View mFootView;
     private TextView mFriendCount;
@@ -59,8 +59,15 @@ public class FriendFragment extends BaseFragment {
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
+<<<<<<< HEAD
     private ProgressBar mContentLoadingProgressBar;
     protected FriendProvider mFriendProvider;
+=======
+    private ActionBar mActionBar;
+    private FrameLayout mLoading;
+
+    private FriendProvider mFriendProvider;
+>>>>>>> develop
 
     @Override
     public void onAttach(Activity activity) {
@@ -74,6 +81,7 @@ public class FriendFragment extends BaseFragment {
         mActivity.setTitle(getString(R.string.title_friends));
         mFriendProvider = new FriendProvider(mContext);
         setHasOptionsMenu(true);
+        isNews = app.config.newVerifiedNotify;
     }
 
     @Override
@@ -83,7 +91,7 @@ public class FriendFragment extends BaseFragment {
         characterParser = CharacterParser.getInstance();
         friendComparator = new FriendComparator();
 
-        mContentLoadingProgressBar = (ProgressBar) view.findViewById(R.id.content_load);
+        mLoading = (FrameLayout) view.findViewById(R.id.friend_fragment_loading);
         mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
@@ -152,8 +160,9 @@ public class FriendFragment extends BaseFragment {
     }
 
     private void initViewData() {
+        mLoading.setVisibility(View.VISIBLE);
         if (!app.getNetIsConnect()) {
-            mContentLoadingProgressBar.setVisibility(View.GONE);
+            mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         }
 
@@ -165,7 +174,7 @@ public class FriendFragment extends BaseFragment {
         }).then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
-                mContentLoadingProgressBar.setVisibility(View.GONE);
+                mLoading.setVisibility(View.GONE);
                 return null;
             }
         });
@@ -231,7 +240,7 @@ public class FriendFragment extends BaseFragment {
     }
 
     public void setFriendsCount(String count) {
-        mFriendCount.setText("共有" + count + "位好友");
+        mFriendCount.setText(count + "位好友");
     }
 
     @Override
@@ -267,6 +276,8 @@ public class FriendFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.friends_news) {
             isNews = false;
+            app.config.newVerifiedNotify = false;
+            app.saveConfig();
             item.setIcon(R.drawable.icon_menu_notification);
             mActivity.supportInvalidateOptionsMenu();
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
@@ -278,19 +289,17 @@ public class FriendFragment extends BaseFragment {
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
-            loadSchoolApps();
-            loadFriend();
+            initViewData();
         }
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
-            loadSchoolApps();
-            loadFriend();
+            initViewData();
         }
         if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
-            loadSchoolApps();
-            loadFriend();
+            initViewData();
         }
         if (messageType.code == Const.NEW_FANS) {
             isNews = true;
+            FriendNewsActivity.isNews = true;
             mActivity.supportInvalidateOptionsMenu();
         }
     }

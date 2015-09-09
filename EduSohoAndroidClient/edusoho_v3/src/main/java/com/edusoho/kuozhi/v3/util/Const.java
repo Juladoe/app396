@@ -148,6 +148,7 @@ public class Const {
      */
     public static final String COURSE_CLOSE = "closed";
     public static final String NETEASE_OPEN_COURSE = "NeteaseOpenCourse";
+    public static final String QQ_OPEN_COURSE = "qqvideo";
     public static final String COURSE_PUBLISHED = "published";
     public static final String COURSE_SERIALIZE = "serialize";
 

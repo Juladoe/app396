@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
@@ -121,7 +122,7 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
@@ -175,6 +176,7 @@ public class EdusohoApp extends Application {
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
+        request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
         mVolley.addToRequestQueue(request);
     }
@@ -511,8 +513,9 @@ public class EdusohoApp extends Application {
         config.isPublicRegistDevice = sp.getBoolean("registPublicDevice", false);
         config.startWithSchool = sp.getBoolean("startWithSchool", true);
         config.offlineType = sp.getInt("offlineType", 0);
-        config.msgSound = sp.getInt("msgSound", 0);
-        config.msgVibrate = sp.getInt("msgVibrate", 0);
+        config.newVerifiedNotify = sp.getBoolean("newVerifiedNotify", false);
+        config.msgSound = sp.getInt("msgSound", 1);
+        config.msgVibrate = sp.getInt("msgVibrate", 2);
         if (config.startWithSchool) {
             loadDefaultSchool();
         }
@@ -529,6 +532,7 @@ public class EdusohoApp extends Application {
         edit.putInt("offlineType", config.offlineType);
         edit.putInt("msgSound", config.msgSound);
         edit.putInt("msgVibrate", config.msgVibrate);
+        edit.putBoolean("newVerifiedNotify", config.newVerifiedNotify);
         edit.apply();
     }
 
@@ -733,7 +737,7 @@ public class EdusohoApp extends Application {
      * @param bundle
      */
     public void pushRegister(final Bundle bundle) {
-        XGPushConfig.enableDebug(this, true);
+        XGPushConfig.enableDebug(this, false);
         XGPushManager.registerPush(mContext, new XGIOperateCallback() {
             @Override
             public void onSuccess(final Object data, int flag) {

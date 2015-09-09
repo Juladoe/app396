@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
@@ -55,6 +56,8 @@ public class NewsFragment extends BaseFragment {
     public static final int UPDATE_UNREAD_BULLETIN = 11;
 
     private SwipeMenuListView lvNewsList;
+    private View mEmptyView;
+    private TextView tvEmptyText;
     private SwipeAdapter mSwipeAdapter;
     private String mSchoolAvatar;
 
@@ -105,20 +108,12 @@ public class NewsFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);
-
+        mEmptyView = view.findViewById(R.id.view_empty);
+        tvEmptyText = (TextView) view.findViewById(R.id.tv_empty_text);
+        tvEmptyText.setText(getResources().getString(R.string.news_empty_text));
         SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
             public void create(SwipeMenu menu) {
-//                SwipeMenuItem openItem = new SwipeMenuItem(
-//                        mContext);
-//                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-//                        0xCE)));
-//                openItem.setWidth(AppUtil.dp2px(mContext, 90));
-//                openItem.setTitle("标为未读");
-//                openItem.setTitleSize(18);
-//                openItem.setTitleColor(Color.WHITE);
-//                menu.addMenuItem(openItem);
-
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         mContext);
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
@@ -145,6 +140,7 @@ public class NewsFragment extends BaseFragment {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
             mSwipeAdapter.update(news);
+            setListVisibility(mSwipeAdapter.getCount() == 0);
         }
         if (TextUtils.isEmpty(mSchoolAvatar)) {
             RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
@@ -180,7 +176,7 @@ public class NewsFragment extends BaseFragment {
                         notificationId = newModel.fromId;
                     }
                     NotificationUtil.cancelById(notificationId);
-                    mSwipeAdapter.notifyDataSetChanged();
+                    setListVisibility(mSwipeAdapter.getCount() == 0);
                     break;
                 case 1:
                     break;
@@ -281,6 +277,7 @@ public class NewsFragment extends BaseFragment {
                     }
                     break;
             }
+            setListVisibility(mSwipeAdapter.getCount() == 0);
         }
     }
 
@@ -371,10 +368,13 @@ public class NewsFragment extends BaseFragment {
         super.onDestroy();
     }
 
-    private void updateUnreadFromLocalDB(New newItem) {
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        newItem.unread = 0;
-        newDataSource.update(newItem);
-        updateNew(newItem);
+    /**
+     * 设置空数据背景ICON
+     *
+     * @param visibility 是否空数据
+     */
+    private void setListVisibility(boolean visibility) {
+        lvNewsList.setVisibility(visibility ? View.GONE : View.VISIBLE);
+        mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 }

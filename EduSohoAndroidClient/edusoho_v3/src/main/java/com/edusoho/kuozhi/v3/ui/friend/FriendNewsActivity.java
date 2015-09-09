@@ -44,6 +44,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
     public String mTitle = "添加校友";
 
+    public static boolean isNews = false;
+    public static boolean isClick = false;
+
     private ListView newsList;
     private TextView mEmptyNotice;
     private ArrayList<FollowerNotification> mList;
@@ -173,6 +176,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isNews == true || isClick == true){
+            app.sendMessage(Const.REFRESH_FRIEND_LIST, null);
+            isNews = false;
+            isClick = false;
+        }
+    }
+
     private class FriendNewsAdapter extends BaseAdapter {
         private int mResource;
 
@@ -277,7 +290,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                             }
                             if (followResult.success) {
                                 CommonUtil.longToast(mContext, "关注用户成功");
-                                app.sendMessage(Const.REFRESH_FRIEND_LIST, null);
+                                isClick = true;
                                 loadRelationships();
                             } else {
                                 CommonUtil.longToast(mContext, "关注用户失败");

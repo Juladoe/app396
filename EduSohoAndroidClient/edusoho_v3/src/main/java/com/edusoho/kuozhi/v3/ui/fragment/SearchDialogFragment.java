@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ import java.util.TimerTask;
  */
 public class SearchDialogFragment extends DialogFragment {
 
-    private EduSohoRoundedEditText mSearchFrame;
+    private EditText mSearchFrame;
     private TextView mCancel;
     private ActionBarBaseActivity mActivity;
     private Context mContext;
@@ -66,7 +67,7 @@ public class SearchDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.search_dialog, container, false);
-        mSearchFrame = (EduSohoRoundedEditText) view.findViewById(R.id.search_dialog_frame);
+        mSearchFrame = (EditText) view.findViewById(R.id.search_dialog_frame);
         mSearchFrame.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
         mSearchFrame.setCompoundDrawablePadding(20);
 

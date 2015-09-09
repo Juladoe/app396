@@ -4,9 +4,9 @@
 
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
-    <string name="api_version">2.1.0</string>
+    <string name="api_version">3.0.0</string>
     <string name="apk_version">3.0.0</string>
-    <string name="apk_code">13</string>
+    <string name="apk_code">20</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
     <string name="image_cache_path">ImageLoaderCache</string>
@@ -17,7 +17,11 @@
     <string name="down_tab_friends">校友</string>
     <string name="toolbar_title">分类</string>
     <string name="login">登录</string>
+    <string name="login_loading">正在登录...</string>
+    <string name="login_success">登录成功</string>
     <string name="register">注册</string>
+    <string name="register_loading">正在注册...</string>
+    <string name="register_success">正在成功</string>
 
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
@@ -62,8 +66,11 @@
 
     <!--ttf-->
     <string name="font_friends">&#xe628;</string>
-    <string name="font_news">&#xe607;</string>
-    <string name="font_find">&#xe604;</string>
+    <string name="font_friends_pressed">&#xe646;</string>
+    <string name="font_news">&#xe609;</string>
+    <string name="font_news_pressed">&#xe647;</string>
+    <string name="font_find">&#xe64b;</string>
+    <string name="font_find_pressed">&#xe645;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
     <string name="font_downloading">&#xe612;</string>
@@ -79,8 +86,10 @@
     <string name="font_chat_media_photo">&#xe64b;</string>
     <string name="font_chat_media_camera">&#xe64a;</string>
     <string name="drawer_setting">&#xe60e;</string>
-    <string name="font_favoirte">&#xe605;</string>
+    <string name="font_favorite">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
+    <string name="font_login_username">&#xe619;</string>
+    <string name="font_login_password">&#xe616;</string>
 
     <string name="learned_status">&#xe639;</string>
     <string name="course_paybtn"></string>
@@ -107,6 +116,8 @@
     <string name="hand_move_up_and_send_cancel">手指上滑，取消发送</string>
     <string name="hand_up_and_exit">手指松开，取消发送</string>
     <string name="audio_length_too_short">录音时间太短</string>
+    <string name="news_empty_text">暂无动态消息哦~</string>
+    <string name="announcement_empty_text">暂无公告消息哦~</string>
 
     <string name="app_id">wx91c11946311906a3</string>
     <!-- 网校提示字符 -->

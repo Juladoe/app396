@@ -43,8 +43,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginRight="8dp"
                 android:layout_marginLeft="16dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_avatar" />
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/tv_send_content"

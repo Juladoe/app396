@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
@@ -31,6 +30,7 @@ import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Collections;
@@ -47,7 +47,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 public class BulletinActivity extends ActionBarBaseActivity {
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
-    private View mHeaderView;
+    private View mEmptyView;
     private TextView tvEmpty;
     private BulletinDataSource mBulletinDataSource;
     private BulletinAdapter mBulletinAdapter;
@@ -68,6 +68,9 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private void initView() {
         mListView = (ListView) findViewById(R.id.lv_bulletin);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
+        mEmptyView = findViewById(R.id.view_empty);
+        tvEmpty = (TextView) findViewById(R.id.tv_empty_text);
+        tvEmpty.setText(getResources().getString(R.string.announcement_empty_text));
     }
 
     private void initData() {
@@ -96,9 +99,8 @@ public class BulletinActivity extends ActionBarBaseActivity {
             mBulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         List<Bulletin> bulletinList = getBulletins(mStart);
-        NotificationUtil.cancelById(bulletinList.isEmpty() ? 0 : bulletinList.get(bulletinList.size() - 1).id);
+        NotificationUtil.cancelById(bulletinList.size() == 0 ? 0 : bulletinList.get(bulletinList.size() - 1).id);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
-        mListView.addHeaderView(initHeaderView());
         mListView.setAdapter(mBulletinAdapter);
         mListView.post(mRunnable);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
@@ -111,6 +113,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
             }
         });
         notifyNewFragment2UpdateItem();
+        setListVisibility(mBulletinAdapter.getCount() == 0);
     }
 
     private Runnable mRunnable = new Runnable() {
@@ -151,6 +154,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 mBulletinAdapter.addItem(bulletin);
                 break;
         }
+        setListVisibility(mBulletinAdapter.getCount() == 0);
     }
 
     @Override
@@ -161,9 +165,12 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     public class BulletinAdapter extends BaseAdapter {
         private List<Bulletin> mList;
+        private DisplayImageOptions mOptions;
 
         public BulletinAdapter(List<Bulletin> list) {
             mList = list;
+            mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_avatar).
+                    showImageOnFail(R.drawable.default_avatar).build();
         }
 
         public void addItems(List<Bulletin> list) {
@@ -184,6 +191,12 @@ public class BulletinActivity extends ActionBarBaseActivity {
         }
 
         @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            BulletinActivity.this.setListVisibility(getCount() == 0);
+        }
+
+        @Override
         public int getCount() {
             return mList.size();
         }
@@ -201,11 +214,6 @@ public class BulletinActivity extends ActionBarBaseActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
-            if (getCount() > 0) {
-                tvEmpty.setVisibility(View.GONE);
-            } else {
-                tvEmpty.setVisibility(View.VISIBLE);
-            }
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_bulletin, null);
                 holder = new ViewHolder(convertView);
@@ -225,7 +233,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.createdTime) * 1000));
             }
             holder.tvContent.setText(bulletin.content);
-            ImageLoader.getInstance().displayImage(mHeadImageUrl, holder.ivHeadImageUrl, EdusohoApp.app.mOptions);
+            ImageLoader.getInstance().displayImage(mHeadImageUrl, holder.ivHeadImageUrl, mOptions);
             return convertView;
         }
     }
@@ -242,9 +250,13 @@ public class BulletinActivity extends ActionBarBaseActivity {
         }
     }
 
-    private View initHeaderView() {
-        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_empty, null);
-        tvEmpty = (TextView) mHeaderView.findViewById(R.id.tv_empty_for_list_view);
-        return mHeaderView;
+    /**
+     * 设置空数据背景ICON
+     *
+     * @param visibility 是否空数据
+     */
+    private void setListVisibility(boolean visibility) {
+        mListView.setVisibility(visibility ? View.GONE : View.VISIBLE);
+        mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 }

@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -24,6 +23,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
-    private Button mBtnLogin;
+    private EduSohoLoadingButton mBtnLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
@@ -56,7 +56,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private void initView() {
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
-        mBtnLogin = (Button) findViewById(R.id.btn_login);
+        mBtnLogin = (EduSohoLoadingButton) findViewById(R.id.btn_login);
         mBtnLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
@@ -97,7 +97,9 @@ public class LoginActivity extends ActionBarBaseActivity {
             params.put("_username", etUsername.getText().toString().trim());
             params.put("_password", etPassword.getText().toString().trim());
 
-            mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
+            mBtnLogin.setLoadingState();
+
+            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
@@ -109,17 +111,25 @@ public class LoginActivity extends ActionBarBaseActivity {
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
                         app.pushRegister(bundle);
-                        mActivity.finish();
+                        mBtnLogin.setSuccessState();
+                        mBtnLogin.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mActivity.finish();
+                            }
+                        }, 500);
                     } else {
+                        mBtnLogin.setInitState();
                         CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    mBtnLogin.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
-            }, "登录中...");
+            });
         }
     };
 

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -87,135 +89,148 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 String result = bundle.getString("result");
-                Log.d("qr:", "qr->" + result + "&version=2");
-                showQrResultDlg(result + "&version=2");
+                new SchoolChangeHandler(mActivity).change(result + "&version=2");
             }
         }
     }
 
-    private void showQrResultDlg(final String result) {
-        final LoadDialog loading = LoadDialog.create(mContext);
-        loading.show();
+    public static class SchoolChangeHandler
+    {
+        private EdusohoApp mApp;
+        private BaseActivity mActivity;
 
-        RequestUrl requestUrl = new RequestUrl(result);
-        ajaxGet(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                loading.dismiss();
-                try {
-                    final UserResult userResult = app.gson.fromJson(
-                            response, new TypeToken<UserResult>() {
-                            }.getType());
+        public SchoolChangeHandler(BaseActivity activity)
+        {
+            this.mActivity = activity;
+            this.mApp = mActivity.app;
+        }
 
-                    if (userResult == null) {
-                        CommonUtil.longToast(mActivity, "二维码信息错误!");
-                        return;
-                    }
+        private void showSchSplash(String schoolName, String[] splashs) {
+            SchoolSplashActivity.start(mActivity, schoolName, splashs);
+        }
 
-                    final School site = userResult.site;
-                    if (!checkMobileVersion(site, site.apiVersionRange)) {
-                        return;
-                    }
+        public void change(String url) {
+            Log.d(TAG, url);
+            final LoadDialog loading = LoadDialog.create(mActivity);
+            loading.show();
 
-                    if (userResult.token == null || "".equals(userResult.token)) {
-                        //未登录二维码
-                        app.removeToken();
-                        app.sendMessage(Const.LOGOUT_SUCCESS, null);
-                    } else {
-                        //扫描登录用户二维码
-                        app.saveToken(userResult);
-                        app.sendMessage(Const.LOGIN_SUCCESS, null);
-                    }
+            RequestUrl requestUrl = new RequestUrl(url);
+            mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    loading.dismiss();
+                    try {
+                        final UserResult userResult = mApp.gson.fromJson(
+                                response, new TypeToken<UserResult>() {
+                                }.getType());
 
-                    app.setCurrentSchool(site);
-                    SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
-                    showSchSplash(site.name, site.splashs);
-                    app.registDevice(new NormalCallback() {
-                        @Override
-                        public void success(Object obj) {
-                            showSchSplash(site.name, site.splashs);
+                        if (userResult == null) {
+                            CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
+                            return;
                         }
-                    });
 
-                    RequestUrl requestUrl = app.bindUrl(Const.GET_API_TOKEN, false);
-                    app.getUrl(requestUrl, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Token token = parseJsonValue(response, new TypeToken<Token>() {
-                            });
-                            if (token != null) {
-                                app.saveApiToken(token.token);
-                                Bundle bundle = new Bundle();
-                                bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                                app.pushRegister(bundle);
+                        final School site = userResult.site;
+                        if (!checkMobileVersion(site, site.apiVersionRange)) {
+                            return;
+                        }
+
+                        if (userResult.token == null || "".equals(userResult.token)) {
+                            //未登录二维码
+                            mApp.removeToken();
+                            mApp.sendMessage(Const.LOGOUT_SUCCESS, null);
+                        } else {
+                            //扫描登录用户二维码
+                            mApp.saveToken(userResult);
+                            mApp.sendMessage(Const.LOGIN_SUCCESS, null);
+                        }
+
+                        mApp.setCurrentSchool(site);
+                        SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
+                        showSchSplash(site.name, site.splashs);
+                        mApp.registDevice(new NormalCallback() {
+                            @Override
+                            public void success(Object obj) {
+                                showSchSplash(site.name, site.splashs);
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d(TAG, "无法获取网校Token");
-                        }
-                    });
+                        });
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    CommonUtil.longToast(mActivity, "二维码信息错误!");
+                        RequestUrl requestUrl = mApp.bindUrl(Const.GET_API_TOKEN, false);
+                        mApp.getUrl(requestUrl, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Token token = mActivity.parseJsonValue(response, new TypeToken<Token>() {
+                                });
+                                if (token != null) {
+                                    mApp.saveApiToken(token.token);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                                    mApp.pushRegister(bundle);
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d(TAG, "无法获取网校Token");
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loading.dismiss();
-                CommonUtil.longToast(mActivity, "二维码信息错误!");
-            }
-        });
-    }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    loading.dismiss();
+                    CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
+                }
+            });
+        }
 
-    private void showSchSplash(String schoolName, String[] splashs) {
-        SchoolSplashActivity.start(mContext, schoolName, splashs);
-    }
+        private boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {
+            String min = versionRange.get("min");
+            String max = versionRange.get("max");
 
-    public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {
-        String min = versionRange.get("min");
-        String max = versionRange.get("max");
-
-        int result = AppUtil.compareVersion(app.apiVersion, min);
-        if (result == Const.LOW_VERSIO) {
-            PopupDialog dlg = PopupDialog.createMuilt(
-                    mContext,
-                    "网校提示",
-                    "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。",
-                    new PopupDialog.PopupClickListener() {
-                        @Override
-                        public void onClick(int button) {
-                            if (button == PopupDialog.OK) {
-                                String code = getResources().getString(R.string.app_code);
-                                String updateUrl = String.format(
-                                        "%s/%s?code=%s",
-                                        site.url,
-                                        Const.DOWNLOAD_URL,
-                                        code
-                                );
-                                app.startUpdateWebView(updateUrl);
+            int result = AppUtil.compareVersion(mApp.apiVersion, min);
+            if (result == Const.LOW_VERSIO) {
+                PopupDialog dlg = PopupDialog.createMuilt(
+                        mActivity,
+                        "网校提示",
+                        "您的客户端版本过低，无法登录该网校，请立即更新至最新版本。",
+                        new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.OK) {
+                                    String code = mActivity.getResources().getString(R.string.app_code);
+                                    String updateUrl = String.format(
+                                            "%s/%s?code=%s",
+                                            site.url,
+                                            Const.DOWNLOAD_URL,
+                                            code
+                                    );
+                                    mApp.startUpdateWebView(updateUrl);
+                                }
                             }
-                        }
-                    });
+                        });
 
-            dlg.setOkText("立即下载");
-            dlg.show();
-            return false;
+                dlg.setOkText("立即下载");
+                dlg.show();
+                return false;
+            }
+
+            result = AppUtil.compareVersion(mApp.apiVersion, max);
+            if (result == Const.HEIGHT_VERSIO) {
+                PopupDialog.createNormal(
+                        mActivity,
+                        "网校提示",
+                        "网校服务器版本过低，无法继续登录！请重新尝试。"
+                ).show();
+                return false;
+            }
+
+            return true;
         }
-
-        result = AppUtil.compareVersion(app.apiVersion, max);
-        if (result == Const.HEIGHT_VERSIO) {
-            PopupDialog.createNormal(
-                    mContext,
-                    "网校提示",
-                    "网校服务器版本过低，无法继续登录！请重新尝试。"
-            ).show();
-            return false;
-        }
-
-        return true;
     }
+
 }

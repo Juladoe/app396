@@ -316,7 +316,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
 
         int length = mLessonIds.length;
-        int index = Arrays.binarySearch(mLessonIds, mLessonId);
+        int index = AppUtil.searchInArray(mLessonIds, mLessonId);
         if (index < 0) {
             mNextLessonId = 0;
             mPreviousLessonId = 0;
@@ -457,11 +457,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void switchLoadLessonContent(LessonItem lessonItem) {
         CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
-        if (Const.NETEASE_OPEN_COURSE.equals(lessonItem.mediaSource)) {
-            CommonUtil.longToast(mContext, "客户端暂不支持网易云视频");
+
+        if ("flash".equals(lessonItem.type) || CommonUtil.inArray(lessonItem.mediaSource,
+                new String[] { Const.NETEASE_OPEN_COURSE, Const.QQ_OPEN_COURSE })) {
+            CommonUtil.longToast(mContext, "客户端暂不支持该课时！");
             return;
         }
-
         if (lessonType == CourseLessonType.VIDEO
                 && !"self".equals(lessonItem.mediaSource)) {
             loadLessonFragment("WebVideoLessonFragment");
