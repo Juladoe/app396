@@ -43,6 +43,7 @@
     <string name="about_check_update">检查新版本</string>
     <string name="login_forget_password">忘记密码?</string>
     <string name="drawer_nickname">立即登录</string>
+    <string name="chat_profile">聊天信息</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
