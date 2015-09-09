@@ -48,6 +48,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
     private View mEmptyView;
+    private TextView tvEmpty;
     private BulletinDataSource mBulletinDataSource;
     private BulletinAdapter mBulletinAdapter;
     private String mHeadImageUrl;
@@ -68,6 +69,8 @@ public class BulletinActivity extends ActionBarBaseActivity {
         mListView = (ListView) findViewById(R.id.lv_bulletin);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
         mEmptyView = findViewById(R.id.view_empty);
+        tvEmpty = (TextView) findViewById(R.id.tv_empty_text);
+        tvEmpty.setText(getResources().getString(R.string.announcement_empty_text));
     }
 
     private void initData() {
@@ -96,29 +99,21 @@ public class BulletinActivity extends ActionBarBaseActivity {
             mBulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         List<Bulletin> bulletinList = getBulletins(mStart);
-        if (bulletinList != null) {
-            if (bulletinList.isEmpty()) {
-                mEmptyView.setVisibility(View.VISIBLE);
-                mPtrFrame.setVisibility(View.GONE);
-            } else {
-                NotificationUtil.cancelById(bulletinList.size() == 0 ? 0 : bulletinList.get(bulletinList.size() - 1).id);
-                mBulletinAdapter = new BulletinAdapter(bulletinList);
-                mListView.setAdapter(mBulletinAdapter);
-                mListView.post(mRunnable);
-                mPtrFrame.setLastUpdateTimeRelateObject(this);
-                mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
-                    @Override
-                    public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
-                        mBulletinAdapter.addItems(getBulletins(mStart));
-                        mPtrFrame.refreshComplete();
-                        mListView.postDelayed(mRunnable, 100);
-                    }
-                });
-                notifyNewFragment2UpdateItem();
-                mEmptyView.setVisibility(View.GONE);
-                mPtrFrame.setVisibility(View.VISIBLE);
+        NotificationUtil.cancelById(bulletinList.size() == 0 ? 0 : bulletinList.get(bulletinList.size() - 1).id);
+        mBulletinAdapter = new BulletinAdapter(bulletinList);
+        mListView.setAdapter(mBulletinAdapter);
+        mListView.post(mRunnable);
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+        mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
+                mBulletinAdapter.addItems(getBulletins(mStart));
+                mPtrFrame.refreshComplete();
+                mListView.postDelayed(mRunnable, 100);
             }
-        }
+        });
+        notifyNewFragment2UpdateItem();
+        setListVisibility(mBulletinAdapter.getCount() == 0);
     }
 
     private Runnable mRunnable = new Runnable() {
@@ -159,6 +154,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 mBulletinAdapter.addItem(bulletin);
                 break;
         }
+        setListVisibility(mBulletinAdapter.getCount() == 0);
     }
 
     @Override
@@ -192,6 +188,12 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 mList.clear();
                 notifyDataSetChanged();
             }
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            BulletinActivity.this.setListVisibility(getCount() == 0);
         }
 
         @Override
@@ -246,5 +248,15 @@ public class BulletinActivity extends ActionBarBaseActivity {
             tvContent = (TextView) view.findViewById(R.id.tv_send_content);
             tvCreatedTime = (TextView) view.findViewById(R.id.tv_send_time);
         }
+    }
+
+    /**
+     * 设置空数据背景ICON
+     *
+     * @param visibility 是否空数据
+     */
+    private void setListVisibility(boolean visibility) {
+        mListView.setVisibility(visibility ? View.GONE : View.VISIBLE);
+        mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 }
