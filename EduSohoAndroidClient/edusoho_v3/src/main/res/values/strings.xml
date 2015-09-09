@@ -43,7 +43,6 @@
     <string name="about_check_update">检查新版本</string>
     <string name="login_forget_password">忘记密码?</string>
     <string name="drawer_nickname">立即登录</string>
-    <string name="chat_profile">聊天信息</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -64,6 +63,7 @@
     <string name="request_failed">请求失败</string>
     <string name="authorize_cancelled">取消授权</string>
     <string name="user_not_exist">用户不存在</string>
+    <string name="school_info_error">"无法获取网校信息"</string>
 
     <!--ttf-->
     <string name="font_friends">&#xe628;</string>
