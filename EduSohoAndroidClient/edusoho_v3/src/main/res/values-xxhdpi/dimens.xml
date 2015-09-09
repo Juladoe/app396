@@ -38,8 +38,6 @@
     <dimen name="chat_btn_size">32dp</dimen>
 
     <dimen name="downloading_select_size">22sp</dimen>
-
-    <dimen name="btn_loading_margin">14dp</dimen>
     <dimen name="empty_list_icon">100sp</dimen>
 
 </resources>
