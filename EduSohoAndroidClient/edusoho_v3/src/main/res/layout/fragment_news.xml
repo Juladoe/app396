@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
+    <include
+        layout="@layout/empty_list"
+        android:id="@+id/view_empty" />
+
     <com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:id="@+id/lv_news_list">
-
-    </com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView>
+        android:id="@+id/lv_news_list" />
 
 </LinearLayout>

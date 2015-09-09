@@ -116,6 +116,8 @@
     <string name="hand_move_up_and_send_cancel">手指上滑，取消发送</string>
     <string name="hand_up_and_exit">手指松开，取消发送</string>
     <string name="audio_length_too_short">录音时间太短</string>
+    <string name="news_empty_text">暂无动态消息哦~</string>
+    <string name="announcement_empty_text">暂无公告消息哦~</string>
 
     <string name="app_id">wx91c11946311906a3</string>
     <!-- 网校提示字符 -->
