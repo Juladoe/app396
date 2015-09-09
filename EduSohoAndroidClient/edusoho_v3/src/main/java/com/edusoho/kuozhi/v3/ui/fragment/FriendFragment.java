@@ -53,17 +53,21 @@ public class FriendFragment extends BaseFragment {
     public static boolean isNews = false;
     private ListView mFriendList;
     private View mFootView;
-    private View mToolbarView;
     private TextView mFriendCount;
     private FriendFragmentAdapter mFriendAdapter;
     private SideBar mSidebar;
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
+<<<<<<< HEAD
+    private ProgressBar mContentLoadingProgressBar;
+    protected FriendProvider mFriendProvider;
+=======
     private ActionBar mActionBar;
     private FrameLayout mLoading;
 
     private FriendProvider mFriendProvider;
+>>>>>>> develop
 
     @Override
     public void onAttach(Activity activity) {
@@ -108,21 +112,7 @@ public class FriendFragment extends BaseFragment {
             public void onClick(View v) {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
-                    getBar();
-                    ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", mToolbarView.getHeight(), 0);
-                    mToolbarView.setTag(mToolbarView.getHeight());
-                    animator.setDuration(300);
-                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
-                            searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
-                            searchDialogFragment.setToolBarView(mToolbarView);
-                        }
-                    });
-
-                    animator.start();
+                    showSearchDialog();
                 }
             }
         });
@@ -149,6 +139,24 @@ public class FriendFragment extends BaseFragment {
 
         mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
         initViewData();
+    }
+
+    private void showSearchDialog() {
+        final View toolbarView = getToolbarView();
+        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(toolbarView), "height", toolbarView.getHeight(), 0);
+        toolbarView.setTag(toolbarView.getHeight());
+        animator.setDuration(300);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+                searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
+                searchDialogFragment.setToolBarView(toolbarView);
+            }
+        });
+
+        animator.start();
     }
 
     private void initViewData() {
@@ -213,7 +221,6 @@ public class FriendFragment extends BaseFragment {
                 }
                 setFriendsCount(friendResult.data.length + "");
                 promise.resolve(friendResult);
-
             }
         });
 
@@ -311,9 +318,10 @@ public class FriendFragment extends BaseFragment {
 
         View view = null;
         try {
-            Field toolbarField = mActionBar.getClass().getDeclaredField("mDecorToolbar");
+            ActionBar actionBar = mActivity.getSupportActionBar();
+            Field toolbarField = actionBar.getClass().getDeclaredField("mDecorToolbar");
             toolbarField.setAccessible(true);
-            DecorToolbar toolbar = (DecorToolbar) toolbarField.get(mActionBar);
+            DecorToolbar toolbar = (DecorToolbar) toolbarField.get(actionBar);
             view = toolbar.getViewGroup();
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -323,8 +331,4 @@ public class FriendFragment extends BaseFragment {
         return view;
     }
 
-    private void getBar(){
-        mActionBar = mActivity.getSupportActionBar();
-        mToolbarView = getToolbarView();
-    }
 }
