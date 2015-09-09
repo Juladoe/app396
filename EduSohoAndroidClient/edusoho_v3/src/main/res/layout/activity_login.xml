@@ -26,8 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/login_edittext_bg"
             android:layout_marginBottom="@dimen/login_widget_margin_bottom"
-            android:paddingRight="15dp"
-            android:paddingLeft="15dp">
+            android:padding="@dimen/btn_loading_padding">
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:layout_width="wrap_content"
@@ -55,8 +54,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/login_edittext_bg"
             android:layout_marginBottom="@dimen/login_widget_margin_bottom"
-            android:paddingRight="15dp"
-            android:paddingLeft="15dp">
+            android:padding="@dimen/btn_loading_padding">
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:layout_width="wrap_content"

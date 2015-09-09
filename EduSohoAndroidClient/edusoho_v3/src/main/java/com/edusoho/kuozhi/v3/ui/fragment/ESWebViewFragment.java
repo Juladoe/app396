@@ -5,9 +5,6 @@ import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
-import in.srain.cube.views.ptr.PtrFrameLayout;
 
 /**
  * Created by howzhi on 15/7/16.
@@ -29,7 +26,7 @@ public class ESWebViewFragment extends BaseFragment {
         mWebView.initPlugin(mActivity);
     }
 
-    public ESWebView getView() {
+    public ESWebView getWebView() {
         return mWebView;
     }
 }

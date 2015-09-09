@@ -137,4 +137,6 @@
     <dimen name="head_icon_small">32dp</dimen>
 
     <dimen name="empty_list_icon">40sp</dimen>
+
+    <dimen name="btn_loading_padding">15dp</dimen>
 </resources>
