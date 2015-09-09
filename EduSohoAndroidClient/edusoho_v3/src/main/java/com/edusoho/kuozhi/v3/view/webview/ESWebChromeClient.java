@@ -1,12 +1,14 @@
 package com.edusoho.kuozhi.v3.view.webview;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -46,6 +48,11 @@ public class ESWebChromeClient extends CordovaChromeClient {
     }
 
     @Override
+    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+        return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+    }
+
+    @Override
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
         this.openFileChooser(uploadMsg, "*/*");
     }
@@ -66,18 +73,18 @@ public class ESWebChromeClient extends CordovaChromeClient {
                     @Override
                     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
                         Uri result = intent == null || resultCode != Activity.RESULT_OK ? null : intent.getData();
-                        uploadMsg.onReceiveValue(compressImage(result));
+                        uploadMsg.onReceiveValue(compressImage(mActivity.getApplicationContext(), result));
                     }
                 },
                 Intent.createChooser(i, "File Browser"),
                 FILECHOOSER_RESULTCODE);
     }
 
-    private Uri compressImage(Uri uri) {
+    public static Uri compressImage(Context context, Uri uri) {
         if (uri == null || TextUtils.isEmpty(uri.getPath())) {
             return null;
         }
-        String path = AppUtil.getPath(mActivity.getApplicationContext(), uri);
+        String path = AppUtil.getPath(context, uri);
         Bitmap bitmap = AppUtil.getBitmapFromFile(new File(path));
         if (bitmap == null) {
             return uri;

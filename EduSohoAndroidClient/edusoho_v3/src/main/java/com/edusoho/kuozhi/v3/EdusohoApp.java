@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
@@ -121,7 +122,7 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 

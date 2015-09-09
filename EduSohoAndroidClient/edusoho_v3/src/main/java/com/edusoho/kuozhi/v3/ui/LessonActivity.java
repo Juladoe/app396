@@ -316,7 +316,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
 
         int length = mLessonIds.length;
-        int index = Arrays.binarySearch(mLessonIds, mLessonId);
+        int index = AppUtil.searchInArray(mLessonIds, mLessonId);
         if (index < 0) {
             mNextLessonId = 0;
             mPreviousLessonId = 0;
