@@ -112,7 +112,7 @@
             android:layout_marginTop="12dp"
             android:textSize="16sp"
             android:textColor="@color/grey"
-            android:text="讨论组"
+            android:text="服务号"
             />
 
     </RelativeLayout>
