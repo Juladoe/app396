@@ -176,6 +176,7 @@ public class EdusohoApp extends Application {
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
+        request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
         mVolley.addToRequestQueue(request);
     }
@@ -321,7 +322,9 @@ public class EdusohoApp extends Application {
                         app.saveConfig();
                     }
 
-                    normalCallback.success(null);
+                    if (normalCallback != null) {
+                        normalCallback.success(null);
+                    }
                 } catch (Exception e) {
                     Log.e(null, e.toString());
                 }
