@@ -86,7 +86,6 @@ public class ChatAdapter extends BaseAdapter {
         mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnLoading(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
         mChatOpposite = user;
     }
@@ -306,7 +305,7 @@ public class ChatAdapter extends BaseAdapter {
                 break;
         }
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick("file://" + model.content));
-        ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, mOptions);
+        ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
     }
 
@@ -327,7 +326,7 @@ public class ChatAdapter extends BaseAdapter {
         holder.ivStateError.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, mOptions, mMyImageLoadingListener);
+                ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
         ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, mOptions);
@@ -345,7 +344,7 @@ public class ChatAdapter extends BaseAdapter {
             }
         }
 
-        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, mOptions, mMyImageLoadingListener);
+        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
     private void handlerSendAudio(final ViewHolder holder, int position) {
