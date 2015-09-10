@@ -102,8 +102,8 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     headHolder = new HeadHolder();
                     headHolder.tvSearchFriend = (TextView) v.findViewById(R.id.search_friend_btn);
                     headHolder.discussionGroup = (RelativeLayout) v.findViewById(R.id.discussion_group);
-                    headHolder.service = (RelativeLayout) v.findViewById(R.id.service)
-;                    v.setTag(headHolder);
+                    headHolder.service = (RelativeLayout) v.findViewById(R.id.service);
+                    v.setTag(headHolder);
                 } else {
                     headHolder = (HeadHolder) v.getTag();
                 }
@@ -220,6 +220,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     public void clearList() {
         mList.clear();
+        updateList();
     }
 
     public void setHeadClickListener(OnClickListener onclickListener) {
