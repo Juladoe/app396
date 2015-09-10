@@ -86,7 +86,6 @@ public class ChatAdapter extends BaseAdapter {
         mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnLoading(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
         mChatOpposite = user;
     }
