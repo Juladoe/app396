@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,6 +47,13 @@ public class ServiceListActivity extends ActionBarBaseActivity {
         mProvider = new FriendProvider(mContext);
 
         loadSchoolApps();
+
+        serviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
+            }
+        });
     }
 
     public Promise loadSchoolApps() {
