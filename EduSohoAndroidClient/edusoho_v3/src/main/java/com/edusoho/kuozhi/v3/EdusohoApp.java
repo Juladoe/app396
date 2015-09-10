@@ -122,7 +122,7 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+//        EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         init();
     }
 
