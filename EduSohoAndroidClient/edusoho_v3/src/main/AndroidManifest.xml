@@ -259,7 +259,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.edusoho.kuozhi.v3.service.PushMessageReceiver">
+        <receiver android:name=".v3.service.PushMessageReceiver">
             <intent-filter>
                 <!-- 接收消息透传 -->
                 <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />

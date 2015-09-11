@@ -2,15 +2,11 @@ package com.edusoho.kuozhi.v3.service;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
-import com.edusoho.kuozhi.v3.ui.BulletinActivity;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.service.push.CommandFactory;
+import com.edusoho.kuozhi.v3.service.push.PushCommand;
+import com.edusoho.kuozhi.v3.service.push.Pusher;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
@@ -45,64 +41,31 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
 
     }
 
-    //消息传递
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
         try {
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
-
             JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContent());
             String typeBusiness = jsonObject.getString("typeBusiness");
-            if (typeBusiness.equals(TypeBusinessEnum.FRIEND.getName()) || typeBusiness.equals(TypeBusinessEnum.TEACHER.getName())) {
-                bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_RECEIVE_MSG);
-                boolean isForeground = EdusohoApp.app.isForeground(ChatActivity.class.getName());
-                if (isForeground) {
-                    wrapperMessage.isForeground = true;
-                    EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, ChatActivity.class);
-                }
-                EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
-                EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, wrapperMessage);
-            } else if (typeBusiness.equals(TypeBusinessEnum.BULLETIN.getName())) {
-                boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
-                if (isForeground) {
-                    wrapperMessage.isForeground = true;
-                    EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, bundle, BulletinActivity.class);
-                }
-                EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, bundle, NewsFragment.class);
-                EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, wrapperMessage);
-            } else if (typeBusiness.equals(TypeBusinessEnum.VERIFIED.getName())) {
-                EdusohoMainService.getService().setNewNotification();
-                EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, bundle, FriendFragment.class);
+            Pusher pusher = new Pusher(bundle, wrapperMessage);
+            PushCommand pushCommand = CommandFactory.Make(typeBusiness, pusher);
+            if (pushCommand != null) {
+                pushCommand.execute();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //通知展示
     @Override
     public void onNotifactionClickedResult(Context context, XGPushClickedResult message) {
-        if (context == null || message == null) {
-            return;
-        }
-        String text = "";
-        if (message.getActionType() == XGPushClickedResult.NOTIFACTION_CLICKED_TYPE) {
-            text = "通知被打开 :" + message;
-        } else if (message.getActionType() == XGPushClickedResult.NOTIFACTION_DELETED_TYPE) {
-            text = "通知被清除 :" + message;
-        }
-        Log.d("PushMessageReceiver", text);
+
     }
 
     @Override
     public void onNotifactionShowedResult(Context context, XGPushShowedResult xgPushShowedResult) {
-        if (context == null || xgPushShowedResult == null) {
 
-            return;
-        }
     }
-
-
 }
