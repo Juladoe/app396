@@ -168,6 +168,15 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.friend.GroupListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".v3.ui.friend.ServiceListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.edusoho.kuozhi.wxapi.WXEntryActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"

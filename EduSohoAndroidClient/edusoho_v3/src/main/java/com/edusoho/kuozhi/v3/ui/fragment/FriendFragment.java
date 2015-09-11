@@ -109,10 +109,10 @@ public class FriendFragment extends BaseFragment {
                     showSearchDialog();
                 }
                 if (i == R.id.discussion_group){
-                    Toast.makeText(mContext,"Discussion",Toast.LENGTH_SHORT).show();  //todo
+                    app.mEngine.runNormalPlugin("GroupListActivity",mActivity,null);
                 }
                 if (i == R.id.service){
-                    Toast.makeText(mContext,"service",Toast.LENGTH_SHORT).show();     //todo
+                    app.mEngine.runNormalPlugin("ServiceListActivity",mActivity,null);
 
                 }
             }

@@ -193,8 +193,8 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 }
 
                 itemHolder.friendName.setText(friend.nickname);
-                if (!TextUtils.isEmpty(friend.smallAvatar)) {
-                    ImageLoader.getInstance().displayImage(friend.smallAvatar, itemHolder.friendAvatar, mApp.mOptions);
+                if (!TextUtils.isEmpty(friend.mediumAvatar)) {
+                    ImageLoader.getInstance().displayImage(friend.mediumAvatar, itemHolder.friendAvatar, mApp.mOptions);
                 } else {
                     itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
                 }
