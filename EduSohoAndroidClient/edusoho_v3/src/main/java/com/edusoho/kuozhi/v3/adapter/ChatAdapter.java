@@ -729,20 +729,32 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     public void updateVoiceDownloadStatus(long downId) {
-        DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
-        Cursor c = mDownloadManager.query(query);
-        if (c != null && c.moveToFirst()) {
-            String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+        Chat downloadChat = null;
+        try {
             for (Chat chat : mList) {
                 if (chat.chatId == mDownloadList.get(downId)) {
-                    chat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
-                    mChatDataSource.update(chat);
-                    mDownloadList.remove(downId);
-                    notifyDataSetChanged();
+                    downloadChat = chat;
                     break;
                 }
             }
-            c.close();
+            if (downloadChat == null) {
+                return;
+            }
+            DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
+            Cursor c = mDownloadManager.query(query);
+            if (c != null && c.moveToFirst()) {
+                String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                downloadChat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
+                c.close();
+            }
+        } catch (Exception ex) {
+            Log.d("downloader", ex.toString());
+            if (downloadChat != null) {
+                downloadChat.setDelivery(Chat.Delivery.FAILED);
+            }
         }
+        mChatDataSource.update(downloadChat);
+        mDownloadList.remove(downId);
+        notifyDataSetChanged();
     }
 }
