@@ -90,7 +90,7 @@ public class FriendNewsActivityTest extends BaseActivityUnitTestCase<FriendNewsA
             }
 
             @Override
-            public ProviderListener laodRelationships(RequestUrl requestUrl) {
+            public ProviderListener loadRelationships(RequestUrl requestUrl) {
                 ProviderListener<String[]> providerListener = new ProviderListener<String[]>() {
                 };
                 String[] result = new String[10];
