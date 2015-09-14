@@ -10,6 +10,6 @@ public class PushVerifiedCommand extends PushCommand {
 
     @Override
     public void execute() {
-        mPusher.pushVerifield();
+        mPusher.pushVerified();
     }
 }

@@ -46,7 +46,7 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, mWrapperMessage);
     }
 
-    public void pushVerifield() {
+    public void pushVerified() {
         //验证
         EdusohoMainService.getService().setNewNotification();
         EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, mBundle, FriendFragment.class);
