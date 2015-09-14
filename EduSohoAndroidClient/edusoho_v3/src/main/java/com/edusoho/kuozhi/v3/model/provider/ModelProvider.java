@@ -47,4 +47,26 @@ public abstract class ModelProvider {
         request.setTag(requestUrl.url);
         mVolley.addToRequestQueue(request);
     }
+
+    public <T> void addPostRequest(
+            RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
+        mVolley.getRequestQueue();
+        BaseVolleyRequest request = new BaseVolleyRequest(
+                Request.Method.POST, requestUrl, responseListener, errorListener) {
+            @Override
+            protected T getResponseData(NetworkResponse response) {
+                T value = null;
+                try {
+                    value = mGson.fromJson(
+                            new String(response.data, "UTF-8"), typeToken.getType());
+                } catch (Exception e) {
+                }
+
+                return value;
+            }
+        };
+
+        request.setTag(requestUrl.url);
+        mVolley.addToRequestQueue(request);
+    }
 }

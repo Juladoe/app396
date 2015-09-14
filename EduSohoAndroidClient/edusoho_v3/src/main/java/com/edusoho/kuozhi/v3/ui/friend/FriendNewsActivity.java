@@ -29,7 +29,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -139,7 +138,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         relations = new SparseArray<String>();
 
         final Promise promise = new Promise();
-        mFriendProvider.laodRelationships(requestUrl).success(new NormalCallback<String[]>() {
+        mFriendProvider.loadRelationships(requestUrl).success(new NormalCallback<String[]>() {
             @Override
             public void success(String[] relationships) {
                 for (int i = 0; i < relationships.length; i++) {
