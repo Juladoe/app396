@@ -68,7 +68,6 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                     @Override
                     public void success(List<SchoolApp> schoolAppResult) {
                         if (schoolAppResult.size() != 0) {
-//                            mFriendAdapter.setSchoolListSize(schoolAppResult.size());
                             mAdapter.addSchoolAppList(schoolAppResult);
                         }
                         promise.resolve(schoolAppResult);
