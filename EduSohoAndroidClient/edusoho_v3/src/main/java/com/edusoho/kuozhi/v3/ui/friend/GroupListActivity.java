@@ -36,7 +36,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
         loadGroup();
     }
 
-    private void loadGroup(){
+    private void loadGroup() {
         for (int i = 2; i < 10; i++) {
             mAdapter.addGroupItem(new DiscussionGroup("今晚打dao了 " + i + " 只老虎"));
         }
@@ -86,12 +86,16 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
             DiscussionGroup group = mGroupList.get(i);
 
-            for (int count = 0; count < i + 2; count++) {
-                groupItemHolder.groupAvatar.addAvatar(R.drawable.default_avatar);
-            }
+            generateGroupAvatar(groupItemHolder, i + 2);
             groupItemHolder.groupName.setText(group.groupName);
 
             return view;
+        }
+
+        private void generateGroupAvatar(GroupItemHolder groupItemHolder, int i) {
+            for (int count = 0; count < i; count++) {
+                groupItemHolder.groupAvatar.addAvatar(R.drawable.default_avatar);
+            }
         }
 
         private class GroupItemHolder {

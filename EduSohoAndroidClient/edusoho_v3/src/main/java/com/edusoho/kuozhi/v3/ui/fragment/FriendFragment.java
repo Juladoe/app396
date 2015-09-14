@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -40,6 +41,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -108,11 +110,11 @@ public class FriendFragment extends BaseFragment {
                 if (i == R.id.search_friend_btn) {
                     showSearchDialog();
                 }
-                if (i == R.id.discussion_group){
-                    app.mEngine.runNormalPlugin("GroupListActivity",mActivity,null);
+                if (i == R.id.discussion_group) {
+                    app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
                 }
-                if (i == R.id.service){
-                    app.mEngine.runNormalPlugin("ServiceListActivity",mActivity,null);
+                if (i == R.id.service) {
+                    app.mEngine.runNormalPlugin("ServiceListActivity", mActivity, null);
 
                 }
             }
@@ -122,19 +124,15 @@ public class FriendFragment extends BaseFragment {
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (position != 1) {
-                    final Friend friend = (Friend) parent.getAdapter().getItem(position);
-                    app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
-                        @Override
-                        public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
-                            startIntent.putExtra(ChatActivity.NICKNAME, friend.nickname);
-                            startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
-                        }
-                    });
-//                } else {
-//                    app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
-//                }
+                final Friend friend = (Friend) parent.getAdapter().getItem(position);
+                app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
+                        startIntent.putExtra(ChatActivity.NICKNAME, friend.nickname);
+                        startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
+                    }
+                });
             }
         });
 
@@ -165,22 +163,9 @@ public class FriendFragment extends BaseFragment {
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
-        }else {
+        } else {
             mFriendAdapter.clearList();
         }
-
-//        loadSchoolApps().then(new PromiseCallback() {
-//            @Override
-//            public Promise invoke(Object obj) {
-//                return loadFriend();
-//            }
-//        }).then(new PromiseCallback() {
-//            @Override
-//            public Promise invoke(Object obj) {
-//                mLoading.setVisibility(View.GONE);
-//                return null;
-//            }
-//        });
         loadFriend().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
@@ -198,16 +183,15 @@ public class FriendFragment extends BaseFragment {
 
         final Promise promise = new Promise();
         mFriendProvider.getSchoolApps(requestUrl)
-        .success(new NormalCallback<List<SchoolApp>>() {
-            @Override
-            public void success(List<SchoolApp> schoolAppResult) {
-                if (schoolAppResult.size() != 0) {
-                    mFriendAdapter.setSchoolListSize(schoolAppResult.size());
-                    mFriendAdapter.addSchoolList(schoolAppResult);
-                }
-                promise.resolve(schoolAppResult);
-            }
-        });
+                .success(new NormalCallback<List<SchoolApp>>() {
+                    @Override
+                    public void success(List<SchoolApp> schoolAppResult) {
+                        if (schoolAppResult.size() != 0) {
+                            mFriendAdapter.addSchoolList(schoolAppResult);
+                        }
+                        promise.resolve(schoolAppResult);
+                    }
+                });
 
         return promise;
     }
@@ -220,19 +204,19 @@ public class FriendFragment extends BaseFragment {
 
         final Promise promise = new Promise();
         mFriendProvider.getFriend(requestUrl)
-        .success(new NormalCallback<FriendResult>() {
-            @Override
-            public void success(FriendResult friendResult) {
-                if (friendResult.data.length != 0) {
-                    List<Friend> list = Arrays.asList(friendResult.data);
-                    setChar(list);
-                    Collections.sort(list, friendComparator);
-                    mFriendAdapter.addFriendList(list);
-                }
-                setFriendsCount(friendResult.data.length + "");
-                promise.resolve(friendResult);
-            }
-        });
+                .success(new NormalCallback<FriendResult>() {
+                    @Override
+                    public void success(FriendResult friendResult) {
+                        if (friendResult.data.length != 0) {
+                            List<Friend> list = Arrays.asList(friendResult.data);
+                            setChar(list);
+                            Collections.sort(list, friendComparator);
+                            mFriendAdapter.addFriendList(list);
+                        }
+                        setFriendsCount(friendResult.data.length + "");
+                        promise.resolve(friendResult);
+                    }
+                });
 
         return promise;
     }
@@ -324,7 +308,7 @@ public class FriendFragment extends BaseFragment {
         return messageTypes;
     }
 
-    public View getToolbarView(){
+    public View getToolbarView() {
 
         View view = null;
         try {
