@@ -10,4 +10,14 @@ public class DiscussionGroup {
     }
 
     public String groupName;
+
+    private String sortLetter;
+
+    public String getSortLetters() {
+        return sortLetter;
+    }
+
+    public void setSortLetters(String letter) {
+        this.sortLetter = letter;
+    }
 }
