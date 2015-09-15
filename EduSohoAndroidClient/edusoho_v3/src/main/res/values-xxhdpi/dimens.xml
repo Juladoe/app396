@@ -28,6 +28,7 @@
     <dimen name="chat_media_size">38dp</dimen>
 
     <dimen name="head_icon_large">46dp</dimen>
+    <dimen name="head_icon_large_margin">6dp</dimen>
 
     <dimen name="head_icon_medium">40dp</dimen>
 
