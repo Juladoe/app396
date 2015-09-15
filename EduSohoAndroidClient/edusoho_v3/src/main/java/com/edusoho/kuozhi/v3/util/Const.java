@@ -256,8 +256,8 @@ public class Const {
     public static final String USER_DATA_NUMBER = "User/getUserNum";
 
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
-    public static final String PUSH_HOST = "http://115.29.78.158:94/v1";
-    //public static final String PUSH_HOST = "http://tui.edusoho.net/v1";
+    //public static final String PUSH_HOST = "http://115.29.78.158:94/v1";
+    public static final String PUSH_HOST = "http://tui.edusoho.net/v1";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
