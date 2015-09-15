@@ -17,6 +17,8 @@ import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
 import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -24,11 +26,17 @@ import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewClient;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.gson.reflect.TypeToken;
@@ -50,6 +58,7 @@ public class ESWebView extends RelativeLayout {
     protected BaseActivity mActivity;
     protected String mAppCode;
     private AttributeSet mAttrs;
+    private String mUrl;
     private static final String TAG = "ESWebView";
     private static Pattern APPCODE_PAT = Pattern.compile(".+/mapi_v2/mobile/(\\w+)[#|/]*", Pattern.DOTALL);
 
@@ -127,7 +136,8 @@ public class ESWebView extends RelativeLayout {
         updateCode(appCode);
         mLocalAppMeta = getLocalApp(appCode);
         setLoadType(LOAD_FROM_CACHE);
-        updateApp(mAppCode);
+        mUrl = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
+        loadUrl(mUrl);
     }
 
     private void updateCode(String code) {
@@ -175,54 +185,29 @@ public class ESWebView extends RelativeLayout {
         return mAppCode;
     }
 
-    private void updateAppResource(final String resourceUrl) {
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-        loadDialog.show();
-        mRequestManager.downloadResource(new Request(resourceUrl), new RequestCallback<Boolean>() {
-            @Override
-            public Boolean onResponse(Response<Boolean> response) {
-                if (response.getData()) {
-                    mWebView.loadUrl(String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, mAppCode));
-                }
-                loadDialog.dismiss();
-                return null;
-            }
-        });
-    }
-
-    public void updateApp(final String appCode) {
+    public void updateApp(String appCode, boolean isLoadByDialog) {
         RequestUrl appVersionUrl = mActivity.app.bindUrl(
                 String.format(Const.MOBILE_APP_VERSION, appCode), true);
-        mRequestManager.updateApp(appVersionUrl, new RequestCallback<String>() {
-            @Override
-            public String onResponse(Response<String> response) {
-                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
-                UpdateAppMeta appMeta = mActivity.parseJsonValue(
-                        response.getData(), new TypeToken<UpdateAppMeta>(){});
-                if (appMeta == null) {
-                    mWebView.loadUrl(url);
-                    return null;
-                }
 
-                if (mLocalAppMeta == null) {
-                    updateAppResource(appMeta.resource);
-                    return null;
+        RequestCallback<Boolean> callback = null;
+        if (isLoadByDialog) {
+            final LoadDialog loadDialog = LoadDialog.create(mActivity);
+            loadDialog.show();
+            callback = new RequestCallback<Boolean>() {
+                @Override
+                public Boolean onResponse(Response response) {
+                    loadDialog.dismiss();
+                    mWebView.loadUrl(mUrl);
+                    return false;
                 }
+            };
+        }
 
-                int result = CommonUtil.compareVersion(mLocalAppMeta.version, appMeta.version);
-                if (result == Const.LOW_VERSIO) {
-                    updateAppResource(appMeta.resource);
-                    return null;
-                }
-                mWebView.loadUrl(url);
-
-                return null;
-            }
-        });
+        mRequestManager.updateApp(appVersionUrl, callback);
     }
 
     public void loadUrl(String url) {
-
+        mUrl = url;
         Matcher matcher = APPCODE_PAT.matcher(url);
         if (matcher.find()) {
             updateCode(matcher.group(1));
@@ -231,17 +216,64 @@ public class ESWebView extends RelativeLayout {
             mActivity.showActionBar();
         }
 
-        mWebView.loadUrl(url);
+        if (checkResourceIsExists()) {
+            mWebView.loadUrl(mUrl);
+            return;
+        }
+
+        updateApp(mAppCode, true);
+    }
+
+    private boolean checkResourceIsExists() {
+        File appZipStorage = AppUtil.getAppZipStorage();
+
+        File[] files = appZipStorage.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return filename.contains(mAppCode);
+            }
+        });
+
+        final Pattern versionPat = Pattern.compile(".+-([\\.\\d]+)\\..*", Pattern.DOTALL);
+        Arrays.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                Matcher matcher = versionPat.matcher(lhs.getName());
+                String lv = matcher.find() ? matcher.group(1) : null;
+                matcher = versionPat.matcher(rhs.getName());
+                String rv = matcher.find() ? matcher.group(1) : null;
+                return CommonUtil.compareVersion(lv, rv);
+            }
+        });
+
+        if (mLocalAppMeta != null) {
+            return true;
+        }
+
+        File schoolStorage = AppUtil.getSchoolStorage(mActivity.app.domain);
+        File schoolAppFile = new File(schoolStorage, mAppCode);
+        InputStream zinInputStream = null;
+
+        try {
+            if (files.length == 0) {
+                zinInputStream = mContext.getAssets().open(String.format("edusoho-html5-%s.Android.zip", mAppCode));
+                updateApp(mAppCode, false);
+            } else {
+                zinInputStream = new FileInputStream(files[0]);
+            }
+        } catch (Exception e) {
+        }
+
+        if (AppUtil.unZipFile(schoolAppFile, zinInputStream)) {
+            mLocalAppMeta = getLocalApp(mAppCode);
+        }
+
+        return mLocalAppMeta != null;
     }
 
     public void initPlugin(BaseActivity activity) {
         this.mActivity = activity;
         initWebView();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
     }
 
     public void destroy() {
