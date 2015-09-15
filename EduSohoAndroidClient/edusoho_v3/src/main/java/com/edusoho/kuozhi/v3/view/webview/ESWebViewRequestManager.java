@@ -14,13 +14,21 @@ import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
+import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -41,6 +49,8 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by howzhi on 15/4/29.
@@ -113,18 +123,56 @@ public class ESWebViewRequestManager extends RequestManager {
     }
 
     @Override
-    public void updateApp(RequestUrl requestUrl, final RequestCallback<String> callback) {
+    public void updateApp(RequestUrl requestUrl, final RequestCallback<Boolean> callback) {
         VolleySingleton volley = VolleySingleton.getInstance(mContext);
         volley.getRequestQueue();
         StringVolleyRequest stringRequest = new StringVolleyRequest(
                 Method.GET, requestUrl, new Listener<String>() {
             @Override
             public void onResponse(String response) {
-                callback.onResponse(new Response<String>(response));
+                handlerUpdateApp(response).then(new PromiseCallback<Boolean>() {
+                    @Override
+                    public Promise invoke(Boolean success) {
+                        if (callback != null) {
+                            callback.onResponse(new Response<Boolean>(success));
+                        }
+                        return null;
+                    }
+                });
             }
         }, null);
         stringRequest.setTag(requestUrl.url);
         volley.addToRequestQueue(stringRequest);
+    }
+
+    private Promise handlerUpdateApp(String appVersion) {
+        UpdateAppMeta appMeta = new Gson().fromJson(appVersion, UpdateAppMeta.class);
+
+        AppMeta localAppMeta = getLocalApp(mCode);
+        Promise promise = new Promise();
+        if (appMeta == null) {
+            return promise;
+        }
+
+        if (localAppMeta == null
+                || Const.LOW_VERSIO == CommonUtil.compareVersion(localAppMeta.version, appMeta.version)) {
+            promise = updateAppResource(appMeta.resource);
+        }
+
+        return promise;
+    }
+
+    private Promise updateAppResource(String resourceUrl) {
+        final Promise promise = new Promise();
+        downloadResource(new Request(resourceUrl), new RequestCallback<Boolean>() {
+            @Override
+            public Boolean onResponse(Response<Boolean> response) {
+                promise.resolve(response.getData());
+                return null;
+            }
+        });
+
+        return promise;
     }
 
     @Override
@@ -168,17 +216,9 @@ public class ESWebViewRequestManager extends RequestManager {
         return srcDir;
     }
 
-    private boolean isFileDirExists(File file) {
-        if (! file.getParentFile().exists()) {
-            return file.getParentFile().mkdirs();
-        }
-
-        return true;
-    }
-
-    private File saveFile(File storage, Request request) {
-        File cache = new File(storage, request.getName() + "_temp");
-        HttpGet httpGet = getHttpGet(request.url);
+    private File saveFile(File storage, String name, String url) {
+        File cache = new File(storage, name + "_temp");
+        HttpGet httpGet = getHttpGet(url);
         try {
             if (cache.exists()) {
                 httpGet.setHeader("Range", "bytes=" + cache.length());
@@ -201,34 +241,23 @@ public class ESWebViewRequestManager extends RequestManager {
         return null;
     }
 
-    private boolean unZipFile(String schoolHost, File zinFile) {
-        File schoolStorage = AppUtil.getSchoolStorage(schoolHost);
-        File schoolAppStorage = new File(schoolStorage, mCode);
-        if (! schoolAppStorage.exists()) {
-            schoolAppStorage.mkdir();
-        }
-        try {
-            ZipInputStream zin = new ZipInputStream(new FileInputStream(zinFile));
-            for (ZipEntry e; (e = zin.getNextEntry()) != null; zin.closeEntry()) {
-                File file = new File(schoolAppStorage, e.getName());
-                if (e.isDirectory()) {
-                    file.mkdirs();
-                    continue;
-                }
+    public AppMeta getLocalApp(String appCode) {
+        File schoolStorage = AppUtil.getSchoolStorage(EdusohoApp.app.domain);
+        File appDir = new File(schoolStorage, appCode);
 
-                if (! isFileDirExists(file)) {
-                    continue;
-                }
-                if (AppUtil.saveStreamToFile(zin, file, false)) {
-                    Log.d(TAG, String.format("file %s is unzip", e.getName()));
-                }
+        if (appDir.exists()) {
+            StringBuilder appVersionString = FileUtils.readFile(
+                    new File(appDir, "version.json").getAbsolutePath(), "utf-8");
+            if (appVersionString == null) {
+                return null;
             }
-
-            return true;
-
-        } catch (Exception e) {
-            return false;
+            try {
+                return new Gson().fromJson(appVersionString.toString(), AppMeta.class);
+            } catch (Exception e) {
+            }
         }
+
+        return null;
     }
 
     @Override
@@ -236,10 +265,12 @@ public class ESWebViewRequestManager extends RequestManager {
         mWorkExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                String domain = EdusohoApp.app.domain;
-                File storage = getResourceStorage(domain);
-                File saveFile = saveFile(storage, request);
-                if (unZipFile(domain, saveFile)) {
+                File appZipStorage = AppUtil.getAppZipStorage();
+                File saveFile = saveFile(appZipStorage, request.getName(), request.url);
+
+                File schoolStorage = AppUtil.getSchoolStorage(EdusohoApp.app.domain);
+                File schoolAppFile = new File(schoolStorage, mCode);
+                if (AppUtil.unZipFile(schoolAppFile, saveFile)) {
                     callback.onResponse(new Response(true));
                     return;
                 }
