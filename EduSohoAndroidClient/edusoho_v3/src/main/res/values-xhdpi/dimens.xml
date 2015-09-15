@@ -27,11 +27,12 @@
 
     <dimen name="chat_media_size">38sp</dimen>
 
-    <dimen name="head_icon_large">46sp</dimen>
+    <dimen name="head_icon_large">46dp</dimen>
+    <dimen name="head_icon_large_margin">12dp</dimen>
 
-    <dimen name="head_icon_medium">40sp</dimen>
+    <dimen name="head_icon_medium">40dp</dimen>
 
-    <dimen name="head_icon_small">32sp</dimen>
+    <dimen name="head_icon_small">32dp</dimen>
 
     <dimen name="new_item_title_size">16sp</dimen>
     <dimen name="new_item_time_size">13sp</dimen>
