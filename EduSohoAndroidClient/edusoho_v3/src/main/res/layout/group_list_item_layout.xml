@@ -23,7 +23,14 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
-        <com.edusoho.kuozhi.v3.view.EduSohoGroupAvatar
+        <!--<com.edusoho.kuozhi.v3.view.EduSohoGroupAvatar-->
+            <!--android:id="@+id/group_avatar"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:layout_marginLeft="16dp"/>-->
+
+        <ImageView
             android:id="@+id/group_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
