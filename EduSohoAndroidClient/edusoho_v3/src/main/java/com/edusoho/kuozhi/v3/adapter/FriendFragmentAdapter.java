@@ -8,7 +8,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,7 +17,6 @@ import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -116,7 +114,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder.friendAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
                     itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
                     itemHolder.dividerLine = v.findViewById(R.id.divider_line);
-                    itemHolder.catelog = (TextView) v.findViewById(R.id.catalog);
+                    itemHolder.catalog = (TextView) v.findViewById(R.id.catalog);
                     v.setTag(itemHolder);
                 } else {
                     itemHolder = (ItemHolder) v.getTag();
@@ -142,10 +140,10 @@ public class FriendFragmentAdapter extends BaseAdapter {
                 position--;
                 int section = getSectionForPosition(position);
                 if (position == getPositionForSection(section)) {
-                    itemHolder.catelog.setVisibility(View.VISIBLE);
-                    itemHolder.catelog.setText(friend.getSortLetters());
+                    itemHolder.catalog.setVisibility(View.VISIBLE);
+                    itemHolder.catalog.setText(friend.getSortLetters());
                 } else {
-                    itemHolder.catelog.setVisibility(View.GONE);
+                    itemHolder.catalog.setVisibility(View.GONE);
                 }
 
                 itemHolder.friendName.setText(friend.nickname);
@@ -212,13 +210,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
         private ImageView teacherTag;
         //        private LinearLayout friendTag;
         private View dividerLine;
-        private TextView catelog;
-    }
-
-    private class SchoolAppHolder {
-        private ImageView schoolAppAvatar;
-        private TextView SchoolAppName;
-        //        private LinearLayout schoolAppTag;
-        private View dividerLine;
+        private TextView catalog;
     }
 }
