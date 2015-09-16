@@ -4,17 +4,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.fragment.AboutFragment;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
-import com.google.gson.reflect.TypeToken;
 import com.google.zxing.Result;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,6 +44,7 @@ public class QrSearchActivity extends CaptureActivity {
     private void initURLMatchType(String result) {
         mURLMatchTypes = new ArrayList<URLMatchType>();
         mURLMatchTypes.add(new LoginURLMatchType(result));
+        mURLMatchTypes.add(new SchoolURLMatchType(result));
     }
 
     protected boolean parseResult(String result) {
@@ -116,6 +109,20 @@ public class QrSearchActivity extends CaptureActivity {
             super(url);
             this.apiType = "mapi_v2";
             this.apiMethod = "User/loginWithToken";
+        }
+
+        @Override
+        public void match() {
+            new QrSchoolActivity.SchoolChangeHandler(mActivity).change(this.mUrl + "&version=2");
+        }
+    }
+
+    private class SchoolURLMatchType extends URLMatchType {
+
+        public SchoolURLMatchType(String url) {
+            super(url);
+            this.apiType = "mapi_v2";
+            this.apiMethod = "School/loginSchoolWithSite";
         }
 
         @Override

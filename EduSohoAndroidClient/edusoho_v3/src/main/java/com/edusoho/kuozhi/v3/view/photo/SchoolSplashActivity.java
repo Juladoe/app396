@@ -60,6 +60,7 @@ public class SchoolSplashActivity extends BaseActivity {
                 startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             }
         });
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
 

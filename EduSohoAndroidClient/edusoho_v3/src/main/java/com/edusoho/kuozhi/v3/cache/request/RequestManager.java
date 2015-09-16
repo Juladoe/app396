@@ -57,7 +57,7 @@ public abstract class RequestManager {
         this.mWebView = webView;
     }
 
-    public abstract void updateApp(RequestUrl requestUrl, final RequestCallback<String> callback);
+    public abstract void updateApp(RequestUrl requestUrl, final RequestCallback<Boolean> callback);
 
     public abstract void get(Request request, RequestCallback callback);
 

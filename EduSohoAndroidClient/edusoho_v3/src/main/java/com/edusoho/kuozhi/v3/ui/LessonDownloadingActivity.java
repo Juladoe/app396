@@ -414,7 +414,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 if (m3U8DbModle != null) {
                     return;
                 }
-
                 m3U8DbModle = M3U8Util.saveM3U8Model(
                         mContext, lessonItem.id, app.domain, app.loginUser.id);
                 M3U8DownService.startDown(
