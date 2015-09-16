@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Iterator;
@@ -26,11 +26,15 @@ public class SwipeAdapter extends BaseAdapter {
     private Context mContext;
     private int mLayoutId;
     private List<New> mList;
+    private DisplayImageOptions mOptions;
 
     public SwipeAdapter(Context ctx, int id, List<New> list) {
         mContext = ctx;
         mLayoutId = id;
         mList = list;
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
+                showImageForEmptyUri(R.drawable.default_avatar).
+                showImageOnFail(R.drawable.default_avatar).build();
     }
 
     public void update(List<New> list) {
@@ -106,7 +110,7 @@ public class SwipeAdapter extends BaseAdapter {
         }
 
         New item = mList.get(position);
-        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, EdusohoApp.app.mOptions);
+        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions);
         if (item.unread == 0) {
             viewHolder.bvUnread.setVisibility(View.GONE);
         } else {

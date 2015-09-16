@@ -86,7 +86,6 @@ public class ChatAdapter extends BaseAdapter {
         mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnLoading(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
         mChatOpposite = user;
     }
@@ -306,7 +305,7 @@ public class ChatAdapter extends BaseAdapter {
                 break;
         }
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick("file://" + model.content));
-        ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, mOptions);
+        ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
     }
 
@@ -327,7 +326,7 @@ public class ChatAdapter extends BaseAdapter {
         holder.ivStateError.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, mOptions, mMyImageLoadingListener);
+                ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
         ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, mOptions);
@@ -345,7 +344,7 @@ public class ChatAdapter extends BaseAdapter {
             }
         }
 
-        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, mOptions, mMyImageLoadingListener);
+        ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
     private void handlerSendAudio(final ViewHolder holder, int position) {
@@ -730,20 +729,32 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     public void updateVoiceDownloadStatus(long downId) {
-        DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
-        Cursor c = mDownloadManager.query(query);
-        if (c != null && c.moveToFirst()) {
-            String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+        Chat downloadChat = null;
+        try {
             for (Chat chat : mList) {
                 if (chat.chatId == mDownloadList.get(downId)) {
-                    chat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
-                    mChatDataSource.update(chat);
-                    mDownloadList.remove(downId);
-                    notifyDataSetChanged();
+                    downloadChat = chat;
                     break;
                 }
             }
-            c.close();
+            if (downloadChat == null) {
+                return;
+            }
+            DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
+            Cursor c = mDownloadManager.query(query);
+            if (c != null && c.moveToFirst()) {
+                String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                downloadChat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
+                c.close();
+            }
+        } catch (Exception ex) {
+            Log.d("downloader", ex.toString());
+            if (downloadChat != null) {
+                downloadChat.setDelivery(Chat.Delivery.FAILED);
+            }
         }
+        mChatDataSource.update(downloadChat);
+        mDownloadList.remove(downId);
+        notifyDataSetChanged();
     }
 }

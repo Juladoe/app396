@@ -28,6 +28,7 @@
     <dimen name="chat_media_size">38dp</dimen>
 
     <dimen name="head_icon_large">46dp</dimen>
+    <dimen name="head_icon_large_margin">6dp</dimen>
 
     <dimen name="head_icon_medium">40dp</dimen>
 
@@ -38,8 +39,6 @@
     <dimen name="chat_btn_size">32dp</dimen>
 
     <dimen name="downloading_select_size">22sp</dimen>
-
-    <dimen name="btn_loading_margin">14dp</dimen>
     <dimen name="empty_list_icon">100sp</dimen>
 
 </resources>

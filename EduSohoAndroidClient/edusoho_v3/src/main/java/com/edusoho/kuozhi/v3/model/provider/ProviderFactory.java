@@ -3,14 +3,18 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 /**
  * Created by howzhi on 15/9/9.
  */
 public class ProviderFactory {
 
-    private ProviderFactory() {}
-    private HashMap<String, ModelProvider> mProviderHashMap;
+    private ProviderFactory() {
+        mProviderHashMap = new WeakHashMap<>();
+    }
+
+    private WeakHashMap<String, ModelProvider> mProviderHashMap;
     private static ProviderFactory mFactory;
 
     public static synchronized ProviderFactory getFactory() {
@@ -21,8 +25,8 @@ public class ProviderFactory {
         return mFactory;
     }
 
-    public boolean inject(String name, ModelProvider provider) {
-        return mProviderHashMap.put(name, provider) != null;
+    private void inject(String name, ModelProvider provider) {
+        mProviderHashMap.put(name, provider);
     }
 
     public ModelProvider getProvider(String name) {

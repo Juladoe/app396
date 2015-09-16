@@ -5,33 +5,6 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/friend_item_tag"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/base_gray"
-        android:visibility="gone">
-
-        <TextView
-            android:text="好友"
-            android:textSize="12sp"
-            android:textColor="@color/grey_alpha"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginTop="16dp"
-            android:paddingLeft="16dp"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/material_grey"
-            />
-        </LinearLayout>
-
     <TextView
         android:id="@+id/catalog"
         android:layout_width="match_parent"
@@ -39,8 +12,8 @@
         android:background="@color/base_gray"
         android:textColor="@color/grey"
         android:paddingLeft="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:text="A"
         />
 

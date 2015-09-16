@@ -2,9 +2,7 @@ package com.edusoho.kuozhi.v3.ui.friend;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,16 +14,14 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
-import com.edusoho.kuozhi.v3.model.bal.FriendResult;
+import com.edusoho.kuozhi.v3.model.bal.SearchFriendResult;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.sys.*;
 import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -126,11 +122,11 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                FriendResult friendResult = mActivity.parseJsonValue(response, new TypeToken<FriendResult>() {
+                SearchFriendResult searchFriendResult = mActivity.parseJsonValue(response, new TypeToken<SearchFriendResult>() {
                 });
 
                 boolean isEmpty;
-                if ((friendResult.mobile.length == 0) && (friendResult.nickname.length == 0) && (friendResult.qq.length == 0)) {
+                if ((searchFriendResult.mobile.length == 0) && (searchFriendResult.nickname.length == 0) && (searchFriendResult.qq.length == 0)) {
                     isEmpty = true;
                     mList.setVisibility(View.GONE);
                     mNotice.setVisibility(View.VISIBLE);
@@ -141,8 +137,8 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 }
 
                 count = 0;
-                if (friendResult.mobile != null) {
-                    for (Friend friend : friendResult.mobile) {
+                if (searchFriendResult.mobile != null) {
+                    for (Friend friend : searchFriendResult.mobile) {
                         if (friend.id == app.loginUser.id) {
                             continue;
                         }
@@ -152,8 +148,8 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
                     }
                 }
-                if (friendResult.qq != null) {
-                    for (Friend friend : friendResult.qq) {
+                if (searchFriendResult.qq != null) {
+                    for (Friend friend : searchFriendResult.qq) {
                         if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)) {
                             continue;
                         } else {
@@ -163,8 +159,8 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                         }
                     }
                 }
-                if (friendResult.nickname != null) {
-                    for (Friend friend : friendResult.nickname) {
+                if (searchFriendResult.nickname != null) {
+                    for (Friend friend : searchFriendResult.nickname) {
                         if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)) {
                             continue;
                         } else {

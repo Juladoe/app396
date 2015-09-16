@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
@@ -179,16 +180,16 @@ public class SettingActivity extends ActionBarBaseActivity {
             if (service != null) {
                 service.cancelAllDownloadTask();
             }
-
         }
     };
 
     private long getCacheSize(File workSpace) {
         long totalSize = 0;
         for (File file : workSpace.listFiles()) {
-            if (file.getName().equals("videos")) {
+            if (CommonUtil.inArray(file.getName(), new String[] { "videos", "appZip" } )) {
                 continue;
             }
+
             if (!file.isDirectory()) {
                 totalSize = totalSize + file.length();
             } else {

@@ -1,14 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -110,7 +108,6 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         }
 
         public void change(String url) {
-            Log.d(TAG, url);
             final LoadDialog loading = LoadDialog.create(mActivity);
             loading.show();
 
@@ -146,13 +143,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
 
                         mApp.setCurrentSchool(site);
                         SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
-                        showSchSplash(site.name, site.splashs);
-                        mApp.registDevice(new NormalCallback() {
-                            @Override
-                            public void success(Object obj) {
-                                showSchSplash(site.name, site.splashs);
-                            }
-                        });
+                        mApp.registDevice(null);
 
                         RequestUrl requestUrl = mApp.bindUrl(Const.GET_API_TOKEN, false);
                         mApp.getUrl(requestUrl, new Response.Listener<String>() {
@@ -174,8 +165,10 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                             }
                         });
 
+                        showSchSplash(site.name, site.splashs);
+                        mActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        mActivity.finish();
                     } catch (Exception e) {
-                        e.printStackTrace();
                         CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                     }
                 }
@@ -232,5 +225,4 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             return true;
         }
     }
-
 }

@@ -1,12 +1,9 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
-import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.google.gson.reflect.TypeToken;
-
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -19,9 +16,9 @@ public class ArticleProvider extends ModelProvider {
     }
 
     public ProviderListener getMenus(RequestUrl requestUrl) {
-        ProviderListener<List<MenuItem>> responseListener = new ProviderListener<List<MenuItem>>() {
+        ProviderListener<List<LinkedHashMap>> responseListener = new ProviderListener<List<LinkedHashMap>>() {
         };
-        addRequest(requestUrl, new TypeToken<List<MenuItem>>() {
+        addRequest(requestUrl, new TypeToken<List<LinkedHashMap>>() {
         }, responseListener, responseListener);
         return responseListener;
     }

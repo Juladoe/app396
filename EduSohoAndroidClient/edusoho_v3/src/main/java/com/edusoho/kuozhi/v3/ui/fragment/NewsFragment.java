@@ -30,6 +30,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
@@ -149,8 +150,10 @@ public class NewsFragment extends BaseFragment {
                 public void onResponse(String response) {
                     SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
                     });
-                    if (schoolAppResult.length != 0) {
+                    if (schoolAppResult != null && schoolAppResult.length != 0) {
                         mSchoolAvatar = schoolAppResult[0].avatar;
+                    } else {
+                        CommonUtil.shortToast(mContext, getResources().getString(R.string.school_info_error));
                     }
                 }
             }, null);

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -35,12 +36,12 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 /**
@@ -54,8 +55,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String LESSON_IDS = "lesson_ids";
     public static final String RESULT_ID = "resultId";
 
-    private String mCurrentFragment;
+    private String mCurrentFragmentName;
     private Class mCurrentFragmentClass;
+    private Fragment mCurrentFragment;
     public static final int SHOW_TOOLS = 0001;
     public static final int HIDE_TOOLS = 0002;
 
@@ -248,6 +250,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void goToAnotherLesson(int lessonId) {
         mLessonId = lessonId;
+
+        if (mCurrentFragment != null) {
+            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            fragmentTransaction.remove(mCurrentFragment);
+            fragmentTransaction.setCustomAnimations(
+                    FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            fragmentTransaction.commit();
+        }
+
         hieToolsByAnim();
         loadLesson();
     }
@@ -297,7 +308,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         int userId = app.loginUser == null ? 0 : app.loginUser.id;
         M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
                 mContext, userId, mLessonId, app.domain, M3U8Util.FINISH);
-        if (m3U8DbModle != null) {
+        mFromCache = m3U8DbModle != null;
+        if (mFromCache) {
             try {
                 loadLessonFromCache();
             } catch (RuntimeException e) {
@@ -328,6 +340,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void loadLessonFromNet() {
+        final LoadDialog loadDialog = LoadDialog.create(this);
+        loadDialog.show();
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.COURSELESSON, true);
         requestUrl.setParams(new String[]{
                 "courseId", String.valueOf(mCourseId),
@@ -336,6 +350,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                loadDialog.dismiss();
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
                     CommonUtil.longToast(mContext, "课程数据错误！");
@@ -349,12 +364,16 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
                 switchLoadLessonContent(mLessonItem);
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loadDialog.dismiss();
+            }
+        });
 
     }
 
     private void loadLessonFromCache() {
-        mFromCache = true;
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
         String object = sqliteUtil.query(
                 String.class,
@@ -489,7 +508,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         fragmentTransaction.commit();
 
-        mCurrentFragment = fragmentName;
+        mCurrentFragment = fragment;
+        mCurrentFragmentName = fragmentName;
         mCurrentFragmentClass = fragment.getClass();
     }
 

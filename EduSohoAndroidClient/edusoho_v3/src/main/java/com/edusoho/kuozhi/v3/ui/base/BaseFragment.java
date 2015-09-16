@@ -46,22 +46,6 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
         mUIMessageQueue = new ArrayDeque<>();
     }
 
-    protected void initPorvider() {
-        try {
-            Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                Class targetClass = field.getType();
-                if (ModelProvider.class.isAssignableFrom(targetClass)) {
-                    Object target = ProviderFactory.getFactory().create(targetClass, mContext);
-                    field.set(this, target);
-                }
-            }
-        } catch (Exception e) {
-            //nothing
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +53,6 @@ public abstract class BaseFragment extends Fragment implements MessageEngine.Mes
             app = EdusohoApp.app;
         }
         app.registMsgSource(this);
-        initPorvider();
     }
 
     protected void invokeUIMessage() {

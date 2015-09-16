@@ -168,6 +168,15 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.friend.GroupListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".v3.ui.friend.ServiceListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.edusoho.kuozhi.wxapi.WXEntryActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -219,8 +228,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.edusoho.kuozhi.v3.service.EdusohoMainService" />
-
         <!-- 【必须】 信鸽receiver广播接收 -->
         <receiver
             android:name="com.tencent.android.tpush.XGPushReceiver"
@@ -250,7 +257,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.edusoho.kuozhi.v3.service.PushMessageReceiver">
+        <receiver android:name=".v3.service.PushMessageReceiver">
             <intent-filter>
                 <!-- 接收消息透传 -->
                 <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />
@@ -258,6 +265,8 @@
                 <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
             </intent-filter>
         </receiver>
+
+        <service android:name="com.edusoho.kuozhi.v3.service.EdusohoMainService" />
 
         <service
             android:name="com.tencent.android.tpush.service.XGPushService"
