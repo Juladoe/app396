@@ -1,12 +1,16 @@
 package com.edusoho.kuozhi.v3.ui.fragment.article;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -139,11 +143,30 @@ public class ArticleFragment extends BaseFragment {
                 case MenuItem.DATA:
                     break;
                 case MenuItem.MENU:
-                    Log.d("MenuItem:", menuItem.getSubMenus().toString());
+                    showMenuPop(v, menuItem);
                     break;
                 case MenuItem.WEBVIEW:
                     break;
             }
         }
     };
+
+    private void showMenuPop(View target, MenuItem menuItem) {
+        ListView contentView = new ListView(mContext);
+        ArrayAdapter<MenuItem> adapter = new ArrayAdapter(
+                mContext, android.R.layout.simple_list_item_1, menuItem.getSubMenus());
+        contentView.setAdapter(adapter);
+
+        PopupWindow popupWindow = new PopupWindow(
+                contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(target.getWidth());
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+
+        int[] location = new int[2];
+        target.getLocationOnScreen(location);
+        popupWindow.showAtLocation(
+                target, Gravity.BOTTOM, target.getWidth() * 3 / 2, target.getHeight());
+    }
 }

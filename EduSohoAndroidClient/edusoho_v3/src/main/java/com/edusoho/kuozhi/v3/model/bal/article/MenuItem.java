@@ -28,6 +28,11 @@ public class MenuItem {
         return menuItem;
     }
 
+    @Override
+    public String toString() {
+        return title;
+    }
+
     public void setSubMenus(List<MenuItem> menus) {
         this.subMenus = menus;
     }
