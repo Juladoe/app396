@@ -3,11 +3,13 @@ package com.edusoho.kuozhi.v3.service;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.service.push.CommandFactory;
 import com.edusoho.kuozhi.v3.service.push.PushCommand;
 import com.edusoho.kuozhi.v3.service.push.Pusher;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.google.gson.Gson;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
@@ -47,12 +49,23 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
-            JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContent());
-            String typeBusiness = jsonObject.getString("typeBusiness");
-            Pusher pusher = new Pusher(bundle, wrapperMessage);
-            PushCommand pushCommand = CommandFactory.Make(typeBusiness, pusher);
-            if (pushCommand != null) {
-                pushCommand.execute();
+            JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContentJson());
+            if (jsonObject.has("typeBusiness")) {
+                String typeBusiness = jsonObject.getString("typeBusiness");
+                Pusher pusher = new Pusher(bundle, wrapperMessage);
+                PushCommand pushCommand = CommandFactory.Make(typeBusiness, pusher);
+                if (pushCommand != null) {
+                    pushCommand.execute();
+                }
+            } else {
+                Gson gson = new Gson();
+                V2CustomContent v2CustomContent = gson.fromJson(wrapperMessage.getCustomContentJson(), V2CustomContent.class);
+                Pusher pusher = new Pusher(bundle, wrapperMessage);
+                pusher.setV2CustomContent(v2CustomContent);
+                PushCommand pushCommand = CommandFactory.V2Make(pusher);
+                if (pushCommand != null) {
+                    pushCommand.execute();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

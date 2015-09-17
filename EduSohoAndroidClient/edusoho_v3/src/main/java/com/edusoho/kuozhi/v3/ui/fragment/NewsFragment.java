@@ -23,16 +23,19 @@ import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
@@ -53,6 +56,7 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     public static final int HANDLE_SEND_MSG = 1;
     public static final int HANDLE_RECEIVE_MSG = 2;
+    public static final int HANDLER_RECEIVE_COURSE = 3;
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
 
@@ -212,8 +216,9 @@ public class NewsFragment extends BaseFragment {
                 case "bulletin":
                     app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
                     break;
-                case "course":
+                case PushUtil.CourseType.TYPE:
                     // TODO 打开课程
+                    CommonUtil.longToast(mContext, "tapped a course");
                     break;
             }
         }
@@ -242,6 +247,10 @@ public class NewsFragment extends BaseFragment {
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
                     WrapperXGPushTextMessage chatMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
                     getNewChatMsg(handleType, chatMessage);
+                    break;
+                case Const.ADD_COURSE_MSG:
+                    WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.COURSE_DATA);
+                    handlerReceiveCourse(newsCourseMessage);
                     break;
                 case UPDATE_UNREAD_MSG:
                     int fromId = message.data.getInt(Const.FROM_ID);
@@ -291,10 +300,15 @@ public class NewsFragment extends BaseFragment {
      * @param xgPushTextMessage 消息结构
      */
     private void getNewChatMsg(int chatType, WrapperXGPushTextMessage xgPushTextMessage) {
-        if (chatType == HANDLE_RECEIVE_MSG) {
-            handleReceiveMsg(xgPushTextMessage);
-        } else if (chatType == HANDLE_SEND_MSG) {
-            handleSendMsg(xgPushTextMessage);
+        switch (chatType) {
+            case HANDLE_RECEIVE_MSG:
+                handleReceiveMsg(xgPushTextMessage);
+                break;
+            case HANDLE_SEND_MSG:
+                handleSendMsg(xgPushTextMessage);
+                break;
+            case HANDLER_RECEIVE_COURSE:
+                break;
         }
     }
 
@@ -308,7 +322,7 @@ public class NewsFragment extends BaseFragment {
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         newModel.content = wrapperMessage.content;
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContent(), new TypeToken<CustomContent>() {
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
         });
         newModel.imgUrl = app.host + "/" + mSchoolAvatar;
         newModel.createdTime = customContent.getCreatedTime();
@@ -323,6 +337,31 @@ public class NewsFragment extends BaseFragment {
         } else {
             newModel.unread = wrapperMessage.isForeground ? 0 : bulletins.get(0).unread + 1;
             newDataSource.updateBulletin(newModel);
+            setItemToTop(newModel);
+        }
+    }
+
+    private void handlerReceiveCourse(WrapperXGPushTextMessage wrapperMessage) {
+        New newModel = new New();
+        V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
+
+        newModel.fromId = v2CustomContent.getFrom().getId();
+        newModel.belongId = app.loginUser.id;
+        newModel.title = wrapperMessage.title;
+        newModel.content = wrapperMessage.content;
+        newModel.imgUrl = v2CustomContent.getFrom().getImage();
+        newModel.createdTime = v2CustomContent.getCreatedTime();
+        newModel.setType(v2CustomContent.getBody().getType());
+
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        if (news.size() == 0) {
+            newModel.unread = 1;
+            newDataSource.create(newModel);
+            insertNew(newModel);
+        } else {
+            newModel.unread = (wrapperMessage.isForeground && NewsCourseActivity.CurrentCourseId == newModel.fromId) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(newModel);
             setItemToTop(newModel);
         }
     }

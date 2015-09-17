@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,11 +12,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -31,6 +29,7 @@ import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
+import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -190,6 +189,14 @@ public class EdusohoMainService extends Service {
                     bulletinDataSource.create(bulletin);
                     if (!xgMessage.isForeground) {
                         NotificationUtil.showBulletinNotification(EdusohoApp.app.mContext, xgMessage);
+                    }
+                    break;
+                case Const.ADD_COURSE_MSG:
+                    NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
+                    NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
+                    newsCourseDataSource.create(newsCourseEntity);
+                    if (!xgMessage.isForeground) {
+                        NotificationUtil.showNewsCourseNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
             }

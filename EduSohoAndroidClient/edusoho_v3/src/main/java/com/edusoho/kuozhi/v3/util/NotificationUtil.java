@@ -12,10 +12,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 
 import java.util.List;
 
@@ -55,7 +57,6 @@ public class NotificationUtil {
             notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
             if (isAppExit(context)) {
                 mMessage = xgMessage;
-                //notifyIntent.putExtra(Const.CHAT_DATA, xgMessage);
             }
             notifyIntent.putExtra(ChatActivity.NICKNAME, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
@@ -92,6 +93,33 @@ public class NotificationUtil {
         } catch (Exception ex) {
             Log.d("showNotification-->", ex.getMessage());
         }
+    }
+
+    public static void showNewsCourseNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(xgMessage.title)
+                        .setContentText(xgMessage.content).setAutoCancel(true);
+        NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
+        int notificationId = newsCourseEntity.getCourseId();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, newsCourseEntity.getCourseId());
+        notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
+        if (isAppExit(context)) {
+            mMessage = xgMessage;
+        }
+        notifyIntent.putExtra(ChatActivity.NICKNAME, xgMessage.title);
+        PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
+                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendIntent);
+        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        mNotificationManager.notify(notificationId, mBuilder.build());
     }
 
     public static void cancelById(int id) {

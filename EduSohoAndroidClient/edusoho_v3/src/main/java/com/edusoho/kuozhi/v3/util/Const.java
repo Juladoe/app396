@@ -82,15 +82,17 @@ public class Const {
     public static final String MEDIA_IMAGE = "图片";
     public static final String MEDIA_AUDIO = "语音";
     public static final String CHAT_DATA = "chat_data";
+    public static final String COURSE_DATA = "course_data";
     public static final String FROM_ID = "from_id";
     public static final int ADD_CHAT_MSG = 5;
+    public static final int ADD_COURSE_MSG = 6;
     /**
      * 用于离线获取，更新多条信息
      */
-    public static final int ADD_CHAT_MSGS = 6;
-    public static final int ADD_BULLETIT_MSG = 7;
-    public static final int SWITCH_TAB = 8;
-    public static final int DRAWER_REGISTER = 9;
+    public static final int ADD_CHAT_MSGS = 7;
+    public static final int ADD_BULLETIT_MSG = 8;
+    public static final int SWITCH_TAB = 9;
+    public static final int DRAWER_REGISTER = 10;
 
 
     public static final int NEW_FANS = 0x0A;

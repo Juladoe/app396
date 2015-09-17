@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
+import com.google.gson.Gson;
 import com.tencent.android.tpush.XGPushTextMessage;
 
 import java.io.Serializable;
@@ -10,7 +11,18 @@ import java.io.Serializable;
 public class WrapperXGPushTextMessage extends XGPushTextMessage implements Serializable {
     public String title;
     public String content;
+    public String customContentJson;
     public boolean isForeground = false;
+
+    public WrapperXGPushTextMessage() {
+
+    }
+
+    public WrapperXGPushTextMessage(XGPushTextMessage xgPushTextMessage) {
+        this.title = xgPushTextMessage.getTitle();
+        this.content = xgPushTextMessage.getContent();
+        this.customContentJson = xgPushTextMessage.getCustomContent();
+    }
 
     public boolean isForeground() {
         return isForeground;
@@ -38,25 +50,16 @@ public class WrapperXGPushTextMessage extends XGPushTextMessage implements Seria
         this.content = content;
     }
 
-    @Override
-    public String getCustomContent() {
-        return customContent;
+    public String getCustomContentJson() {
+        return customContentJson;
     }
 
-    public void setCustomContent(String customContent) {
-        this.customContent = customContent;
+    public void setCustomContentJson(String customContent) {
+        this.customContentJson = customContent;
     }
 
-    public String customContent;
-
-    public WrapperXGPushTextMessage() {
-
+    public V2CustomContent getV2CustomContent() {
+        Gson gson = new Gson();
+        return gson.fromJson(this.customContentJson, V2CustomContent.class);
     }
-
-    public WrapperXGPushTextMessage(XGPushTextMessage xgPushTextMessage) {
-        this.title = xgPushTextMessage.getTitle();
-        this.content = xgPushTextMessage.getContent();
-        this.customContent = xgPushTextMessage.getCustomContent();
-    }
-
 }

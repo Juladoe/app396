@@ -3,10 +3,8 @@ package com.edusoho.kuozhi.v3.util.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
@@ -20,15 +18,13 @@ import java.util.List;
  * Created by JesseHuang on 15/7/1.
  */
 public class SqliteChatUtil extends SQLiteOpenHelper {
-
-    private static final int oldVersion = 1;
-    private static final int newVersion = 2;
+    private static final int VERSION = 2;
     private static String mCurDbName;
     private static SqliteChatUtil instance;
     private Context mContext;
 
     public SqliteChatUtil(Context context, String name, SQLiteDatabase.CursorFactory factory) {
-        super(context, name, null, oldVersion);
+        super(context, name, null, VERSION);
         mContext = context;
         mCurDbName = name;
     }
@@ -59,7 +55,10 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        List<String> sqlList = getInitSql("db_init_chat.sql");
+        for (String sql : sqlList) {
+            db.execSQL(sql);
+        }
     }
 
     private ArrayList<String> getInitSql(String name) {
@@ -94,36 +93,6 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
         }
 
         return sqlList;
-    }
-
-    private void initTypeTable(SQLiteDatabase db) {
-        try {
-            String sql = "INSERT INTO TYPE VALUES(?,?)";
-            SQLiteStatement sqLiteStatement = db.compileStatement(sql);
-            int size = getTypeDatas().size();
-            db.beginTransaction();
-            for (int i = 1; i < size + 1; i++) {
-                sqLiteStatement.bindLong(1, i);
-                sqLiteStatement.bindString(2, getTypeDatas().get(i));
-                sqLiteStatement.execute();
-                sqLiteStatement.clearBindings();
-            }
-            db.setTransactionSuccessful();
-            db.endTransaction();
-        } catch (Exception ex) {
-            Log.d("init", ex.getMessage());
-        }
-    }
-
-    private SparseArray<String> getTypeDatas() {
-        SparseArray<String> typeDatas = new SparseArray<>(6);
-        typeDatas.put(1, "friend");
-        typeDatas.put(2, "teacher");
-        typeDatas.put(3, "course");
-        typeDatas.put(4, "text");
-        typeDatas.put(5, "sound");
-        typeDatas.put(6, "image");
-        return typeDatas;
     }
 
     public void close() {
