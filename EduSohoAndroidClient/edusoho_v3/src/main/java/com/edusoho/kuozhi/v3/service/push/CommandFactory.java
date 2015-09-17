@@ -32,6 +32,7 @@ public class CommandFactory {
         PushCommand pushCommand = null;
         switch (pusher.getV2CustomContent().getBody().getType()) {
             case "lesson.new":
+                pushCommand = new PushLessonNewCommand(pusher);
                 break;
             case "testpaper.reviewed":
                 break;

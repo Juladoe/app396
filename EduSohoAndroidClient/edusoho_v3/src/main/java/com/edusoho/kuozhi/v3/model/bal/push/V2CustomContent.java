@@ -91,6 +91,7 @@ public class V2CustomContent {
          */
         private String content;
         private String type;
+        private int lessonId;
 
         public void setContent(String content) {
             this.content = content;
@@ -106,6 +107,14 @@ public class V2CustomContent {
 
         public String getType() {
             return type;
+        }
+
+        public int getLessonId() {
+            return lessonId;
+        }
+
+        public void setLessonId(int lessonId) {
+            this.lessonId = lessonId;
         }
     }
 

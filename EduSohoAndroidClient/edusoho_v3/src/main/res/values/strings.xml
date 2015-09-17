@@ -44,6 +44,7 @@
     <string name="login_forget_password">忘记密码?</string>
     <string name="drawer_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
+    <string name="study_entrance">进入学习</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -101,7 +102,7 @@
     <string name="learn_more"></string>
     <string name="lesson_next">&#xe63b;</string>
     <string name="lesson_previous">&#xe63a;</string>
-    
+
     <string name="font_group">&#xe643;</string>
     <string name="font_service">&#xe60c;</string>
 

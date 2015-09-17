@@ -31,3 +31,14 @@ create table if not exists bulletin(
     createdTime integer
 );
 
+create table if not exists news_course(
+    id integer,
+    courseId integer,
+    lessonId integer,
+    title varchar(100),
+    content varchar(255),
+    fromType  varchar(50),
+    bodyType varchar(50),
+    createdTime integer
+);
+

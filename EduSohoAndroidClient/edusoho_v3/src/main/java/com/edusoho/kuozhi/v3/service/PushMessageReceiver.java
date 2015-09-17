@@ -49,7 +49,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
             bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
-            JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContent());
+            JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContentJson());
             if (jsonObject.has("typeBusiness")) {
                 String typeBusiness = jsonObject.getString("typeBusiness");
                 Pusher pusher = new Pusher(bundle, wrapperMessage);
@@ -59,7 +59,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
                 }
             } else {
                 Gson gson = new Gson();
-                V2CustomContent v2CustomContent = gson.fromJson(wrapperMessage.getCustomContent(), V2CustomContent.class);
+                V2CustomContent v2CustomContent = gson.fromJson(wrapperMessage.getCustomContentJson(), V2CustomContent.class);
                 Pusher pusher = new Pusher(bundle, wrapperMessage);
                 pusher.setV2CustomContent(v2CustomContent);
                 PushCommand pushCommand = CommandFactory.V2Make(pusher);

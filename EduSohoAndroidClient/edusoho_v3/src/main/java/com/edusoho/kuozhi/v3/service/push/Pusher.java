@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -64,6 +65,17 @@ public class Pusher {
         EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, mBundle, FriendFragment.class);
     }
 
+    public void pushLessonNew() {
+        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        if (isForeground) {
+            mWrapperMessage.isForeground = true;
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+        }
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
+    }
+
+
     public void convertWrapperMessage2V2() {
         CustomContent v1CustomContent = new CustomContent();
         v1CustomContent.setId(mV2CustomContent.getMsgId());
@@ -74,6 +86,6 @@ public class Pusher {
         v1CustomContent.setFromId(mV2CustomContent.getFrom().getId());
         v1CustomContent.setCreatedTime(mV2CustomContent.getCreatedTime());
         Gson gson = new Gson();
-        mWrapperMessage.setCustomContent(gson.toJson(v1CustomContent));
+        mWrapperMessage.setCustomContentJson(gson.toJson(v1CustomContent));
     }
 }
