@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment.article;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,9 +8,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -20,30 +18,42 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by howzhi on 15/9/8.
  */
 public class ArticleFragment extends BaseFragment {
 
+    private static final String TAG = "ArticleFragment";
+
     private ArticleProvider mArticleProvider;
-    protected ListView mMessageListView;
+    protected ExpandableListView mMessageListView;
     protected ViewGroup mMenuLayout;
     protected PtrClassicFrameLayout mMessageLayout;
+
+    private ArticleCardAdapter mArticleAdapter;
+    private View.OnClickListener mMenuClickListener = new MenuClickListener();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,8 +72,23 @@ public class ArticleFragment extends BaseFragment {
         super.initView(view);
 
         mMenuLayout = (ViewGroup) view.findViewById(R.id.message_menu_layout);
-        mMessageListView = (ListView) view.findViewById(R.id.message_list);
+        mMessageListView = (ExpandableListView) view.findViewById(R.id.message_list);
         mMessageLayout = (PtrClassicFrameLayout) view.findViewById(R.id.message_list_layout);
+
+        mMessageLayout.setLastUpdateTimeRelateObject(this);
+        mMessageLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                Log.d(TAG, "onRefreshBegin");
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
+
+        initArticleList();
     }
 
     @Override
@@ -73,7 +98,8 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void initArticleList() {
-
+        mArticleAdapter = new ArticleCardAdapter(mContext);
+        mMessageListView.setAdapter(mArticleAdapter);
     }
 
     private void initMenu() {
@@ -143,31 +169,76 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
-    private View.OnClickListener mMenuClickListener = new View.OnClickListener() {
+    private void handleClick(View v, MenuItem menuItem) {
+        if (menuItem == null) {
+            return;
+        }
+
+        switch (menuItem.type) {
+            case MenuItem.DATA:
+                insertArticles(menuItem.id);
+                break;
+            case MenuItem.MENU:
+                showMenuPop(v, menuItem);
+                break;
+            case MenuItem.WEBVIEW:
+                break;
+        }
+    }
+
+    private class MenuClickListener implements View.OnClickListener {
+
         @Override
         public void onClick(View v) {
             MenuItem menuItem = (MenuItem) v.getTag();
-            if (menuItem == null) {
-                return;
-            }
-
-            switch (menuItem.type) {
-                case MenuItem.DATA:
-                    break;
-                case MenuItem.MENU:
-                    showMenuPop(v, menuItem);
-                    break;
-                case MenuItem.WEBVIEW:
-                    break;
-            }
+            handleClick(v, menuItem);
         }
-    };
+    }
+
+    private void insertArticles(String categoryId) {
+
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
+        String url = String.format("%s?categoryId=%s&limit=%s", Const.ARTICELS, categoryId, "3");
+        RequestUrl requestUrl = app.bindNewUrl(url, true);
+        mArticleProvider.getArticles(requestUrl).success(new NormalCallback<ArticleList>() {
+            @Override
+            public void success(ArticleList articleList) {
+                loadDialog.dismiss();
+                if (articleList == null || articleList.resources.isEmpty()) {
+                    CommonUtil.longToast(mContext, "没有相关资讯!");
+                    return;
+                }
+                mArticleAdapter.addArticleChat(ArticleChat.create(articleList.resources));
+                expandArticle();
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                loadDialog.dismiss();
+            }
+        });
+    }
+
+    private void expandArticle() {
+        int count = mArticleAdapter.getGroupCount();
+        for (int i = 0; i < count; i++) {
+            mMessageListView.expandGroup(i);
+        }
+    }
 
     private void showMenuPop(View target, MenuItem menuItem) {
         View contentView = LayoutInflater.from(mContext).inflate(R.layout.article_more_menu, null);
         ListView listView = (ListView) contentView.findViewById(R.id.article_listview);
         MenuAdapter adapter = new MenuAdapter(mContext, menuItem.getSubMenus());
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MenuItem menuItem = (MenuItem) parent.getItemAtPosition(position);
+                handleClick(view, menuItem);
+            }
+        });
 
         PopupWindow popupWindow = new PopupWindow(
                 contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
