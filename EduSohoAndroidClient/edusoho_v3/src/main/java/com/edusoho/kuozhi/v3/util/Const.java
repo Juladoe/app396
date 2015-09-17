@@ -450,5 +450,5 @@ public class Const {
         资讯api
     */
     public static final String ARTICEL_MENU = "/api/article_categories";
-    public static final String ARTICELS = "/api/articles?categoryId=%s";
+    public static final String ARTICELS = "/api/articles";
 }
