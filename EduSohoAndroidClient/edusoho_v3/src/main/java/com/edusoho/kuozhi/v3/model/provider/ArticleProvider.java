@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
+
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.google.gson.reflect.TypeToken;
 import java.util.LinkedHashMap;
@@ -16,10 +18,10 @@ public class ArticleProvider extends ModelProvider {
     }
 
     public ProviderListener getMenus(RequestUrl requestUrl) {
-        ProviderListener<List<LinkedHashMap>> responseListener = new ProviderListener<List<LinkedHashMap>>() {
-        };
-        addRequest(requestUrl, new TypeToken<List<LinkedHashMap>>() {
-        }, responseListener, responseListener);
-        return responseListener;
+        return addSimpleGetRequest(requestUrl, new TypeToken<List<LinkedHashMap>>(){});
+    }
+
+    public ProviderListener getArticles(RequestUrl requestUrl) {
+        return addSimpleGetRequest(requestUrl, new TypeToken<ArticleList>(){});
     }
 }

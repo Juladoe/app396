@@ -46,11 +46,22 @@ public abstract class ModelProvider {
         }
     }
 
-    public <T> void addRequest(
-            RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
+    public <T> ProviderListener<T> addSimpleGetRequest(
+            RequestUrl requestUrl, TypeToken<T> typeToken) {
+        ProviderListener<T> providerListener = new ProviderListener<T>() {
+        };
+        addRquestToVolley(Request.Method.GET, requestUrl, typeToken, providerListener, providerListener);
+
+        return providerListener;
+    }
+
+    private <T> void addRquestToVolley(
+            int method, RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener
+    ) {
+
         mVolley.getRequestQueue();
         BaseVolleyRequest request = new BaseVolleyRequest(
-                Request.Method.GET, requestUrl, responseListener, errorListener) {
+                method, requestUrl, responseListener, errorListener) {
             @Override
             protected T getResponseData(NetworkResponse response) {
                 T value = null;
@@ -68,25 +79,13 @@ public abstract class ModelProvider {
         mVolley.addToRequestQueue(request);
     }
 
-    public <T> void addPostRequest(
+    public <T> void addRequest(
             RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
-        mVolley.getRequestQueue();
-        BaseVolleyRequest request = new BaseVolleyRequest(
-                Request.Method.POST, requestUrl, responseListener, errorListener) {
-            @Override
-            protected T getResponseData(NetworkResponse response) {
-                T value = null;
-                try {
-                    value = mGson.fromJson(
-                            new String(response.data, "UTF-8"), typeToken.getType());
-                } catch (Exception e) {
-                }
+        addRquestToVolley(Request.Method.GET, requestUrl, typeToken, responseListener, errorListener);
+    }
 
-                return value;
-            }
-        };
-
-        request.setTag(requestUrl.url);
-        mVolley.addToRequestQueue(request);
+    public <T> void addPostRequest(
+            RequestUrl requestUrl, TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
+        addRquestToVolley(Request.Method.POST, requestUrl, typeToken, responseListener, errorListener);
     }
 }
