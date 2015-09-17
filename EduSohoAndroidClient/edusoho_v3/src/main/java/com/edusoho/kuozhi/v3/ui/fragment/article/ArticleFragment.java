@@ -1,13 +1,18 @@
 package com.edusoho.kuozhi.v3.ui.fragment.article;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -25,6 +30,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -64,6 +70,10 @@ public class ArticleFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initMenu();
+    }
+
+    private void initArticleList() {
+
     }
 
     private void initMenu() {
@@ -113,11 +123,13 @@ public class ArticleFragment extends BaseFragment {
 
     private void initArticleMenuItem(List<MenuItem> menuItems) {
         mMenuLayout.removeAllViews();
+        int childWidth = mMenuLayout.getWidth() / menuItems.size();
         for (MenuItem item : menuItems) {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.weight = 1;
+                    childWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
             TextView textView = new TextView(mContext);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            textView.setBackgroundResource(R.drawable.article_menu_btn_bg);
             textView.setGravity(Gravity.CENTER);
             int padding = mContext.getResources().getDimensionPixelSize(R.dimen.base_large_size);
             textView.setPadding(padding, padding, padding, padding);
@@ -127,7 +139,7 @@ public class ArticleFragment extends BaseFragment {
             textView.setLayoutParams(layoutParams);
 
             textView.setOnClickListener(mMenuClickListener);
-            mMenuLayout.addView(textView);
+            mMenuLayout.addView(textView, layoutParams);
         }
     }
 
@@ -152,21 +164,60 @@ public class ArticleFragment extends BaseFragment {
     };
 
     private void showMenuPop(View target, MenuItem menuItem) {
-        ListView contentView = new ListView(mContext);
-        ArrayAdapter<MenuItem> adapter = new ArrayAdapter(
-                mContext, android.R.layout.simple_list_item_1, menuItem.getSubMenus());
-        contentView.setAdapter(adapter);
+        View contentView = LayoutInflater.from(mContext).inflate(R.layout.article_more_menu, null);
+        ListView listView = (ListView) contentView.findViewById(R.id.article_listview);
+        MenuAdapter adapter = new MenuAdapter(mContext, menuItem.getSubMenus());
+        listView.setAdapter(adapter);
 
         PopupWindow popupWindow = new PopupWindow(
-                contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         popupWindow.setWidth(target.getWidth());
+        popupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.article_more_menu_bg));
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
 
         int[] location = new int[2];
         target.getLocationOnScreen(location);
         popupWindow.showAtLocation(
-                target, Gravity.BOTTOM, target.getWidth() * 3 / 2, target.getHeight());
+                target, Gravity.BOTTOM | Gravity.LEFT, location[0] - 10, target.getHeight() + 10);
+    }
+
+    private class MenuAdapter extends BaseAdapter {
+
+        private Context mContext;
+        private List<MenuItem> mMenuItems;
+
+        public MenuAdapter(Context context, List<MenuItem> menuItems) {
+            this.mContext = context;
+            this.mMenuItems = menuItems;
+        }
+
+        @Override
+        public MenuItem getItem(int position) {
+            return mMenuItems.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.article_menu_list_item, null);
+            }
+
+            TextView textView = (TextView)convertView;
+            textView.setText(mMenuItems.get(position).title);
+            return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return mMenuItems.size();
+        }
     }
 }
