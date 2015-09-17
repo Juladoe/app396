@@ -60,7 +60,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
         mAdapter = new GroupListAdapter();
         groupList.setAdapter(mAdapter);
-        loadGroup();
+        loadGroup();   //todo 取数据 加loading
     }
 
     private void loadGroup() {
@@ -139,6 +139,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 groupItemHolder.groupAvatar = (ImageView) view.findViewById(R.id.group_avatar);
                 groupItemHolder.groupName = (TextView) view.findViewById(R.id.group_name);
                 groupItemHolder.catalog = (TextView) view.findViewById(R.id.group_item_catalog);
+                groupItemHolder.dividerLine = view.findViewById(R.id.divider_line);
 
                 view.setTag(groupItemHolder);
             } else {
@@ -157,6 +158,16 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 groupItemHolder.catalog.setText(group.getSortLetters());
             } else {
                 groupItemHolder.catalog.setVisibility(View.GONE);
+            }
+
+            if (position != mGroupList.size()-1) {
+                if (getSectionForPosition(position) != getSectionForPosition(position+1)) {
+                    groupItemHolder.dividerLine.setVisibility(View.GONE);
+                } else {
+                    groupItemHolder.dividerLine.setVisibility(View.VISIBLE);
+                }
+            } else {
+                groupItemHolder.dividerLine.setVisibility(View.GONE);
             }
 
             return view;
@@ -191,6 +202,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
             ImageView groupAvatar;
             TextView groupName;
             TextView catalog;
+            View dividerLine;
         }
     }
 }
