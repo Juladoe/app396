@@ -48,7 +48,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
         try {
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);
-            bundle.putSerializable(Const.CHAT_DATA, wrapperMessage);
+            bundle.putSerializable(Const.GET_PUSH_DATA, wrapperMessage);
             JSONObject jsonObject = new JSONObject(wrapperMessage.getCustomContentJson());
             if (jsonObject.has("typeBusiness")) {
                 String typeBusiness = jsonObject.getString("typeBusiness");

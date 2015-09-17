@@ -235,7 +235,7 @@ public class EdusohoMainService extends Service {
                         newArrayList.add(newModel);
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(Const.CHAT_DATA, newArrayList);
+                    bundle.putSerializable(Const.GET_PUSH_DATA, newArrayList);
                     EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSGS, bundle, NewsFragment.class);
                 }
             }

@@ -149,7 +149,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.ADD_BULLETIT_MSG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                 Bulletin bulletin = new Bulletin(wrapperMessage);
                 mBulletinAdapter.addItem(bulletin);
                 break;

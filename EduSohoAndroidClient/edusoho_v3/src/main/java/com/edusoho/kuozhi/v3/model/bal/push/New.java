@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.model.bal.push;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
-import com.tencent.android.tpush.XGPushTextMessage;
 
 import java.io.Serializable;
 
@@ -134,8 +133,8 @@ public class New implements Serializable {
         belongId = EdusohoApp.app.loginUser.id;
     }
 
-    public New(XGPushTextMessage message) {
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContent(), new TypeToken<CustomContent>() {
+    public New(WrapperXGPushTextMessage message) {
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
         });
         fromId = customContent.getFromId();
         title = message.getTitle();

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -118,6 +119,11 @@ public class SwipeAdapter extends BaseAdapter {
             viewHolder.bvUnread.setText(String.valueOf(item.unread));
         }
 
+        if (PushUtil.CourseType.LESSON_PUBLISH.equals(item.type)) {
+            viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.news_course_title));
+        } else {
+            viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.base_black_87));
+        }
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
         viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));

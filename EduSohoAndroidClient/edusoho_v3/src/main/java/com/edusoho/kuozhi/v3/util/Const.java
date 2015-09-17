@@ -81,8 +81,7 @@ public class Const {
     public static final String AUDIO_EXTENSION = ".amr";
     public static final String MEDIA_IMAGE = "图片";
     public static final String MEDIA_AUDIO = "语音";
-    public static final String CHAT_DATA = "chat_data";
-    public static final String COURSE_DATA = "course_data";
+    public static final String GET_PUSH_DATA = "get_push_data";
     public static final String FROM_ID = "from_id";
     public static final int ADD_CHAT_MSG = 5;
     public static final int ADD_COURSE_MSG = 6;

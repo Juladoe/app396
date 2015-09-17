@@ -245,11 +245,11 @@ public class NewsFragment extends BaseFragment {
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
-                    WrapperXGPushTextMessage chatMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                    WrapperXGPushTextMessage chatMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     getNewChatMsg(handleType, chatMessage);
                     break;
                 case Const.ADD_COURSE_MSG:
-                    WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.COURSE_DATA);
+                    WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handlerReceiveCourse(newsCourseMessage);
                     break;
                 case UPDATE_UNREAD_MSG:
@@ -258,13 +258,14 @@ public class NewsFragment extends BaseFragment {
                     List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
                     if (news.size() > 0) {
                         New newModel = news.get(0);
+
                         newModel.unread = 0;
                         newDataSource.update(newModel);
                         updateNew(newModel);
                     }
                     break;
                 case Const.ADD_BULLETIT_MSG:
-                    WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.CHAT_DATA);
+                    WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handleBulletinMsg(bulletinMessage);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
@@ -279,7 +280,7 @@ public class NewsFragment extends BaseFragment {
                     }
                     break;
                 case Const.ADD_CHAT_MSGS:
-                    ArrayList<New> newArrayList = (ArrayList<New>) message.data.get(Const.CHAT_DATA);
+                    ArrayList<New> newArrayList = (ArrayList<New>) message.data.get(Const.GET_PUSH_DATA);
                     for (final New newModel : newArrayList) {
                         if (mSwipeAdapter.getContainItem(newModel)) {
                             updateNew(newModel);

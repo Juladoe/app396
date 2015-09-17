@@ -31,7 +31,7 @@ public class CommandFactory {
     public static PushCommand V2Make(Pusher pusher) {
         PushCommand pushCommand = null;
         switch (pusher.getV2CustomContent().getBody().getType()) {
-            case "lesson.new":
+            case "lesson.publish":
                 pushCommand = new PushLessonNewCommand(pusher);
                 break;
             case "testpaper.reviewed":
