@@ -1,78 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_bg">
+    android:background="@color/grey_bg"
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/material_grey"
-        />
+        android:background="@color/material_grey" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:background="@color/base_gray">
+        android:background="@color/base_gray"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/search_friend_btn"
-            android:textColor="@color/gray"
-            android:text="搜索昵称/手机/QQ号"
-            android:drawableLeft="@drawable/icon_edittext_search"
-            android:drawablePadding="8dp"
-            android:paddingLeft="96dp"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:background="@drawable/search_friend_bg"
-            android:textSize="14sp"
-            android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/search_friend_bg"
+            android:drawableLeft="@drawable/icon_edittext_search"
+            android:drawablePadding="8dp"
             android:gravity="center_vertical"
-            />
-        </RelativeLayout>
+            android:paddingLeft="96dp"
+            android:text="搜索昵称/手机/QQ号"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/material_grey"
-        />
+        android:background="@color/material_grey" />
 
     <RelativeLayout
         android:id="@+id/discussion_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        >
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
         <com.edusoho.kuozhi.v3.view.EduSohoIconView
             android:id="@+id/discussion_group_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/font_group"
-            android:textSize="@dimen/xxx_large_font_size"
-            android:textColor="@color/white"
+            android:background="@color/material_green"
             android:gravity="center"
-            android:background="@color/material_green"/>
+            android:text="@string/font_group"
+            android:textColor="@color/white"
+            android:textSize="@dimen/xxx_large_font_size" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/discussion_group_icon"
             android:layout_alignTop="@id/discussion_group_icon"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="12dp"
-            android:textSize="16sp"
-            android:textColor="@color/grey"
+            android:layout_toRightOf="@id/discussion_group_icon"
             android:text="讨论组"
-            />
+            android:textColor="@color/grey"
+            android:textSize="16sp" />
 
 
     </RelativeLayout>
@@ -80,48 +75,45 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/material_grey"
         android:layout_marginLeft="16dp"
-        />
+        android:background="@color/material_grey" />
 
     <RelativeLayout
         android:id="@+id/service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
         <com.edusoho.kuozhi.v3.view.EduSohoIconView
             android:id="@+id/service_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/font_service"
-            android:textSize="@dimen/xxx_large_font_size"
-            android:textColor="@color/white"
+            android:background="@color/blue_alpha"
             android:gravity="center"
-            android:background="@color/blue_alpha"/>
+            android:text="@string/font_service"
+            android:textColor="@color/white"
+            android:textSize="@dimen/xxx_large_font_size" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/service_icon"
             android:layout_alignTop="@id/service_icon"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="12dp"
-            android:textSize="16sp"
-            android:textColor="@color/grey"
+            android:layout_toRightOf="@id/service_icon"
             android:text="服务号"
-            />
+            android:textColor="@color/grey"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/material_grey"
-        />
+        android:background="@color/material_grey" />
 
 
 </LinearLayout>

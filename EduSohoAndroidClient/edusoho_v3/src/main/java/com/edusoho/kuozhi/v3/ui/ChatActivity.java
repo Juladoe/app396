@@ -294,7 +294,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         CustomContent cc = getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND);
         cc.setFromId(mFromId);
         cc.setImgUrl(mFromUserInfo.mediumAvatar);
-        message.setCustomContent(gson.toJson(cc));
+        message.setCustomContentJson(gson.toJson(cc));
         message.isForeground = true;
         notifyNewFragmentListView2Update(message);
 
@@ -356,7 +356,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      */
     private void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.CHAT_DATA, message);
+        bundle.putSerializable(Const.GET_PUSH_DATA, message);
         bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_MSG);
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
@@ -839,7 +839,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             CustomContent cc = getCustomContent(type, TypeBusinessEnum.FRIEND);
             cc.setFromId(mFromId);
             cc.setImgUrl(mFromUserInfo.mediumAvatar);
-            message.setCustomContent(gson.toJson(cc));
+            message.setCustomContentJson(gson.toJson(cc));
             message.isForeground = true;
             notifyNewFragmentListView2Update(message);
 
@@ -1042,7 +1042,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         try {
             MessageType messageType = message.type;
             WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
-            CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContent(), new TypeToken<CustomContent>() {
+            CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
             });
             if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
                     customContent.getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {

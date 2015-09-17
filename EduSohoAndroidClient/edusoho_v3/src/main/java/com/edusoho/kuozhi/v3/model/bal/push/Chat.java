@@ -192,7 +192,7 @@ public class Chat implements Serializable {
     }
 
     public Chat(WrapperXGPushTextMessage message) {
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContent(), new TypeToken<CustomContent>() {
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
         });
         id = customContent.getId();
         fromId = customContent.getFromId();
