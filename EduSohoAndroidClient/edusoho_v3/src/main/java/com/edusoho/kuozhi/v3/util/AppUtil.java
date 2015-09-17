@@ -37,6 +37,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,11 +48,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by JesseHuang on 15/4/26.
  */
 public class AppUtil {
+
+    public static final String TAG = "AppUtil";
 
     public static int parseInt(String value) {
         int i = 0;
@@ -546,11 +551,72 @@ public class AppUtil {
         return cacheDir;
     }
 
+    public static File getAppZipStorage()
+    {
+        File storage = AppUtil.getAppStorage();
+        File srcDir = new File(storage, "appZip");
+        if (!srcDir.exists()) {
+            srcDir.mkdirs();
+        }
+
+        return srcDir;
+    }
+
     public static File getSystemStorage() {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             return Environment.getDataDirectory();
         }
         return Environment.getExternalStorageDirectory();
+    }
+
+    public static boolean unZipFile(File outFile, InputStream zinInputStream) {
+        try {
+            ZipInputStream zin = new ZipInputStream(zinInputStream);
+            for (ZipEntry e; (e = zin.getNextEntry()) != null; zin.closeEntry()) {
+                File file = new File(outFile, e.getName());
+                if (e.isDirectory()) {
+                    file.mkdirs();
+                    continue;
+                }
+
+                if (! isFileDirExists(file)) {
+                    continue;
+                }
+                if (AppUtil.saveStreamToFile(zin, file, false)) {
+                    Log.d(TAG, String.format("file %s is unzip", e.getName()));
+                }
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                zinInputStream.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public static boolean unZipFile(File outFile, File zinFile) {
+        if (! outFile.exists()) {
+            outFile.mkdir();
+        }
+
+        try {
+            return unZipFile(outFile, new FileInputStream(zinFile));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static boolean isFileDirExists(File file) {
+        if (! file.getParentFile().exists()) {
+            return file.getParentFile().mkdirs();
+        }
+
+        return true;
     }
 
     /**

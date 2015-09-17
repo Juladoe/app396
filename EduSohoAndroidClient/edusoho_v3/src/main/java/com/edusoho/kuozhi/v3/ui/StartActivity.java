@@ -98,7 +98,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 SchoolResult schoolResult = parseJsonValue(response.toString(), new TypeToken<SchoolResult>() {
                 });
 
-                if (schoolResult == null) {
+                if (schoolResult == null || schoolResult.site == null) {
                     showSchoolErrorDlg();
                     return;
                 }
@@ -123,9 +123,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         String min = versionRange.get("min");
         String max = versionRange.get("max");
 
-        Log.d(null, "api max version" + max + " min " + min);
         int result = CommonUtil.compareVersion(app.apiVersion, min);
-
         if (result == Const.LOW_VERSIO) {
             PopupDialog popupDialog = PopupDialog.createMuilt(
                     mContext,

@@ -13,16 +13,14 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.sys.Token;
+import com.edusoho.kuozhi.v3.model.sys.*;
+import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -33,7 +31,6 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -167,8 +164,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                                 response, new TypeToken<SchoolResult>() {
                                 }.getType());
 
-                        if (schoolResult == null) {
-                            PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
+                        if (schoolResult == null || schoolResult.site == null) {
+                            handlerError(response);
                             return;
                         }
                         final School site = schoolResult.site;
@@ -226,6 +223,18 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 }
             }
         });
+    }
+
+    private void handlerError(String errorStr) {
+        try {
+            ErrorResult result = app.gson.fromJson(errorStr, new TypeToken<ErrorResult>() {}.getType());
+            if (result != null) {
+                Error error = result.error;
+                PopupDialog.createNormal(mContext, "系统提示", error.message).show();
+            }
+        } catch (Exception e) {
+            PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
+        }
     }
 
     public boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {

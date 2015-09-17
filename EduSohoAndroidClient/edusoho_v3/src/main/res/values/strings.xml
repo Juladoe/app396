@@ -5,8 +5,8 @@
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
     <string name="api_version">3.0.0</string>
-    <string name="apk_version">3.0.0</string>
-    <string name="apk_code">20</string>
+    <string name="apk_version">3.0.1</string>
+    <string name="apk_code">21</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
     <string name="image_cache_path">ImageLoaderCache</string>
@@ -130,7 +130,7 @@
     <string name="testpaper_reviewing">请耐心等待老师批阅，老师批阅后可查看全部考试结果</string>
     <string name="course_no_teacher">该课程尚未设置教师</string>
     <string name="course_no_review">还没有评价哦~</string>
-    <string name="app_code">edusoho</string>
+    <string name="app_code">edusohov3</string>
 
     <string name="show_live_in_school_room">0</string>
 

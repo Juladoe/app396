@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -64,18 +65,17 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
     private void loadGroup() {
         tmpList = new ArrayList<DiscussionGroup>();
+        String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 2; i < 10; i++) {
             tmpList.add(new DiscussionGroup("今晚打dao了 " + i + " 只老虎"));
         }
         for (int i = 5; i < 7; i++) {
             tmpList.add(new DiscussionGroup("明天 " + i + " 只老虎"));
         }
-        tmpList.add(new DiscussionGroup("MMMMMMMMMM"));
-        tmpList.add(new DiscussionGroup("6435fgahsgg"));
-        tmpList.add(new DiscussionGroup("baslkdjf5"));
-        tmpList.add(new DiscussionGroup("lKVad54adBb87E"));
-        tmpList.add(new DiscussionGroup("sd5fb13v5awbff"));
-        tmpList.add(new DiscussionGroup("vdf9wuv"));
+        for (int i = 0;i<26;i++){
+            tmpList.add(new DiscussionGroup(string.charAt(i)+"1号组"));
+            tmpList.add(new DiscussionGroup(string.charAt(i)+"2号组"));
+        }
 
 
         setSortChar(tmpList);
@@ -135,7 +135,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
             if (view == null) {
                 groupItemHolder = new GroupItemHolder();
                 view = mLayoutInflater.inflate(R.layout.group_list_item_layout, null);
-                groupItemHolder.groupAvatar = (EduSohoGroupAvatar) view.findViewById(R.id.group_avatar);
+//                groupItemHolder.groupAvatar = (EduSohoGroupAvatar) view.findViewById(R.id.group_avatar);
+                groupItemHolder.groupAvatar = (ImageView) view.findViewById(R.id.group_avatar);
                 groupItemHolder.groupName = (TextView) view.findViewById(R.id.group_name);
                 groupItemHolder.catalog = (TextView) view.findViewById(R.id.group_item_catalog);
 
@@ -146,7 +147,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
             DiscussionGroup group = mGroupList.get(position);
 
-            generateGroupAvatar(groupItemHolder, position + 2);
+//            generateGroupAvatar(groupItemHolder, position + 2);
+            groupItemHolder.groupAvatar.setImageResource(R.drawable.default_avatar);
             groupItemHolder.groupName.setText(group.groupName);
 
             int section = getSectionForPosition(position);
@@ -160,11 +162,11 @@ public class GroupListActivity extends ActionBarBaseActivity {
             return view;
         }
 
-        private void generateGroupAvatar(GroupItemHolder groupItemHolder, int i) {
-            for (int count = 0; count < i; count++) {
-                groupItemHolder.groupAvatar.addAvatar(R.drawable.default_avatar);
-            }
-        }
+//        private void generateGroupAvatar(GroupItemHolder groupItemHolder, int i) {
+//            for (int count = 0; count < i; count++) {
+//                groupItemHolder.groupAvatar.addAvatar(R.drawable.default_avatar);
+//            }
+//        }
 
         public int getSectionForPosition(int position) {
             DiscussionGroup group = mGroupList.get(position);
@@ -185,7 +187,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
         }
 
         private class GroupItemHolder {
-            EduSohoGroupAvatar groupAvatar;
+//            EduSohoGroupAvatar groupAvatar;
+            ImageView groupAvatar;
             TextView groupName;
             TextView catalog;
         }

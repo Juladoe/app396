@@ -322,7 +322,9 @@ public class EdusohoApp extends Application {
                         app.saveConfig();
                     }
 
-                    normalCallback.success(null);
+                    if (normalCallback != null) {
+                        normalCallback.success(null);
+                    }
                 } catch (Exception e) {
                     Log.e(null, e.toString());
                 }
