@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -33,6 +35,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
     private LayoutInflater mLayoutInflater;
     private ServiceListAdapter mAdapter;
     private FriendProvider mProvider;
+    private FrameLayout mLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +43,18 @@ public class ServiceListActivity extends ActionBarBaseActivity {
         setBackMode(BACK, "服务号");
         setContentView(R.layout.service_list_layout);
         serviceList = (ListView) findViewById(R.id.service_list);
+        mLoading = (FrameLayout) findViewById(R.id.service_list_loading);
         mAdapter = new ServiceListAdapter();
         serviceList.setAdapter(mAdapter);
         mProvider = new FriendProvider(mContext);
 
-        loadSchoolApps();
+        loadSchoolApps().then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object obj) {
+                mLoading.setVisibility(View.GONE);
+                return null;
+            }
+        });
 
         serviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -108,7 +118,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             return i;
         }
 
-        public void clearList(){
+        public void clearList() {
             mServiceList.clear();
             notifyDataSetChanged();
         }
@@ -119,7 +129,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(int position, View view, ViewGroup viewGroup) {
             final SchoolAppHolder schoolAppHolder;
             if (view == null) {
                 view = mLayoutInflater.inflate(R.layout.item_type_school_app, null);
@@ -132,12 +142,19 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                 schoolAppHolder = (SchoolAppHolder) view.getTag();
             }
 
-            final SchoolApp schoolApp = mServiceList.get(i);
+            final SchoolApp schoolApp = mServiceList.get(position);
 
             if (!TextUtils.isEmpty(schoolApp.avatar)) {
                 ImageLoader.getInstance().displayImage(app.host + "/" + schoolApp.avatar, schoolAppHolder.schoolAppAvatar, app.mOptions);
             }
             schoolAppHolder.SchoolAppName.setText(schoolApp.name);
+
+            if (position != mServiceList.size()-1) {
+                schoolAppHolder.dividerLine.setVisibility(View.VISIBLE);
+            } else {
+                schoolAppHolder.dividerLine.setVisibility(View.GONE);
+            }
+
             return view;
         }
 

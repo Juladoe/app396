@@ -65,7 +65,6 @@
 
     </RelativeLayout>
 
-
     <View
         android:id="@+id/divider_line"
         android:background="@color/material_grey"
