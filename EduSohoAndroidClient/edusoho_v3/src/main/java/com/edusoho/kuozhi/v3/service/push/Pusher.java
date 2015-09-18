@@ -9,9 +9,12 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
+import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.Gson;
 
@@ -75,6 +78,24 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
+    public void pushArticleCreate() {
+        boolean isForeground = EdusohoApp.app.isForeground(ServiceProviderActivity.class.getName());
+        if (isForeground && ServiceProviderActivity.ARTICLE.equals(ServiceProviderActivity.SERVICE_NAME)) {
+            mWrapperMessage.isForeground = true;
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_ARTICLE_CREATE_MAG, mBundle, ArticleFragment.class);
+        }
+
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_ARTICLE_CREATE_MAG, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
+
+        /*boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        if (isForeground) {
+            mWrapperMessage.isForeground = true;
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+        }
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);*/
+    }
 
     public void convertWrapperMessage2V2() {
         CustomContent v1CustomContent = new CustomContent();

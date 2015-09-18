@@ -85,6 +85,7 @@ public class Const {
     public static final String FROM_ID = "from_id";
     public static final int ADD_CHAT_MSG = 5;
     public static final int ADD_COURSE_MSG = 6;
+    public static final int ADD_ARTICLE_CREATE_MAG = 12;
     /**
      * 用于离线获取，更新多条信息
      */

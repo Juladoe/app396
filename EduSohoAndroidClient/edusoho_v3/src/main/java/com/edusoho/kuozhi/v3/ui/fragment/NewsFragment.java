@@ -29,7 +29,9 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
+import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -220,6 +222,14 @@ public class NewsFragment extends BaseFragment {
                     // TODO 打开课程
                     CommonUtil.longToast(mContext, "tapped a course");
                     break;
+                case "news.create":
+                    app.mEngine.runNormalPlugin("ServiceProviderActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ServiceProviderActivity.FRAGMENT, "ArticleFragment");
+                        }
+                    });
+                    break;
             }
         }
     };
@@ -289,6 +299,10 @@ public class NewsFragment extends BaseFragment {
                         }
                     }
                     break;
+                case Const.ADD_ARTICLE_CREATE_MAG:
+                    WrapperXGPushTextMessage articleCreateMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    handlerReceiveArticleMessage(articleCreateMessage);
+                    break;
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
@@ -338,6 +352,31 @@ public class NewsFragment extends BaseFragment {
         } else {
             newModel.unread = wrapperMessage.isForeground ? 0 : bulletins.get(0).unread + 1;
             newDataSource.updateBulletin(newModel);
+            setItemToTop(newModel);
+        }
+    }
+
+    private void handlerReceiveArticleMessage(WrapperXGPushTextMessage wrapperMessage) {
+        New newModel = new New();
+        V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
+
+        newModel.fromId = v2CustomContent.getFrom().getId();
+        newModel.belongId = app.loginUser.id;
+        newModel.title = wrapperMessage.title;
+        newModel.content = wrapperMessage.content;
+        newModel.imgUrl = v2CustomContent.getFrom().getImage();
+        newModel.createdTime = v2CustomContent.getCreatedTime();
+        newModel.setType(v2CustomContent.getBody().getType());
+
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        if (news.size() == 0) {
+            newModel.unread = 1;
+            newDataSource.create(newModel);
+            insertNew(newModel);
+        } else {
+            newModel.unread = (wrapperMessage.isForeground) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(newModel);
             setItemToTop(newModel);
         }
     }
@@ -400,7 +439,10 @@ public class NewsFragment extends BaseFragment {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_BULLETIT_MSG, source), new MessageType(Const.ADD_CHAT_MSGS, source),
+        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source),
+                new MessageType(Const.ADD_BULLETIT_MSG, source),
+                new MessageType(Const.ADD_CHAT_MSGS, source),
+                new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
                 new MessageType(UPDATE_UNREAD_BULLETIN, source)};
