@@ -25,7 +25,7 @@ public class NewsCourseEntity {
         V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
         this.id = v2CustomContent.getMsgId();
         this.courseId = v2CustomContent.getFrom().getId();
-        this.lessonId = v2CustomContent.getBody().getLessonId();
+        this.lessonId = v2CustomContent.getBody().getId();
         this.title = xgMessage.getTitle();
         this.content = xgMessage.getContent();
         this.fromType = v2CustomContent.getFrom().getType();
