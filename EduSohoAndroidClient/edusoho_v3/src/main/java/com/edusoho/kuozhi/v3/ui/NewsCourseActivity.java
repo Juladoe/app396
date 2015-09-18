@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -100,14 +99,13 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
                 int count = getNewsCourseList(mStart).size();
-                Log.d("checkCanDoRefresh", canDoRefresh + "|start:" + mStart + "|count:" + count);
                 return count > 0 && canDoRefresh;
             }
         });
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
-        return newsCourseDataSource.getNewsCourse(start, 1, mCourseId, app.loginUser.id);
+        return newsCourseDataSource.getNewsCourse(start, Const.LIMIT, mCourseId, app.loginUser.id);
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
