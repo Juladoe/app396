@@ -125,7 +125,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private ChatDataSource mChatDataSource;
     private int mSendTime;
     private int mStart = 0;
-    private static final int LIMIT = 15;
     private File mCameraFile;
 
     public static int CurrentFromId = 0;
@@ -267,7 +266,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     private ArrayList<Chat> getChatList(int start) {
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, mToId, mFromId, mToId);
-        ArrayList<Chat> mList = mChatDataSource.getChats(start, LIMIT, selectSql);
+        ArrayList<Chat> mList = mChatDataSource.getChats(start, Const.NEWS_LIMIT, selectSql);
         Collections.reverse(mList);
         return mList;
     }

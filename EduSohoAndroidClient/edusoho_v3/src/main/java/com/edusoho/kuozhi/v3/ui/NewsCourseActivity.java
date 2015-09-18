@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 
+import java.util.Collections;
 import java.util.List;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -105,7 +106,9 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
-        return newsCourseDataSource.getNewsCourse(start, Const.LIMIT, mCourseId, app.loginUser.id);
+        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourse(start, Const.NEWS_LIMIT, mCourseId, app.loginUser.id);
+        Collections.reverse(entities);
+        return entities;
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {

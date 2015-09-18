@@ -46,7 +46,7 @@ public class NewsCourseDataSource {
         try {
             list = new ArrayList<>();
             String sql = String.format("COURSEID = %d AND USERID = %d", courseId, userId);
-            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CREATEDTIME ",
+            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CREATEDTIME DESC",
                     String.format("%d, %d", start, limit));
             while (cursor.moveToNext()) {
                 list.add(cursorToEntity(cursor));
