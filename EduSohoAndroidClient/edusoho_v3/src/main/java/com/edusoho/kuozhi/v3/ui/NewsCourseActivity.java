@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +26,11 @@ import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 
 import java.util.List;
 
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+
 /**
  * Created by JesseHuang on 15/9/16.
  */
@@ -33,10 +39,13 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     public static final String COURSE_ID = "course_id";
     public static final String[] ACTIONS = {"查看详情", "进入学习"};
     private int mCourseId;
+    private int mStart = 0;
 
+    private PtrClassicFrameLayout mPtrFrame;
     private ListView lvCourseNews;
     private TextView tvStudyEntrance;
     private NewsCourseAdapter mAdapter;
+    private NewsCourseDataSource newsCourseDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +58,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private void initViews() {
         lvCourseNews = (ListView) findViewById(R.id.lv_course_news);
         tvStudyEntrance = (TextView) findViewById(R.id.tv_study_entrance);
+        mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
         tvStudyEntrance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,11 +80,42 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         }
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         mCourseId = intent.getIntExtra(COURSE_ID, 0);
-        NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<NewsCourseEntity> newsCourseEntityList = newsCourseDataSource.getNewsCourse(0, Const.LIMIT, mCourseId, app.loginUser.id);
+        newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(mStart);
         mAdapter = new NewsCourseAdapter(mContext, newsCourseEntityList);
         lvCourseNews.setAdapter(mAdapter);
+        lvCourseNews.postDelayed(mListViewSelectRunnable, 100);
+        mStart = mAdapter.getCount();
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mAdapter.addItems(getNewsCourseList(mStart));
+                mStart = mAdapter.getCount();
+                mPtrFrame.refreshComplete();
+                lvCourseNews.postDelayed(mListViewSelectRunnable, 100);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                int count = getNewsCourseList(mStart).size();
+                Log.d("checkCanDoRefresh", canDoRefresh + "|start:" + mStart + "|count:" + count);
+                return count > 0 && canDoRefresh;
+            }
+        });
     }
+
+    private List<NewsCourseEntity> getNewsCourseList(int start) {
+        return newsCourseDataSource.getNewsCourse(start, 1, mCourseId, app.loginUser.id);
+    }
+
+    private Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            lvCourseNews.setSelection(mStart);
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,6 +165,16 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         @Override
         public long getItemId(int position) {
             return 0;
+        }
+
+        public void addItem(NewsCourseEntity entity) {
+            mList.add(entity);
+            notifyDataSetChanged();
+        }
+
+        public void addItems(List<NewsCourseEntity> entities) {
+            mList.addAll(0, entities);
+            notifyDataSetChanged();
         }
 
         @Override

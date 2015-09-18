@@ -46,7 +46,7 @@ public class NewsCourseDataSource {
         try {
             list = new ArrayList<>();
             String sql = String.format("COURSEID = %d AND USERID = %d", courseId, userId);
-            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CREATEDTIME DESC",
+            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CREATEDTIME ",
                     String.format("%d, %d", start, limit));
             while (cursor.moveToNext()) {
                 list.add(cursorToEntity(cursor));
@@ -60,18 +60,18 @@ public class NewsCourseDataSource {
     }
 
     public NewsCourseEntity cursorToEntity(Cursor cursor) {
-        NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
-        newsCourseEntity.setId(cursor.getInt(0));
-        newsCourseEntity.setCourseId(cursor.getInt(1));
-        newsCourseEntity.setLessonId(cursor.getInt(2));
-        newsCourseEntity.setTitle(cursor.getString(3));
-        newsCourseEntity.setContent(cursor.getString(4));
-        newsCourseEntity.setFromType(cursor.getString(5));
-        newsCourseEntity.setBodyType(cursor.getString(6));
-        newsCourseEntity.setLessonType(cursor.getString(7));
-        newsCourseEntity.setUserId(cursor.getInt(8));
-        newsCourseEntity.setCreatedTime(cursor.getInt(9));
-        return newsCourseEntity;
+        NewsCourseEntity entity = new NewsCourseEntity();
+        entity.setId(cursor.getInt(0));
+        entity.setCourseId(cursor.getInt(1));
+        entity.setLessonId(cursor.getInt(2));
+        entity.setTitle(cursor.getString(3));
+        entity.setContent(cursor.getString(4));
+        entity.setFromType(cursor.getString(5));
+        entity.setBodyType(cursor.getString(6));
+        entity.setLessonType(cursor.getString(7));
+        entity.setUserId(cursor.getInt(8));
+        entity.setCreatedTime(cursor.getInt(9));
+        return entity;
     }
 
     public long create(NewsCourseEntity newsCourseEntity) {
