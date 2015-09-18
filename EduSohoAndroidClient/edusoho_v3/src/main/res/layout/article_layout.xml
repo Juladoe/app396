@@ -27,6 +27,7 @@
         app:ptr_resistance="1.7">
 
         <ExpandableListView
+            android:listSelector="@color/transparent"
             android:groupIndicator="@null"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

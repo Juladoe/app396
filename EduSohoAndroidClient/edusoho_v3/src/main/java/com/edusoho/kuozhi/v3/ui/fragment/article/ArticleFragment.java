@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
@@ -23,16 +22,25 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-
+import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -53,6 +61,7 @@ public class ArticleFragment extends BaseFragment {
     protected PtrClassicFrameLayout mMessageLayout;
 
     private ArticleCardAdapter mArticleAdapter;
+    private ChatDataSource mChatDataSource;
     private View.OnClickListener mMenuClickListener = new MenuClickListener();
 
     @Override
@@ -60,6 +69,7 @@ public class ArticleFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.article_layout);
         ModelProvider.init(mContext, this);
+        mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
     }
 
     @Override
@@ -88,6 +98,12 @@ public class ArticleFragment extends BaseFragment {
             }
         });
 
+        mMessageListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                return true;
+            }
+        });
         initArticleList();
     }
 
@@ -195,6 +211,17 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
+    /*private ArrayList<ArticleChat> getChatList(int start) {
+        String selectSql = String.format("CHATID = %d", mFromId, mToId, mFromId, mToId);
+        ArrayList<Chat> mList = mChatDataSource.getChats(start, 10, selectSql);
+        Collections.reverse(mList);
+        return mList;
+    }*/
+
+    private void insertArticle() {
+
+    }
+
     private void insertArticles(String categoryId) {
 
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
@@ -290,5 +317,26 @@ public class ArticleFragment extends BaseFragment {
         public int getCount() {
             return mMenuItems.size();
         }
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        MessageType messageType = message.type;
+        switch (messageType.code) {
+            case Const.ADD_ARTICLE_CREATE_MAG:
+                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(ChatActivity.CHAT_DATA);
+                CustomContent customContent = mActivity.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
+                });
+                break;
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        return new MessageType[] {
+            new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source)
+        };
     }
 }

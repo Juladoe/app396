@@ -395,6 +395,7 @@
     <color name="blue_alpha">#4a90e2</color>
     <color name="grey">#444444</color>
     <color name="grey_666666">#666666</color>
+    <color name="grey_dddddd">#dddddd</color>
     <color name="grey_cccccc">#cccccc</color>
     <color name="grey_alpha">#999999</color>
     <color name="grey_beta">#97989a</color>

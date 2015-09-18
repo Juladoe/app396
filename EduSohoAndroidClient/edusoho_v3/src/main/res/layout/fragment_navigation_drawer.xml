@@ -233,7 +233,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginBottom="24dp"
         android:textSize="@dimen/x_large_font_size"
-        android:text="@string/drawer_setting"
+        android:text="@string/font_drawer_setting"
         android:textColor="@color/grey_alpha"
         android:layout_alignParentBottom="true" />
 

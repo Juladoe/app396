@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class NewsCourseDataSource {
     public static final String TABLE_NAME = "NEWS_COURSE";
-    public String[] allColumns = {"ID", "COURSEID", "LESSONID", "TITLE", "CONTENT", "FROMTYPE", "BODYTYPE", "USERID", "CREATEDTIME"};
+    public String[] allColumns = {"ID", "COURSEID", "LESSONID", "TITLE", "CONTENT", "FROMTYPE", "BODYTYPE", "LESSONTYPE", "USERID", "CREATEDTIME"};
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
 
@@ -68,8 +68,9 @@ public class NewsCourseDataSource {
         newsCourseEntity.setContent(cursor.getString(4));
         newsCourseEntity.setFromType(cursor.getString(5));
         newsCourseEntity.setBodyType(cursor.getString(6));
-        newsCourseEntity.setUserId(cursor.getInt(7));
-        newsCourseEntity.setCreatedTime(cursor.getInt(7));
+        newsCourseEntity.setLessonType(cursor.getString(7));
+        newsCourseEntity.setUserId(cursor.getInt(8));
+        newsCourseEntity.setCreatedTime(cursor.getInt(9));
         return newsCourseEntity;
     }
 
@@ -83,8 +84,9 @@ public class NewsCourseDataSource {
         cv.put(allColumns[4], newsCourseEntity.getContent());
         cv.put(allColumns[5], newsCourseEntity.getFromType());
         cv.put(allColumns[6], newsCourseEntity.getBodyType());
-        cv.put(allColumns[7], newsCourseEntity.getUserId());
-        cv.put(allColumns[8], newsCourseEntity.getCreatedTime());
+        cv.put(allColumns[7], newsCourseEntity.getLessonType());
+        cv.put(allColumns[8], newsCourseEntity.getUserId());
+        cv.put(allColumns[9], newsCourseEntity.getCreatedTime());
         long effectRow = mDataBase.insert(TABLE_NAME, null, cv);
         this.close();
         return effectRow;
@@ -98,8 +100,10 @@ public class NewsCourseDataSource {
         cv.put(allColumns[3], newsCourseEntity.getTitle());
         cv.put(allColumns[4], newsCourseEntity.getContent());
         cv.put(allColumns[5], newsCourseEntity.getFromType());
-        cv.put(allColumns[7], newsCourseEntity.getUserId());
-        cv.put(allColumns[8], newsCourseEntity.getCreatedTime());
+        cv.put(allColumns[6], newsCourseEntity.getBodyType());
+        cv.put(allColumns[7], newsCourseEntity.getLessonType());
+        cv.put(allColumns[8], newsCourseEntity.getUserId());
+        cv.put(allColumns[9], newsCourseEntity.getCreatedTime());
         int effectRow = mDataBase.update(TABLE_NAME, cv, "ID = ?", new String[]{newsCourseEntity.getId() + ""});
         this.close();
         return effectRow;

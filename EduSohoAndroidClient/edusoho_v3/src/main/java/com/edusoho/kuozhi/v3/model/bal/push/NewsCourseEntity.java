@@ -13,6 +13,7 @@ public class NewsCourseEntity {
     private String content;
     private String fromType;
     private String bodyType;
+    private String lessonType;
     private int userId;
     private int createdTime;
 
@@ -29,6 +30,7 @@ public class NewsCourseEntity {
         this.content = xgMessage.getContent();
         this.fromType = v2CustomContent.getFrom().getType();
         this.bodyType = v2CustomContent.getBody().getType();
+        this.lessonType = v2CustomContent.getBody().getLessonType();
         this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
     }
@@ -58,7 +60,7 @@ public class NewsCourseEntity {
     }
 
     public String getTitle() {
-        return title;
+        return title == null ? "" : title;
     }
 
     public void setTitle(String title) {
@@ -66,7 +68,7 @@ public class NewsCourseEntity {
     }
 
     public String getContent() {
-        return content;
+        return content == null ? "" : content;
     }
 
     public void setContent(String content) {
@@ -74,7 +76,7 @@ public class NewsCourseEntity {
     }
 
     public String getFromType() {
-        return fromType;
+        return fromType == null ? "" : fromType;
     }
 
     public void setFromType(String fromType) {
@@ -82,11 +84,19 @@ public class NewsCourseEntity {
     }
 
     public String getBodyType() {
-        return bodyType;
+        return bodyType == null ? "" : bodyType;
     }
 
     public void setBodyType(String bodyType) {
         this.bodyType = bodyType;
+    }
+
+    public String getLessonType() {
+        return lessonType == null ? "" : lessonType;
+    }
+
+    public void setLessonType(String lessonType) {
+        this.lessonType = lessonType;
     }
 
     public int getUserId() {

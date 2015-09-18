@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
@@ -65,7 +66,18 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         }
 
         TextView textView = (TextView) convertView;
-        textView.setText(String.valueOf(mArcicleChatList.get(groupPosition).createdTime));
+        ArticleChat articleChat = mArcicleChatList.get(groupPosition);
+        int createdTime = articleChat.createdTime;
+        String time = "";
+        if (groupPosition > 0) {
+            ArticleChat prevArticleChat = getGroup(groupPosition - 1);
+            if (createdTime - prevArticleChat.createdTime > 60 * 5) {
+                time = AppUtil.convertMills2Date(((long) articleChat.createdTime) * 1000);
+            }
+        } else {
+            time = AppUtil.convertMills2Date(((long) articleChat.createdTime) * 1000);
+        }
+        textView.setText(time);
         return convertView;
     }
 
@@ -75,7 +87,7 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
+    public ArticleChat getGroup(int groupPosition) {
         return mArcicleChatList.get(groupPosition);
     }
 
@@ -119,8 +131,12 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         View view = null;
         if (count > 1 && childPosition == 0) {
             view = layoutInflater.inflate(R.layout.article_list_item_large, null);
+            view.setBackgroundResource(R.drawable.article_list_item_large_bg);
         } else {
             view = layoutInflater.inflate(R.layout.article_list_item_normal, null);
+            int res = ( childPosition == (count - 1) ) ?
+                    R.drawable.article_list_item_bottom : R.drawable.article_list_item_mid_bg;
+            view.setBackgroundResource(res);
         }
 
         ViewHolder viewHolder = new ViewHolder();

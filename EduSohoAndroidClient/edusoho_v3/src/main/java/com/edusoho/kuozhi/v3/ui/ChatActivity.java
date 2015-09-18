@@ -81,7 +81,7 @@ import in.srain.cube.views.ptr.PtrHandler;
  * Created by JesseHuang on 15/6/3.
  * input params:
  * 1. FROM_ID 对方userId
- * 2. NICKNAME 对方昵称
+ * 2. ACTIONBAR_TITLE 对方昵称
  * 3. HEAD_IMAGE_URL 对方头像
  */
 public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener, ChatAdapter.ImageErrorClick {
@@ -90,7 +90,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public static final String TAG = "ChatActivity";
     public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
-    public static final String NICKNAME = "nickname";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
     private static final int IMAGE_SIZE = 1024 * 500;
@@ -252,10 +251,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mFromUserInfo = new User();
         mFromUserInfo.id = mFromId;
         mFromUserInfo.mediumAvatar = intent.getStringExtra(HEAD_IMAGE_URL);
-        mFromUserInfo.nickname = intent.getStringExtra(NICKNAME);
+        mFromUserInfo.nickname = intent.getStringExtra(Const.ACTIONBAR_TITLE);
 
         NotificationUtil.cancelById(mFromId);
-        setBackMode(BACK, intent.getStringExtra(NICKNAME));
+        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         CurrentFromId = mFromId;
         if (mChatDataSource == null) {
             mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -1025,7 +1024,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.profile) {
+        if (item.getItemId() == R.id.user_profile) {
             mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
