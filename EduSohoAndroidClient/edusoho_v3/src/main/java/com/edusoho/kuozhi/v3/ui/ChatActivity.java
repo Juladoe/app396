@@ -88,7 +88,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     //region Field
     public static final String TAG = "ChatActivity";
-    public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
@@ -1042,7 +1041,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public void invoke(WidgetMessage message) {
         try {
             MessageType messageType = message.type;
-            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
+            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
             CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
             });
             if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
@@ -1058,7 +1057,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         }
                         break;
                     case Const.ADD_CHAT_MSGS:
-                        ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(CHAT_DATA);
+                        ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(Const.GET_PUSH_DATA);
                         mAdapter.addItems(chats);
                         break;
                 }
