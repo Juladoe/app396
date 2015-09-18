@@ -58,7 +58,7 @@ public class NotificationUtil {
             if (isAppExit(context)) {
                 mMessage = xgMessage;
             }
-            notifyIntent.putExtra(ChatActivity.NICKNAME, xgMessage.title);
+            notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
@@ -101,7 +101,7 @@ public class NotificationUtil {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(xgMessage.title)
                         .setContentText(xgMessage.content).setAutoCancel(true);
-        NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
+        NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
         int notificationId = newsCourseEntity.getCourseId();
 
         NotificationManager mNotificationManager =
@@ -114,7 +114,7 @@ public class NotificationUtil {
         if (isAppExit(context)) {
             mMessage = xgMessage;
         }
-        notifyIntent.putExtra(ChatActivity.NICKNAME, xgMessage.title);
+        notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
         PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);

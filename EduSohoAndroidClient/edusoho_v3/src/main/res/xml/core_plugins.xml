@@ -66,6 +66,11 @@
         version="1.0" />
 
     <plugin
+        name="NewsCourseActivity"
+        package="com.edusoho.kuozhi.v3.ui.NewsCourseActivity"
+        version="1.0" />
+
+    <plugin
         name="BulletinActivity"
         package="com.edusoho.kuozhi.v3.ui.BulletinActivity"
         version="1.0" />
@@ -260,22 +265,22 @@
     <plugin
         name="BDVideoLessonFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
-        version="1.0"/>
+        version="1.0" />
     <plugin
         name="DocumentLessonFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.DocumentLessonFragment"
-        version="1.0"/>
+        version="1.0" />
     <plugin
         name="DefaultLessonFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.lesson.DefaultLessonFragment"
-        version="1.0"/>
+        version="1.0" />
     <plugin
         name="GroupListActivity"
         package="com.edusoho.kuozhi.v3.ui.friend.GroupListActivity"
-        version="1.0"/>
+        version="1.0" />
 
     <plugin
         name="ServiceListActivity"
         package="com.edusoho.kuozhi.v3.ui.friend.ServiceListActivity"
-        version="1.0"/>
+        version="1.0" />
 </plugins>

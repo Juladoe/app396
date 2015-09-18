@@ -129,7 +129,7 @@ public class FriendFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
-                        startIntent.putExtra(ChatActivity.NICKNAME, friend.nickname);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, friend.nickname);
                         startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
                     }
                 });

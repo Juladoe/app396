@@ -153,6 +153,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.NewsCourseActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".v3.ui.test.TestpaperActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -172,7 +177,8 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".v3.ui.friend.ServiceListActivity"
+        <activity
+            android:name=".v3.ui.friend.ServiceListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 

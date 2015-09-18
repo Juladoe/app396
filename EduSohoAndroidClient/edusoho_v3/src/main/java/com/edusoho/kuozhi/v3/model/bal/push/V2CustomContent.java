@@ -59,65 +59,6 @@ public class V2CustomContent {
         return from;
     }
 
-    public static class ToEntity {
-        /**
-         * id : 268
-         * type : user
-         */
-        private String id;
-        private String type;
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getType() {
-            return type;
-        }
-    }
-
-    public static class BodyEntity {
-        /**
-         * content : bd
-         * type : text
-         */
-        private String content;
-        private String type;
-        private int lessonId;
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public int getLessonId() {
-            return lessonId;
-        }
-
-        public void setLessonId(int lessonId) {
-            this.lessonId = lessonId;
-        }
-    }
-
     public static class FromEntity {
 
         private int id;
@@ -157,4 +98,70 @@ public class V2CustomContent {
             return type;
         }
     }
+
+    public static class ToEntity {
+        /**
+         * id : 268
+         * type : user
+         */
+        private String id;
+        private String type;
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
+
+    public static class BodyEntity {
+        private int lessonId;
+        private String content;
+        private String type;
+        private String lessonType;
+
+        public int getLessonId() {
+            return lessonId;
+        }
+
+        public void setLessonId(int lessonId) {
+            this.lessonId = lessonId;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getLessonType() {
+            return lessonType;
+        }
+
+        public void setLessonType(String lessonType) {
+            this.lessonType = lessonType;
+        }
+    }
+
+
 }

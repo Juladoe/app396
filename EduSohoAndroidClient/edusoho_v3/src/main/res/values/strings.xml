@@ -44,6 +44,7 @@
     <string name="login_forget_password">忘记密码?</string>
     <string name="drawer_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
+    <string name="news_course_profile">课程信息</string>
     <string name="study_entrance">进入学习</string>
 
     <!--EditText-->
@@ -88,20 +89,25 @@
     <string name="font_chat_voice">&#xe641;</string>
     <string name="font_chat_media_photo">&#xe640;</string>
     <string name="font_chat_media_camera">&#xe63f;</string>
-    <string name="drawer_setting">&#xe60e;</string>
+    <string name="font_drawer_setting">&#xe60e;</string>
     <string name="font_favorite">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
     <string name="font_login_username">&#xe619;</string>
     <string name="font_login_password">&#xe616;</string>
+    <string name="font_lesson_type_live">&#xe652;</string>
+    <string name="font_lesson_type_text">&#xe64c;</string>
+    <string name="font_lesson_type_video">&#xe64a;</string>
+    <string name="font_lesson_type_audio">&#xe64f;</string>
+    <string name="font_lesson_type_testpaper">&#xe61e;</string>
+    <string name="font_lesson_type_ppt">&#xe650;</string>
+    <string name="font_lesson_type_document">&#xe651;</string>
+    <string name="font_lesson_type_flash">&#xe653;</string>
 
     <string name="learned_status">&#xe639;</string>
-    <string name="course_paybtn"></string>
     <string name="learning_status">&#xe638;</string>
-    <string name="learn_note"></string>
-    <string name="learn_question"></string>
-    <string name="learn_more"></string>
     <string name="lesson_next">&#xe63b;</string>
     <string name="lesson_previous">&#xe63a;</string>
+    <string name="learn_more"></string>
 
     <string name="font_group">&#xe643;</string>
     <string name="font_service">&#xe60c;</string>

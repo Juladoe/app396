@@ -205,7 +205,7 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
-                            startIntent.putExtra(ChatActivity.NICKNAME, newItem.title);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });
@@ -216,9 +216,14 @@ public class NewsFragment extends BaseFragment {
                 case "bulletin":
                     app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
                     break;
-                case PushUtil.CourseType.TYPE:
-                    // TODO 打开课程
-                    CommonUtil.longToast(mContext, "tapped a course");
+                case PushUtil.CourseType.LESSON_PUBLISH:
+                    app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(NewsCourseActivity.COURSE_ID, newItem.fromId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                        }
+                    });
                     break;
             }
         }

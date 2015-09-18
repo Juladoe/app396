@@ -39,6 +39,8 @@ create table if not exists news_course(
     content varchar(255),
     fromType  varchar(50),
     bodyType varchar(50),
+    lessonType varchar(15),
+    userId integer,
     createdTime integer
 );
 

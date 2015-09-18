@@ -49,7 +49,6 @@ public class Pusher {
     }
 
     public void pushBulletin() {
-        //公告
         boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
@@ -60,7 +59,6 @@ public class Pusher {
     }
 
     public void pushVerified() {
-        //验证
         EdusohoMainService.getService().setNewNotification();
         EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, mBundle, FriendFragment.class);
     }
@@ -74,7 +72,6 @@ public class Pusher {
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
-
 
     public void convertWrapperMessage2V2() {
         CustomContent v1CustomContent = new CustomContent();

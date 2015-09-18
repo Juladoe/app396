@@ -50,7 +50,6 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
         for (String sql : sqlList) {
             db.execSQL(sql);
         }
-        //initTypeTable(db);
     }
 
     @Override
