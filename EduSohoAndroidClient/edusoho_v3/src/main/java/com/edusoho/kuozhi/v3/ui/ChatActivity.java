@@ -198,15 +198,17 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                mStart = mAdapter.getCount();
                 mAdapter.addItems(getChatList(mStart));
+                mStart = mAdapter.getCount();
                 mPtrFrame.refreshComplete();
                 lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
 
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                int count = getChatList(mStart).size();
+                return count > 0 && canDoRefresh;
             }
         });
 
