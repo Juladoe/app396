@@ -128,6 +128,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.ServiceProviderActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".v3.ui.BulletinActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:screenOrientation="portrait" />
