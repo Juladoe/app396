@@ -94,7 +94,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     }
 
     protected void invokeUIMessage() {
-        WidgetMessage message = null;
+        WidgetMessage message;
         while ((message = mUIMessageQueue.poll()) != null) {
             invoke(message);
         }

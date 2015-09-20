@@ -979,21 +979,23 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * 获取对方信息
      */
     private void getFriendUserInfo() {
-        RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("userId", mFromId + "");
-        ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
-                });
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "无法获取对方信息");
-            }
-        });
+        if (mFromUserInfo == null) {
+            RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
+            HashMap<String, String> params = requestUrl.getParams();
+            params.put("userId", mFromId + "");
+            ajaxPost(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
+                    });
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "无法获取对方信息");
+                }
+            });
+        }
     }
 
     @Override

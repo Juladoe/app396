@@ -178,7 +178,6 @@ public class EdusohoMainService extends Service {
                     ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
                     chatDataSource.create(chatModel);
                     if (!xgMessage.isForeground || (xgMessage.isForeground && ChatActivity.CurrentFromId != chatModel.fromId)) {
-                        //如果ChatActivity不在最顶栈，显示通知
                         NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;

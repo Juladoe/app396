@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -87,6 +90,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         }
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         mCourseId = intent.getIntExtra(COURSE_ID, 0);
+        CurrentCourseId = mCourseId;
         if (mCourseId == 0) {
             CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
             return;
@@ -298,6 +302,22 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             tvAction = (TextView) view.findViewById(R.id.tv_action);
             tvTime = (TextView) view.findViewById(R.id.tv_send_time);
             viewItem = view.findViewById(R.id.ll_news_course_item);
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        return new MessageType[]{new MessageType(Const.ADD_COURSE_MSG, source)};
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (Const.ADD_COURSE_MSG == messageType.code) {
+            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+            NewsCourseEntity entity = new NewsCourseEntity(wrapperMessage);
+            mAdapter.addItem(entity);
         }
     }
 }

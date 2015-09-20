@@ -44,7 +44,11 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,8 +140,38 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setOnItemClickListener(mItemClickListener);
         initData();
         if (NotificationUtil.mMessage != null) {
-            getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
-            NotificationUtil.mMessage = null;
+            JSONObject jsonObject;
+            WrapperXGPushTextMessage message = NotificationUtil.mMessage;
+            try {
+                jsonObject = new JSONObject(NotificationUtil.mMessage.getCustomContentJson());
+                if (jsonObject.has("typeBusiness")) {
+                    String type = jsonObject.getString("typeBusiness");
+                    if (PushUtil.ChatUserRole.FRIEND.equals(type) || PushUtil.ChatUserRole.TEACHER.equals(type)) {
+                        getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
+                    } else {
+                        handleBulletinMsg(message);
+                    }
+                } else {
+                    Gson gson = new Gson();
+                    V2CustomContent v2CustomContent = gson.fromJson(message.getCustomContentJson(), V2CustomContent.class);
+                    switch (v2CustomContent.getBody().getType()) {
+                        case PushUtil.ChatUserRole.USER:
+                        case PushUtil.ChatUserRole.FRIEND:
+                        case PushUtil.ChatUserRole.TEACHER:
+                            getNewChatMsg(HANDLE_RECEIVE_MSG, message);
+                            break;
+                        case PushUtil.CourseType.LESSON_PUBLISH:
+                            handlerReceiveCourse(message);
+                            break;
+                        case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                            break;
+                    }
+                }
+                NotificationUtil.mMessage = null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
