@@ -16,7 +16,9 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
@@ -46,6 +48,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private TextView tvStudyEntrance;
     private NewsCourseAdapter mAdapter;
     private NewsCourseDataSource newsCourseDataSource;
+    private android.os.Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     }
 
     private void initViews() {
+        mHandler = new android.os.Handler();
         lvCourseNews = (ListView) findViewById(R.id.lv_course_news);
         tvStudyEntrance = (TextView) findViewById(R.id.tv_study_entrance);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
@@ -65,12 +69,14 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.USER_LEARN_COURSE) + mCourseId;
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_LEARN_COURSE, mCourseId));
                         startIntent.putExtra(WebViewActivity.URL, url);
                     }
                 });
             }
         });
+
+
     }
 
     private void initDatas() {
@@ -80,6 +86,10 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         }
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         mCourseId = intent.getIntExtra(COURSE_ID, 0);
+        if (mCourseId == 0) {
+            CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
+            return;
+        }
         newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(mStart);
         mAdapter = new NewsCourseAdapter(mContext, newsCourseEntityList);
@@ -103,6 +113,19 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 return count > 0 && canDoRefresh;
             }
         });
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendNewFragment2UpdateItemBadge();
+            }
+        }, 500);
+    }
+
+    private void sendNewFragment2UpdateItemBadge() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.FROM_ID, mCourseId);
+        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_NEWS_COURSE, bundle, NewsFragment.class);
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
