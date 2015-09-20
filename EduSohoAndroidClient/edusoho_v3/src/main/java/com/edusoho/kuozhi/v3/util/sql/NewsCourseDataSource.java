@@ -109,16 +109,6 @@ public class NewsCourseDataSource {
         return effectRow;
     }
 
-    public int update(int fromId, int userId) {
-        this.openWrite();
-        ContentValues cv = new ContentValues();
-        cv.put(allColumns[1], fromId);
-        cv.put(allColumns[8], userId);
-        int effectRow = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND USERID = ?", new String[]{fromId + "", userId + ""});
-        this.close();
-        return effectRow;
-    }
-
     public long delete(int courseId, int userId) {
         this.openWrite();
         long effectRow = mDataBase.delete(TABLE_NAME, "COURSEID = ? AND USERID = ?",

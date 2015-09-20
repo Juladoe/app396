@@ -286,7 +286,7 @@ public class NewsFragment extends BaseFragment {
                 case UPDATE_UNREAD_NEWS_COURSE:
                     NewDataSource newsCourseDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                     int fromId = message.data.getInt(Const.FROM_ID);
-                    newsCourseDataSource.updateUnread(message.data.getInt(Const.FROM_ID), app.loginUser.id);
+                    newsCourseDataSource.updateUnread(message.data.getInt(Const.FROM_ID), app.loginUser.id, PushUtil.CourseType.LESSON_PUBLISH);
                     mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.LESSON_PUBLISH);
                     break;
                 case Const.ADD_CHAT_MSGS:

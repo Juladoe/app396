@@ -94,13 +94,14 @@ public class NewDataSource {
         return id;
     }
 
-    public long updateUnread(int fromId, int belongId) {
+    public long updateUnread(int fromId, int belongId, String type) {
         openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[1], fromId);
         cv.put(allColumns[6], 0);
+        cv.put(allColumns[7], type);
         cv.put(allColumns[8], belongId);
-        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
+        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND TYPE = ? AND BELONGID = ?", new String[]{fromId + "", type, belongId + ""});
         close();
         return id;
     }
