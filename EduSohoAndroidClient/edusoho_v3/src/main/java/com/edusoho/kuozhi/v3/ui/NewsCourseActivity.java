@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -120,6 +121,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 sendNewFragment2UpdateItemBadge();
             }
         }, 500);
+        NotificationUtil.cancelById(mCourseId);
     }
 
     private void sendNewFragment2UpdateItemBadge() {
