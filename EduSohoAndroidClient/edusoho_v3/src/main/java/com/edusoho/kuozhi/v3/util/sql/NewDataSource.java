@@ -106,19 +106,13 @@ public class NewDataSource {
         return id;
     }
 
-    public long updateBulletin(New newModel) {
+    public long updateBulletinUnread(int belongId, String type) {
         openWrite();
         ContentValues cv = new ContentValues();
-        cv.put(allColumns[1], newModel.fromId);
-        cv.put(allColumns[2], newModel.title);
-        cv.put(allColumns[3], newModel.content);
-        cv.put(allColumns[4], newModel.createdTime);
-        cv.put(allColumns[5], newModel.imgUrl);
-        cv.put(allColumns[6], newModel.unread);
-        cv.put(allColumns[7], newModel.type);
-        cv.put(allColumns[8], newModel.belongId);
-        cv.put(allColumns[9], newModel.isTop);
-        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + ""});
+        cv.put(allColumns[6], 0);
+        cv.put(allColumns[7], type);
+        cv.put(allColumns[8], belongId);
+        long id = mDataBase.update(TABLE_NAME, cv, "TYPE = ? AND BELONGID = ?", new String[]{type, belongId + ""});
         close();
         return id;
     }

@@ -140,6 +140,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private User mFromUserInfo;
     private int mFromId;
     private int mToId;
+    private String mType;
     //endregion
 
     @Override
@@ -158,6 +159,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     private void initView() {
+        mHandler = new VolumeHandler(this);
         mAudioDownloadReceiver = new AudioDownloadReceiver();
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(msgTextWatcher);
@@ -217,14 +219,23 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 return false;
             }
         });
-        sendNewFragment2UpdateItemBadge();
-
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
+        }
+    };
+
+    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.FROM_ID, mFromId);
+            bundle.putString(Const.NEWS_TYPE, mType);
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
         }
     };
 
@@ -237,7 +248,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
         mAdapter.setSendImageClickListener(this);
-        sendNewFragment2UpdateItemBadge();
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     private void initData() {
@@ -247,6 +258,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             return;
         }
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
+        mType = intent.getStringExtra(Const.NEWS_TYPE);
         mToId = app.loginUser.id;
         mFromUserInfo = new User();
         mFromUserInfo.id = mFromId;
@@ -261,7 +273,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
-        mHandler = new VolumeHandler(this);
+
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -271,11 +283,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         return mList;
     }
 
-    private void sendNewFragment2UpdateItemBadge() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Const.FROM_ID, mFromId);
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
-    }
 
     private void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
@@ -972,23 +979,21 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * 获取对方信息
      */
     private void getFriendUserInfo() {
-        if (mFromUserInfo == null) {
-            RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("userId", mFromId + "");
-            ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
-                    });
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "无法获取对方信息");
-                }
-            });
-        }
+        RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("userId", mFromId + "");
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
+                });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "无法获取对方信息");
+            }
+        });
     }
 
     @Override

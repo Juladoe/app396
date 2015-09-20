@@ -84,6 +84,7 @@ public class Const {
     public static final String MEDIA_AUDIO = "语音";
     public static final String GET_PUSH_DATA = "get_push_data";
     public static final String FROM_ID = "from_id";
+    public static final String NEWS_TYPE = "news_type";
     public static final int ADD_CHAT_MSG = 5;
     public static final int ADD_COURSE_MSG = 6;
     /**

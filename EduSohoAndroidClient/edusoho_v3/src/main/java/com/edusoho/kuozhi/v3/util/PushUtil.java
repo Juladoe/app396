@@ -29,4 +29,13 @@ public class PushUtil {
         public static final String LESSON_PUBLISH = "课时更新";
         public static final String COURSE_ANNOUNCEMENT = "最新公告";
     }
+
+    public static class ChatUserRole {
+        public static final String TEACHER = "teacher";
+        public static final String FRIEND = "friend";
+    }
+
+    public static class BulletinType {
+        public static final String TYPE = "bulletin";
+    }
 }

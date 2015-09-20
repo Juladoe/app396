@@ -207,6 +207,7 @@ public class NewsFragment extends BaseFragment {
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
                             startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });
@@ -248,6 +249,7 @@ public class NewsFragment extends BaseFragment {
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();
         } else {
+            int fromId = message.data.getInt(Const.FROM_ID);
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
@@ -264,29 +266,18 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case UPDATE_UNREAD_MSG:
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", message.data.getInt(Const.FROM_ID) + "", app.loginUser.id + "");
-                    if (news.size() > 0) {
-                        New newModel = news.get(0);
-                        newModel.unread = 0;
-                        newDataSource.update(newModel);
-                        updateNew(newModel);
-                    }
+                    String type = message.data.getString(Const.NEWS_TYPE);
+                    newDataSource.updateUnread(fromId, app.loginUser.id, type);
+                    mSwipeAdapter.updateItem(fromId, type);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
                     NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    List<New> bulletins = bulletinDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
-                            TypeBusinessEnum.BULLETIN.getName());
-                    if (bulletins.size() > 0) {
-                        New newModel = bulletins.get(0);
-                        newModel.unread = 0;
-                        bulletinDataSource.update(newModel);
-                        updateNew(newModel);
-                    }
+                    bulletinDataSource.updateBulletinUnread(app.loginUser.id, PushUtil.BulletinType.TYPE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.BulletinType.TYPE);
                     break;
                 case UPDATE_UNREAD_NEWS_COURSE:
                     NewDataSource newsCourseDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    int fromId = message.data.getInt(Const.FROM_ID);
-                    newsCourseDataSource.updateUnread(message.data.getInt(Const.FROM_ID), app.loginUser.id, PushUtil.CourseType.LESSON_PUBLISH);
+                    newsCourseDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.LESSON_PUBLISH);
                     mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.LESSON_PUBLISH);
                     break;
                 case Const.ADD_CHAT_MSGS:
@@ -345,7 +336,7 @@ public class NewsFragment extends BaseFragment {
             insertNew(newModel);
         } else {
             newModel.unread = wrapperMessage.isForeground ? 0 : bulletins.get(0).unread + 1;
-            newDataSource.updateBulletin(newModel);
+            newDataSource.update(newModel);
             setItemToTop(newModel);
         }
     }
