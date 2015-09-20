@@ -65,7 +65,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_LEARN);
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.USER_LEARN_COURSE) + mCourseId;
                         startIntent.putExtra(WebViewActivity.URL, url);
                     }
                 });
@@ -189,7 +189,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            NewsCourseEntity newsCourseEntity = mList.get(position);
+            final NewsCourseEntity newsCourseEntity = mList.get(position);
             viewHolder.tvTime.setText(AppUtil.convertMills2Date(((long) newsCourseEntity.getCreatedTime()) * 1000));
             viewHolder.tvLessonTitle.setText(newsCourseEntity.getContent());
             switch (newsCourseEntity.getLessonType()) {
@@ -241,7 +241,16 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             viewHolder.viewItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    app.mEngine.runNormalPlugin(
+                            LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.COURSE_ID, newsCourseEntity.getCourseId());
+                                    startIntent.putExtra(Const.LESSON_ID, newsCourseEntity.getLessonId());
+                                    //startIntent.putExtra(LessonActivity.LESSON_IDS, lessonArray);
+                                }
+                            }
+                    );
                 }
             });
 
