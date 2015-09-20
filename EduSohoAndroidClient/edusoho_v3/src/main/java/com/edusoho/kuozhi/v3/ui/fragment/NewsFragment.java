@@ -56,9 +56,10 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     public static final int HANDLE_SEND_MSG = 1;
     public static final int HANDLE_RECEIVE_MSG = 2;
-    public static final int HANDLER_RECEIVE_COURSE = 3;
+    public static final int HANDLE_RECEIVE_COURSE = 3;
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
+    public static final int UPDATE_UNREAD_NEWS_COURSE = 12;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -257,21 +258,19 @@ public class NewsFragment extends BaseFragment {
                     WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handlerReceiveCourse(newsCourseMessage);
                     break;
+                case Const.ADD_BULLETIT_MSG:
+                    WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    handleBulletinMsg(bulletinMessage);
+                    break;
                 case UPDATE_UNREAD_MSG:
-                    int fromId = message.data.getInt(Const.FROM_ID);
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
+                    List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", message.data.getInt(Const.FROM_ID) + "", app.loginUser.id + "");
                     if (news.size() > 0) {
                         New newModel = news.get(0);
-
                         newModel.unread = 0;
                         newDataSource.update(newModel);
                         updateNew(newModel);
                     }
-                    break;
-                case Const.ADD_BULLETIT_MSG:
-                    WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                    handleBulletinMsg(bulletinMessage);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
                     NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -283,6 +282,12 @@ public class NewsFragment extends BaseFragment {
                         bulletinDataSource.update(newModel);
                         updateNew(newModel);
                     }
+                    break;
+                case UPDATE_UNREAD_NEWS_COURSE:
+                    NewDataSource newsCourseDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                    int fromId = message.data.getInt(Const.FROM_ID);
+                    newsCourseDataSource.updateUnread(message.data.getInt(Const.FROM_ID), app.loginUser.id);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.LESSON_PUBLISH);
                     break;
                 case Const.ADD_CHAT_MSGS:
                     ArrayList<New> newArrayList = (ArrayList<New>) message.data.get(Const.GET_PUSH_DATA);
@@ -312,8 +317,6 @@ public class NewsFragment extends BaseFragment {
                 break;
             case HANDLE_SEND_MSG:
                 handleSendMsg(xgPushTextMessage);
-                break;
-            case HANDLER_RECEIVE_COURSE:
                 break;
         }
     }
@@ -350,7 +353,6 @@ public class NewsFragment extends BaseFragment {
     private void handlerReceiveCourse(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
         V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
-
         newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
@@ -405,10 +407,13 @@ public class NewsFragment extends BaseFragment {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_BULLETIT_MSG, source), new MessageType(Const.ADD_CHAT_MSGS, source),
+        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source),
+                new MessageType(Const.ADD_BULLETIT_MSG, source),
+                new MessageType(Const.ADD_CHAT_MSGS, source),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
-                new MessageType(UPDATE_UNREAD_BULLETIN, source)};
+                new MessageType(UPDATE_UNREAD_BULLETIN, source),
+                new MessageType(UPDATE_UNREAD_NEWS_COURSE, source)};
     }
 
     @Override

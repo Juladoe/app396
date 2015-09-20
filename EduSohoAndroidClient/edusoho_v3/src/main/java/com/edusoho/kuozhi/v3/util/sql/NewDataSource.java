@@ -94,6 +94,17 @@ public class NewDataSource {
         return id;
     }
 
+    public long updateUnread(int fromId, int belongId) {
+        openWrite();
+        ContentValues cv = new ContentValues();
+        cv.put(allColumns[1], fromId);
+        cv.put(allColumns[6], 0);
+        cv.put(allColumns[8], belongId);
+        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
+        close();
+        return id;
+    }
+
     public long updateBulletin(New newModel) {
         openWrite();
         ContentValues cv = new ContentValues();

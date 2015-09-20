@@ -72,6 +72,18 @@ public class SwipeAdapter extends BaseAdapter {
         }
     }
 
+    public void updateItem(int fromId, String type) {
+        Iterator<New> iterator = mList.iterator();
+        while (iterator.hasNext()) {
+            New item = iterator.next();
+            if (item.fromId == fromId && type.equals(item.getType())) {
+                item.setUnread(0);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     public void setItemToTop(New newModel) {
         Iterator<New> iterator = mList.iterator();
         while (iterator.hasNext()) {

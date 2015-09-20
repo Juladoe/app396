@@ -217,7 +217,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 return false;
             }
         });
-        sendNewFragment2UpdateItem();
+        sendNewFragment2UpdateItemBadge();
 
     }
 
@@ -237,7 +237,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
         mAdapter.setSendImageClickListener(this);
-        sendNewFragment2UpdateItem();
+        sendNewFragment2UpdateItemBadge();
     }
 
     private void initData() {
@@ -271,7 +271,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         return mList;
     }
 
-    private void sendNewFragment2UpdateItem() {
+    private void sendNewFragment2UpdateItemBadge() {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.FROM_ID, mFromId);
         app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
@@ -349,7 +349,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * update badgeview the ListView of NewsFragment
+     * update badge the ListView of NewsFragment
      *
      * @param message xg message
      */
@@ -430,7 +430,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         @Override
         public boolean onTouch(final View v, MotionEvent event) {
             /**
-             * 根据手纸滑动距离是否保存
+             * 根据滑动距离是否保存
              */
             boolean mHandUpAndCancel;
             switch (event.getAction()) {
