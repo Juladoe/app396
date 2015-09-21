@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -363,18 +364,15 @@ public class NewsFragment extends BaseFragment {
 
     private void handlerReceiveArticleMessage(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
-        V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
 
-        newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         newModel.content = wrapperMessage.content;
-        newModel.imgUrl = v2CustomContent.getFrom().getImage();
-        newModel.createdTime = v2CustomContent.getCreatedTime();
-        newModel.setType(v2CustomContent.getBody().getType());
-
+        CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
+        });
+        newModel.setType(customContent.getTypeMsg());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {
             newModel.unread = 1;
             newDataSource.create(newModel);

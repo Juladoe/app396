@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ExpandableListView;
@@ -23,14 +24,12 @@ import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
-import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -38,7 +37,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -58,11 +57,14 @@ public class ArticleFragment extends BaseFragment {
     private ArticleProvider mArticleProvider;
     protected ExpandableListView mMessageListView;
     protected ViewGroup mMenuLayout;
+    private PopupWindow mMenuPopupWindow;
     protected PtrClassicFrameLayout mMessageLayout;
 
     private ArticleCardAdapter mArticleAdapter;
     private ChatDataSource mChatDataSource;
     private View.OnClickListener mMenuClickListener = new MenuClickListener();
+
+    private int mStart;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,12 @@ public class ArticleFragment extends BaseFragment {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 Log.d(TAG, "onRefreshBegin");
+                mStart = mArticleAdapter.getGroupCount();
+                mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
+                if (loadLocalArticles()) {
+                    mMessageListView.setSelectedGroup(mStart - 1);
+                }
+                mMessageLayout.refreshComplete();
             }
 
             @Override
@@ -114,8 +122,10 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void initArticleList() {
+        mStart = 0;
         mArticleAdapter = new ArticleCardAdapter(mContext);
         mMessageListView.setAdapter(mArticleAdapter);
+        loadLocalArticles();
     }
 
     private void initMenu() {
@@ -211,15 +221,27 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
-    /*private ArrayList<ArticleChat> getChatList(int start) {
-        String selectSql = String.format("CHATID = %d", mFromId, mToId, mFromId, mToId);
-        ArrayList<Chat> mList = mChatDataSource.getChats(start, 10, selectSql);
+    private ArrayList<ArticleChat> getChatList(int start) {
+        String selectSql = String.format("NICKNAME = '%s' ", app.domain);
+        ArrayList<Chat> mList = mChatDataSource.getChats(start, 5, selectSql);
         Collections.reverse(mList);
-        return mList;
-    }*/
 
-    private void insertArticle() {
+        ArrayList<ArticleChat> articleChats = new ArrayList<>();
+        for (Chat chat : mList) {
+            articleChats.add(new ArticleChat(chat));
+        }
+        return articleChats;
+    }
 
+    private boolean loadLocalArticles() {
+        ArrayList<ArticleChat> articleChats = getChatList(mStart);
+        if (articleChats.isEmpty()) {
+            return false;
+        }
+        mArticleAdapter.addArticleChats(articleChats);
+        expandArticle();
+
+        return true;
     }
 
     private void insertArticles(String categoryId) {
@@ -254,6 +276,12 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
+    private void hideMenuPop() {
+        if (mMenuPopupWindow != null) {
+            mMenuPopupWindow.dismiss();
+        }
+    }
+
     private void showMenuPop(View target, MenuItem menuItem) {
         View contentView = LayoutInflater.from(mContext).inflate(R.layout.article_more_menu, null);
         ListView listView = (ListView) contentView.findViewById(R.id.article_listview);
@@ -264,20 +292,21 @@ public class ArticleFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MenuItem menuItem = (MenuItem) parent.getItemAtPosition(position);
                 handleClick(view, menuItem);
+                hideMenuPop();
             }
         });
 
-        PopupWindow popupWindow = new PopupWindow(
+        mMenuPopupWindow = new PopupWindow(
                 contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        popupWindow.setWidth(target.getWidth());
-        popupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.article_more_menu_bg));
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
+        mMenuPopupWindow.setWidth(target.getWidth());
+        mMenuPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.article_more_menu_bg));
+        mMenuPopupWindow.setFocusable(true);
+        mMenuPopupWindow.setOutsideTouchable(true);
 
         int[] location = new int[2];
         target.getLocationOnScreen(location);
-        popupWindow.showAtLocation(
+        mMenuPopupWindow.showAtLocation(
                 target, Gravity.BOTTOM | Gravity.LEFT, location[0] - 10, target.getHeight() + 10);
     }
 
@@ -325,9 +354,11 @@ public class ArticleFragment extends BaseFragment {
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.ADD_ARTICLE_CREATE_MAG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(ChatActivity.CHAT_DATA);
-                CustomContent customContent = mActivity.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
-                });
+                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                ArticleChat articleChat = new ArticleChat(wrapperMessage);
+                mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+                mArticleAdapter.addArticleChat(articleChat);
+                expandArticle();
                 break;
         }
     }
