@@ -85,7 +85,7 @@ public class Pusher {
         }
 
         EdusohoApp.app.sendMsgToTarget(Const.ADD_ARTICLE_CREATE_MAG, mBundle, NewsFragment.class);
-        EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
+        EdusohoMainService.getService().sendMessage(Const.ADD_ARTICLE_CREATE_MAG, mWrapperMessage);
     }
 
     public void convertWrapperMessage2V2() {
@@ -98,6 +98,20 @@ public class Pusher {
         v1CustomContent.setFromId(mV2CustomContent.getFrom().getId());
         v1CustomContent.setCreatedTime(mV2CustomContent.getCreatedTime());
         Gson gson = new Gson();
+        mWrapperMessage.setCustomContentJson(gson.toJson(v1CustomContent));
+    }
+
+    public void convertArticleMessageV2() {
+        CustomContent v1CustomContent = new CustomContent();
+        v1CustomContent.setId(mV2CustomContent.getMsgId());
+        v1CustomContent.setTypeMsg(mV2CustomContent.getBody().getType());
+        v1CustomContent.setTypeBusiness(mV2CustomContent.getBody().getType());
+        v1CustomContent.setNickname(EdusohoApp.app.domain);
+        v1CustomContent.setImgUrl(mV2CustomContent.getFrom().getImage());
+        v1CustomContent.setFromId(mV2CustomContent.getFrom().getId());
+        v1CustomContent.setCreatedTime(mV2CustomContent.getCreatedTime());
+        Gson gson = new Gson();
+        mWrapperMessage.setContent(gson.toJson(mV2CustomContent.getBody()));
         mWrapperMessage.setCustomContentJson(gson.toJson(v1CustomContent));
     }
 }

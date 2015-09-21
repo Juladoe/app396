@@ -39,6 +39,7 @@ public class CommandFactory {
             case "lesson.live_start":
                 break;
             case "news.create":
+                pusher.convertArticleMessageV2();
                 pushCommand = new PushArticleCreateCommand(pusher);
                 break;
             case "text":

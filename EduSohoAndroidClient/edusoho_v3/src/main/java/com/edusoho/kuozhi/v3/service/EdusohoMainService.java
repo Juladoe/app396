@@ -13,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
@@ -174,7 +175,7 @@ public class EdusohoMainService extends Service {
                     break;
                 case Const.ADD_ARTICLE_CREATE_MAG:
                     //资讯推送
-                    Chat articleChat = new Chat(xgMessage);
+                    Chat articleChat = new ArticleChat(xgMessage);
                     new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).create(articleChat);
                     if (!xgMessage.isForeground) {
                         //如果Activity不在最顶栈，显示通知
