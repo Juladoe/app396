@@ -10,7 +10,7 @@ public class PushUtil {
         public static final String TESTPAPER_REVIEWED = "testpaper.reviewed";
         public static final String COURSE_OPEN = "course.open";
         public static final String COURSE_CLOSE = "course.close";
-        public static final String COURSE_ANNOUNCEMENT = "course.announcement";
+        public static final String COURSE_ANNOUNCEMENT = "announcement.create";
     }
 
     public static class LessonType {
@@ -24,16 +24,30 @@ public class PushUtil {
         public static final String FLASH = "flash";
     }
 
+    public static class AnnouncementType {
+        public static final String COURSE = "course";
+        public static final String GLOBAL = "global";
+    }
+
     public static class CourseCode {
         public static final String TESTPAPER_REVIEWED = "试卷批阅完成";
         public static final String LESSON_PUBLISH = "课时更新";
         public static final String COURSE_ANNOUNCEMENT = "最新公告";
     }
 
-    public static class ChatUserRole {
+    public static class ChatUserType {
         public static final String USER = "user";
         public static final String TEACHER = "teacher";
         public static final String FRIEND = "friend";
+    }
+
+    /**
+     * custom 中的 typeBusinesss
+     */
+    public static class ChatMsgType {
+        public static final String TEXT = "text";
+        public static final String AUDIO = "audio";
+        public static final String IMAGE = "image";
     }
 
     public static class BulletinType {

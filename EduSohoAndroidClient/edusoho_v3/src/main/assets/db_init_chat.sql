@@ -34,7 +34,7 @@ create table if not exists bulletin(
 create table if not exists news_course(
     id integer,
     courseId integer,
-    lessonId integer,
+    objectId integer,
     title varchar(100),
     content varchar(255),
     fromType  varchar(50),

@@ -56,7 +56,7 @@ public class NotificationUtil {
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, chat.getHeadimgurl());
             notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
-            notifyIntent.putExtra(Const.NEWS_TYPE, PushUtil.ChatUserRole.FRIEND);
+            notifyIntent.putExtra(Const.NEWS_TYPE, PushUtil.ChatUserType.FRIEND);
             notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
             if (isAppExit(context)) {
                 mMessage = xgMessage;

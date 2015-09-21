@@ -287,7 +287,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
         public ChildPanel(View view, DownloadType type) {
             ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
-            tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_title);
+            tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_content);
             viewDownloadProgress = view.findViewById(R.id.rl_progress);
             ivDownloadSign = (EduSohoIconView) view.findViewById(R.id.iv_download_sign);
             tvProgress = (TextView) view.findViewById(R.id.tv_progress);
