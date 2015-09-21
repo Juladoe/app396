@@ -5,17 +5,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
+import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
+import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.view.EduSohoGroupAvatar;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.SideBar;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,68 +33,92 @@ import java.util.List;
  */
 public class GroupListActivity extends ActionBarBaseActivity {
 
-    private ListView groupList;
+    private ListView mListView;
 
     private GroupListAdapter mAdapter;
     private LayoutInflater mLayoutInflater;
 
     private SideBar mSidebar;
     private TextView mCharTextView;
+    private FrameLayout mEmptyNotice;
+    private FrameLayout mLoading;
+
+    private DiscussionGroupProvider mDiscussionGroupProvider;
 
     private CharacterParser characterParser;
     private GroupComparator groupComparator;
 
-    private ArrayList<DiscussionGroup> tmpList;//模拟数据用。以后采用接口取数据的时候可能就不需要了
+//    private ArrayList<DiscussionGroup> mGroupList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBackMode(BACK, "讨论组");
         setContentView(R.layout.group_list_layout);
-        groupList = (ListView) findViewById(R.id.group_listview);
+        mListView = (ListView) findViewById(R.id.group_listview);
         mSidebar = (SideBar) findViewById(R.id.group_list_sidebar);
         mCharTextView = (TextView) findViewById(R.id.sidebar_char_hint);
+        mEmptyNotice = (FrameLayout) findViewById(R.id.empty_discussion_group);
+        mLoading = (FrameLayout) findViewById(R.id.discussion_group_loading);
         mSidebar.setTextView(mCharTextView);
         mSidebar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChangedListener(String string) {
                 int position = mAdapter.getPositionForSection(string.charAt(0));
                 if (position != -1) {
-                    groupList.setSelection(position);
+                    mListView.setSelection(position);
                 }
             }
         });
         characterParser = CharacterParser.getInstance();
         groupComparator = new GroupComparator();
 
+        mDiscussionGroupProvider = new DiscussionGroupProvider(mContext);
+
         mAdapter = new GroupListAdapter();
-        groupList.setAdapter(mAdapter);
-        loadGroup();   //todo 取数据 加loading
+        mListView.setAdapter(mAdapter);
+        mEmptyNotice.setVisibility(View.GONE);
+        mLoading.setVisibility(View.VISIBLE);
+        loadGroup().then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object obj) {
+                mLoading.setVisibility(View.GONE);
+                return null;
+            }
+        });
     }
 
-    private void loadGroup() {
-        tmpList = new ArrayList<DiscussionGroup>();
-        String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for (int i = 2; i < 10; i++) {
-            tmpList.add(new DiscussionGroup("今晚打dao了 " + i + " 只老虎"));
-        }
-        for (int i = 5; i < 7; i++) {
-            tmpList.add(new DiscussionGroup("明天 " + i + " 只老虎"));
-        }
-        for (int i = 0;i<26;i++){
-            tmpList.add(new DiscussionGroup(string.charAt(i)+"1号组"));
-            tmpList.add(new DiscussionGroup(string.charAt(i)+"2号组"));
-        }
+    private Promise loadGroup() {
 
+        RequestUrl requestUrl = app.bindNewUrl(Const.DISCUSSION_GROUP, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        stringBuffer.append("?start=0&limit=10000/");
+        requestUrl.url = stringBuffer.toString();
 
-        setSortChar(tmpList);
-        Collections.sort(tmpList,groupComparator);
-        mAdapter.addGroupList(tmpList);
+        final Promise promise = new Promise();
+        mDiscussionGroupProvider.getClassrooms(requestUrl).success(new NormalCallback<DiscussionGroupResult>() {
+            @Override
+            public void success(DiscussionGroupResult discussionGroupResult) {
+                if (discussionGroupResult.resources.length != 0) {
+                    DiscussionGroup[] groups = discussionGroupResult.resources;
+                    List<DiscussionGroup> groupsList = Arrays.asList(groups);
+                    setSortChar(groupsList);
+                    Collections.sort(groupsList, groupComparator);
+                    mAdapter.addGroupList(groupsList);
+
+                    promise.resolve(groupsList);
+
+                } else {
+                    mEmptyNotice.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        return promise;
     }
 
-    public void setSortChar(List<DiscussionGroup> groupList){
-        for (DiscussionGroup discussionGroup:groupList){
-            String pinyin = characterParser.getSelling(discussionGroup.groupName);
+    public void setSortChar(List<DiscussionGroup> groupList) {
+        for (DiscussionGroup discussionGroup : groupList) {
+            String pinyin = characterParser.getSelling(discussionGroup.title);
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {
                 discussionGroup.setSortLetters(sortString.toUpperCase());
@@ -93,8 +126,6 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 discussionGroup.setSortLetters("#");
             }
         }
-
-
     }
 
 
@@ -125,7 +156,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
             mGroupList.add(group);
         }
 
-        public void addGroupList(ArrayList<DiscussionGroup> list){
+        public void addGroupList(List<DiscussionGroup> list) {
             mGroupList.addAll(list);
         }
 
@@ -149,8 +180,12 @@ public class GroupListActivity extends ActionBarBaseActivity {
             DiscussionGroup group = mGroupList.get(position);
 
 //            generateGroupAvatar(groupItemHolder, position + 2);
-            groupItemHolder.groupAvatar.setImageResource(R.drawable.default_avatar);
-            groupItemHolder.groupName.setText(group.groupName);
+            if (!group.picture.equals("")){
+                ImageLoader.getInstance().displayImage(group.picture,groupItemHolder.groupAvatar,app.mOptions);
+            }else {
+                groupItemHolder.groupAvatar.setImageResource(R.drawable.default_avatar);
+            }
+            groupItemHolder.groupName.setText(group.title);
 
             int section = getSectionForPosition(position);
             if (position == getPositionForSection(section)) {
@@ -160,8 +195,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 groupItemHolder.catalog.setVisibility(View.GONE);
             }
 
-            if (position != mGroupList.size()-1) {
-                if (getSectionForPosition(position) != getSectionForPosition(position+1)) {
+            if (position != mGroupList.size() - 1) {
+                if (getSectionForPosition(position) != getSectionForPosition(position + 1)) {
                     groupItemHolder.dividerLine.setVisibility(View.GONE);
                 } else {
                     groupItemHolder.dividerLine.setVisibility(View.VISIBLE);
@@ -186,11 +221,11 @@ public class GroupListActivity extends ActionBarBaseActivity {
         }
 
         public int getPositionForSection(int section) {
-            for (int i = 0; i <mGroupList.size(); i++){
+            for (int i = 0; i < mGroupList.size(); i++) {
                 DiscussionGroup group = mGroupList.get(i);
-                String  sortLetter = group.getSortLetters();
+                String sortLetter = group.getSortLetters();
                 char firstLettar = sortLetter.toUpperCase().charAt(0);
-                if (firstLettar == section){
+                if (firstLettar == section) {
                     return i;
                 }
             }
@@ -198,7 +233,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
         }
 
         private class GroupItemHolder {
-//            EduSohoGroupAvatar groupAvatar;
+            //            EduSohoGroupAvatar groupAvatar;
             ImageView groupAvatar;
             TextView groupName;
             TextView catalog;

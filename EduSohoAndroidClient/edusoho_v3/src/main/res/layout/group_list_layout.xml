@@ -31,4 +31,43 @@
         android:layout_marginBottom="88dp"
         android:layout_marginTop="88dp" />
 
+    <FrameLayout
+        android:id="@+id/discussion_group_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone"
+        >
+
+        <ProgressBar
+            android:layout_width="@dimen/xxx_large_font_size"
+            android:layout_height="@dimen/xxx_large_font_size"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:indeterminateDrawable="@drawable/load" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="正在加载讨论组..."
+            android:textSize="@dimen/large_font_size"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/empty_discussion_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="您还没有加入任何讨论组"
+            android:textSize="@dimen/x_large_font_size"/>
+
+    </FrameLayout>
+
 </FrameLayout>
