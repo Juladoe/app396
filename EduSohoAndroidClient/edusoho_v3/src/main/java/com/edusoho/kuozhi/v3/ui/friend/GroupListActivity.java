@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.friend;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 public class GroupListActivity extends ActionBarBaseActivity {
 
+    private final String TAG = "GroupList";
     private ListView mListView;
 
     private GroupListAdapter mAdapter;
@@ -70,13 +72,12 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 }
             }
         });
-        characterParser = CharacterParser.getInstance();
-        groupComparator = new GroupComparator();
-
-        mDiscussionGroupProvider = new DiscussionGroupProvider(mContext);
-
         mAdapter = new GroupListAdapter();
         mListView.setAdapter(mAdapter);
+        characterParser = CharacterParser.getInstance();
+        groupComparator = new GroupComparator();
+        mDiscussionGroupProvider = new DiscussionGroupProvider(mContext);
+
         mEmptyNotice.setVisibility(View.GONE);
         mLoading.setVisibility(View.VISIBLE);
         loadGroup().then(new PromiseCallback() {
@@ -158,6 +159,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
         public void addGroupList(List<DiscussionGroup> list) {
             mGroupList.addAll(list);
+            notifyDataSetChanged();
         }
 
         @Override
@@ -180,9 +182,9 @@ public class GroupListActivity extends ActionBarBaseActivity {
             DiscussionGroup group = mGroupList.get(position);
 
 //            generateGroupAvatar(groupItemHolder, position + 2);
-            if (!group.picture.equals("")){
-                ImageLoader.getInstance().displayImage(group.picture,groupItemHolder.groupAvatar,app.mOptions);
-            }else {
+            if (!group.picture.equals("")) {
+                ImageLoader.getInstance().displayImage(group.picture, groupItemHolder.groupAvatar, app.mOptions);
+            } else {
                 groupItemHolder.groupAvatar.setImageResource(R.drawable.default_avatar);
             }
             groupItemHolder.groupName.setText(group.title);
