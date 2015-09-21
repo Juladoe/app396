@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,8 +80,6 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 });
             }
         });
-
-
     }
 
     private void initDatas() {
@@ -119,9 +118,26 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             }
         });
 
+//        final String[] bodyTypes = new String[]{PushUtil.LessonType.FLASH, PushUtil.LessonType.LIVE, PushUtil.LessonType.DOCUMENT,
+//                PushUtil.LessonType.AUDIO, PushUtil.LessonType.PPT, PushUtil.LessonType.TESTPAPER, PushUtil.LessonType.VIDEO};
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+//                for (int i = 0; i < bodyTypes.length; i++) {
+//                    NewsCourseEntity entity = new NewsCourseEntity();
+//                    entity.setId(i);
+//                    entity.setObjectId(i);
+//                    entity.setCourseId(i);
+//                    entity.setUserId(app.loginUser.id);
+//                    entity.setCreatedTime(1442733480);
+//                    entity.setFromType("course");
+//                    entity.setLessonType(bodyTypes[i]);
+//                    entity.setContent(i + "");
+//                    entity.setTitle(i + "");
+//                    entity.setBodyType("lesson.publish");
+//                    mAdapter.addItem(entity);
+//                }
                 sendNewFragment2UpdateItemBadge();
             }
         }, 500);
@@ -220,68 +236,86 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
 
             final NewsCourseEntity newsCourseEntity = mList.get(position);
             viewHolder.tvTime.setText(AppUtil.convertMills2Date(((long) newsCourseEntity.getCreatedTime()) * 1000));
-            viewHolder.tvLessonTitle.setText(newsCourseEntity.getContent());
-            switch (newsCourseEntity.getLessonType()) {
-                case PushUtil.LessonType.LIVE:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_live));
-                    break;
-                case PushUtil.LessonType.VIDEO:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_video));
-                    break;
-                case PushUtil.LessonType.AUDIO:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_audio));
-                    break;
-                case PushUtil.LessonType.TESTPAPER:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_testpaper));
-                    break;
-                case PushUtil.LessonType.PPT:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_ppt));
-                    break;
-                case PushUtil.LessonType.DOCUMENT:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_document));
-                    break;
-                case PushUtil.LessonType.FLASH:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_flash));
-                    break;
-                default:
-                    //default is TEXT:
-                    viewHolder.ivLessonType.setText(mContext.getString(R.string.font_lesson_type_text));
-                    break;
-            }
+            viewHolder.tvContent.setText(Html.fromHtml(newsCourseEntity.getContent()).toString().trim());
 
-            viewHolder.tvLessonTitle.setText(newsCourseEntity.getContent());
+            View.OnClickListener itemClickListener = null;
 
             switch (newsCourseEntity.getBodyType()) {
                 case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                     viewHolder.tvAction.setText(ACTIONS[0]);
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.COURSE_ANNOUNCEMENT);
+                    viewHolder.ivLessonType.setText(getString(R.string.font_announcement));
+                    viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.orange_alpha));
+                    itemClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.ANNOUNCEMENT, newsCourseEntity.getCourseId()));
+                                    startIntent.putExtra(WebViewActivity.URL, url);
+                                }
+                            });
+                        }
+                    };
                     break;
                 case PushUtil.CourseType.TESTPAPER_REVIEWED:
                     viewHolder.tvAction.setText(ACTIONS[0]);
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.TESTPAPER_REVIEWED);
+                    viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_testpaper));
+                    viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.green_alpha));
                     break;
                 default:
                     //default is LESSON_PUBLISH:
                     viewHolder.tvAction.setText(ACTIONS[1]);
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.LESSON_PUBLISH);
+                    viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.blue_alpha));
+                    switch (newsCourseEntity.getLessonType()) {
+                        case PushUtil.LessonType.LIVE:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_live));
+                            break;
+                        case PushUtil.LessonType.VIDEO:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_video));
+                            break;
+                        case PushUtil.LessonType.AUDIO:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_audio));
+                            break;
+                        case PushUtil.LessonType.TESTPAPER:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_testpaper));
+                            break;
+                        case PushUtil.LessonType.PPT:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_ppt));
+                            break;
+                        case PushUtil.LessonType.DOCUMENT:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_document));
+                            break;
+                        case PushUtil.LessonType.FLASH:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_flash));
+                            break;
+                        default:
+                            //default is TEXT:
+                            viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_text));
+                            break;
+                    }
+                    itemClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            app.mEngine.runNormalPlugin(
+                                    LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                                        @Override
+                                        public void setIntentDate(Intent startIntent) {
+                                            startIntent.putExtra(Const.COURSE_ID, newsCourseEntity.getCourseId());
+                                            startIntent.putExtra(Const.LESSON_ID, newsCourseEntity.getObjectId());
+                                            //startIntent.putExtra(LessonActivity.LESSON_IDS, lessonArray);
+                                        }
+                                    }
+                            );
+                        }
+                    };
                     break;
             }
 
-            viewHolder.viewItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    app.mEngine.runNormalPlugin(
-                            LessonActivity.TAG, mActivity, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    startIntent.putExtra(Const.COURSE_ID, newsCourseEntity.getCourseId());
-                                    startIntent.putExtra(Const.LESSON_ID, newsCourseEntity.getLessonId());
-                                    //startIntent.putExtra(LessonActivity.LESSON_IDS, lessonArray);
-                                }
-                            }
-                    );
-                }
-            });
+            viewHolder.viewItem.setOnClickListener(itemClickListener);
 
             return convertView;
         }
@@ -290,14 +324,14 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     public static class ViewHolder {
         public TextView tvLessonType;
         public EduSohoIconView ivLessonType;
-        public TextView tvLessonTitle;
+        public TextView tvContent;
         public TextView tvAction;
         private TextView tvTime;
         private View viewItem;
 
         public ViewHolder(View view) {
             tvLessonType = (TextView) view.findViewById(R.id.tv_lesson_type);
-            tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_title);
+            tvContent = (TextView) view.findViewById(R.id.tv_lesson_content);
             ivLessonType = (EduSohoIconView) view.findViewById(R.id.iv_lesson_type);
             tvAction = (TextView) view.findViewById(R.id.tv_action);
             tvTime = (TextView) view.findViewById(R.id.tv_send_time);

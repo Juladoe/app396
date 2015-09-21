@@ -146,7 +146,7 @@ public class NewsFragment extends BaseFragment {
                 jsonObject = new JSONObject(NotificationUtil.mMessage.getCustomContentJson());
                 if (jsonObject.has("typeBusiness")) {
                     String type = jsonObject.getString("typeBusiness");
-                    if (PushUtil.ChatUserRole.FRIEND.equals(type) || PushUtil.ChatUserRole.TEACHER.equals(type)) {
+                    if (PushUtil.ChatUserType.FRIEND.equals(type) || PushUtil.ChatUserType.TEACHER.equals(type)) {
                         getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
                     } else {
                         handleBulletinMsg(message);
@@ -155,9 +155,9 @@ public class NewsFragment extends BaseFragment {
                     Gson gson = new Gson();
                     V2CustomContent v2CustomContent = gson.fromJson(message.getCustomContentJson(), V2CustomContent.class);
                     switch (v2CustomContent.getBody().getType()) {
-                        case PushUtil.ChatUserRole.USER:
-                        case PushUtil.ChatUserRole.FRIEND:
-                        case PushUtil.ChatUserRole.TEACHER:
+                        case PushUtil.ChatUserType.USER:
+                        case PushUtil.ChatUserType.FRIEND:
+                        case PushUtil.ChatUserType.TEACHER:
                             getNewChatMsg(HANDLE_RECEIVE_MSG, message);
                             break;
                         case PushUtil.CourseType.LESSON_PUBLISH:
@@ -171,7 +171,6 @@ public class NewsFragment extends BaseFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -249,10 +248,10 @@ public class NewsFragment extends BaseFragment {
 
                     }
                     break;
-                case "bulletin":
+                case PushUtil.BulletinType.TYPE:
                     app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
                     break;
-                case PushUtil.CourseType.LESSON_PUBLISH:
+                case PushUtil.CourseType.TYPE:
                     app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
@@ -311,8 +310,8 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case UPDATE_UNREAD_NEWS_COURSE:
                     NewDataSource newsCourseDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    newsCourseDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.LESSON_PUBLISH);
-                    mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.LESSON_PUBLISH);
+                    newsCourseDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.TYPE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.TYPE);
                     break;
                 case Const.ADD_CHAT_MSGS:
                     ArrayList<New> newArrayList = (ArrayList<New>) message.data.get(Const.GET_PUSH_DATA);
@@ -384,7 +383,7 @@ public class NewsFragment extends BaseFragment {
         newModel.content = wrapperMessage.content;
         newModel.imgUrl = v2CustomContent.getFrom().getImage();
         newModel.createdTime = v2CustomContent.getCreatedTime();
-        newModel.setType(v2CustomContent.getBody().getType());
+        newModel.setType(v2CustomContent.getFrom().getType());
 
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");

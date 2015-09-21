@@ -195,6 +195,7 @@ public class EdusohoMainService extends Service {
                     NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
                     newsCourseDataSource.create(newsCourseEntity);
                     if (!xgMessage.isForeground) {
+
                         NotificationUtil.showNewsCourseNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;

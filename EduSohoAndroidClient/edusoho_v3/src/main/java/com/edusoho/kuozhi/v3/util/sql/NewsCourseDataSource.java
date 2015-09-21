@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class NewsCourseDataSource {
     public static final String TABLE_NAME = "NEWS_COURSE";
-    public String[] allColumns = {"ID", "COURSEID", "LESSONID", "TITLE", "CONTENT", "FROMTYPE", "BODYTYPE", "LESSONTYPE", "USERID", "CREATEDTIME"};
+    public String[] allColumns = {"ID", "COURSEID", "OBJECTID", "TITLE", "CONTENT", "FROMTYPE", "BODYTYPE", "LESSONTYPE", "USERID", "CREATEDTIME"};
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
 
@@ -63,7 +63,7 @@ public class NewsCourseDataSource {
         NewsCourseEntity entity = new NewsCourseEntity();
         entity.setId(cursor.getInt(0));
         entity.setCourseId(cursor.getInt(1));
-        entity.setLessonId(cursor.getInt(2));
+        entity.setObjectId(cursor.getInt(2));
         entity.setTitle(cursor.getString(3));
         entity.setContent(cursor.getString(4));
         entity.setFromType(cursor.getString(5));
@@ -79,7 +79,7 @@ public class NewsCourseDataSource {
         ContentValues cv = new ContentValues();
         cv.put(allColumns[0], newsCourseEntity.getId());
         cv.put(allColumns[1], newsCourseEntity.getCourseId());
-        cv.put(allColumns[2], newsCourseEntity.getLessonId());
+        cv.put(allColumns[2], newsCourseEntity.getObjectId());
         cv.put(allColumns[3], newsCourseEntity.getTitle());
         cv.put(allColumns[4], newsCourseEntity.getContent());
         cv.put(allColumns[5], newsCourseEntity.getFromType());
@@ -96,7 +96,7 @@ public class NewsCourseDataSource {
         this.openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[1], newsCourseEntity.getCourseId());
-        cv.put(allColumns[2], newsCourseEntity.getLessonId());
+        cv.put(allColumns[2], newsCourseEntity.getObjectId());
         cv.put(allColumns[3], newsCourseEntity.getTitle());
         cv.put(allColumns[4], newsCourseEntity.getContent());
         cv.put(allColumns[5], newsCourseEntity.getFromType());
