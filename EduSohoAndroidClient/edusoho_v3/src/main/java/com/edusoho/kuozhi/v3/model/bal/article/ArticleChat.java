@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal.article;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
@@ -24,21 +25,44 @@ public class ArticleChat extends Chat {
             articleList = new ArrayList<>();
         }
 
-        articleChat.id = (int) System.currentTimeMillis();
+        articleChat.nickName = EdusohoApp.app.domain;
+        articleChat.id = -1;
         articleChat.createdTime = (int) (System.currentTimeMillis() / 1000);
         articleChat.articleList = articleList;
         return articleChat;
     }
 
-    public ArticleChat(){
+    private ArticleChat(){
+    }
+
+    public ArticleChat(Chat chat)
+    {
+        Article article = new Article();
+
+        V2CustomContent.BodyEntity bodyEntity = new Gson().fromJson(chat.getContent(), V2CustomContent.BodyEntity.class);
+        article.body = bodyEntity.getContent();
+        article.title = bodyEntity.getTitle();
+        article.id = bodyEntity.getId();
+
+        this.nickName = EdusohoApp.app.domain;
+        this.articleList = new ArrayList<>();
+        this.articleList.add(article);
     }
 
     public ArticleChat(WrapperXGPushTextMessage message)
     {
         super(message);
-        V2CustomContent customContent = message.getV2CustomContent();
         Article article = new Article();
 
+        Gson gson = new Gson();
+        V2CustomContent.BodyEntity bodyEntity = gson.fromJson(
+                message.getContent(), V2CustomContent.BodyEntity.class);
+        article.body = bodyEntity.getContent();
+        article.title = bodyEntity.getTitle();
+        article.id = bodyEntity.getId();
+        article.picture = bodyEntity.getImage();
+
+        this.nickName = EdusohoApp.app.domain;
         this.articleList = new ArrayList<>();
         this.articleList.add(article);
     }

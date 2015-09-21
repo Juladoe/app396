@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.v3.model.bal.article;
  */
 public class Article {
 
-    public String id;
+    public int id;
     public String title;
     public String categoryId;
     public String body;
