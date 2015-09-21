@@ -435,6 +435,7 @@ public class Const {
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
+    public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
 
     /**
      * 绑定第三方登录
