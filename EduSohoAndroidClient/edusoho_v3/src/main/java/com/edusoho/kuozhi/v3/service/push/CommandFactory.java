@@ -37,6 +37,7 @@ public class CommandFactory {
                 pushCommand = new PushLessonPublishCommand(pusher);
                 break;
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                pushCommand = new PushTestpaperReviewedCommand(pusher);
                 break;
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                 if (PushUtil.AnnouncementType.COURSE.equals(pusher.getV2CustomContent().getFrom().getType())) {

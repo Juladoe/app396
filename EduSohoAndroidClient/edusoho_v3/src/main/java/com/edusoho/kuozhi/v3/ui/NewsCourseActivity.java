@@ -238,7 +238,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             viewHolder.tvTime.setText(AppUtil.convertMills2Date(((long) newsCourseEntity.getCreatedTime()) * 1000));
             viewHolder.tvContent.setText(Html.fromHtml(newsCourseEntity.getContent()).toString().trim());
 
-            View.OnClickListener itemClickListener = null;
+            View.OnClickListener itemClickListener;
 
             switch (newsCourseEntity.getBodyType()) {
                 case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
@@ -264,6 +264,12 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.TESTPAPER_REVIEWED);
                     viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_testpaper));
                     viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.green_alpha));
+                    itemClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    };
                     break;
                 default:
                     //default is LESSON_PUBLISH:
