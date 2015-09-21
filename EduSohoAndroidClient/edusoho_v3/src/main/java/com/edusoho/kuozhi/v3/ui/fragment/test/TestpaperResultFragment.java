@@ -84,7 +84,7 @@ public class TestpaperResultFragment extends BaseFragment {
             @Override
             public void onResponse(String response) {
                 showProgress(false);
-                TestpaperResultType testpaperResultType = mActivity.parseJsonValue(
+                TestpaperResultType testpaperResultType = mActivity.handleJsonValue(
                         response, new TypeToken<TestpaperResultType>() {
                         });
                 if (testpaperResultType == null) {
