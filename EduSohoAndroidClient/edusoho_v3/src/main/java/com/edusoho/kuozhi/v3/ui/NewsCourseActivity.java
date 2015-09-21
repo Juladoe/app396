@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -267,7 +268,15 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     itemClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
+                            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, newsCourseEntity.getTitle() + "考试结果");
+                                    startIntent.putExtra(TestpaperResultFragment.RESULT_ID, newsCourseEntity.getObjectId());
+                                    startIntent.putExtra(Const.STATUS, "finished");
+                                }
+                            });
                         }
                     };
                     break;

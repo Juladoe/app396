@@ -88,6 +88,7 @@ public class TestpaperResultFragment extends BaseFragment {
                         response, new TypeToken<TestpaperResultType>() {
                         });
                 if (testpaperResultType == null) {
+                    mResultParseBtn.setBackgroundColor(getResources().getColor(R.color.grey_cccccc));
                     return;
                 }
 

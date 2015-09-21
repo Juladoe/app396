@@ -198,17 +198,6 @@ public class BaseActivity extends ActionBarActivity {
         return value;
     }
 
-    private String handleRequest(String response) {
-        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
-        });
-        if (result != null && result.error != null) {
-            CommonUtil.longToast(mActivity, result.error.message);
-            return null;
-        } else {
-            return response;
-        }
-    }
-
     public <T> T handleJsonValue(String response, TypeToken<T> typeToken) {
         ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
         });
