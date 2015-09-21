@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter.article;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
     }
 
     public void addArticleChats(ArrayList<ArticleChat> articles) {
-        mArcicleChatList.addAll(articles);
+        mArcicleChatList.addAll(0, articles);
         notifyDataSetChanged();
     }
 
@@ -113,43 +114,79 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = getViewByPosition(groupPosition, childPosition);
-        }
+
+        int childCount = getChildrenCount(groupPosition);
+        convertView = getViewByPosition(convertView, childPosition, childCount);
+        changeChildViewByPosition(convertView, childPosition, childCount);
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
         Article article = getChild(groupPosition, childPosition);
+        Log.d("childPosition", String.format("title:%s  pos:%d v:%s", article.title, childPosition, convertView));
         viewHolder.mTitleView.setText(article.title);
         ImageLoader.getInstance().displayImage(article.picture, viewHolder.mImgView, mOptions);
         return convertView;
     }
 
-    private View getViewByPosition(int groupPosition, int childPosition) {
-        int count = getChildrenCount(groupPosition);
-        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-
-        View view = null;
-        if (count > 1 && childPosition == 0) {
-            view = layoutInflater.inflate(R.layout.article_list_item_large, null);
+    private void changeChildViewByPosition(View view, int childPosition, int childCount) {
+        if (childCount == 1) {
+            view.setBackgroundResource(R.drawable.article_list_item_single_bg);
+        } else if (childCount > 1 && childPosition == 0) {
             view.setBackgroundResource(R.drawable.article_list_item_large_bg);
         } else {
-            view = layoutInflater.inflate(R.layout.article_list_item_normal, null);
-            int res = ( childPosition == (count - 1) ) ?
+            int res = ( childPosition == (childCount - 1) ) ?
                     R.drawable.article_list_item_bottom : R.drawable.article_list_item_mid_bg;
             view.setBackgroundResource(res);
         }
+    }
 
-        ViewHolder viewHolder = new ViewHolder();
+    private View getViewByPosition(View view, int childPosition, int childCount) {
+        ViewHolder viewHolder =
+                view != null ? (ViewHolder) view.getTag() : new ViewHolder();
+
+        int viewType = -1;
+        if (childCount == 1) {
+            viewType = 0;
+        } else if (childCount > 1 && childPosition == 0) {
+            viewType = 1;
+        } else {
+            viewType = 2;
+        }
+
+        if (view != null && viewHolder.type == viewType) {
+            Log.d("childPosition-", String.format("childCount:%d  childPosition:%d vt:%d", childCount, childPosition, viewHolder.type));
+            return view;
+        }
+
+        viewHolder = new ViewHolder();
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        switch (viewType) {
+            case 0:
+            case 1:
+                viewHolder.type = viewType;
+                view = layoutInflater.inflate(R.layout.article_list_item_large, null);
+                break;
+            case 2:
+                viewHolder.type = viewType;
+                view = layoutInflater.inflate(R.layout.article_list_item_normal, null);
+        }
+
         viewHolder.mImgView = (ImageView) view.findViewById(R.id.article_item_img);
         viewHolder.mTitleView = (TextView) view.findViewById(R.id.article_item_text);
         view.setTag(viewHolder);
 
+        Log.d("childPosition", String.format("childCount:%d  childPosition:%d vt:%d", childCount, childPosition, viewHolder.type));
         return view;
     }
 
     private class ViewHolder {
 
+        public int type;
         public TextView mTitleView;
         public ImageView mImgView;
+
+        public ViewHolder()
+        {
+            this.type = -1;
+        }
     }
 }
