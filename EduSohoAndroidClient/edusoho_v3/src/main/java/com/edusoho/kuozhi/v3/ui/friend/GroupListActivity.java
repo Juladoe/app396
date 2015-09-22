@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -50,8 +51,6 @@ public class GroupListActivity extends ActionBarBaseActivity {
     private CharacterParser characterParser;
     private GroupComparator groupComparator;
 
-//    private ArrayList<DiscussionGroup> mGroupList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +77,14 @@ public class GroupListActivity extends ActionBarBaseActivity {
         groupComparator = new GroupComparator();
         mDiscussionGroupProvider = new DiscussionGroupProvider(mContext);
 
-        mEmptyNotice.setVisibility(View.GONE);
         mLoading.setVisibility(View.VISIBLE);
+        mEmptyNotice.setVisibility(View.GONE);
+        if (!app.getNetIsConnect()) {
+            mLoading.setVisibility(View.GONE);
+            Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
+        } else {
+            mAdapter.clearList();
+        }
         loadGroup().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
@@ -106,9 +111,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
                     mAdapter.addGroupList(groupsList);
-
                     promise.resolve(groupsList);
-
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }
@@ -159,6 +162,15 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
         public void addGroupList(List<DiscussionGroup> list) {
             mGroupList.addAll(list);
+            notifyDataSetChanged();
+        }
+
+        private void clearList() {
+            mGroupList.clear();
+            updataList();
+        }
+
+        public void updataList() {
             notifyDataSetChanged();
         }
 
