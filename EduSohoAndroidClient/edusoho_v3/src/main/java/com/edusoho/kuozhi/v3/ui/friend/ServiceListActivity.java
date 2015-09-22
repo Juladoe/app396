@@ -146,6 +146,8 @@ public class ServiceListActivity extends ActionBarBaseActivity {
 
             if (!TextUtils.isEmpty(schoolApp.avatar)) {
                 ImageLoader.getInstance().displayImage(app.host + "/" + schoolApp.avatar, schoolAppHolder.schoolAppAvatar, app.mOptions);
+            } else {
+                displayAppIcon(schoolAppHolder.schoolAppAvatar, schoolApp);
             }
             schoolAppHolder.SchoolAppName.setText(schoolApp.name);
 
@@ -156,6 +158,19 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             }
 
             return view;
+        }
+
+        private void displayAppIcon(ImageView schoolAppAvatar, SchoolApp schoolApp) {
+            switch (schoolApp.code) {
+                case "announcement":
+                    ImageLoader.getInstance().displayImage(app.host + "/" + schoolApp.avatar, schoolAppAvatar, app.mOptions);
+                    break;
+                case "news":
+                    schoolAppAvatar.setBackgroundColor(mContext.getResources().getColor(R.color.blue_alpha));
+                    schoolAppAvatar.setPadding(10, 10, 10, 10);
+                    schoolAppAvatar.setImageResource(R.drawable.article_app_icon);
+                    break;
+            }
         }
 
         private class SchoolAppHolder {
