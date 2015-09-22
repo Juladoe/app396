@@ -141,6 +141,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
             if (mCourseId == 0 || mLessonId == 0) {
                 CommonUtil.longToast(mContext, "课程数据错误！");
+                setBackMode(BACK, getString(R.string.lesson_default_title));
                 return;
             }
 
@@ -478,7 +479,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
 
         if ("flash".equals(lessonItem.type) || CommonUtil.inArray(lessonItem.mediaSource,
-                new String[] { Const.NETEASE_OPEN_COURSE, Const.QQ_OPEN_COURSE })) {
+                new String[]{Const.NETEASE_OPEN_COURSE, Const.QQ_OPEN_COURSE})) {
             CommonUtil.longToast(mContext, "客户端暂不支持该课时！");
             return;
         }

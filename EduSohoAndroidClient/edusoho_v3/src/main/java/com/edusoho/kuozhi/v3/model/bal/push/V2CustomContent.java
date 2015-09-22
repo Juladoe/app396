@@ -125,7 +125,7 @@ public class V2CustomContent {
     }
 
     public static class BodyEntity {
-        private int lessonId;
+
         private int id;
         private String content;
         private String type;
@@ -157,14 +157,6 @@ public class V2CustomContent {
             this.title = title;
         }
 
-        public int getLessonId() {
-            return lessonId;
-        }
-
-        public void setLessonId(int lessonId) {
-            this.lessonId = lessonId;
-        }
-
         public String getContent() {
             return content;
         }
@@ -189,6 +181,4 @@ public class V2CustomContent {
             this.lessonType = lessonType;
         }
     }
-
-
 }

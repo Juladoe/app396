@@ -69,6 +69,7 @@ public class Const {
 
     //默认分页数量
     public static final int LIMIT = 10;
+    public static final int NEWS_LIMIT = 15;
 
     public static final String EQUIP_TYPE = "Android";
     public static final String BIND_USER_ID = "bind_user_id";
@@ -83,9 +84,10 @@ public class Const {
     public static final String MEDIA_AUDIO = "语音";
     public static final String GET_PUSH_DATA = "get_push_data";
     public static final String FROM_ID = "from_id";
+    public static final String NEWS_TYPE = "news_type";
     public static final int ADD_CHAT_MSG = 5;
     public static final int ADD_COURSE_MSG = 6;
-    public static final int ADD_ARTICLE_CREATE_MAG = 12;
+    public static final int ADD_ARTICLE_CREATE_MAG = 13;
     /**
      * 用于离线获取，更新多条信息
      */
@@ -416,7 +418,8 @@ public class Const {
     public static final String MY_INFO = "main#/myinfo";
     public static final String MY_FAVORITE = "main#/myfavorite";
     public static final String USER_PROFILE = "main#/userinfo/%d";
-    public static final String USER_LEARN_COURSE = "main#/";
+    public static final String USER_LEARN_COURSE = "main#/course/%d";
+    public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
@@ -433,6 +436,7 @@ public class Const {
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
+    public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
 
     /**
      * 绑定第三方登录

@@ -54,11 +54,13 @@ public class NotificationUtil {
             notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
+            notifyIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, chat.getHeadimgurl());
+            notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
+            notifyIntent.putExtra(Const.NEWS_TYPE, PushUtil.ChatUserType.FRIEND);
             notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
             if (isAppExit(context)) {
                 mMessage = xgMessage;
             }
-            notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
@@ -85,6 +87,9 @@ public class NotificationUtil {
             notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(Const.INTENT_TARGET, BulletinActivity.class);
+            if (isAppExit(context)) {
+                mMessage = xgMessage;
+            }
             PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
@@ -109,12 +114,13 @@ public class NotificationUtil {
         Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
         notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, newsCourseEntity.getCourseId());
         notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
         if (isAppExit(context)) {
             mMessage = xgMessage;
         }
-        notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
+
         PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);

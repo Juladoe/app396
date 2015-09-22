@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_lesson_title"
+                android:id="@+id/tv_lesson_content"
                 android:textSize="@dimen/medium_font_size"
                 android:layout_centerVertical="true"
                 android:textColor="@color/base_black_87"

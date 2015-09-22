@@ -8,7 +8,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 public class NewsCourseEntity {
     private int id;
     private int courseId;
-    private int lessonId;
+    private int objectId;
     private String title;
     private String content;
     private String fromType;
@@ -25,7 +25,7 @@ public class NewsCourseEntity {
         V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
         this.id = v2CustomContent.getMsgId();
         this.courseId = v2CustomContent.getFrom().getId();
-        this.lessonId = v2CustomContent.getBody().getLessonId();
+        this.objectId = v2CustomContent.getBody().getId();
         this.title = xgMessage.getTitle();
         this.content = xgMessage.getContent();
         this.fromType = v2CustomContent.getFrom().getType();
@@ -51,12 +51,12 @@ public class NewsCourseEntity {
         this.courseId = courseId;
     }
 
-    public int getLessonId() {
-        return lessonId;
+    public int getObjectId() {
+        return objectId;
     }
 
-    public void setLessonId(int lessonId) {
-        this.lessonId = lessonId;
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
     }
 
     public String getTitle() {

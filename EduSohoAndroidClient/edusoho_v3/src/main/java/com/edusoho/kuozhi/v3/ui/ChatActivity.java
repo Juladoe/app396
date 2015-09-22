@@ -88,7 +88,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     //region Field
     public static final String TAG = "ChatActivity";
-    public static final String CHAT_DATA = "chat_data";
     public static final String FROM_ID = "from_id";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
@@ -126,7 +125,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private ChatDataSource mChatDataSource;
     private int mSendTime;
     private int mStart = 0;
-    private static final int LIMIT = 15;
     private File mCameraFile;
 
     public static int CurrentFromId = 0;
@@ -142,6 +140,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private User mFromUserInfo;
     private int mFromId;
     private int mToId;
+    private String mType;
     //endregion
 
     @Override
@@ -160,6 +159,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     private void initView() {
+        mHandler = new VolumeHandler(this);
         mAudioDownloadReceiver = new AudioDownloadReceiver();
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(msgTextWatcher);
@@ -198,15 +198,17 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                mStart = mAdapter.getCount();
                 mAdapter.addItems(getChatList(mStart));
+                mStart = mAdapter.getCount();
                 mPtrFrame.refreshComplete();
                 lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
 
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                int count = getChatList(mStart).size();
+                return count > 0 && canDoRefresh;
             }
         });
 
@@ -217,14 +219,23 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 return false;
             }
         });
-        sendNewFragment2UpdateItem();
-
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
+        }
+    };
+
+    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.FROM_ID, mFromId);
+            bundle.putString(Const.NEWS_TYPE, mType);
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
         }
     };
 
@@ -237,7 +248,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
         mAdapter.setSendImageClickListener(this);
-        sendNewFragment2UpdateItem();
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     private void initData() {
@@ -247,6 +258,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             return;
         }
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
+        mType = intent.getStringExtra(Const.NEWS_TYPE);
         mToId = app.loginUser.id;
         mFromUserInfo = new User();
         mFromUserInfo.id = mFromId;
@@ -261,21 +273,16 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
-        mHandler = new VolumeHandler(this);
+
     }
 
     private ArrayList<Chat> getChatList(int start) {
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, mToId, mFromId, mToId);
-        ArrayList<Chat> mList = mChatDataSource.getChats(start, LIMIT, selectSql);
+        ArrayList<Chat> mList = mChatDataSource.getChats(start, Const.NEWS_LIMIT, selectSql);
         Collections.reverse(mList);
         return mList;
     }
 
-    private void sendNewFragment2UpdateItem() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Const.FROM_ID, mFromId);
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
-    }
 
     private void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
@@ -349,7 +356,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * update badgeview the ListView of NewsFragment
+     * update badge the ListView of NewsFragment
      *
      * @param message xg message
      */
@@ -430,7 +437,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         @Override
         public boolean onTouch(final View v, MotionEvent event) {
             /**
-             * 根据手纸滑动距离是否保存
+             * 根据滑动距离是否保存
              */
             boolean mHandUpAndCancel;
             switch (event.getAction()) {
@@ -1040,7 +1047,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public void invoke(WidgetMessage message) {
         try {
             MessageType messageType = message.type;
-            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(CHAT_DATA);
+            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
             CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
             });
             if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
@@ -1056,7 +1063,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         }
                         break;
                     case Const.ADD_CHAT_MSGS:
-                        ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(CHAT_DATA);
+                        ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(Const.GET_PUSH_DATA);
                         mAdapter.addItems(chats);
                         break;
                 }

@@ -67,6 +67,8 @@
     <string name="authorize_cancelled">取消授权</string>
     <string name="user_not_exist">用户不存在</string>
     <string name="school_info_error">"无法获取网校信息"</string>
+    <string name="lesson_default_title">课程简介</string>
+    <string name="course_params_error">课程参数不正确</string>
 
     <!--ttf-->
     <string name="font_friends">&#xe628;</string>
@@ -92,6 +94,7 @@
     <string name="font_drawer_setting">&#xe60e;</string>
     <string name="font_favorite">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
+    <string name="font_announcement">&#xe629;</string>
     <string name="font_login_username">&#xe619;</string>
     <string name="font_login_password">&#xe616;</string>
     <string name="font_lesson_type_live">&#xe652;</string>

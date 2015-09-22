@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class NewsCourseDataSource {
     public static final String TABLE_NAME = "NEWS_COURSE";
-    public String[] allColumns = {"ID", "COURSEID", "LESSONID", "TITLE", "CONTENT", "FROMTYPE", "BODYTYPE", "LESSONTYPE", "USERID", "CREATEDTIME"};
+    public String[] allColumns = {"ID", "COURSEID", "OBJECTID", "TITLE", "CONTENT", "FROMTYPE", "BODYTYPE", "LESSONTYPE", "USERID", "CREATEDTIME"};
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
 
@@ -60,18 +60,18 @@ public class NewsCourseDataSource {
     }
 
     public NewsCourseEntity cursorToEntity(Cursor cursor) {
-        NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
-        newsCourseEntity.setId(cursor.getInt(0));
-        newsCourseEntity.setCourseId(cursor.getInt(1));
-        newsCourseEntity.setLessonId(cursor.getInt(2));
-        newsCourseEntity.setTitle(cursor.getString(3));
-        newsCourseEntity.setContent(cursor.getString(4));
-        newsCourseEntity.setFromType(cursor.getString(5));
-        newsCourseEntity.setBodyType(cursor.getString(6));
-        newsCourseEntity.setLessonType(cursor.getString(7));
-        newsCourseEntity.setUserId(cursor.getInt(8));
-        newsCourseEntity.setCreatedTime(cursor.getInt(9));
-        return newsCourseEntity;
+        NewsCourseEntity entity = new NewsCourseEntity();
+        entity.setId(cursor.getInt(0));
+        entity.setCourseId(cursor.getInt(1));
+        entity.setObjectId(cursor.getInt(2));
+        entity.setTitle(cursor.getString(3));
+        entity.setContent(cursor.getString(4));
+        entity.setFromType(cursor.getString(5));
+        entity.setBodyType(cursor.getString(6));
+        entity.setLessonType(cursor.getString(7));
+        entity.setUserId(cursor.getInt(8));
+        entity.setCreatedTime(cursor.getInt(9));
+        return entity;
     }
 
     public long create(NewsCourseEntity newsCourseEntity) {
@@ -79,7 +79,7 @@ public class NewsCourseDataSource {
         ContentValues cv = new ContentValues();
         cv.put(allColumns[0], newsCourseEntity.getId());
         cv.put(allColumns[1], newsCourseEntity.getCourseId());
-        cv.put(allColumns[2], newsCourseEntity.getLessonId());
+        cv.put(allColumns[2], newsCourseEntity.getObjectId());
         cv.put(allColumns[3], newsCourseEntity.getTitle());
         cv.put(allColumns[4], newsCourseEntity.getContent());
         cv.put(allColumns[5], newsCourseEntity.getFromType());
@@ -96,7 +96,7 @@ public class NewsCourseDataSource {
         this.openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[1], newsCourseEntity.getCourseId());
-        cv.put(allColumns[2], newsCourseEntity.getLessonId());
+        cv.put(allColumns[2], newsCourseEntity.getObjectId());
         cv.put(allColumns[3], newsCourseEntity.getTitle());
         cv.put(allColumns[4], newsCourseEntity.getContent());
         cv.put(allColumns[5], newsCourseEntity.getFromType());

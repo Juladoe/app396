@@ -5,11 +5,10 @@ package com.edusoho.kuozhi.v3.model.bal;
  */
 public class DiscussionGroup {
 
-    public DiscussionGroup(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public String groupName;
+    public String type;
+    public String id;
+    public String title;
+    public String picture;
 
     private String sortLetter;
 

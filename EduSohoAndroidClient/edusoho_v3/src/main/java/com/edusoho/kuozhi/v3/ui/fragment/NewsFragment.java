@@ -47,7 +47,11 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +63,10 @@ import java.util.List;
 public class NewsFragment extends BaseFragment {
     public static final int HANDLE_SEND_MSG = 1;
     public static final int HANDLE_RECEIVE_MSG = 2;
-    public static final int HANDLER_RECEIVE_COURSE = 3;
+    public static final int HANDLE_RECEIVE_COURSE = 3;
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
+    public static final int UPDATE_UNREAD_NEWS_COURSE = 12;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -138,8 +143,37 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setOnItemClickListener(mItemClickListener);
         initData();
         if (NotificationUtil.mMessage != null) {
-            getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
-            NotificationUtil.mMessage = null;
+            JSONObject jsonObject;
+            WrapperXGPushTextMessage message = NotificationUtil.mMessage;
+            try {
+                jsonObject = new JSONObject(NotificationUtil.mMessage.getCustomContentJson());
+                if (jsonObject.has("typeBusiness")) {
+                    String type = jsonObject.getString("typeBusiness");
+                    if (PushUtil.ChatUserType.FRIEND.equals(type) || PushUtil.ChatUserType.TEACHER.equals(type)) {
+                        getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
+                    } else {
+                        handleBulletinMsg(message);
+                    }
+                } else {
+                    Gson gson = new Gson();
+                    V2CustomContent v2CustomContent = gson.fromJson(message.getCustomContentJson(), V2CustomContent.class);
+                    switch (v2CustomContent.getBody().getType()) {
+                        case PushUtil.ChatUserType.USER:
+                        case PushUtil.ChatUserType.FRIEND:
+                        case PushUtil.ChatUserType.TEACHER:
+                            getNewChatMsg(HANDLE_RECEIVE_MSG, message);
+                            break;
+                        case PushUtil.CourseType.LESSON_PUBLISH:
+                            handlerReceiveCourse(message);
+                            break;
+                        case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                            break;
+                    }
+                }
+                NotificationUtil.mMessage = null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -209,6 +243,7 @@ public class NewsFragment extends BaseFragment {
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
                             startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });
@@ -216,10 +251,10 @@ public class NewsFragment extends BaseFragment {
 
                     }
                     break;
-                case "bulletin":
+                case PushUtil.BulletinType.TYPE:
                     app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
                     break;
-                case PushUtil.CourseType.LESSON_PUBLISH:
+                case PushUtil.CourseType.TYPE:
                     app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
@@ -258,6 +293,7 @@ public class NewsFragment extends BaseFragment {
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();
         } else {
+            int fromId = message.data.getInt(Const.FROM_ID);
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
@@ -268,32 +304,25 @@ public class NewsFragment extends BaseFragment {
                     WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handlerReceiveCourse(newsCourseMessage);
                     break;
-                case UPDATE_UNREAD_MSG:
-                    int fromId = message.data.getInt(Const.FROM_ID);
-                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", fromId + "", app.loginUser.id + "");
-                    if (news.size() > 0) {
-                        New newModel = news.get(0);
-
-                        newModel.unread = 0;
-                        newDataSource.update(newModel);
-                        updateNew(newModel);
-                    }
-                    break;
                 case Const.ADD_BULLETIT_MSG:
                     WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handleBulletinMsg(bulletinMessage);
                     break;
+                case UPDATE_UNREAD_MSG:
+                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                    String type = message.data.getString(Const.NEWS_TYPE);
+                    newDataSource.updateUnread(fromId, app.loginUser.id, type);
+                    mSwipeAdapter.updateItem(fromId, type);
+                    break;
                 case UPDATE_UNREAD_BULLETIN:
                     NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    List<New> bulletins = bulletinDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
-                            TypeBusinessEnum.BULLETIN.getName());
-                    if (bulletins.size() > 0) {
-                        New newModel = bulletins.get(0);
-                        newModel.unread = 0;
-                        bulletinDataSource.update(newModel);
-                        updateNew(newModel);
-                    }
+                    bulletinDataSource.updateBulletinUnread(app.loginUser.id, PushUtil.BulletinType.TYPE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.BulletinType.TYPE);
+                    break;
+                case UPDATE_UNREAD_NEWS_COURSE:
+                    NewDataSource newsCourseDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                    newsCourseDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.TYPE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.TYPE);
                     break;
                 case Const.ADD_CHAT_MSGS:
                     ArrayList<New> newArrayList = (ArrayList<New>) message.data.get(Const.GET_PUSH_DATA);
@@ -328,8 +357,6 @@ public class NewsFragment extends BaseFragment {
             case HANDLE_SEND_MSG:
                 handleSendMsg(xgPushTextMessage);
                 break;
-            case HANDLER_RECEIVE_COURSE:
-                break;
         }
     }
 
@@ -357,7 +384,7 @@ public class NewsFragment extends BaseFragment {
             insertNew(newModel);
         } else {
             newModel.unread = wrapperMessage.isForeground ? 0 : bulletins.get(0).unread + 1;
-            newDataSource.updateBulletin(newModel);
+            newDataSource.update(newModel);
             setItemToTop(newModel);
         }
     }
@@ -387,14 +414,13 @@ public class NewsFragment extends BaseFragment {
     private void handlerReceiveCourse(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
         V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
-
         newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         newModel.content = wrapperMessage.content;
         newModel.imgUrl = v2CustomContent.getFrom().getImage();
         newModel.createdTime = v2CustomContent.getCreatedTime();
-        newModel.setType(v2CustomContent.getBody().getType());
+        newModel.setType(v2CustomContent.getFrom().getType());
 
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
@@ -442,13 +468,14 @@ public class NewsFragment extends BaseFragment {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source),
+        return new MessageType[]{
+                new MessageType(Const.ADD_CHAT_MSG, source),
                 new MessageType(Const.ADD_BULLETIT_MSG, source),
-                new MessageType(Const.ADD_CHAT_MSGS, source),
                 new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
-                new MessageType(UPDATE_UNREAD_BULLETIN, source)};
+                new MessageType(UPDATE_UNREAD_BULLETIN, source),
+                new MessageType(UPDATE_UNREAD_NEWS_COURSE, source)};
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * 公告
  */
 public class BulletinActivity extends ActionBarBaseActivity {
+
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
     private View mEmptyView;
@@ -56,6 +58,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private int mStart = 0;
 
     private static long TIME_INTERVAL = 60 * 5;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     }
 
     private void initView() {
+        mHandler = new Handler();
         mListView = (ListView) findViewById(R.id.lv_bulletin);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
         mEmptyView = findViewById(R.id.view_empty);
@@ -112,7 +116,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 mListView.postDelayed(mRunnable, 100);
             }
         });
-        notifyNewFragment2UpdateItem();
+        mHandler.postDelayed(mNotifyNewFragment2UpdateItemBadgeRunnable, 500);
         setListVisibility(mBulletinAdapter.getCount() == 0);
     }
 
@@ -137,12 +141,15 @@ public class BulletinActivity extends ActionBarBaseActivity {
         mStart = 0;
         mBulletinAdapter.addItems(getBulletins(mStart));
         mListView.post(mRunnable);
-        notifyNewFragment2UpdateItem();
+        mHandler.postDelayed(mNotifyNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
-    private void notifyNewFragment2UpdateItem() {
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_BULLETIN, null, NewsFragment.class);
-    }
+    private Runnable mNotifyNewFragment2UpdateItemBadgeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_BULLETIN, null, NewsFragment.class);
+        }
+    };
 
     @Override
     public void invoke(WidgetMessage message) {
