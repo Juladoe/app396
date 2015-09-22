@@ -252,10 +252,9 @@ public class EdusohoMainService extends Service {
         for (int i = 0; i < size; i++) {
             Chat latestChat = latestChats.get(i);
             latestChat = latestChat.serializeCustomContent(latestChat);
-            switch (latestChat.getCustomContent().getTypeMsg()) {
-                case PushUtil.ChatMsgType.TEXT:
-                case PushUtil.ChatMsgType.AUDIO:
-                case PushUtil.ChatMsgType.IMAGE:
+            switch (latestChat.getCustomContent().getTypeBusiness()) {
+                case PushUtil.ChatUserType.FRIEND:
+                case PushUtil.ChatUserType.TEACHER:
                     int fromId = latestChat.getFromId();
                     if (chatHashMaps.containsKey(fromId)) {
                         chatHashMaps.get(fromId).add(latestChat);
