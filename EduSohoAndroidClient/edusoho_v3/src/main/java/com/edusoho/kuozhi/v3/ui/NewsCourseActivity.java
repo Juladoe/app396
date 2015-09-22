@@ -119,26 +119,9 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             }
         });
 
-//        final String[] bodyTypes = new String[]{PushUtil.LessonType.FLASH, PushUtil.LessonType.LIVE, PushUtil.LessonType.DOCUMENT,
-//                PushUtil.LessonType.AUDIO, PushUtil.LessonType.PPT, PushUtil.LessonType.TESTPAPER, PushUtil.LessonType.VIDEO};
-
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                for (int i = 0; i < bodyTypes.length; i++) {
-//                    NewsCourseEntity entity = new NewsCourseEntity();
-//                    entity.setId(i);
-//                    entity.setObjectId(i);
-//                    entity.setCourseId(i);
-//                    entity.setUserId(app.loginUser.id);
-//                    entity.setCreatedTime(1442733480);
-//                    entity.setFromType("course");
-//                    entity.setLessonType(bodyTypes[i]);
-//                    entity.setContent(i + "");
-//                    entity.setTitle(i + "");
-//                    entity.setBodyType("lesson.publish");
-//                    mAdapter.addItem(entity);
-//                }
                 sendNewFragment2UpdateItemBadge();
             }
         }, 500);
@@ -152,7 +135,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
-        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourse(start, Const.NEWS_LIMIT, mCourseId, app.loginUser.id);
+        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.NEWS_LIMIT, mCourseId, app.loginUser.id);
         Collections.reverse(entities);
         return entities;
     }
