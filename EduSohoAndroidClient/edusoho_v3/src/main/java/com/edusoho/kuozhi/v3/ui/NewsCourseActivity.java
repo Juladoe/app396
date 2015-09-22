@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -238,7 +239,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             viewHolder.tvTime.setText(AppUtil.convertMills2Date(((long) newsCourseEntity.getCreatedTime()) * 1000));
             viewHolder.tvContent.setText(Html.fromHtml(newsCourseEntity.getContent()).toString().trim());
 
-            View.OnClickListener itemClickListener = null;
+            View.OnClickListener itemClickListener;
 
             switch (newsCourseEntity.getBodyType()) {
                 case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
@@ -264,6 +265,20 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.TESTPAPER_REVIEWED);
                     viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_testpaper));
                     viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.green_alpha));
+                    itemClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, newsCourseEntity.getTitle() + "考试结果");
+                                    startIntent.putExtra(TestpaperResultFragment.RESULT_ID, newsCourseEntity.getObjectId());
+                                    startIntent.putExtra(Const.STATUS, "finished");
+                                }
+                            });
+                        }
+                    };
                     break;
                 default:
                     //default is LESSON_PUBLISH:

@@ -17,7 +17,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -26,6 +25,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
@@ -195,7 +195,6 @@ public class EdusohoMainService extends Service {
                     NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
                     newsCourseDataSource.create(newsCourseEntity);
                     if (!xgMessage.isForeground) {
-
                         NotificationUtil.showNewsCourseNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
@@ -253,17 +252,20 @@ public class EdusohoMainService extends Service {
         for (int i = 0; i < size; i++) {
             Chat latestChat = latestChats.get(i);
             latestChat = latestChat.serializeCustomContent(latestChat);
-            if (latestChat.getCustomContent().getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName())
-                    || latestChat.getCustomContent().getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
-                //只增加校友或者教师的信息
-                int fromId = latestChat.getFromId();
-                if (chatHashMaps.containsKey(fromId)) {
-                    chatHashMaps.get(fromId).add(latestChat);
-                } else {
-                    ArrayList<Chat> tmpLatestChat = new ArrayList<>();
-                    tmpLatestChat.add(latestChat);
-                    chatHashMaps.put(fromId, tmpLatestChat);
-                }
+            switch (latestChat.getCustomContent().getTypeMsg()) {
+                case PushUtil.ChatMsgType.TEXT:
+                case PushUtil.ChatMsgType.AUDIO:
+                case PushUtil.ChatMsgType.IMAGE:
+                    int fromId = latestChat.getFromId();
+                    if (chatHashMaps.containsKey(fromId)) {
+                        chatHashMaps.get(fromId).add(latestChat);
+                    } else {
+                        ArrayList<Chat> tmpLatestChat = new ArrayList<>();
+                        tmpLatestChat.add(latestChat);
+                        chatHashMaps.put(fromId, tmpLatestChat);
+                    }
+                    break;
+                default:
             }
         }
         return chatHashMaps;

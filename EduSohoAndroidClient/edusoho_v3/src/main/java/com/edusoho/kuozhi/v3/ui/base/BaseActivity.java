@@ -24,8 +24,6 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-
 import java.util.Map;
 
 /**
@@ -200,14 +198,14 @@ public class BaseActivity extends ActionBarActivity {
         return value;
     }
 
-    private String handleRequest(String response) throws JSONException {
+    public <T> T handleJsonValue(String response, TypeToken<T> typeToken) {
         ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
         });
         if (result != null && result.error != null) {
             CommonUtil.longToast(mActivity, result.error.message);
             return null;
         } else {
-            return response;
+            return parseJsonValue(response, typeToken);
         }
     }
 }
