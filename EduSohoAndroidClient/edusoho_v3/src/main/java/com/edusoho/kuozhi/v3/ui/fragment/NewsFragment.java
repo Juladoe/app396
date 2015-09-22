@@ -394,8 +394,10 @@ public class NewsFragment extends BaseFragment {
 
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
-        newModel.content = wrapperMessage.content;
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
+
+        V2CustomContent.BodyEntity bodyEntity = app.parseJsonValue(wrapperMessage.content, new TypeToken<V2CustomContent.BodyEntity>(){});
+        newModel.content = bodyEntity.getTitle();
+        CustomContent customContent = app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
         });
         newModel.setType(customContent.getTypeMsg());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
