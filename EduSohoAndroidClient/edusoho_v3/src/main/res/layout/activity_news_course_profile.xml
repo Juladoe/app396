@@ -67,8 +67,7 @@
                     android:id="@+id/tv_rating_num"
                     android:text="（0人）"
                     android:textSize="@dimen/small_font_size"
-                    android:textColor="@color/base_black_54"
-                    android:layout_marginLeft="10dp" />
+                    android:textColor="@color/base_black_54" />
 
             </LinearLayout>
 

@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
@@ -48,6 +49,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
     private RatingBar rbCourseRating;
 
     private int mCourseId;
+    private CourseDetailsResult mCourseResult;
     private Course mCourseInfo;
     private DisplayImageOptions mOptions;
 
@@ -131,8 +133,9 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mCourseInfo = parseJsonValue(response, new TypeToken<Course>() {
+                mCourseResult = parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
                 });
+                mCourseInfo = mCourseResult.course;
                 rbCourseRating.setRating((float) mCourseInfo.rating);
                 tvRatingNum.setText(String.format("（%s人）", TextUtils.isEmpty(mCourseInfo.ratingNum) ? "0" : mCourseInfo.ratingNum));
             }
@@ -154,7 +157,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.news_course_profile) {
-            if (mCourseInfo != null) {
+            if (mCourseResult != null) {
                 String url = app.host + "/course/" + mCourseId;
                 String title = mCourseInfo.title;
                 String about = mCourseInfo.about;
