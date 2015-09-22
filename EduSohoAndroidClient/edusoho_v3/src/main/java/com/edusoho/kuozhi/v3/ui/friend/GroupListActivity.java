@@ -18,7 +18,9 @@ import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -47,6 +49,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
     private FrameLayout mLoading;
 
     private DiscussionGroupProvider mDiscussionGroupProvider;
+    private ArrayList<DiscussionGroup> mGroupList = new ArrayList<DiscussionGroup>();
 
     private CharacterParser characterParser;
     private GroupComparator groupComparator;
@@ -79,11 +82,12 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
         mLoading.setVisibility(View.VISIBLE);
         mEmptyNotice.setVisibility(View.GONE);
+        if (mGroupList.size() != 0) {
+            mAdapter.clearList();
+        }
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
-        } else {
-            mAdapter.clearList();
         }
         loadGroup().then(new PromiseCallback() {
             @Override
@@ -111,10 +115,10 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
                     mAdapter.addGroupList(groupsList);
-                    promise.resolve(groupsList);
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }
+                promise.resolve(discussionGroupResult);
             }
         });
         return promise;
@@ -138,8 +142,6 @@ public class GroupListActivity extends ActionBarBaseActivity {
         public GroupListAdapter() {
             mLayoutInflater = LayoutInflater.from(mContext);
         }
-
-        private ArrayList<DiscussionGroup> mGroupList = new ArrayList<DiscussionGroup>();
 
         @Override
         public int getCount() {

@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -39,6 +40,8 @@ public class ServiceListActivity extends ActionBarBaseActivity {
     private FriendProvider mProvider;
     private FrameLayout mLoading;
 
+    private ArrayList<SchoolApp> mServiceList = new ArrayList<SchoolApp>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,13 @@ public class ServiceListActivity extends ActionBarBaseActivity {
         serviceList.setAdapter(mAdapter);
         mProvider = new FriendProvider(mContext);
 
+        if (mServiceList.size() != 0) {
+            mAdapter.clearList();
+        }
+        if (!app.getNetIsConnect()) {
+            mLoading.setVisibility(View.GONE);
+            Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
+        }
         loadSchoolApps().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
@@ -88,8 +98,6 @@ public class ServiceListActivity extends ActionBarBaseActivity {
     }
 
     public class ServiceListAdapter extends BaseAdapter {
-
-        private ArrayList<SchoolApp> mServiceList = new ArrayList<SchoolApp>();
 
         public ServiceListAdapter() {
             mLayoutInflater = LayoutInflater.from(mContext);
@@ -141,7 +149,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             }
             schoolAppHolder.SchoolAppName.setText(schoolApp.name);
 
-            if (position != mServiceList.size()-1) {
+            if (position != mServiceList.size() - 1) {
                 schoolAppHolder.dividerLine.setVisibility(View.VISIBLE);
             } else {
                 schoolAppHolder.dividerLine.setVisibility(View.GONE);
