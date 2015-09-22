@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -89,7 +88,6 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener setOfflineTypeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d("setOfflineTypeListener", "setOfflineTypeListener");
             app.config.offlineType = cbOfflineType.isChecked() ? 1 : 0;
             app.saveConfig();
         }
@@ -186,7 +184,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private long getCacheSize(File workSpace) {
         long totalSize = 0;
         for (File file : workSpace.listFiles()) {
-            if (CommonUtil.inArray(file.getName(), new String[] { "videos", "appZip" } )) {
+            if (CommonUtil.inArray(file.getName(), new String[]{"videos", "appZip"})) {
                 continue;
             }
 

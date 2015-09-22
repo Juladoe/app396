@@ -40,7 +40,7 @@ public class NewsCourseDataSource {
         mDbHelper.close();
     }
 
-    public ArrayList<NewsCourseEntity> getNewsCourse(int start, int limit, int courseId, int userId) {
+    public ArrayList<NewsCourseEntity> getNewsCourses(int start, int limit, int courseId, int userId) {
         this.openRead();
         ArrayList<NewsCourseEntity> list = null;
         try {

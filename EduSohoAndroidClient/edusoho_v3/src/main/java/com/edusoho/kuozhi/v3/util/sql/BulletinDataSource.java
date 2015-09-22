@@ -71,6 +71,18 @@ public class BulletinDataSource {
         return insertId;
     }
 
+    public int getMaxId() {
+        openRead();
+        Cursor cursor = mDataBase.rawQuery("SELECT ID FROM BULLETIN ORDER BY CREATEDTIME DESC LIMIT 0,1", null);
+        int maxId = 0;
+        if (cursor.moveToNext()) {
+            maxId = cursor.getInt(0);
+        }
+        cursor.close();
+        close();
+        return maxId;
+    }
+
     private Bulletin cursorToBulletin(Cursor cursor) {
         Bulletin bulletin = new Bulletin();
         bulletin.id = cursor.getInt(0);

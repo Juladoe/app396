@@ -29,7 +29,6 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
@@ -523,6 +522,18 @@ public class EdusohoApp extends Application {
         }
 
         loadToken();
+    }
+
+    public int getMsgDisturbFromCourseId(int fromId) {
+        SharedPreferences sp = getSharedPreferences("msgDisturbConfig_" + loginUser.id, MODE_APPEND);
+        return sp.getInt(fromId + "", 0);
+    }
+
+    public void saveMsgDisturbConfig(int fromId, int param) {
+        SharedPreferences sp = getSharedPreferences("msgDisturbConfig_" + loginUser.id, MODE_APPEND);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putInt(fromId + "", param);
+        edit.apply();
     }
 
     public void saveConfig() {

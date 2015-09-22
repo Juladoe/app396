@@ -22,6 +22,7 @@
     <string name="register">注册</string>
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
+    <string name="course_study_entrance">进入学习</string>
 
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
@@ -45,7 +46,10 @@
     <string name="drawer_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
     <string name="news_course_profile">课程信息</string>
+    <string name="news_course_share">课程信息</string>
     <string name="study_entrance">进入学习</string>
+    <string name="message_do_not_disturb">消息免打扰</string>
+    <string name="clear_message_record">清空课程历史记录</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
