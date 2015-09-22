@@ -18,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
@@ -258,8 +259,10 @@ public class ArticleFragment extends BaseFragment {
                     CommonUtil.longToast(mContext, "没有相关资讯!");
                     return;
                 }
-                mArticleAdapter.addArticleChat(ArticleChat.create(articleList.resources));
+                ArticleChat articleChat = ArticleChat.create(articleList.resources);
+                mArticleAdapter.addArticleChat(articleChat);
                 expandArticle();
+                new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).create(articleChat);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override

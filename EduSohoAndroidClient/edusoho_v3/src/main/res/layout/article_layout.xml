@@ -16,7 +16,9 @@
     <in.srain.cube.views.ptr.PtrClassicFrameLayout
         android:layout_above="@id/message_menu_layout"
         android:id="@+id/message_list_layout"
-        android:padding="@dimen/base_size"
+        android:paddingBottom="@dimen/base_size"
+        android:paddingLeft="@dimen/base_size"
+        android:paddingRight="@dimen/base_size"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:ptr_duration_to_close="200"
