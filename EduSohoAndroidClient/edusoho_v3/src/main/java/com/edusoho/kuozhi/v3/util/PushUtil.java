@@ -32,7 +32,7 @@ public class PushUtil {
     public static class CourseCode {
         public static final String TESTPAPER_REVIEWED = "试卷批阅完成";
         public static final String LESSON_PUBLISH = "课时更新";
-        public static final String COURSE_ANNOUNCEMENT = "最新公告";
+        public static final String COURSE_ANNOUNCEMENT = "最新课程公告";
     }
 
     public static class ChatUserType {
@@ -42,7 +42,7 @@ public class PushUtil {
     }
 
     /**
-     * custom 中的 typeBusinesss
+     * custom 中的 typeMsg
      */
     public static class ChatMsgType {
         public static final String TEXT = "text";
@@ -56,5 +56,18 @@ public class PushUtil {
 
     public static class FriendVerified {
         public static final String TYPE = "verified";
+    }
+
+    public static class DiscountType {
+        public static final String DISCOUNT = "discount";
+        public static final String DISCOUNT_FREE = "discount.free";
+        public static final String DISCOUNT_DISCOUNT = "discount.discount";
+        public static final String DISCOUNT_GLOBAL = "discount.global";
+    }
+
+    public static class DiscountCode {
+        public static final String DISCOUNT_FREE = "限时免费";
+        public static final String DISCOUNT_DISCOUNT = "限时打折";
+        public static final String DISCOUNT_GLOBAL = "全站打折";
     }
 }

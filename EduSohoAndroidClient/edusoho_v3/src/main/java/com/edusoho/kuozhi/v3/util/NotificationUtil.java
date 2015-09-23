@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.service.push.CommandFactory;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
@@ -126,6 +127,30 @@ public class NotificationUtil {
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate) & EdusohoApp.app.getMsgDisturbFromCourseId(courseId));
         mNotificationManager.notify(courseId, mBuilder.build());
+    }
+
+    public static void showDiscountPass(Context context, WrapperXGPushTextMessage xgMessage) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(xgMessage.title)
+                        .setContentText(CommandFactory.MakeNotificationTitle(xgMessage)).setAutoCancel(true);
+        int discountMsgId = xgMessage.getV2CustomContent().getMsgId();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (isAppExit(context)) {
+            notifyIntent.putExtra(Const.INTENT_COMMAND, PushUtil.DiscountType.DISCOUNT);
+        }
+
+        PendingIntent pendIntent = PendingIntent.getActivity(context, discountMsgId,
+                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendIntent);
+        mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate));
+        mNotificationManager.notify(discountMsgId, mBuilder.build());
     }
 
     public static void cancelById(int id) {

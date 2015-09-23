@@ -87,6 +87,7 @@ public class Const {
     public static final String NEWS_TYPE = "news_type";
     public static final int ADD_CHAT_MSG = 5;
     public static final int ADD_COURSE_MSG = 6;
+    public static final int ADD_DISCOUNT_PASS = 7;
     /**
      * 用于离线获取，更新多条信息
      */
@@ -450,4 +451,5 @@ public class Const {
      * intent action
      */
     public static final String INTENT_TARGET = "intent_target";
+    public static final String INTENT_COMMAND = "intent_command";
 }

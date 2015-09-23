@@ -93,6 +93,10 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
+    public void pushDiscountPass() {
+        EdusohoMainService.getService().sendMessage(Const.ADD_DISCOUNT_PASS, mWrapperMessage);
+    }
+
     public void convertWrapperMessage2V2() {
         CustomContent v1CustomContent = new CustomContent();
         v1CustomContent.setId(mV2CustomContent.getMsgId());
