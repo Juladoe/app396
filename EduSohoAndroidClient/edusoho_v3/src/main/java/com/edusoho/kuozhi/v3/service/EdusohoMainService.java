@@ -179,7 +179,7 @@ public class EdusohoMainService extends Service {
                     new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).create(articleChat);
                     if (!xgMessage.isForeground) {
                         //如果Activity不在最顶栈，显示通知
-                        NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage);
+                        NotificationUtil.showArticleNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
                 case Const.ADD_CHAT_MSG:

@@ -7,14 +7,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -49,10 +47,8 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +63,7 @@ public class NewsFragment extends BaseFragment {
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
     public static final int UPDATE_UNREAD_NEWS_COURSE = 12;
+    public static final int UPDATE_UNREAD_ARTICLE_CREATE = 14;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -338,6 +335,11 @@ public class NewsFragment extends BaseFragment {
                     WrapperXGPushTextMessage articleCreateMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handlerReceiveArticleMessage(articleCreateMessage);
                     break;
+                case UPDATE_UNREAD_ARTICLE_CREATE:
+                    NewDataSource articleDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                    articleDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.ArticleType.NEWS_CREATE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.NEWS_CREATE);
+                    break;
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
@@ -400,6 +402,7 @@ public class NewsFragment extends BaseFragment {
         CustomContent customContent = app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
         });
         newModel.setType(customContent.getTypeMsg());
+        newModel.setCreatedTime(customContent.getCreatedTime());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {
