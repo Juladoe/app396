@@ -293,7 +293,7 @@ public class NewsFragment extends BaseFragment {
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();
         } else {
-            int fromId = message.data.getInt(Const.FROM_ID);
+            int fromId = message.data.getInt(Const.FROM_ID, 0);
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);

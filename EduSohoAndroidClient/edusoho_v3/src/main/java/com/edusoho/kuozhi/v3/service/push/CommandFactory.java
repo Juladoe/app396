@@ -18,7 +18,7 @@ public class CommandFactory {
                 pushCommand = new PushMsgCommand(pusher);
                 break;
             case "bulletin":
-                pushCommand = new PushBulletinCommand(pusher);
+                pushCommand = new PushGlobalAnnouncementCommand(pusher);
                 break;
             case "verified":
                 pushCommand = new PushVerifiedCommand(pusher);

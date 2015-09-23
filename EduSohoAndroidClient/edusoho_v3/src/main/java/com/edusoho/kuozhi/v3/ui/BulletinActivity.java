@@ -147,7 +147,9 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private Runnable mNotifyNewFragment2UpdateItemBadgeRunnable = new Runnable() {
         @Override
         public void run() {
-            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_BULLETIN, null, NewsFragment.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.FROM_ID, 0);
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_BULLETIN, bundle, NewsFragment.class);
         }
     };
 
