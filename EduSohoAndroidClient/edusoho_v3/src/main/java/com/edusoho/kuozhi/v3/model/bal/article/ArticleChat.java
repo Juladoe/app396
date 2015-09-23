@@ -4,7 +4,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

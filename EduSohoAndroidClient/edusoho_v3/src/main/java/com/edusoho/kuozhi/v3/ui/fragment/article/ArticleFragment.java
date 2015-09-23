@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.v3.ui.fragment.article;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
@@ -31,7 +35,9 @@ import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -113,13 +119,33 @@ public class ArticleFragment extends BaseFragment {
                 return true;
             }
         });
+
+        mMessageListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Article article = mArticleAdapter.getChild(groupPosition, childPosition);
+                showArticle(article.id);
+                return false;
+            }
+        });
         initArticleList();
+        sendNewFragment2UpdateItemBadge();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         initMenu();
+    }
+
+    private void showArticle(int id) {
+        final String url = String.format(Const.ARTICLE_CONTENT, app.schoolHost, id);
+        app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(WebViewActivity.URL, url);
+            }
+        });
     }
 
     private void initArticleList() {
@@ -155,6 +181,10 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
+    private void sendNewFragment2UpdateItemBadge() {
+        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_ARTICLE_CREATE, new Bundle(), NewsFragment.class);
+    }
+
     private List<MenuItem> coverMenuItem(List<LinkedHashMap> menuList) {
         List<MenuItem> menuItems = new ArrayList<>();
 
@@ -181,6 +211,8 @@ public class ArticleFragment extends BaseFragment {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     childWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
             TextView textView = new TextView(mContext);
+            textView.setSingleLine();
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.base_size));
             textView.setEllipsize(TextUtils.TruncateAt.END);
             textView.setBackgroundResource(R.drawable.article_menu_btn_bg);
             textView.setGravity(Gravity.CENTER);
@@ -249,7 +281,7 @@ public class ArticleFragment extends BaseFragment {
 
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.show();
-        String url = String.format("%s?categoryId=%s&limit=%s", Const.ARTICELS, categoryId, "3");
+        String url = String.format("%s?categoryId=%s&limit=%s&start=-1", Const.ARTICELS, categoryId, "3");
         RequestUrl requestUrl = app.bindNewUrl(url, true);
         mArticleProvider.getArticles(requestUrl).success(new NormalCallback<ArticleList>() {
             @Override

@@ -153,7 +153,6 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         }
 
         if (view != null && viewHolder.type == viewType) {
-            Log.d("childPosition-", String.format("childCount:%d  childPosition:%d vt:%d", childCount, childPosition, viewHolder.type));
             return view;
         }
 
@@ -174,7 +173,6 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         viewHolder.mTitleView = (TextView) view.findViewById(R.id.article_item_text);
         view.setTag(viewHolder);
 
-        Log.d("childPosition", String.format("childCount:%d  childPosition:%d vt:%d", childCount, childPosition, viewHolder.type));
         return view;
     }
 

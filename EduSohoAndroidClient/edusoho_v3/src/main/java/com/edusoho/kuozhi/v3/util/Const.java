@@ -420,6 +420,7 @@ public class Const {
     public static final String USER_PROFILE = "main#/userinfo/%d";
     public static final String USER_LEARN_COURSE = "main#/course/%d";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
+    public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
