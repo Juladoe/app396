@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -29,7 +28,9 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
+import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -47,10 +48,8 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +64,7 @@ public class NewsFragment extends BaseFragment {
     public static final int UPDATE_UNREAD_MSG = 10;
     public static final int UPDATE_UNREAD_BULLETIN = 11;
     public static final int UPDATE_UNREAD_NEWS_COURSE = 12;
+    public static final int UPDATE_UNREAD_ARTICLE_CREATE = 14;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -271,6 +271,14 @@ public class NewsFragment extends BaseFragment {
                         }
                     });
                     break;
+                case "news.create":
+                    app.mEngine.runNormalPlugin("ServiceProviderActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ServiceProviderActivity.FRAGMENT, "ArticleFragment");
+                        }
+                    });
+                    break;
             }
         }
     };
@@ -293,7 +301,7 @@ public class NewsFragment extends BaseFragment {
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();
         } else {
-            int fromId = message.data.getInt(Const.FROM_ID);
+            int fromId = message.data.getInt(Const.FROM_ID, 0);
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
@@ -333,6 +341,15 @@ public class NewsFragment extends BaseFragment {
                             insertNew(newModel);
                         }
                     }
+                    break;
+                case Const.ADD_ARTICLE_CREATE_MAG:
+                    WrapperXGPushTextMessage articleCreateMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    handlerReceiveArticleMessage(articleCreateMessage);
+                    break;
+                case UPDATE_UNREAD_ARTICLE_CREATE:
+                    NewDataSource articleDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                    articleDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.ArticleType.NEWS_CREATE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.NEWS_CREATE);
                     break;
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
@@ -380,6 +397,31 @@ public class NewsFragment extends BaseFragment {
             insertNew(newModel);
         } else {
             newModel.unread = wrapperMessage.isForeground ? 0 : bulletins.get(0).unread + 1;
+            newDataSource.update(newModel);
+            setItemToTop(newModel);
+        }
+    }
+
+    private void handlerReceiveArticleMessage(WrapperXGPushTextMessage wrapperMessage) {
+        New newModel = new New();
+
+        newModel.belongId = app.loginUser.id;
+        newModel.title = wrapperMessage.title;
+
+        V2CustomContent.BodyEntity bodyEntity = app.parseJsonValue(wrapperMessage.content, new TypeToken<V2CustomContent.BodyEntity>(){});
+        newModel.content = bodyEntity.getTitle();
+        CustomContent customContent = app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
+        });
+        newModel.setType(customContent.getTypeMsg());
+        newModel.setCreatedTime(customContent.getCreatedTime());
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUser.id + "", newModel.type);
+        if (news.size() == 0) {
+            newModel.unread = 1;
+            newDataSource.create(newModel);
+            insertNew(newModel);
+        } else {
+            newModel.unread = (wrapperMessage.isForeground) ? 0 : news.get(0).unread + 1;
             newDataSource.update(newModel);
             setItemToTop(newModel);
         }
@@ -442,9 +484,10 @@ public class NewsFragment extends BaseFragment {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source),
+        return new MessageType[]{
+                new MessageType(Const.ADD_CHAT_MSG, source),
                 new MessageType(Const.ADD_BULLETIT_MSG, source),
-                new MessageType(Const.ADD_CHAT_MSGS, source),
+                new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
                 new MessageType(UPDATE_UNREAD_BULLETIN, source),

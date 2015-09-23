@@ -280,6 +280,11 @@
         package="com.edusoho.kuozhi.v3.ui.fragment.lesson.DefaultLessonFragment"
         version="1.0" />
     <plugin
+        name="ArticleFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment"
+        version="1.0" />
+
+    <plugin
         name="GroupListActivity"
         package="com.edusoho.kuozhi.v3.ui.friend.GroupListActivity"
         version="1.0" />
@@ -287,5 +292,9 @@
     <plugin
         name="ServiceListActivity"
         package="com.edusoho.kuozhi.v3.ui.friend.ServiceListActivity"
+        version="1.0" />
+    <plugin
+        name="ServiceProviderActivity"
+        package="com.edusoho.kuozhi.v3.ui.ServiceProviderActivity"
         version="1.0" />
 </plugins>

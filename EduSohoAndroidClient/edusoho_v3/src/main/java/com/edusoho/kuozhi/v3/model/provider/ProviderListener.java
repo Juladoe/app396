@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 public abstract class ProviderListener<T> implements Response.Listener<T>, Response.ErrorListener {
 
     private NormalCallback<T> mCallabck;
-    private NormalCallback mFailCallabck;
+    private NormalCallback<VolleyError> mFailCallabck;
     private T mResponse;
 
     @Override
@@ -29,7 +29,7 @@ public abstract class ProviderListener<T> implements Response.Listener<T>, Respo
         mCallabck.success(response);
     }
 
-    public ProviderListener fail(NormalCallback callback)
+    public ProviderListener fail(NormalCallback<VolleyError> callback)
     {
         this.mFailCallabck = callback;
         return this;

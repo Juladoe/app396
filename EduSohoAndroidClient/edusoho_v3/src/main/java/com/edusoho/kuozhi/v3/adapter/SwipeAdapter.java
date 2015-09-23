@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,7 +125,7 @@ public class SwipeAdapter extends BaseAdapter {
         }
 
         New item = mList.get(position);
-        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions);
+        setItemIcon(viewHolder.ivAvatar, item);
         if (item.unread == 0) {
             viewHolder.bvUnread.setVisibility(View.GONE);
         } else {
@@ -142,6 +143,17 @@ public class SwipeAdapter extends BaseAdapter {
         viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
         return convertView;
 
+    }
+
+    private void setItemIcon(ImageView ivAvatar, New item) {
+        switch (item.type) {
+            case PushUtil.ArticleType.NEWS_CREATE:
+                ivAvatar.setBackgroundColor(mContext.getResources().getColor(R.color.blue_alpha));
+                ivAvatar.setPadding(10, 10, 10, 10);
+                ivAvatar.setImageResource(R.drawable.article_app_icon);
+                return;
+        }
+        ImageLoader.getInstance().displayImage(item.imgUrl, ivAvatar, mOptions);
     }
 
     public void removeItem(int position) {

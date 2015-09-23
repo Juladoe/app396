@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.service;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
@@ -45,6 +46,7 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
 
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
+        Log.d("XGPushTextMessage", message.toString());
         try {
             Bundle bundle = new Bundle();
             WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage(message);

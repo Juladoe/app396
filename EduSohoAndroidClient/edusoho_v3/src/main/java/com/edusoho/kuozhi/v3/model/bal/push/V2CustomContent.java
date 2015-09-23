@@ -125,10 +125,21 @@ public class V2CustomContent {
     }
 
     public static class BodyEntity {
+
         private int id;
         private String content;
         private String type;
         private String lessonType;
+        private String title;
+        private String image;
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
 
         public int getId() {
             return id;
@@ -136,6 +147,14 @@ public class V2CustomContent {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public String getContent() {
