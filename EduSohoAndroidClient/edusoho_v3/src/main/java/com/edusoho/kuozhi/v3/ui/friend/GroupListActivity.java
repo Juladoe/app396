@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -17,7 +18,9 @@ import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -46,11 +49,10 @@ public class GroupListActivity extends ActionBarBaseActivity {
     private FrameLayout mLoading;
 
     private DiscussionGroupProvider mDiscussionGroupProvider;
+    private ArrayList<DiscussionGroup> mGroupList = new ArrayList<DiscussionGroup>();
 
     private CharacterParser characterParser;
     private GroupComparator groupComparator;
-
-//    private ArrayList<DiscussionGroup> mGroupList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +80,15 @@ public class GroupListActivity extends ActionBarBaseActivity {
         groupComparator = new GroupComparator();
         mDiscussionGroupProvider = new DiscussionGroupProvider(mContext);
 
-        mEmptyNotice.setVisibility(View.GONE);
         mLoading.setVisibility(View.VISIBLE);
+        mEmptyNotice.setVisibility(View.GONE);
+        if (mGroupList.size() != 0) {
+            mAdapter.clearList();
+        }
+        if (!app.getNetIsConnect()) {
+            mLoading.setVisibility(View.GONE);
+            Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
+        }
         loadGroup().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
@@ -106,12 +115,10 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
                     mAdapter.addGroupList(groupsList);
-
-                    promise.resolve(groupsList);
-
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }
+                promise.resolve(discussionGroupResult);
             }
         });
         return promise;
@@ -136,8 +143,6 @@ public class GroupListActivity extends ActionBarBaseActivity {
             mLayoutInflater = LayoutInflater.from(mContext);
         }
 
-        private ArrayList<DiscussionGroup> mGroupList = new ArrayList<DiscussionGroup>();
-
         @Override
         public int getCount() {
             return mGroupList.size();
@@ -159,6 +164,15 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
         public void addGroupList(List<DiscussionGroup> list) {
             mGroupList.addAll(list);
+            notifyDataSetChanged();
+        }
+
+        private void clearList() {
+            mGroupList.clear();
+            updataList();
+        }
+
+        public void updataList() {
             notifyDataSetChanged();
         }
 

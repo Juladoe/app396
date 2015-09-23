@@ -51,16 +51,6 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, mWrapperMessage);
     }
 
-    public void pushBulletin() {
-        boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
-        if (isForeground) {
-            mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, mBundle, BulletinActivity.class);
-        }
-        EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, mBundle, NewsFragment.class);
-        EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, mWrapperMessage);
-    }
-
     public void pushVerified() {
         EdusohoMainService.getService().setNewNotification();
         EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, mBundle, FriendFragment.class);
@@ -87,7 +77,13 @@ public class Pusher {
     }
 
     public void pushGlobalAnnouncement() {
-
+        boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
+        if (isForeground) {
+            mWrapperMessage.isForeground = true;
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, mBundle, BulletinActivity.class);
+        }
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, mWrapperMessage);
     }
 
     public void pushTestpaperReviewed() {

@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
@@ -40,6 +39,18 @@ public class NewDataSource {
             mDataBase.close();
         }
         mDbHelper.close();
+    }
+
+    public New getNew(int courseId, int belongId) {
+        openRead();
+        Cursor cursor = mDataBase.rawQuery("SELECT * FROM NEW WHERE FROMID = ? AND BELONGID = ?", new String[]{courseId + "", belongId + ""});
+        New newCourse = null;
+        if (cursor.moveToNext()) {
+            newCourse = convertCursor2New(cursor);
+        }
+        cursor.close();
+        close();
+        return newCourse;
     }
 
     /**
@@ -141,9 +152,9 @@ public class NewDataSource {
         return newModel;
     }
 
-    public long delete(int id) {
+    public long delete(int fromId, int belongId) {
         openWrite();
-        long newId = mDataBase.delete(TABLE_NAME, "ID = ?", new String[]{id + ""});
+        long newId = mDataBase.delete(TABLE_NAME, "FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
         close();
         return newId;
     }

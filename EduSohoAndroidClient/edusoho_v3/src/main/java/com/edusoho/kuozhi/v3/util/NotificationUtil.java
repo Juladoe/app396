@@ -51,7 +51,7 @@ public class NotificationUtil {
                             .setContentTitle(xgMessage.title)
                             .setContentText(xgMessage.content).setAutoCancel(true);
 
-            int notificationId = chat.fromId;
+            int fromId = chat.fromId;
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -66,11 +66,11 @@ public class NotificationUtil {
             if (isAppExit(context)) {
                 mMessage = xgMessage;
             }
-            PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
+            PendingIntent pendIntent = PendingIntent.getActivity(context, fromId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
-            mNotificationManager.notify(notificationId, mBuilder.build());
+            mNotificationManager.notify(fromId, mBuilder.build());
         } catch (Exception ex) {
             Log.d("showMsgNotification-->", ex.getMessage());
         }
@@ -84,7 +84,7 @@ public class NotificationUtil {
                             .setContentTitle(xgMessage.title)
                             .setContentText(xgMessage.content).setAutoCancel(true);
             Bulletin bulletin = new Bulletin(xgMessage);
-            int notificationId = bulletin.id;
+            int bulletinId = bulletin.id;
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -95,11 +95,11 @@ public class NotificationUtil {
             if (isAppExit(context)) {
                 mMessage = xgMessage;
             }
-            PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
+            PendingIntent pendIntent = PendingIntent.getActivity(context, bulletinId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
-            mNotificationManager.notify(notificationId, mBuilder.build());
+            mNotificationManager.notify(bulletinId, mBuilder.build());
         } catch (Exception ex) {
             Log.d("showNotification-->", ex.getMessage());
         }
@@ -112,7 +112,7 @@ public class NotificationUtil {
                         .setContentTitle(xgMessage.title)
                         .setContentText(xgMessage.content).setAutoCancel(true);
         NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
-        int notificationId = newsCourseEntity.getCourseId();
+        int courseId = newsCourseEntity.getCourseId();
 
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -126,11 +126,11 @@ public class NotificationUtil {
             mMessage = xgMessage;
         }
 
-        PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
+        PendingIntent pendIntent = PendingIntent.getActivity(context, courseId,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);
-        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
-        mNotificationManager.notify(notificationId, mBuilder.build());
+        mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate) & EdusohoApp.app.getMsgDisturbFromCourseId(courseId));
+        mNotificationManager.notify(courseId, mBuilder.build());
     }
 
     public static void showArticleNotification(Context context, WrapperXGPushTextMessage xgMessage) {

@@ -18,7 +18,7 @@ public class CommandFactory {
                 pushCommand = new PushMsgCommand(pusher);
                 break;
             case "bulletin":
-                pushCommand = new PushBulletinCommand(pusher);
+                pushCommand = new PushGlobalAnnouncementCommand(pusher);
                 break;
             case "verified":
                 pushCommand = new PushVerifiedCommand(pusher);
@@ -50,6 +50,7 @@ public class CommandFactory {
                 pusher.convertArticleMessageV2();
                 pushCommand = new PushArticleCreateCommand(pusher);
                 break;
+            case PushUtil.FriendVerified.TYPE:
             case PushUtil.ChatMsgType.AUDIO:
             case PushUtil.ChatMsgType.IMAGE:
             case PushUtil.ChatMsgType.TEXT:

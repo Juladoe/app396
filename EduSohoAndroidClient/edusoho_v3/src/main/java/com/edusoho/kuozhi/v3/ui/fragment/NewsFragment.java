@@ -40,6 +40,7 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
+import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenu;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
@@ -206,15 +207,25 @@ public class NewsFragment extends BaseFragment {
                     New newModel = mSwipeAdapter.getItem(position);
                     mSwipeAdapter.removeItem(position);
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    newDataSource.delete(newModel.id);
-                    int notificationId;
-                    if (newModel.getType().equals(TypeBusinessEnum.BULLETIN.getName())) {
-                        BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        notificationId = bulletinDataSource.delete();
-                    } else {
-                        ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).openWrite();
-                        chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
-                        notificationId = newModel.fromId;
+                    newDataSource.delete(newModel.fromId, newModel.belongId);
+                    int notificationId = 0;
+                    switch (newModel.getType()) {
+                        case PushUtil.BulletinType.TYPE:
+                            BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                            notificationId = bulletinDataSource.getMaxId();
+                            bulletinDataSource.delete();
+                            break;
+                        case PushUtil.ChatUserType.FRIEND:
+                        case PushUtil.ChatUserType.TEACHER:
+                            ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                            chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
+                            notificationId = newModel.fromId;
+                            break;
+                        case PushUtil.CourseType.TYPE:
+                            NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                            notificationId = newModel.fromId;
+                            newsCourseDataSource.delete(newModel.fromId, app.loginUser.id);
+                            break;
                     }
                     NotificationUtil.cancelById(notificationId);
                     setListVisibility(mSwipeAdapter.getCount() == 0);
@@ -290,7 +301,7 @@ public class NewsFragment extends BaseFragment {
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();
         } else {
-            int fromId = message.data.getInt(Const.FROM_ID);
+            int fromId = message.data.getInt(Const.FROM_ID, 0);
             switch (messageType.code) {
                 case Const.ADD_CHAT_MSG:
                     int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);

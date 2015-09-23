@@ -83,6 +83,16 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         });
     }
 
+    @Override
+    protected void onRestart() {
+        super.onResume();
+        mStart = 0;
+        List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(mStart);
+        mAdapter = new NewsCourseAdapter(mContext, newsCourseEntityList);
+        lvCourseNews.setAdapter(mAdapter);
+        lvCourseNews.postDelayed(mListViewSelectRunnable, 100);
+    }
+
     private void initDatas() {
         Intent intent = getIntent();
         if (intent == null) {
@@ -99,8 +109,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(mStart);
         mAdapter = new NewsCourseAdapter(mContext, newsCourseEntityList);
         lvCourseNews.setAdapter(mAdapter);
-        lvCourseNews.postDelayed(mListViewSelectRunnable, 100);
         mStart = mAdapter.getCount();
+        lvCourseNews.postDelayed(mListViewSelectRunnable, 100);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
@@ -114,31 +124,17 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                int count = getNewsCourseList(mStart).size();
+                int count = 0;
+                if (canDoRefresh) {
+                    count = getNewsCourseList(mStart).size();
+                }
                 return count > 0 && canDoRefresh;
             }
         });
 
-//        final String[] bodyTypes = new String[]{PushUtil.LessonType.FLASH, PushUtil.LessonType.LIVE, PushUtil.LessonType.DOCUMENT,
-//                PushUtil.LessonType.AUDIO, PushUtil.LessonType.PPT, PushUtil.LessonType.TESTPAPER, PushUtil.LessonType.VIDEO};
-
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                for (int i = 0; i < bodyTypes.length; i++) {
-//                    NewsCourseEntity entity = new NewsCourseEntity();
-//                    entity.setId(i);
-//                    entity.setObjectId(i);
-//                    entity.setCourseId(i);
-//                    entity.setUserId(app.loginUser.id);
-//                    entity.setCreatedTime(1442733480);
-//                    entity.setFromType("course");
-//                    entity.setLessonType(bodyTypes[i]);
-//                    entity.setContent(i + "");
-//                    entity.setTitle(i + "");
-//                    entity.setBodyType("lesson.publish");
-//                    mAdapter.addItem(entity);
-//                }
                 sendNewFragment2UpdateItemBadge();
             }
         }, 500);
@@ -152,7 +148,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
-        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourse(start, Const.NEWS_LIMIT, mCourseId, app.loginUser.id);
+        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.NEWS_LIMIT, mCourseId, app.loginUser.id);
         Collections.reverse(entities);
         return entities;
     }
@@ -174,8 +170,12 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.news_course_profile) {
-            //TODO 课时信息
-
+            app.mEngine.runNormalPlugin("NewsCourseProfileActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);
