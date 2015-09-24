@@ -16,7 +16,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
-import com.edusoho.kuozhi.v3.service.push.CommandFactory;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
@@ -138,7 +137,7 @@ public class NotificationUtil {
                 new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(xgMessage.title)
-                        .setContentText(CommandFactory.MakeNotificationTitle(xgMessage)).setAutoCancel(true);
+                        .setContentText(xgMessage.content).setAutoCancel(true);
         int discountMsgId = xgMessage.getV2CustomContent().getMsgId();
 
         NotificationManager mNotificationManager =

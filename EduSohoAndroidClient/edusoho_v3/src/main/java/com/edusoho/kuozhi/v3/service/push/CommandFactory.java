@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.v3.service.push;
 
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
 /**
@@ -66,26 +64,5 @@ public class CommandFactory {
                 break;
         }
         return pushCommand;
-    }
-
-    public static String MakeNotificationTitle(WrapperXGPushTextMessage xgMessage) {
-        V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
-        String notifyTitle = "";
-        if (PushUtil.CourseType.TYPE.equals(v2CustomContent.getFrom().getType())) {
-
-        } else {
-            switch (v2CustomContent.getBody().getType()) {
-                case PushUtil.DiscountType.DISCOUNT_GLOBAL:
-                    notifyTitle = String.format("[%s]%s", PushUtil.DiscountCode.DISCOUNT_GLOBAL, xgMessage.getContent());
-                    break;
-                case PushUtil.DiscountType.DISCOUNT_DISCOUNT:
-                    notifyTitle = String.format("[%s]%s", PushUtil.DiscountCode.DISCOUNT_DISCOUNT, xgMessage.getContent());
-                    break;
-                case PushUtil.DiscountType.DISCOUNT_FREE:
-                    notifyTitle = String.format("[%s]%s", PushUtil.DiscountCode.DISCOUNT_FREE, xgMessage.getContent());
-                    break;
-            }
-        }
-        return notifyTitle;
     }
 }

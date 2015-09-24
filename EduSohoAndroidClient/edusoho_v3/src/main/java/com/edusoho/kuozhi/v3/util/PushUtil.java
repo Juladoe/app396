@@ -69,10 +69,4 @@ public class PushUtil {
         public static final String DISCOUNT_DISCOUNT = "discount.discount";
         public static final String DISCOUNT_GLOBAL = "discount.global";
     }
-
-    public static class DiscountCode {
-        public static final String DISCOUNT_FREE = "限时免费";
-        public static final String DISCOUNT_DISCOUNT = "限时打折";
-        public static final String DISCOUNT_GLOBAL = "全站打折";
-    }
 }
