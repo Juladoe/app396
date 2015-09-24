@@ -1,10 +1,8 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import android.text.TextUtils;
-
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
