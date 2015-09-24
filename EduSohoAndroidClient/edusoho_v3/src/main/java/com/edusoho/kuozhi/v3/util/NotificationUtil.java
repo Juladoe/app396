@@ -109,7 +109,7 @@ public class NotificationUtil {
             case PushUtil.CourseType.LESSON_PUBLISH:
                 xgMessage.content = "【课程更新】" + xgMessage.content;
                 break;
-            case PushUtil.CourseType.TESTPAPER_REVIEWED:ga
+            case PushUtil.CourseType.TESTPAPER_REVIEWED:
                 xgMessage.content = "【试卷批阅完成】" + xgMessage.content;
                 break;
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
