@@ -312,6 +312,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                         default:
                             break;
                     }
+
                     itemClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -321,7 +322,6 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                                         public void setIntentDate(Intent startIntent) {
                                             startIntent.putExtra(Const.COURSE_ID, newsCourseEntity.getCourseId());
                                             startIntent.putExtra(Const.LESSON_ID, newsCourseEntity.getObjectId());
-                                            //startIntent.putExtra(LessonActivity.LESSON_IDS, lessonArray);
                                         }
                                     }
                             );

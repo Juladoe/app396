@@ -354,7 +354,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 loadDialog.dismiss();
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
-                    CommonUtil.longToast(mContext, "课程数据错误！");
+                    finish();
                     return;
                 }
                 mLessonType = mLessonItem.type;
@@ -386,7 +386,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         LessonItem lessonItem = getLessonResultType(object);
         if (lessonItem == null) {
-            throw new RuntimeException("local lesson error");
+            finish();
+            return;
+//            throw new RuntimeException("local lesson error");
         }
 
         mLessonItem = lessonItem;
@@ -400,9 +402,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private LessonItem getLessonResultType(String object) {
-        LessonItem lessonItem = parseJsonValue(
+        LessonItem lessonItem = handleJsonValue(
                 object, new TypeToken<LessonItem>() {
                 });
+        if (lessonItem == null) {
+            return null;
+        }
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
             case LIVE:
