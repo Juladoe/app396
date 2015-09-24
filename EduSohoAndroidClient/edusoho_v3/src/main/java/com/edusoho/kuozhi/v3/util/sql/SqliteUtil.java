@@ -109,8 +109,6 @@ public class SqliteUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(null, String.format("create db_init_m3u8 db newVersion %d ov %d", newVersion, oldVersion));
-
         SharedPreferences sp = mContext.getSharedPreferences("db_preference", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         for (String initSql : INIT_SQLS) {
