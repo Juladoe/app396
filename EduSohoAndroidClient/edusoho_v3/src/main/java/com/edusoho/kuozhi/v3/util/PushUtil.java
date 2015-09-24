@@ -55,7 +55,7 @@ public class PushUtil {
     }
 
     public static class ArticleType {
-        public static final String TYPE = "article";
+        public static final String TYPE = "news";
         public static final String NEWS_CREATE = "news.create";
     }
 
