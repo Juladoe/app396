@@ -8,6 +8,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,31 +22,33 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
-import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
+import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.ServiceProfileFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
+import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -68,17 +72,61 @@ public class ArticleFragment extends BaseFragment {
     protected PtrClassicFrameLayout mMessageLayout;
 
     private ArticleCardAdapter mArticleAdapter;
-    private ChatDataSource mChatDataSource;
+    private ServiceProviderDataSource mSPDataSource;
     private View.OnClickListener mMenuClickListener = new MenuClickListener();
 
     private int mStart;
+    private int mServiceProvierId;
+
+    private PtrHandler mMessageListPtrHandler = new PtrHandler() {
+        @Override
+        public void onRefreshBegin(PtrFrameLayout frame) {
+            Log.d(TAG, "onRefreshBegin");
+            mStart = mArticleAdapter.getGroupCount();
+            mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
+            if (loadLocalArticles()) {
+                mMessageListView.setSelectedGroup(mStart - 1);
+            }
+            mMessageLayout.refreshComplete();
+        }
+
+        @Override
+        public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+            return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+        }
+    };
+
+    private void showArticleProfile() {
+        app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ServiceProfileFragment.SERVICE_ID, mServiceProvierId);
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ServiceProfileFragment");
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.news_course_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (R.id.news_course_profile == item.getItemId()) {
+            showArticleProfile();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         setContainerView(R.layout.article_layout);
         ModelProvider.init(mContext, this);
-        mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        mSPDataSource = new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
     }
 
     @Override
@@ -95,24 +143,7 @@ public class ArticleFragment extends BaseFragment {
         mMessageLayout = (PtrClassicFrameLayout) view.findViewById(R.id.message_list_layout);
 
         mMessageLayout.setLastUpdateTimeRelateObject(this);
-        mMessageLayout.setPtrHandler(new PtrHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                Log.d(TAG, "onRefreshBegin");
-                mStart = mArticleAdapter.getGroupCount();
-                mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
-                if (loadLocalArticles()) {
-                    mMessageListView.setSelectedGroup(mStart - 1);
-                }
-                mMessageLayout.refreshComplete();
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-            }
-        });
-
+        mMessageLayout.setPtrHandler(mMessageListPtrHandler);
         mMessageListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -128,7 +159,7 @@ public class ArticleFragment extends BaseFragment {
                 return false;
             }
         });
-        initArticleList();
+        initData();
         sendNewFragment2UpdateItemBadge();
     }
 
@@ -148,8 +179,9 @@ public class ArticleFragment extends BaseFragment {
         });
     }
 
-    private void initArticleList() {
+    private void initData() {
         mStart = 0;
+        mServiceProvierId = getArguments().getInt(ServiceProviderActivity.SERVICE_ID);
         mArticleAdapter = new ArticleCardAdapter(mContext);
         mMessageListView.setAdapter(mArticleAdapter);
         loadLocalArticles();
@@ -182,7 +214,9 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void sendNewFragment2UpdateItemBadge() {
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_ARTICLE_CREATE, new Bundle(), NewsFragment.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.FROM_ID, mServiceProvierId);
+        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_ARTICLE_CREATE, bundle, NewsFragment.class);
     }
 
     private List<MenuItem> coverMenuItem(List<LinkedHashMap> menuList) {
@@ -254,24 +288,23 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
-    private ArrayList<ArticleChat> getChatList(int start) {
-        String selectSql = String.format("NICKNAME = '%s' ", app.domain);
-        ArrayList<Chat> mList = mChatDataSource.getChats(start, 5, selectSql);
+    private ArrayList<ArticleModel> getChatList(int start) {
+        ArrayList<ServiceProviderModel> mList = mSPDataSource.getServiceProviderMsgs(app.loginUser.id, start, 5);
         Collections.reverse(mList);
 
-        ArrayList<ArticleChat> articleChats = new ArrayList<>();
-        for (Chat chat : mList) {
-            articleChats.add(new ArticleChat(chat));
+        ArrayList<ArticleModel> articleModels = new ArrayList<>();
+        for (ServiceProviderModel model : mList) {
+            articleModels.add(new ArticleModel(model));
         }
-        return articleChats;
+        return articleModels;
     }
 
     private boolean loadLocalArticles() {
-        ArrayList<ArticleChat> articleChats = getChatList(mStart);
-        if (articleChats.isEmpty()) {
+        ArrayList<ArticleModel> articleModels = getChatList(mStart);
+        if (articleModels.isEmpty()) {
             return false;
         }
-        mArticleAdapter.addArticleChats(articleChats);
+        mArticleAdapter.addArticleChats(articleModels);
         expandArticle();
 
         return true;
@@ -291,10 +324,10 @@ public class ArticleFragment extends BaseFragment {
                     CommonUtil.longToast(mContext, "没有相关资讯!");
                     return;
                 }
-                ArticleChat articleChat = ArticleChat.create(articleList.resources);
-                mArticleAdapter.addArticleChat(articleChat);
+                ArticleModel articleModel = ArticleModel.create(app.loginUser.id, articleList.resources);
+                mArticleAdapter.addArticleChat(articleModel);
                 expandArticle();
-                new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).create(articleChat);
+                new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).create(articleModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -390,9 +423,9 @@ public class ArticleFragment extends BaseFragment {
         switch (messageType.code) {
             case Const.ADD_ARTICLE_CREATE_MAG:
                 WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                ArticleChat articleChat = new ArticleChat(wrapperMessage);
+                ArticleModel articleModel = new ArticleModel(wrapperMessage);
                 mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-                mArticleAdapter.addArticleChat(articleChat);
+                mArticleAdapter.addArticleChat(articleModel);
                 expandArticle();
                 break;
         }

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -24,14 +24,14 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
     private DisplayImageOptions mOptions;
-    private List<ArticleChat> mArcicleChatList;
+    private List<ArticleModel> mArcicleChatList;
 
     public ArticleCardAdapter(Context context)
     {
-        this(context, new ArrayList<ArticleChat>());
+        this(context, new ArrayList<ArticleModel>());
     }
 
-    public ArticleCardAdapter(Context context, ArrayList<ArticleChat> articles)
+    public ArticleCardAdapter(Context context, ArrayList<ArticleModel> articles)
     {
         this.mContext = context;
         this.mArcicleChatList = articles;
@@ -40,13 +40,13 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
                 showImageOnFail(R.drawable.defaultpic).build();
     }
 
-    public void addArticleChats(ArrayList<ArticleChat> articles) {
+    public void addArticleChats(ArrayList<ArticleModel> articles) {
         mArcicleChatList.addAll(0, articles);
         notifyDataSetChanged();
     }
 
-    public void addArticleChat(ArticleChat articleChat) {
-        mArcicleChatList.add(articleChat);
+    public void addArticleChat(ArticleModel articleModel) {
+        mArcicleChatList.add(articleModel);
         notifyDataSetChanged();
     }
 
@@ -67,16 +67,16 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         }
 
         TextView textView = (TextView) convertView;
-        ArticleChat articleChat = mArcicleChatList.get(groupPosition);
-        int createdTime = articleChat.createdTime;
+        ArticleModel articleModel = mArcicleChatList.get(groupPosition);
+        int createdTime = articleModel.createdTime;
         String time = "";
         if (groupPosition > 0) {
-            ArticleChat prevArticleChat = getGroup(groupPosition - 1);
-            if (createdTime - prevArticleChat.createdTime > 60 * 5) {
-                time = AppUtil.convertMills2Date(((long) articleChat.createdTime) * 1000);
+            ArticleModel prevArticleModel = getGroup(groupPosition - 1);
+            if (createdTime - prevArticleModel.createdTime > 60 * 5) {
+                time = AppUtil.convertMills2Date(((long) articleModel.createdTime) * 1000);
             }
         } else {
-            time = AppUtil.convertMills2Date(((long) articleChat.createdTime) * 1000);
+            time = AppUtil.convertMills2Date(((long) articleModel.createdTime) * 1000);
         }
         textView.setText(time);
         return convertView;
@@ -88,7 +88,7 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public ArticleChat getGroup(int groupPosition) {
+    public ArticleModel getGroup(int groupPosition) {
         return mArcicleChatList.get(groupPosition);
     }
 
