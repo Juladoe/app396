@@ -293,8 +293,14 @@
         name="ServiceListActivity"
         package="com.edusoho.kuozhi.v3.ui.friend.ServiceListActivity"
         version="1.0" />
+
     <plugin
         name="ServiceProviderActivity"
         package="com.edusoho.kuozhi.v3.ui.ServiceProviderActivity"
+        version="1.0" />
+
+    <plugin
+        name="ServiceProfileFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ServiceProfileFragment"
         version="1.0" />
 </plugins>

@@ -50,6 +50,7 @@
     <string name="study_entrance">进入学习</string>
     <string name="message_do_not_disturb">消息免打扰</string>
     <string name="clear_message_record">清空课程历史记录</string>
+    <string name="clear_service_profile_record">清空历史记录</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
