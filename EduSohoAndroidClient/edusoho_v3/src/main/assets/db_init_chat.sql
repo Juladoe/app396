@@ -44,3 +44,14 @@ create table if not exists news_course(
     createdTime integer
 );
 
+create table if not exists sp_msg(
+    id integer,
+    sp_id integer,
+    title varchar(100),
+    content varchar(255),
+    type integer,
+    body text,
+    createdTime integer,
+    toId integer
+);
+
