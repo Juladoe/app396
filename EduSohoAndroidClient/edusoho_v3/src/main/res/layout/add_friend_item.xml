@@ -39,7 +39,7 @@
         android:background="@color/white"
         android:padding="12dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage
             android:src="@drawable/default_avatar"
             android:id="@+id/add_friend_image"
             android:layout_width="40dp"

@@ -42,7 +42,7 @@ public class EduSohoRoundConerImage extends ImageView {
         Drawable drawable = getDrawable();
         if (null != drawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            Bitmap b = getRoundBitmap(bitmap, 6);
+            Bitmap b = getRoundBitmap(bitmap, 10);
             final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight());
             final Rect rectDest = new Rect(0, 0, getWidth(), getHeight());
             paint.reset();
@@ -57,8 +57,6 @@ public class EduSohoRoundConerImage extends ImageView {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
 
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final RectF rectF = new RectF(rect);

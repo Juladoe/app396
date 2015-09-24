@@ -30,7 +30,7 @@
             <!--android:layout_marginRight="8dp"-->
             <!--android:layout_marginLeft="16dp"/>-->
 
-        <ImageView
+        <com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage
             android:id="@+id/group_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
