@@ -56,6 +56,11 @@ public class CommandFactory {
                 pusher.convertWrapperMessage2V2();
                 pushCommand = new PushMsgCommand(pusher);
                 break;
+            case PushUtil.DiscountType.DISCOUNT_GLOBAL:
+            case PushUtil.DiscountType.DISCOUNT_DISCOUNT:
+            case PushUtil.DiscountType.DISCOUNT_FREE:
+                pushCommand = new PushDiscountPassCommand(pusher);
+                break;
         }
         return pushCommand;
     }

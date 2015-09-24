@@ -41,7 +41,6 @@ public class NotificationUtil {
                 case AUDIO:
                     xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
                     break;
-
             }
 
             NotificationCompat.Builder mBuilder =
@@ -105,12 +104,25 @@ public class NotificationUtil {
     }
 
     public static void showNewsCourseNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
+        switch (newsCourseEntity.getBodyType()) {
+            case PushUtil.CourseType.LESSON_PUBLISH:
+                xgMessage.content = "【课程更新】" + xgMessage.content;
+                break;
+            case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                xgMessage.content = "【试卷批阅完成】" + xgMessage.content;
+                break;
+            case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
+                xgMessage.content = "【课程公告】" + xgMessage.content;
+                break;
+        }
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(xgMessage.title)
                         .setContentText(xgMessage.content).setAutoCancel(true);
-        NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
+
         int courseId = newsCourseEntity.getCourseId();
 
         NotificationManager mNotificationManager =
@@ -130,6 +142,30 @@ public class NotificationUtil {
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate) & EdusohoApp.app.getMsgDisturbFromCourseId(courseId));
         mNotificationManager.notify(courseId, mBuilder.build());
+    }
+
+    public static void showDiscountPass(Context context, WrapperXGPushTextMessage xgMessage) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(xgMessage.title)
+                        .setContentText(xgMessage.content).setAutoCancel(true);
+        int discountMsgId = xgMessage.getV2CustomContent().getMsgId();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (isAppExit(context)) {
+            notifyIntent.putExtra(Const.INTENT_COMMAND, PushUtil.DiscountType.DISCOUNT);
+        }
+
+        PendingIntent pendIntent = PendingIntent.getActivity(context, discountMsgId,
+                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendIntent);
+        mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate));
+        mNotificationManager.notify(discountMsgId, mBuilder.build());
     }
 
     public static void showArticleNotification(Context context, WrapperXGPushTextMessage xgMessage) {

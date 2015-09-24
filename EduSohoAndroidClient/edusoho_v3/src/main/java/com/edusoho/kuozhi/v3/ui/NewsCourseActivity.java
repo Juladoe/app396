@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -88,6 +87,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         super.onResume();
         mStart = 0;
         List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(mStart);
+        mStart = newsCourseEntityList.size();
         mAdapter = new NewsCourseAdapter(mContext, newsCourseEntityList);
         lvCourseNews.setAdapter(mAdapter);
         lvCourseNews.postDelayed(mListViewSelectRunnable, 100);
@@ -237,13 +237,11 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
 
             final NewsCourseEntity newsCourseEntity = mList.get(position);
             viewHolder.tvTime.setText(AppUtil.convertMills2Date(((long) newsCourseEntity.getCreatedTime()) * 1000));
-            viewHolder.tvContent.setText(Html.fromHtml(newsCourseEntity.getContent()).toString().trim());
-
-            View.OnClickListener itemClickListener;
-
+            View.OnClickListener itemClickListener = null;
             switch (newsCourseEntity.getBodyType()) {
                 case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                     viewHolder.tvAction.setText(ACTIONS[0]);
+                    viewHolder.tvContent.setText(newsCourseEntity.getContent());
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.COURSE_ANNOUNCEMENT);
                     viewHolder.ivLessonType.setText(getString(R.string.font_announcement));
                     viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.orange_alpha));
@@ -262,6 +260,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     break;
                 case PushUtil.CourseType.TESTPAPER_REVIEWED:
                     viewHolder.tvAction.setText(ACTIONS[0]);
+                    viewHolder.tvContent.setText(newsCourseEntity.getContent());
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.TESTPAPER_REVIEWED);
                     viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_testpaper));
                     viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.green_alpha));
@@ -280,9 +279,9 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                         }
                     };
                     break;
-                default:
-                    //default is LESSON_PUBLISH:
+                case PushUtil.CourseType.LESSON_PUBLISH:
                     viewHolder.tvAction.setText(ACTIONS[1]);
+                    viewHolder.tvContent.setText(newsCourseEntity.getContent());
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.LESSON_PUBLISH);
                     viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.blue_alpha));
                     switch (newsCourseEntity.getLessonType()) {
@@ -307,11 +306,13 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                         case PushUtil.LessonType.FLASH:
                             viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_flash));
                             break;
-                        default:
-                            //default is TEXT:
+                        case PushUtil.LessonType.TEXT:
                             viewHolder.ivLessonType.setText(getString(R.string.font_lesson_type_text));
                             break;
+                        default:
+                            break;
                     }
+
                     itemClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -321,12 +322,13 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                                         public void setIntentDate(Intent startIntent) {
                                             startIntent.putExtra(Const.COURSE_ID, newsCourseEntity.getCourseId());
                                             startIntent.putExtra(Const.LESSON_ID, newsCourseEntity.getObjectId());
-                                            //startIntent.putExtra(LessonActivity.LESSON_IDS, lessonArray);
                                         }
                                     }
                             );
                         }
                     };
+                    break;
+                default:
                     break;
             }
 

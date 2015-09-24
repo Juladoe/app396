@@ -91,18 +91,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(TAG, "onNewIntent");
         processIntent(intent);
         setIntent(intent);
     }
 
     private void processIntent(Intent intent) {
-        if (intent != null && intent.hasExtra(Const.INTENT_TARGET)) {
+        if (intent == null) {
+            return;
+        }
+        if (intent.hasExtra(Const.INTENT_TARGET)) {
             Class target = (Class) intent.getSerializableExtra(Const.INTENT_TARGET);
             Intent targetIntent = new Intent(mContext, target);
             targetIntent.putExtras(intent.getExtras());
             targetIntent.setFlags(intent.getFlags());
             startActivity(targetIntent);
+        } else if (!intent.hasExtra(Const.INTENT_COMMAND)) {
+            selectDownTab(R.id.nav_tab_find);
         }
     }
 
@@ -170,6 +174,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             tag = "FriendFragment";
             mToolBar.setCenterTitle(getString(R.string.title_friends));
             mToolBar.setVisibility(View.VISIBLE);
+        }
+        if (tag.equals(mCurrentTag)) {
+            return;
         }
         hideFragment(mCurrentTag);
         showFragment(tag);
@@ -270,7 +277,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    selectDownTab(R.id.nav_tab_news);
+                    if (getIntent().hasExtra(Const.INTENT_COMMAND)) {
+                        selectDownTab(R.id.nav_tab_find);
+                    } else {
+                        selectDownTab(R.id.nav_tab_news);
+                    }
                     mLogoutFlag = false;
                 }
             });
