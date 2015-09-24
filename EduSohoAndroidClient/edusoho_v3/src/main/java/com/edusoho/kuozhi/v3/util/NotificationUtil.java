@@ -41,7 +41,6 @@ public class NotificationUtil {
                 case AUDIO:
                     xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
                     break;
-
             }
 
             NotificationCompat.Builder mBuilder =
@@ -105,12 +104,25 @@ public class NotificationUtil {
     }
 
     public static void showNewsCourseNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
+        switch (newsCourseEntity.getBodyType()) {
+            case PushUtil.CourseType.LESSON_PUBLISH:
+                xgMessage.content = "【课程更新】" + xgMessage.content;
+                break;
+            case PushUtil.CourseType.TESTPAPER_REVIEWED:ga
+                xgMessage.content = "【试卷批阅完成】" + xgMessage.content;
+                break;
+            case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
+                xgMessage.content = "【课程公告】" + xgMessage.content;
+                break;
+        }
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(xgMessage.title)
                         .setContentText(xgMessage.content).setAutoCancel(true);
-        NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
+
         int courseId = newsCourseEntity.getCourseId();
 
         NotificationManager mNotificationManager =
