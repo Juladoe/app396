@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -139,7 +137,7 @@ public class SwipeAdapter extends BaseAdapter {
             viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.base_black_87));
         }
         viewHolder.tvTitle.setText(item.title);
-        viewHolder.tvContent.setText(Html.fromHtml(item.content).toString().trim());
+        viewHolder.tvContent.setText(item.content);
         viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
         return convertView;
 

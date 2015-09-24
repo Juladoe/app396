@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.service.push;
 
 import android.os.Bundle;
+import android.text.Html;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
@@ -15,6 +16,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.Gson;
 
 /**
@@ -66,6 +68,7 @@ public class Pusher {
     }
 
     public void pushCourseAnnouncement() {
+        mWrapperMessage.setContent(Html.fromHtml(PushUtil.replaceImgTag(mWrapperMessage.getContent())).toString().trim());
         boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;

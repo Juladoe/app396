@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by JesseHuang on 15/9/16.
  */
@@ -68,5 +71,11 @@ public class PushUtil {
         public static final String DISCOUNT_FREE = "discount.free";
         public static final String DISCOUNT_DISCOUNT = "discount.discount";
         public static final String DISCOUNT_GLOBAL = "discount.global";
+    }
+
+    public static String replaceImgTag(String source) {
+        Pattern pattern = Pattern.compile("<img[^>]+>", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(source);
+        return matcher.replaceAll("[图片]");
     }
 }
