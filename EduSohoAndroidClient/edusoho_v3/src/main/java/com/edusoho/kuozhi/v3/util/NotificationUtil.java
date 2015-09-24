@@ -11,7 +11,7 @@ import android.util.Log;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
 
 import java.util.List;
 
@@ -134,10 +133,10 @@ public class NotificationUtil {
     }
 
     public static void showArticleNotification(Context context, WrapperXGPushTextMessage xgMessage) {
-        ArticleChat articleChat = new ArticleChat(xgMessage);
-        int notificationId = articleChat.getId();
+        ArticleModel articleModel = new ArticleModel(xgMessage);
+        int notificationId = articleModel.spId;
 
-        List<Article> articleList = articleChat.articleList;
+        List<Article> articleList = articleModel.articleList;
         String content = articleList.isEmpty() ? "有一条新资讯" : articleList.get(0).title;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
@@ -151,7 +150,7 @@ public class NotificationUtil {
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
-        notifyIntent.putExtra(FragmentPageActivity.FRAGMENT, "ArticleFragment");
+        notifyIntent.putExtra(ServiceProviderActivity.SERVICE_TYPE, ServiceProviderActivity.ARTICLE);
         notifyIntent.putExtra(Const.INTENT_TARGET, ServiceProviderActivity.class);
         if (isAppExit(context)) {
             mMessage = xgMessage;
