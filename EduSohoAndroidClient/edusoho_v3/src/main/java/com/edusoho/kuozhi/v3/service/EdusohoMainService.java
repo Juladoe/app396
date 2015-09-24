@@ -13,7 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.belladati.httpclientandroidlib.util.TextUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
+import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -175,8 +176,8 @@ public class EdusohoMainService extends Service {
                     break;
                 case Const.ADD_ARTICLE_CREATE_MAG:
                     //资讯推送
-                    Chat articleChat = new ArticleChat(xgMessage);
-                    new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).create(articleChat);
+                    ArticleModel articleModel = new ArticleModel(xgMessage);
+                    new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).create(articleModel);
                     if (!xgMessage.isForeground) {
                         //如果Activity不在最顶栈，显示通知
                         NotificationUtil.showArticleNotification(EdusohoApp.app.mContext, xgMessage);

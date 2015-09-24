@@ -271,11 +271,12 @@ public class NewsFragment extends BaseFragment {
                         }
                     });
                     break;
-                case "news.create":
+                case PushUtil.ArticleType.TYPE:
                     app.mEngine.runNormalPlugin("ServiceProviderActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(ServiceProviderActivity.FRAGMENT, "ArticleFragment");
+                            startIntent.putExtra(ServiceProviderActivity.SERVICE_TYPE, PushUtil.ArticleType.TYPE);
+                            startIntent.putExtra(ServiceProviderActivity.SERVICE_ID, newItem.fromId);
                         }
                     });
                     break;
@@ -348,8 +349,8 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case UPDATE_UNREAD_ARTICLE_CREATE:
                     NewDataSource articleDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    articleDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.ArticleType.NEWS_CREATE);
-                    mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.NEWS_CREATE);
+                    articleDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.ArticleType.TYPE);
+                    mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.TYPE);
                     break;
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
@@ -407,13 +408,11 @@ public class NewsFragment extends BaseFragment {
 
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
-
-        V2CustomContent.BodyEntity bodyEntity = app.parseJsonValue(wrapperMessage.content, new TypeToken<V2CustomContent.BodyEntity>(){});
-        newModel.content = bodyEntity.getTitle();
-        CustomContent customContent = app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
-        });
-        newModel.setType(customContent.getTypeMsg());
-        newModel.setCreatedTime(customContent.getCreatedTime());
+        V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
+        newModel.content = wrapperMessage.content;
+        newModel.setFromId(v2CustomContent.getFrom().getId());
+        newModel.setType(v2CustomContent.getFrom().getType());
+        newModel.setCreatedTime(v2CustomContent.getCreatedTime());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {

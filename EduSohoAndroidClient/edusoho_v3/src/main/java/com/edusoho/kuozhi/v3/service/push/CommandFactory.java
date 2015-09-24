@@ -47,7 +47,6 @@ public class CommandFactory {
                 }
                 break;
             case "news.create":
-                pusher.convertArticleMessageV2();
                 pushCommand = new PushArticleCreateCommand(pusher);
                 break;
             case PushUtil.FriendVerified.TYPE:

@@ -96,10 +96,9 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
-
     public void pushArticleCreate() {
         boolean isForeground = EdusohoApp.app.isForeground(ServiceProviderActivity.class.getName());
-        if (isForeground && ServiceProviderActivity.ARTICLE.equals(ServiceProviderActivity.SERVICE_NAME)) {
+        if (isForeground && ServiceProviderActivity.isRunWithFragmentByType(ServiceProviderActivity.ARTICLE)) {
             mWrapperMessage.isForeground = true;
             EdusohoApp.app.sendMsgToTarget(Const.ADD_ARTICLE_CREATE_MAG, mBundle, ArticleFragment.class);
         }
