@@ -6,25 +6,65 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.Const;
+
+import java.util.List;
 
 /**
  * Created by howzhi on 15/8/17.
  */
 public class FragmentTestActivity extends ActionBarBaseActivity {
 
+    private String mFragment;
+    private String mTitle;
+    public static final String FRAGMENT = "fragment";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(null, "FragmentPageActivity start");
+        setContentView(com.edusoho.kuozhi.R.layout.fragment_page_layout);
+        initView();
+    }
+
     public Fragment loadFragment(String fragmentName, Bundle bundle) {
-        Fragment fragment = null;
+        List<Fragment> list =  mFragmentManager.getFragments();
+        if (list.isEmpty()) {
+            try {
+                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                Fragment fragment = Fragment.instantiate(mActivity, fragmentName);
+                fragment.setArguments(bundle);
+                fragmentTransaction.replace(android.R.id.content, fragment);
+                fragmentTransaction.commit();
+
+                return fragment;
+            } catch (Exception ex) {
+                Log.d("FragmentPageActivity", ex.toString());
+            }
+        }
+
+        return list.get(0);
+    }
+
+    protected void initView() {
+
+        Intent data = getIntent();
+        if (data != null) {
+            mFragment = data.getStringExtra(FRAGMENT);
+            mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
+        }
+
+        mFragment = data.getStringExtra(FRAGMENT);
+        mTitle = data.getStringExtra(Const.ACTIONBAR_TITLE);
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragment = Fragment.instantiate(mActivity, fragmentName);
-            fragment.setArguments(bundle);
+            Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
+                    mFragment, mActivity, data != null ? data.getExtras() : null);
             fragmentTransaction.replace(android.R.id.content, fragment);
             fragmentTransaction.commit();
         } catch (Exception ex) {
             Log.d("FragmentPageActivity", ex.toString());
         }
-
-        return fragment;
     }
 
     @Override

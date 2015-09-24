@@ -88,6 +88,8 @@ public class Const {
     public static final int ADD_CHAT_MSG = 5;
     public static final int ADD_COURSE_MSG = 6;
     public static final int ADD_DISCOUNT_PASS = 7;
+    public static final int ADD_ARTICLE_CREATE_MAG = 13;
+
     /**
      * 用于离线获取，更新多条信息
      */
@@ -420,6 +422,7 @@ public class Const {
     public static final String USER_PROFILE = "main#/userinfo/%d";
     public static final String USER_LEARN_COURSE = "main#/course/%d";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
+    public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
@@ -452,4 +455,10 @@ public class Const {
      */
     public static final String INTENT_TARGET = "intent_target";
     public static final String INTENT_COMMAND = "intent_command";
+
+    /*
+        资讯api
+    */
+    public static final String ARTICEL_MENU = "/api/article_categories";
+    public static final String ARTICELS = "/api/articles";
 }

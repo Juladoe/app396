@@ -12,19 +12,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +69,17 @@ public class ServiceListActivity extends ActionBarBaseActivity {
         serviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
+                SchoolApp schoolApp = (SchoolApp) adapterView.getItemAtPosition(i);
+                switch (schoolApp.code) {
+                    case "announcement":
+                        app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
+                        break;
+                    case "news":
+                        Bundle bundle = new Bundle();
+                        bundle.putString(FragmentPageActivity.FRAGMENT, "ArticleFragment");
+                        app.mEngine.runNormalPluginWithBundle("FragmentPageActivity", mActivity, bundle);
+                        break;
+                }
             }
         });
     }
@@ -146,6 +154,8 @@ public class ServiceListActivity extends ActionBarBaseActivity {
 
             if (!TextUtils.isEmpty(schoolApp.avatar)) {
                 ImageLoader.getInstance().displayImage(app.host + "/" + schoolApp.avatar, schoolAppHolder.schoolAppAvatar, app.mOptions);
+            } else {
+                displayAppIcon(schoolAppHolder.schoolAppAvatar, schoolApp);
             }
             schoolAppHolder.SchoolAppName.setText(schoolApp.name);
 
@@ -156,6 +166,19 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             }
 
             return view;
+        }
+
+        private void displayAppIcon(ImageView schoolAppAvatar, SchoolApp schoolApp) {
+            switch (schoolApp.code) {
+                case "announcement":
+                    ImageLoader.getInstance().displayImage(app.host + "/" + schoolApp.avatar, schoolAppAvatar, app.mOptions);
+                    break;
+                case "news":
+                    schoolAppAvatar.setBackgroundColor(mContext.getResources().getColor(R.color.blue_alpha));
+                    schoolAppAvatar.setPadding(10, 10, 10, 10);
+                    schoolAppAvatar.setImageResource(R.drawable.article_app_icon);
+                    break;
+            }
         }
 
         private class SchoolAppHolder {

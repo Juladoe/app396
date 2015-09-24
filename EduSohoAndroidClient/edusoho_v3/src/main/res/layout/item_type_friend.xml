@@ -25,7 +25,7 @@
         android:background="@color/white"
         >
 
-        <ImageView
+        <com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage
             android:id="@+id/friend_avatar"
             android:src="@drawable/default_avatar"
             android:scaleType="centerCrop"
@@ -39,8 +39,6 @@
             android:layout_marginLeft="16dp"
             android:id="@+id/friend_name"
             android:text="好友姓名"
-            android:singleLine="true"
-            android:ellipsize="end"
             android:textSize="@dimen/medium_font_size"
             android:textColor="@color/grey"
             android:layout_toRightOf="@id/friend_avatar"

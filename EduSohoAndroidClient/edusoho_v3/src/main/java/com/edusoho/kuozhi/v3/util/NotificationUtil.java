@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.article.Article;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleChat;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
@@ -18,7 +20,9 @@ import com.edusoho.kuozhi.v3.service.push.CommandFactory;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
+import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 
 import java.util.List;
 
@@ -151,6 +155,37 @@ public class NotificationUtil {
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate));
         mNotificationManager.notify(discountMsgId, mBuilder.build());
+    }
+
+    public static void showArticleNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        ArticleChat articleChat = new ArticleChat(xgMessage);
+        int notificationId = articleChat.getId();
+
+        List<Article> articleList = articleChat.articleList;
+        String content = articleList.isEmpty() ? "有一条新资讯" : articleList.get(0).title;
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(xgMessage.title)
+                        .setContentText(content).setAutoCancel(true);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
+        notifyIntent.putExtra(FragmentPageActivity.FRAGMENT, "ArticleFragment");
+        notifyIntent.putExtra(Const.INTENT_TARGET, ServiceProviderActivity.class);
+        if (isAppExit(context)) {
+            mMessage = xgMessage;
+        }
+
+        PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
+                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendIntent);
+        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        mNotificationManager.notify(notificationId, mBuilder.build());
     }
 
     public static void cancelById(int id) {

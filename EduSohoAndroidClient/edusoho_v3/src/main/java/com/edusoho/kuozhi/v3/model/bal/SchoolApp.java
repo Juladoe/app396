@@ -5,6 +5,7 @@ package com.edusoho.kuozhi.v3.model.bal;
  */
 public class SchoolApp {
     public int id;
+    public String code;
     public String name;
     public String title;
     public String about;

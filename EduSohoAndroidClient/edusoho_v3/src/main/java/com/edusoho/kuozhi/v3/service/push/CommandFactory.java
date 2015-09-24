@@ -48,8 +48,11 @@ public class CommandFactory {
                     pushCommand = new PushGlobalAnnouncementCommand(pusher);
                 }
                 break;
-            case PushUtil.FriendVerified.TYPE:
+            case "news.create":
+                pusher.convertArticleMessageV2();
+                pushCommand = new PushArticleCreateCommand(pusher);
                 break;
+            case PushUtil.FriendVerified.TYPE:
             case PushUtil.ChatMsgType.AUDIO:
             case PushUtil.ChatMsgType.IMAGE:
             case PushUtil.ChatMsgType.TEXT:

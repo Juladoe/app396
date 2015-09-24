@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
+import com.edusoho.kuozhi.v3.model.provider.ProviderFactory;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.CommonUtil;

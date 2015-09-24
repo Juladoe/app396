@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -11,6 +12,8 @@ import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Field;
+
 
 /**
  * Created by howzhi on 15/8/24.
@@ -19,6 +22,7 @@ public abstract class ModelProvider {
 
     protected VolleySingleton mVolley;
     protected Gson mGson;
+    private static final String TAG = "ModelProvider";
 
     public ModelProvider(Context context)
     {
@@ -26,11 +30,57 @@ public abstract class ModelProvider {
         this.mVolley = VolleySingleton.getInstance(context);
     }
 
-    public <T> void addRequest(
-            RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
+    public static void init(Context context, Object target) {
+        try {
+            Field[] fields = target.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Class targetClass = field.getType();
+                if (ModelProvider.class.isAssignableFrom(targetClass)) {
+                    Object provider = ProviderFactory.getFactory().create(targetClass, context);
+                    field.set(target, provider);
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+    }
+
+    public <T> RequestOption<T> buildSimpleGetRequest(
+            RequestUrl requestUrl, TypeToken<T> typeToken) {
+        ProviderListener<T> providerListener = new ProviderListener<T>() {
+        };
+        BaseVolleyRequest request = getVolleyRequest(Request.Method.GET, requestUrl, typeToken, providerListener, providerListener);
+        return new RequestOption<T>(request, providerListener);
+    }
+
+    public class RequestOption<T> {
+
+        private ProviderListener<T> mProviderListener;
+        private BaseVolleyRequest mRquest;
+
+        public RequestOption(BaseVolleyRequest request, ProviderListener<T> providerListener)
+        {
+            this.mRquest = request;
+            this.mProviderListener = providerListener;
+        }
+
+        public BaseVolleyRequest getRequest() {
+            return mRquest;
+        }
+
+        public ProviderListener<T> build() {
+            mVolley.addToRequestQueue(mRquest);
+            return mProviderListener;
+        }
+    }
+
+    private <T> BaseVolleyRequest getVolleyRequest(
+            int method, RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener
+    ) {
         mVolley.getRequestQueue();
         BaseVolleyRequest request = new BaseVolleyRequest(
-                Request.Method.GET, requestUrl, responseListener, errorListener) {
+                method, requestUrl, responseListener, errorListener) {
             @Override
             protected T getResponseData(NetworkResponse response) {
                 T value = null;
@@ -45,28 +95,18 @@ public abstract class ModelProvider {
         };
 
         request.setTag(requestUrl.url);
+        return request;
+    }
+
+    public <T> void addRequest(
+            RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
+        Request request = getVolleyRequest(Request.Method.GET, requestUrl, typeToken, responseListener, errorListener);
         mVolley.addToRequestQueue(request);
     }
 
     public <T> void addPostRequest(
-            RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
-        mVolley.getRequestQueue();
-        BaseVolleyRequest request = new BaseVolleyRequest(
-                Request.Method.POST, requestUrl, responseListener, errorListener) {
-            @Override
-            protected T getResponseData(NetworkResponse response) {
-                T value = null;
-                try {
-                    value = mGson.fromJson(
-                            new String(response.data, "UTF-8"), typeToken.getType());
-                } catch (Exception e) {
-                }
-
-                return value;
-            }
-        };
-
-        request.setTag(requestUrl.url);
+            RequestUrl requestUrl, TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener) {
+        Request request = getVolleyRequest(Request.Method.POST, requestUrl, typeToken, responseListener, errorListener);
         mVolley.addToRequestQueue(request);
     }
 }

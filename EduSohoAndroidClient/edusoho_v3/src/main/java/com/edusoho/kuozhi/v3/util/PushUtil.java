@@ -54,6 +54,11 @@ public class PushUtil {
         public static final String TYPE = "bulletin";
     }
 
+    public static class ArticleType {
+        public static final String TYPE = "article";
+        public static final String NEWS_CREATE = "news.create";
+    }
+
     public static class FriendVerified {
         public static final String TYPE = "verified";
     }
