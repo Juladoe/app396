@@ -27,6 +27,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -37,8 +38,10 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
 import com.edusoho.kuozhi.v3.ui.friend.FriendNewsActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
 
@@ -130,6 +133,8 @@ public class FriendFragment extends BaseFragment {
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, friend.nickname);
+                        startIntent.putExtra(Const.NEWS_TYPE, CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.roles) ?
+                                PushUtil.ChatUserType.TEACHER : PushUtil.ChatUserType.FRIEND);
                         startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
                     }
                 });
