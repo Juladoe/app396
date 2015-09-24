@@ -208,6 +208,9 @@ public class EdusohoMainService extends Service {
                         NotificationUtil.showNewsCourseNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
+                case Const.ADD_DISCOUNT_PASS:
+                    NotificationUtil.showDiscountPass(EdusohoApp.app.mContext, xgMessage);
+                    break;
             }
         }
     }

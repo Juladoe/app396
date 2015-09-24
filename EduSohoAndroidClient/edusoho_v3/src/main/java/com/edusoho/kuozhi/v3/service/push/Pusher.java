@@ -9,7 +9,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
@@ -96,6 +95,9 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
+    public void pushDiscountPass() {
+        EdusohoMainService.getService().sendMessage(Const.ADD_DISCOUNT_PASS, mWrapperMessage);
+    }
 
     public void pushArticleCreate() {
         boolean isForeground = EdusohoApp.app.isForeground(ServiceProviderActivity.class.getName());

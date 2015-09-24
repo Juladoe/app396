@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
 
 import java.util.List;
 
@@ -131,6 +130,30 @@ public class NotificationUtil {
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate) & EdusohoApp.app.getMsgDisturbFromCourseId(courseId));
         mNotificationManager.notify(courseId, mBuilder.build());
+    }
+
+    public static void showDiscountPass(Context context, WrapperXGPushTextMessage xgMessage) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(xgMessage.title)
+                        .setContentText(xgMessage.content).setAutoCancel(true);
+        int discountMsgId = xgMessage.getV2CustomContent().getMsgId();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (isAppExit(context)) {
+            notifyIntent.putExtra(Const.INTENT_COMMAND, PushUtil.DiscountType.DISCOUNT);
+        }
+
+        PendingIntent pendIntent = PendingIntent.getActivity(context, discountMsgId,
+                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendIntent);
+        mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate));
+        mNotificationManager.notify(discountMsgId, mBuilder.build());
     }
 
     public static void showArticleNotification(Context context, WrapperXGPushTextMessage xgMessage) {
