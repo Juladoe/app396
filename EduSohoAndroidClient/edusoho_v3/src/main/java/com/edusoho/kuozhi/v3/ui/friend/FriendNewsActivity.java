@@ -29,6 +29,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -221,7 +222,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 convertView = mInflater.inflate(mResource, null);
                 holder.content = (TextView) convertView.findViewById(R.id.news_content);
                 holder.time = (TextView) convertView.findViewById(R.id.news_time);
-                holder.avatar = (ImageView) convertView.findViewById(R.id.new_follower_avatar);
+                holder.avatar = (EduSohoRoundConerImage) convertView.findViewById(R.id.new_follower_avatar);
                 holder.relation = (ImageView) convertView.findViewById(R.id.fans_relation);
                 convertView.setTag(holder);
             } else {
@@ -309,7 +310,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         }
 
         private class ItemHolder {
-            ImageView avatar;
+            EduSohoRoundConerImage avatar;
             TextView content;
             TextView time;
             ImageView relation;
