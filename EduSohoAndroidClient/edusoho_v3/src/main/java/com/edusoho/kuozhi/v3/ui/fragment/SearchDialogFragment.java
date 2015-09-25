@@ -38,7 +38,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage;
+import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -46,8 +46,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Melomelon on 2015/6/3.
@@ -225,7 +223,7 @@ public class SearchDialogFragment extends DialogFragment {
             if (convertView == null) {
                 holder = new ItemHolder();
                 convertView = mLayoutInflater.inflate(R.layout.add_friend_item, null);
-                holder.image = (EduSohoRoundConerImage) convertView.findViewById(R.id.add_friend_image);
+                holder.image = (EduSohoRoundCornerImage) convertView.findViewById(R.id.add_friend_image);
                 holder.name = (TextView) convertView.findViewById(R.id.add_friend_name);
                 holder.state = (ImageView) convertView.findViewById(R.id.add_friend_state);
                 convertView.setTag(holder);
@@ -274,7 +272,7 @@ public class SearchDialogFragment extends DialogFragment {
         }
 
         private class ItemHolder {
-            EduSohoRoundConerImage image;
+            EduSohoRoundCornerImage image;
             TextView name;
             ImageView state;
         }

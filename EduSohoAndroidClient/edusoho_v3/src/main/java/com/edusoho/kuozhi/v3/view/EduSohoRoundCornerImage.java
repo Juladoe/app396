@@ -18,19 +18,19 @@ import android.widget.ImageView;
 /**
  * Created by Melomelon on 2015/9/23.
  */
-public class EduSohoRoundConerImage extends ImageView {
+public class EduSohoRoundCornerImage extends ImageView {
 
     private Paint paint;
 
-    public EduSohoRoundConerImage(Context context) {
+    public EduSohoRoundCornerImage(Context context) {
         super(context);
     }
 
-    public EduSohoRoundConerImage(Context context, AttributeSet attrs) {
+    public EduSohoRoundCornerImage(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public EduSohoRoundConerImage(Context context, AttributeSet attrs, int defStyleAttr) {
+    public EduSohoRoundCornerImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

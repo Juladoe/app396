@@ -17,7 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage;
+import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     v = mInflater.inflate(R.layout.item_type_friend, null);
                     itemHolder = new ItemHolder();
                     itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
-                    itemHolder.friendAvatar = (EduSohoRoundConerImage) v.findViewById(R.id.friend_avatar);
+                    itemHolder.friendAvatar = (EduSohoRoundCornerImage) v.findViewById(R.id.friend_avatar);
                     itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
                     itemHolder.dividerLine = v.findViewById(R.id.divider_line);
                     itemHolder.catalog = (TextView) v.findViewById(R.id.catalog);
@@ -206,7 +206,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
     }
 
     private class ItemHolder {
-        private EduSohoRoundConerImage friendAvatar;
+        private EduSohoRoundCornerImage friendAvatar;
         private TextView friendName;
         private ImageView teacherTag;
         //        private LinearLayout friendTag;
