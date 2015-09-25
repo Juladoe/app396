@@ -53,7 +53,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private TextView tvEmpty;
     private BulletinDataSource mBulletinDataSource;
     private BulletinAdapter mBulletinAdapter;
-    private String mHeadImageUrl;
+    private String mArticleAvatar;
     private static final int LIMIT = 15;
     private int mStart = 0;
 
@@ -79,13 +79,13 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     private void initData() {
         setBackMode(BACK, "网校公告");
-        if (TextUtils.isEmpty(mHeadImageUrl)) {
+        if (TextUtils.isEmpty(mArticleAvatar)) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             List<New> bulletins = newDataSource.getNews("WHERE TYPE = ? ORDER BY CREATEDTIME DESC", TypeBusinessEnum.BULLETIN.getName());
             if (bulletins.size() > 0) {
-                mHeadImageUrl = bulletins.get(0).imgUrl;
+                mArticleAvatar = bulletins.get(0).imgUrl;
             }
-            if (TextUtils.isEmpty(mHeadImageUrl)) {
+            if (TextUtils.isEmpty(mArticleAvatar)) {
                 RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
                 mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
                     @Override
@@ -93,7 +93,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                         SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
                         });
                         if (schoolAppResult.length != 0) {
-                            mHeadImageUrl = app.schoolHost + schoolAppResult[0].avatar;
+                            mArticleAvatar = schoolAppResult[1].avatar;
                         }
                     }
                 }, null);
@@ -242,7 +242,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.createdTime) * 1000));
             }
             holder.tvContent.setText(bulletin.content);
-            ImageLoader.getInstance().displayImage(mHeadImageUrl, holder.ivHeadImageUrl, mOptions);
+            ImageLoader.getInstance().displayImage(mArticleAvatar, holder.ivHeadImageUrl, mOptions);
             return convertView;
         }
     }
