@@ -13,6 +13,7 @@ public class WrapperXGPushTextMessage extends XGPushTextMessage implements Seria
     public String content;
     public String customContentJson;
     public boolean isForeground = false;
+    private V2CustomContent mV2CustomContent;
 
     public WrapperXGPushTextMessage() {
 
@@ -60,6 +61,9 @@ public class WrapperXGPushTextMessage extends XGPushTextMessage implements Seria
 
     public V2CustomContent getV2CustomContent() {
         Gson gson = new Gson();
-        return gson.fromJson(this.customContentJson, V2CustomContent.class);
+        if (mV2CustomContent == null) {
+            mV2CustomContent = gson.fromJson(this.customContentJson, V2CustomContent.class);
+        }
+        return mV2CustomContent;
     }
 }
