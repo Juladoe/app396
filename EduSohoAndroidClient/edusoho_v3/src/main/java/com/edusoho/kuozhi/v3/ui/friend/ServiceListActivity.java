@@ -22,7 +22,7 @@ import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundConerImage;
+import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +144,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                 view = mLayoutInflater.inflate(R.layout.item_type_school_app, null);
                 schoolAppHolder = new SchoolAppHolder();
                 schoolAppHolder.SchoolAppName = (TextView) view.findViewById(R.id.friend_name);
-                schoolAppHolder.schoolAppAvatar = (EduSohoRoundConerImage) view.findViewById(R.id.friend_avatar);
+                schoolAppHolder.schoolAppAvatar = (EduSohoRoundCornerImage) view.findViewById(R.id.friend_avatar);
                 schoolAppHolder.dividerLine = view.findViewById(R.id.divider_line);
                 view.setTag(schoolAppHolder);
             } else {
@@ -183,7 +183,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
         }
 
         private class SchoolAppHolder {
-            private EduSohoRoundConerImage schoolAppAvatar;
+            private EduSohoRoundCornerImage schoolAppAvatar;
             private TextView SchoolAppName;
             private View dividerLine;
         }
