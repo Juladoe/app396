@@ -436,7 +436,19 @@ public class NewsFragment extends BaseFragment {
         newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
-        newModel.content = wrapperMessage.content;
+        String type = "";
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.CourseType.LESSON_PUBLISH:
+                type = PushUtil.CourseCode.LESSON_PUBLISH;
+                break;
+            case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                type = PushUtil.CourseCode.TESTPAPER_REVIEWED;
+                break;
+            case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
+                type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
+                break;
+        }
+        newModel.content = String.format("【%s】%s", type, wrapperMessage.content);
         newModel.imgUrl = v2CustomContent.getFrom().getImage();
         newModel.createdTime = v2CustomContent.getCreatedTime();
         newModel.setType(v2CustomContent.getFrom().getType());

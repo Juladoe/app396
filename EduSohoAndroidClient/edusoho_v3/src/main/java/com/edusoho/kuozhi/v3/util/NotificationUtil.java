@@ -105,17 +105,19 @@ public class NotificationUtil {
 
     public static void showNewsCourseNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
+        String type = "";
         switch (newsCourseEntity.getBodyType()) {
             case PushUtil.CourseType.LESSON_PUBLISH:
-                xgMessage.content = "【课程更新】" + xgMessage.content;
+                type = PushUtil.CourseCode.LESSON_PUBLISH;
                 break;
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
-                xgMessage.content = "【试卷批阅完成】" + xgMessage.content;
+                type = PushUtil.CourseCode.TESTPAPER_REVIEWED;
                 break;
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
-                xgMessage.content = "【课程公告】" + xgMessage.content;
+                type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
                 break;
         }
+        xgMessage.content = String.format("【%s】%s", type, xgMessage.content);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())

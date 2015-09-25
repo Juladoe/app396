@@ -35,7 +35,7 @@ public class PushUtil {
     public static class CourseCode {
         public static final String TESTPAPER_REVIEWED = "试卷批阅完成";
         public static final String LESSON_PUBLISH = "课时更新";
-        public static final String COURSE_ANNOUNCEMENT = "最新课程公告";
+        public static final String COURSE_ANNOUNCEMENT = "课程公告";
     }
 
     public static class ChatUserType {
