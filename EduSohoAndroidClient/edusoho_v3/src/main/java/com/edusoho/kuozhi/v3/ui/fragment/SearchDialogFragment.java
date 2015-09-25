@@ -232,10 +232,10 @@ public class SearchDialogFragment extends DialogFragment {
             }
 
             final Friend friend = mResultList.get(position);
-            if (friend.smallAvatar.equals("")) {
+            if (friend.mediumAvatar.equals("")) {
                 holder.image.setImageResource(R.drawable.default_avatar);
             } else {
-                ImageLoader.getInstance().displayImage(friend.smallAvatar, holder.image, mActivity.app.mOptions);
+                ImageLoader.getInstance().displayImage(friend.mediumAvatar, holder.image, mActivity.app.mOptions);
             }
             holder.name.setText(friend.nickname);
             if (friend.friendship == null) {
