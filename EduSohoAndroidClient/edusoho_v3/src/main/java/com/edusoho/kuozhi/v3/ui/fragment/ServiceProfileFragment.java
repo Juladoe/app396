@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class ServiceProfileFragment extends BaseFragment {
 
     private SystemProvider mSystemProvider;
     private ImageView mServiceIconView;
+    private CheckBox mSPDonotDisturbView;
     private TextView mServiceNameView;
     private TextView mServiceTitleView;
     private TextView mClearView;
@@ -51,6 +53,7 @@ public class ServiceProfileFragment extends BaseFragment {
         mServiceIconView = (ImageView) view.findViewById(R.id.sp_icon);
         mServiceNameView = (TextView) view.findViewById(R.id.sp_name);
         mServiceTitleView = (TextView) view.findViewById(R.id.sp_title);
+        mSPDonotDisturbView = (CheckBox) view.findViewById(R.id.sp_icon_do_not_disturb);
         mClearView = (TextView) view.findViewById(R.id.sp_icon_clear_message);
         initServiceProfile();
     }
@@ -59,7 +62,6 @@ public class ServiceProfileFragment extends BaseFragment {
 
         Bundle bundle = getArguments();
         mSchoolProfileId = bundle != null ? bundle.getInt(SERVICE_ID, 0) : 0;
-
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.GET_SCHOOL_APP, mSchoolProfileId), true);
         mSystemProvider.getSchoolApp(requestUrl).success(new NormalCallback<SchoolApp>() {
             @Override
@@ -71,6 +73,7 @@ public class ServiceProfileFragment extends BaseFragment {
                 initSchoolApp(schoolApp);
             }
         });
+        mSPDonotDisturbView.setChecked(app.getMsgDisturbFromCourseId(mSchoolProfileId) == 0);
     }
 
     private void initSchoolApp(SchoolApp schoolApp) {
@@ -90,11 +93,21 @@ public class ServiceProfileFragment extends BaseFragment {
                 }).show();
             }
         });
+        mSPDonotDisturbView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.saveMsgDisturbConfig(mSchoolProfileId, mSPDonotDisturbView.isChecked() ? 0 : 3);
+            }
+        });
         ImageLoader.getInstance().displayImage(schoolApp.avatar, mServiceIconView, app.mOptions);
     }
 
     private void clearHistory() {
         ServiceProviderDataSource dataSource = new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         dataSource.deleteBySPId(mSchoolProfileId);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(SERVICE_ID, mSchoolProfileId);
+        app.sendMessage(Const.CLEAR_HISTORY, bundle);
     }
 }

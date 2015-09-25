@@ -195,7 +195,7 @@ public class NotificationUtil {
         PendingIntent pendIntent = PendingIntent.getActivity(context, notificationId,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);
-        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate) & EdusohoApp.app.getMsgDisturbFromCourseId(articleModel.spId));
         mNotificationManager.notify(notificationId, mBuilder.build());
     }
 
