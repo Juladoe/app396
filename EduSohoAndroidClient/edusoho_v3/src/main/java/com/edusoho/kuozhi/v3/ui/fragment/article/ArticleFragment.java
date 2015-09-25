@@ -25,7 +25,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
@@ -299,6 +298,11 @@ public class ArticleFragment extends BaseFragment {
         return articleModels;
     }
 
+    private void clearArticleList() {
+        mStart = 0;
+        mArticleAdapter.clear();
+    }
+
     private boolean loadLocalArticles() {
         ArrayList<ArticleModel> articleModels = getChatList(mStart);
         if (articleModels.isEmpty()) {
@@ -420,6 +424,15 @@ public class ArticleFragment extends BaseFragment {
     public void invoke(WidgetMessage message) {
         super.invoke(message);
         MessageType messageType = message.type;
+        if (Const.CLEAR_HISTORY.equals(messageType.type)) {
+            Bundle bundle = message.data;
+            int serviceId = bundle.getInt(ServiceProviderActivity.SERVICE_ID, 0);
+            if (serviceId == mServiceProvierId) {
+                clearArticleList();
+            }
+
+            return;
+        }
         switch (messageType.code) {
             case Const.ADD_ARTICLE_CREATE_MAG:
                 WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
@@ -435,7 +448,8 @@ public class ArticleFragment extends BaseFragment {
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         return new MessageType[] {
-            new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source)
+            new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
+            new MessageType(Const.CLEAR_HISTORY)
         };
     }
 }

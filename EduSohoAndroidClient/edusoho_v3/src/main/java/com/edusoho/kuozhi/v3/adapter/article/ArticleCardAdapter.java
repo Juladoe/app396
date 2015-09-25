@@ -36,8 +36,8 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         this.mContext = context;
         this.mArcicleChatList = articles;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
-                showImageForEmptyUri(R.drawable.defaultpic).
-                showImageOnFail(R.drawable.defaultpic).build();
+                showImageForEmptyUri(R.drawable.article_default_small).
+                showImageOnFail(R.drawable.article_default_small).build();
     }
 
     public void addArticleChats(ArrayList<ArticleModel> articles) {
@@ -47,6 +47,11 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
 
     public void addArticleChat(ArticleModel articleModel) {
         mArcicleChatList.add(articleModel);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        mArcicleChatList.clear();
         notifyDataSetChanged();
     }
 
@@ -121,7 +126,7 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
         Article article = getChild(groupPosition, childPosition);
-        Log.d("childPosition", String.format("title:%s  pos:%d v:%s", article.title, childPosition, convertView));
+
         viewHolder.mTitleView.setText(article.title);
         ImageLoader.getInstance().displayImage(article.picture, viewHolder.mImgView, mOptions);
         return convertView;
