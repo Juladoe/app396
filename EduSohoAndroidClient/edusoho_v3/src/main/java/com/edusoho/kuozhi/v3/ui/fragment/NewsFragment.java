@@ -249,8 +249,8 @@ public class NewsFragment extends BaseFragment {
             final New newItem = (New) parent.getItemAtPosition(position);
             TypeBusinessEnum.getName(newItem.type);
             switch (newItem.type) {
-                case PushUtil.ChatUserType.TEACHER:
-                case PushUtil.ChatUserType.FRIEND:
+                case "friend":
+                case "teacher":
                     app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
