@@ -189,6 +189,7 @@ public class NotificationUtil {
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
         notifyIntent.putExtra(ServiceProviderActivity.SERVICE_TYPE, ServiceProviderActivity.ARTICLE);
+        notifyIntent.putExtra(ServiceProviderActivity.SERVICE_ID, articleModel.spId);
         notifyIntent.putExtra(Const.INTENT_TARGET, ServiceProviderActivity.class);
         if (isAppExit(context)) {
             mMessage = xgMessage;

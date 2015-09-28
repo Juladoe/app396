@@ -228,6 +228,9 @@ public class NewsFragment extends BaseFragment {
                             notificationId = newModel.fromId;
                             newsCourseDataSource.delete(newModel.fromId, app.loginUser.id);
                             break;
+                        case PushUtil.ArticleType.TYPE:
+                            notificationId = newModel.fromId;
+                            break;
                     }
                     NotificationUtil.cancelById(notificationId);
                     setListVisibility(mSwipeAdapter.getCount() == 0);
@@ -353,6 +356,7 @@ public class NewsFragment extends BaseFragment {
                     NewDataSource articleDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                     articleDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.ArticleType.TYPE);
                     mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.TYPE);
+                    NotificationUtil.cancelById(fromId);
                     break;
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
