@@ -46,7 +46,7 @@ public class CommandFactory {
                     pushCommand = new PushGlobalAnnouncementCommand(pusher);
                 }
                 break;
-            case "news.create":
+            case PushUtil.ArticleType.NEWS_CREATE:
                 pushCommand = new PushArticleCreateCommand(pusher);
                 break;
             case PushUtil.FriendVerified.TYPE:

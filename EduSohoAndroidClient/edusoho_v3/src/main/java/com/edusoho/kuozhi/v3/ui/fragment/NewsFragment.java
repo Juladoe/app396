@@ -201,7 +201,7 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
+    private SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
             switch (index) {
@@ -242,7 +242,7 @@ public class NewsFragment extends BaseFragment {
         }
     };
 
-    AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
