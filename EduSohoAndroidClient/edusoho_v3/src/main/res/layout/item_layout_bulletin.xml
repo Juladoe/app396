@@ -27,15 +27,6 @@
             android:paddingTop="8dp"
             android:gravity="left|center_vertical">
 
-            <!--<de.hdodenhof.circleimageview.CircleImageView-->
-            <!--android:id="@+id/ci_send_pic"-->
-            <!--android:layout_width="@dimen/head_icon_40"-->
-            <!--android:layout_height="@dimen/head_icon_40"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_marginRight="8dp"-->
-            <!--android:layout_marginLeft="16dp"-->
-            <!--android:src="@drawable/myinfo_default_face" />-->
-
             <ImageView
                 android:id="@+id/ci_send_pic"
                 android:layout_width="@dimen/head_icon_medium"
@@ -51,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/ci_send_pic"
                 android:background="@drawable/chat_text_from_layout"
-                android:gravity="center"
+                android:gravity="left|center_vertical"
                 android:layout_centerInParent="true"
                 android:maxWidth="250dp"
                 android:textColor="@color/base_black_87"
