@@ -249,8 +249,8 @@ public class NewsFragment extends BaseFragment {
             final New newItem = (New) parent.getItemAtPosition(position);
             TypeBusinessEnum.getName(newItem.type);
             switch (newItem.type) {
-                case "friend":
-                case "teacher":
+                case PushUtil.ChatUserType.FRIEND:
+                case PushUtil.ChatUserType.TEACHER:
                     app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
@@ -260,9 +260,6 @@ public class NewsFragment extends BaseFragment {
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });
-                    if (newItem.unread > 0) {
-
-                    }
                     break;
                 case PushUtil.BulletinType.TYPE:
                     app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
