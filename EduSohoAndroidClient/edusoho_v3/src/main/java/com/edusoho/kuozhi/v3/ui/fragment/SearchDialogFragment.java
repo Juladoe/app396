@@ -39,6 +39,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -223,7 +224,7 @@ public class SearchDialogFragment extends DialogFragment {
             if (convertView == null) {
                 holder = new ItemHolder();
                 convertView = mLayoutInflater.inflate(R.layout.add_friend_item, null);
-                holder.image = (EduSohoRoundCornerImage) convertView.findViewById(R.id.add_friend_image);
+                holder.image = (RoundedImageView) convertView.findViewById(R.id.add_friend_image);
                 holder.name = (TextView) convertView.findViewById(R.id.add_friend_name);
                 holder.state = (ImageView) convertView.findViewById(R.id.add_friend_state);
                 convertView.setTag(holder);
@@ -272,7 +273,7 @@ public class SearchDialogFragment extends DialogFragment {
         }
 
         private class ItemHolder {
-            EduSohoRoundCornerImage image;
+            RoundedImageView image;
             TextView name;
             ImageView state;
         }

@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.edusoho.kuozhi.v3.view.SideBar;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -184,7 +185,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 groupItemHolder = new GroupItemHolder();
                 view = mLayoutInflater.inflate(R.layout.group_list_item_layout, null);
 //                groupItemHolder.groupAvatar = (EduSohoGroupAvatar) view.findViewById(R.id.group_avatar);
-                groupItemHolder.groupAvatar = (EduSohoRoundCornerImage) view.findViewById(R.id.group_avatar);
+                groupItemHolder.groupAvatar = (RoundedImageView) view.findViewById(R.id.group_avatar);
                 groupItemHolder.groupName = (TextView) view.findViewById(R.id.group_name);
                 groupItemHolder.catalog = (TextView) view.findViewById(R.id.group_item_catalog);
                 groupItemHolder.dividerLine = view.findViewById(R.id.divider_line);
@@ -251,7 +252,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
         private class GroupItemHolder {
             //            EduSohoGroupAvatar groupAvatar;
-            EduSohoRoundCornerImage groupAvatar;
+            RoundedImageView groupAvatar;
             TextView groupName;
             TextView catalog;
             View dividerLine;
