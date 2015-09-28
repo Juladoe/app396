@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,12 +13,13 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp">
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:src="@drawable/default_avatar"
             android:id="@+id/iv_course_image"
+            app:riv_corner_radius="3dp"
             android:scaleType="fitXY" />
 
         <RelativeLayout

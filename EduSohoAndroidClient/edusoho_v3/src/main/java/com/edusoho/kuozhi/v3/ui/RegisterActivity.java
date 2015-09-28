@@ -262,6 +262,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
                         });
                         if (result != null && result.error != null) {
+                            btnMailReg.setInitState();
                             CommonUtil.longToast(mActivity, result.error.message);
                             return;
                         }

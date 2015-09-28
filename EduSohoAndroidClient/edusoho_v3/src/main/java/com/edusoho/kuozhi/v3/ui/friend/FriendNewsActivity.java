@@ -3,9 +3,9 @@ package com.edusoho.kuozhi.v3.ui.friend;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,13 +22,14 @@ import com.edusoho.kuozhi.v3.model.bal.FollowerNotification;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotificationResult;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
-import com.edusoho.kuozhi.v3.model.sys.*;
 import com.edusoho.kuozhi.v3.model.sys.Error;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -82,11 +83,11 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         loadData();
     }
 
-    public void setProvider(FriendProvider provider){
+    public void setProvider(FriendProvider provider) {
         this.mFriendProvider = provider;
     }
 
-    public void loadData(){
+    public void loadData() {
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
@@ -106,7 +107,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         });
     }
 
-    public Promise loadNotifications(){
+    public Promise loadNotifications() {
         RequestUrl requestUrl = app.bindNewUrl(Const.NEW_FOLLOWER_NOTIFICATION, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=10000&type=user-follow");
@@ -133,7 +134,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         return promise;
     }
 
-    public Promise loadRelationships(){
+    public Promise loadRelationships() {
         RequestUrl requestUrl = setRelationParams(ids);
         relations = new SparseArray<String>();
 
@@ -178,7 +179,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (isNews == true || isClick == true){
+        if (isNews == true || isClick == true) {
             app.sendMessage(Const.REFRESH_FRIEND_LIST, null);
             isNews = false;
             isClick = false;
@@ -221,7 +222,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 convertView = mInflater.inflate(mResource, null);
                 holder.content = (TextView) convertView.findViewById(R.id.news_content);
                 holder.time = (TextView) convertView.findViewById(R.id.news_time);
-                holder.avatar = (ImageView) convertView.findViewById(R.id.new_follower_avatar);
+                holder.avatar = (EduSohoRoundCornerImage) convertView.findViewById(R.id.new_follower_avatar);
                 holder.relation = (ImageView) convertView.findViewById(R.id.fans_relation);
                 convertView.setTag(holder);
             } else {
@@ -243,9 +244,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             }
             if (relations.size() != 0) {
                 String relation = relations.get(position);
-                if (relation.equals(Const.NO_USER)){
+                if (relation.equals(Const.NO_USER)) {
                     holder.relation.setVisibility(View.GONE);
-                }else {
+                } else {
                     holder.relation.setVisibility(View.VISIBLE);
                 }
                 switch (relation) {
@@ -309,7 +310,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         }
 
         private class ItemHolder {
-            ImageView avatar;
+            EduSohoRoundCornerImage avatar;
             TextView content;
             TextView time;
             ImageView relation;

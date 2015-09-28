@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -28,7 +29,6 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -48,8 +48,10 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +72,7 @@ public class NewsFragment extends BaseFragment {
     private View mEmptyView;
     private TextView tvEmptyText;
     private SwipeAdapter mSwipeAdapter;
-    private String mSchoolAvatar;
+    private String mArticleAvatar;
 
     @Override
     public void onAttach(Activity activity) {
@@ -182,7 +184,7 @@ public class NewsFragment extends BaseFragment {
             mSwipeAdapter.update(news);
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
-        if (TextUtils.isEmpty(mSchoolAvatar)) {
+        if (TextUtils.isEmpty(mArticleAvatar)) {
             RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
             mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
                 @Override
@@ -190,7 +192,7 @@ public class NewsFragment extends BaseFragment {
                     SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
                     });
                     if (schoolAppResult != null && schoolAppResult.length != 0) {
-                        mSchoolAvatar = schoolAppResult[0].avatar;
+                        mArticleAvatar = schoolAppResult[1].avatar;
                     } else {
                         CommonUtil.shortToast(mContext, getResources().getString(R.string.school_info_error));
                     }
@@ -386,7 +388,7 @@ public class NewsFragment extends BaseFragment {
         newModel.content = wrapperMessage.content;
         CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
         });
-        newModel.imgUrl = app.host + "/" + mSchoolAvatar;
+        newModel.imgUrl = mArticleAvatar;
         newModel.createdTime = customContent.getCreatedTime();
         newModel.setType(TypeBusinessEnum.BULLETIN.getName());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -410,9 +412,11 @@ public class NewsFragment extends BaseFragment {
         newModel.title = wrapperMessage.title;
         V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
         newModel.content = wrapperMessage.content;
+        newModel.setImgUrl(v2CustomContent.getFrom().getImage());
         newModel.setFromId(v2CustomContent.getFrom().getId());
         newModel.setType(v2CustomContent.getFrom().getType());
         newModel.setCreatedTime(v2CustomContent.getCreatedTime());
+
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {
@@ -432,7 +436,19 @@ public class NewsFragment extends BaseFragment {
         newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
-        newModel.content = wrapperMessage.content;
+        String type = "";
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.CourseType.LESSON_PUBLISH:
+                type = PushUtil.CourseCode.LESSON_PUBLISH;
+                break;
+            case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                type = PushUtil.CourseCode.TESTPAPER_REVIEWED;
+                break;
+            case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
+                type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
+                break;
+        }
+        newModel.content = String.format("【%s】%s", type, wrapperMessage.content);
         newModel.imgUrl = v2CustomContent.getFrom().getImage();
         newModel.createdTime = v2CustomContent.getCreatedTime();
         newModel.setType(v2CustomContent.getFrom().getType());

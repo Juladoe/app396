@@ -85,7 +85,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         logSchoolInfoToServer();
-        processIntent(getIntent());
+        if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.INTENT_COMMAND)) {
+            processIntent(getIntent());
+        }
     }
 
     @Override
