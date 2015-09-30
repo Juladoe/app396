@@ -245,7 +245,7 @@ public class Chat implements Serializable {
      * 资源类型
      */
     public static enum FileType {
-        TEXT("text"), IMAGE("image"), AUDIO("audio"), VIDEO("video");
+        TEXT("text"), IMAGE("image"), AUDIO("audio"), VIDEO("video"), MULTI("multi");
 
         private String name;
 
