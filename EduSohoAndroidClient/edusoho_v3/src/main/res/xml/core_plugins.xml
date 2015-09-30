@@ -303,4 +303,14 @@
         name="ServiceProfileFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.ServiceProfileFragment"
         version="1.0" />
+
+    <plugin
+        name="ChatSelectFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment"
+        version="1.0" />
+
+    <plugin
+        name="FriendSelectFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FriendSelectFragment"
+        version="1.0" />
 </plugins>
