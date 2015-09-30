@@ -53,6 +53,7 @@ public class CommandFactory {
             case PushUtil.ChatMsgType.AUDIO:
             case PushUtil.ChatMsgType.IMAGE:
             case PushUtil.ChatMsgType.TEXT:
+            case PushUtil.ChatMsgType.MULTI:
                 pusher.convertWrapperMessage2V2();
                 pushCommand = new PushMsgCommand(pusher);
                 break;

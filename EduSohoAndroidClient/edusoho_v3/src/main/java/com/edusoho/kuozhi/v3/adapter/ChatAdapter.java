@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
@@ -20,13 +21,17 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -62,13 +67,15 @@ public class ChatAdapter extends BaseAdapter {
     private User mChatOpposite;
 
     private static long TIME_INTERVAL = 60 * 5;
-    private static final int TYPE_COUNT = 6;
+    private static final int TYPE_COUNT = 8;
     private static final int MSG_SEND_TEXT = 0;
     private static final int MSG_RECEIVE_TEXT = 1;
     private static final int MSG_SEND_IMAGE = 2;
     private static final int MSG_RECEIVE_IMAGE = 3;
     private static final int MSG_SEND_AUDIO = 4;
     private static final int MSG_RECEIVE_AUDIO = 5;
+    private static final int MSG_SEND_MULIT = 6;
+    private static final int MSG_RECEIVE_MULIT = 7;
 
     public void setSendImageClickListener(ImageErrorClick imageErrorClick) {
         mImageErrorClick = imageErrorClick;
@@ -141,6 +148,8 @@ public class ChatAdapter extends BaseAdapter {
                 case AUDIO:
                     type = MSG_SEND_AUDIO;
                     break;
+                case MULTI:
+                    type = MSG_SEND_MULIT;
             }
         } else {
             switch (msg.fileType) {
@@ -153,6 +162,8 @@ public class ChatAdapter extends BaseAdapter {
                 case AUDIO:
                     type = MSG_RECEIVE_AUDIO;
                     break;
+                case MULTI:
+                    type = MSG_RECEIVE_MULIT;
             }
         }
         return type;
@@ -204,8 +215,69 @@ public class ChatAdapter extends BaseAdapter {
             case MSG_RECEIVE_AUDIO:
                 handlerReceiveAudio(holder, position);
                 break;
+            case MSG_SEND_MULIT:
+                handleSendMsgMulti(holder, position);
+            case MSG_RECEIVE_MULIT:
+                handlerMultiMsg(holder, position);
+                break;
         }
         return convertView;
+    }
+
+    private void handlerMultiMsg(ViewHolder holder, int position) {
+        Chat model = mList.get(position);
+        holder.tvSendTime.setVisibility(View.GONE);
+        if (position > 0) {
+            if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
+                holder.tvSendTime.setVisibility(View.VISIBLE);
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            }
+        } else {
+            holder.tvSendTime.setVisibility(View.VISIBLE);
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+        }
+
+        final RedirectBody body = EdusohoApp.app.parseJsonValue(model.content, new TypeToken<RedirectBody>(){});
+        holder.multiBodyContent.setText(body.content);
+        holder.multiBodyTitle.setText(body.title);
+        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(body.image, holder.multiBodyIcon, mOptions);
+
+        holder.multiBodyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EdusohoApp.app.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(WebViewActivity.URL, body.url);
+                    }
+                });
+            }
+        });
+    }
+
+    private void handleSendMsgMulti(ViewHolder holder, int position) {
+        final Chat model = mList.get(position);
+        switch (model.getDelivery()) {
+            case SUCCESS:
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.GONE);
+                break;
+            case UPLOADING:
+                holder.pbLoading.setVisibility(View.VISIBLE);
+                holder.ivStateError.setVisibility(View.GONE);
+                break;
+            case FAILED:
+                holder.pbLoading.setVisibility(View.GONE);
+                holder.ivStateError.setVisibility(View.VISIBLE);
+                holder.ivStateError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mImageErrorClick.sendMsgAgain(model);
+                    }
+                });
+                break;
+        }
     }
 
     private void handleSendMsgText(ViewHolder holder, int position) {
@@ -667,6 +739,12 @@ public class ChatAdapter extends BaseAdapter {
             case MSG_RECEIVE_AUDIO:
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_audio, null);
                 break;
+            case MSG_SEND_MULIT:
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_send_multi, null);
+                break;
+            case MSG_RECEIVE_MULIT:
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_layout_msg_receive_multi, null);
+                break;
         }
         return convertView;
     }
@@ -680,6 +758,11 @@ public class ChatAdapter extends BaseAdapter {
         public ImageView ivStateError;
         public TextView tvAudioLength;
         public ImageView ivVoiceAnim;
+
+        public TextView multiBodyTitle;
+        public TextView multiBodyContent;
+        public ImageView multiBodyIcon;
+        public View multiBodyLayout;
 
         public ViewHolder(View view, int type) {
             switch (type) {
@@ -713,6 +796,17 @@ public class ChatAdapter extends BaseAdapter {
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     tvAudioLength = (TextView) view.findViewById(R.id.tv_audio_length);
                     ivVoiceAnim = (ImageView) view.findViewById(R.id.iv_voice_play_anim);
+                    break;
+                case MSG_SEND_MULIT:
+                    pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
+                    ivStateError = (ImageView) view.findViewById(R.id.msg_status);
+                case MSG_RECEIVE_MULIT:
+                    multiBodyLayout = view.findViewById(R.id.chat_multi_body);
+                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
+                    tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
+                    multiBodyContent = (TextView) view.findViewById(R.id.chat_multi_content);
+                    multiBodyTitle = (TextView) view.findViewById(R.id.chat_multi_title);
+                    multiBodyIcon = (ImageView) view.findViewById(R.id.chat_multi_icon);
                     break;
             }
         }

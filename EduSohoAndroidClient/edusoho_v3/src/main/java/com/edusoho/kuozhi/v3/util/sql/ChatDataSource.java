@@ -62,6 +62,23 @@ public class ChatDataSource {
         return list;
     }
 
+    public Chat getChat(int id) {
+        this.openRead();
+        Chat chat = null;
+        try {
+            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, "id=?",
+                    new String[] { String.valueOf(id) }, null, null, "CHATID DESC");
+            if (cursor.moveToNext()) {
+                chat = cursorToComment(cursor);
+            }
+            cursor.close();
+        } catch (Exception ex) {
+            Log.d("-->", ex.getMessage());
+        }
+        this.close();
+        return chat;
+    }
+
     public long create(Chat chat) {
         this.openWrite();
         ContentValues cv = new ContentValues();

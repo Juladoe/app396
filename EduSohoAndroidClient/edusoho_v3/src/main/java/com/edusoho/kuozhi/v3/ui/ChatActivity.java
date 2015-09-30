@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -57,10 +56,8 @@ import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,7 +68,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -89,6 +85,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     //region Field
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
+    public static final String MSG_DELIVERY = "msg_delivery";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
     private static final int IMAGE_SIZE = 1024 * 500;
@@ -282,7 +279,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         Collections.reverse(mList);
         return mList;
     }
-
 
     private void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
@@ -1066,6 +1062,12 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(Const.GET_PUSH_DATA);
                         mAdapter.addItems(chats);
                         break;
+                    case Const.UPDATE_CHAT_MSG:
+                        if (mFromId == customContent.getFromId()) {
+                            Chat chat = new Chat(wrapperMessage);
+                            updateSendMsgToListView(Chat.Delivery.getDelivery(message.data.getInt(MSG_DELIVERY)), chat);
+                        }
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -1076,7 +1078,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_CHAT_MSG, source), new MessageType(Const.ADD_CHAT_MSGS, source)};
+        return new MessageType[]{
+                new MessageType(Const.ADD_CHAT_MSG, source),
+                new MessageType(Const.ADD_CHAT_MSGS, source),
+                new MessageType(Const.UPDATE_CHAT_MSG, source)
+        };
     }
 
 
