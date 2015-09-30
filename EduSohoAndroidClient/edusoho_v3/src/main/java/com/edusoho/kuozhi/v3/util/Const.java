@@ -90,6 +90,8 @@ public class Const {
     public static final int ADD_DISCOUNT_PASS = 7;
     public static final int ADD_ARTICLE_CREATE_MAG = 13;
 
+    public static final int UPDATE_CHAT_MSG = 0x1000;
+
     /**
      * 用于离线获取，更新多条信息
      */
