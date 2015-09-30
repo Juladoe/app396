@@ -3,30 +3,26 @@ package com.edusoho.kuozhi.v3.plugin;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.RequestFuture;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
@@ -48,19 +44,27 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Iterator;
-
-import cn.trinea.android.common.util.ArrayUtils;
-import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by JesseHuang on 15/6/2.
  */
 public class MenuClickPlugin extends CoreBridge {
+
+    @JsAnnotation
+    public void redirect(JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        JSONObject body = args.getJSONObject(0);
+        final RedirectBody redirectBody = RedirectBody.createByJsonObj(body);
+        mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
+                startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
+            }
+        });
+    }
 
     @JsAnnotation
     public void showInput(JSONArray args, final CallbackContext callbackContext) throws JSONException {
