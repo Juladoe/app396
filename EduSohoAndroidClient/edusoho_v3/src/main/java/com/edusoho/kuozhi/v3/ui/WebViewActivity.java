@@ -3,11 +3,13 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.CordovaContext;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
@@ -42,6 +44,10 @@ public class WebViewActivity extends ActionBarBaseActivity {
             url = intent.getStringExtra(URL);
         }
 
+        if (TextUtils.isEmpty(url)) {
+            CommonUtil.longToast(mActivity, "访问的地址不存在");
+            return;
+        }
         mWebView = (ESWebView) findViewById(R.id.webView);
         mWebView.initPlugin(mActivity);
         mWebView.loadUrl(url);
