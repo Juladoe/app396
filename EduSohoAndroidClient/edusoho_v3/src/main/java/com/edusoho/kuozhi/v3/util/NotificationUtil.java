@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
@@ -22,6 +23,7 @@ import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -40,6 +42,10 @@ public class NotificationUtil {
                     break;
                 case AUDIO:
                     xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                    break;
+                case MULTI:
+                    RedirectBody redirectBody = new Gson().fromJson(xgMessage.content, RedirectBody.class);
+                    xgMessage.content = redirectBody.content;
                     break;
             }
 
