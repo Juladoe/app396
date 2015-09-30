@@ -387,9 +387,8 @@ public class NewsFragment extends BaseFragment {
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         newModel.content = wrapperMessage.content;
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
-        });
-        newModel.imgUrl = mArticleAvatar;
+        V2CustomContent customContent = wrapperMessage.getV2CustomContent();
+        newModel.imgUrl = customContent.getFrom().getImage();
         newModel.createdTime = customContent.getCreatedTime();
         newModel.setType(TypeBusinessEnum.BULLETIN.getName());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
