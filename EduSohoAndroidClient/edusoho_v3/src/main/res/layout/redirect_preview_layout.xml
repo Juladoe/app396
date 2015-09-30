@@ -20,7 +20,7 @@
         android:layout_margin="8dp"
         android:id="@+id/popup_icon"
         android:layout_below="@id/popup_title"
-        android:src="@drawable/default_avatar"
+        android:src="@drawable/defaultpic"
         android:layout_width="@dimen/head_icon_large"
         android:layout_height="@dimen/head_icon_large" />
 
