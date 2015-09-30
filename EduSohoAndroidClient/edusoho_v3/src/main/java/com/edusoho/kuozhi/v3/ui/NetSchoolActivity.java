@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.*;
@@ -175,12 +176,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                         app.setCurrentSchool(site);
                         app.removeToken();
                         SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
-                        app.registDevice(new NormalCallback() {
-                            @Override
-                            public void success(Object obj) {
-                                showSchSplash(site.name, site.splashs);
-                            }
-                        });
+                        app.registDevice(null);
 
                         final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
                         app.getUrl(requestUrl, new Response.Listener<String>() {
@@ -199,6 +195,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                                 Log.d(TAG, "无法获取网校Token");
                             }
                         });
+                        showSchSplash(site.name, site.splashs);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -282,8 +279,18 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
     }
 
     private void showSchSplash(String schoolName, String[] splashs) {
+        if (splashs == null || splashs.length == 0) {
+            app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                }
+            });
+        }
         SchoolSplashActivity.start(mContext, schoolName, splashs);
-        //app.appFinish();
+
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 
     private void showQrResultDlg(String result) {

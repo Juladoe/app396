@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -104,7 +105,18 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         }
 
         private void showSchSplash(String schoolName, String[] splashs) {
-            SchoolSplashActivity.start(mActivity, schoolName, splashs);
+            if (splashs == null || splashs.length == 0) {
+                mApp.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    }
+                });
+            }
+            SchoolSplashActivity.start(mActivity.getBaseContext(), schoolName, splashs);
+
+            mActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            mActivity.finish();
         }
 
         public void change(String url) {
@@ -166,8 +178,6 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         });
 
                         showSchSplash(site.name, site.splashs);
-                        mActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        mActivity.finish();
                     } catch (Exception e) {
                         CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                     }
