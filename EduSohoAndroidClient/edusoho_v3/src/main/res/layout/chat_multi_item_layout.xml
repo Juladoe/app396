@@ -24,6 +24,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/chat_multi_icon"
             android:layout_margin="6dp"
             android:layout_width="@dimen/head_icon_large"
