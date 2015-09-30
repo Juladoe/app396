@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.RedirectPreViewDialog;
 import com.google.gson.Gson;
@@ -109,6 +110,7 @@ public class ChatSendHandler {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
         bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_MSG);
+        ChatActivity.CurrentFromId = customContent.getFromId();
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
 
         return message;
@@ -129,6 +131,9 @@ public class ChatSendHandler {
 
         final Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
+
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -145,12 +150,14 @@ public class ChatSendHandler {
                 if (mFinishCallback != null) {
                     mFinishCallback.success(null);
                 }
+                loadDialog.dismiss();
                 mActivity.finish();
                 CommonUtil.longToast(mActivity.getBaseContext(), "分享成功");
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                loadDialog.dismiss();
                 CommonUtil.longToast(mActivity.getBaseContext(), "网络连接不可用请稍后再试");
                 updateChatStatus(chat, Chat.Delivery.FAILED, bundle);
             }

@@ -115,8 +115,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private float mPressDownY;
     private MediaRecorderTask mMediaRecorderTask;
     private VolumeHandler mHandler;
-
-
     private AudioDownloadReceiver mAudioDownloadReceiver;
 
     private ChatDataSource mChatDataSource;
