@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.internal.widget.DecorToolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,23 +107,8 @@ public class FriendFragment extends BaseFragment {
                 }
             }
         });
-        mFriendAdapter = new FriendFragmentAdapter(mContext, R.layout.item_type_friend_head, app);
-        mFriendAdapter.setHeadClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int i = v.getId();
-                if (i == R.id.search_friend_btn) {
-                    showSearchDialog();
-                }
-                if (i == R.id.discussion_group) {
-                    app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
-                }
-                if (i == R.id.service) {
-                    app.mEngine.runNormalPlugin("ServiceListActivity", mActivity, null);
-
-                }
-            }
-        });
+        mFriendAdapter = new FriendFragmentAdapter(mContext, app);
+        mFriendAdapter.setHeadView(getFriendListHeadView());
         mFriendList.addFooterView(mFootView, null, false);
         mFriendList.setAdapter(mFriendAdapter);
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -143,6 +130,33 @@ public class FriendFragment extends BaseFragment {
 
         mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
         initViewData();
+    }
+
+    private View getFriendListHeadView() {
+
+        View headView = LayoutInflater.from(mContext).inflate(R.layout.item_type_friend_head, null);
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i = v.getId();
+                if (i == R.id.search_friend_btn) {
+                    showSearchDialog();
+                }
+                if (i == R.id.discussion_group) {
+                    app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
+                }
+                if (i == R.id.service) {
+                    app.mEngine.runNormalPlugin("ServiceListActivity", mActivity, null);
+
+                }
+            }
+        };
+        headView.findViewById(R.id.search_friend_btn).setOnClickListener(onClickListener);
+        headView.findViewById(R.id.discussion_group).setOnClickListener(onClickListener);
+        headView.findViewById(R.id.service).setOnClickListener(onClickListener);
+
+        return headView;
     }
 
     private void showSearchDialog() {

@@ -10,17 +10,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +32,15 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private ArrayList mList;
-    private OnClickListener mOnClickListener;
+    private Context mContext;
     private EdusohoApp mApp;
+    private View mHeadView;
 
-    public FriendFragmentAdapter(Context mContext, int mResource, EdusohoApp app) {
+    public FriendFragmentAdapter(Context context, EdusohoApp app) {
         mList = new ArrayList();
+        mContext = context;
         mInflater = LayoutInflater.from(mContext);
         mApp = app;
-
     }
 
     public void updateList() {
@@ -81,7 +79,6 @@ public class FriendFragmentAdapter extends BaseAdapter {
         } else {
             return TYPE_FRIEND;
         }
-
     }
 
     @Override
@@ -90,22 +87,10 @@ public class FriendFragmentAdapter extends BaseAdapter {
         int type = getItemViewType(position);
         switch (type) {
             case TYPE_HEAD:
-                final HeadHolder headHolder;
                 if (convertView == null) {
-                    v = mInflater.inflate(R.layout.item_type_friend_head, null);
-                    headHolder = new HeadHolder();
-                    headHolder.tvSearchFriend = (TextView) v.findViewById(R.id.search_friend_btn);
-                    headHolder.discussionGroup = (RelativeLayout) v.findViewById(R.id.discussion_group);
-                    headHolder.service = (RelativeLayout) v.findViewById(R.id.service);
-                    v.setTag(headHolder);
-                } else {
-                    headHolder = (HeadHolder) v.getTag();
+                    v = mHeadView == null ? new View(mContext) : mHeadView;
                 }
-                headHolder.tvSearchFriend.setOnClickListener(mOnClickListener);
-                headHolder.discussionGroup.setOnClickListener(mOnClickListener);
-                headHolder.service.setOnClickListener(mOnClickListener);
                 break;
-
 
             case TYPE_FRIEND:
                 final ItemHolder itemHolder;
@@ -173,14 +158,13 @@ public class FriendFragmentAdapter extends BaseAdapter {
         updateList();
     }
 
-
     public void clearList() {
         mList.clear();
         updateList();
     }
 
-    public void setHeadClickListener(OnClickListener onclickListener) {
-        this.mOnClickListener = onclickListener;
+    public void setHeadView(View headView) {
+        mHeadView = headView;
     }
 
     @Override
@@ -193,24 +177,15 @@ public class FriendFragmentAdapter extends BaseAdapter {
         return (Friend) mList.get(position - 1);
     }
 
-
-
     @Override
     public long getItemId(int position) {
         return 0;
-    }
-
-    private class HeadHolder {
-        TextView tvSearchFriend;
-        RelativeLayout discussionGroup;
-        RelativeLayout service;
     }
 
     private class ItemHolder {
         private RoundedImageView friendAvatar;
         private TextView friendName;
         private ImageView teacherTag;
-        //        private LinearLayout friendTag;
         private View dividerLine;
         private TextView catalog;
     }
