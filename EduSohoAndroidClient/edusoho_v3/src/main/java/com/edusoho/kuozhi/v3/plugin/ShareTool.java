@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.plugin;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -101,8 +102,10 @@ public class ShareTool {
         wXMediaMessage.description = AppUtil.coverCourseAbout(mAbout);
         wXMediaMessage.title = mTitle;
         //具体尺寸new ImageSize(100, 99)待修改
-        wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mPic,
-                new ImageSize(100, 99), EdusohoApp.app.mOptions));
+        if (! TextUtils.isEmpty(mPic)) {
+            wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mPic,
+                    new ImageSize(100, 99), EdusohoApp.app.mOptions));
+        }
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.scene = type;
