@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import android.text.TextUtils;
+
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -200,6 +202,20 @@ public class Chat implements Serializable {
         content = message.getContent();
         type = customContent.getTypeMsg();
         createdTime = customContent.getCreatedTime();
+        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+        fileType = FileType.getType(type);
+    }
+
+    public Chat(OfflineMsgEntity offlineMsgModel) {
+        V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
+        id = v2CustomContent.getMsgId();
+        fromId = v2CustomContent.getFrom().getId();
+        toId = EdusohoApp.app.loginUser.id;
+        nickName = v2CustomContent.getFrom().getNickname();
+        headimgurl = v2CustomContent.getFrom().getImage();
+        content = v2CustomContent.getBody().getContent();
+        type = v2CustomContent.getBody().getType();
+        createdTime = v2CustomContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
         fileType = FileType.getType(type);
     }

@@ -18,6 +18,8 @@ import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.OfflineMsgEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -225,19 +227,19 @@ public class EdusohoMainService extends Service {
         app.getUrl(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                ArrayList<Chat> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<Chat>>() {
+                ArrayList<OfflineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OfflineMsgEntity>>() {
                 });
                 if (latestChat.size() > 0) {
                     //Collections.reverse(latestChat);
-                    HashMap<Integer, ArrayList<Chat>> latestHashMap = filterLatestChats(latestChat);
-                    Iterator<Map.Entry<Integer, ArrayList<Chat>>> iterators = latestHashMap.entrySet().iterator();
+                    HashMap<Integer, ArrayList<OfflineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
+                    Iterator<Map.Entry<Integer, ArrayList<OfflineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();
                     ArrayList<New> newArrayList = new ArrayList<>();
                     while (iterators.hasNext()) {
-                        Map.Entry<Integer, ArrayList<Chat>> iterator = iterators.next();
-                        chatDataSource.create(iterator.getValue());
-                        Chat chat = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
-                        New newModel = new New(chat);
-                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", chat.fromId + "", EdusohoApp.app.loginUser.id + "");
+                        Map.Entry<Integer, ArrayList<OfflineMsgEntity>> iterator = iterators.next();
+                        save2DB(iterator.getValue());
+                        OfflineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
+                        New newModel = new New(offlineMsgModel);
+                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUser.id + "");
                         if (news.size() == 0) {
                             newModel.unread = iterator.getValue().size();
                             newDataSource.create(newModel);
@@ -260,27 +262,62 @@ public class EdusohoMainService extends Service {
         });
     }
 
-    private HashMap<Integer, ArrayList<Chat>> filterLatestChats(ArrayList<Chat> latestChats) {
+    public ArrayList<Chat> save2DB(ArrayList<OfflineMsgEntity> offlineMsgEntityArrayList) {
+        ArrayList<Chat> chatArrayList = new ArrayList<>();
+        ArrayList<NewsCourseEntity> courseArrayList = new ArrayList<>();
+        for (OfflineMsgEntity offlineMsgModel : offlineMsgEntityArrayList) {
+            switch (offlineMsgModel.getCustom().getFrom().getType()) {
+                case PushUtil.ChatUserType.TEACHER:
+                case PushUtil.ChatUserType.FRIEND:
+                    chatArrayList.add(new Chat(offlineMsgModel));
+                    break;
+                case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                    courseArrayList.add(new NewsCourseEntity(offlineMsgModel));
+                    break;
+            }
+        }
+        if (chatArrayList.size() > 0) {
+            final ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
+            chatDataSource.create(chatArrayList);
+        }
+        if (courseArrayList.size() > 0) {
+            final NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
+            newsCourseDataSource.create(courseArrayList);
+        }
+        return chatArrayList;
+    }
+
+    private HashMap<Integer, ArrayList<OfflineMsgEntity>> filterLatestChats(ArrayList<OfflineMsgEntity> latestChats) {
         int size = latestChats.size();
-        HashMap<Integer, ArrayList<Chat>> chatHashMaps = new HashMap<>();
+        HashMap<Integer, ArrayList<OfflineMsgEntity>> chatHashMaps = new HashMap<>();
         for (int i = 0; i < size; i++) {
-            Chat latestChat = latestChats.get(i);
-            latestChat = latestChat.serializeCustomContent(latestChat);
-            if (latestChat.getCustomContent().getTypeBusiness() != null) {
-                switch (latestChat.getCustomContent().getTypeBusiness()) {
-                    case PushUtil.ChatUserType.FRIEND:
-                    case PushUtil.ChatUserType.TEACHER:
-                        int fromId = latestChat.getFromId();
-                        if (chatHashMaps.containsKey(fromId)) {
-                            chatHashMaps.get(fromId).add(latestChat);
-                        } else {
-                            ArrayList<Chat> tmpLatestChat = new ArrayList<>();
-                            tmpLatestChat.add(latestChat);
-                            chatHashMaps.put(fromId, tmpLatestChat);
-                        }
-                        break;
-                    default:
+            OfflineMsgEntity offlineMsgModel = latestChats.get(i);
+            V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
+            if (v2CustomContent.getFrom() != null) {
+                int fromId = v2CustomContent.getFrom().getId();
+                if (chatHashMaps.containsKey(fromId)) {
+                    chatHashMaps.get(fromId).add(offlineMsgModel);
+                } else {
+                    ArrayList<OfflineMsgEntity> tmpLatestChat = new ArrayList<>();
+                    tmpLatestChat.add(offlineMsgModel);
+                    chatHashMaps.put(fromId, tmpLatestChat);
                 }
+//                switch (v2CustomContent.getFrom().getType()) {
+//                    case PushUtil.ChatUserType.FRIEND:
+//                    case PushUtil.ChatUserType.TEACHER:
+//                        int fromId = v2CustomContent.getFrom().getId();
+//                        if (chatHashMaps.containsKey(fromId)) {
+//                            chatHashMaps.get(fromId).add(offlineMsgModel);
+//                        } else {
+//                            ArrayList<OfflineMsgEntity> tmpLatestChat = new ArrayList<>();
+//                            tmpLatestChat.add(offlineMsgModel);
+//                            chatHashMaps.put(fromId, tmpLatestChat);
+//                        }
+//                        break;
+//                    case PushUtil.CourseType.TESTPAPER_REVIEWED:
+//                        break;
+//                    default:
+//                }
             }
         }
         return chatHashMaps;

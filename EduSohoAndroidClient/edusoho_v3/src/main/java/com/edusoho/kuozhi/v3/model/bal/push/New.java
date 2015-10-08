@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.bal.push;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
@@ -116,6 +117,31 @@ public class New implements Serializable {
 
     }
 
+    public New(OfflineMsgEntity offlineMsgModel) {
+        V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
+        fromId = v2CustomContent.getFrom().getId();
+        title = offlineMsgModel.getTitle();
+        createdTime = v2CustomContent.getCreatedTime();
+        imgUrl = v2CustomContent.getFrom().getImage();
+        type = v2CustomContent.getFrom().getType();
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.ChatMsgType.TEXT:
+                content = offlineMsgModel.getContent();
+                break;
+            case PushUtil.ChatMsgType.IMAGE:
+                content = String.format("[%s]", Const.MEDIA_IMAGE);
+                break;
+            case PushUtil.ChatMsgType.AUDIO:
+                content = String.format("[%s]", Const.MEDIA_AUDIO);
+                break;
+            case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                content = String.format("【%s】%s", type, offlineMsgModel.getContent());
+                break;
+        }
+
+        belongId = EdusohoApp.app.loginUser.id;
+    }
+
     public New(Chat chat) {
         fromId = chat.fromId;
         title = chat.nickName;
@@ -143,7 +169,8 @@ public class New implements Serializable {
         } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
             content = String.format("[%s]", Const.MEDIA_AUDIO);
         } else if (customContent.getTypeMsg().equals(Chat.FileType.MULTI.getName())) {
-            RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>(){});
+            RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+            });
             content = body.content;
         } else {
             content = message.getContent();

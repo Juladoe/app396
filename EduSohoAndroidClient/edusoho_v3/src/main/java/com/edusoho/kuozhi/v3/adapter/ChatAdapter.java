@@ -237,7 +237,8 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
 
-        final RedirectBody body = EdusohoApp.app.parseJsonValue(model.content, new TypeToken<RedirectBody>(){});
+        final RedirectBody body = EdusohoApp.app.parseJsonValue(model.content, new TypeToken<RedirectBody>() {
+        });
         holder.multiBodyContent.setText(body.content);
         holder.multiBodyTitle.setText(body.title);
         ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, mOptions);
@@ -837,18 +838,21 @@ public class ChatAdapter extends BaseAdapter {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
             Cursor c = mDownloadManager.query(query);
             if (c != null && c.moveToFirst()) {
-                String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                downloadChat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
-                c.close();
+                int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
+                    String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                    downloadChat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
+                    c.close();
+                }
             }
+            mChatDataSource.update(downloadChat);
+            mDownloadList.remove(downId);
+            notifyDataSetChanged();
         } catch (Exception ex) {
             Log.d("downloader", ex.toString());
             if (downloadChat != null) {
                 downloadChat.setDelivery(Chat.Delivery.FAILED);
             }
         }
-        mChatDataSource.update(downloadChat);
-        mDownloadList.remove(downId);
-        notifyDataSetChanged();
     }
 }
