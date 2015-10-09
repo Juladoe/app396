@@ -294,6 +294,9 @@ public class EdusohoMainService extends Service {
             OffLineMsgEntity offlineMsgModel = latestChats.get(i);
             V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
             if (v2CustomContent.getFrom() != null) {
+                if (PushUtil.FriendVerified.TYPE.equals(v2CustomContent.getFrom().getType())) {
+                    continue;
+                }
                 int fromId = v2CustomContent.getFrom().getId();
                 if (chatHashMaps.containsKey(fromId)) {
                     chatHashMaps.get(fromId).add(offlineMsgModel);
@@ -302,22 +305,6 @@ public class EdusohoMainService extends Service {
                     tmpLatestChat.add(offlineMsgModel);
                     chatHashMaps.put(fromId, tmpLatestChat);
                 }
-//                switch (v2CustomContent.getFrom().getType()) {
-//                    case PushUtil.ChatUserType.FRIEND:
-//                    case PushUtil.ChatUserType.TEACHER:
-//                        int fromId = v2CustomContent.getFrom().getId();
-//                        if (chatHashMaps.containsKey(fromId)) {
-//                            chatHashMaps.get(fromId).add(offlineMsgModel);
-//                        } else {
-//                            ArrayList<OfflineMsgEntity> tmpLatestChat = new ArrayList<>();
-//                            tmpLatestChat.add(offlineMsgModel);
-//                            chatHashMaps.put(fromId, tmpLatestChat);
-//                        }
-//                        break;
-//                    case PushUtil.CourseType.TESTPAPER_REVIEWED:
-//                        break;
-//                    default:
-//                }
             }
         }
         return chatHashMaps;
