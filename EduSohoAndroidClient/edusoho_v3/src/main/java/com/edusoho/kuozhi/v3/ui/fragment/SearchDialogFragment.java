@@ -161,7 +161,7 @@ public class SearchDialogFragment extends DialogFragment {
         } else {
             closeInput();
             mLoading.setVisibility(View.VISIBLE);
-            if (mResultList != null){
+            if (mResultList != null) {
                 clearList();
             }
             loadSearchResult().then(new PromiseCallback() {
@@ -294,8 +294,9 @@ public class SearchDialogFragment extends DialogFragment {
                     mNotice.setVisibility(View.GONE);
                 }
 
+                Arrays.fill(friendIds, 0);
                 count = 0;
-                if (searchFriendResult.mobile != null) {
+                if (searchFriendResult.mobile.length != 0) {
                     for (Friend friend : searchFriendResult.mobile) {
                         if (friend.id == mApp.loginUser.id) {
                             continue;
@@ -306,7 +307,7 @@ public class SearchDialogFragment extends DialogFragment {
 
                     }
                 }
-                if (searchFriendResult.qq != null) {
+                if (searchFriendResult.qq.length != 0) {
                     for (Friend friend : searchFriendResult.qq) {
                         if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
                             continue;
@@ -317,7 +318,7 @@ public class SearchDialogFragment extends DialogFragment {
                         }
                     }
                 }
-                if (searchFriendResult.nickname != null) {
+                if (searchFriendResult.nickname.length != 0) {
                     for (Friend friend : searchFriendResult.nickname) {
                         if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
                             continue;

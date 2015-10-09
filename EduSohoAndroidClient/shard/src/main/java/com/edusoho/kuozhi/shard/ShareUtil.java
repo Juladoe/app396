@@ -2,8 +2,14 @@ package com.edusoho.kuozhi.shard;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import java.io.File;
@@ -31,7 +37,7 @@ public class ShareUtil {
     public String mShareSite;
     private OnekeyShare mOneKeyShare;
     private Context mContext;
-    private AlertDialog mAlertDialog;
+    private ShardDialog mAlertDialog;
     private ShareHandler mShareHandler;
     private static ShareUtil shareUtil;
 
@@ -94,23 +100,16 @@ public class ShareUtil {
             list.add(data);
         }
 
-        //list = addWechatPlat(list);
         Collections.sort(list, new Comparator<ListData>() {
             @Override
             public int compare(ListData lhs, ListData rhs) {
                 return rhs.type.compareToIgnoreCase(lhs.type);
             }
         });
-        ListView listView = new ListView(mContext);
-        ShardListAdapter adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
-        listView.setAdapter(adapter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        mAlertDialog = builder
-                .setTitle("分享课程")
-                .setView(listView)
-                .create();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAlertDialog = new ShardDialog(mContext);
+        mAlertDialog.setShardDatas(list);
+        mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListData data = (ListData) parent.getItemAtPosition(position);
