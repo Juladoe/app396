@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.handler;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,7 +10,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
@@ -48,8 +46,7 @@ public class ChatSendHandler {
     private ChatDataSource mChatDataSource;
     private NormalCallback mFinishCallback;
 
-    public ChatSendHandler(BaseActivity activity, RedirectBody redirectBody)
-    {
+    public ChatSendHandler(BaseActivity activity, RedirectBody redirectBody) {
         mActivity = activity;
         mRedirectBody = redirectBody;
         app = mActivity.app;
@@ -117,12 +114,11 @@ public class ChatSendHandler {
     }
 
     private void redirectMessageToUser(CustomContent customContent, final Chat chat, WrapperXGPushTextMessage message) {
-        int toId = customContent.getFromId();
         customContent.setFromId(app.loginUser.id);
         customContent.setNickname(app.loginUser.nickname);
         customContent.setImgUrl(app.loginUser.mediumAvatar);
 
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, toId));
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("type", Chat.FileType.MULTI.getName());

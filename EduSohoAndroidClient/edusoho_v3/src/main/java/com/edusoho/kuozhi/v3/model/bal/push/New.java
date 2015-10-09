@@ -160,25 +160,30 @@ public class New implements Serializable {
     }
 
     public New(WrapperXGPushTextMessage message) {
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
-        });
-        fromId = customContent.getFromId();
+//        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
+//        });
+        V2CustomContent v2CustomContent = message.getV2CustomContent();
+        fromId = v2CustomContent.getFrom().getId();
         title = message.getTitle();
-        if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
-            content = String.format("[%s]", Const.MEDIA_IMAGE);
-        } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
-            content = String.format("[%s]", Const.MEDIA_AUDIO);
-        } else if (customContent.getTypeMsg().equals(Chat.FileType.MULTI.getName())) {
-            RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
-            });
-            content = body.content;
-        } else {
-            content = message.getContent();
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.ChatMsgType.AUDIO:
+                content = String.format("[%s]", Const.MEDIA_AUDIO);
+                break;
+            case PushUtil.ChatMsgType.IMAGE:
+                content = String.format("[%s]", Const.MEDIA_IMAGE);
+                break;
+            case PushUtil.ChatMsgType.MULTI:
+                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                });
+                content = body.content;
+                break;
+            default:
+                content = message.getContent();
         }
-        createdTime = customContent.getCreatedTime();
-        imgUrl = customContent.getImgUrl();
+        createdTime = v2CustomContent.getCreatedTime();
+        imgUrl = v2CustomContent.getFrom().getImage();
         //newModel.setUnread();
-        type = customContent.getTypeBusiness();
+        type = v2CustomContent.getFrom().getType();
         belongId = EdusohoApp.app.loginUser.id;
     }
 }

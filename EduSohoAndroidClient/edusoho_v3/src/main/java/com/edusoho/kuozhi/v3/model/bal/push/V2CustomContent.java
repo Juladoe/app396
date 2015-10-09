@@ -104,10 +104,10 @@ public class V2CustomContent {
          * id : 268
          * type : user
          */
-        private String id;
+        private int id;
         private String type;
 
-        public void setId(String id) {
+        public void setId(int id) {
             this.id = id;
         }
 
@@ -115,7 +115,7 @@ public class V2CustomContent {
             this.type = type;
         }
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
