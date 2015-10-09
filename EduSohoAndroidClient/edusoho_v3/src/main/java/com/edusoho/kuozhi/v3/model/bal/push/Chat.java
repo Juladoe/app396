@@ -206,7 +206,7 @@ public class Chat implements Serializable {
         fileType = FileType.getType(type);
     }
 
-    public Chat(OfflineMsgEntity offlineMsgModel) {
+    public Chat(OffLineMsgEntity offlineMsgModel) {
         V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
         id = v2CustomContent.getMsgId();
         fromId = v2CustomContent.getFrom().getId();

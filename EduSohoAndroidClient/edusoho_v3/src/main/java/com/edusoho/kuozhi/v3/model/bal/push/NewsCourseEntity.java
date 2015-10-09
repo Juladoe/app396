@@ -35,7 +35,7 @@ public class NewsCourseEntity {
         this.createdTime = v2CustomContent.getCreatedTime();
     }
 
-    public NewsCourseEntity(OfflineMsgEntity offlineMsgModel) {
+    public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
         V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
         this.id = v2CustomContent.getMsgId();
         this.courseId = v2CustomContent.getFrom().getId();

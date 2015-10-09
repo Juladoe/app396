@@ -18,7 +18,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.OfflineMsgEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.OffLineMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -227,17 +227,17 @@ public class EdusohoMainService extends Service {
         app.getUrl(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                ArrayList<OfflineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OfflineMsgEntity>>() {
+                ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
                 });
                 if (latestChat.size() > 0) {
                     //Collections.reverse(latestChat);
-                    HashMap<Integer, ArrayList<OfflineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
-                    Iterator<Map.Entry<Integer, ArrayList<OfflineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();
+                    HashMap<Integer, ArrayList<OffLineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
+                    Iterator<Map.Entry<Integer, ArrayList<OffLineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();
                     ArrayList<New> newArrayList = new ArrayList<>();
                     while (iterators.hasNext()) {
-                        Map.Entry<Integer, ArrayList<OfflineMsgEntity>> iterator = iterators.next();
+                        Map.Entry<Integer, ArrayList<OffLineMsgEntity>> iterator = iterators.next();
                         save2DB(iterator.getValue());
-                        OfflineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
+                        OffLineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
                         New newModel = new New(offlineMsgModel);
                         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUser.id + "");
                         if (news.size() == 0) {
@@ -262,10 +262,10 @@ public class EdusohoMainService extends Service {
         });
     }
 
-    public ArrayList<Chat> save2DB(ArrayList<OfflineMsgEntity> offlineMsgEntityArrayList) {
+    public ArrayList<Chat> save2DB(ArrayList<OffLineMsgEntity> offLineMsgEntityArrayList) {
         ArrayList<Chat> chatArrayList = new ArrayList<>();
         ArrayList<NewsCourseEntity> courseArrayList = new ArrayList<>();
-        for (OfflineMsgEntity offlineMsgModel : offlineMsgEntityArrayList) {
+        for (OffLineMsgEntity offlineMsgModel : offLineMsgEntityArrayList) {
             switch (offlineMsgModel.getCustom().getFrom().getType()) {
                 case PushUtil.ChatUserType.TEACHER:
                 case PushUtil.ChatUserType.FRIEND:
@@ -287,18 +287,18 @@ public class EdusohoMainService extends Service {
         return chatArrayList;
     }
 
-    private HashMap<Integer, ArrayList<OfflineMsgEntity>> filterLatestChats(ArrayList<OfflineMsgEntity> latestChats) {
+    private HashMap<Integer, ArrayList<OffLineMsgEntity>> filterLatestChats(ArrayList<OffLineMsgEntity> latestChats) {
         int size = latestChats.size();
-        HashMap<Integer, ArrayList<OfflineMsgEntity>> chatHashMaps = new HashMap<>();
+        HashMap<Integer, ArrayList<OffLineMsgEntity>> chatHashMaps = new HashMap<>();
         for (int i = 0; i < size; i++) {
-            OfflineMsgEntity offlineMsgModel = latestChats.get(i);
+            OffLineMsgEntity offlineMsgModel = latestChats.get(i);
             V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
             if (v2CustomContent.getFrom() != null) {
                 int fromId = v2CustomContent.getFrom().getId();
                 if (chatHashMaps.containsKey(fromId)) {
                     chatHashMaps.get(fromId).add(offlineMsgModel);
                 } else {
-                    ArrayList<OfflineMsgEntity> tmpLatestChat = new ArrayList<>();
+                    ArrayList<OffLineMsgEntity> tmpLatestChat = new ArrayList<>();
                     tmpLatestChat.add(offlineMsgModel);
                     chatHashMaps.put(fromId, tmpLatestChat);
                 }

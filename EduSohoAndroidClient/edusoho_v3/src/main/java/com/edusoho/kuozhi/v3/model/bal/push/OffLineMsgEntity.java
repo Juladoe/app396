@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by JesseHuang on 15/10/8.
  */
-public class OfflineMsgEntity implements Serializable {
+public class OffLineMsgEntity implements Serializable {
 
     private String content;
     private String id;

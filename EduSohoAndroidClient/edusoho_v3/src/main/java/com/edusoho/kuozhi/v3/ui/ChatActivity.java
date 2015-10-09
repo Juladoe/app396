@@ -298,6 +298,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
         V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND, chat.content);
+        v2CustomContent.getFrom().setId(mFromId);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
         message.setCustomContentJson(v2CustomContentJson);
         message.isForeground = true;
@@ -307,7 +308,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", content);
-        params.put("custom", v2CustomContentJson);
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        params.put("custom", gson.toJson(v2CustomContent));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -858,6 +860,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             message.setTitle(mFromUserInfo.nickname);
             message.setContent(String.format("[%s]", strType));
             V2CustomContent v2CustomContent = getV2CustomContent(type, TypeBusinessEnum.FRIEND, message.getContent());
+            v2CustomContent.getFrom().setId(mFromId);
             message.setCustomContentJson(gson.toJson(v2CustomContent));
             message.isForeground = true;
             notifyNewFragmentListView2Update(message);

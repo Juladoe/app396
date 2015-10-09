@@ -117,7 +117,7 @@ public class New implements Serializable {
 
     }
 
-    public New(OfflineMsgEntity offlineMsgModel) {
+    public New(OffLineMsgEntity offlineMsgModel) {
         V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
         fromId = v2CustomContent.getFrom().getId();
         title = offlineMsgModel.getTitle();
@@ -163,27 +163,50 @@ public class New implements Serializable {
 //        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
 //        });
         V2CustomContent v2CustomContent = message.getV2CustomContent();
-        fromId = v2CustomContent.getFrom().getId();
-        title = message.getTitle();
-        switch (v2CustomContent.getBody().getType()) {
-            case PushUtil.ChatMsgType.AUDIO:
-                content = String.format("[%s]", Const.MEDIA_AUDIO);
-                break;
-            case PushUtil.ChatMsgType.IMAGE:
+        if (v2CustomContent.getFrom() != null) {
+            //新格式
+            fromId = v2CustomContent.getFrom().getId();
+            title = message.getTitle();
+            switch (v2CustomContent.getBody().getType()) {
+                case PushUtil.ChatMsgType.AUDIO:
+                    content = String.format("[%s]", Const.MEDIA_AUDIO);
+                    break;
+                case PushUtil.ChatMsgType.IMAGE:
+                    content = String.format("[%s]", Const.MEDIA_IMAGE);
+                    break;
+                case PushUtil.ChatMsgType.MULTI:
+                    RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                    });
+                    content = body.content;
+                    break;
+                default:
+                    content = message.getContent();
+            }
+            createdTime = v2CustomContent.getCreatedTime();
+            imgUrl = v2CustomContent.getFrom().getImage();
+            type = v2CustomContent.getFrom().getType();
+            belongId = EdusohoApp.app.loginUser.id;
+        } else {
+            CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
+            });
+            fromId = customContent.getFromId();
+            title = message.getTitle();
+            if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
                 content = String.format("[%s]", Const.MEDIA_IMAGE);
-                break;
-            case PushUtil.ChatMsgType.MULTI:
+            } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
+                content = String.format("[%s]", Const.MEDIA_AUDIO);
+            } else if (customContent.getTypeMsg().equals(Chat.FileType.MULTI.getName())) {
                 RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
                 });
                 content = body.content;
-                break;
-            default:
+            } else {
                 content = message.getContent();
+            }
+            createdTime = customContent.getCreatedTime();
+            imgUrl = customContent.getImgUrl();
+            //newModel.setUnread();
+            type = customContent.getTypeBusiness();
+            belongId = EdusohoApp.app.loginUser.id;
         }
-        createdTime = v2CustomContent.getCreatedTime();
-        imgUrl = v2CustomContent.getFrom().getImage();
-        //newModel.setUnread();
-        type = v2CustomContent.getFrom().getType();
-        belongId = EdusohoApp.app.loginUser.id;
     }
 }
