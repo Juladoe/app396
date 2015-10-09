@@ -366,17 +366,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
-//    private CustomContent getCustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness) {
-//        CustomContent customContent = new CustomContent();
-//        customContent.setFromId(app.loginUser.id);
-//        customContent.setNickname(app.loginUser.nickname);
-//        customContent.setImgUrl(app.loginUser.mediumAvatar);
-//        customContent.setTypeMsg(fileType.getName());
-//        customContent.setCreatedTime(mSendTime);
-//        customContent.setTypeBusiness(typeBusiness.getName());
-//        return customContent;
-//    }
-
     private V2CustomContent getV2CustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
@@ -393,6 +382,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         bodyEntity.setContent(content);
         v2CustomContent.setBody(bodyEntity);
         v2CustomContent.setV(2);
+        v2CustomContent.setCreatedTime(mSendTime);
         return v2CustomContent;
     }
 

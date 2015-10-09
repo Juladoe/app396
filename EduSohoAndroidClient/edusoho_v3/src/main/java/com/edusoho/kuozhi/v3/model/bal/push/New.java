@@ -160,8 +160,6 @@ public class New implements Serializable {
     }
 
     public New(WrapperXGPushTextMessage message) {
-//        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
-//        });
         V2CustomContent v2CustomContent = message.getV2CustomContent();
         if (v2CustomContent.getFrom() != null) {
             //新格式
