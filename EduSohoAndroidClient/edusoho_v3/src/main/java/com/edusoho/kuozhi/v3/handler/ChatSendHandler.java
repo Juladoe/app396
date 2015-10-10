@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -20,6 +21,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -114,16 +116,29 @@ public class ChatSendHandler {
     }
 
     private void redirectMessageToUser(CustomContent customContent, final Chat chat, WrapperXGPushTextMessage message) {
-        customContent.setFromId(app.loginUser.id);
-        customContent.setNickname(app.loginUser.nickname);
-        customContent.setImgUrl(app.loginUser.mediumAvatar);
+
+        V2CustomContent v2CustomContent = new V2CustomContent();
+        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setType(customContent.getTypeBusiness());
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        v2CustomContent.setFrom(fromEntity);
+        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
+        toEntity.setId(chat.toId);
+        toEntity.setType(PushUtil.ChatUserType.USER);
+        v2CustomContent.setTo(toEntity);
+        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
+        bodyEntity.setType(PushUtil.ChatMsgType.MULTI);
+        bodyEntity.setContent(chat.content);
+        v2CustomContent.setBody(bodyEntity);
+        v2CustomContent.setV(2);
+        v2CustomContent.setCreatedTime(customContent.getCreatedTime());
 
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("type", Chat.FileType.MULTI.getName());
         params.put("content", chat.content);
-        params.put("custom", new Gson().toJson(customContent));
+        params.put("custom", new Gson().toJson(v2CustomContent));
 
         final Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
@@ -133,7 +148,6 @@ public class ChatSendHandler {
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("sendMessage", response);
                 CloudResult result = app.parseJsonValue(response, new TypeToken<CloudResult>() {
                 });
 
