@@ -309,6 +309,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         params.put("title", app.loginUser.nickname);
         params.put("content", content);
         v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
         params.put("custom", gson.toJson(v2CustomContent));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -371,7 +372,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setType(typeBusiness.getName());
         fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
+        fromEntity.setImage(mFromUserInfo.mediumAvatar);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
         toEntity.setId(mFromId);
