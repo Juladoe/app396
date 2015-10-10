@@ -151,9 +151,6 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <string name="bugly_appid">900001729</string>
-    <string name="channel_name">baidu</string>
-
     <string-array name="drawer_items">
         <item>我的学习</item>
         <item>我的收藏</item>

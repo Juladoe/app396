@@ -29,10 +29,6 @@
             android:configChanges="keyboardHidden|orientation" />
 
         <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
-
-        <meta-data
             android:name="UMENG_APPKEY"
             android:value="550f8dacfd98c56a3200084f" />
 

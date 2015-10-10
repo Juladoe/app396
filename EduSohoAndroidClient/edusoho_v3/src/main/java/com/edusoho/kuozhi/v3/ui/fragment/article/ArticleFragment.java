@@ -80,11 +80,11 @@ public class ArticleFragment extends BaseFragment {
     private PtrHandler mMessageListPtrHandler = new PtrHandler() {
         @Override
         public void onRefreshBegin(PtrFrameLayout frame) {
-            Log.d(TAG, "onRefreshBegin");
             mStart = mArticleAdapter.getGroupCount();
             mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
             if (loadLocalArticles()) {
-                mMessageListView.setSelectedGroup(mStart - 1);
+                int total = mArticleAdapter.getGroupCount();
+                mMessageListView.setSelectedGroup(total - mStart > 4 ? 4 : total - mStart);
             }
             mMessageLayout.refreshComplete();
         }
