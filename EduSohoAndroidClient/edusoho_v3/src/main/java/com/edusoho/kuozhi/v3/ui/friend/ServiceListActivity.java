@@ -81,6 +81,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                         Bundle bundle = new Bundle();
                         bundle.putString(ServiceProviderActivity.SERVICE_TYPE, PushUtil.ArticleType.TYPE);
                         bundle.putInt(ServiceProviderActivity.SERVICE_ID, schoolApp.id);
+                        bundle.putString(Const.ACTIONBAR_TITLE, "资讯");
                         app.mEngine.runNormalPluginWithBundle("ServiceProviderActivity", mActivity, bundle);
                         break;
                 }
