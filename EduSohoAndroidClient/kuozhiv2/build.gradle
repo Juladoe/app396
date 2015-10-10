@@ -8,6 +8,7 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
+        //multiDexEnabled true
     }
 
     productFlavors {
@@ -37,7 +38,7 @@ android {
         debug {
             zipAlignEnabled true
             minifyEnabled false
-            proguardFiles 'proguard-rules.txt'
+            //proguardFiles 'proguard-rules.txt'
             signingConfig signingConfigs.debugConfig
         }
     }
