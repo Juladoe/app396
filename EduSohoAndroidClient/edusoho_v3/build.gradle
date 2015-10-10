@@ -7,6 +7,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 21
+        //multiDexEnabled true
     }
 }
 
@@ -14,7 +15,8 @@ dependencies {
     compile project(':commonUtils')
     compile project(':bdvideoplayer')
     compile project(':shard')
-    compile project(':liveEplayer')
+
+    compile project(':reactnative')
     compile project(':commonLib')
     compile files('libs/core-3.2.0.jar')
     compile files('libs/httpclientandroidlib-4.3.0.jar')
@@ -33,4 +35,5 @@ dependencies {
     compile files('libs/cordova-3.4.jar')
     compile files('libs/gson-2.1.jar')
     compile 'com.umeng.analytics:analytics:latest.integration'
+    //compile 'com.android.support:multidex:1.0.0'
 }

@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
-import com.edusoho.kuozhi.LiveUtil;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LiveLesson;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -242,7 +241,7 @@ public class LiveLessonFragment extends BaseFragment {
                 String exStr = param[param.length - 1].substring(exStrPoint + "exStr=".length());
                 Log.d(null, "liveClassroomId " + liveClassroomId);
 
-                new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
+                //new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
             }
         }, null);
     }
