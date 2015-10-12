@@ -248,6 +248,17 @@ public class NewsFragment extends BaseFragment {
             TypeBusinessEnum.getName(newItem.type);
             switch (newItem.type) {
                 case PushUtil.ChatUserType.FRIEND:
+                    app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
+                            startIntent.putExtra(ChatActivity.OPPOSITE_ROLE, PushUtil.ChatUserType.FRIEND);
+                            startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
+                        }
+                    });
+                    break;
                 case PushUtil.ChatUserType.TEACHER:
                     app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
                         @Override
@@ -255,6 +266,7 @@ public class NewsFragment extends BaseFragment {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);
                             startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
                             startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
+                            startIntent.putExtra(ChatActivity.OPPOSITE_ROLE, PushUtil.ChatUserType.TEACHER);
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });

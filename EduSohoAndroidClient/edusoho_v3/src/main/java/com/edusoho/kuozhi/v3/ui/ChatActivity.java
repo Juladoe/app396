@@ -94,6 +94,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public static final String FROM_ID = "from_id";
     public static final String MSG_DELIVERY = "msg_delivery";
     public static final String HEAD_IMAGE_URL = "head_image_url";
+    public static final String OPPOSITE_ROLE = "opposite_role";
 
     private static final int IMAGE_SIZE = 1024 * 500;
 
@@ -144,7 +145,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private int mToId;
     private String mType;
 
-    private String mRole;
+    private String mOppositeRole;
+    private String mMyRole;
     //endregion
 
     @Override
@@ -261,15 +263,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
-        if (TextUtils.isEmpty(mRole)) {
+        if (TextUtils.isEmpty(mMyRole)) {
             String[] roles = new String[app.loginUser.roles.length];
             for (int i = 0; i < app.loginUser.roles.length; i++) {
                 roles[i] = app.loginUser.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
-                mRole = PushUtil.ChatUserType.TEACHER;
+                mMyRole = PushUtil.ChatUserType.TEACHER;
             } else {
-                mRole = PushUtil.ChatUserType.FRIEND;
+                mMyRole = PushUtil.ChatUserType.FRIEND;
             }
         }
 
@@ -280,7 +282,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mFromUserInfo.id = mFromId;
         mFromUserInfo.mediumAvatar = intent.getStringExtra(HEAD_IMAGE_URL);
         mFromUserInfo.nickname = intent.getStringExtra(Const.ACTIONBAR_TITLE);
-
+        mOppositeRole = intent.getStringExtra(OPPOSITE_ROLE);
         NotificationUtil.cancelById(mFromId);
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         CurrentFromId = mFromId;
@@ -313,7 +315,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
         V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, chat.content);
-        v2CustomContent.getFrom().setId(mFromId);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
         message.setCustomContentJson(v2CustomContentJson);
         message.isForeground = true;
@@ -325,8 +326,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         params.put("content", content);
         v2CustomContent.getFrom().setId(app.loginUser.id);
         v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        v2CustomContent.getFrom().setType(mMyRole);
         params.put("custom", gson.toJson(v2CustomContent));
-
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -349,9 +350,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void sendMediaMsg(final Chat chat, Chat.FileType type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
+        V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, chat.getUpyunMediaGetUrl());
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        v2CustomContent.getFrom().setType(mMyRole);
         params.put("title", app.loginUser.nickname);
         params.put("content", chat.getUpyunMediaGetUrl());
-        params.put("custom", gson.toJson(getV2CustomContent(type, chat.getUpyunMediaGetUrl())));
+        params.put("custom", gson.toJson(v2CustomContent));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -385,8 +390,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private V2CustomContent getV2CustomContent(Chat.FileType fileType, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setType(mRole);
-        fromEntity.setId(app.loginUser.id);
+        fromEntity.setType(mOppositeRole);
+        fromEntity.setId(mFromId);
         fromEntity.setImage(mFromUserInfo.mediumAvatar);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
@@ -866,7 +871,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             message.setTitle(mFromUserInfo.nickname);
             message.setContent(String.format("[%s]", strType));
             V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
-            v2CustomContent.getFrom().setId(mFromId);
             message.setCustomContentJson(gson.toJson(v2CustomContent));
             message.isForeground = true;
             notifyNewFragmentListView2Update(message);
