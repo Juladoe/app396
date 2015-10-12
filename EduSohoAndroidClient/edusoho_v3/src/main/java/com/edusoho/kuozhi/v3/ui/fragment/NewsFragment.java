@@ -16,11 +16,9 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
-import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;

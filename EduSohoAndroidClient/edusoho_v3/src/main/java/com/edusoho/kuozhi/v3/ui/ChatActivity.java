@@ -37,6 +37,7 @@ import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
@@ -142,6 +143,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private int mFromId;
     private int mToId;
     private String mType;
+
+    private String mRole;
     //endregion
 
     @Override
@@ -258,6 +261,18 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
+        if (TextUtils.isEmpty(mRole)) {
+            String[] roles = new String[app.loginUser.roles.length];
+            for (int i = 0; i < app.loginUser.roles.length; i++) {
+                roles[i] = app.loginUser.roles[i].toString();
+            }
+            if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
+                mRole = PushUtil.ChatUserType.TEACHER;
+            } else {
+                mRole = PushUtil.ChatUserType.FRIEND;
+            }
+        }
+
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mType = intent.getStringExtra(Const.NEWS_TYPE);
         mToId = app.loginUser.id;
@@ -297,7 +312,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
-        V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND, chat.content);
+        V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, chat.content);
         v2CustomContent.getFrom().setId(mFromId);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
         message.setCustomContentJson(v2CustomContentJson);
@@ -336,7 +351,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", chat.getUpyunMediaGetUrl());
-        params.put("custom", gson.toJson(getV2CustomContent(type, TypeBusinessEnum.FRIEND, chat.getUpyunMediaGetUrl())));
+        params.put("custom", gson.toJson(getV2CustomContent(type, chat.getUpyunMediaGetUrl())));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -367,10 +382,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
-    private V2CustomContent getV2CustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness, String content) {
+    private V2CustomContent getV2CustomContent(Chat.FileType fileType, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setType(typeBusiness.getName());
+        fromEntity.setType(mRole);
         fromEntity.setId(app.loginUser.id);
         fromEntity.setImage(mFromUserInfo.mediumAvatar);
         v2CustomContent.setFrom(fromEntity);
@@ -420,7 +435,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", chat.getContent());
-        params.put("custom", gson.toJson(getV2CustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND, chat.getContent())));
+        params.put("custom", gson.toJson(getV2CustomContent(Chat.FileType.TEXT, chat.getContent())));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -850,7 +865,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
             message.setTitle(mFromUserInfo.nickname);
             message.setContent(String.format("[%s]", strType));
-            V2CustomContent v2CustomContent = getV2CustomContent(type, TypeBusinessEnum.FRIEND, message.getContent());
+            V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
             v2CustomContent.getFrom().setId(mFromId);
             message.setCustomContentJson(gson.toJson(v2CustomContent));
             message.isForeground = true;
