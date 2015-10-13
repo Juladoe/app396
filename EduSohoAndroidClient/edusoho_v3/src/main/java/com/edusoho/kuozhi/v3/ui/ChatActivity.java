@@ -274,7 +274,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
-
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -984,11 +983,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void initCacheFolder() {
         File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {
-            imageFolder.mkdir();
+            imageFolder.mkdirs();
         }
         File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
         if (!imageThumbFolder.exists()) {
-            imageThumbFolder.mkdir();
+            imageThumbFolder.mkdirs();
+        }
+        File audioFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE);
+        if (!audioFolder.exists()) {
+            audioFolder.mkdirs();
         }
     }
 
