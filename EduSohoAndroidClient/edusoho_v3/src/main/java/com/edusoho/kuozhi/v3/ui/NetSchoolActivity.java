@@ -8,20 +8,23 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
-import com.edusoho.kuozhi.v3.model.sys.*;
 import com.edusoho.kuozhi.v3.model.sys.Error;
+import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -32,6 +35,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,16 +190,22 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                                 });
                                 if (token != null) {
                                     app.saveApiToken(token.token);
-                                    app.pushRegister(null);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
+                                        @Override
+                                        public void showSplash() {
+                                            showSchSplash(site.name, site.splashs);
+                                        }
+                                    });
+                                    app.pushRegister(bundle);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.d(TAG, "无法获取网校Token");
+                                CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
                             }
                         });
-                        showSchSplash(site.name, site.splashs);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -224,7 +234,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
 
     private void handlerError(String errorStr) {
         try {
-            ErrorResult result = app.gson.fromJson(errorStr, new TypeToken<ErrorResult>() {}.getType());
+            ErrorResult result = app.gson.fromJson(errorStr, new TypeToken<ErrorResult>() {
+            }.getType());
             if (result != null) {
                 Error error = result.error;
                 PopupDialog.createNormal(mContext, "系统提示", error.message).show();
