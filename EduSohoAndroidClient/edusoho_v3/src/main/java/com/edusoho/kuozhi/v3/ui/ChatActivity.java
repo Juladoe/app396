@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -40,6 +41,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -52,12 +54,15 @@ import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,6 +73,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -291,19 +297,19 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
-        CustomContent cc = getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND);
-        cc.setFromId(mFromId);
-        cc.setImgUrl(mFromUserInfo.mediumAvatar);
-        message.setCustomContentJson(gson.toJson(cc));
+        V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND, chat.content);
+        String v2CustomContentJson = gson.toJson(v2CustomContent);
+        message.setCustomContentJson(v2CustomContentJson);
         message.isForeground = true;
         notifyNewFragmentListView2Update(message);
 
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("type", "text");
         params.put("content", content);
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        params.put("custom", gson.toJson(v2CustomContent));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -325,12 +331,14 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     private void sendMediaMsg(final Chat chat, Chat.FileType type) {
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        V2CustomContent v2CustomContent = getV2CustomContent(type, TypeBusinessEnum.FRIEND, chat.getUpyunMediaGetUrl());
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("type", type.getName());
         params.put("content", chat.getUpyunMediaGetUrl());
-        params.put("custom", gson.toJson(getCustomContent(type, TypeBusinessEnum.FRIEND)));
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        params.put("custom", gson.toJson(v2CustomContent));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -361,15 +369,32 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
-    private CustomContent getCustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness) {
-        CustomContent customContent = new CustomContent();
-        customContent.setFromId(app.loginUser.id);
-        customContent.setNickname(app.loginUser.nickname);
-        customContent.setImgUrl(app.loginUser.mediumAvatar);
-        customContent.setTypeMsg(fileType.getName());
-        customContent.setCreatedTime(mSendTime);
-        customContent.setTypeBusiness(typeBusiness.getName());
-        return customContent;
+    /**
+     * 存本地的Custom信息
+     *
+     * @param fileType
+     * @param typeBusiness
+     * @param content
+     * @return
+     */
+    private V2CustomContent getV2CustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness, String content) {
+        V2CustomContent v2CustomContent = new V2CustomContent();
+        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setType(typeBusiness.getName());
+        fromEntity.setId(mFromId);
+        fromEntity.setImage(mFromUserInfo.mediumAvatar);
+        v2CustomContent.setFrom(fromEntity);
+        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
+        toEntity.setId(mFromId);
+        toEntity.setType(PushUtil.ChatUserType.USER);
+        v2CustomContent.setTo(toEntity);
+        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
+        bodyEntity.setType(fileType.getName());
+        bodyEntity.setContent(content);
+        v2CustomContent.setBody(bodyEntity);
+        v2CustomContent.setV(2);
+        v2CustomContent.setCreatedTime(mSendTime);
+        return v2CustomContent;
     }
 
     @Override
@@ -401,12 +426,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     @Override
     public void sendMsgAgain(final Chat chat) {
-        RequestUrl requestUrl = app.bindPushUrl(String.format(Const.SEND, app.loginUser.id, mFromId));
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("type", "text");
         params.put("content", chat.getContent());
-        params.put("custom", gson.toJson(getCustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND)));
+        params.put("custom", gson.toJson(getV2CustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND, chat.getContent())));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -836,10 +860,9 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
             message.setTitle(mFromUserInfo.nickname);
             message.setContent(String.format("[%s]", strType));
-            CustomContent cc = getCustomContent(type, TypeBusinessEnum.FRIEND);
-            cc.setFromId(mFromId);
-            cc.setImgUrl(mFromUserInfo.mediumAvatar);
-            message.setCustomContentJson(gson.toJson(cc));
+            V2CustomContent v2CustomContent = getV2CustomContent(type, TypeBusinessEnum.FRIEND, message.getContent());
+            v2CustomContent.getFrom().setId(mFromId);
+            message.setCustomContentJson(gson.toJson(v2CustomContent));
             message.isForeground = true;
             notifyNewFragmentListView2Update(message);
 

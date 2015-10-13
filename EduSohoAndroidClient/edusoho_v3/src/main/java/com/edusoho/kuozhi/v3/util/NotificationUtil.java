@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.google.gson.Gson;
@@ -32,6 +31,7 @@ import java.util.List;
  */
 public class NotificationUtil {
     public static WrapperXGPushTextMessage mMessage = null;
+    public static final int DISCOUNT_ID = -1;
 
     public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
@@ -158,7 +158,6 @@ public class NotificationUtil {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(xgMessage.title)
                         .setContentText(xgMessage.content).setAutoCancel(true);
-        int discountMsgId = xgMessage.getV2CustomContent().getMsgId();
 
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -169,11 +168,11 @@ public class NotificationUtil {
             notifyIntent.putExtra(Const.INTENT_COMMAND, PushUtil.DiscountType.DISCOUNT);
         }
 
-        PendingIntent pendIntent = PendingIntent.getActivity(context, discountMsgId,
+        PendingIntent pendIntent = PendingIntent.getActivity(context, DISCOUNT_ID,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setDefaults((EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate));
-        mNotificationManager.notify(discountMsgId, mBuilder.build());
+        mNotificationManager.notify(DISCOUNT_ID, mBuilder.build());
     }
 
     public static void showArticleNotification(Context context, WrapperXGPushTextMessage xgMessage) {

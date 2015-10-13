@@ -80,6 +80,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private EduSohoTextBtn mLessonPreviousBtn;
     private EduSohoTextBtn mMoreBtn;
 
+    private ExerciseOptionDialog mExerciseDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,12 +297,23 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.icon_exercise) {
+            mExerciseDialog = new ExerciseOptionDialog(mContext);
+            mExerciseDialog.show();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
+
+        if (true) { //todo 判断是否显示练习icon
+            menu.getItem(0).setVisible(false);
+        }
+        return true;
     }
 
     private void loadLesson() {

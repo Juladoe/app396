@@ -92,6 +92,25 @@ public class NewsCourseDataSource {
         return effectRow;
     }
 
+    public void create(ArrayList<NewsCourseEntity> list) {
+        this.openWrite();
+        for (NewsCourseEntity newsCourseEntity : list) {
+            ContentValues cv = new ContentValues();
+            cv.put(allColumns[0], newsCourseEntity.getId());
+            cv.put(allColumns[1], newsCourseEntity.getCourseId());
+            cv.put(allColumns[2], newsCourseEntity.getObjectId());
+            cv.put(allColumns[3], newsCourseEntity.getTitle());
+            cv.put(allColumns[4], newsCourseEntity.getContent());
+            cv.put(allColumns[5], newsCourseEntity.getFromType());
+            cv.put(allColumns[6], newsCourseEntity.getBodyType());
+            cv.put(allColumns[7], newsCourseEntity.getLessonType());
+            cv.put(allColumns[8], newsCourseEntity.getUserId());
+            cv.put(allColumns[9], newsCourseEntity.getCreatedTime());
+            mDataBase.insert(TABLE_NAME, null, cv);
+        }
+        this.close();
+    }
+
     public int update(NewsCourseEntity newsCourseEntity) {
         this.openWrite();
         ContentValues cv = new ContentValues();

@@ -279,6 +279,7 @@ public class NewsFragment extends BaseFragment {
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ServiceProviderActivity.SERVICE_TYPE, PushUtil.ArticleType.TYPE);
                             startIntent.putExtra(ServiceProviderActivity.SERVICE_ID, newItem.fromId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, "资讯");
                         }
                     });
                     break;

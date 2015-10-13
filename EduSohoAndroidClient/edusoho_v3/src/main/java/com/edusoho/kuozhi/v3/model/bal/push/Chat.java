@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import android.text.TextUtils;
+
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -195,7 +197,7 @@ public class Chat implements Serializable {
         id = customContent.getId();
         fromId = customContent.getFromId();
         toId = EdusohoApp.app.loginUser.id;
-        nickName = customContent.getNickname();
+        nickName = message.getTitle();
         headimgurl = customContent.getImgUrl();
         content = message.getContent();
         type = customContent.getTypeMsg();
@@ -204,24 +206,18 @@ public class Chat implements Serializable {
         fileType = FileType.getType(type);
     }
 
-    public Chat serializeCustomContent(Chat chat) {
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(this.custom, new TypeToken<CustomContent>() {
-        });
-        this.fromId = customContent.getFromId();
-        this.toId = EdusohoApp.app.loginUser.id;
-        this.nickName = customContent.getNickname();
-        this.content = chat.content;
-        this.headimgurl = customContent.getImgUrl();
-        this.type = customContent.getTypeMsg();
-        this.createdTime = chat.createdTime;
-        this.direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        this.fileType = FileType.getType(type);
-        if (this.fileType == FileType.TEXT) {
-            this.delivery = Delivery.SUCCESS.getIndex();
-        } else {
-            this.delivery = Delivery.UPLOADING.getIndex();
-        }
-        return chat;
+    public Chat(OffLineMsgEntity offlineMsgModel) {
+        V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
+        id = v2CustomContent.getMsgId();
+        fromId = v2CustomContent.getFrom().getId();
+        toId = EdusohoApp.app.loginUser.id;
+        nickName = v2CustomContent.getFrom().getNickname();
+        headimgurl = v2CustomContent.getFrom().getImage();
+        content = v2CustomContent.getBody().getContent();
+        type = v2CustomContent.getBody().getType();
+        createdTime = v2CustomContent.getCreatedTime();
+        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+        fileType = FileType.getType(type);
     }
 
     public CustomContent getCustomContent() {

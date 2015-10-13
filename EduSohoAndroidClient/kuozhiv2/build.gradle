@@ -46,5 +46,4 @@ android {
 
 dependencies {
     compile project(':edusoho_v3')
-    compile files('libs/bugly.jar')
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="21"
+    android:versionCode="22"
     android:versionName="@string/apk_version"
     package="com.edusoho">
 
@@ -27,10 +27,6 @@
             android:launchMode="singleInstance"
             android:name=".kuozhi.KuozhiSplashActivity"
             android:configChanges="keyboardHidden|orientation" />
-
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="5b77ea360739afd264b46fcd671aafa558c092b1" />
 
         <meta-data
             android:name="UMENG_APPKEY"

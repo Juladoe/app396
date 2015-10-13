@@ -35,6 +35,20 @@ public class NewsCourseEntity {
         this.createdTime = v2CustomContent.getCreatedTime();
     }
 
+    public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
+        V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
+        this.id = v2CustomContent.getMsgId();
+        this.courseId = v2CustomContent.getFrom().getId();
+        this.objectId = v2CustomContent.getBody().getId();
+        this.title = offlineMsgModel.getTitle();
+        this.content = offlineMsgModel.getContent();
+        this.fromType = v2CustomContent.getFrom().getType();
+        this.bodyType = v2CustomContent.getBody().getType();
+        this.lessonType = v2CustomContent.getBody().getLessonType();
+        this.userId = EdusohoApp.app.loginUser.id;
+        this.createdTime = v2CustomContent.getCreatedTime();
+    }
+
     public int getId() {
         return id;
     }
