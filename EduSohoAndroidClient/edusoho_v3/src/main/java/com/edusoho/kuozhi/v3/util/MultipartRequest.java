@@ -2,24 +2,19 @@ package com.edusoho.kuozhi.v3.util;
 
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.FileEntity;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
-
 
 /**
  * Created by JesseHuang on 15/6/28.

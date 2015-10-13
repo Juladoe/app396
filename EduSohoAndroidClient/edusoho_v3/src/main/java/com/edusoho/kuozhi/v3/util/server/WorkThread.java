@@ -1,14 +1,12 @@
 package com.edusoho.kuozhi.v3.util.server;
 
 import android.util.Log;
-
 import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpException;
 import org.apache.http.HttpServerConnection;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpService;
-
 import java.io.IOException;
 
 /**

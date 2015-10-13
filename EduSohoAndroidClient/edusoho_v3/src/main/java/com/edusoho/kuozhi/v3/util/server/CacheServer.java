@@ -2,12 +2,9 @@ package com.edusoho.kuozhi.v3.util.server;
 
 
 import android.util.Log;
-import android.util.SparseArray;
-
 import com.edusoho.kuozhi.v3.service.handler.FileHandler;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
-
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.impl.DefaultHttpServerConnection;
@@ -23,12 +20,10 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
 
 public class CacheServer extends Thread {
 
