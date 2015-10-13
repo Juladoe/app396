@@ -53,7 +53,7 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
             String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-            return new FileEntity(file, mimeType);
+            return new FileEntity(file, ContentType.parse(mimeType).getMimeType());
         }
         return null;
     }
