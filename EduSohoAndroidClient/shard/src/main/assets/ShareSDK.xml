@@ -18,9 +18,6 @@
     <SinaWeibo Id="4" SortId="4" AppKey="3283517414" AppSecret="b9500cb3ff5274769b2d4dd8fc878b81"
         RedirectUrl="http://demo.edusoho.com/mobile/" ShareByAppClient="false" Enable="true" />
 
-    <TencentWeibo Id="5" SortId="5" AppKey="801549953" AppSecret="390578fb32a81b577aa9794a42d2e970"
-        RedirectUri="http://demo.edusoho.com/mobile/" Enable="true" />
-
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <QZone Id="6" SortId="6" AppId="1103424113" AppKey="ZSJdqYxH7kSD6iuT" ShareByAppClient="false"
         Enable="true" />
