@@ -7,13 +7,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
-import com.belladati.httpclientandroidlib.HttpEntity;
-import com.belladati.httpclientandroidlib.entity.ContentType;
-import com.belladati.httpclientandroidlib.entity.FileEntity;
-import com.belladati.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
-import com.belladati.httpclientandroidlib.entity.mime.content.FileBody;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.FileEntity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,21 +58,23 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
             String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-            return new FileEntity(file, mimeType == null ? ContentType.DEFAULT_BINARY : ContentType.parse(mimeType));
+            return new FileEntity(file, mimeType);
         }
         return null;
     }
 
     private HttpEntity buildMultipartEntity() {
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.setCharset(Charset.forName("UTF-8"));
+        FileEntity entity = null;
         Iterator iterator = mRequestUrl.getAllParams().entrySet().iterator();
-        while (iterator.hasNext()) {
+        if (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             File file = (File) entry.getValue();
-            builder.addPart(KEY, new FileBody(file));
+            String extension = MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath());
+            entity = new FileEntity(
+                    file, MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
         }
-        return builder.build();
+
+        return entity;
     }
 
     @Override

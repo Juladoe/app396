@@ -20,7 +20,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -222,10 +221,12 @@ public class EdusohoApp extends Application {
         notifyMap.clear();
         if (mResouceCacheServer != null) {
             mResouceCacheServer.close();
+            mResouceCacheServer = null;
         }
 
         if (mPlayCacheServer != null) {
             mPlayCacheServer.close();
+            mPlayCacheServer = null;
         }
 
         M3U8DownService m3U8DownService = M3U8DownService.getService();
@@ -263,6 +264,22 @@ public class EdusohoApp extends Application {
 
         mEngine = CoreEngine.create(this);
         startMainService();
+        installPlugin();
+    }
+
+    private void installPlugin() {
+        final SharedPreferences sp = getSharedPreferences(PLUGIN_CONFIG, MODE_APPEND);
+        if (sp.contains(INSTALL_PLUGIN)) {
+            return;
+        }
+        new android.os.Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "installPlugin");
+                mEngine.installApkPlugin();
+                //sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
+            }
+        });
     }
 
     protected void initImageLoaderConfig(File file) {
