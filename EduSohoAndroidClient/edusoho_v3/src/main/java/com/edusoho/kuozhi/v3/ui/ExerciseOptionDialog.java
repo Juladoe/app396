@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.ui.homework.HomeworkSummary;
 
 /**
  * Created by Melomelon on 2015/10/10.
@@ -24,12 +26,15 @@ public class ExerciseOptionDialog extends Dialog {
     private TextView homework;
     private TextView exercise;
 
+    private String mLessonTitle;
+
     public View.OnClickListener mClickListener;
 
 
-    public ExerciseOptionDialog(Context context) {
+    public ExerciseOptionDialog(Context context,String title) {
         super(context, R.style.FullDialogTheme);
         mContext = context;
+        mLessonTitle = title;
         setContentView(R.layout.exercise_option_layout);
 
         initView();
@@ -44,12 +49,14 @@ public class ExerciseOptionDialog extends Dialog {
             public void onClick(View view) {
                 int id = view.getId();
                 if (id == R.id.do_homework) {
-                    //todo
-                    Toast.makeText(mContext,"homework",Toast.LENGTH_SHORT);
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, HomeworkSummary.class);
+                    intent.putExtra("lesson",mLessonTitle);
+                    mContext.startActivity(intent);
                 }
                 if (id == R.id.do_exercise) {
                     //todo
-                    Toast.makeText(mContext,"exercise",Toast.LENGTH_SHORT);
+                    Toast.makeText(mContext, "exercise", Toast.LENGTH_SHORT);
                 }
             }
         };
