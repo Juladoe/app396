@@ -313,4 +313,9 @@
         name="FriendSelectFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.FriendSelectFragment"
         version="1.0" />
+
+    <plugin
+        name="HomeworkActivity"
+        package="com.edusoho.kuozhi.v3.ui.homework.HomeworkActivity"
+        version="1.0" />
 </plugins>

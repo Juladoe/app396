@@ -28,14 +28,16 @@ public class ExerciseOptionDialog extends Dialog {
     private TextView exercise;
 
     private String mLessonTitle;
+    private int mLessonId;
 
     public View.OnClickListener mClickListener;
 
 
-    public ExerciseOptionDialog(Context context, String title) {
+    public ExerciseOptionDialog(Context context, String title, int lessonId) {
         super(context, R.style.FullDialogTheme);
         mContext = context;
         mLessonTitle = title;
+        mLessonId = lessonId;
         setContentView(R.layout.exercise_option_layout);
 
         initView();
@@ -50,6 +52,7 @@ public class ExerciseOptionDialog extends Dialog {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("lesson", mLessonTitle);
+                bundle.putInt("lessonId", mLessonId);
 
                 int id = view.getId();
                 if (id == R.id.do_homework) {
@@ -62,7 +65,7 @@ public class ExerciseOptionDialog extends Dialog {
                 if (id == R.id.do_exercise) {
                     Intent intent = new Intent();
                     intent.setClass(mContext, HomeworkSummary.class);
-                    bundle.putInt("type", HomeworkSummary.EXERCISE);
+                    bundle.putInt("type", HomeworkSummary.HOME_HORK);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                 }

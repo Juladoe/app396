@@ -464,4 +464,9 @@ public class Const {
     */
     public static final String ARTICEL_MENU = "/api/article_categories";
     public static final String ARTICELS = "/api/articles";
+
+    /**
+     * 作业与练习
+     */
+    public static final String HOMEWORK_CONTENT = "/api/homework";
 }

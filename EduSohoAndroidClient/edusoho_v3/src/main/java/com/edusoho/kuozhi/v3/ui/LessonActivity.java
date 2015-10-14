@@ -299,7 +299,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.icon_exercise) {
-            mExerciseDialog = new ExerciseOptionDialog(mContext,getLessonItem().title);
+            mExerciseDialog = new ExerciseOptionDialog(mContext,getLessonItem().title,getLessonId());
             mExerciseDialog.show();
         }
 
