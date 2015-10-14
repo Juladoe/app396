@@ -5,7 +5,7 @@ android {
     buildToolsVersion '21.1.1'
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 15
         targetSdkVersion 21
     }
     sourceSets {
@@ -18,4 +18,5 @@ android {
 }
 
 dependencies {
+    compile files('libs/dexmaker-1.1.jar')
 }

@@ -1,13 +1,12 @@
 package com.edusoho.kuozhi.v3.util.server;
 
-
-import com.belladati.httpclientandroidlib.ConnectionClosedException;
-import com.belladati.httpclientandroidlib.HttpException;
-import com.belladati.httpclientandroidlib.HttpServerConnection;
-import com.belladati.httpclientandroidlib.protocol.BasicHttpContext;
-import com.belladati.httpclientandroidlib.protocol.HttpContext;
-import com.belladati.httpclientandroidlib.protocol.HttpService;
-
+import android.util.Log;
+import org.apache.http.ConnectionClosedException;
+import org.apache.http.HttpException;
+import org.apache.http.HttpServerConnection;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpService;
 import java.io.IOException;
 
 /**
@@ -40,9 +39,12 @@ public class WorkThread extends Thread {
         } finally {
             try {
                 this.conn.shutdown();
+                this.conn.close();
             } catch (IOException ignore) {
             }
         }
+
+        Log.d("WorkThread", "close");
     }
 
 }

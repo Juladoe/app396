@@ -184,21 +184,6 @@ public class NewsFragment extends BaseFragment {
             mSwipeAdapter.update(news);
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
-        if (TextUtils.isEmpty(mArticleAvatar)) {
-            RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-            mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
-                    });
-                    if (schoolAppResult != null && schoolAppResult.length != 0) {
-                        mArticleAvatar = schoolAppResult[1].avatar;
-                    } else {
-                        CommonUtil.shortToast(mContext, getResources().getString(R.string.school_info_error));
-                    }
-                }
-            }, null);
-        }
     }
 
     private SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {

@@ -27,6 +27,8 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
@@ -146,7 +148,11 @@ public class ESWebViewRequestManager extends RequestManager {
     }
 
     private Promise handlerUpdateApp(String appVersion) {
-        UpdateAppMeta appMeta = new Gson().fromJson(appVersion, UpdateAppMeta.class);
+        UpdateAppMeta appMeta = null;
+        try {
+            appMeta = new Gson().fromJson(appVersion, UpdateAppMeta.class);
+        } catch (JsonSyntaxException e) {
+        }
 
         AppMeta localAppMeta = getLocalApp(mCode);
         Promise promise = new Promise();

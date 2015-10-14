@@ -274,7 +274,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
-
     }
 
     private ArrayList<Chat> getChatList(int start) {
@@ -298,7 +297,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
         V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, TypeBusinessEnum.FRIEND, chat.content);
-        v2CustomContent.getFrom().setId(mFromId);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
         message.setCustomContentJson(v2CustomContentJson);
         message.isForeground = true;
@@ -333,10 +331,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     private void sendMediaMsg(final Chat chat, Chat.FileType type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        V2CustomContent v2CustomContent = getV2CustomContent(type, TypeBusinessEnum.FRIEND, chat.getUpyunMediaGetUrl());
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", chat.getUpyunMediaGetUrl());
-        params.put("custom", gson.toJson(getV2CustomContent(type, TypeBusinessEnum.FRIEND, chat.getUpyunMediaGetUrl())));
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        params.put("custom", gson.toJson(v2CustomContent));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -367,11 +368,19 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
+    /**
+     * 存本地的Custom信息
+     *
+     * @param fileType
+     * @param typeBusiness
+     * @param content
+     * @return
+     */
     private V2CustomContent getV2CustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setType(typeBusiness.getName());
-        fromEntity.setId(app.loginUser.id);
+        fromEntity.setId(mFromId);
         fromEntity.setImage(mFromUserInfo.mediumAvatar);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
@@ -974,11 +983,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void initCacheFolder() {
         File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {
-            imageFolder.mkdir();
+            imageFolder.mkdirs();
         }
         File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
         if (!imageThumbFolder.exists()) {
-            imageThumbFolder.mkdir();
+            imageThumbFolder.mkdirs();
+        }
+        File audioFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE);
+        if (!audioFolder.exists()) {
+            audioFolder.mkdirs();
         }
     }
 

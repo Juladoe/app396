@@ -2,30 +2,28 @@ package com.edusoho.kuozhi.v3.util.server;
 
 
 import android.util.Log;
-
-import com.belladati.httpclientandroidlib.impl.DefaultConnectionReuseStrategy;
-import com.belladati.httpclientandroidlib.impl.DefaultHttpResponseFactory;
-import com.belladati.httpclientandroidlib.impl.DefaultHttpServerConnection;
-import com.belladati.httpclientandroidlib.params.BasicHttpParams;
-import com.belladati.httpclientandroidlib.params.CoreConnectionPNames;
-import com.belladati.httpclientandroidlib.params.CoreProtocolPNames;
-import com.belladati.httpclientandroidlib.params.HttpParams;
-import com.belladati.httpclientandroidlib.protocol.BasicHttpProcessor;
-import com.belladati.httpclientandroidlib.protocol.HttpRequestHandler;
-import com.belladati.httpclientandroidlib.protocol.HttpRequestHandlerRegistry;
-import com.belladati.httpclientandroidlib.protocol.HttpService;
-import com.belladati.httpclientandroidlib.protocol.ResponseConnControl;
-import com.belladati.httpclientandroidlib.protocol.ResponseContent;
-import com.belladati.httpclientandroidlib.protocol.ResponseDate;
-import com.belladati.httpclientandroidlib.protocol.ResponseServer;
 import com.edusoho.kuozhi.v3.service.handler.FileHandler;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
-
+import org.apache.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.http.impl.DefaultHttpResponseFactory;
+import org.apache.http.impl.DefaultHttpServerConnection;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpProcessor;
+import org.apache.http.protocol.HttpRequestHandler;
+import org.apache.http.protocol.HttpRequestHandlerRegistry;
+import org.apache.http.protocol.HttpService;
+import org.apache.http.protocol.ResponseConnControl;
+import org.apache.http.protocol.ResponseContent;
+import org.apache.http.protocol.ResponseDate;
+import org.apache.http.protocol.ResponseServer;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.util.ArrayList;
 
 public class CacheServer extends Thread {
 
@@ -35,9 +33,11 @@ public class CacheServer extends Thread {
     private ActionBarBaseActivity mActivity;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
+    private ArrayList<Thread> mThreadList;
 
     public CacheServer(ActionBarBaseActivity activity) {
         this.mActivity = activity;
+        this.mThreadList = new ArrayList<>();
         // 创建HTTP请求执行器注册表
         mHttpRequestHandlerRegistry = new HttpRequestHandlerRegistry();
     }
@@ -96,9 +96,7 @@ public class CacheServer extends Thread {
             // 设置HTTP参数
             httpService.setParams(params);
 
-            if (mHttpRequestHandlerRegistry.getHandlers().isEmpty()) {
-                mHttpRequestHandlerRegistry.register("*", new FileHandler(mActivity.app.host, mActivity));
-            }
+            mHttpRequestHandlerRegistry.register("*", new FileHandler(mActivity.app.host, mActivity));
             // 设置HTTP请求执行器
             httpService.setHandlerResolver(mHttpRequestHandlerRegistry);
             /* 循环接收各客户端 */
@@ -114,11 +112,11 @@ public class CacheServer extends Thread {
                 Thread t = new WorkThread(httpService, conn);
                 t.setDaemon(true); // 设为守护线程
                 t.start();
+                mThreadList.add(t);
                 Log.d(TAG, "WorkThread Start");
             }
         } catch (IOException e) {
             isLoop = false;
-            e.printStackTrace();
         } finally {
             try {
                 if (mServerSocket != null) {
@@ -135,6 +133,10 @@ public class CacheServer extends Thread {
         Log.d(TAG, "Cache exit");
         isLoop = false;
         try {
+            for (Thread t : mThreadList) {
+                t.interrupt();
+            }
+            mThreadList.clear();
             mServerSocket.close();
         } catch (Exception e) {
             //nothing

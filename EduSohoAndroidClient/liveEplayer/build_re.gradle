@@ -1,13 +1,19 @@
-apply plugin: 'com.android.library'
+//apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
 
     defaultConfig {
-//        applicationId "com.plugin.edusoho.bdvideoplayer"
         minSdkVersion 9
         targetSdkVersion 21
+    }
+
+    productFlavors {
+        edusoho {
+            applicationId "com.edusoho.liveplayer"
+        }
     }
 }
 
@@ -24,5 +30,8 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
 
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.0'
-    compile files('libs/cyberplayer-sdk.jar')
+    compile files('libs/android-async-http-1.4.3.jar')
+    compile files('libs/eplayercommon.jar')
+    compile files('libs/eventbus-2.2.1.jar')
+    compile files('libs/protobuf-java-2.5.0.jar')
 }

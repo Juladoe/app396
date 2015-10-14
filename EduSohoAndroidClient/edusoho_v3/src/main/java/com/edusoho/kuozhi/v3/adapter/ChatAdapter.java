@@ -843,6 +843,9 @@ public class ChatAdapter extends BaseAdapter {
                     String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
                     downloadChat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
                     c.close();
+                } else if (DownloadManager.STATUS_FAILED == c.getInt(columnIndex)) {
+                    downloadChat.setDelivery(Chat.Delivery.FAILED);
+                    c.close();
                 }
             }
             mChatDataSource.update(downloadChat);
