@@ -112,7 +112,7 @@
 
     <plugin
         name="FindFragment"
-        package="com.edusoho.reactnative.ReactNativeFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
         version="1.0" />
 
     <plugin

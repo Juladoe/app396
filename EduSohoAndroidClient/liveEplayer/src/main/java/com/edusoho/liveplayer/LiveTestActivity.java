@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi;
+package com.edusoho.liveplayer;
 
 import android.app.Activity;
 import android.os.Bundle;

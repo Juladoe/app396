@@ -36,7 +36,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.ParseException;
 import java.util.Locale;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Content type information consisting of a MIME type and an optional charset.
@@ -47,7 +46,6 @@ import javax.annotation.concurrent.Immutable;
  *
  * @since 4.2
  */
-@Immutable
 public final class ContentType implements Serializable {
 
     private static final long serialVersionUID = -7768694718232371896L;

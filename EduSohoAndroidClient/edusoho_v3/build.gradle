@@ -7,7 +7,6 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 21
-        //multiDexEnabled true
     }
 }
 
@@ -15,25 +14,21 @@ dependencies {
     compile project(':commonUtils')
     compile project(':bdvideoplayer')
     compile project(':shard')
-
-    compile project(':reactnative')
     compile project(':commonLib')
+    compile project(':liveEplayer')
     compile files('libs/core-3.2.0.jar')
-    compile files('libs/httpclientandroidlib-4.3.0.jar')
     compile files('libs/mid-sdk-2.20.jar')
     compile files('libs/jg_filter_sdk_1.1.jar')
     compile files('libs/wup-1.0.0-SNAPSHOT.jar')
     compile files('libs/Xg_sdk_v2.38.jar')
     compile files('libs/libammsdk.jar')
-    compile 'com.android.support:recyclerview-v7:21.0.0'
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.makeramen:roundedimageview:2.2.0'
     compile 'in.srain.cube:ultra-ptr:1.0.9'
     compile 'com.mcxiaoke.volley:library:1.0.15'
     compile 'de.hdodenhof:circleimageview:1.2.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile files('libs/cordova-3.4.jar')
     compile files('libs/gson-2.1.jar')
+    compile files('libs/cordova-3.4.jar');
     compile 'com.umeng.analytics:analytics:latest.integration'
-    //compile 'com.android.support:multidex:1.0.0'
 }
