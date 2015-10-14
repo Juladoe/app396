@@ -579,7 +579,7 @@ public class EdusohoApp extends Application {
 
     public static File getWorkSpace() {
         File file = new File(Environment.getExternalStorageDirectory() + "/edusoho");
-        return file != null ? file : null;
+        return file;
     }
 
     public static File getChatCacheFile() {
