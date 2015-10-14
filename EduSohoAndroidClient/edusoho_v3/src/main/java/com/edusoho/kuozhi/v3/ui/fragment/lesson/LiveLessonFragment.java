@@ -1,18 +1,16 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.android.volley.Response;
-import com.edusoho.kuozhi.LiveUtil;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LiveLesson;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -20,8 +18,8 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ESExpandableTextView;
+import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -240,7 +238,6 @@ public class LiveLessonFragment extends BaseFragment {
 
                 int exStrPoint = param[param.length - 1].indexOf("exStr=");
                 String exStr = param[param.length - 1].substring(exStrPoint + "exStr=".length());
-                Log.d(null, "liveClassroomId " + liveClassroomId);
 
                 new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
             }

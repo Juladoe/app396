@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.util;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
@@ -38,8 +40,6 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
