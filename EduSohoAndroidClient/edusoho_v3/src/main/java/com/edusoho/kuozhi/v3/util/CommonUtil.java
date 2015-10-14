@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -1152,6 +1153,15 @@ public class CommonUtil {
 
     public static boolean isExitsSdcard() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? true : false;
+    }
+
+    public static boolean bundleHasKey(Bundle bundle, String key) {
+        for (String element : bundle.keySet()) {
+            if (element.equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

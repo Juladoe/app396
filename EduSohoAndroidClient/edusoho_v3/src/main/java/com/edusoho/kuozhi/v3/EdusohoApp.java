@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
+import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -564,7 +565,7 @@ public class EdusohoApp extends Application {
 
     public static File getWorkSpace() {
         File file = new File(Environment.getExternalStorageDirectory() + "/edusoho");
-        return file != null ? file : null;
+        return file;
     }
 
     public static File getChatCacheFile() {
@@ -755,26 +756,33 @@ public class EdusohoApp extends Application {
             @Override
             public void onSuccess(final Object data, int flag) {
                 Log.w(Constants.LogTag, "+++ register push success. token:" + data);
+                final boolean isBind = (bundle != null && CommonUtil.bundleHasKey(bundle, Const.BIND_USER_ID));
+                String bindUrl = isBind ? Const.BIND : Const.ANONYMOUS_BIND;
                 NormalCallback<RequestUrl> normalCallback = new NormalCallback<RequestUrl>() {
                     @Override
                     public void success(RequestUrl requestUrl) {
                         HashMap<String, String> params = requestUrl.getParams();
                         params.put("appToken", data.toString());
-                        if (bundle != null) {
+                        if (isBind) {
                             params.put("studentId", bundle.getString(Const.BIND_USER_ID));
                         }
                         params.put("euqip", Const.EQUIP_TYPE);
+
                         app.postUrl(requestUrl, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 try {
                                     JSONObject resultObject = new JSONObject(response);
-                                    if (bundle != null) {
+                                    if (isBind) {
                                         getService().getOfflineMsgs();
                                     }
                                     String result = resultObject.getString("result");
                                     if (result.equals("success")) {
                                         Log.d(TAG, "cloud register success");
+                                    }
+                                    if (bundle != null && CommonUtil.bundleHasKey(bundle, Const.SHOW_SCH_SPLASH)) {
+                                        SwitchNetSchoolListener listener = (SwitchNetSchoolListener) bundle.getSerializable(Const.SHOW_SCH_SPLASH);
+                                        listener.showSplash();
                                     }
                                 } catch (JSONException e) {
                                     Log.d(TAG, "cloud register failed");
@@ -789,7 +797,7 @@ public class EdusohoApp extends Application {
                         });
                     }
                 };
-                app.bindPushUrl(bundle == null ? Const.ANONYMOUS_BIND : Const.BIND, normalCallback);
+                app.bindPushUrl(bindUrl, normalCallback);
             }
 
             @Override

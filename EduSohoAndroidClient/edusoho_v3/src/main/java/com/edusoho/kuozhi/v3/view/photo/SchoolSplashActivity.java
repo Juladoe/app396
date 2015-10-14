@@ -71,6 +71,7 @@ public class SchoolSplashActivity extends BaseActivity {
             intent.putExtra("images", imageArray);
         }
         saveSchoolHistory(context, schoolName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

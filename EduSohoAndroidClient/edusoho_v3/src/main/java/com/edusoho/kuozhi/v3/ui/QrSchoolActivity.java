@@ -3,16 +3,16 @@ package com.edusoho.kuozhi.v3.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -93,13 +93,11 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         }
     }
 
-    public static class SchoolChangeHandler
-    {
+    public static class SchoolChangeHandler {
         private EdusohoApp mApp;
         private BaseActivity mActivity;
 
-        public SchoolChangeHandler(BaseActivity activity)
-        {
+        public SchoolChangeHandler(BaseActivity activity) {
             this.mActivity = activity;
             this.mApp = mActivity.app;
         }
@@ -133,7 +131,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                 response, new TypeToken<UserResult>() {
                                 }.getType());
 
-                        if (userResult == null) {
+                        if (userResult == null || userResult.user == null) {
                             CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                             return;
                         }
@@ -157,7 +155,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
                         mApp.registDevice(null);
 
-                        RequestUrl requestUrl = mApp.bindUrl(Const.GET_API_TOKEN, false);
+                        RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_API_TOKEN, false);
                         mApp.getUrl(requestUrl, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -167,17 +165,22 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                     mApp.saveApiToken(token.token);
                                     Bundle bundle = new Bundle();
                                     bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                                    bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
+                                        @Override
+                                        public void showSplash() {
+                                            showSchSplash(site.name, site.splashs);
+                                        }
+                                    });
                                     mApp.pushRegister(bundle);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.d(TAG, "无法获取网校Token");
+                                CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
                             }
                         });
 
-                        showSchSplash(site.name, site.splashs);
                     } catch (Exception e) {
                         CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                     }
