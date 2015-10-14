@@ -217,49 +217,6 @@ public class CoreEngine {
         return new File(mContext.getFilesDir(), pluginName);
     }
 
-    public void runApkPlugin(String pluginName, Activity proxyActivity) {
-        File pluginDir = new File(mContext.getFilesDir(), PLUGIN);
-        File pluginFile = new File(pluginDir, pluginName + ".apk");
-        if (!pluginFile.exists()) {
-            return;
-        }
-        DexClassLoader dexClassLoader = new DexClassLoader(
-                pluginFile.getAbsolutePath(), pluginDir.getAbsolutePath(), null, ClassLoader.getSystemClassLoader());
-        PackageInfo packageInfo = mContext.getPackageManager().getPackageArchiveInfo(
-                pluginFile.getAbsolutePath(), 1);
-        ActivityInfo[] activities = packageInfo.activities;
-        if (activities == null || activities.length <= 0) {
-            //no find
-            return;
-        }
-
-        try {
-            Class pluginClass = dexClassLoader.loadClass(activities[0].name);
-            Constructor pluginConstructor = pluginClass.getConstructor(new Class[]{});
-            Object pluginInstance = pluginConstructor.newInstance(new Object[]{});
-
-            invokeMethod(
-                    pluginInstance, pluginClass, "setActivity", new Class[]{Activity.class}, new Object[]{proxyActivity});
-
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isProxy", true);
-            invokeMethod(
-                    pluginInstance, pluginClass, "onCreate", new Class[]{Bundle.class}, new Object[]{bundle});
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void invokeMethod(
-            Object instance, Class pluginClass, String methodName, Class[] methodParams, Object[] params)
-            throws Exception {
-        Method method = pluginClass.getDeclaredMethod(methodName, methodParams);
-        method.setAccessible(true);
-        method.invoke(instance, params);
-    }
-
     public void registMsgSrc(MessageEngine.MessageCallback source) {
         messageEngine.registMessageSource(source);
     }
@@ -381,6 +338,12 @@ public class CoreEngine {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                src.close();
+                target.close();
+            } catch (Exception e) {
+            }
         }
     }
 }

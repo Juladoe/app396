@@ -11,29 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import com.belladati.httpclientandroidlib.HttpEntity;
-import com.belladati.httpclientandroidlib.HttpException;
-import com.belladati.httpclientandroidlib.HttpHost;
-import com.belladati.httpclientandroidlib.HttpRequest;
-import com.belladati.httpclientandroidlib.HttpResponse;
-import com.belladati.httpclientandroidlib.client.protocol.RequestExpectContinue;
-import com.belladati.httpclientandroidlib.entity.FileEntity;
-import com.belladati.httpclientandroidlib.entity.InputStreamEntity;
-import com.belladati.httpclientandroidlib.entity.StringEntity;
-import com.belladati.httpclientandroidlib.impl.DefaultBHttpClientConnection;
-import com.belladati.httpclientandroidlib.message.BasicHttpRequest;
-import com.belladati.httpclientandroidlib.protocol.HttpContext;
-import com.belladati.httpclientandroidlib.protocol.HttpCoreContext;
-import com.belladati.httpclientandroidlib.protocol.HttpProcessor;
-import com.belladati.httpclientandroidlib.protocol.HttpProcessorBuilder;
-import com.belladati.httpclientandroidlib.protocol.HttpRequestExecutor;
-import com.belladati.httpclientandroidlib.protocol.HttpRequestHandler;
-import com.belladati.httpclientandroidlib.protocol.RequestConnControl;
-import com.belladati.httpclientandroidlib.protocol.RequestContent;
-import com.belladati.httpclientandroidlib.protocol.RequestTargetHost;
-import com.belladati.httpclientandroidlib.protocol.RequestUserAgent;
-import com.belladati.httpclientandroidlib.util.Args;
-import com.belladati.httpclientandroidlib.util.EntityUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
@@ -43,6 +20,26 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.DefaultHttpClientConnection;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.BasicHttpProcessor;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpRequestExecutor;
+import org.apache.http.protocol.HttpRequestHandler;
+import org.apache.http.protocol.RequestContent;
+import org.apache.http.util.EntityUtils;
 
 import cn.trinea.android.common.util.DigestUtils;
 
@@ -122,24 +119,17 @@ public class FileHandler implements HttpRequestHandler {
         try {
             Log.d(TAG, String.format("proxy host->%s, url->%s", host, url));
             Socket outsocket = new Socket(host, 80);
-            DefaultBHttpClientConnection conn = new DefaultBHttpClientConnection(8 * 1024);
-            conn.bind(outsocket);
+            DefaultHttpClientConnection conn = new DefaultHttpClientConnection();
+            conn.bind(outsocket, new BasicHttpParams());
 
-            HttpProcessor httpproc = HttpProcessorBuilder.create()
-                    .add(new RequestContent())
-                    .add(new RequestTargetHost())
-                    .add(new RequestConnControl())
-                    .add(new RequestUserAgent())
-                    .add(new RequestExpectContinue())
-                    .build();
+            HttpProcessor httpproc = new BasicHttpProcessor();
             HttpRequestExecutor httpexecutor = new HttpRequestExecutor();
 
             HttpRequest request = new BasicHttpRequest("GET", url);
             Log.d(TAG, "proxy url->" + request.getRequestLine().getUri());
-            HttpCoreContext context = HttpCoreContext.create();
+            HttpContext context = new BasicHttpContext();
 
             HttpHost httpHost = new HttpHost(host, 80);
-            context.setTargetHost(httpHost);
             httpexecutor.preProcess(request, httpproc, context);
             HttpResponse response = httpexecutor.execute(request, conn, context);
             httpexecutor.postProcess(response, httpproc, context);
@@ -150,10 +140,10 @@ public class FileHandler implements HttpRequestHandler {
             if (type.equals("application/vnd.apple.mpegurl")) {
                 String entityStr = EntityUtils.toString(entity);
                 entityStr = reEncodeM3U8File(entityStr);
-                return new StringEntity(entityStr, "application/vnd.apple.mpegurl", "utf-8");
+                return new StringEntity(entityStr, /*"application/vnd.apple.mpegurl",*/ "utf-8");
             } else if (type.equals("video/mp2t")) {
                 WrapInputStream wrapInput = new WrapInputStream(url, entity.getContent());
-                HttpEntity wrapEntity = new InputStreamEntity(wrapInput);
+                HttpEntity wrapEntity = new InputStreamEntity(wrapInput, wrapInput.available());
                 return wrapEntity;
             }
 
@@ -173,13 +163,13 @@ public class FileHandler implements HttpRequestHandler {
         private String mHost;
 
         public WrapFileEntity(File file, String host) {
-            super(file);
+            super(file, "video/mp2t");
             this.mHost = host;
         }
 
         @Override
         public void writeTo(OutputStream outstream) throws IOException {
-            Args.notNull(outstream, "Output stream");
+            //Args.notNull(outstream, "Output stream");
             M3U8Util.DegestInputStream instream = new M3U8Util.DegestInputStream(
                     new FileInputStream(this.file)
                     ,mHost
