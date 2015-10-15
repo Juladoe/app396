@@ -16,14 +16,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
-import com.belladati.httpclientandroidlib.androidextra.Base64;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.ResourceDownStatusReceiver;
@@ -33,7 +32,6 @@ import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonResource;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpHead;

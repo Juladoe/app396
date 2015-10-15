@@ -201,14 +201,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void showFragment(String tag) {
-        BaseFragment fragment;
+        Fragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        fragment = (BaseFragment) mFragmentManager.findFragmentByTag(tag);
+        fragment = mFragmentManager.findFragmentByTag(tag);
 
         if (fragment != null) {
             fragmentTransaction.show(fragment);
         } else {
-            fragment = (BaseFragment) app.mEngine.runPluginWithFragment(tag, mActivity, null);
+            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
 

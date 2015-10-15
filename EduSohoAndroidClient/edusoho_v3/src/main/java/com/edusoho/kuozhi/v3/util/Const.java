@@ -73,6 +73,7 @@ public class Const {
 
     public static final String EQUIP_TYPE = "Android";
     public static final String BIND_USER_ID = "bind_user_id";
+    public static final String SHOW_SCH_SPLASH = "show_sch_splash";
 
     //Plugin事件
     public static final int MAIN_MENU_CLOSE = 2;

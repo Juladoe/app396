@@ -41,7 +41,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.commonlib.R;
-import com.nineoldandroids.view.ViewHelper;
 
 import java.util.Locale;
 
@@ -276,7 +275,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
             if (i == position) {
                 TextView textView = (TextView) tv;
                 if (Build.VERSION.SDK_INT < 11) {
-                    ViewHelper.setAlpha(tv, 1.0f);
+                    tv.setAlpha(1.0f);
                 } else {
                     tv.setAlpha(1.0f);
                 }
@@ -285,7 +284,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 View v = tabsContainer.getChildAt(i);
                 TextView textView = (TextView) v;
                 if (Build.VERSION.SDK_INT < 11) {
-                    ViewHelper.setAlpha(v, mAlpha);
+                    v.setAlpha(mAlpha);
                 } else {
                     v.setAlpha(mAlpha);
                 }
