@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.appplugin.PluginUtil;
 import com.edusoho.kuozhi.v3.view.ESExpandableTextView;
-import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;
 import java.text.SimpleDateFormat;
 import java.util.Date;

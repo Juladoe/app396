@@ -310,7 +310,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
 
-        if (false) { //todo 判断是否显示练习icon
+        if (true) { //todo 判断是否显示练习icon
             menu.getItem(0).setVisible(true);
         }
         return true;

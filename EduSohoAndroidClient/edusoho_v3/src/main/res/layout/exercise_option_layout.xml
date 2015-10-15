@@ -2,28 +2,65 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
+    android:gravity="left"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/do_homework"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="作业"
-        android:textSize="32sp" />
 
-    <TextView
-        android:id="@+id/do_exercise"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/do_homework"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="练习"
-        android:textSize="32sp" />
+        android:layout_margin="12dp"
+        android:background="@drawable/round_side_bg_green"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="12dp">
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/font_homework"
+            android:textColor="@color/material_green"
+            android:textSize="@dimen/xxxx_large_font_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:text="@string/homework"
+            android:textColor="@color/material_green" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/do_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:background="@drawable/round_side_bg_green"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="12dp">
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/font_exercise"
+            android:textColor="@color/material_green"
+            android:textSize="@dimen/xxxx_large_font_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:text="@string/exercise"
+            android:textColor="@color/material_green" />
+    </LinearLayout>
 
 
 </LinearLayout>

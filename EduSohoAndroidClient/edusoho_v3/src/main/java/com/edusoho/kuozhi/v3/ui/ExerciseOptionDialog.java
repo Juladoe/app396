@@ -24,8 +24,8 @@ public class ExerciseOptionDialog extends Dialog {
     private Context mContext;
     private LinearLayout mLayout;
 
-    private TextView homework;
-    private TextView exercise;
+    private LinearLayout homework;
+    private LinearLayout exercise;
 
     private String mLessonTitle;
     private int mLessonId;
@@ -45,8 +45,8 @@ public class ExerciseOptionDialog extends Dialog {
     }
 
     public void initView() {
-        homework = (TextView) findViewById(R.id.do_homework);
-        exercise = (TextView) findViewById(R.id.do_exercise);
+        homework = (LinearLayout) findViewById(R.id.do_homework);
+        exercise = (LinearLayout) findViewById(R.id.do_exercise);
         mClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
