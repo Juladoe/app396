@@ -908,7 +908,10 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         voteControllerView= (VoteControllerView) findViewById(R.id.voteControllerView);
         voteControllerView.init(this,DeviceUtil.DEVICE_TYPE_PHONE);
 
-        EplayerSetting.setContext( this.getApplicationContext());
+        Log.d(TAG, "classloader:" + this.getBaseContext().getClass().getClassLoader());
+        Log.d(TAG, "classloader:" + this.getBaseContext());
+        Log.d(TAG, "classloader:" + this.getBaseContext().getClass());
+        EplayerSetting.setContext( this.getBaseContext());
 
         fl_all= (RelativeLayout) findViewById(R.id.fl_all);
         chatView= (MyChatView) findViewById(R.id.mychatview);

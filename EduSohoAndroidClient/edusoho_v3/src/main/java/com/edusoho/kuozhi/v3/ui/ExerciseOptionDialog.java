@@ -11,10 +11,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.homework.HomeworkSummary;
+import com.edusoho.kuozhi.v3.util.appplugin.PluginUtil;
 
 /**
  * Created by Melomelon on 2015/10/10.
@@ -56,18 +56,8 @@ public class ExerciseOptionDialog extends Dialog {
 
                 int id = view.getId();
                 if (id == R.id.do_homework) {
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, HomeworkSummary.class);
-                    bundle.putInt("type", HomeworkSummary.HOME_HORK);
-                    intent.putExtras(bundle);
-                    mContext.startActivity(intent);
                 }
                 if (id == R.id.do_exercise) {
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, HomeworkSummary.class);
-                    bundle.putInt("type", HomeworkSummary.HOME_HORK);
-                    intent.putExtras(bundle);
-                    mContext.startActivity(intent);
                 }
             }
         };

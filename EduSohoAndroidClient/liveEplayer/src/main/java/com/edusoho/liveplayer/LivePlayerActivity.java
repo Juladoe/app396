@@ -3,7 +3,6 @@ package com.edusoho.liveplayer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
 /**
  * Created by howzhi on 15/10/12.
  */

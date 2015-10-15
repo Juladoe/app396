@@ -14,7 +14,12 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application android:allowBackup="true">
-
+        <activity android:name="com.edusoho.liveplayer.LivePlayerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.soooner.EplayerPluginLibary.EplayerPluginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

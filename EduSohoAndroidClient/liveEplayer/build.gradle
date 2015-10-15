@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
@@ -8,18 +8,39 @@ android {
         minSdkVersion 9
         targetSdkVersion 21
     }
+
+    productFlavors {
+        liveplayer {
+            applicationId "com.edusoho.liveplayer"
+        }
+    }
+
+
+    //链接选项 移除lint检查的error
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
+    //签名
+    signingConfigs {
+        debugConfig {
+            storeFile file("key/edusoho.kuozhi.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+    }
+
+    buildTypes {
+        debug {
+            zipAlignEnabled true
+            minifyEnabled false
+        }
+    }
 }
 
-task copyNativeLibs(type: Copy) {
-    from fileTree(dir: 'libs', include: 'armeabi/*.so') into 'build/lib'
-}
-tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn copyNativeLibs
-}
-clean.dependsOn 'cleanCopyNativeLibs'
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniFolders = [new File(buildDir, 'lib')]
-}
 
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.0'

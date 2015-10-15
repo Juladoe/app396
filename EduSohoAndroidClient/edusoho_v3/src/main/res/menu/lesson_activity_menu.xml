@@ -6,7 +6,7 @@
         android:id="@+id/icon_exercise"
         android:icon="@drawable/icon_menu_notification_news"
         android:title="练习与作业"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="always" />
 
 </menu>

@@ -579,4 +579,5 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         AppUtil.animForHeight(
                 new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
+
 }
