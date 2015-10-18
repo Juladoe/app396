@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.handler;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -108,7 +107,7 @@ public class ChatSendHandler {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_MSG);
+        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_CHAT_MSG);
         ChatActivity.CurrentFromId = customContent.getFromId();
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
 

@@ -29,6 +29,8 @@ public class New implements Serializable {
     public String type;
     public int unread;
 
+    public int sendUserId;
+
     public int belongId;
     public int isTop = 0;
 
@@ -96,6 +98,13 @@ public class New implements Serializable {
         this.unread = unread;
     }
 
+    public int getSendUserId() {
+        return sendUserId;
+    }
+
+    public void setSendUserId(int sendUserId) {
+        this.sendUserId = sendUserId;
+    }
 
     public int getBelongId() {
         return belongId;

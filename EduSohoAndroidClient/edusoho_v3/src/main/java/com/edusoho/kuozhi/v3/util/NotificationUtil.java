@@ -207,6 +207,10 @@ public class NotificationUtil {
         mNotificationManager.notify(notificationId, mBuilder.build());
     }
 
+    public static void showClassroomDiscussMsg(Context context, WrapperXGPushTextMessage xgMessage) {
+
+    }
+
     public static void cancelById(int id) {
         NotificationManager mNotificationManager =
                 (NotificationManager) EdusohoApp.app.mContext.getSystemService(Context.NOTIFICATION_SERVICE);

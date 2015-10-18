@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.ChatDownloadListener;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -47,7 +48,7 @@ import java.util.List;
  * Created by JesseHuang on 15/6/3.
  * Chat ListView Adapter
  */
-public class ChatAdapter extends BaseAdapter {
+public class ChatAdapter extends BaseAdapter implements ChatDownloadListener {
 
     private Context mContext;
     private List<Chat> mList;
@@ -247,7 +248,7 @@ public class ChatAdapter extends BaseAdapter {
         holder.multiBodyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EdusohoApp.app.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(WebViewActivity.URL, body.url);
@@ -819,10 +820,12 @@ public class ChatAdapter extends BaseAdapter {
         public void sendMsgAgain(Chat chat);
     }
 
+    @Override
     public HashMap<Long, Integer> getDownloadList() {
         return mDownloadList;
     }
 
+    @Override
     public void updateVoiceDownloadStatus(long downId) {
         Chat downloadChat = null;
         try {

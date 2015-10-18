@@ -191,7 +191,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mAdapter = new ChatAdapter(mContext, getChatList(0), mFromUserInfo);
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
-        mAudioDownloadReceiver.setChatAdapter(mAdapter);
+        mAudioDownloadReceiver.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
@@ -364,7 +364,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_MSG);
+        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_CHAT_MSG);
         app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
     }
 
@@ -700,6 +700,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
         }
     };
+
     //endregion
 
     /**

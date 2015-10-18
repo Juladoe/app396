@@ -128,6 +128,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.ClassroomDiscussActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".v3.ui.ServiceProviderActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:screenOrientation="portrait" />
@@ -227,12 +232,6 @@
             android:name=".v3.ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".v3.util.ProxyActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-        <activity android:name="androidx.pluginmgr.PluginActivity" />
 
         <activity
             android:name="com.edusoho.kuozhi.v3.view.photo.ViewPagerActivity"

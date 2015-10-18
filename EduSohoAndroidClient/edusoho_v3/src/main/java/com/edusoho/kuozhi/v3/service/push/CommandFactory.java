@@ -54,8 +54,12 @@ public class CommandFactory {
             case PushUtil.ChatMsgType.IMAGE:
             case PushUtil.ChatMsgType.TEXT:
             case PushUtil.ChatMsgType.MULTI:
-                pusher.convertWrapperMessage2V2();
-                pushCommand = new PushMsgCommand(pusher);
+                if (PushUtil.ChatUserType.CLASSROOM.equals(pusher.getV2CustomContent().getTo().getType())) {
+                    pushCommand = new PushClassRoomMsgCommand(pusher);
+                } else {
+                    pusher.convertWrapperMessage2V2();
+                    pushCommand = new PushMsgCommand(pusher);
+                }
                 break;
             case PushUtil.DiscountType.DISCOUNT_GLOBAL:
             case PushUtil.DiscountType.DISCOUNT_DISCOUNT:
