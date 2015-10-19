@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.listener.IHomeworkQuestionResult;
@@ -121,5 +122,13 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.homework_menu,menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.homework_menu_card){
+            app.mEngine.runNormalPluginWithBundle("HomeworkAnswerCardActivity",mContext,null);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
