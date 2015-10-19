@@ -79,18 +79,21 @@ public class EduImageGetterHandler implements Html.ImageGetter {
         }
 
         private void setBitmap(Bitmap loadedImage) {
-            float showMaxWidth, showMinWidth;
+            float showMaxWidth, showMaxHeight;
             if (mImageSize == -1) {
                 showMaxWidth = EdusohoApp.app.screenW * 0.9f;
-                showMinWidth = EdusohoApp.app.screenW * 0.5f;
+                showMaxHeight = EdusohoApp.app.screenH * 0.3f;
             } else {
                 showMaxWidth = mImageSize * 0.9f;
-                showMinWidth = mImageSize * 0.9f;
+                showMaxHeight = mImageSize * 0.9f;
             }
-            if (showMaxWidth < loadedImage.getWidth()) {
-                loadedImage = AppUtil.scaleImage(loadedImage, showMaxWidth, 0);
-            } else if (showMinWidth >= loadedImage.getWidth()) {
-                loadedImage = AppUtil.scaleImage(loadedImage, showMinWidth, 0);
+
+            int w = loadedImage.getWidth();
+            int h = loadedImage.getHeight();
+            if (w > h) {
+                loadedImage = AppUtil.scaleImage(loadedImage, w > showMaxWidth ? showMaxWidth : w, 0);
+            } else {
+                loadedImage = AppUtil.scaleImage(loadedImage, h > showMaxHeight ? showMaxHeight : w, 0);
             }
 
             mDrawable.bitmap = loadedImage;

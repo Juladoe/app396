@@ -134,14 +134,14 @@ public class EduHtml {
     }
 
     private SpannableStringBuilder addImageClick(
-            SpannableStringBuilder spanned, ArrayList<String> array) {
+            SpannableStringBuilder spanned, final ArrayList<String> array) {
         CharacterStyle[] characterStyles = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
         int index = 0;
         for (CharacterStyle characterStyle : characterStyles) {
             if (characterStyle instanceof ImageSpan) {
                 ImageSpan imageSpan = (ImageSpan) characterStyle;
                 String src = imageSpan.getSource();
-                ImageClickSpan clickSpan = new ImageClickSpan(src, index);
+                ImageClickSpan clickSpan = new ImageClickSpan(mContext, src, index);
                 int start = spanned.getSpanStart(characterStyle);
                 int end = spanned.getSpanEnd(characterStyle);
                 if (array == null) {
@@ -164,28 +164,6 @@ public class EduHtml {
         public boolean onTouchEvent(MotionEvent event) {
 
             return super.onTouchEvent(event);
-        }
-    }
-
-    private class ImageClickSpan extends ClickableSpan {
-        private int mIndex;
-        private String imageUrl;
-
-        public ImageClickSpan(String url, int index) {
-            this.mIndex = index;
-            this.imageUrl = url;
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (mIsClickable) {
-                mIsMove = false;
-                mIsClickable = true;
-                Bundle bundle = new Bundle();
-                bundle.putInt("index", mIndex);
-                bundle.putStringArrayList("imageList", imageArray);
-                EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
-            }
         }
     }
 }
