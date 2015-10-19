@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
@@ -77,7 +78,13 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     private void renderView(final HomeWorkModel homeWorkModel) {
         tvCourseTitle.setText(homeWorkModel.getCourseTitle());
         homeworkNameContent.setText(homeWorkModel.getLessonTitle());
-        homeworkInfoContent.setText(AppUtil.coverCourseAbout(homeWorkModel.getDescription()));
+        String about = AppUtil.coverCourseAbout(homeWorkModel.getDescription());
+        if (about.length() != 0) {
+            homeworkInfoContent.setText(about);
+        } else {
+            homeworkInfoContent.setText("暂无说明");
+        }
+
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Menu;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.listener.IHomeworkQuestionResult;
@@ -114,5 +115,11 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
             getSupportFragmentManager().getFragments().get(0).onActivityResult(requestCode, resultCode, data);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.homework_menu,menu);
+        return true;
     }
 }
