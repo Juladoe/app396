@@ -1,0 +1,198 @@
+package com.edusoho.kuozhi.homework.view.test;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ImageSpan;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.edusoho.kuozhi.homework.R;
+import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
+import com.edusoho.kuozhi.v3.model.bal.test.Question;
+import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
+import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
+import com.edusoho.kuozhi.v3.model.bal.test.TestResult;
+import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.html.EduImageGetterHandler;
+import com.edusoho.kuozhi.v3.util.html.EduTagHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cn.trinea.android.common.util.ImageUtils;
+
+
+/**
+ * Created by howzhi on 14-9-29.
+ */
+public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
+
+    protected LinearLayout fillLayout;
+
+    public FillHomeworkQuestionWidget(Context context) {
+        super(context);
+    }
+
+    public FillHomeworkQuestionWidget(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    private TextWatcher onTextChangedListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int index, int i2, int i3) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", mIndex - 1);
+            bundle.putString("QuestionType", QuestionType.material.name());
+            ArrayList<String> data = new ArrayList<String>();
+            int count = fillLayout.getChildCount();
+            for (int i=0; i < count; i++) {
+                EditText editText = (EditText) fillLayout.getChildAt(i);
+                data.add(editText.getText().toString());
+            }
+
+            bundle.putStringArrayList("data", data);
+            EdusohoApp.app.sendMsgToTarget(
+                    TestpaperActivity.CHANGE_ANSWER, bundle, TestpaperActivity.class);
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+
+    @Override
+    protected Spanned getQuestionStem() {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+        Spanned spanned = Html.fromHtml(
+                mQuestion.getStem(), new EduImageGetterHandler(mContext, stemView), new EduTagHandler());
+
+        spannableStringBuilder
+                .append(mIndex + " ")
+                .append(spanned);
+        return parseStem(spannableStringBuilder);
+    }
+
+    @Override
+    protected void invalidateData() {
+        super.invalidateData();
+        fillLayout = (LinearLayout) this.findViewById(R.id.hw_question_fill_layout);
+
+        List<String> answers = mQuestion.getAnswer();
+        Resources resources = mContext.getResources();
+        fillLayout.removeAllViews();
+        int size = answers.size();
+        for (int i=1; i <= size; i++) {
+            EditText editText = new EditText(mContext);
+            editText.setSingleLine();
+            int padding = AppUtil.dp2px(mContext, 8);
+            editText.setPadding(padding, padding, padding, padding);
+            editText.setHint("答案" + i);
+            editText.setTextColor(resources.getColor(R.color.homework_fill_edt_text));
+            editText.setHintTextColor(resources.getColor(R.color.homework_fill_edt_hit));
+            editText.setBackgroundDrawable(resources.getDrawable(R.drawable.homework_fill_edt_bg));
+            editText.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.question_fill));
+            editText.addTextChangedListener(onTextChangedListener);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.topMargin = AppUtil.dp2px(mContext, 16);
+            fillLayout.addView(editText, layoutParams);
+        }
+
+    }
+
+    @Override
+    protected String listToStr(ArrayList<String> arrayList)
+    {
+        int index = 1;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String answer : arrayList) {
+            if (TextUtils.isEmpty(answer)) {
+                continue;
+            }
+            stringBuilder.append(String.format("答案(%d):", index++));
+            stringBuilder.append(answer);
+            stringBuilder.append("\n");
+        }
+        int length = stringBuilder.length();
+        if (length > 0) {
+            stringBuilder.delete(length - 1, length);
+        }
+        return stringBuilder.toString();
+    }
+
+    private Spanned parseStem(SpannableStringBuilder stem)
+    {
+        Pattern stemPattern = Pattern.compile("(\\[\\[[^\\[\\]]+\\]\\])", Pattern.DOTALL);
+        Matcher matcher = stemPattern.matcher(stem);
+        int count = 0;
+        Paint paint = new Paint();
+        paint.setTextSize(20);
+        paint.setColor(mContext.getResources().getColor(R.color.base_black_87));
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG);
+
+        while (matcher.find()) {
+            count ++;
+            CharSequence countStr = stem.subSequence(matcher.start(), matcher.end());
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.homework_fill_edt_bg);
+            drawable.setBounds(0, 0, 80, 40);
+
+            Bitmap bitmap = Bitmap.createBitmap(80, 40, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.draw(canvas);
+            canvas.drawText("(" + count + ")", 25, 25, paint);
+            ImageSpan imageSpan = new ImageSpan(mContext, bitmap);
+            SpannableString spannableString = new SpannableString(countStr);
+            spannableString.setSpan(imageSpan, 0, countStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            stem.delete(matcher.start(), matcher.end());
+            stem.insert(matcher.start(), spannableString);
+        }
+
+        return stem;
+    }
+    @Override
+    protected void initView(AttributeSet attrs) {
+    }
+
+    @Override
+     public void setData(HomeWorkQuestion questionSeq, int index) {
+        super.setData(questionSeq, index);
+        invalidateData();
+    }
+}

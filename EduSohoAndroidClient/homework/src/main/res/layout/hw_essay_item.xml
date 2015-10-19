@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.homework.view.test.EssayHomeworkQuestionWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingTop="28dp"
+    android:paddingBottom="28dp"
+    android:paddingLeft="15dp"
+    android:orientation="vertical"
+    android:paddingRight="15dp"
+    android:layout_height="match_parent">
+    <include layout="@layout/homework_material_stem_include" />
+    <TextView
+        android:layout_below="@id/homework_question_stem"
+        android:id="@+id/homework_question_stem"
+        android:textColor="@color/homework_stem"
+        android:textSize="@dimen/question_stem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginTop="@dimen/homework_question_content_top"
+        android:id="@+id/hw_essay_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:padding="5dp"
+        android:background="@drawable/card_bg"
+        android:hint="你的回答..."
+        android:lines="8"
+        android:maxLines="10"
+        android:layout_below="@id/homework_question_stem" />
+
+    <LinearLayout
+        android:gravity="right"
+        android:layout_below="@id/hw_essay_content"
+        android:id="@+id/hw_essay_tools_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/hw_essay_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/widget_photo"
+            android:background="@drawable/icon_camera"
+            android:clickable="true" />
+
+        <ImageView
+            android:id="@+id/hw_essay_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_action_move_gray"
+            android:background="@drawable/icon_photo"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <ViewStub
+        android:layout="@layout/homework_question_analysis"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/hw_essay_tools_layout"
+        android:id="@+id/hw_quetion_choice_analysis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</com.edusoho.kuozhi.homework.view.test.EssayHomeworkQuestionWidget>

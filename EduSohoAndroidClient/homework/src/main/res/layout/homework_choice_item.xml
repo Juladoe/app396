@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.homework.view.test.ChoiceHomeworkQuestionWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="28dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="28dp">
+
+    <include layout="@layout/homework_material_stem_include" />
+
+    <TextView
+        android:layout_below="@id/homework_material_stem"
+        android:id="@+id/homework_question_stem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/homework_stem"
+        android:textSize="@dimen/question_stem" />
+
+    <RadioGroup
+        android:id="@+id/homework_quetion_choice_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/homework_question_stem"
+        android:layout_marginTop="@dimen/homework_question_content_top"
+        android:orientation="vertical"></RadioGroup>
+
+    <ViewStub
+        android:id="@+id/quetion_choice_analysis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/quetion_choice_group"
+        android:layout_marginTop="20dp"
+        android:layout="@layout/homework_question_analysis" />
+</com.edusoho.kuozhi.homework.view.test.ChoiceHomeworkQuestionWidget>
