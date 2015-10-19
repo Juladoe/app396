@@ -36,6 +36,7 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -299,7 +300,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.icon_exercise) {
-            mExerciseDialog = new ExerciseOptionDialog(mContext,getLessonItem().title,getLessonId());
+            mExerciseDialog = new ExerciseOptionDialog(mContext, getLessonId());
             mExerciseDialog.show();
         }
 
@@ -309,10 +310,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
-
-        if (false) { //todo 判断是否显示练习icon
-            menu.getItem(0).setVisible(true);
-        }
         return true;
     }
 

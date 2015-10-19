@@ -469,5 +469,5 @@ public class Const {
     /**
      * 作业与练习
      */
-    public static final String HOMEWORK_CONTENT = "/api/homework";
+    public static final String HOMEWORK_CONTENT = "/api/homework/%d";
 }

@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.base;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -15,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
@@ -60,6 +63,39 @@ public class BaseActivity extends ActionBarActivity {
         mService = app.getService();
         app.mActivity = mActivity;
         app.mContext = mContext;
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+
+        ComponentName componentName = intent.getComponent();
+        if (componentName == null) {
+            super.startActivity(intent);
+            return;
+        }
+
+        String className = componentName.getClassName();
+        if (getPackageName().equals(componentName.getPackageName()) && app.mEngine.isPlugin(className)) {
+            intent.setComponent(new ComponentName(componentName.getPackageName(), app.mEngine.getPluginPkgName(className)));
+        }
+        super.startActivity(intent);
+    }
+
+    @Override
+    public void startActivityForResult(final Intent intent, int requestCode, Bundle options) {
+
+        ComponentName componentName = intent.getComponent();
+        if (componentName == null) {
+            super.startActivityForResult(intent, requestCode, options);
+            return;
+        }
+
+        String className = componentName.getClassName();
+        if (getPackageName().equals(componentName.getPackageName()) && app.mEngine.isPlugin(className)) {
+            intent.setComponent(new ComponentName(componentName.getPackageName(), app.mEngine.getPluginPkgName(className)));
+        }
+
+        super.startActivityForResult(intent, requestCode, options);
     }
 
     public EdusohoMainService getService() {

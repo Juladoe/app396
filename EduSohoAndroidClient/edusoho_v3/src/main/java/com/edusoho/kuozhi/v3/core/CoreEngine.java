@@ -136,6 +136,14 @@ public class CoreEngine {
         }
     }
 
+    public boolean isPlugin(String pluginName) {
+        return mPluginModelHashMap.containsKey(pluginName);
+    }
+
+    public String getPluginPkgName(String pluginName) {
+        return mPluginModelHashMap.get(pluginName).packAge;
+    }
+
     public Fragment runPluginWithFragmentByBundle(
             String pluginName, Activity activity, Bundle bundle) {
         Fragment fragment = null;
@@ -241,6 +249,7 @@ public class CoreEngine {
             ActivityInfo[] activities = packageInfo.activities;
             Resources resources = packageManager.getResourcesForActivity(
                     new ComponentName(mContext.getPackageName(), activities[0].name));
+
             XmlResourceParser xmlResourceParser = resources.getXml(R.xml.plugins);
             HashMap<String, PluginModel> otherPluginMap = parsePluginXml(xmlResourceParser);
             mPluginModelHashMap.putAll(otherPluginMap);

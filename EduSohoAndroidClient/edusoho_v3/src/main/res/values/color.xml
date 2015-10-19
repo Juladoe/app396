@@ -180,7 +180,7 @@
     <color name="loading_progress_gradient">#03b884</color>
     <color name="loading_progress_bg_gradient">#ddd</color>
     <color name="login_btn_stroke">#ccc</color>
-    <color name="login_btn_gradient">#45d17b</color>
+    <color name="login_btn_gradient">@color/primary_color</color>
     <color name="login_btn_gradient_pressed">#38bf6c</color>
 
     <color name="regist_btn_stroke">#03b884</color>

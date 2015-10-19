@@ -149,6 +149,14 @@ public class AudioLessonFragment extends BaseFragment {
                 }
             });
 
+            audioMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    CommonUtil.longToast(mContext, "不能播放此音频课程!");
+                    return true;
+                }
+            });
+
             mAudioProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -167,6 +175,8 @@ public class AudioLessonFragment extends BaseFragment {
 
                 }
             });
+        } catch (IllegalStateException e) {
+            CommonUtil.longToast(mContext, "不能播放此音频课程!");
         } catch (Exception e) {
             CommonUtil.longToast(mContext, "不能播放此音频课程!");
         }
