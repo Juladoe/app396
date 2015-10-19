@@ -120,9 +120,15 @@
     <string name="font_group">&#xe643;</string>
     <string name="font_service">&#xe60c;</string>
 
+    <string name="font_homework">&#xe659;</string>
+    <string name="font_exercise">&#xe658;</string>
+
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>
     <string name="title_friends">校友</string>
+
+    <string name="exercise">练习</string>
+    <string name="homework">作业</string>
 
     <string name="select_all">全选</string>
     <string name="select_all_cancel">取消</string>
