@@ -39,8 +39,8 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
+        mType = intent.getStringExtra("homework");
         if (intent == null || !intent.hasExtra(HOMEWORK_ID)) {
-            mType = intent.getStringExtra("type");
             CommonUtil.longToast(
                     getBaseContext(),
                     HomeworkSummaryActivity.HOME_HORK.equals(mType) ? "获取作业数据错误" : "获取练习数据错误"
