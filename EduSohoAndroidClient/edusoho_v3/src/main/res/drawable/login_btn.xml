@@ -5,6 +5,7 @@
     <corners android:radius="3dip" />
     
     <stroke
+        android:color="@color/login_btn_gradient"
 	    android:width="1px"
 	    />
     <!-- shape的颜色，支持渐变 -->

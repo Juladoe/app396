@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
+    android:gravity="center_vertical"
+    android:padding="16dp"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/do_homework"
+    <GridView
+        android:id="@id/gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="作业"
-        android:textSize="32sp" />
+        android:columnWidth="@dimen/shard_item_width"
+        android:numColumns="4"
+        android:listSelector="@android:color/transparent"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="16dp"
+        android:stretchMode="columnWidth">
 
-    <TextView
-        android:id="@+id/do_exercise"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="练习"
-        android:textSize="32sp" />
-
+    </GridView>
 
 </LinearLayout>
