@@ -16,9 +16,11 @@ import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
@@ -63,7 +65,7 @@ public class NotificationUtil {
             notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
-            notifyIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, chat.getHeadimgurl());
+            notifyIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, chat.headImgUrl);
             notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
             notifyIntent.putExtra(Const.NEWS_TYPE, PushUtil.ChatUserType.FRIEND);
             notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
@@ -105,7 +107,7 @@ public class NotificationUtil {
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
             mNotificationManager.notify(bulletinId, mBuilder.build());
         } catch (Exception ex) {
-            Log.d("showNotification-->", ex.getMessage());
+            Log.d("BulletinNotification-->", ex.getMessage());
         }
     }
 
@@ -208,7 +210,50 @@ public class NotificationUtil {
     }
 
     public static void showClassroomDiscussMsg(Context context, WrapperXGPushTextMessage xgMessage) {
+        try {
+            V2CustomContent model = xgMessage.getV2CustomContent();
+            switch (model.getBody().getType()) {
+                case PushUtil.ChatMsgType.IMAGE:
+                    xgMessage.content = String.format("[%s]", Const.MEDIA_IMAGE);
+                    break;
+                case PushUtil.ChatMsgType.AUDIO:
+                    xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                    break;
+                case PushUtil.ChatMsgType.MULTI:
+                    RedirectBody redirectBody = new Gson().fromJson(xgMessage.content, RedirectBody.class);
+                    xgMessage.content = redirectBody.content;
+                    break;
+            }
 
+
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(xgMessage.title)
+                            .setContentText(model.getFrom().getNickname() + ": " + xgMessage.content).setAutoCancel(true);
+
+            int fromId = model.getTo().getId();
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+            notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            notifyIntent.putExtra(ClassroomDiscussActivity.FROM_ID, model.getTo().getId());
+            notifyIntent.putExtra(ClassroomDiscussActivity.CLASSROOM_IMAGE, model.getTo().getImage());
+            notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
+            notifyIntent.putExtra(Const.INTENT_TARGET, ClassroomDiscussActivity.class);
+            if (isAppExit(context)) {
+                mMessage = xgMessage;
+            }
+            PendingIntent pendIntent = PendingIntent.getActivity(context, fromId,
+                    notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendIntent);
+            mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+            mNotificationManager.notify(fromId, mBuilder.build());
+        } catch (Exception ex) {
+            Log.d("Classroom-->", ex.getMessage());
+        }
     }
 
     public static void cancelById(int id) {

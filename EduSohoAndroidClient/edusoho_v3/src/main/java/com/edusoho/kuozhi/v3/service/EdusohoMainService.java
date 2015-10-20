@@ -187,7 +187,7 @@ public class EdusohoMainService extends Service {
                         NotificationUtil.showArticleNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
-                case Const.ADD_CHAT_MSG:
+                case Const.ADD_MSG:
                     //普通消息
                     Chat chatModel = new Chat(xgMessage);
                     ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
@@ -220,7 +220,7 @@ public class EdusohoMainService extends Service {
                     ClassroomDiscussEntity model = new ClassroomDiscussEntity(xgMessage);
                     ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
                     classroomDiscussDataSource.create(model);
-                    if (!xgMessage.isForeground || ClassroomDiscussActivity.CurrentClassroomId != model.getClassroomId()) {
+                    if (!xgMessage.isForeground || ClassroomDiscussActivity.CurrentClassroomId != model.classroomId) {
                         NotificationUtil.showClassroomDiscussMsg(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
@@ -239,7 +239,7 @@ public class EdusohoMainService extends Service {
             public void onResponse(String response) {
                 ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
                 });
-                if (latestChat.size() > 0) {
+                if (latestChat.size() > 0 && latestChat.get(0).getCustom().getV() >= 2) {
                     //Collections.reverse(latestChat);
                     HashMap<Integer, ArrayList<OffLineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
                     Iterator<Map.Entry<Integer, ArrayList<OffLineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();

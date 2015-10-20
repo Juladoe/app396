@@ -45,39 +45,59 @@
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/default_avatar" />
 
-            <ImageView
-                android:id="@+id/iv_msg_image"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/ci_send_pic"
-                android:background="@drawable/chat_image_from_layout"
-                android:clickable="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="6dp" />
+                android:layout_toRightOf="@+id/ci_send_pic">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/iv_msg_image"
-                android:paddingTop="2dp"
-                android:orientation="vertical">
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:id="@+id/sendProgressPar" />
-
-                <ImageView
-                    android:id="@+id/msg_status"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:clickable="true"
-                    android:src="@drawable/msg_state_failed_resend"
-                    android:scaleType="fitXY"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_nickname"
+                    android:textSize="@dimen/x_small_font_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginBottom="3dp"
                     android:visibility="gone" />
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_msg_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_nickname"
+                    android:background="@drawable/chat_image_from_layout"
+                    android:clickable="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="6dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:orientation="vertical"
+                    android:layout_toRightOf="@+id/iv_msg_image"
+                    android:layout_alignTop="@+id/iv_msg_image">
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:id="@+id/sendProgressPar" />
+
+                    <ImageView
+                        android:id="@+id/msg_status"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:clickable="true"
+                        android:src="@drawable/msg_state_failed_resend"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 

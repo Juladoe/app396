@@ -153,9 +153,9 @@ public class New implements Serializable {
 
     public New(Chat chat) {
         fromId = chat.fromId;
-        title = chat.nickName;
+        title = chat.nickname;
         createdTime = chat.createdTime;
-        imgUrl = chat.headimgurl;
+        imgUrl = chat.headImgUrl;
         CustomContent customContent = chat.getCustomContent();
         type = chat.getCustomContent().getTypeBusiness();
         if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.getName())) {

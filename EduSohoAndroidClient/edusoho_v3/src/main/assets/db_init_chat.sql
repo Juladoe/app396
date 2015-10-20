@@ -56,6 +56,7 @@ create table if not exists sp_msg(
 );
 
 create table if not exists classroom_discuss(
+    discussId integer primary key AutoIncrement,
     id integer,
     classroomId integer,
     fromId integer,

@@ -3,132 +3,23 @@ package com.edusoho.kuozhi.v3.model.bal.push;
 import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * Created by JesseHuang on 15/7/2.
  */
-public class Chat implements Serializable {
+public class Chat extends BaseMsgEntity {
     public int chatId;
-    public int id;
     public int userId;
     public int fromId;
     public int toId;
-    public String nickName;
-    public String headimgurl;
-    public String content;
-    public String type;
-    public int delivery = 2;
-    public int createdTime;
+    public String nickname;
 
     public Direct direct;
     public FileType fileType;
 
-    private String upyunMediaPutUrl;
-    private String upyunMediaGetUrl;
-
     public String custom;
-
-    private HashMap<String, String> headers;
-
-    public int getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(int chatId) {
-        this.chatId = chatId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getFromId() {
-        return fromId;
-    }
-
-    public void setFromId(int fromId) {
-        this.fromId = fromId;
-    }
-
-    public int getToId() {
-        return toId;
-    }
-
-    public void setToId(int toId) {
-        this.toId = toId;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getHeadimgurl() {
-        return headimgurl;
-    }
-
-    public void setHeadimgurl(String headimgurl) {
-        this.headimgurl = headimgurl;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(int createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public HashMap<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(HashMap<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public String getUpyunMediaPutUrl() {
-        return upyunMediaPutUrl;
-    }
-
-    public void setUpyunMediaPutUrl(String upyunMediaPutUrl) {
-        this.upyunMediaPutUrl = upyunMediaPutUrl;
-    }
-
-    public String getUpyunMediaGetUrl() {
-        return upyunMediaGetUrl;
-    }
-
-    public void setUpyunMediaGetUrl(String upyunMediaGetUrl) {
-        this.upyunMediaGetUrl = upyunMediaGetUrl;
-    }
 
     public Direct getDirect() {
         if (fromId != 0 && EdusohoApp.app.loginUser != null) {
@@ -139,14 +30,6 @@ public class Chat implements Serializable {
 
     public void setDirect(Direct direct) {
         this.direct = direct;
-    }
-
-    public Delivery getDelivery() {
-        return Delivery.getDelivery(delivery);
-    }
-
-    public void setDelivery(Delivery delivery) {
-        this.delivery = Delivery.getIndex(delivery);
     }
 
     public FileType getFileType() {
@@ -164,31 +47,23 @@ public class Chat implements Serializable {
 
     }
 
-    public Chat(int fId, int tId, String name, String url, String content, String t, int cTime) {
-        this.fromId = fId;
-        this.toId = tId;
-        this.nickName = name;
-        this.headimgurl = url;
-        this.content = content;
-        this.type = t;
-        this.createdTime = cTime;
-        this.direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        this.fileType = FileType.getType(type);
+    public Chat(int fromId, int toId, String nickname, String headImgUrl, String content, String type, int createdTime) {
+        super(0, content, headImgUrl, 2, type, createdTime);
+        this.fromId = fromId;
+        this.toId = toId;
+        this.nickname = nickname;
+        this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
+        this.fileType = FileType.getType(this.type);
     }
 
-    public Chat(int chatId, int id, int fId, int tId, String name, String url, String content, String t, int d, int cTime) {
+    public Chat(int chatId, int id, int fromId, int toId, String nickname, String headImgUrl, String content, String type, int delivery, int createdTime) {
+        super(id, content, headImgUrl, delivery, type, createdTime);
         this.chatId = chatId;
-        this.id = id;
-        this.fromId = fId;
-        this.toId = tId;
-        this.nickName = name;
-        this.headimgurl = url;
-        this.content = content;
-        this.type = t;
-        this.delivery = d;
-        this.createdTime = cTime;
-        this.direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        this.fileType = FileType.getType(type);
+        this.fromId = fromId;
+        this.toId = toId;
+        this.nickname = nickname;
+        this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
+        this.fileType = FileType.getType(this.type);
     }
 
     public Chat(WrapperXGPushTextMessage message) {
@@ -197,13 +72,16 @@ public class Chat implements Serializable {
         id = customContent.getId();
         fromId = customContent.getFromId();
         toId = EdusohoApp.app.loginUser.id;
-        nickName = message.getTitle();
-        headimgurl = customContent.getImgUrl();
+        nickname = message.getTitle();
+        headImgUrl = customContent.getImgUrl();
         content = message.getContent();
         type = customContent.getTypeMsg();
         createdTime = customContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
         fileType = FileType.getType(type);
+        if (fileType == FileType.TEXT) {
+            delivery = PushUtil.MsgDeliveryType.SUCCESS;
+        }
     }
 
     public Chat(OffLineMsgEntity offlineMsgModel) {
@@ -211,8 +89,8 @@ public class Chat implements Serializable {
         id = v2CustomContent.getMsgId();
         fromId = v2CustomContent.getFrom().getId();
         toId = EdusohoApp.app.loginUser.id;
-        nickName = v2CustomContent.getFrom().getNickname();
-        headimgurl = v2CustomContent.getFrom().getImage();
+        nickname = v2CustomContent.getFrom().getNickname();
+        headImgUrl = v2CustomContent.getFrom().getImage();
         content = v2CustomContent.getBody().getContent();
         type = v2CustomContent.getBody().getType();
         createdTime = v2CustomContent.getCreatedTime();
@@ -260,38 +138,6 @@ public class Chat implements Serializable {
                 }
             }
             return TEXT;
-        }
-    }
-
-    public static enum Delivery {
-        SUCCESS(1), FAILED(0), UPLOADING(2);
-
-        private int index;
-
-        private Delivery(int i) {
-            this.index = i;
-        }
-
-        public int getIndex() {
-            return this.index;
-        }
-
-        public static Delivery getDelivery(int i) {
-            for (Delivery type : Delivery.values()) {
-                if (type.index == i) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public static int getIndex(Delivery delivery) {
-            for (Delivery type : Delivery.values()) {
-                if (type == delivery) {
-                    return type.getIndex();
-                }
-            }
-            return -1;
         }
     }
 }

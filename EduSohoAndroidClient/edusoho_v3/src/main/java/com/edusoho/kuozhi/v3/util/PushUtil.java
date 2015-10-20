@@ -55,6 +55,12 @@ public class PushUtil {
         public static final String MULTI = "multi";
     }
 
+    public static class MsgDeliveryType {
+        public static final int SUCCESS = 1;
+        public static final int FAILED = 0;
+        public static final int UPLOADING = 2;
+    }
+
     public static class BulletinType {
         public static final String TYPE = "bulletin";
     }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,25 +26,34 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
@@ -93,8 +103,6 @@ public class BaseChatActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        initView();
     }
 
     @Override
@@ -103,7 +111,6 @@ public class BaseChatActivity extends ActionBarBaseActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(mAudioDownloadReceiver, intentFilter);
-        initView();
     }
 
     protected void initView() {
@@ -333,7 +340,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param chat chatInfo
      * @param type Media Type
      */
-    public void uploadUnYunMedia(final File file, final Chat chat, final Chat.FileType type) {
+    public void uploadUnYunMedia(final File file, final ClassroomDiscussEntity chat, final Chat.FileType type) {
 
     }
 
@@ -343,12 +350,50 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param file     upload file
      * @param callback callback
      */
-    public void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback) {
-
+    public void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback, int fromId) {
+        String path = String.format(Const.GET_UPLOAD_INFO, fromId, file.length(), file.getName());
+        RequestUrl url = app.bindPushUrl(path);
+        ajaxGet(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                UpYunUploadResult result = parseJsonValue(response, new TypeToken<UpYunUploadResult>() {
+                });
+                callback.success(result);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.success(null);
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "get upload info from upyun failed");
+            }
+        });
     }
 
-    public void saveUploadResult(String putUrl, String getUrl) {
-
+    public void saveUploadResult(String putUrl, String getUrl, int fromId) {
+        String path = String.format(Const.SAVE_UPLOAD_INFO, fromId);
+        RequestUrl url = app.bindPushUrl(path);
+        HashMap<String, String> hashMap = url.getParams();
+        hashMap.put("putUrl", putUrl);
+        hashMap.put("getUrl", getUrl);
+        ajaxPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject result = new JSONObject(response);
+                    if ("success".equals(result.getString("result"))) {
+                        Log.d(TAG, "save upload result success");
+                    }
+                } catch (JSONException e) {
+                    Log.d(TAG, "convert json to obj error");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "save upload info error");
+            }
+        });
     }
 
     // endregion
@@ -368,7 +413,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param delivery 是否送达
      * @param chat     一行聊天记录
      */
-    public void addSendMsgToListView(Chat.Delivery delivery, Chat chat) {
+    public void addSendMsgToListView(int delivery, Chat chat) {
 
     }
 
@@ -378,7 +423,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param delivery 是否送达
      * @param chat     一行聊天记录
      */
-    public void updateSendMsgToListView(Chat.Delivery delivery, Chat chat) {
+    public void updateSendMsgToListView(int delivery, Chat chat) {
 
     }
 
@@ -387,7 +432,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
     /**
      * 从图库获取图片
      */
-    private void openPictureFromLocal() {
+    protected void openPictureFromLocal() {
         Intent intent;
         if (Build.VERSION.SDK_INT < 19) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -404,7 +449,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param selectedImage 原图
      * @return file
      */
-    private File selectPicture(Uri selectedImage) {
+    protected File selectPicture(Uri selectedImage) {
         Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
         String picturePath = null;
         if (cursor != null) {
@@ -437,7 +482,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param file   original image file
      * @return compressed image file
      */
-    private File compressImage(Bitmap bitmap, File file) {
+    protected File compressImage(Bitmap bitmap, File file) {
         File compressedFile;
         try {
             //分辨率压缩到屏幕的0.4
@@ -469,6 +514,36 @@ public class BaseChatActivity extends ActionBarBaseActivity {
 
     // endregion
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SEND_IMAGE:
+                if (data != null) {
+                    Uri selectedImage = data.getData();
+                    if (selectedImage != null) {
+                        File file = selectPicture(selectedImage);
+                        uploadMedia(file, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                    }
+                }
+                break;
+            case SEND_CAMERA:
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
+                if (bitmap != null) {
+                    File compressedCameraFile = compressImage(bitmap, mCameraFile);
+                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mAudioDownloadReceiver);
+    }
+
     /**
      * 存本地的Custom信息
      *
@@ -482,13 +557,6 @@ public class BaseChatActivity extends ActionBarBaseActivity {
 
         return v2CustomContent;
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mAudioDownloadReceiver);
-    }
-
 
     //region InnerClass
 

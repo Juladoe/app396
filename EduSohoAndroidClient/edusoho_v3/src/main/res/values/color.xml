@@ -391,6 +391,7 @@
     <color name="green_alpha_12">#2e37b97d</color>
     <color name="green_beta">#59c593</color>
     <color name="green_feedback">#0e9e5c</color>
+    <color name="green_background">#D3EEE2</color>
     <color name="orange_alpha">#f5a623</color>
     <color name="blue_alpha">#4a90e2</color>
     <color name="grey">#444444</color>

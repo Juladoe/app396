@@ -85,8 +85,8 @@ public class ChatDataSource {
         cv.put(allColumns[1], chat.id);
         cv.put(allColumns[2], chat.fromId);
         cv.put(allColumns[3], chat.toId);
-        cv.put(allColumns[4], chat.nickName);
-        cv.put(allColumns[5], chat.headimgurl);
+        cv.put(allColumns[4], chat.nickname);
+        cv.put(allColumns[5], chat.headImgUrl);
         cv.put(allColumns[6], chat.content);
         cv.put(allColumns[7], chat.type);
         cv.put(allColumns[8], chat.delivery);
@@ -103,8 +103,8 @@ public class ChatDataSource {
             cv.put(allColumns[1], chat.id);
             cv.put(allColumns[2], chat.fromId);
             cv.put(allColumns[3], chat.toId);
-            cv.put(allColumns[4], chat.nickName);
-            cv.put(allColumns[5], chat.headimgurl);
+            cv.put(allColumns[4], chat.nickname);
+            cv.put(allColumns[5], chat.headImgUrl);
             cv.put(allColumns[6], chat.content);
             cv.put(allColumns[7], chat.type);
             cv.put(allColumns[8], chat.delivery);
@@ -120,8 +120,8 @@ public class ChatDataSource {
         cv.put(allColumns[1], chat.id);
         cv.put(allColumns[2], chat.fromId);
         cv.put(allColumns[3], chat.toId);
-        cv.put(allColumns[4], chat.nickName);
-        cv.put(allColumns[5], chat.headimgurl);
+        cv.put(allColumns[4], chat.nickname);
+        cv.put(allColumns[5], chat.headImgUrl);
         cv.put(allColumns[6], chat.content);
         cv.put(allColumns[7], chat.type);
         cv.put(allColumns[8], chat.delivery);

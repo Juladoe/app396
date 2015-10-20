@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -131,10 +132,19 @@ public class SwipeAdapter extends BaseAdapter {
             viewHolder.bvUnread.setText(String.valueOf(item.unread));
         }
 
-        if (PushUtil.CourseType.LESSON_PUBLISH.equals(item.type)) {
+        if (PushUtil.CourseType.TYPE.equals(item.type)) {
             viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.news_course_title));
         } else {
             viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.base_black_87));
+        }
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.tvTitle.getLayoutParams();
+        if (PushUtil.ChatUserType.TEACHER.equals(item.type)) {
+            viewHolder.tvRole.setVisibility(View.VISIBLE);
+            layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
+        } else {
+            viewHolder.tvRole.setVisibility(View.GONE);
+            layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.tv_post_time);
         }
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
@@ -155,6 +165,7 @@ public class SwipeAdapter extends BaseAdapter {
         public TextView tvContent;
         public TextView tvPostTime;
         public View viewAvatar;
+        public TextView tvRole;
 
         public ViewHolder(View view) {
             ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
@@ -165,6 +176,7 @@ public class SwipeAdapter extends BaseAdapter {
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
             tvContent = (TextView) view.findViewById(R.id.tv_content);
             tvPostTime = (TextView) view.findViewById(R.id.tv_post_time);
+            tvRole = (TextView) view.findViewById(R.id.tv_role);
             view.setTag(this);
         }
     }

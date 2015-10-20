@@ -106,6 +106,7 @@ public class V2CustomContent {
          */
         private int id;
         private String type;
+        private String image;
 
         public void setId(int id) {
             this.id = id;
@@ -121,6 +122,14 @@ public class V2CustomContent {
 
         public String getType() {
             return type;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
         }
     }
 

@@ -43,14 +43,14 @@ public class Pusher {
 
     public void pushMsg() {
         //普通消息
-        mBundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_RECEIVE_CHAT_MSG);
+        mBundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_CHAT_MSG);
         boolean isForeground = EdusohoApp.app.isForeground(ChatActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, mBundle, ChatActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_MSG, mBundle, ChatActivity.class);
         }
-        EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSG, mBundle, NewsFragment.class);
-        EdusohoMainService.getService().sendMessage(Const.ADD_CHAT_MSG, mWrapperMessage);
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_MSG, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_MSG, mWrapperMessage);
     }
 
     public void pushVerified() {
@@ -115,7 +115,7 @@ public class Pusher {
     }
 
     public void pushClassroomMsg() {
-        mBundle.putInt(Const.ADD_CLASSROOM_DISCUSS_MSG_TYPE, NewsFragment.HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG);
+        mBundle.putInt(Const.ADD_CLASSROOM_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG);
         boolean isForeground = EdusohoApp.app.isForeground(ClassroomDiscussActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;

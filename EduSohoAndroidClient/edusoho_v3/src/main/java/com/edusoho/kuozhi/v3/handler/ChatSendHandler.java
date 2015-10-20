@@ -80,8 +80,8 @@ public class ChatSendHandler {
         Chat chat = new Chat(app.loginUser.id, toId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 content, Chat.FileType.MULTI.toString().toLowerCase(), createdTime);
         chat.direct = Chat.Direct.SEND;
-        chat.setDelivery(Chat.Delivery.UPLOADING);
-        chat.headimgurl = app.loginUser.mediumAvatar;
+        chat.delivery = PushUtil.MsgDeliveryType.UPLOADING;
+        chat.headImgUrl = app.loginUser.mediumAvatar;
         chat.chatId = (int) mChatDataSource.create(chat);
 
         return chat;
@@ -107,9 +107,9 @@ public class ChatSendHandler {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_TYPE, NewsFragment.HANDLE_SEND_CHAT_MSG);
+        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
         ChatActivity.CurrentFromId = customContent.getFromId();
-        app.sendMsgToTarget(Const.ADD_CHAT_MSG, bundle, NewsFragment.class);
+        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
 
         return message;
     }
@@ -150,12 +150,12 @@ public class ChatSendHandler {
                 CloudResult result = app.parseJsonValue(response, new TypeToken<CloudResult>() {
                 });
 
-                Chat.Delivery status = Chat.Delivery.FAILED;
+                int status = PushUtil.MsgDeliveryType.FAILED;
                 if (result != null && result.getResult()) {
                     chat.id = result.id;
-                    status = Chat.Delivery.SUCCESS;
+                    status = PushUtil.MsgDeliveryType.SUCCESS;
                 }
-                updateChatStatus(chat, status, bundle);
+                updateChatStatus(chat, PushUtil.MsgDeliveryType.FAILED, bundle);
                 if (mFinishCallback != null) {
                     mFinishCallback.success(null);
                 }
@@ -168,7 +168,7 @@ public class ChatSendHandler {
             public void onErrorResponse(VolleyError error) {
                 loadDialog.dismiss();
                 CommonUtil.longToast(mActivity.getBaseContext(), "网络连接不可用请稍后再试");
-                updateChatStatus(chat, Chat.Delivery.FAILED, bundle);
+                updateChatStatus(chat, PushUtil.MsgDeliveryType.FAILED, bundle);
             }
         });
     }
@@ -185,10 +185,10 @@ public class ChatSendHandler {
         return customContent;
     }
 
-    private void updateChatStatus(Chat chat, Chat.Delivery status, Bundle bundle) {
-        chat.setDelivery(status);
+    private void updateChatStatus(Chat chat, int status, Bundle bundle) {
+        chat.delivery = status;
         mChatDataSource.update(chat);
-        bundle.putInt(ChatActivity.MSG_DELIVERY, status.getIndex());
+        bundle.putInt(ChatActivity.MSG_DELIVERY, status);
         app.sendMsgToTarget(Const.UPDATE_CHAT_MSG, bundle, ChatActivity.class);
     }
 }
