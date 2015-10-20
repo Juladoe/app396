@@ -30,16 +30,18 @@ import java.util.List;
  */
 public class HomeworkActivity extends ActionBarBaseActivity implements IHomeworkQuestionResult {
 
+    public static HomeworkActivity homeworkActivity;
     public static final String HOMEWORK_ID = "homeworkId";
     private int mHomeWorkId;
     private String mType;
     private List<HomeWorkQuestion> mHomeWorkQuestionList;
+    private List<String> mAnswerList;
     private HomeworkProvider mHomeworkProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        homeworkActivity = this;
         Intent intent = getIntent();
         mType = intent.getStringExtra("homework");
         if (intent == null || !intent.hasExtra(HOMEWORK_ID)) {

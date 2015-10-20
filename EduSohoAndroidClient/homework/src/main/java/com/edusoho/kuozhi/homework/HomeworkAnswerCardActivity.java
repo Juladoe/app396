@@ -3,22 +3,28 @@ package com.edusoho.kuozhi.homework;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
+import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.view.EduSohoButton;
+
+import java.util.List;
 
 /**
  * Created by Melomelon on 2015/10/19.
  */
 public class HomeworkAnswerCardActivity extends ActionBarBaseActivity {
 
-    private String mTitle = "¥Ã‚ø®";
+    private String mTitle = "Á≠îÈ¢òÂç°";
     private LinearLayout mCardLayout;
     private EduSohoButton submitBtn;
+
+    private HomeworkActivity mHomeworkActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homework_answer_card_layout);
+        mHomeworkActivity = HomeworkActivity.homeworkActivity;
         initView();
     }
 
