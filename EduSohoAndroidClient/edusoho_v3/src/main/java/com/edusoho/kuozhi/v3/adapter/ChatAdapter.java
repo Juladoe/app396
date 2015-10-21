@@ -144,31 +144,31 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         Chat msg = (Chat) mList.get(position);
         int type = -1;
         if (msg.direct == Chat.Direct.SEND) {
-            switch (msg.fileType) {
-                case TEXT:
+            switch (msg.type) {
+                case PushUtil.ChatMsgType.TEXT:
                     type = MSG_SEND_TEXT;
                     break;
-                case IMAGE:
+                case PushUtil.ChatMsgType.IMAGE:
                     type = MSG_SEND_IMAGE;
                     break;
-                case AUDIO:
+                case PushUtil.ChatMsgType.AUDIO:
                     type = MSG_SEND_AUDIO;
                     break;
-                case MULTI:
+                case PushUtil.ChatMsgType.MULTI:
                     type = MSG_SEND_MULIT;
             }
         } else {
-            switch (msg.fileType) {
-                case TEXT:
+            switch (msg.type) {
+                case PushUtil.ChatMsgType.TEXT:
                     type = MSG_RECEIVE_TEXT;
                     break;
-                case IMAGE:
+                case PushUtil.ChatMsgType.IMAGE:
                     type = MSG_RECEIVE_IMAGE;
                     break;
-                case AUDIO:
+                case PushUtil.ChatMsgType.AUDIO:
                     type = MSG_RECEIVE_AUDIO;
                     break;
-                case MULTI:
+                case PushUtil.ChatMsgType.MULTI:
                     type = MSG_RECEIVE_MULIT;
             }
         }
@@ -374,7 +374,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                                 model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.uploadMediaAgain(file, model, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                                mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                             } else {
                                 CommonUtil.longToast(mContext, "图片不存在，无法上传");
                             }
@@ -481,7 +481,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                                 model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.uploadMediaAgain(file, model, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                                mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
                                 notifyDataSetChanged();
                             } else {
                                 CommonUtil.longToast(mContext, "音频不存在，无法上传");
@@ -826,7 +826,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     public interface ImageErrorClick {
-        public void uploadMediaAgain(File file, BaseMsgEntity model, Chat.FileType type, String strType);
+        public void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
 
         public void sendMsgAgain(BaseMsgEntity model);
     }

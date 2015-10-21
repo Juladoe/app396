@@ -17,7 +17,7 @@ public class Chat extends BaseMsgEntity {
     public String nickname;
 
     public Direct direct;
-    public FileType fileType;
+    public String type;
 
     public String custom;
 
@@ -32,16 +32,6 @@ public class Chat extends BaseMsgEntity {
         this.direct = direct;
     }
 
-    public FileType getFileType() {
-        if (TextUtils.isEmpty(type)) {
-            return FileType.getType(type);
-        }
-        return fileType;
-    }
-
-    public void setFileType(FileType fileType) {
-        this.fileType = fileType;
-    }
 
     public Chat() {
 
@@ -53,7 +43,7 @@ public class Chat extends BaseMsgEntity {
         this.toId = toId;
         this.nickname = nickname;
         this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
-        this.fileType = FileType.getType(this.type);
+        this.type = type;
     }
 
     public Chat(int chatId, int id, int fromId, int toId, String nickname, String headImgUrl, String content, String type, int delivery, int createdTime) {
@@ -63,7 +53,7 @@ public class Chat extends BaseMsgEntity {
         this.toId = toId;
         this.nickname = nickname;
         this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
-        this.fileType = FileType.getType(this.type);
+        this.type = type;
     }
 
     public Chat(WrapperXGPushTextMessage message) {
@@ -78,8 +68,8 @@ public class Chat extends BaseMsgEntity {
         type = customContent.getTypeMsg();
         createdTime = customContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        fileType = FileType.getType(type);
-        if (fileType == FileType.TEXT) {
+        type = customContent.getTypeBusiness();
+        if (type == PushUtil.ChatMsgType.TEXT) {
             delivery = PushUtil.MsgDeliveryType.SUCCESS;
         }
     }
@@ -95,7 +85,6 @@ public class Chat extends BaseMsgEntity {
         type = v2CustomContent.getBody().getType();
         createdTime = v2CustomContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        fileType = FileType.getType(type);
     }
 
     public CustomContent getCustomContent() {
@@ -115,29 +104,29 @@ public class Chat extends BaseMsgEntity {
         }
     }
 
-    /**
-     * 资源类型
-     */
-    public static enum FileType {
-        TEXT("text"), IMAGE("image"), AUDIO("audio"), VIDEO("video"), MULTI("multi");
-
-        private String name;
-
-        private FileType(String n) {
-            this.name = n;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public static FileType getType(String name) {
-            for (FileType type : FileType.values()) {
-                if (type.getName().equals(name)) {
-                    return type;
-                }
-            }
-            return TEXT;
-        }
-    }
+//    /**
+//     * 资源类型
+//     */
+//    public static enum FileType {
+//        TEXT("text"), IMAGE("image"), AUDIO("audio"), VIDEO("video"), MULTI("multi");
+//
+//        private String name;
+//
+//        private FileType(String n) {
+//            this.name = n;
+//        }
+//
+//        public String getName() {
+//            return this.name;
+//        }
+//
+//        public static FileType getType(String name) {
+//            for (FileType type : FileType.values()) {
+//                if (type.getName().equals(name)) {
+//                    return type;
+//                }
+//            }
+//            return TEXT;
+//        }
+//    }
 }

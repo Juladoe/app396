@@ -16,7 +16,6 @@ import com.edusoho.kuozhi.v3.adapter.ClassroomDiscussAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
@@ -174,7 +173,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     public void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
         final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                etSend.getText().toString(), app.loginUser.id, Chat.FileType.TEXT.toString().toLowerCase(), PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
+                etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
         addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
@@ -184,7 +183,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mClassroomName);
         message.setContent(model.content);
-        V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, model.content);
+        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
         message.setCustomContentJson(v2CustomContentJson);
         message.isForeground = true;
@@ -215,7 +214,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         });
     }
 
-    public void sendMediaMsg(final ClassroomDiscussEntity model, Chat.FileType type) {
+    public void sendMediaMsg(final ClassroomDiscussEntity model, String type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", mClassroomName);
@@ -240,7 +239,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     }
 
     @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final Chat.FileType type, String strType) {
+    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
         final ClassroomDiscussEntity discussModel = (ClassroomDiscussEntity) model;
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
@@ -273,7 +272,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
-        params.put("custom", gson.toJson(getV2CustomContent(Chat.FileType.TEXT, model.content)));
+        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -295,7 +294,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
 
     // region 多媒体资源上传
 
-    public void uploadMedia(final File file, final Chat.FileType type, String strType) {
+    public void uploadMedia(final File file, final String type, String strType) {
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
@@ -303,7 +302,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         try {
             mSendTime = (int) (System.currentTimeMillis() / 1000);
             final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                    file.getPath(), app.loginUser.id, type.getName().toLowerCase(), PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
+                    file.getPath(), app.loginUser.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
             //生成New页面的消息并通知更改
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
@@ -336,7 +335,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         }
     }
 
-    public void uploadUnYunMedia(final File file, final ClassroomDiscussEntity model, final Chat.FileType type) {
+    public void uploadUnYunMedia(final File file, final ClassroomDiscussEntity model, final String type) {
         RequestUrl putUrl = new RequestUrl(model.upyunMediaPutUrl);
         putUrl.setHeads(model.headers);
         putUrl.setMuiltParams(new Object[]{"file", file});
@@ -411,7 +410,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
      *
      * @return V2CustomContent
      */
-    private V2CustomContent getV2CustomContent(Chat.FileType fileType, String content) {
+    private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setId(app.loginUser.id);
@@ -426,7 +425,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         toEntity.setType(PushUtil.ChatUserType.CLASSROOM);
         v2CustomContent.setTo(toEntity);
         V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(fileType.getName());
+        bodyEntity.setType(type);
         bodyEntity.setContent(content);
         v2CustomContent.setBody(bodyEntity);
         v2CustomContent.setV(Const.PUSH_VERSION);

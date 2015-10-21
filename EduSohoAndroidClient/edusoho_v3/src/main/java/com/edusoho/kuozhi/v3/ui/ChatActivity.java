@@ -308,7 +308,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     private void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
         final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                etSend.getText().toString(), Chat.FileType.TEXT.toString().toLowerCase(), mSendTime);
+                etSend.getText().toString(), PushUtil.ChatMsgType.TEXT, mSendTime);
 
         addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
 
@@ -318,7 +318,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
-        V2CustomContent v2CustomContent = getV2CustomContent(Chat.FileType.TEXT, chat.content);
+        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
         message.setCustomContentJson(v2CustomContentJson);
         message.isForeground = true;
@@ -351,7 +351,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         });
     }
 
-    private void sendMediaMsg(final Chat chat, Chat.FileType type) {
+    private void sendMediaMsg(final Chat chat, String type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         V2CustomContent v2CustomContent = getV2CustomContent(type, chat.upyunMediaGetUrl);
         v2CustomContent.getFrom().setId(app.loginUser.id);
@@ -394,11 +394,11 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     /**
      * 存本地的Custom信息
      *
-     * @param fileType
+     * @param type
      * @param content
      * @return
      */
-    private V2CustomContent getV2CustomContent(Chat.FileType fileType, String content) {
+    private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setId(mFromId);
@@ -410,7 +410,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         toEntity.setType(PushUtil.ChatUserType.USER);
         v2CustomContent.setTo(toEntity);
         V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(fileType.getName());
+        bodyEntity.setType(type);
         bodyEntity.setContent(content);
         v2CustomContent.setBody(bodyEntity);
         v2CustomContent.setV(2);
@@ -419,7 +419,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final Chat.FileType type, String strType) {
+    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
         final Chat chat = (Chat) model;
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
@@ -452,7 +452,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
-        params.put("custom", gson.toJson(getV2CustomContent(Chat.FileType.TEXT, model.content)));
+        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -598,7 +598,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             } else {
                 if (isSave) {
                     Log.d(TAG, "正常保存上传");
-                    uploadMedia(mUploadAudio, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                    uploadMedia(mUploadAudio, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
                     mViewSpeakContainer.setVisibility(View.GONE);
                 } else {
                     Log.d(TAG, "录制时间太短");
@@ -842,7 +842,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      * @param chat chatInfo
      * @param type Media Type
      */
-    private void uploadUnYunMedia(final File file, final Chat chat, final Chat.FileType type) {
+    private void uploadUnYunMedia(final File file, final Chat chat, final String type) {
         RequestUrl putUrl = new RequestUrl(chat.upyunMediaPutUrl);
         putUrl.setHeads(chat.headers);
         putUrl.setMuiltParams(new Object[]{"file", file});
@@ -867,7 +867,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
      *
      * @param file upload file
      */
-    private void uploadMedia(final File file, final Chat.FileType type, String strType) {
+    private void uploadMedia(final File file, final String type, String strType) {
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
@@ -875,7 +875,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         try {
             mSendTime = (int) (System.currentTimeMillis() / 1000);
             final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                    file.getPath(), type.getName(), mSendTime);
+                    file.getPath(), type, mSendTime);
 
             //生成New页面的消息并通知更改
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
@@ -1047,7 +1047,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
                         File file = selectPicture(selectedImage);
-                        uploadMedia(file, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                        uploadMedia(file, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                     }
                 }
                 break;
@@ -1057,7 +1057,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
                 if (bitmap != null) {
                     File compressedCameraFile = compressImage(bitmap, mCameraFile);
-                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                    uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                 }
                 break;
         }

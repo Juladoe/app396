@@ -38,14 +38,14 @@ public class NotificationUtil {
     public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
             Chat chat = new Chat(xgMessage);
-            switch (chat.getFileType()) {
-                case IMAGE:
+            switch (chat.type) {
+                case PushUtil.ChatMsgType.IMAGE:
                     xgMessage.content = String.format("[%s]", Const.MEDIA_IMAGE);
                     break;
-                case AUDIO:
+                case PushUtil.ChatMsgType.AUDIO:
                     xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
                     break;
-                case MULTI:
+                case PushUtil.ChatMsgType.MULTI:
                     RedirectBody redirectBody = new Gson().fromJson(xgMessage.content, RedirectBody.class);
                     xgMessage.content = redirectBody.content;
                     break;

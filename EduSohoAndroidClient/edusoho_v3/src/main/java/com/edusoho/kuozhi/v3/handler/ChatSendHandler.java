@@ -78,7 +78,7 @@ public class ChatSendHandler {
 
     private Chat updateChatData(int toId, String content, int createdTime) {
         Chat chat = new Chat(app.loginUser.id, toId, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                content, Chat.FileType.MULTI.toString().toLowerCase(), createdTime);
+                content, PushUtil.ChatMsgType.MULTI.toLowerCase(), createdTime);
         chat.direct = Chat.Direct.SEND;
         chat.delivery = PushUtil.MsgDeliveryType.UPLOADING;
         chat.headImgUrl = app.loginUser.mediumAvatar;
@@ -178,7 +178,7 @@ public class ChatSendHandler {
         customContent.setFromId(toId);
         customContent.setNickname(title);
         customContent.setImgUrl(avatar);
-        customContent.setTypeMsg(Chat.FileType.MULTI.getName());
+        customContent.setTypeMsg(PushUtil.ChatMsgType.MULTI);
         customContent.setCreatedTime((int) (System.currentTimeMillis() / 1000));
         customContent.setTypeBusiness(TypeBusinessEnum.FRIEND.getName());
 

@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
 
@@ -317,7 +318,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      *
      * @param chat
      */
-    public void sendMediaMsg(final Chat chat, Chat.FileType type) {
+    public void sendMediaMsg(final Chat chat, String type) {
 
     }
 
@@ -329,7 +330,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      *
      * @param file upload file
      */
-    public void uploadMedia(final File file, final Chat.FileType type, String strType) {
+    public void uploadMedia(final File file, final String type, String strType) {
 
     }
 
@@ -340,7 +341,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param chat chatInfo
      * @param type Media Type
      */
-    public void uploadUnYunMedia(final File file, final ClassroomDiscussEntity chat, final Chat.FileType type) {
+    public void uploadUnYunMedia(final File file, final ClassroomDiscussEntity chat, final String type) {
 
     }
 
@@ -522,7 +523,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
                         File file = selectPicture(selectedImage);
-                        uploadMedia(file, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                        uploadMedia(file, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                     }
                 }
                 break;
@@ -532,7 +533,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
                 if (bitmap != null) {
                     File compressedCameraFile = compressImage(bitmap, mCameraFile);
-                    uploadMedia(compressedCameraFile, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                    uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                 }
                 break;
         }
@@ -552,7 +553,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
      * @param content
      * @return
      */
-    private V2CustomContent getV2CustomContent(Chat.FileType fileType, TypeBusinessEnum typeBusiness, String content) {
+    private V2CustomContent getV2CustomContent(String fileType, TypeBusinessEnum typeBusiness, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
 
         return v2CustomContent;
@@ -632,7 +633,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
             } else {
                 if (isSave) {
                     Log.d(TAG, "正常保存上传");
-                    uploadMedia(mUploadAudio, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                    uploadMedia(mUploadAudio, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
                     mViewSpeakContainer.setVisibility(View.GONE);
                 } else {
                     Log.d(TAG, "录制时间太短");
