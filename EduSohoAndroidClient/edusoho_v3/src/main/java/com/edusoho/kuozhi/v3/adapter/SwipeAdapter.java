@@ -139,13 +139,24 @@ public class SwipeAdapter extends BaseAdapter {
         }
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.tvTitle.getLayoutParams();
-        if (PushUtil.ChatUserType.TEACHER.equals(item.type)) {
-            viewHolder.tvRole.setVisibility(View.VISIBLE);
-            layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
-        } else {
-            viewHolder.tvRole.setVisibility(View.GONE);
-            layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.tv_post_time);
+        switch (item.type) {
+            case PushUtil.ChatUserType.TEACHER:
+                viewHolder.tvRole.setVisibility(View.VISIBLE);
+                viewHolder.tvRole.setText("老师");
+                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.green_alpha));
+                layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
+                break;
+            case PushUtil.ChatUserType.CLASSROOM:
+                viewHolder.tvRole.setVisibility(View.VISIBLE);
+                viewHolder.tvRole.setText("班级");
+                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.blue_alpha));
+                layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
+                break;
+            default:
+                viewHolder.tvRole.setVisibility(View.GONE);
+                layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.tv_post_time);
         }
+
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
         viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
