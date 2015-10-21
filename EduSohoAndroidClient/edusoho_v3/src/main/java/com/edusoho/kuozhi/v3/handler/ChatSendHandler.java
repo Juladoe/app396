@@ -155,7 +155,7 @@ public class ChatSendHandler {
                     chat.id = result.id;
                     status = PushUtil.MsgDeliveryType.SUCCESS;
                 }
-                updateChatStatus(chat, PushUtil.MsgDeliveryType.FAILED, bundle);
+                updateChatStatus(chat, status, bundle);
                 if (mFinishCallback != null) {
                     mFinishCallback.success(null);
                 }
