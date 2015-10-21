@@ -24,7 +24,7 @@ public class HomeworkAnswerCardActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homework_answer_card_layout);
-        mHomeworkActivity = HomeworkActivity.homeworkActivity;
+        mHomeworkActivity = HomeworkActivity.getInstance();
         initView();
     }
 

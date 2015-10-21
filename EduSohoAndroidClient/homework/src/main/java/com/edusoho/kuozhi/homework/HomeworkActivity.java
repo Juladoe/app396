@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class HomeworkActivity extends ActionBarBaseActivity implements IHomeworkQuestionResult {
 
-    public static HomeworkActivity homeworkActivity;
+    private static HomeworkActivity homeworkActivity;
     public static final String HOMEWORK_ID = "homeworkId";
     private int mHomeWorkId;
     private String mType;
@@ -132,5 +132,9 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
             app.mEngine.runNormalPluginWithBundle("HomeworkAnswerCardActivity",mContext,null);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static HomeworkActivity getInstance(){
+        return homeworkActivity;
     }
 }
