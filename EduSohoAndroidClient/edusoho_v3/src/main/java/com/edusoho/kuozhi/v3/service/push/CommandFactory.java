@@ -35,7 +35,8 @@ public class CommandFactory {
     public static PushCommand V2Make(Pusher pusher) {
         PushCommand pushCommand = null;
         V2CustomContent v2CustomContent = pusher.getV2CustomContent();
-        switch (v2CustomContent.getBody().getType()) {
+        String bodyType = v2CustomContent.getTo().getType();
+        switch (bodyType) {
             case PushUtil.CourseType.LESSON_PUBLISH:
                 pushCommand = new PushLessonPublishCommand(pusher);
                 break;
@@ -61,7 +62,8 @@ public class CommandFactory {
                     if (v2CustomContent.getFrom().getId() != EdusohoApp.app.loginUser.id) {
                         pushCommand = new PushClassRoomMsgCommand(pusher);
                     }
-                } else {
+                } else if (PushUtil.ChatUserType.FRIEND.equals(bodyType) ||
+                        PushUtil.ChatUserType.TEACHER.equals(bodyType)) {
                     pusher.convertWrapperMessage2V2();
                     pushCommand = new PushMsgCommand(pusher);
                 }

@@ -17,7 +17,6 @@ public class Chat extends BaseMsgEntity {
     public String nickname;
 
     public Direct direct;
-    public String type;
 
     public String custom;
 
@@ -43,7 +42,6 @@ public class Chat extends BaseMsgEntity {
         this.toId = toId;
         this.nickname = nickname;
         this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
-        this.type = type;
     }
 
     public Chat(int chatId, int id, int fromId, int toId, String nickname, String headImgUrl, String content, String type, int delivery, int createdTime) {
@@ -53,7 +51,6 @@ public class Chat extends BaseMsgEntity {
         this.toId = toId;
         this.nickname = nickname;
         this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
-        this.type = type;
     }
 
     public Chat(WrapperXGPushTextMessage message) {
@@ -68,7 +65,6 @@ public class Chat extends BaseMsgEntity {
         type = customContent.getTypeMsg();
         createdTime = customContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
-        type = customContent.getTypeBusiness();
         if (type == PushUtil.ChatMsgType.TEXT) {
             delivery = PushUtil.MsgDeliveryType.SUCCESS;
         }
