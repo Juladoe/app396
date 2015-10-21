@@ -92,7 +92,7 @@ public class Chat extends BaseMsgEntity {
         });
     }
 
-    public static enum Direct {
+    public enum Direct {
         SEND, RECEIVE;
 
         public static Direct getDirect(boolean n) {
@@ -103,30 +103,4 @@ public class Chat extends BaseMsgEntity {
             }
         }
     }
-
-//    /**
-//     * 资源类型
-//     */
-//    public static enum FileType {
-//        TEXT("text"), IMAGE("image"), AUDIO("audio"), VIDEO("video"), MULTI("multi");
-//
-//        private String name;
-//
-//        private FileType(String n) {
-//            this.name = n;
-//        }
-//
-//        public String getName() {
-//            return this.name;
-//        }
-//
-//        public static FileType getType(String name) {
-//            for (FileType type : FileType.values()) {
-//                if (type.getName().equals(name)) {
-//                    return type;
-//                }
-//            }
-//            return TEXT;
-//        }
-//    }
 }
