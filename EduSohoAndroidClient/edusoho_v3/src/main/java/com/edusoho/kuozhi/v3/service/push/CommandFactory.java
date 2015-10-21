@@ -35,7 +35,7 @@ public class CommandFactory {
     public static PushCommand V2Make(Pusher pusher) {
         PushCommand pushCommand = null;
         V2CustomContent v2CustomContent = pusher.getV2CustomContent();
-        String bodyType = v2CustomContent.getTo().getType();
+        String bodyType = v2CustomContent.getBody().getType();
         switch (bodyType) {
             case PushUtil.CourseType.LESSON_PUBLISH:
                 pushCommand = new PushLessonPublishCommand(pusher);

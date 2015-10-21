@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
@@ -38,6 +39,7 @@ public class NotificationUtil {
     public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         try {
             Chat chat = new Chat(xgMessage);
+            New newModel = new New(xgMessage);
             switch (chat.type) {
                 case PushUtil.ChatMsgType.IMAGE:
                     xgMessage.content = String.format("[%s]", Const.MEDIA_IMAGE);
@@ -57,8 +59,6 @@ public class NotificationUtil {
                             .setContentTitle(xgMessage.title)
                             .setContentText(xgMessage.content).setAutoCancel(true);
 
-            int fromId = chat.fromId;
-
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
@@ -67,16 +67,16 @@ public class NotificationUtil {
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, chat.headImgUrl);
             notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
-            notifyIntent.putExtra(Const.NEWS_TYPE, PushUtil.ChatUserType.FRIEND);
+            notifyIntent.putExtra(Const.NEWS_TYPE, newModel.type);
             notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
             if (isAppExit(context)) {
                 mMessage = xgMessage;
             }
-            PendingIntent pendIntent = PendingIntent.getActivity(context, fromId,
+            PendingIntent pendIntent = PendingIntent.getActivity(context, chat.fromId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
-            mNotificationManager.notify(fromId, mBuilder.build());
+            mNotificationManager.notify(chat.fromId, mBuilder.build());
         } catch (Exception ex) {
             Log.d("showMsgNotification-->", ex.getMessage());
         }
