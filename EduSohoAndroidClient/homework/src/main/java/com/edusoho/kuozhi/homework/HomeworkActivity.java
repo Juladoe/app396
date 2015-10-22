@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.listener.IHomeworkQuestionResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
@@ -25,6 +26,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -35,7 +37,7 @@ import java.util.List;
  */
 public class HomeworkActivity extends ActionBarBaseActivity implements IHomeworkQuestionResult, NormalCallback<VolleyError> {
 
-    public static HomeworkActivity homeworkActivity;
+    private static HomeworkActivity homeworkActivity;
     public static final String HOMEWORK_ID = "homeworkId";
     public static final int CHANGE_ANSWER = 0100;
     public static final int SUBMIT_HOMEWORK = 0200;
@@ -184,6 +186,10 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
         return super.onOptionsItemSelected(item);
     }
 
+    public static HomeworkActivity getInstance() {
+        return homeworkActivity;
+    }
+
     protected void showHomeWorkCard() {
         HomeWorkCardFragment cardFragment = new HomeWorkCardFragment();
         cardFragment.setTitle("作业答题卡");
@@ -224,7 +230,7 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
     @Override
     public MessageType[] getMsgTypes() {
         String source = getClass().getSimpleName();
-        return new MessageType[] {
+        return new MessageType[]{
                 new MessageType(CHANGE_ANSWER, source),
                 new MessageType(SUBMIT_HOMEWORK, source)
         };
