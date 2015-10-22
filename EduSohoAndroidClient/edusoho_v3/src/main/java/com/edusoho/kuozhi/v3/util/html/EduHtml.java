@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class EduHtml {
 
     private static Pattern IMAGE_FILTER = Pattern.compile("<[^>]+/?>", Pattern.DOTALL);
-    private static Pattern IMAGE_URL_FILTER = Pattern.compile("<img src=['\"]([^>'\"]+)['\"][^>]+>", Pattern.DOTALL);
+    public static Pattern IMAGE_URL_FILTER = Pattern.compile("<img src=['\"]([^>'\"]+)['\"][^>]+>", Pattern.DOTALL);
     private static boolean mIsClickable = true;
     private static boolean mIsMove = false;
     private static float mShiftDownY;
