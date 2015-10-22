@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class HomeworkActivity extends ActionBarBaseActivity implements IHomeworkQuestionResult, NormalCallback<VolleyError> {
 
+    public static HomeworkActivity homeworkActivity;
     public static final String HOMEWORK_ID = "homeworkId";
     public static final int CHANGE_ANSWER = 0100;
     public static final int SUBMIT_HOMEWORK = 0200;
