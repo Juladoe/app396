@@ -411,4 +411,16 @@
 
     <!-- pym color -->
     <color name="btn_bg">#ff884a</color>
+    <color name="btn_bg_grey">#ccc</color>
+    <color name="btn_bg_black">#0b0b0b</color>
+    <color name="primary">#37b97d</color>
+    <color name="assist">#444</color>
+    <color name="error">#e96969</color>
+    <color name="backgroud">#f7f7f7</color>
+    <color name="font_1">#444</color>
+    <color name="font_2">#666</color>
+    <color name="font_3">#999</color>
+    <color name="grounding">#f7f7f7</color>
+    <color name="grounding_operation">#fafafa</color>
+    <color name="feedback">#f0f0f0</color>
 </resources>
