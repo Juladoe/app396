@@ -67,11 +67,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -170,6 +167,18 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         registerReceiver(mAudioDownloadReceiver, intentFilter);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        initData();
+        mAdapter.clear();
+        mAdapter.addItems(getChatList(0));
+        mStart = mAdapter.getCount();
+        lvMessage.post(mListViewSelectRunnable);
+        mAdapter.setSendImageClickListener(this);
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
+    }
+
     private void initView() {
         mHandler = new VolumeHandler(this);
         mAudioDownloadReceiver = new AudioDownloadReceiver();
@@ -199,7 +208,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mViewSpeakContainer = findViewById(R.id.recording_container);
         mViewSpeakContainer.bringToFront();
         initData();
-        mAdapter = new ChatAdapter(mContext, getChatList(0), mFromUserInfo);
+        mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserInfo);
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
         mAudioDownloadReceiver.setAdapter(mAdapter);
@@ -231,35 +240,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 return false;
             }
         });
-        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
-    }
-
-    private Runnable mListViewSelectRunnable = new Runnable() {
-        @Override
-        public void run() {
-            lvMessage.setSelection(mStart);
-        }
-    };
-
-    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Bundle bundle = new Bundle();
-            bundle.putInt(Const.FROM_ID, mFromId);
-            bundle.putString(Const.NEWS_TYPE, mType);
-            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
-        }
-    };
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        initData();
-        mAdapter.clear();
-        mAdapter.addItems(getChatList(0));
-        mStart = mAdapter.getCount();
-        lvMessage.post(mListViewSelectRunnable);
-        mAdapter.setSendImageClickListener(this);
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
@@ -297,6 +277,24 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         initCacheFolder();
         getFriendUserInfo();
     }
+
+    private Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            lvMessage.setSelection(mStart);
+        }
+    };
+
+    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.FROM_ID, mFromId);
+            bundle.putString(Const.NEWS_TYPE, mType);
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
+        }
+    };
+
 
     private ArrayList<Chat> getChatList(int start) {
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, mToId, mFromId, mToId);
@@ -379,43 +377,30 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         });
     }
 
-    /**
-     * update badge the ListView of NewsFragment
-     *
-     * @param message xg message
-     */
-    private void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
-        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
-    }
+    @Override
+    public void sendMsgAgain(final BaseMsgEntity model) {
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", app.loginUser.nickname);
+        params.put("content", model.content);
+        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
 
-    /**
-     * 存本地的Custom信息
-     *
-     * @param type
-     * @param content
-     * @return
-     */
-    private V2CustomContent getV2CustomContent(String type, String content) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(mFromId);
-        fromEntity.setType(mType);
-        fromEntity.setImage(mFromUserInfo.mediumAvatar);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mFromId);
-        toEntity.setType(PushUtil.ChatUserType.USER);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(type);
-        bodyEntity.setContent(content);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(2);
-        v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
+                });
+                if (result != null && result.getResult()) {
+                    model.id = result.id;
+                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (Chat) model);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "发送信息失败");
+            }
+        });
     }
 
     @Override
@@ -446,28 +431,127 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     }
 
-    @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("content", model.content);
-        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
+    /**
+     * 上传资源
+     *
+     * @param file upload file
+     */
+    private void uploadMedia(final File file, final String type, String strType) {
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
+        try {
+            mSendTime = (int) (System.currentTimeMillis() / 1000);
+            final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                    file.getPath(), type, mSendTime);
 
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            //生成New页面的消息并通知更改
+            WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
+            message.setTitle(mFromUserInfo.nickname);
+            message.setContent(String.format("[%s]", strType));
+            V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
+            message.setCustomContentJson(gson.toJson(v2CustomContent));
+            message.isForeground = true;
+            notifyNewFragmentListView2Update(message);
+
+            addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
+
+            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    if (result != null) {
+                        chat.upyunMediaPutUrl = result.putUrl;
+                        chat.upyunMediaGetUrl = result.getUrl;
+                        chat.headers = result.getHeaders();
+                        uploadUnYunMedia(file, chat, type);
+                        saveUploadResult(result.putUrl, result.getUrl);
+                    } else {
+                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
+                    }
+                }
+            });
+            viewMediaLayout.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    /**
+     * get upyun upload info from push server
+     *
+     * @param file     upload file
+     * @param callback callback
+     */
+    private void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback) {
+        String path = String.format(Const.GET_UPLOAD_INFO, mFromId, file.length(), file.getName());
+        RequestUrl url = app.bindPushUrl(path);
+        ajaxGet(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
+                UpYunUploadResult result = parseJsonValue(response, new TypeToken<UpYunUploadResult>() {
                 });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (Chat) model);
+                callback.success(result);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.success(null);
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "get upload info from upyun failed");
+            }
+        });
+    }
+
+    /**
+     * Upload media resource to upyun
+     *
+     * @param file Upload file
+     * @param chat chatInfo
+     * @param type Media Type
+     */
+    private void uploadUnYunMedia(final File file, final Chat chat, final String type) {
+        RequestUrl putUrl = new RequestUrl(chat.upyunMediaPutUrl);
+        putUrl.setHeads(chat.headers);
+        putUrl.setMuiltParams(new Object[]{"file", file});
+        ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "success");
+                sendMediaMsg(chat, type);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "upload media res to upyun failed");
+            }
+        }, Request.Method.PUT);
+    }
+
+    private void saveUploadResult(String putUrl, String getUrl) {
+        String path = String.format(Const.SAVE_UPLOAD_INFO, mFromId);
+        RequestUrl url = app.bindPushUrl(path);
+        HashMap<String, String> hashMap = url.getParams();
+        hashMap.put("putUrl", putUrl);
+        hashMap.put("getUrl", getUrl);
+        ajaxPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject result = new JSONObject(response);
+                    if ("success".equals(result.getString("result"))) {
+                        Log.d(TAG, "save upload result success");
+                    }
+                } catch (JSONException e) {
+                    Log.d(TAG, "convert json to obj error");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
+                Log.d(TAG, "save upload info error");
             }
         });
     }
@@ -726,6 +810,91 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
     //endregion
 
+
+    /**
+     * update badge the ListView of NewsFragment
+     *
+     * @param message xg message
+     */
+    private void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.GET_PUSH_DATA, message);
+        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
+        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
+    }
+
+    /**
+     * 保持一条聊天记录到数据库，并添加到ListView
+     *
+     * @param delivery 是否送达
+     * @param chat     一行聊天记录
+     */
+    private void addSendMsgToListView(int delivery, Chat chat) {
+        chat.direct = Chat.Direct.SEND;
+        chat.delivery = delivery;
+        long chatId = mChatDataSource.create(chat);
+        chat.chatId = (int) chatId;
+        if (app.loginUser != null) {
+            chat.headImgUrl = app.loginUser.mediumAvatar;
+        }
+        mAdapter.addItem(chat);
+    }
+
+    /**
+     * 更新一行聊天记录，并更新对应的Item
+     *
+     * @param delivery 是否送达
+     * @param chat     一行聊天记录
+     */
+    private void updateSendMsgToListView(int delivery, Chat chat) {
+        chat.delivery = delivery;
+        mChatDataSource.update(chat);
+        mAdapter.updateItemByChatId(chat);
+    }
+
+    //region local func
+
+    /**
+     * 初始化Cache文件夹
+     */
+    private void initCacheFolder() {
+        File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs();
+        }
+        File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        if (!imageThumbFolder.exists()) {
+            imageThumbFolder.mkdirs();
+        }
+        File audioFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE);
+        if (!audioFolder.exists()) {
+            audioFolder.mkdirs();
+        }
+    }
+
+    /**
+     * 获取对方信息
+     */
+    private void getFriendUserInfo() {
+        if (mFromUserInfo == null) {
+            RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
+            HashMap<String, String> params = requestUrl.getParams();
+            params.put("userId", mFromId + "");
+            ajaxPost(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
+                    });
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "无法获取对方信息");
+                }
+            });
+        }
+    }
+
     /**
      * 从图库获取图片
      */
@@ -809,235 +978,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         return compressedFile;
     }
 
-    /**
-     * get upyun upload info from push server
-     *
-     * @param file     upload file
-     * @param callback callback
-     */
-    private void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback) {
-        String path = String.format(Const.GET_UPLOAD_INFO, mFromId, file.length(), file.getName());
-        RequestUrl url = app.bindPushUrl(path);
-        ajaxGet(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                UpYunUploadResult result = parseJsonValue(response, new TypeToken<UpYunUploadResult>() {
-                });
-                callback.success(result);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.success(null);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                Log.d(TAG, "get upload info from upyun failed");
-            }
-        });
-    }
-
-    /**
-     * Upload media resource to upyun
-     *
-     * @param file Upload file
-     * @param chat chatInfo
-     * @param type Media Type
-     */
-    private void uploadUnYunMedia(final File file, final Chat chat, final String type) {
-        RequestUrl putUrl = new RequestUrl(chat.upyunMediaPutUrl);
-        putUrl.setHeads(chat.headers);
-        putUrl.setMuiltParams(new Object[]{"file", file});
-        ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "success");
-                sendMediaMsg(chat, type);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                Log.d(TAG, "upload media res to upyun failed");
-            }
-        }, Request.Method.PUT);
-    }
-
-    /**
-     * 上传资源
-     *
-     * @param file upload file
-     */
-    private void uploadMedia(final File file, final String type, String strType) {
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
-        try {
-            mSendTime = (int) (System.currentTimeMillis() / 1000);
-            final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                    file.getPath(), type, mSendTime);
-
-            //生成New页面的消息并通知更改
-            WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-            message.setTitle(mFromUserInfo.nickname);
-            message.setContent(String.format("[%s]", strType));
-            V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
-            message.setCustomContentJson(gson.toJson(v2CustomContent));
-            message.isForeground = true;
-            notifyNewFragmentListView2Update(message);
-
-            addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
-
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        chat.upyunMediaPutUrl = result.putUrl;
-                        chat.upyunMediaGetUrl = result.getUrl;
-                        chat.headers = result.getHeaders();
-                        uploadUnYunMedia(file, chat, type);
-                        saveUploadResult(result.putUrl, result.getUrl);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
-                    }
-                }
-            });
-            viewMediaLayout.setVisibility(View.GONE);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    private void saveUploadResult(String putUrl, String getUrl) {
-        String path = String.format(Const.SAVE_UPLOAD_INFO, mFromId);
-        RequestUrl url = app.bindPushUrl(path);
-        HashMap<String, String> hashMap = url.getParams();
-        hashMap.put("putUrl", putUrl);
-        hashMap.put("getUrl", getUrl);
-        ajaxPost(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject result = new JSONObject(response);
-                    if ("success".equals(result.getString("result"))) {
-                        Log.d(TAG, "save upload result success");
-                    }
-                } catch (JSONException e) {
-                    Log.d(TAG, "convert json to obj error");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "save upload info error");
-            }
-        });
-    }
-
-    /**
-     * 保持一条聊天记录到数据库，并添加到ListView
-     *
-     * @param delivery 是否送达
-     * @param chat     一行聊天记录
-     */
-    private void addSendMsgToListView(int delivery, Chat chat) {
-        chat.direct = Chat.Direct.SEND;
-        chat.delivery = delivery;
-        long chatId = mChatDataSource.create(chat);
-        chat.chatId = (int) chatId;
-        if (app.loginUser != null) {
-            chat.headImgUrl = app.loginUser.mediumAvatar;
-        }
-        mAdapter.addItem(chat);
-    }
-
-    /**
-     * 更新一行聊天记录，并更新对应的Item
-     *
-     * @param delivery 是否送达
-     * @param chat     一行聊天记录
-     */
-    private void updateSendMsgToListView(int delivery, Chat chat) {
-        chat.delivery = delivery;
-        mChatDataSource.update(chat);
-        mAdapter.updateItemByChatId(chat);
-    }
-
-    /**
-     * 上传的Image复制到本地缓存
-     *
-     * @param originFile 小于500k的原图
-     */
-    private File copyImageFileToCache(File originFile) {
-        String targetPath;
-        String targetFileName = System.currentTimeMillis() + "";
-
-        targetPath = EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE;
-        File targetFile = new File(targetPath + "/" + targetFileName);
-        if (targetFile.exists()) {
-            targetFile.delete();
-        }
-        FileInputStream fis;
-        FileOutputStream fos;
-        FileChannel in;
-        FileChannel out;
-        try {
-            fis = new FileInputStream(originFile);
-            fos = new FileOutputStream(targetFile);
-            in = fis.getChannel();
-            out = fos.getChannel();
-            in.transferTo(0, in.size(), out);
-            fis.close();
-            fos.close();
-            in.close();
-            out.close();
-            return targetFile;
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * 初始化Cache文件夹
-     */
-    private void initCacheFolder() {
-        File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
-        File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
-        if (!imageThumbFolder.exists()) {
-            imageThumbFolder.mkdirs();
-        }
-        File audioFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE);
-        if (!audioFolder.exists()) {
-            audioFolder.mkdirs();
-        }
-    }
-
-    /**
-     * 获取对方信息
-     */
-    private void getFriendUserInfo() {
-        if (mFromUserInfo == null) {
-            RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("userId", mFromId + "");
-            ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
-                    });
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "无法获取对方信息");
-                }
-            });
-        }
-    }
+    //endregion
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1082,6 +1023,33 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 存本地的Custom信息
+     *
+     * @param type
+     * @param content
+     * @return V2CustomContent
+     */
+    private V2CustomContent getV2CustomContent(String type, String content) {
+        V2CustomContent v2CustomContent = new V2CustomContent();
+        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setId(mFromId);
+        fromEntity.setType(mType);
+        fromEntity.setImage(mFromUserInfo.mediumAvatar);
+        v2CustomContent.setFrom(fromEntity);
+        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
+        toEntity.setId(mFromId);
+        toEntity.setType(PushUtil.ChatUserType.USER);
+        v2CustomContent.setTo(toEntity);
+        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
+        bodyEntity.setType(type);
+        bodyEntity.setContent(content);
+        v2CustomContent.setBody(bodyEntity);
+        v2CustomContent.setV(2);
+        v2CustomContent.setCreatedTime(mSendTime);
+        return v2CustomContent;
     }
 
     @Override
