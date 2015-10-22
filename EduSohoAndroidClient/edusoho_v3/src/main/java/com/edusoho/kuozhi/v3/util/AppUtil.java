@@ -86,16 +86,18 @@ public class AppUtil {
     }
 
     public static Bitmap getBitmapFromFile(File file) {
+        return getBitmapFromFile(file, (int) (EdusohoApp.screenW * 0.5f));
+    }
+
+    public static Bitmap getBitmapFromFile(File file, int width) {
         Bitmap bitmap;
         BitmapFactory.Options option = new BitmapFactory.Options();
         option.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(file.getAbsolutePath(), option);
-        int width = (int) (EdusohoApp.screenW * 0.5f);
         option.inSampleSize = computeSampleSize(option, -1, width * width);
         option.inJustDecodeBounds = false;
         try {
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
-            Log.d(null, "bm->" + bitmap);
         } catch (Exception e) {
             bitmap = null;
         }
@@ -320,18 +322,35 @@ public class AppUtil {
 
     public static Bitmap compressImage(Bitmap image, ByteArrayOutputStream bos) {
         Bitmap bitmap = null;
+        boolean isOutStream = false;
+        ByteArrayInputStream isBm = null;
         try {
             int options = 100;
+            if (bos == null) {
+                isOutStream = true;
+                bos = new ByteArrayOutputStream();
+            }
             image.compress(Bitmap.CompressFormat.JPEG, options, bos);
             while (bos.toByteArray().length / 1024 > 200) {
                 options -= 2;
                 bos.reset();
                 image.compress(Bitmap.CompressFormat.JPEG, options, bos);
             }
-            ByteArrayInputStream isBm = new ByteArrayInputStream(bos.toByteArray());
+            isBm = new ByteArrayInputStream(bos.toByteArray());
             bitmap = BitmapFactory.decodeStream(isBm, null, null);
         } catch (Exception e) {
             Log.e("compressImage", e.getMessage());
+        } finally {
+            try {
+                if (isBm != null) {
+                    isBm.close();
+                }
+                if (isOutStream && bos != null) {
+                    bos.close();
+                }
+            }catch (Exception e) {
+
+            }
         }
         return bitmap;
     }

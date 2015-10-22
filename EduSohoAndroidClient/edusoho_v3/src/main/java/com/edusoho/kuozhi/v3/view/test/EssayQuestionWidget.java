@@ -275,8 +275,6 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         option.inSampleSize = 2;
         Bitmap bitmap = BitmapFactory.decodeFile(filePath, option);
         insertImage(contentEdt, filePath, bitmap, imageTag);
-
-        Log.d(null, "edit->" + contentEdt.getText().toString());
     }
 
     @Override
