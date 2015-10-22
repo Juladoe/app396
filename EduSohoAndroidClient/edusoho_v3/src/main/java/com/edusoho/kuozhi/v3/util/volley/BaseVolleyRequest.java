@@ -68,7 +68,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     @Override
     protected Map<String, String> getParams() throws AuthFailureError {
-        return mRequestUrl.getParams();
+        return mRequestUrl.isMuiltkeyParams() ? mRequestUrl.getMuiltKeyParams() : mRequestUrl.getParams();
     }
 
     @Override

@@ -299,7 +299,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.icon_do_homework) {
+        if (item.getItemId() == R.id.menu_homework) {
             mExerciseDialog = new ExerciseOptionDialog(mContext, getLessonId());
             mExerciseDialog.show();
         }

@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.util.html;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
@@ -42,6 +43,16 @@ public class EduTagHandler implements Html.TagHandler {
                 String style = attributes.get("style");
                 setStyle(style, editable);
             }
+        } else if ("ep".equalsIgnoreCase(tag)) {
+            handleP(editable, opening);
+        } else if ("ediv".equalsIgnoreCase(tag)) {
+            handleP(editable, opening);
+        }
+    }
+
+    private void handleP(Editable editable, boolean opening) {
+        if (editable.length() > 0 && opening) {
+            editable.append("\n");
         }
     }
 

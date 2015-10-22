@@ -157,7 +157,7 @@ public class ExerciseOptionDialog extends Dialog {
 
         public int iconRes;
         public String title;
-        public String type;;
+        public String type;
         public String action;
     }
 

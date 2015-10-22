@@ -46,6 +46,13 @@ public class MessageEngine {
         return messageEngine;
     }
 
+    public static MessageEngine getInstance() {
+        if (messageEngine == null) {
+            messageEngine = init();
+        }
+        return messageEngine;
+    }
+
     private String getMsgTargetType(Object target) {
         if (target instanceof Class) {
             return ((Class) target).getSimpleName();

@@ -28,9 +28,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.v3.model.bal.test.Question;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
@@ -55,6 +57,7 @@ import cn.trinea.android.common.util.ImageUtils;
 public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
 
     protected LinearLayout fillLayout;
+    private int mSpaceCount;
 
     public FillHomeworkQuestionWidget(Context context) {
         super(context);
@@ -72,36 +75,41 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int index, int i2, int i3) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("index", mIndex - 1);
-            bundle.putString("QuestionType", QuestionType.material.name());
-            ArrayList<String> data = new ArrayList<String>();
-            int count = fillLayout.getChildCount();
-            for (int i=0; i < count; i++) {
-                EditText editText = (EditText) fillLayout.getChildAt(i);
-                data.add(editText.getText().toString());
-            }
-
-            bundle.putStringArrayList("data", data);
-            EdusohoApp.app.sendMsgToTarget(
-                    TestpaperActivity.CHANGE_ANSWER, bundle, TestpaperActivity.class);
+            updateAnswerData();
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
-
         }
     };
 
+    private void updateAnswerData() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", mIndex - 1);
+        bundle.putString("QuestionType", QuestionType.material.name());
+        ArrayList<String> data = new ArrayList<String>();
+        int count = fillLayout.getChildCount();
+        for (int i=0; i < count; i++) {
+            EditText editText = (EditText) fillLayout.getChildAt(i);
+            data.add(editText.getText().toString());
+        }
+
+        bundle.putStringArrayList("data", data);
+        MessageEngine.getInstance().sendMsgToTaget(
+                HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
+    }
 
     @Override
     protected Spanned getQuestionStem() {
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         Spanned spanned = Html.fromHtml(
-                mQuestion.getStem(), new EduImageGetterHandler(mContext, stemView), new EduTagHandler());
+                coverHtmlTag(mQuestion.getStem()),
+                new EduImageGetterHandler(mContext, stemView),
+                new EduTagHandler()
+        );
 
         spannableStringBuilder
-                .append(mIndex + " ")
+                .append(mIndex + " 、 ")
                 .append(spanned);
         return parseStem(spannableStringBuilder);
     }
@@ -110,12 +118,10 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     protected void invalidateData() {
         super.invalidateData();
         fillLayout = (LinearLayout) this.findViewById(R.id.hw_question_fill_layout);
-
-        List<String> answers = mQuestion.getAnswer();
         Resources resources = mContext.getResources();
         fillLayout.removeAllViews();
-        int size = answers.size();
-        for (int i=1; i <= size; i++) {
+
+        for (int i=1; i <= mSpaceCount; i++) {
             EditText editText = new EditText(mContext);
             editText.setSingleLine();
             int padding = AppUtil.dp2px(mContext, 8);
@@ -133,49 +139,27 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             layoutParams.topMargin = AppUtil.dp2px(mContext, 16);
             fillLayout.addView(editText, layoutParams);
         }
-
-    }
-
-    @Override
-    protected String listToStr(ArrayList<String> arrayList)
-    {
-        int index = 1;
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String answer : arrayList) {
-            if (TextUtils.isEmpty(answer)) {
-                continue;
-            }
-            stringBuilder.append(String.format("答案(%d):", index++));
-            stringBuilder.append(answer);
-            stringBuilder.append("\n");
-        }
-        int length = stringBuilder.length();
-        if (length > 0) {
-            stringBuilder.delete(length - 1, length);
-        }
-        return stringBuilder.toString();
     }
 
     private Spanned parseStem(SpannableStringBuilder stem)
     {
         Pattern stemPattern = Pattern.compile("(\\[\\[[^\\[\\]]+\\]\\])", Pattern.DOTALL);
         Matcher matcher = stemPattern.matcher(stem);
-        int count = 0;
         Paint paint = new Paint();
         paint.setTextSize(20);
         paint.setColor(mContext.getResources().getColor(R.color.base_black_87));
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 
         while (matcher.find()) {
-            count ++;
+            mSpaceCount ++;
             CharSequence countStr = stem.subSequence(matcher.start(), matcher.end());
-            Drawable drawable = mContext.getResources().getDrawable(R.drawable.homework_fill_edt_bg);
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.homework_fill_span_bg);
             drawable.setBounds(0, 0, 80, 40);
 
             Bitmap bitmap = Bitmap.createBitmap(80, 40, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.draw(canvas);
-            canvas.drawText("(" + count + ")", 25, 25, paint);
+            canvas.drawText("(" + mSpaceCount + ")", 25, 25, paint);
             ImageSpan imageSpan = new ImageSpan(mContext, bitmap);
             SpannableString spannableString = new SpannableString(countStr);
             spannableString.setSpan(imageSpan, 0, countStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

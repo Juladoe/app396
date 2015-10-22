@@ -6,13 +6,18 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
+import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
 import java.util.ArrayList;
@@ -38,11 +43,11 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    sendMsgToTestpaper();
+                    sendMsgToHomework();
                 }
-            };
+    };
 
-    protected void sendMsgToTestpaper() {
+    protected void sendMsgToHomework() {
         Bundle bundle = new Bundle();
         bundle.putInt("index", mIndex - 1);
         bundle.putString("QuestionType", QuestionType.material.name());
@@ -57,8 +62,8 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         }
 
         bundle.putStringArrayList("data", data);
-        EdusohoApp.app.sendMsgToTarget(
-                TestpaperActivity.CHANGE_ANSWER, bundle, TestpaperActivity.class);
+        MessageEngine.getInstance().sendMsgToTaget(
+                HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
     }
 
     @Override
@@ -72,13 +77,17 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             for (int i = 0; i < size; i++) {
                 CheckBox checkBox = initCheckBox(metas.get(i), i + 1);
                 checkBox.setOnCheckedChangeListener(checkedChangeListener);
-                radioGroup.addView(checkBox);
+
+                RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.bottomMargin = mContext.getResources().getDimensionPixelOffset(R.dimen.homework_question_choice_padding);;
+                radioGroup.addView(checkBox, layoutParams);
             }
         }
 
-        /*if (mQuestion.testResult != null) {
+        if (mQuestion.getResult() != null) {
             enable(radioGroup, false);
-            mAnalysisVS = (ViewStub) this.findViewById(R.id.quetion_choice_analysis);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_choice_analysis);
             mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
                 @Override
                 public void onInflate(ViewStub viewStub, View view) {
@@ -87,7 +96,7 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
                 }
             });
             mAnalysisVS.inflate();
-        }*/
+        }
     }
 
     private void initQuestionResult() {

@@ -6,6 +6,8 @@
     android:gravity="center|top"
     android:orientation="vertical">
 
+    <include layout="@layout/load_layout" />
+
     <TextView
         android:id="@+id/homework_name"
         android:layout_width="match_parent"

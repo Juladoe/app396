@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class HomeWorkQuestion {
 
-    private String id;
+    private int id;
 
     private String type;
 
@@ -25,6 +25,16 @@ public class HomeWorkQuestion {
 
     private HomeWorkQuestion parent;
 
+    private HomeWorkItemResult result;
+
+    public HomeWorkItemResult getResult() {
+        return result;
+    }
+
+    public void setResult(HomeWorkItemResult result) {
+        this.result = result;
+    }
+
     public List<HomeWorkQuestion> getItems() {
         return items;
     }
@@ -41,11 +51,11 @@ public class HomeWorkQuestion {
         this.parent = parent;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getId() {
+    public int getId() {
         return this.id;
     }
 

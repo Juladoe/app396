@@ -8,6 +8,8 @@
     android:paddingRight="15dp"
     android:layout_height="match_parent">
 
+    <include layout="@layout/homework_material_stem_include" />
+
     <TextView
         android:layout_below="@id/homework_question_stem"
         android:id="@+id/homework_question_stem"

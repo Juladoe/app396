@@ -30,6 +30,10 @@ public abstract class ModelProvider {
         this.mVolley = VolleySingleton.getInstance(context);
     }
 
+    public static <T> T initProvider(Context context, Class<T> targetClass) {
+        return (T) ProviderFactory.getFactory().create(targetClass, context);
+    }
+
     public static void init(Context context, Object target) {
         try {
             Field[] fields = target.getClass().getDeclaredFields();
@@ -51,6 +55,14 @@ public abstract class ModelProvider {
         ProviderListener<T> providerListener = new ProviderListener<T>() {
         };
         BaseVolleyRequest request = getVolleyRequest(Request.Method.GET, requestUrl, typeToken, providerListener, providerListener);
+        return new RequestOption<T>(request, providerListener);
+    }
+
+    public <T> RequestOption<T> buildSimplePostRequest(
+            RequestUrl requestUrl, TypeToken<T> typeToken) {
+        ProviderListener<T> providerListener = new ProviderListener<T>() {
+        };
+        BaseVolleyRequest request = getVolleyRequest(Request.Method.POST, requestUrl, typeToken, providerListener, providerListener);
         return new RequestOption<T>(request, providerListener);
     }
 

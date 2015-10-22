@@ -4,6 +4,7 @@ import android.os.Build;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * Created by howzhi on 14-9-11.
@@ -15,7 +16,7 @@ public class RequestUrl {
     public HashMap<String, String> params;
     public HashMap<String, Object> muiltParams;
 
-    public IdentityHashMap<String, Object> muiltKeysMap;
+    public IdentityHashMap<String, String> muiltKeysMap;
 
     public RequestUrl() {
         heads = new HashMap<>();
@@ -97,12 +98,16 @@ public class RequestUrl {
         return heads;
     }
 
-    public IdentityHashMap<String, Object> initKeysMap() {
+    public IdentityHashMap<String, String> initKeysMap() {
         muiltKeysMap = new IdentityHashMap<>();
         return muiltKeysMap;
     }
 
-    public IdentityHashMap<String, Object> getKeysMap() {
+    public IdentityHashMap<String, String> getMuiltKeyParams() {
         return muiltKeysMap;
+    }
+
+    public boolean isMuiltkeyParams() {
+        return muiltKeysMap != null;
     }
 }

@@ -10,4 +10,8 @@ import java.util.List;
 public interface IHomeworkQuestionResult {
 
     public List<HomeWorkQuestion> getQuestionList();
+
+    public int getCurrentQuestionIndex();
+
+    public void setCurrentQuestionIndex(int index);
 }
