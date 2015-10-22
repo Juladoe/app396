@@ -407,4 +407,8 @@
     <color name="badge_red">#ff0000</color>
 
     <color name="news_course_title">#576b95</color>
+
+
+    <!-- pym color -->
+    <color name="btn_bg">#ff884a</color>
 </resources>
