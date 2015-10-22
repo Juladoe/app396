@@ -8,9 +8,11 @@ import android.view.ViewStub;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
+import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
@@ -55,8 +57,8 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
                 }
 
                 bundle.putStringArrayList("data", data);
-                EdusohoApp.app.sendMsgToTarget(
-                        TestpaperActivity.CHANGE_ANSWER, bundle, TestpaperActivity.class);
+                MessageEngine.getInstance().sendMsgToTaget(
+                        HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
             }
         });
 

@@ -85,12 +85,16 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
         if (parent != null) {
             ViewStub viewStub = (ViewStub) findViewById(R.id.homework_material_stem);
             mMaterialStem = (TextView) viewStub.inflate();
-            SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(
-                    String.format("(材料题)%s", parent.getStem()),
+
+            SpannableStringBuilder spanned = new SpannableStringBuilder();
+            Spanned stemBody = Html.fromHtml(
+                    parent.getStem(),
                     new EduImageGetterHandler(mContext, mMaterialStem),
                     new EduTagHandler()
             );
 
+            spanned.append("(材料题) ")
+                    .append(stemBody);
             mMaterialStem.setText(EduHtml.addImageClickListener(spanned, mMaterialStem, mContext));
         }
 
@@ -99,19 +103,24 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
      * 获取题干
      */
     protected Spanned getQuestionStem() {
-        String stem = String.format("%d, ", mIndex);
+        String stem = String.format("%d 、", mIndex);
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         SpannableStringBuilder stemSpanned = (SpannableStringBuilder) Html.fromHtml(
-                mQuestion.getStem(),
+                coverHtmlTag(mQuestion.getStem()),
                 new EduImageGetterHandler(mContext, stemView),
                 new EduTagHandler()
         );
+
         spannableStringBuilder
                 .append(stem)
                 .append(stemSpanned);
 
         return spannableStringBuilder;
+    }
+
+    protected String coverHtmlTag(String stem) {
+        return stem.replace("p>", "ep>").replace("div>", "ediv>");
     }
 
     private SpannableStringBuilder handleImageClick(SpannableStringBuilder spanned) {

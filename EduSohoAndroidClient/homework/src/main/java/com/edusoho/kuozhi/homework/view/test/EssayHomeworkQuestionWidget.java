@@ -16,46 +16,44 @@ import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
-import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
+import com.edusoho.kuozhi.homework.adapter.EssayImageSelectAdapter;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
+import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkQuestionFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
-import com.edusoho.kuozhi.v3.model.bal.test.PaperResult;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
-import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
-import com.edusoho.kuozhi.v3.model.bal.test.TestResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.fragment.test.EssayFragment;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
-import com.edusoho.kuozhi.v3.ui.test.TestpaperParseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
 import java.io.File;
 import java.util.ArrayList;
-
 
 /**
  * Created by howzhi on 14-9-29.
  */
-public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget
-        implements MessageEngine.MessageCallback {
+public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
 
     private EditText contentEdt;
-    private ImageView mPhotoBtn;
-    private ImageView mCameraBtn;
+    private ArrayList<String> mRealImageList;
     private View mToolsLayout;
+    private GridView mImageGridView;
+    private EssayImageSelectAdapter mImageGridViewAdapter;
 
     private static final int IMAGE_SIZE = 500;
 
@@ -75,28 +73,49 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget
         super(context, attrs);
     }
 
-    @Override
-    public void invoke(WidgetMessage message) {
-        int type = message.type.code;
-        switch (type) {
-            case GET_PHOTO:
-            case GET_CAMERA:
+    private AdapterView.OnItemClickListener mClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (mImageGridViewAdapter.getCount() >= 7) {
+                CommonUtil.longToast(mContext, "上传图片仅限5张!");
+                return;
+            }
+            EssayImageSelectAdapter.GridViewItem item = (EssayImageSelectAdapter.GridViewItem)
+                    parent.getItemAtPosition(position);
+            switch (item.type) {
+                case EssayImageSelectAdapter.SEL_IMG:
+                    MessageEngine.getInstance().sendMsgToTagetForCallback(
+                            HomeWorkQuestionFragment.PHOTO, null, HomeWorkQuestionFragment.class, new NormalCallback() {
+                                @Override
+                                public void success(Object obj) {
+                                    addImageToGridView((Bundle) obj);
+                                }
+                            });
+                    break;
+                case EssayImageSelectAdapter.CAMERA_IMG:
+                    MessageEngine.getInstance().sendMsgToTagetForCallback(
+                            HomeWorkQuestionFragment.CAMERA, null, HomeWorkQuestionFragment.class, new NormalCallback() {
+                                @Override
+                                public void success(Object obj) {
+                                    addImageToGridView((Bundle) obj);
+                                }
+                            });
+                    break;
+                case EssayImageSelectAdapter.SHOW_IMG:
+
+
+            }
+
         }
-    }
+    };
 
-    @Override
-    public int getMode() {
-        return REGIST_CLASS;
-    }
-
-    @Override
-    public MessageType[] getMsgTypes() {
-        String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{
-                new MessageType(GET_PHOTO, source),
-                new MessageType(GET_CAMERA, source)
-        };
-        return messageTypes;
+    private void addImageToGridView(Bundle bundle) {
+        String filePath = bundle.getString("file");
+        String realImagePath = bundle.getString("image");
+        Bitmap bitmap = AppUtil.getBitmapFromFile(new File(filePath), AppUtil.dp2px(mContext, 40));
+        mRealImageList.add(realImagePath);
+        mImageGridViewAdapter.insertItem(bitmap);
+        updateAnswerData(getRealImageStr().toString());
     }
 
     private TextWatcher onTextChangedListener = new TextWatcher() {
@@ -106,14 +125,8 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("index", mIndex - 1);
-            bundle.putString("QuestionType", QuestionType.material.name());
-            ArrayList<String> data = new ArrayList<String>();
-            data.add(charSequence.toString());
-            bundle.putStringArrayList("data", data);
-            EdusohoApp.app.sendMsgToTarget(
-                    TestpaperActivity.CHANGE_ANSWER, bundle, TestpaperActivity.class);
+            updateAnswerData(getRealImageStr().append(charSequence).toString());
+
         }
 
         @Override
@@ -121,6 +134,25 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget
         }
     };
 
+    public StringBuilder getRealImageStr() {
+        StringBuilder builder = new StringBuilder();
+        for (String image : mRealImageList) {
+            builder.append(String.format("<img src='%s' />", image));
+        }
+
+        return builder;
+    }
+
+    private void updateAnswerData(String answerStr) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", mIndex - 1);
+        bundle.putString("QuestionType", QuestionType.material.name());
+        ArrayList<String> data = new ArrayList<String>();
+        data.add(answerStr);
+        bundle.putStringArrayList("data", data);
+        MessageEngine.getInstance().sendMsgToTaget(
+                HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
+    }
 
     @Override
     protected void invalidateData() {
@@ -128,41 +160,13 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget
 
         mToolsLayout = this.findViewById(R.id.hw_essay_tools_layout);
         contentEdt = (EditText) this.findViewById(R.id.hw_essay_content);
-        mPhotoBtn = (ImageView) this.findViewById(R.id.hw_essay_photo);
-        mCameraBtn = (ImageView) this.findViewById(R.id.hw_essay_camera);
-
+        mImageGridView = (GridView) findViewById(R.id.hw_essay_select_gridview);
         contentEdt.addTextChangedListener(onTextChangedListener);
 
-        mPhotoBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
-                testpaperActivity.setType(TestpaperActivity.PHOTO_CAMEAR);
-                EdusohoApp.app.sendMsgToTargetForCallback(
-                        EssayFragment.PHOTO, null, EssayFragment.class, new NormalCallback() {
-                            @Override
-                            public void success(Object obj) {
-                                addImageToEdit((Bundle) obj);
-                            }
-                        });
-            }
-        });
-
-        mCameraBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
-                testpaperActivity.setType(TestpaperActivity.PHOTO_CAMEAR);
-                EdusohoApp.app.sendMsgToTargetForCallback(
-                        EssayFragment.CAMERA, null, EssayFragment.class, new NormalCallback() {
-                            @Override
-                            public void success(Object obj) {
-                                addImageToEdit((Bundle) obj);
-                            }
-                        });
-            }
-        });
-
+        mImageGridViewAdapter = new EssayImageSelectAdapter(mContext);
+        mImageGridView.setAdapter(mImageGridViewAdapter);
+        mImageGridView.setOnItemClickListener(mClickListener);
+        mRealImageList = new ArrayList<>(5);
     }
 
     private class NetImageGetter implements Html.ImageGetter {
@@ -210,17 +214,6 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget
 
             return drawable;
         }
-    }
-
-    private void addImageToEdit(Bundle bundle) {
-        String filePath = bundle.getString("file");
-        String imageTag = bundle.getString("image");
-        BitmapFactory.Options option = new BitmapFactory.Options();
-        option.inSampleSize = 2;
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath, option);
-        insertImage(contentEdt, filePath, bitmap, imageTag);
-
-        Log.d(null, "edit->" + contentEdt.getText().toString());
     }
 
     @Override

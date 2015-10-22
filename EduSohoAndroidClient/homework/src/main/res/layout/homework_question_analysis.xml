@@ -11,7 +11,7 @@
         android:id="@+id/question_favorite"
         android:layout_alignParentRight="true"
         app:fontColor="@color/base_black_normal"
-        app:size="@dimen/nav_layout_btn"
+        app:size="@dimen/base_size"
         app:image="@string/font_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

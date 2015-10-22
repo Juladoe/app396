@@ -27,7 +27,7 @@
         android:orientation="vertical"></RadioGroup>
 
     <ViewStub
-        android:id="@+id/quetion_choice_analysis"
+        android:id="@+id/hw_quetion_choice_analysis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/quetion_choice_group"
