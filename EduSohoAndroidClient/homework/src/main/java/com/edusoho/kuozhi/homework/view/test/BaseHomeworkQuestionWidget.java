@@ -13,11 +13,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.homework.R;
+import com.edusoho.kuozhi.homework.model.HomeWorkItemResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
@@ -28,6 +30,7 @@ import com.edusoho.kuozhi.v3.util.html.EduTagHandler;
 import com.edusoho.kuozhi.v3.util.html.ImageClickSpan;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howzhi on 14-9-29.
@@ -64,6 +67,7 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
     }
 
     protected abstract void initView(AttributeSet attrs);
+    protected abstract void parseQuestionAnswer();
 
     protected void invalidateData() {
         stemView = (TextView) this.findViewById(R.id.homework_question_stem);
@@ -150,8 +154,7 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
         }
     }
 
-
-    protected String listToStr(ArrayList<String> arrayList) {
+    protected String listToStr(List<String> arrayList) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String answer : arrayList) {
             if (TextUtils.isEmpty(answer)) {
@@ -206,11 +209,12 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
     }
 
     protected void initResultAnalysis(View view) {
-        /*TextView myAnswerText = (TextView) view.findViewById(R.id.question_my_anwer);
-        TextView myRightText = (TextView) view.findViewById(R.id.question_right_anwer);
-        TextView AnalysisText = (TextView) view.findViewById(R.id.question_analysis);
+        ImageView answerStatusView = (ImageView) view.findViewById(R.id.hw_question_answer_icon);
+        TextView myAnswerText = (TextView) view.findViewById(R.id.hw_question_my_anwer);
+        TextView myRightText = (TextView) view.findViewById(R.id.hw_question_right_anwer);
+        TextView AnalysisText = (TextView) view.findViewById(R.id.hw_question_analysis);
 
-        TestResult testResult = mQuestion.testResult;
+        HomeWorkItemResult testResult = mQuestion.getResult();
         String myAnswer = null;
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
@@ -218,13 +222,31 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
             myAnswer = listToStr(testResult.answer);
         }
 
-        int rightColor = mContext.getResources().getColor(R.color.testpaper_result_right);
+        setAnswerStatusIcon(answerStatusView, testResult.status);
+        int rightColor = mContext.getResources().getColor(R.color.primary);
         SpannableString rightText = AppUtil.getColorTextAfter(
-                "正确答案:", listToStr(mQuestion.answer), rightColor);
+                "正确答案:", listToStr(mQuestion.getAnswer()), rightColor);
         myAnswerText.setText("你的答案:" + myAnswer);
         myRightText.setText(rightText);
 
         AnalysisText.setText(
-                TextUtils.isEmpty(mQuestion.analysis) ? "暂无解析" : Html.fromHtml(mQuestion.analysis));*/
+                TextUtils.isEmpty(mQuestion.getAnalysis()) ? "暂无解析" : Html.fromHtml(mQuestion.getAnalysis()));
+    }
+
+    private void setAnswerStatusIcon(ImageView answerStatusView, String status) {
+        switch (status) {
+            case "wrong":
+            case "noAnswer":
+                answerStatusView.setImageResource(R.drawable.hw_question_answer_wrong);
+                answerStatusView.setBackgroundResource(R.drawable.hw_question_answer_bg_wrong);
+                break;
+            case "partright":
+                answerStatusView.setImageResource(R.drawable.hw_question_answer_partright);
+                answerStatusView.setBackgroundResource(R.drawable.hw_question_answer_bg_partright);
+                break;
+            case "right":
+                answerStatusView.setImageResource(R.drawable.hw_question_answer_right);
+                answerStatusView.setBackgroundResource(R.drawable.hw_question_answer_bg_right);
+        }
     }
 }

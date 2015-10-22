@@ -17,4 +17,5 @@ public class HomeWorkItemResult {
     public String questionType;
 
     public List<HomeWorkItemResult> items;
+    public List<String> answer;
 }

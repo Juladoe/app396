@@ -72,6 +72,24 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
                 sendMsgToTestpaper();
             }
         });
+
+        parseQuestionAnswer();
+    }
+
+    @Override
+    protected void parseQuestionAnswer() {
+        if (mQuestion.getResult() != null) {
+            enable(radioGroup, false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                    initQuestionResult();
+                }
+            });
+            mAnalysisVS.inflate();
+        }
     }
 
     private void initQuestionResult() {
@@ -110,7 +128,7 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
                 R.layout.question_radiobox, null);
         radioButton.setText(text);
         Resources resources = mContext.getResources();
-        radioButton.setTextColor(resources.getColorStateList(R.color.question_choice_btn_color));
+        radioButton.setTextColor(resources.getColor(R.color.assist));
         int id = resources.getIdentifier(
                 "question_choice_" + index, "drawable", mContext.getPackageName());
         radioButton.setButtonDrawable(id);

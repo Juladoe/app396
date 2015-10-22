@@ -1,8 +1,9 @@
 package com.edusoho.kuozhi.homework.view.test;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,34 +16,36 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.adapter.EssayImageSelectAdapter;
+import com.edusoho.kuozhi.homework.model.HomeWorkItemResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkQuestionFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.html.EduHtml;
+import com.edusoho.kuozhi.v3.util.html.EduTagHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by howzhi on 14-9-29.
@@ -53,12 +56,13 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     private ArrayList<String> mRealImageList;
     private View mToolsLayout;
     private GridView mImageGridView;
+    private int mWorkMode;
     private EssayImageSelectAdapter mImageGridViewAdapter;
 
     private static final int IMAGE_SIZE = 500;
 
-    public static final int GET_PHOTO = 0001;
-    public static final int GET_CAMERA = 0002;
+    public static final int PARSE = 0001;
+    public static final int WORK = 0002;
 
     /**
      * 图片数量
@@ -76,12 +80,21 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     private AdapterView.OnItemClickListener mClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            EssayImageSelectAdapter.GridViewItem item = (EssayImageSelectAdapter.GridViewItem)
+                    parent.getItemAtPosition(position);
+            if (item.type == EssayImageSelectAdapter.SHOW_IMG) {
+                prevSelectImage(item.path);
+                return;
+            }
+
+            if (mWorkMode == PARSE) {
+                return;
+            }
+
             if (mImageGridViewAdapter.getCount() >= 7) {
                 CommonUtil.longToast(mContext, "上传图片仅限5张!");
                 return;
             }
-            EssayImageSelectAdapter.GridViewItem item = (EssayImageSelectAdapter.GridViewItem)
-                    parent.getItemAtPosition(position);
             switch (item.type) {
                 case EssayImageSelectAdapter.SEL_IMG:
                     MessageEngine.getInstance().sendMsgToTagetForCallback(
@@ -101,20 +114,91 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
                                 }
                             });
                     break;
-                case EssayImageSelectAdapter.SHOW_IMG:
-
 
             }
-
         }
     };
+
+    private void prevSelectImage(String url) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", 0);
+        String[] imgPaths = new String[] {
+                url
+        };
+        bundle.putStringArray("images", imgPaths);
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        intent.setComponent(new ComponentName(mContext.getPackageName(), "ViewPagerActivity"));
+        mContext.startActivity(intent);
+    }
+
+    @Override
+    protected void parseQuestionAnswer() {
+        HomeWorkItemResult itemResult = mQuestion.getResult();
+        if (itemResult != null) {
+            initQuestionAnswer(itemResult.answer);
+            mWorkMode = PARSE;
+            contentEdt.setEnabled(false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                }
+            });
+            mAnalysisVS.inflate();
+        }
+    }
+
+    private void initQuestionAnswer(List<String> answer) {
+        String answerContent = answer == null || answer.isEmpty()
+                ? "" : answer.get(0);
+
+        Pattern imageFilterPat = EduHtml.IMAGE_URL_FILTER;
+        Matcher matcher = imageFilterPat.matcher(answerContent);
+        StringBuffer newContent = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(newContent, "");
+            if (mRealImageList.size() > 5) {
+                continue;
+            }
+            mRealImageList.add(matcher.group(1));
+            ImageLoader.getInstance().loadImage(matcher.group(1), new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    mImageGridViewAdapter.insertItem(loadedImage, imageUri);
+                }
+            });
+        }
+        matcher.appendTail(newContent);
+        contentEdt.setText(newContent);
+    }
+
+    protected void initResultAnalysis(View view) {
+        TextView myRightText = (TextView) view.findViewById(R.id.hw_question_right_anwer);
+        TextView AnalysisText = (TextView) view.findViewById(R.id.hw_question_analysis);
+        TextView teacherSayView = (TextView) view.findViewById(R.id.hw_question_teachersay);
+
+        String html = coverHtmlTag("正确答案:<p></p>" + listToStr(mQuestion.getAnswer()));
+        myRightText.setText(Html.fromHtml(
+                html, new NetImageGetter(myRightText, html), new EduTagHandler()));
+
+        int rightColor = mContext.getResources().getColor(R.color.primary);
+        SpannableString teacherSayText = AppUtil.getColorTextAfter(
+                "老师评语:\n", TextUtils.isEmpty(mQuestion.getResult().teacherSay) ? "无" : mQuestion.getResult().teacherSay, rightColor);
+        teacherSayView.setText(teacherSayText);
+
+        String analysis = mQuestion.getAnalysis();
+        AnalysisText.setText(
+                TextUtils.isEmpty(analysis) ? "解析:无" : Html.fromHtml("解析<p></p>" + coverHtmlTag(analysis)));
+    }
 
     private void addImageToGridView(Bundle bundle) {
         String filePath = bundle.getString("file");
         String realImagePath = bundle.getString("image");
         Bitmap bitmap = AppUtil.getBitmapFromFile(new File(filePath), AppUtil.dp2px(mContext, 40));
         mRealImageList.add(realImagePath);
-        mImageGridViewAdapter.insertItem(bitmap);
+        mImageGridViewAdapter.insertItem(bitmap, filePath);
         updateAnswerData(getRealImageStr().toString());
     }
 
@@ -158,6 +242,7 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     protected void invalidateData() {
         super.invalidateData();
 
+        mWorkMode = WORK;
         mToolsLayout = this.findViewById(R.id.hw_essay_tools_layout);
         contentEdt = (EditText) this.findViewById(R.id.hw_essay_content);
         mImageGridView = (GridView) findViewById(R.id.hw_essay_select_gridview);
@@ -167,6 +252,8 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         mImageGridView.setAdapter(mImageGridViewAdapter);
         mImageGridView.setOnItemClickListener(mClickListener);
         mRealImageList = new ArrayList<>(5);
+
+        parseQuestionAnswer();
     }
 
     private class NetImageGetter implements Html.ImageGetter {

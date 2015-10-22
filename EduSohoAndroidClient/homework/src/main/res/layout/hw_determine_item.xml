@@ -2,26 +2,25 @@
 <com.edusoho.kuozhi.homework.view.test.DetermineHomeworkQuestionWidget xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/system_normal_bg"
-    android:paddingBottom="28dp"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:orientation="vertical"
-    android:paddingTop="28dp">
-    <include layout="@layout/homework_material_stem_include" />
-    <TextView
-        android:textColor="@color/homework_stem"
-        android:layout_below="@id/homework_question_stem"
-        android:id="@+id/homework_question_stem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/homework_question_stem"
-        android:layout_marginTop="@dimen/homework_question_content_top"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="28dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="28dp">
+
+        <include layout="@layout/homework_material_stem_include" />
+
+        <TextView
+            android:id="@+id/homework_question_stem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/homework_question_stem"
+            android:textColor="@color/homework_stem" />
 
         <RadioGroup
             android:id="@+id/hw_question_result_radio"
@@ -36,23 +35,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:button="@drawable/question_choice_error"
+                android:button="@drawable/hw_choice_right_sel"
                 android:gravity="center" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:button="@drawable/question_choice_right"
+                android:button="@drawable/hw_choice_error_sel"
                 android:gravity="center" />
         </RadioGroup>
-
-        <ViewStub
-            android:id="@+id/hw_quetion_choice_analysis"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1"
-            android:layout="@layout/homework_question_analysis" />
     </LinearLayout>
+
+    <ViewStub
+        android:id="@+id/hw_quetion_analysis"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:layout="@layout/homework_question_analysis" />
 </com.edusoho.kuozhi.homework.view.test.DetermineHomeworkQuestionWidget>

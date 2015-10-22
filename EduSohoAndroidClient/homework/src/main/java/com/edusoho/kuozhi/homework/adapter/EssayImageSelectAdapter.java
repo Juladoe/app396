@@ -42,18 +42,21 @@ public class EssayImageSelectAdapter extends BaseAdapter {
         GridViewItem item = new GridViewItem();
         item.icon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.hw_essay_imgselect);
         item.type = SEL_IMG;
+        item.path = "hw_essay_imgselect";
         list.add(item);
         item = new GridViewItem();
         item.icon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.hw_essay_imgcamera);
         item.type = CAMERA_IMG;
+        item.path = "hw_essay_imgcamera";
         list.add(item);
         return list;
     }
 
-    public void insertItem(Bitmap bitmap) {
+    public void insertItem(Bitmap bitmap, String path) {
         GridViewItem item = new GridViewItem();
         item.icon = bitmap;
-        item.type = 1;
+        item.type = SHOW_IMG;
+        item.path = path;
 
         mList.add(0, item);
         notifyDataSetChanged();
@@ -106,6 +109,7 @@ public class EssayImageSelectAdapter extends BaseAdapter {
 
     public static class GridViewItem {
 
+        public String path;
         public Bitmap icon;
         public int type;
     }

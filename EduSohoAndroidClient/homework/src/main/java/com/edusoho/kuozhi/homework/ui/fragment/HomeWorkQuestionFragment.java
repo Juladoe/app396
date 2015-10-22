@@ -39,6 +39,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -204,11 +205,8 @@ public class HomeWorkQuestionFragment extends BaseFragment implements ViewPager.
 
             }
         }
-        loadDialog.dismiss();
-        callback.success(imageFile.getAbsolutePath());
-        /*
 
-        RequestUrl requestUrl = app.bindUrl(Const.UPLOAD_IMAGE, true);
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.FILE_UPLOAD, "default"), true);
         requestUrl.setMuiltParams(new Object[]{
                 "file", imageFile
         });
@@ -217,15 +215,15 @@ public class HomeWorkQuestionFragment extends BaseFragment implements ViewPager.
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();
-                String result = mActivity.parseJsonValue(
-                        response, new TypeToken<String>() {
-                        });
-
-                Log.d(null, "upload result->" + result);
-                if (result == null || TextUtils.isEmpty(result)) {
-                    CommonUtil.longToast(mContext, "上传失败!服务器暂不支持过大图片");
+                LinkedHashMap<String, String> resultMap = mActivity.parseJsonValue(
+                        response, new TypeToken<LinkedHashMap<String, String>>(){});
+                if (!"200".equals(resultMap.get("code"))) {
+                    CommonUtil.longToast(mActivity.getBaseContext(), "上传失败");
+                    return;
                 }
-                callback.success(String.format("<img src='%s'/>", result));
+
+                String url = resultMap.get("message");
+                callback.success(url);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -234,7 +232,6 @@ public class HomeWorkQuestionFragment extends BaseFragment implements ViewPager.
                 loadDialog.dismiss();
             }
         }, Request.Method.POST);
-        */
     }
 
     @Override

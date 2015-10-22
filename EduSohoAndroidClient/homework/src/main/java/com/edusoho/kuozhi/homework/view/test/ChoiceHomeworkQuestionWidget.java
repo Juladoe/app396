@@ -85,9 +85,14 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             }
         }
 
+        parseQuestionAnswer();
+    }
+
+    @Override
+    protected void parseQuestionAnswer() {
         if (mQuestion.getResult() != null) {
             enable(radioGroup, false);
-            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_choice_analysis);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
             mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
                 @Override
                 public void onInflate(ViewStub viewStub, View view) {
@@ -121,7 +126,7 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
                 R.layout.question_checkbox, null);
         checkBox.setText(text);
         Resources resources = mContext.getResources();
-        checkBox.setTextColor(resources.getColorStateList(R.color.question_choice_btn_color));
+        checkBox.setTextColor(resources.getColor(R.color.assist));
         int id = resources.getIdentifier(
                 "question_choice_" + index, "drawable", mContext.getPackageName());
         checkBox.setButtonDrawable(id);

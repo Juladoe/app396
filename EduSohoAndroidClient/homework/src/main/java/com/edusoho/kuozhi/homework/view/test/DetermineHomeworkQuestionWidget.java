@@ -3,21 +3,17 @@ package com.edusoho.kuozhi.homework.view.test;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
-
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
-import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
-import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
-
 import java.util.ArrayList;
 
 
@@ -62,16 +58,33 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
             }
         });
 
+        parseQuestionAnswer();
+    }
+
+    @Override
+    protected void parseQuestionAnswer() {
+        if (mQuestion.getResult() != null) {
+            enable(radioGroup, false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                    initQuestionResult();
+                }
+            });
+            mAnalysisVS.inflate();
+        }
     }
 
     private void initQuestionResult()
     {
         int count = radioGroup.getChildCount();
         for (int i=0; i < count; i++) {
-            View child = radioGroup.getChildAt(i);
+            CompoundButton child = (CompoundButton) radioGroup.getChildAt(i);
             for (String answer : mQuestion.getAnswer()) {
                 if (answer.equals(String.valueOf(i))) {
-                    child.setSelected(true);
+                    child.setChecked(true);
                     break;
                 }
             }
@@ -91,7 +104,6 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
     private RadioGroup.OnCheckedChangeListener onCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
         }
     };
 }

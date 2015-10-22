@@ -83,6 +83,21 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         }
     };
 
+    @Override
+    protected void parseQuestionAnswer() {
+        if (mQuestion.getResult() != null) {
+            enable(fillLayout, false);
+            mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
+            mAnalysisVS.setOnInflateListener(new ViewStub.OnInflateListener() {
+                @Override
+                public void onInflate(ViewStub viewStub, View view) {
+                    initResultAnalysis(view);
+                }
+            });
+            mAnalysisVS.inflate();
+        }
+    }
+
     private void updateAnswerData() {
         Bundle bundle = new Bundle();
         bundle.putInt("index", mIndex - 1);
@@ -139,6 +154,8 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             layoutParams.topMargin = AppUtil.dp2px(mContext, 16);
             fillLayout.addView(editText, layoutParams);
         }
+
+        parseQuestionAnswer();
     }
 
     private Spanned parseStem(SpannableStringBuilder stem)
@@ -178,5 +195,25 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
      public void setData(HomeWorkQuestion questionSeq, int index) {
         super.setData(questionSeq, index);
         invalidateData();
+    }
+
+    @Override
+    protected String listToStr(List<String> arrayList)
+    {
+        int index = 1;
+        StringBuilder stringBuilder = new StringBuilder("\n\n");
+        for (String answer : arrayList) {
+            if (TextUtils.isEmpty(answer)) {
+                continue;
+            }
+            stringBuilder.append(String.format("%d:", index++));
+            stringBuilder.append(answer);
+            stringBuilder.append("\n\n");
+        }
+        int length = stringBuilder.length();
+        if (length > 0) {
+            stringBuilder.delete(length - 2, length);
+        }
+        return stringBuilder.toString();
     }
 }
