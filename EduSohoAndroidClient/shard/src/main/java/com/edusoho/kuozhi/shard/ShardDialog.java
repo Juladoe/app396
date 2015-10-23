@@ -44,6 +44,7 @@ public class ShardDialog extends Dialog {
 
     private void initWindow() {
         Window window = getWindow();
+        window.setWindowAnimations(R.style.ShareDialogWindowAnimation);
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.LEFT | Gravity.BOTTOM);
 

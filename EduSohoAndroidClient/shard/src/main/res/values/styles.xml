@@ -7,4 +7,9 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="ShareDialogWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_window_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_window_exit</item>
+    </style>
 </resources>
