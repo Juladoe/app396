@@ -83,6 +83,7 @@ public class ExerciseOptionDialog extends Dialog {
 
     public void initWindow() {
         Window window = getWindow();
+        window.setWindowAnimations(R.style.DialogWindowAnimation);
         window.setGravity(Gravity.BOTTOM);
         WindowManager.LayoutParams lp = window.getAttributes();
         WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
