@@ -5,8 +5,8 @@
     <shape>
         <!-- shape的颜色，支持渐变 -->
         <gradient
-            android:endColor="@color/base_black_low"
-            android:startColor="@color/base_black_low" />
+            android:endColor="@color/grounding"
+            android:startColor="@color/grounding" />
     </shape>
 </item>
 

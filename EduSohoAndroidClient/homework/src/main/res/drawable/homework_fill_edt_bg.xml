@@ -6,7 +6,7 @@
 
     <stroke
         android:width="1px"
-        android:color="@color/material_grey"
+        android:color="@color/font_3"
 
         />
     <!-- shape的颜色，支持渐变 -->

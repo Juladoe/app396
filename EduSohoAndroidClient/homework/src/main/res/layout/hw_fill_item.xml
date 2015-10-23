@@ -27,10 +27,8 @@
             android:id="@+id/hw_question_fill_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/homework_question_stem"
             android:layout_marginTop="@dimen/homework_question_content_top"
             android:orientation="vertical">
-
         </LinearLayout>
     </LinearLayout>
 

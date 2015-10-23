@@ -7,10 +7,10 @@
         android:height="32dp" />
     <stroke
         android:width="1px"
-        android:color="@color/primary" />
+        android:color="@color/error" />
     <!-- shape的颜色，支持渐变 -->
     <gradient
-        android:endColor="@color/primary"
-        android:startColor="@color/primary" />
+        android:endColor="@color/error"
+        android:startColor="@color/error" />
 
 </shape>
