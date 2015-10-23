@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -58,11 +59,13 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
             }
         });
 
+        restoreResult(mQuestion.getAnswer());
         parseQuestionAnswer();
     }
 
     @Override
     protected void parseQuestionAnswer() {
+        mWorkMode = PARSE;
         if (mQuestion.getResult() != null) {
             enable(radioGroup, false);
             mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
@@ -70,19 +73,27 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
                 @Override
                 public void onInflate(ViewStub viewStub, View view) {
                     initResultAnalysis(view);
-                    initQuestionResult();
+                    initQuestionResult(mQuestion.getAnswer());
                 }
             });
             mAnalysisVS.inflate();
         }
     }
 
-    private void initQuestionResult()
+    @Override
+    protected void restoreResult(List<String> resultData) {
+        if (resultData == null) {
+            return;
+        }
+        initQuestionResult(resultData);
+    }
+
+    private void initQuestionResult(List<String> resultData)
     {
         int count = radioGroup.getChildCount();
         for (int i=0; i < count; i++) {
             CompoundButton child = (CompoundButton) radioGroup.getChildAt(i);
-            for (String answer : mQuestion.getAnswer()) {
+            for (String answer : resultData) {
                 if (answer.equals(String.valueOf(i))) {
                     child.setChecked(true);
                     break;

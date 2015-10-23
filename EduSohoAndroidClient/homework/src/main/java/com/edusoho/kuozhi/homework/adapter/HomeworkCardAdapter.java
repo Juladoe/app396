@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
-import com.edusoho.kuozhi.v3.model.bal.Answer;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class HomeworkCardAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private int mResouce;
     private Context mContext;
-    private List<HomeWorkQuestion> mList;
+    protected List<HomeWorkQuestion> mList;
 
     public HomeworkCardAdapter(
             Context context,
@@ -57,7 +56,7 @@ public class HomeworkCardAdapter extends BaseAdapter {
 
         TextView mText = (TextView) view;
         List<String> answers = mList.get(i).getAnswer();
-        mText.setEnabled(answers == null);
+        mText.setBackgroundResource(answers == null ? R.drawable.hw_card_item_bg : R.drawable.hw_card_item_bg_pressed);
         mText.setText((i + 1) + "");
         return view;
     }

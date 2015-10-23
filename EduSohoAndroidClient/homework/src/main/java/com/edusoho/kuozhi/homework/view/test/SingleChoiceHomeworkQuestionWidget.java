@@ -73,11 +73,13 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
             }
         });
 
+        restoreResult(mQuestion.getAnswer());
         parseQuestionAnswer();
     }
 
     @Override
     protected void parseQuestionAnswer() {
+        mWorkMode = PARSE;
         if (mQuestion.getResult() != null) {
             enable(radioGroup, false);
             mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
@@ -85,20 +87,38 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
                 @Override
                 public void onInflate(ViewStub viewStub, View view) {
                     initResultAnalysis(view);
-                    initQuestionResult();
+                    initQuestionResult(mQuestion.getAnswer());
                 }
             });
             mAnalysisVS.inflate();
         }
     }
 
-    private void initQuestionResult() {
+    @Override
+    protected void restoreResult(List<String> resultData) {
+        if (resultData == null) {
+            return;
+        }
+        int count = radioGroup.getChildCount();
+        for (int i = 0; i < count; i++) {
+            CompoundButton child = (CompoundButton) radioGroup.getChildAt(i);
+            for (String answer : resultData) {
+                if (answer.equals(String.valueOf(i))) {
+                    child.setChecked(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void initQuestionResult(List<String> resultData) {
         int count = radioGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = radioGroup.getChildAt(i);
-            for (String answer : mQuestion.getAnswer()) {
+            child.setSelected(true);
+            for (String answer : resultData) {
                 if (answer.equals(String.valueOf(i))) {
-                    child.setSelected(true);
+                    child.setActivated(true);
                     break;
                 }
             }
@@ -130,7 +150,7 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
         Resources resources = mContext.getResources();
         radioButton.setTextColor(resources.getColor(R.color.assist));
         int id = resources.getIdentifier(
-                "question_choice_" + index, "drawable", mContext.getPackageName());
+                "hw_question_choice_" + index, "drawable", mContext.getPackageName());
         radioButton.setButtonDrawable(id);
 
         return radioButton;

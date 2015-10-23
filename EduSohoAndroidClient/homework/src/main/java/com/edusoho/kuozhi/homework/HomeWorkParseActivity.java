@@ -4,6 +4,8 @@ import android.content.Intent;
 
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
+import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkCardFragment;
+import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkParseCardFragment;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.Const;
 
@@ -25,5 +27,12 @@ public class HomeWorkParseActivity extends HomeworkActivity {
     @Override
     protected RequestUrl getRequestUrl() {
         return app.bindNewUrl(String.format(Const.HOMEWORK_CONTENT_RESULT, mHomeWorkResultId), true);
+    }
+
+    @Override
+    protected void showHomeWorkCard() {
+        HomeWorkCardFragment cardFragment = new HomeWorkParseCardFragment();
+        cardFragment.setTitle("答题卡");
+        cardFragment.show(mFragmentManager, "parseCardDialog");
     }
 }

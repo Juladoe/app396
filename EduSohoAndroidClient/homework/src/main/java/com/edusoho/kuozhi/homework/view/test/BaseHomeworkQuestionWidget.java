@@ -44,6 +44,10 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
     protected ViewStub mAnalysisVS;
 
     protected int mIndex;
+    protected int mWorkMode;
+
+    public static final int PARSE = 0001;
+    public static final int WORK = 0002;
 
     public static final String[] CHOICE_ANSWER = {
             "A", "B", "C",
@@ -68,8 +72,10 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
 
     protected abstract void initView(AttributeSet attrs);
     protected abstract void parseQuestionAnswer();
+    protected abstract void restoreResult(List<String> resultData);
 
     protected void invalidateData() {
+        mWorkMode = WORK;
         stemView = (TextView) this.findViewById(R.id.homework_question_stem);
 
         SpannableStringBuilder spanned = (SpannableStringBuilder) getQuestionStem();

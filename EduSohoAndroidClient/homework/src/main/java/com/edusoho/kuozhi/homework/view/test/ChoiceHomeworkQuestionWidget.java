@@ -85,11 +85,30 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             }
         }
 
+        restoreResult(mQuestion.getAnswer());
         parseQuestionAnswer();
     }
 
     @Override
+    protected void restoreResult(List<String> resultData) {
+        if (resultData == null) {
+            return;
+        }
+
+        int count = radioGroup.getChildCount();
+        for (int i = 0; i < count; i++) {
+            CompoundButton child = (CompoundButton) radioGroup.getChildAt(i);
+            for (String answer : resultData) {
+                if (answer.equals(String.valueOf(i))) {
+                    child.setChecked(true);
+                }
+            }
+        }
+    }
+
+    @Override
     protected void parseQuestionAnswer() {
+        mWorkMode = PARSE;
         if (mQuestion.getResult() != null) {
             enable(radioGroup, false);
             mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
@@ -97,21 +116,21 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
                 @Override
                 public void onInflate(ViewStub viewStub, View view) {
                     initResultAnalysis(view);
-                    initQuestionResult();
+                    initQuestionResult(mQuestion.getAnswer());
                 }
             });
             mAnalysisVS.inflate();
         }
     }
 
-    private void initQuestionResult() {
+    private void initQuestionResult(List<String> resultData) {
         int count = radioGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = radioGroup.getChildAt(i);
-            for (String answer : mQuestion.getAnswer()) {
+            child.setSelected(true);
+            for (String answer : resultData) {
                 if (answer.equals(String.valueOf(i))) {
-                    child.setSelected(true);
-                    break;
+                    child.setActivated(true);
                 }
             }
         }
@@ -128,7 +147,7 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         Resources resources = mContext.getResources();
         checkBox.setTextColor(resources.getColor(R.color.assist));
         int id = resources.getIdentifier(
-                "question_choice_" + index, "drawable", mContext.getPackageName());
+                "hw_question_choice_" + index, "drawable", mContext.getPackageName());
         checkBox.setButtonDrawable(id);
 
         return checkBox;

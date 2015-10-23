@@ -21,7 +21,6 @@ import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.R;
@@ -56,13 +55,8 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     private ArrayList<String> mRealImageList;
     private View mToolsLayout;
     private GridView mImageGridView;
-    private int mWorkMode;
     private EssayImageSelectAdapter mImageGridViewAdapter;
-
     private static final int IMAGE_SIZE = 500;
-
-    public static final int PARSE = 0001;
-    public static final int WORK = 0002;
 
     /**
      * 图片数量
@@ -133,6 +127,14 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     }
 
     @Override
+    protected void restoreResult(List<String> resultData) {
+        if (resultData == null) {
+            return;
+        }
+        initQuestionAnswer(resultData);
+    }
+
+    @Override
     protected void parseQuestionAnswer() {
         HomeWorkItemResult itemResult = mQuestion.getResult();
         if (itemResult != null) {
@@ -199,7 +201,7 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         Bitmap bitmap = AppUtil.getBitmapFromFile(new File(filePath), AppUtil.dp2px(mContext, 40));
         mRealImageList.add(realImagePath);
         mImageGridViewAdapter.insertItem(bitmap, filePath);
-        updateAnswerData(getRealImageStr().toString());
+        updateAnswerData(getRealImageStr().append(contentEdt.getText()).toString());
     }
 
     private TextWatcher onTextChangedListener = new TextWatcher() {
@@ -241,8 +243,6 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     @Override
     protected void invalidateData() {
         super.invalidateData();
-
-        mWorkMode = WORK;
         mToolsLayout = this.findViewById(R.id.hw_essay_tools_layout);
         contentEdt = (EditText) this.findViewById(R.id.hw_essay_content);
         mImageGridView = (GridView) findViewById(R.id.hw_essay_select_gridview);
@@ -253,6 +253,7 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         mImageGridView.setOnItemClickListener(mClickListener);
         mRealImageList = new ArrayList<>(5);
 
+        restoreResult(mQuestion.getAnswer());
         parseQuestionAnswer();
     }
 

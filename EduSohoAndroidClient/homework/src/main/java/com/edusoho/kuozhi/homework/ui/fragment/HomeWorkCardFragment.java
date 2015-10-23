@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -29,8 +30,8 @@ import java.util.List;
 public class HomeWorkCardFragment extends DialogFragment implements
         View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private View mBackView;
-    private View mSubmitBtn;
+    protected View mBackView;
+    protected View mSubmitBtn;
     private TextView mHeadTitleView;
     private GridView mCardItemGridView;
     private String mTitle;
@@ -62,7 +63,7 @@ public class HomeWorkCardFragment extends DialogFragment implements
         return view;
     }
 
-    private void initView(View view) {
+    protected void initView(View view) {
 
         mBackView = view.findViewById(R.id.home);
         mSubmitBtn = view.findViewById(R.id.hw_card_submit);
@@ -74,12 +75,14 @@ public class HomeWorkCardFragment extends DialogFragment implements
         mBackView.setOnClickListener(this);
 
         List<HomeWorkQuestion> questionList = mIHomeworkQuestionResult.getQuestionList();
-        HomeworkCardAdapter cardAdapter = new HomeworkCardAdapter(
+        mCardItemGridView.setAdapter(getCardAdapter(questionList));
+        mCardItemGridView.setOnItemClickListener(this);
+    }
+
+    protected BaseAdapter getCardAdapter(List<HomeWorkQuestion> questionList) {
+        return new HomeworkCardAdapter(
                 getActivity().getBaseContext(), questionList, R.layout.hw_card_item
         );
-
-        mCardItemGridView.setAdapter(cardAdapter);
-        mCardItemGridView.setOnItemClickListener(this);
     }
 
     @Override

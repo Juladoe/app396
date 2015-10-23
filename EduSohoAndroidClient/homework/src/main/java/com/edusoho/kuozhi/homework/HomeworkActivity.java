@@ -192,7 +192,7 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
 
     protected void showHomeWorkCard() {
         HomeWorkCardFragment cardFragment = new HomeWorkCardFragment();
-        cardFragment.setTitle("作业答题卡");
+        cardFragment.setTitle("答题卡");
         cardFragment.show(mFragmentManager, "cardDialog");
     }
 

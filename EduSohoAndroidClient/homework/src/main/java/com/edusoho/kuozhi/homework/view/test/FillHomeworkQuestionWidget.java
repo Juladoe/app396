@@ -85,6 +85,7 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
 
     @Override
     protected void parseQuestionAnswer() {
+        mWorkMode = PARSE;
         if (mQuestion.getResult() != null) {
             enable(fillLayout, false);
             mAnalysisVS = (ViewStub) this.findViewById(R.id.hw_quetion_analysis);
@@ -95,6 +96,18 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
                 }
             });
             mAnalysisVS.inflate();
+        }
+    }
+
+    @Override
+    protected void restoreResult(List<String> resultData) {
+        if (resultData == null) {
+            return;
+        }
+        int count = fillLayout.getChildCount();
+        for (int i = 0; i < count; i++) {
+            EditText edtView = (EditText) fillLayout.getChildAt(i);
+            edtView.setText(resultData.get(i));
         }
     }
 
@@ -133,9 +146,9 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     protected void invalidateData() {
         super.invalidateData();
         fillLayout = (LinearLayout) this.findViewById(R.id.hw_question_fill_layout);
-        Resources resources = mContext.getResources();
         fillLayout.removeAllViews();
 
+        Resources resources = mContext.getResources();
         for (int i=1; i <= mSpaceCount; i++) {
             EditText editText = new EditText(mContext);
             editText.setSingleLine();
@@ -155,6 +168,7 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
             fillLayout.addView(editText, layoutParams);
         }
 
+        restoreResult(mQuestion.getAnswer());
         parseQuestionAnswer();
     }
 
