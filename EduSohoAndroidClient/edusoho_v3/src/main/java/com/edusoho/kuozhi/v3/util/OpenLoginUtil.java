@@ -85,7 +85,7 @@ public class OpenLoginUtil {
     private String[] getWeixinLoginResult(HashMap<String, Object> res) {
         String id = res.get("unionid").toString();
         String name = res.get("nickname").toString();
-        String avatar = res.get("headimgurl").toString();
+        String avatar = res.get("headImgUrl").toString();
 
         return new String[]{id, name, avatar, "weixinmob"};
     }

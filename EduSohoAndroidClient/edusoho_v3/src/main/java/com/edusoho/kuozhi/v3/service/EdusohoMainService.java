@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.OffLineMsgEntity;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -31,6 +33,7 @@ import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
+import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
@@ -58,9 +61,8 @@ public class EdusohoMainService extends Service {
     //private User mLoginUser;
     private Queue<Request<String>> mAjaxQueue;
 
-    public static final int LOGIN_WITH_TOKEN = 0001;
-    public static final int EXIT_USER = 0002;
-    public static final int INSERT_CHAT = 0x03;
+    public static final int LOGIN_WITH_TOKEN = 11;
+    public static final int EXIT_USER = 12;
 
     @Override
     public void onCreate() {
@@ -185,7 +187,7 @@ public class EdusohoMainService extends Service {
                         NotificationUtil.showArticleNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
-                case Const.ADD_CHAT_MSG:
+                case Const.ADD_MSG:
                     //普通消息
                     Chat chatModel = new Chat(xgMessage);
                     ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
@@ -214,6 +216,14 @@ public class EdusohoMainService extends Service {
                 case Const.ADD_DISCOUNT_PASS:
                     NotificationUtil.showDiscountPass(EdusohoApp.app.mContext, xgMessage);
                     break;
+                case Const.ADD_CLASSROOM_MSG:
+                    ClassroomDiscussEntity model = new ClassroomDiscussEntity(xgMessage);
+                    ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
+                    classroomDiscussDataSource.create(model);
+                    if (!xgMessage.isForeground || ClassroomDiscussActivity.CurrentClassroomId != model.classroomId) {
+                        NotificationUtil.showClassroomDiscussMsg(EdusohoApp.app.mContext, xgMessage);
+                    }
+                    break;
             }
         }
     }
@@ -229,7 +239,7 @@ public class EdusohoMainService extends Service {
             public void onResponse(String response) {
                 ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
                 });
-                if (latestChat.size() > 0) {
+                if (latestChat.size() > 0 && latestChat.get(0).getCustom().getV() >= 2) {
                     //Collections.reverse(latestChat);
                     HashMap<Integer, ArrayList<OffLineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
                     Iterator<Map.Entry<Integer, ArrayList<OffLineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();

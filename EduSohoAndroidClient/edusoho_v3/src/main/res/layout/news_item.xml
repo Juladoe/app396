@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/medium_font_size"
             android:layout_marginBottom="3dp"
@@ -51,8 +51,25 @@
             android:ellipsize="end"
             android:textColor="@color/base_black_87"
             android:layout_above="@+id/view_middle"
-            android:layout_toLeftOf="@+id/tv_post_time"
-            android:text="" />
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/tv_post_time" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_role"
+            android:textSize="@dimen/x_small_font_size"
+            android:text="老师"
+            android:background="@drawable/role_bg"
+            android:textColor="@color/green_alpha"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:visibility="visible"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_toRightOf="@+id/tv_title"
+            android:layout_toEndOf="@+id/tv_title" />
 
         <View
             android:id="@+id/view_middle"

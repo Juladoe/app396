@@ -29,6 +29,8 @@ public class New implements Serializable {
     public String type;
     public int unread;
 
+    public int sendUserId;
+
     public int belongId;
     public int isTop = 0;
 
@@ -96,6 +98,13 @@ public class New implements Serializable {
         this.unread = unread;
     }
 
+    public int getSendUserId() {
+        return sendUserId;
+    }
+
+    public void setSendUserId(int sendUserId) {
+        this.sendUserId = sendUserId;
+    }
 
     public int getBelongId() {
         return belongId;
@@ -144,16 +153,16 @@ public class New implements Serializable {
 
     public New(Chat chat) {
         fromId = chat.fromId;
-        title = chat.nickName;
+        title = chat.nickname;
         createdTime = chat.createdTime;
-        imgUrl = chat.headimgurl;
+        imgUrl = chat.headImgUrl;
         CustomContent customContent = chat.getCustomContent();
         type = chat.getCustomContent().getTypeBusiness();
-        if (customContent.getTypeMsg().equals(Chat.FileType.TEXT.getName())) {
+        if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.TEXT)) {
             content = chat.content;
-        } else if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
+        } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.IMAGE)) {
             content = String.format("[%s]", Const.MEDIA_IMAGE);
-        } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
+        } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
             content = String.format("[%s]", Const.MEDIA_AUDIO);
         }
         belongId = EdusohoApp.app.loginUser.id;
@@ -189,11 +198,11 @@ public class New implements Serializable {
             });
             fromId = customContent.getFromId();
             title = message.getTitle();
-            if (customContent.getTypeMsg().equals(Chat.FileType.IMAGE.getName())) {
+            if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.IMAGE)) {
                 content = String.format("[%s]", Const.MEDIA_IMAGE);
-            } else if (customContent.getTypeMsg().equals(Chat.FileType.AUDIO.getName())) {
+            } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
                 content = String.format("[%s]", Const.MEDIA_AUDIO);
-            } else if (customContent.getTypeMsg().equals(Chat.FileType.MULTI.getName())) {
+            } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.MULTI)) {
                 RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
                 });
                 content = body.content;

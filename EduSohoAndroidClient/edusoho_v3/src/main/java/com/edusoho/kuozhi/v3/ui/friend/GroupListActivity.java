@@ -1,30 +1,29 @@
 package com.edusoho.kuozhi.v3.ui.friend;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -78,6 +77,21 @@ public class GroupListActivity extends ActionBarBaseActivity {
         });
         mAdapter = new GroupListAdapter();
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final DiscussionGroup discussionGroup = ((GroupListAdapter) parent.getAdapter()).getItem(position);
+                app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
+                        startIntent.putExtra(ClassroomDiscussActivity.CLASSROOM_IMAGE, discussionGroup.picture);
+                        startIntent.putExtra(Const.ACTIONBAR_TITLE, discussionGroup.title);
+                    }
+                });
+
+            }
+        });
         characterParser = CharacterParser.getInstance();
         groupComparator = new GroupComparator();
         mDiscussionGroupProvider = new DiscussionGroupProvider(mContext);
@@ -151,7 +165,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
         }
 
         @Override
-        public Object getItem(int i) {
+        public DiscussionGroup getItem(int i) {
             return mGroupList.get(i);
         }
 

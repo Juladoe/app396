@@ -76,9 +76,9 @@ public class Const {
     public static final String SHOW_SCH_SPLASH = "show_sch_splash";
 
     //Plugin事件
-    public static final int MAIN_MENU_CLOSE = 2;
-    public static final int MAIN_MENU_OPEN = 3;
-    public static final int OPEN_COURSE_CHAT = 4;
+    public static final int MAIN_MENU_CLOSE = 1;
+    public static final int MAIN_MENU_OPEN = 2;
+    public static final int OPEN_COURSE_CHAT = 3;
 
     public static final String AUDIO_EXTENSION = ".amr";
     public static final String MEDIA_IMAGE = "图片";
@@ -86,24 +86,24 @@ public class Const {
     public static final String GET_PUSH_DATA = "get_push_data";
     public static final String FROM_ID = "from_id";
     public static final String NEWS_TYPE = "news_type";
-    public static final int ADD_CHAT_MSG = 5;
+
+    //public static final int ADD_DISCUSS_MSG = 1;
+    public static final int ADD_MSG = 2;
     public static final int ADD_COURSE_MSG = 6;
     public static final int ADD_DISCOUNT_PASS = 7;
-    public static final int ADD_ARTICLE_CREATE_MAG = 13;
+    public static final int ADD_CLASSROOM_MSG = 8;
+    public static final int ADD_CHAT_MSGS = 9;
+    public static final int ADD_BULLETIT_MSG = 10;
+    public static final int ADD_ARTICLE_CREATE_MAG = 3;
 
     public static final int UPDATE_CHAT_MSG = 0x1000;
 
-    /**
-     * 用于离线获取，更新多条信息
-     */
-    public static final int ADD_CHAT_MSGS = 7;
-    public static final int ADD_BULLETIT_MSG = 8;
     public static final int SWITCH_TAB = 9;
     public static final int DRAWER_REGISTER = 10;
 
-
     public static final int NEW_FANS = 0x0A;
-    public static final String ADD_CHAT_MSG_TYPE = "aad_chat_msg_type";
+    public static final String ADD_CHAT_MSG_DESTINATION = "add_chat_msg_type";
+    public static final String ADD_CLASSROOM_DISCUSS_MSG_DESTINATION = "add_classroom_discuss_msg_type";
 
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
@@ -265,8 +265,10 @@ public class Const {
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
 
+    public static final int PUSH_VERSION = 2;
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "http://tui.edusoho.net/v2";
+    //public static final String PUSH_HOST = "http://115.29.78.158:94/v2";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";

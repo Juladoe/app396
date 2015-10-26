@@ -152,9 +152,10 @@ public class NewDataSource {
         return newModel;
     }
 
-    public long delete(int fromId, int belongId) {
+    public long delete(New model) {
         openWrite();
-        long newId = mDataBase.delete(TABLE_NAME, "FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
+        long newId = mDataBase.delete(TABLE_NAME, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
+                new String[]{model.fromId + "", model.belongId + "", model.type});
         close();
         return newId;
     }

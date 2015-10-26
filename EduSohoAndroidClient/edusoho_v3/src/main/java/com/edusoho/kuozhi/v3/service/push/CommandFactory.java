@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.service.push;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
 /**
@@ -32,7 +34,10 @@ public class CommandFactory {
      */
     public static PushCommand V2Make(Pusher pusher) {
         PushCommand pushCommand = null;
-        switch (pusher.getV2CustomContent().getBody().getType()) {
+        V2CustomContent v2CustomContent = pusher.getV2CustomContent();
+        String toType = v2CustomContent.getTo().getType();
+        String bodyType = v2CustomContent.getBody().getType();
+        switch (bodyType) {
             case PushUtil.CourseType.LESSON_PUBLISH:
                 pushCommand = new PushLessonPublishCommand(pusher);
                 break;
@@ -40,7 +45,7 @@ public class CommandFactory {
                 pushCommand = new PushTestpaperReviewedCommand(pusher);
                 break;
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
-                if (PushUtil.AnnouncementType.COURSE.equals(pusher.getV2CustomContent().getFrom().getType())) {
+                if (PushUtil.AnnouncementType.COURSE.equals(v2CustomContent.getFrom().getType())) {
                     pushCommand = new PushCourseAnnouncementCommand(pusher);
                 } else {
                     pushCommand = new PushGlobalAnnouncementCommand(pusher);
@@ -54,8 +59,14 @@ public class CommandFactory {
             case PushUtil.ChatMsgType.IMAGE:
             case PushUtil.ChatMsgType.TEXT:
             case PushUtil.ChatMsgType.MULTI:
-                pusher.convertWrapperMessage2V2();
-                pushCommand = new PushMsgCommand(pusher);
+                if (PushUtil.ChatUserType.CLASSROOM.equals(toType)) {
+                    if (v2CustomContent.getFrom().getId() != EdusohoApp.app.loginUser.id) {
+                        pushCommand = new PushClassRoomMsgCommand(pusher);
+                    }
+                } else if (PushUtil.ChatUserType.USER.equals(toType)) {
+                    pusher.convertWrapperMessage2V2();
+                    pushCommand = new PushMsgCommand(pusher);
+                }
                 break;
             case PushUtil.DiscountType.DISCOUNT_GLOBAL:
             case PushUtil.DiscountType.DISCOUNT_DISCOUNT:

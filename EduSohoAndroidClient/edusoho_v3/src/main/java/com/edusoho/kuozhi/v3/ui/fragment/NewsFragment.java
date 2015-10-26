@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,31 +13,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
-import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
+import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -60,13 +57,14 @@ import java.util.List;
  * 动态列表
  */
 public class NewsFragment extends BaseFragment {
-    public static final int HANDLE_SEND_MSG = 1;
-    public static final int HANDLE_RECEIVE_MSG = 2;
-    public static final int HANDLE_RECEIVE_COURSE = 3;
-    public static final int UPDATE_UNREAD_MSG = 10;
-    public static final int UPDATE_UNREAD_BULLETIN = 11;
-    public static final int UPDATE_UNREAD_NEWS_COURSE = 12;
-    public static final int UPDATE_UNREAD_ARTICLE_CREATE = 14;
+    public static final int HANDLE_SEND_CHAT_MSG = 11;
+    public static final int HANDLE_RECEIVE_CHAT_MSG = 12;
+    public static final int HANDLE_SEND_CLASSROOM_DISCUSS_MSG = 13;
+    public static final int HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG = 14;
+    public static final int UPDATE_UNREAD_MSG = 15;
+    public static final int UPDATE_UNREAD_BULLETIN = 17;
+    public static final int UPDATE_UNREAD_NEWS_COURSE = 18;
+    public static final int UPDATE_UNREAD_ARTICLE_CREATE = 19;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -150,7 +148,7 @@ public class NewsFragment extends BaseFragment {
                 if (jsonObject.has("typeBusiness")) {
                     String type = jsonObject.getString("typeBusiness");
                     if (PushUtil.ChatUserType.FRIEND.equals(type) || PushUtil.ChatUserType.TEACHER.equals(type)) {
-                        getNewChatMsg(HANDLE_RECEIVE_MSG, NotificationUtil.mMessage);
+                        getNewChatMsg(HANDLE_RECEIVE_CHAT_MSG, NotificationUtil.mMessage);
                     } else {
                         handleBulletinMsg(message);
                     }
@@ -161,7 +159,7 @@ public class NewsFragment extends BaseFragment {
                         case PushUtil.ChatUserType.USER:
                         case PushUtil.ChatUserType.FRIEND:
                         case PushUtil.ChatUserType.TEACHER:
-                            getNewChatMsg(HANDLE_RECEIVE_MSG, message);
+                            getNewChatMsg(HANDLE_RECEIVE_CHAT_MSG, message);
                             break;
                         case PushUtil.CourseType.LESSON_PUBLISH:
                             handlerReceiveCourse(message);
@@ -194,7 +192,7 @@ public class NewsFragment extends BaseFragment {
                     New newModel = mSwipeAdapter.getItem(position);
                     mSwipeAdapter.removeItem(position);
                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    newDataSource.delete(newModel.fromId, newModel.belongId);
+                    newDataSource.delete(newModel);
                     int notificationId = 0;
                     switch (newModel.getType()) {
                         case PushUtil.BulletinType.TYPE:
@@ -205,7 +203,12 @@ public class NewsFragment extends BaseFragment {
                         case PushUtil.ChatUserType.FRIEND:
                         case PushUtil.ChatUserType.TEACHER:
                             ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                            chatDataSource.delete(newModel.fromId, mActivity.app.loginUser.id);
+                            chatDataSource.delete(newModel.fromId, app.loginUser.id);
+                            notificationId = newModel.fromId;
+                            break;
+                        case PushUtil.ChatUserType.CLASSROOM:
+                            ClassroomDiscussDataSource mClassroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                            mClassroomDiscussDataSource.delete(newModel.fromId, app.loginUser.id);
                             notificationId = newModel.fromId;
                             break;
                         case PushUtil.CourseType.TYPE:
@@ -243,6 +246,16 @@ public class NewsFragment extends BaseFragment {
                             startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
                             startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
                             startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
+                        }
+                    });
+                    break;
+                case PushUtil.ChatUserType.CLASSROOM:
+                    app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, newItem.fromId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(ClassroomDiscussActivity.CLASSROOM_IMAGE, newItem.imgUrl);
                         }
                     });
                     break;
@@ -292,10 +305,10 @@ public class NewsFragment extends BaseFragment {
         } else {
             int fromId = message.data.getInt(Const.FROM_ID, 0);
             switch (messageType.code) {
-                case Const.ADD_CHAT_MSG:
-                    int handleType = message.data.getInt(Const.ADD_CHAT_MSG_TYPE, 0);
+                case Const.ADD_MSG:
+                    int chatHandleType = message.data.getInt(Const.ADD_CHAT_MSG_DESTINATION, 0);
                     WrapperXGPushTextMessage chatMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                    getNewChatMsg(handleType, chatMessage);
+                    getNewChatMsg(chatHandleType, chatMessage);
                     break;
                 case Const.ADD_COURSE_MSG:
                     WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
@@ -341,6 +354,10 @@ public class NewsFragment extends BaseFragment {
                     mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.TYPE);
                     NotificationUtil.cancelById(fromId);
                     break;
+                case Const.ADD_CLASSROOM_MSG:
+                    WrapperXGPushTextMessage classroomMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    int classroomHandleType = message.data.getInt(Const.ADD_CLASSROOM_DISCUSS_MSG_DESTINATION, 0);
+                    getNewChatMsg(classroomHandleType, classroomMessage);
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
@@ -354,11 +371,17 @@ public class NewsFragment extends BaseFragment {
      */
     private void getNewChatMsg(int chatType, WrapperXGPushTextMessage xgPushTextMessage) {
         switch (chatType) {
-            case HANDLE_RECEIVE_MSG:
-                handleReceiveMsg(xgPushTextMessage);
+            case HANDLE_RECEIVE_CHAT_MSG:
+                handleReceiveChatMsg(xgPushTextMessage);
                 break;
-            case HANDLE_SEND_MSG:
-                handleSendMsg(xgPushTextMessage);
+            case HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG:
+                handlerReceiveClassroomMsg(xgPushTextMessage);
+                break;
+            case HANDLE_SEND_CHAT_MSG:
+                handleSendChatMsg(xgPushTextMessage);
+                break;
+            case HANDLE_SEND_CLASSROOM_DISCUSS_MSG:
+                handleSendClassroomMsg(xgPushTextMessage);
                 break;
         }
     }
@@ -452,10 +475,11 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleReceiveMsg(WrapperXGPushTextMessage wrapperMessage) {
+    private void handleReceiveChatMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New(wrapperMessage);
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
+                newModel.fromId + "", newModel.type, app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 1;
             newDataSource.create(newModel);
@@ -467,10 +491,50 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleSendMsg(WrapperXGPushTextMessage wrapperMessage) {
+    private void handlerReceiveClassroomMsg(WrapperXGPushTextMessage message) {
+        New model = new New();
+        V2CustomContent v2CustomContent = message.getV2CustomContent();
+        model.fromId = v2CustomContent.getTo().getId();
+        model.title = message.getTitle();
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.ChatMsgType.AUDIO:
+                model.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                break;
+            case PushUtil.ChatMsgType.IMAGE:
+                model.content = String.format("[%s]", Const.MEDIA_IMAGE);
+                break;
+            case PushUtil.ChatMsgType.MULTI:
+                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                });
+                model.content = body.content;
+                break;
+            default:
+                model.content = message.getContent();
+        }
+        model.content = v2CustomContent.getFrom().getNickname() + ": " + model.content;
+        model.createdTime = v2CustomContent.getCreatedTime();
+        model.imgUrl = v2CustomContent.getTo().getImage();
+        model.type = v2CustomContent.getTo().getType();
+        model.belongId = EdusohoApp.app.loginUser.id;
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
+                model.fromId + "", model.type, app.loginUser.id + "");
+        if (news.size() == 0) {
+            model.unread = 1;
+            model.id = (int) newDataSource.create(model);
+            insertNew(model);
+        } else {
+            model.unread = (message.isForeground && ClassroomDiscussActivity.CurrentClassroomId == model.fromId) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(model);
+            setItemToTop(model);
+        }
+    }
+
+    private void handleSendChatMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New(wrapperMessage);
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
+                newModel.fromId + "", newModel.type, app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 0;
             newModel.id = (int) newDataSource.create(newModel);
@@ -482,11 +546,49 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
+    private void handleSendClassroomMsg(WrapperXGPushTextMessage message) {
+        New model = new New();
+        V2CustomContent v2CustomContent = message.getV2CustomContent();
+        model.fromId = v2CustomContent.getTo().getId();
+        model.title = message.getTitle();
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.ChatMsgType.AUDIO:
+                model.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                break;
+            case PushUtil.ChatMsgType.IMAGE:
+                model.content = String.format("[%s]", Const.MEDIA_IMAGE);
+                break;
+            case PushUtil.ChatMsgType.MULTI:
+                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                });
+                model.content = body.content;
+                break;
+            default:
+                model.content = message.getContent();
+        }
+        model.createdTime = v2CustomContent.getCreatedTime();
+        model.imgUrl = v2CustomContent.getTo().getImage();
+        model.type = v2CustomContent.getTo().getType();
+        model.belongId = EdusohoApp.app.loginUser.id;
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
+                model.fromId + "", model.type, app.loginUser.id + "");
+        if (news.size() == 0) {
+            model.unread = 0;
+            model.id = (int) newDataSource.create(model);
+            insertNew(model);
+        } else {
+            model.unread = (message.isForeground && ClassroomDiscussActivity.CurrentClassroomId == model.fromId) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(model);
+            setItemToTop(model);
+        }
+    }
+
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         return new MessageType[]{
-                new MessageType(Const.ADD_CHAT_MSG, source),
+                new MessageType(Const.ADD_MSG, source),
                 new MessageType(Const.ADD_BULLETIT_MSG, source),
                 new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
                 new MessageType(Const.LOGIN_SUCCESS),
@@ -505,6 +607,7 @@ public class NewsFragment extends BaseFragment {
      *
      * @param visibility 是否空数据
      */
+
     private void setListVisibility(boolean visibility) {
         lvNewsList.setVisibility(visibility ? View.GONE : View.VISIBLE);
         mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);

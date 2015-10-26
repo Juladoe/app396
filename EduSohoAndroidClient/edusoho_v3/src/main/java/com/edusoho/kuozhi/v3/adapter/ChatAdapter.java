@@ -21,14 +21,17 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.ChatDownloadListener;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
@@ -41,52 +44,55 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by JesseHuang on 15/6/3.
  * Chat ListView Adapter
  */
-public class ChatAdapter extends BaseAdapter {
+public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements ChatDownloadListener {
 
-    private Context mContext;
-    private List<Chat> mList;
-    private HashMap<Long, Integer> mDownloadList;
-    private MediaPlayer mMediaPlayer;
+    protected Context mContext;
+    protected ArrayList<T> mList;
+    protected HashMap<Long, Integer> mDownloadList;
+    protected MediaPlayer mMediaPlayer;
     private ChatDataSource mChatDataSource;
-    private ImageView mPrevSpeakImageView;
-    private int mPrevImageViewBg;
-    private ImageErrorClick mImageErrorClick;
+    protected ImageView mPrevSpeakImageView;
+    protected int mPrevImageViewBg;
+    protected ImageErrorClick mImageErrorClick;
 
-    private int mDurationMax = EdusohoApp.screenW / 2;
-    private int mDurationUnit = EdusohoApp.screenW / 40;
-    private DisplayImageOptions mOptions;
-    private String mCurrentAudioPath;
-    private AnimationDrawable mAnimDrawable;
+    protected int mDurationMax = EdusohoApp.screenW / 2;
+    protected int mDurationUnit = EdusohoApp.screenW / 40;
+    protected DisplayImageOptions mOptions;
+    protected String mCurrentAudioPath;
+    protected AnimationDrawable mAnimDrawable;
 
     private User mChatOpposite;
 
-    private static long TIME_INTERVAL = 60 * 5;
-    private static final int TYPE_COUNT = 8;
-    private static final int MSG_SEND_TEXT = 0;
-    private static final int MSG_RECEIVE_TEXT = 1;
-    private static final int MSG_SEND_IMAGE = 2;
-    private static final int MSG_RECEIVE_IMAGE = 3;
-    private static final int MSG_SEND_AUDIO = 4;
-    private static final int MSG_RECEIVE_AUDIO = 5;
-    private static final int MSG_SEND_MULIT = 6;
-    private static final int MSG_RECEIVE_MULIT = 7;
+    protected static long TIME_INTERVAL = 60 * 5;
+    protected static final int TYPE_COUNT = 8;
+    protected static final int MSG_SEND_TEXT = 0;
+    protected static final int MSG_RECEIVE_TEXT = 1;
+    protected static final int MSG_SEND_IMAGE = 2;
+    protected static final int MSG_RECEIVE_IMAGE = 3;
+    protected static final int MSG_SEND_AUDIO = 4;
+    protected static final int MSG_RECEIVE_AUDIO = 5;
+    protected static final int MSG_SEND_MULIT = 6;
+    protected static final int MSG_RECEIVE_MULIT = 7;
 
     public void setSendImageClickListener(ImageErrorClick imageErrorClick) {
         mImageErrorClick = imageErrorClick;
     }
 
-    public void addItems(ArrayList<Chat> list) {
+    public void addItems(ArrayList<T> list) {
         mList.addAll(0, list);
         notifyDataSetChanged();
     }
 
-    public ChatAdapter(Context ctx, List<Chat> list, User user) {
+    public ChatAdapter() {
+
+    }
+
+    public ChatAdapter(Context ctx, ArrayList<T> list, User user) {
         mContext = ctx;
         mList = list;
         mDownloadList = new HashMap<>();
@@ -97,16 +103,16 @@ public class ChatAdapter extends BaseAdapter {
         mChatOpposite = user;
     }
 
-    public void addItem(Chat chat) {
+    public void addItem(T chat) {
         mList.add(chat);
         notifyDataSetChanged();
     }
 
     public void updateItemByChatId(Chat chat) {
         try {
-            for (Chat c : mList) {
-                if (c.chatId == chat.chatId) {
-                    c.setDelivery(chat.getDelivery());
+            for (BaseMsgEntity tmpChat : mList) {
+                if (((Chat) tmpChat).chatId == chat.chatId) {
+                    tmpChat.delivery = chat.delivery;
                     notifyDataSetChanged();
                     break;
                 }
@@ -135,34 +141,34 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        Chat msg = mList.get(position);
+        Chat msg = (Chat) mList.get(position);
         int type = -1;
         if (msg.direct == Chat.Direct.SEND) {
-            switch (msg.fileType) {
-                case TEXT:
+            switch (msg.type) {
+                case PushUtil.ChatMsgType.TEXT:
                     type = MSG_SEND_TEXT;
                     break;
-                case IMAGE:
+                case PushUtil.ChatMsgType.IMAGE:
                     type = MSG_SEND_IMAGE;
                     break;
-                case AUDIO:
+                case PushUtil.ChatMsgType.AUDIO:
                     type = MSG_SEND_AUDIO;
                     break;
-                case MULTI:
+                case PushUtil.ChatMsgType.MULTI:
                     type = MSG_SEND_MULIT;
             }
         } else {
-            switch (msg.fileType) {
-                case TEXT:
+            switch (msg.type) {
+                case PushUtil.ChatMsgType.TEXT:
                     type = MSG_RECEIVE_TEXT;
                     break;
-                case IMAGE:
+                case PushUtil.ChatMsgType.IMAGE:
                     type = MSG_RECEIVE_IMAGE;
                     break;
-                case AUDIO:
+                case PushUtil.ChatMsgType.AUDIO:
                     type = MSG_RECEIVE_AUDIO;
                     break;
-                case MULTI:
+                case PushUtil.ChatMsgType.MULTI:
                     type = MSG_RECEIVE_MULIT;
             }
         }
@@ -224,8 +230,8 @@ public class ChatAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void handlerMultiMsg(ViewHolder holder, int position) {
-        Chat model = mList.get(position);
+    protected void handlerMultiMsg(ViewHolder holder, int position) {
+        Chat model = (Chat) mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
@@ -241,13 +247,13 @@ public class ChatAdapter extends BaseAdapter {
         });
         holder.multiBodyContent.setText(body.content);
         holder.multiBodyTitle.setText(body.title);
-        ImageLoader.getInstance().displayImage(model.headimgurl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
         ImageLoader.getInstance().displayImage(body.image, holder.multiBodyIcon, mOptions);
 
         holder.multiBodyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EdusohoApp.app.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(WebViewActivity.URL, body.url);
@@ -257,18 +263,18 @@ public class ChatAdapter extends BaseAdapter {
         });
     }
 
-    private void handleSendMsgMulti(ViewHolder holder, int position) {
-        final Chat model = mList.get(position);
-        switch (model.getDelivery()) {
-            case SUCCESS:
+    protected void handleSendMsgMulti(ViewHolder holder, int position) {
+        final BaseMsgEntity model = mList.get(position);
+        switch (model.delivery) {
+            case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case UPLOADING:
+            case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case FAILED:
+            case PushUtil.MsgDeliveryType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.ivStateError.setOnClickListener(new View.OnClickListener() {
@@ -281,8 +287,8 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private void handleSendMsgText(ViewHolder holder, int position) {
-        final Chat model = mList.get(position);
+    protected void handleSendMsgText(ViewHolder holder, int position) {
+        final BaseMsgEntity model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
@@ -295,16 +301,16 @@ public class ChatAdapter extends BaseAdapter {
         }
         holder.tvSendContent.setText(model.content);
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
-        switch (model.getDelivery()) {
-            case SUCCESS:
+        switch (model.delivery) {
+            case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case UPLOADING:
+            case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case FAILED:
+            case PushUtil.MsgDeliveryType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.ivStateError.setOnClickListener(new View.OnClickListener() {
@@ -317,8 +323,8 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private void handleReceiveMsgText(ViewHolder holder, int position) {
-        Chat model = mList.get(position);
+    protected void handleReceiveMsgText(ViewHolder holder, int position) {
+        final BaseMsgEntity model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
@@ -330,12 +336,12 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ciPic, mOptions);
     }
 
 
-    private void handlerSendImage(final ViewHolder holder, int position) {
-        final Chat model = mList.get(position);
+    protected void handlerSendImage(final ViewHolder holder, int position) {
+        final BaseMsgEntity model = mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
@@ -347,16 +353,16 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
-        switch (model.getDelivery()) {
-            case SUCCESS:
+        switch (model.delivery) {
+            case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case UPLOADING:
+            case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case FAILED:
+            case PushUtil.MsgDeliveryType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.ivStateError.setOnClickListener(new View.OnClickListener() {
@@ -365,10 +371,10 @@ public class ChatAdapter extends BaseAdapter {
                         if (mImageErrorClick != null) {
                             File file = new File(model.content);
                             if (file.exists()) {
-                                model.setDelivery(Chat.Delivery.UPLOADING);
+                                model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.uploadMediaAgain(file, model, Chat.FileType.IMAGE, Const.MEDIA_IMAGE);
+                                mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                             } else {
                                 CommonUtil.longToast(mContext, "图片不存在，无法上传");
                             }
@@ -382,9 +388,16 @@ public class ChatAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
     }
 
-    private void handlerReceiveImage(final ViewHolder holder, int position) {
-        final Chat model = mList.get(position);
-        final MyImageLoadingListener mMyImageLoadingListener = new MyImageLoadingListener(holder);
+    protected void handlerReceiveImage(final ViewHolder holder, int position) {
+        final BaseMsgEntity model = mList.get(position);
+        final MyImageLoadingListener mMyImageLoadingListener = new MyImageLoadingListener(holder) {
+            @Override
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                super.onLoadingComplete(s, view, bitmap);
+                model.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                mChatDataSource.update((Chat) model);
+            }
+        };
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
@@ -402,7 +415,7 @@ public class ChatAdapter extends BaseAdapter {
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ciPic, mOptions);
 
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
@@ -420,8 +433,8 @@ public class ChatAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
-    private void handlerSendAudio(final ViewHolder holder, int position) {
-        final Chat model = mList.get(position);
+    protected void handlerSendAudio(final ViewHolder holder, int position) {
+        final BaseMsgEntity model = mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
@@ -434,8 +447,8 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
-        switch (model.getDelivery()) {
-            case SUCCESS:
+        switch (model.delivery) {
+            case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
@@ -450,12 +463,12 @@ public class ChatAdapter extends BaseAdapter {
                 }
                 holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content, holder, R.drawable.chat_to_speak_voice, R.drawable.chat_to_voice_play_anim));
                 break;
-            case UPLOADING:
+            case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.GONE);
                 break;
-            case FAILED:
+            case PushUtil.MsgDeliveryType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.tvAudioLength.setVisibility(View.GONE);
@@ -465,11 +478,10 @@ public class ChatAdapter extends BaseAdapter {
                         if (mImageErrorClick != null) {
                             File file = new File(model.content);
                             if (file.exists()) {
-                                model.setDelivery(Chat.Delivery.UPLOADING);
+                                model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mChatDataSource.update(model);
-                                mImageErrorClick.uploadMediaAgain(file, model, Chat.FileType.AUDIO, Const.MEDIA_AUDIO);
+                                mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
                                 notifyDataSetChanged();
                             } else {
                                 CommonUtil.longToast(mContext, "音频不存在，无法上传");
@@ -481,8 +493,8 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private void handlerReceiveAudio(final ViewHolder holder, int position) {
-        final Chat model = mList.get(position);
+    protected void handlerReceiveAudio(final ViewHolder holder, int position) {
+        final Chat model = (Chat) mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
@@ -494,14 +506,14 @@ public class ChatAdapter extends BaseAdapter {
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headimgurl, holder.ciPic, mOptions);
-        switch (model.getDelivery()) {
-            case SUCCESS:
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ciPic, mOptions);
+        switch (model.delivery) {
+            case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
                 String audioFileName = EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
-                        model.getContent().substring(model.getContent().lastIndexOf('/') + 1);
+                        model.content.substring(model.content.lastIndexOf('/') + 1);
                 try {
                     int duration = getAmrDuration(audioFileName);
                     holder.tvAudioLength.setText(duration + "\"");
@@ -515,13 +527,13 @@ public class ChatAdapter extends BaseAdapter {
                         R.drawable.chat_from_speak_voice,
                         R.drawable.chat_from_voice_play_anim));
                 break;
-            case UPLOADING:
+            case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.GONE);
-                downloadAudio(model.content, model.chatId);
+                downloadAudio(model.content, model.id);
                 break;
-            case FAILED:
+            case PushUtil.MsgDeliveryType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.tvAudioLength.setVisibility(View.GONE);
@@ -530,16 +542,16 @@ public class ChatAdapter extends BaseAdapter {
                     public void onClick(View v) {
                         holder.pbLoading.setVisibility(View.VISIBLE);
                         holder.ivStateError.setVisibility(View.GONE);
-                        downloadAudio(model.content, model.chatId);
+                        downloadAudio(model.content, model.id);
                     }
                 });
                 break;
         }
     }
 
-    private DownloadManager mDownloadManager;
+    protected DownloadManager mDownloadManager;
 
-    private void downloadAudio(String url, int chatId) {
+    protected void downloadAudio(String url, int id) {
         if (mDownloadManager == null) {
             mDownloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         }
@@ -551,7 +563,7 @@ public class ChatAdapter extends BaseAdapter {
         request.setVisibleInDownloadsUi(false);
         request.setDestinationUri(Uri.fromFile(new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/", filename)));
         long downloadId = mDownloadManager.enqueue(request);
-        mDownloadList.put(downloadId, chatId);
+        mDownloadList.put(downloadId, id);
     }
 
     /**
@@ -560,7 +572,7 @@ public class ChatAdapter extends BaseAdapter {
      * @param filePath 文件路径
      * @return 音频长度
      */
-    private int getAmrDuration(String filePath) {
+    protected int getAmrDuration(String filePath) {
         mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
         int duration = mMediaPlayer.getDuration();
         return (int) Math.ceil(Float.valueOf(duration) / 1000);
@@ -572,15 +584,15 @@ public class ChatAdapter extends BaseAdapter {
      * @param imagePath 文件路径
      * @return 文件路径
      */
-    private String getThumbFromOriginalImagePath(String imagePath) {
+    protected String getThumbFromOriginalImagePath(String imagePath) {
         return imagePath.replace(Const.UPLOAD_IMAGE_CACHE_FILE, Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
     }
 
-    private String getThumbFromImageName(String imageName) {
+    protected String getThumbFromImageName(String imageName) {
         return EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + imageName;
     }
 
-    private class ImageMsgClick implements View.OnClickListener {
+    public class ImageMsgClick implements View.OnClickListener {
         private String mImageUrl;
 
         public ImageMsgClick(String url) {
@@ -597,7 +609,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
 
-    private class AudioMsgClick implements View.OnClickListener {
+    public class AudioMsgClick implements View.OnClickListener {
         private File mAudioFile;
         private ViewHolder holder;
         private int mChatSpeakResId;
@@ -657,7 +669,7 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private void startVoiceAnim(ViewHolder holder, int resId) {
+    protected void startVoiceAnim(ViewHolder holder, int resId) {
         if (holder.ivVoiceAnim.getBackground() instanceof AnimationDrawable) {
             mAnimDrawable = (AnimationDrawable) holder.ivVoiceAnim.getBackground();
             mAnimDrawable.stop();
@@ -669,14 +681,14 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private void stopVoiceAnim(ViewHolder holder, int resId) {
+    protected void stopVoiceAnim(ViewHolder holder, int resId) {
         if (mAnimDrawable != null) {
             mAnimDrawable.stop();
             holder.ivVoiceAnim.setBackgroundResource(resId);
         }
     }
 
-    private class MyImageLoadingListener implements ImageLoadingListener {
+    public class MyImageLoadingListener implements ImageLoadingListener {
         private ViewHolder holder;
 
         public MyImageLoadingListener(ViewHolder h) {
@@ -719,7 +731,7 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private View createViewByType(int type) {
+    protected View createViewByType(int type) {
         View convertView = null;
         switch (type) {
             case MSG_SEND_TEXT:
@@ -750,7 +762,7 @@ public class ChatAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private static class ViewHolder {
+    public static class ViewHolder {
         public TextView tvSendTime;
         public TextView tvSendContent;
         public ImageView ciPic;
@@ -814,21 +826,24 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     public interface ImageErrorClick {
-        public void uploadMediaAgain(File file, Chat chat, Chat.FileType type, String strType);
+        public void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
 
-        public void sendMsgAgain(Chat chat);
+        public void sendMsgAgain(BaseMsgEntity model);
     }
 
+    @Override
     public HashMap<Long, Integer> getDownloadList() {
         return mDownloadList;
     }
 
+    @Override
     public void updateVoiceDownloadStatus(long downId) {
         Chat downloadChat = null;
         try {
-            for (Chat chat : mList) {
-                if (chat.chatId == mDownloadList.get(downId)) {
-                    downloadChat = chat;
+            for (T tmp : mList) {
+                Chat tmpChat = (Chat) tmp;
+                if (tmpChat.id == mDownloadList.get(downId)) {
+                    downloadChat = tmpChat;
                     break;
                 }
             }
@@ -841,10 +856,10 @@ public class ChatAdapter extends BaseAdapter {
                 int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                 if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
                     String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                    downloadChat.setDelivery(TextUtils.isEmpty(fileUri) ? Chat.Delivery.FAILED : Chat.Delivery.SUCCESS);
+                    downloadChat.delivery = (TextUtils.isEmpty(fileUri) ? PushUtil.MsgDeliveryType.FAILED : PushUtil.MsgDeliveryType.SUCCESS);
                     c.close();
                 } else if (DownloadManager.STATUS_FAILED == c.getInt(columnIndex)) {
-                    downloadChat.setDelivery(Chat.Delivery.FAILED);
+                    downloadChat.delivery = PushUtil.MsgDeliveryType.FAILED;
                     c.close();
                 }
             }
@@ -854,7 +869,7 @@ public class ChatAdapter extends BaseAdapter {
         } catch (Exception ex) {
             Log.d("downloader", ex.toString());
             if (downloadChat != null) {
-                downloadChat.setDelivery(Chat.Delivery.FAILED);
+                downloadChat.delivery = PushUtil.MsgDeliveryType.FAILED;
             }
         }
     }

@@ -42,16 +42,23 @@ public class PushUtil {
         public static final String USER = "user";
         public static final String TEACHER = "teacher";
         public static final String FRIEND = "friend";
+        public static final String CLASSROOM = "classroom";
     }
 
     /**
-     * custom 中的 typeMsg
+     * custom 中的 typeMsg，消息类型
      */
     public static class ChatMsgType {
         public static final String TEXT = "text";
         public static final String AUDIO = "audio";
         public static final String IMAGE = "image";
         public static final String MULTI = "multi";
+    }
+
+    public static class MsgDeliveryType {
+        public static final int SUCCESS = 1;
+        public static final int FAILED = 0;
+        public static final int UPLOADING = 2;
     }
 
     public static class BulletinType {
@@ -74,6 +81,12 @@ public class PushUtil {
         public static final String DISCOUNT_GLOBAL = "discount.global";
     }
 
+    /**
+     * 处理公告消息，替换<img>标签为[图片]
+     *
+     * @param source html代码
+     * @return
+     */
     public static String replaceImgTag(String source) {
         Pattern pattern = Pattern.compile("<img[^>]+>", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(source);
