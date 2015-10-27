@@ -54,7 +54,7 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initIntentData();
-        setBackMode(BACK, HomeworkSummaryActivity.HOME_HORK.equals(mType) ? "作业" : "练习");
+        setBackMode(BACK, HomeworkSummaryActivity.HOMEWORK.equals(mType) ? "作业" : "练习");
         mHomeworkProvider = ModelProvider.initProvider(getBaseContext(), HomeworkProvider.class);
         initView();
         app.registMsgSource(this);
@@ -65,7 +65,7 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
         if (intent == null) {
             CommonUtil.longToast(
                     getBaseContext(),
-                    HomeworkSummaryActivity.HOME_HORK.equals(mType) ? "获取作业数据错误" : "获取练习数据错误"
+                    HomeworkSummaryActivity.HOMEWORK.equals(mType) ? "获取作业数据错误" : "获取练习数据错误"
             );
             throw new RuntimeException("获取数据失败");
         }
@@ -88,7 +88,7 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
             public void success(HomeWorkModel homeWorkModel) {
                 coverQuestionList(homeWorkModel);
                 Bundle bundle = new Bundle();
-                bundle.putString(Const.ACTIONBAR_TITLE, HomeworkSummaryActivity.HOME_HORK.equals(mType) ? "作业题目" : "练习题目");
+                bundle.putString(Const.ACTIONBAR_TITLE, HomeworkSummaryActivity.HOMEWORK.equals(mType) ? "作业题目" : "练习题目");
                 loadFragment(bundle);
                 loadDialog.dismiss();
             }

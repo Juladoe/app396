@@ -328,4 +328,10 @@
         name="HomeworkAnswerCardActivity"
         package="com.edusoho.kuozhi.homework.HomeworkAnswerCardActivity"
         version="1.0" />
+
+    <plugin
+        name="ExerciseActivity"
+        package="com.edusoho.kuozhi.homework.ExerciseActivity"
+        version="1.0" />
+
 </plugins>

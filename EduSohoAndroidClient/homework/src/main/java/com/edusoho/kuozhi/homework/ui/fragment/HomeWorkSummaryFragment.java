@@ -8,9 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.homework.ExerciseActivity;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
+import com.edusoho.kuozhi.homework.model.ExerciseModel;
+import com.edusoho.kuozhi.homework.model.ExerciseProvider;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -35,6 +38,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
 
     private View mLoadLayout;
     private HomeworkProvider mHomeworkProvider;
+    private ExerciseProvider mExerciseProvider;
     private HomeworkSummaryActivity mSummaryActivity;
 
     @Override
@@ -61,18 +65,19 @@ public class HomeWorkSummaryFragment extends BaseFragment {
         homeworkInfo = (TextView) view.findViewById(R.id.homework_info);
         homeworkInfoContent = (TextView) view.findViewById(R.id.homework_info_content);
         startBtn = (Button) view.findViewById(R.id.start_homework_btn);
-        if (HomeworkSummaryActivity.HOME_HORK.equals(mSummaryActivity.getType())) {
+        if (HomeworkSummaryActivity.HOMEWORK.equals(mSummaryActivity.getType())) {
             homeworkName.setText("作业名称");
             homeworkInfo.setText("作业说明");
+            initHomeworkSummary();
         } else {
             homeworkName.setText("练习名称");
             homeworkInfo.setText("练习说明");
+            initExerciseSummary();
         }
 
-        initSummary();
     }
 
-    private void initSummary() {
+    private void initHomeworkSummary() {
         String url = new StringBuilder()
                 .append(String.format(Const.HOMEWORK_CONTENT, mLessonId))
                 .append("?_idType=lesson")
@@ -82,7 +87,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             @Override
             public void success(HomeWorkModel homeWorkModel) {
                 mLoadLayout.setVisibility(View.GONE);
-                renderView(homeWorkModel);
+                renderHomeworkView(homeWorkModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -92,7 +97,27 @@ public class HomeWorkSummaryFragment extends BaseFragment {
         });
     }
 
-    private void renderView(final HomeWorkModel homeWorkModel) {
+    private void initExerciseSummary(){
+        String url = new StringBuilder()
+                .append(String.format(Const.EXERCISE_CONTENT, mLessonId))
+                .append("?_idType=lesson")
+                .toString();
+        RequestUrl requestUrl = app.bindNewUrl(url, true);
+        mExerciseProvider.getExercise(requestUrl).success(new NormalCallback<ExerciseModel>() {
+            @Override
+            public void success(ExerciseModel exerciseModel) {
+                mLoadLayout.setVisibility(View.GONE);
+                renderExerciseView(exerciseModel);
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mLoadLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void renderHomeworkView(final HomeWorkModel homeWorkModel) {
         tvCourseTitle.setText(homeWorkModel.getCourseTitle());
         homeworkNameContent.setText(homeWorkModel.getLessonTitle());
         homeworkInfoContent.setText(AppUtil.coverCourseAbout(homeWorkModel.getDescription()));
@@ -101,9 +126,25 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getBaseContext(), HomeworkActivity.class);
                 intent.putExtra(HomeworkActivity.HOMEWORK_ID, homeWorkModel.getId());
-                intent.putExtra(HomeworkSummaryActivity.HOME_HORK, mSummaryActivity.getType());
+                intent.putExtra(HomeworkSummaryActivity.HOMEWORK, mSummaryActivity.getType());
                 getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
             }
         });
+    }
+
+    private void renderExerciseView(final ExerciseModel exerciseModel){
+        tvCourseTitle.setText(exerciseModel.getCourseTitle());
+        homeworkNameContent.setText(exerciseModel.getLessonTitle());
+        homeworkInfoContent.setText(AppUtil.coverCourseAbout(exerciseModel.getDescription()));
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getBaseContext(), ExerciseActivity.class);
+                intent.putExtra(ExerciseActivity.EXERCISE_ID, exerciseModel.getId());
+                intent.putExtra(HomeworkSummaryActivity.EXERCISE, mSummaryActivity.getType());
+                getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
+            }
+        });
+
     }
 }

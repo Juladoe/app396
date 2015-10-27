@@ -158,14 +158,14 @@ public class HomeWorkResultFragment extends BaseFragment implements View.OnClick
     private void showHomeWorkParse() {
         Intent intent = new Intent(getActivity().getBaseContext(), HomeWorkParseActivity.class);
         intent.putExtra(HomeWorkParseActivity.HOMEWORK_RESULTID, mHomeWorkResult.id);
-        intent.putExtra(HomeworkSummaryActivity.HOME_HORK, mBundle.getString("type"));
+        intent.putExtra(HomeworkSummaryActivity.HOMEWORK, mBundle.getString("type"));
         startActivity(intent);
     }
 
     private void reDoHomeWork() {
         Intent intent = new Intent(getActivity().getBaseContext(), HomeworkActivity.class);
         intent.putExtra(HomeworkActivity.HOMEWORK_ID, mHomeWorkResult.homeworkId);
-        intent.putExtra(HomeworkSummaryActivity.HOME_HORK, mBundle.getString("type"));
+        intent.putExtra(HomeworkSummaryActivity.HOMEWORK, mBundle.getString("type"));
         getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
     }
 }

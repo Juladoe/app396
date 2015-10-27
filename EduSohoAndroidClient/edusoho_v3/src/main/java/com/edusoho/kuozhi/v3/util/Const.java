@@ -475,4 +475,8 @@ public class Const {
     public static final String HOMEWORK_CONTENT_RESULT = "/api/homework/%d/result";
     public static final String HOMEWORK_RESULT = "/api/homework_results/%d";
     public static final String FILE_UPLOAD = "/api/upload/%s";
+
+    public static final String EXERCISE_CONTENT = "/api/exercise/%d";
+    public static final String EXERCISE_CONTENT_RESULT = "/api/exercise/%d/result";
+    public static final String EXERCISE_RESULT = "/api/exercise_results/%d";
 }

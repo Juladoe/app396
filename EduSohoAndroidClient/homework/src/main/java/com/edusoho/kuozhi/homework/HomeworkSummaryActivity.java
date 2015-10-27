@@ -5,20 +5,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.homework.model.HomeWorkItemResult;
-import com.edusoho.kuozhi.homework.model.HomeWorkModel;
+import com.edusoho.kuozhi.homework.model.ExerciseModel;
+import com.edusoho.kuozhi.homework.model.ExerciseProvider;
+import com.edusoho.kuozhi.homework.model.ExerciseResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkResult;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -27,7 +24,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  */
 public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
-    public static final String HOME_HORK = "homework";
+    public static final String HOMEWORK = "homework";
     public static final String EXERCISE = "exercise";
     public static final int REQUEST_DO = 0010;
 
@@ -36,6 +33,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
     private Bundle mBundle;
     private HomeworkProvider mHomeworkProvider;
+    private ExerciseProvider mExerciseProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +43,8 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         mBundle = intent.getExtras();
 
         mLessonId = mBundle == null ? 0 : mBundle.getInt(Const.LESSON_ID);
-        mType = mBundle == null ? HOME_HORK : mBundle.getString("type");
-        setBackMode(BACK, HOME_HORK.equals(mType) ? "作业" : "练习");
+        mType = mBundle == null ? HOMEWORK : mBundle.getString("type");
+        setBackMode(BACK, HOMEWORK.equals(mType) ? "作业" : "练习");
         setContentView(R.layout.homework_summary_layout);
         ModelProvider.init(getBaseContext(), this);
         initView();
@@ -56,13 +54,25 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         return mType;
     }
 
-    private void renderView(final HomeWorkResult homeWorkResult) {
+    private void renderHomeworkView(final HomeWorkResult homeWorkResult) {
         String fragmentName = null;
         if (homeWorkResult == null || "doing".equals(homeWorkResult.status)) {
             fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
         } else {
             fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkResultFragment";
         }
+
+        Bundle bundle = getIntent().getExtras();
+        loadFragment(bundle, fragmentName);
+    }
+
+    private void renderExerciseView() {
+        String fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
+//        if (exerciseResult == null || "doing".equals(exerciseResult.status)) {
+            fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
+//        } else {
+//            fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.ExerciseResultFragment";
+//        }
 
         Bundle bundle = getIntent().getExtras();
         loadFragment(bundle, fragmentName);
@@ -81,7 +91,11 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     }
 
     public void initView() {
-        loadHomeWork();
+        if (HOMEWORK.equals(mType)){
+            loadHomeWork();
+        }else {
+            renderExerciseView();
+        }
     }
 
     private void loadHomeWork() {
@@ -93,7 +107,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
             @Override
             public void success(HomeWorkResult homeWorkModel) {
                 loadDialog.dismiss();
-                renderView(homeWorkModel);
+                renderHomeworkView(homeWorkModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -103,11 +117,35 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         });
     }
 
+//    private void loadExercise(){
+//        String url = String.format(Const.EXERCISE_RESULT, mLessonId);
+//        RequestUrl requestUrl = app.bindNewUrl(url, true);
+//        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+//        loadDialog.show();
+//        mExerciseProvider.getExerciseResult(requestUrl, false).success(new NormalCallback<ExerciseResult>() {
+//            @Override
+//            public void success(ExerciseResult exerciseResult) {
+//                loadDialog.dismiss();
+//                renderExerciseView(exerciseResult);
+//            }
+//        }).fail(new NormalCallback<VolleyError>() {
+//            @Override
+//            public void success(VolleyError obj) {
+//                loadDialog.dismiss();
+//            }
+//        });
+//    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_DO && resultCode == HomeworkActivity.RESULT_DO) {
-            loadHomeWork();
+        if (HOMEWORK.equals(mType)){
+            if (requestCode == REQUEST_DO && resultCode == HomeworkActivity.RESULT_DO) {
+                loadHomeWork();
+            }
+        }else {
+            //todo
         }
+
     }
 }
