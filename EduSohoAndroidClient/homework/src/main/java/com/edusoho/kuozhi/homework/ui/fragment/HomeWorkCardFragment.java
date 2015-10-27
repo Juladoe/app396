@@ -14,7 +14,9 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.homework.ExerciseActivity;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
+import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.adapter.HomeworkCardAdapter;
 import com.edusoho.kuozhi.homework.listener.IHomeworkQuestionResult;
@@ -37,6 +39,8 @@ public class HomeWorkCardFragment extends DialogFragment implements
     private String mTitle;
     private HomeworkProvider mHomeworkProvider;
 
+    private String mType;
+
     private IHomeworkQuestionResult mIHomeworkQuestionResult;
 
     public void setTitle(String title) {
@@ -48,6 +52,7 @@ public class HomeWorkCardFragment extends DialogFragment implements
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.HomeworkCardDialogTheme);
         ModelProvider.init(getActivity().getBaseContext(), this);
+        mType = getArguments().getString("type");
     }
 
     @Override
@@ -90,8 +95,13 @@ public class HomeWorkCardFragment extends DialogFragment implements
         if (v.getId() == R.id.home) {
             dismiss();
         } else if (v.getId() == R.id.hw_card_submit) {
-            MessageEngine.getInstance().sendMsgToTaget(
+            if (HomeworkSummaryActivity.HOMEWORK.equals(mType)){
+                MessageEngine.getInstance().sendMsgToTaget(
                     HomeworkActivity.SUBMIT_HOMEWORK, null, HomeworkActivity.class);
+            }else {
+                MessageEngine.getInstance().sendMsgToTaget(
+                        ExerciseActivity.SUBMIT_EXERCISE, null, ExerciseActivity.class);
+            }
         }
     }
 

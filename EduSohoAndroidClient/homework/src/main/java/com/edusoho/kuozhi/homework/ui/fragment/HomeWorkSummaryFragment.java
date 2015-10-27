@@ -126,7 +126,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getBaseContext(), HomeworkActivity.class);
                 intent.putExtra(HomeworkActivity.HOMEWORK_ID, homeWorkModel.getId());
-                intent.putExtra(HomeworkSummaryActivity.HOMEWORK, mSummaryActivity.getType());
+                intent.putExtra(HomeworkSummaryActivity.TYPE, mSummaryActivity.getType());
                 getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
             }
         });
@@ -141,8 +141,8 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getBaseContext(), ExerciseActivity.class);
                 intent.putExtra(ExerciseActivity.EXERCISE_ID, exerciseModel.getId());
-                intent.putExtra(HomeworkSummaryActivity.EXERCISE, mSummaryActivity.getType());
-                getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
+                intent.putExtra(HomeworkSummaryActivity.TYPE, mSummaryActivity.getType());
+                getActivity().startActivity(intent);
             }
         });
 

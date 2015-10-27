@@ -26,6 +26,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
     public static final String HOMEWORK = "homework";
     public static final String EXERCISE = "exercise";
+    public static final String TYPE = "type";
     public static final int REQUEST_DO = 0010;
 
     private int mLessonId;
@@ -68,12 +69,6 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
     private void renderExerciseView() {
         String fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
-//        if (exerciseResult == null || "doing".equals(exerciseResult.status)) {
-            fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
-//        } else {
-//            fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.ExerciseResultFragment";
-//        }
-
         Bundle bundle = getIntent().getExtras();
         loadFragment(bundle, fragmentName);
     }

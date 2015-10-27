@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.homework;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
@@ -33,6 +34,9 @@ public class HomeWorkParseActivity extends HomeworkActivity {
     protected void showHomeWorkCard() {
         HomeWorkCardFragment cardFragment = new HomeWorkParseCardFragment();
         cardFragment.setTitle("答题卡");
+        Bundle args = new Bundle();
+        args.putString("type",mType);
+        cardFragment.setArguments(args);
         cardFragment.show(mFragmentManager, "parseCardDialog");
     }
 }
