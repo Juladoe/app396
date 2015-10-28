@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  */
 public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
+    private static HomeworkSummaryActivity homeworkSummaryActivity;
     public static final String HOMEWORK = "homework";
     public static final String EXERCISE = "exercise";
     public static final String TYPE = "type";
@@ -142,5 +143,9 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
             //todo
         }
 
+    }
+
+    public static HomeworkSummaryActivity getInstance(){
+        return homeworkSummaryActivity;
     }
 }

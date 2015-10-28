@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkItemResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
@@ -46,6 +47,8 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
     protected int mIndex;
     protected int mWorkMode;
 
+    protected String mType;
+
     public static final int PARSE = 0001;
     public static final int WORK = 0002;
 
@@ -61,6 +64,7 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
     public BaseHomeworkQuestionWidget(Context context) {
         super(context);
         mContext = context;
+        mType = HomeworkSummaryActivity.getInstance().getType();
         initView(null);
     }
 

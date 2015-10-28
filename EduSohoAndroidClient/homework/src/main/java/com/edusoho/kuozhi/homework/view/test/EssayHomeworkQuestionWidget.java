@@ -22,7 +22,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import com.edusoho.kuozhi.homework.ExerciseActivity;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
+import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.adapter.EssayImageSelectAdapter;
 import com.edusoho.kuozhi.homework.model.HomeWorkItemResult;
@@ -236,8 +239,13 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         ArrayList<String> data = new ArrayList<String>();
         data.add(answerStr);
         bundle.putStringArrayList("data", data);
-        MessageEngine.getInstance().sendMsgToTaget(
-                HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
+        if (HomeworkSummaryActivity.HOMEWORK.equals(mType)){
+            MessageEngine.getInstance().sendMsgToTaget(
+                    HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
+        }else {
+            MessageEngine.getInstance().sendMsgToTaget(
+                    ExerciseActivity.CHANGE_ANSWER, bundle, ExerciseActivity.class);
+        }
     }
 
     @Override

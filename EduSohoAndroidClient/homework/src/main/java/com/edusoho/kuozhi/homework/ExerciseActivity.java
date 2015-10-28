@@ -114,6 +114,7 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = Fragment.instantiate(getBaseContext(), "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkQuestionFragment");
+            bundle.putString(HomeworkSummaryActivity.TYPE,mType);
             fragment.setArguments(bundle);
             fragmentTransaction.replace(android.R.id.content, fragment);
             fragmentTransaction.commit();

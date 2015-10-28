@@ -28,7 +28,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.edusoho.kuozhi.homework.ExerciseActivity;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
+import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -123,8 +125,14 @@ public class FillHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         }
 
         bundle.putStringArrayList("data", data);
-        MessageEngine.getInstance().sendMsgToTaget(
-                HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
+        if (HomeworkSummaryActivity.HOMEWORK.equals(mType)){
+            MessageEngine.getInstance().sendMsgToTaget(
+                    HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
+        }else {
+            MessageEngine.getInstance().sendMsgToTaget(
+                    ExerciseActivity.CHANGE_ANSWER, bundle, ExerciseActivity.class);
+        }
+
     }
 
     @Override

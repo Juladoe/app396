@@ -67,6 +67,8 @@ public class HomeWorkQuestionFragment extends BaseFragment implements ViewPager.
     protected ViewPager mHomeworkQuestionPager;
     private IHomeworkQuestionResult mQuestionResult;
 
+    private String mType;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
