@@ -428,6 +428,8 @@ public class Const {
     public static final String USER_LEARN_COURSE = "main#/course/%d";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
+    public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";
+    public static final String CLASSROOM_COURSES = "main#/classroom/%d";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
@@ -446,6 +448,7 @@ public class Const {
     public static final String GET_SCHOOL_APP = "/api/mobileschools/app/%d";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
     public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
+    public static final String CLASSROOM_ALL_MEMBERS = "/api/classrooms/%d/members";
 
     /**
      * 绑定第三方登录
@@ -460,7 +463,7 @@ public class Const {
      * intent action
      */
     public static final String INTENT_TARGET = "intent_target";
-    public static final String INTENT_COMMAND = "intent_command";
+    public static final String SWITCH_NEWS_TAB = "switch_news_tab";
 
     /*
         资讯api

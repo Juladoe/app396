@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -85,7 +84,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         logSchoolInfoToServer();
-        if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.INTENT_COMMAND)) {
+        if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
             processIntent(getIntent());
         }
     }
@@ -107,7 +106,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             targetIntent.putExtras(intent.getExtras());
             targetIntent.setFlags(intent.getFlags());
             startActivity(targetIntent);
-        } else if (!intent.hasExtra(Const.INTENT_COMMAND)) {
+        } else if (!intent.hasExtra(Const.SWITCH_NEWS_TAB)) {
             selectDownTab(R.id.nav_tab_find);
         }
     }
@@ -279,7 +278,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if (getIntent().hasExtra(Const.INTENT_COMMAND)) {
+                    if (getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
                         selectDownTab(R.id.nav_tab_find);
                     } else {
                         selectDownTab(R.id.nav_tab_news);

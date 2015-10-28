@@ -12,6 +12,7 @@ public class User implements Serializable {
     public String payPassword;
     public String payPasswordSalt;
     public int id;
+    public String avatar;
     public String smallAvatar;
     public UserRole[] roles;
     public String salt;

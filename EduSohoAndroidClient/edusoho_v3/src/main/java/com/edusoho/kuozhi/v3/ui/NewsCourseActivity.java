@@ -84,7 +84,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onRestart() {
-        super.onResume();
+        super.onRestart();
         mStart = 0;
         List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(mStart);
         mStart = newsCourseEntityList.size();

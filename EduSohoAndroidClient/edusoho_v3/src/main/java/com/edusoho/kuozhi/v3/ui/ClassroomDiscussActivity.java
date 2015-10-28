@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -14,6 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.ClassroomDiscussAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
@@ -69,6 +72,15 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         initView();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mStart = 0;
+        if (getList(0).size() == 0) {
+            mAdapter.clear();
+        }
     }
 
     @Override
@@ -380,6 +392,28 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     }
 
     // endregion
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.group_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.group_profile) {
+            mActivity.app.mEngine.runNormalPlugin("ClassroomDetailActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mClassroomName);
+                    startIntent.putExtra(Const.FROM_ID, mFromClassroomId);
+                }
+            });
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void invoke(WidgetMessage message) {
