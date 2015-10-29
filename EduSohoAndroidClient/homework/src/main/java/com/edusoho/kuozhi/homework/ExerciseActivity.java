@@ -133,8 +133,9 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
             if (answers == null) {
                 continue;
             }
+            params.put(String.format("data[%d][questionId]", question.getId()),question.getId()+"");
             for (String answer : answers) {
-                params.put(String.format("data[%d][]", question.getId()), answer);
+                params.put(String.format("data[%d][answer][]", question.getId()), answer);
             }
         }
 

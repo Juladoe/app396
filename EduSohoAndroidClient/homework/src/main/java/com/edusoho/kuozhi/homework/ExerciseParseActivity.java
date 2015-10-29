@@ -38,44 +38,6 @@ public class ExerciseParseActivity extends ExerciseActivity {
         return app.bindNewUrl(String.format(Const.EXERCISE_CONTENT_RESULT, mExerciseId), true);
     }
 
-//    @Override
-//    protected void initView() {
-//        RequestUrl requestUrl = getRequestUrl();
-//        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-//        loadDialog.show();
-//        mExerciseProvider.getExercise(requestUrl).success(new NormalCallback<ExerciseModel>() {
-//            @Override
-//            public void success(ExerciseModel exerciseModel) {
-//                coverQuestionList(exerciseModel);
-//                Bundle bundle = new Bundle();
-//                bundle.putString(Const.ACTIONBAR_TITLE, "练习题目");
-//                loadFragment(bundle);
-//                loadDialog.dismiss();
-//            }
-//        }).fail(new NormalCallback<VolleyError>() {
-//            @Override
-//            public void success(VolleyError obj) {
-//                loadDialog.dismiss();
-//            }
-//        });
-//    }
-
-//    private void coverQuestionList(ExerciseResult exerciseResult) {
-//        mExerciseQuestionList = new ArrayList<HomeWorkQuestion>();
-//        for (HomeWorkQuestion question : exerciseResult.getItems()) {
-//            QuestionType type = QuestionType.value(question.getType());
-//            if (QuestionType.material == type) {
-//                List<HomeWorkQuestion> items = question.getItems();
-//                for (HomeWorkQuestion itemQuestion : items) {
-//                    itemQuestion.setParent(question);
-//                    mExerciseQuestionList.add(itemQuestion);
-//                }
-//                continue;
-//            }
-//            mExerciseQuestionList.add(question);
-//        }
-//    }
-
     @Override
     protected void showHomeWorkCard() {
         HomeWorkCardFragment cardFragment = new HomeWorkParseCardFragment();
