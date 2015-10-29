@@ -72,7 +72,7 @@ public class CharacterParser {
         try {
             byte[] bytes = chs.getBytes("gb2312");
             if (bytes == null || bytes.length > 2 || bytes.length <= 0) {
-                throw new RuntimeException("illegal resource string");
+                throw new RuntimeException("illegal resources string");
             }
             if (bytes.length == 1) {
                 asc = bytes[0];

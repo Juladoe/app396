@@ -150,7 +150,7 @@ public class Const {
      * mobile/{code}/version  *
      */
     public static final String MOBILE_APP_VERSION = "mobile/%s/version";
-    public static final String MOBILE_APP_RESOURCE = "mobile/%s/resource";
+    public static final String MOBILE_APP_RESOURCE = "mobile/%s/resources";
     public static final String MOBILE_APP_URL = "%smobile/%s";
 
     /**
@@ -264,6 +264,7 @@ public class Const {
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
+    public static final String CLASSROOM_UNLEARN = "ClassRoom/unlearn";
 
     public static final int PUSH_VERSION = 2;
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
@@ -430,6 +431,7 @@ public class Const {
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
     public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";
     public static final String CLASSROOM_COURSES = "main#/classroom/%d";
+    public static final String CLASSROOM_MEMBER_LIST = "main#/studentlist/classroom/%d";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";

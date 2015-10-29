@@ -504,7 +504,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     }
 
     /**
-     * Upload media resource to upyun
+     * Upload media resources to upyun
      *
      * @param file Upload file
      * @param chat chatInfo
