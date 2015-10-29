@@ -143,14 +143,14 @@ public class ClassroomDetailActivity extends ActionBarBaseActivity implements Vi
                 @Override
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
-                        RequestUrl requestUrl = app.bindNewUrl(Const.CLASSROOM_UNLEARN, true);
+                        RequestUrl requestUrl = app.bindUrl(Const.CLASSROOM_UNLEARN, true);
                         HashMap<String, String> params = requestUrl.getParams();
                         params.put("classRoomId", mClassroomId + "");
                         params.put("targetType", "classroom");
                         ajaxPost(requestUrl, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                if (response.equals(true)) {
+                                if (response.equals("true")) {
                                     ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                                     classroomDiscussDataSource.delete(mClassroomId, app.loginUser.id);
                                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
