@@ -131,7 +131,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                 response, new TypeToken<UserResult>() {
                                 }.getType());
 
-                        if (userResult == null || userResult.user == null) {
+                        if (userResult == null) {
                             CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                             return;
                         }
@@ -164,7 +164,9 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                 if (token != null) {
                                     mApp.saveApiToken(token.token);
                                     Bundle bundle = new Bundle();
-                                    bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                                    if (userResult.user != null) {
+                                        bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+                                    }
                                     bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
                                         @Override
                                         public void showSplash() {
