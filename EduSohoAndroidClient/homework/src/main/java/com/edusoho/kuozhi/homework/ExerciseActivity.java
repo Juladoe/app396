@@ -146,8 +146,9 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
                             CommonUtil.longToast(getBaseContext(), "服务器忙，提交失败,请重新提交!");
                             return;
                         }
-
-                        setResult(RESULT_DO);//todo 直接跳转到解析页面-parse
+                        Intent intent = new Intent();
+                        intent.putExtra(EXERCISE_ID,mExerciseId);
+                        setResult(RESULT_DO,intent);
                         finish();
                     }
                 }).fail(this);

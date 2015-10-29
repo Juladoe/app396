@@ -334,4 +334,9 @@
         package="com.edusoho.kuozhi.homework.ExerciseActivity"
         version="1.0" />
 
+    <plugin
+        name="ExerciseParseActivity"
+        package="com.edusoho.kuozhi.homework.ExerciseParseActivity"
+        version="1.0" />
+
 </plugins>

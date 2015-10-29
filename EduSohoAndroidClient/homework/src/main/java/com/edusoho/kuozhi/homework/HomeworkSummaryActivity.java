@@ -140,7 +140,12 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
                 loadHomeWork();
             }
         }else {
-            //todo
+            if (data!=null){
+                int exerciseId = data.getIntExtra(ExerciseActivity.EXERCISE_ID, 0);
+                Bundle bundle = new Bundle();
+                bundle.putInt(ExerciseParseActivity.EXERCISE_ID,exerciseId);
+                app.mEngine.runNormalPluginWithBundle("ExerciseParseActivity",mContext,bundle);
+            }
         }
 
     }

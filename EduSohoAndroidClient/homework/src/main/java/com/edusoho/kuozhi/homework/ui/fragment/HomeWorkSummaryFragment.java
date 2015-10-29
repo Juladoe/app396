@@ -142,7 +142,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
                 Intent intent = new Intent(getActivity().getBaseContext(), ExerciseActivity.class);
                 intent.putExtra(ExerciseActivity.EXERCISE_ID, exerciseModel.getId());
                 intent.putExtra(HomeworkSummaryActivity.TYPE, mSummaryActivity.getType());
-                getActivity().startActivity(intent);
+                getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
             }
         });
 

@@ -22,4 +22,8 @@ public class ExerciseResult {
     public String passedStatus;
 
     public List<HomeWorkItemResult> items;
+
+    public List<HomeWorkItemResult> getItems() {
+        return items;
+    }
 }
