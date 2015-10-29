@@ -182,12 +182,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonStatus = parseJsonValue(
                         response, new TypeToken<LessonStatus>() {
                         });
-                if (mLessonStatus.learnStatus != LearnStatus.finished) {
-                    mLessonStatus.learnStatus = LearnStatus.learning;
+                if (mLessonStatus != null) {
+                    if (mLessonStatus.learnStatus != LearnStatus.finished) {
+                        mLessonStatus.learnStatus = LearnStatus.learning;
+                    }
+                    mToolsLayout.setVisibility(View.VISIBLE);
+                    showToolsByAnim();
+                    setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
                 }
-                mToolsLayout.setVisibility(View.VISIBLE);
-                showToolsByAnim();
-                setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
             }
         }, null);
     }
