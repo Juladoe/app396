@@ -43,12 +43,13 @@ import java.util.Map;
 /**
  * Created by JesseHuang on 15/5/28.
  */
-public class NetSchoolActivity extends ActionBarBaseActivity {
+public class NetSchoolActivity extends ActionBarBaseActivity implements Response.ErrorListener {
     private static final String SEARCH_HISTORY = "search_history";
     private static final int REQUEST_QR = 001;
     private static final int RESULT_QR = 002;
     private EdusohoAutoCompleteTextView mSearchEdt;
     private View mSearchBtn;
+    protected LoadDialog mLoading;
     private ArrayList<String> mSchoolList;
 
     @Override
@@ -145,14 +146,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
         }
 
         String url = "http://" + searchStr + Const.VERIFYVERSION;
-        final LoadDialog loading = LoadDialog.create(mContext);
-        loading.show();
+        mLoading = LoadDialog.create(mContext);
+        mLoading.show();
 
         RequestUrl requestUrl = new RequestUrl(url);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loading.dismiss();
                 SystemInfo systemInfo = parseJsonValue(response, new TypeToken<SystemInfo>() {
                 });
 
@@ -161,75 +161,9 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                     return;
                 }
 
-                RequestUrl schoolApiUrl = new RequestUrl(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL);
-                app.getUrl(schoolApiUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        SchoolResult schoolResult = app.gson.fromJson(
-                                response, new TypeToken<SchoolResult>() {
-                                }.getType());
-
-                        if (schoolResult == null || schoolResult.site == null) {
-                            handlerError(response);
-                            return;
-                        }
-                        final School site = schoolResult.site;
-                        if (!checkMobileVersion(site, site.apiVersionRange)) {
-                            return;
-                        }
-                        app.setCurrentSchool(site);
-                        app.removeToken();
-                        SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
-                        app.registDevice(null);
-
-                        final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
-                        app.getUrl(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Token token = parseJsonValue(response, new TypeToken<Token>() {
-                                });
-                                if (token != null) {
-                                    app.saveApiToken(token.token);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
-                                        @Override
-                                        public void showSplash() {
-                                            showSchSplash(site.name, site.splashs);
-                                        }
-                                    });
-                                    app.pushRegister(bundle);
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
-                            }
-                        });
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        loading.dismiss();
-                        if (error.networkResponse == null) {
-                            CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
-                        } else {
-                            CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                        }
-                    }
-                });
+                getSchoolApi(systemInfo);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loading.dismiss();
-                if (error.networkResponse == null) {
-                    CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
-                } else {
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                }
-            }
-        });
+        }, this);
     }
 
     private void handlerError(String errorStr) {
@@ -334,5 +268,68 @@ public class NetSchoolActivity extends ActionBarBaseActivity {
                 showQrResultDlg(result);
             }
         }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        mLoading.dismiss();
+        if (error.networkResponse == null) {
+            CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
+        } else {
+            CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+        }
+    }
+
+    protected void getSchoolApi(SystemInfo systemInfo) {
+
+        final RequestUrl schoolApiUrl = new RequestUrl(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL);
+        app.getUrl(schoolApiUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                SchoolResult schoolResult = app.gson.fromJson(
+                        response, new TypeToken<SchoolResult>() {
+                        }.getType());
+
+                if (schoolResult == null
+                        || schoolResult.site == null) {
+                    handlerError(response);
+                    return;
+                }
+
+                School site = schoolResult.site;
+                if (!checkMobileVersion(site, site.apiVersionRange)) {
+                    return;
+                }
+                app.setCurrentSchool(site);
+                app.removeToken();
+                SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
+                app.registDevice(null);
+
+                bindApiToken(site);
+            }
+        }, this);
+    }
+
+    protected void bindApiToken(final School site) {
+        final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
+        app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Token token = parseJsonValue(response, new TypeToken<Token>() {
+                });
+                if (token != null) {
+                    app.saveApiToken(token.token);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
+                        @Override
+                        public void showSplash() {
+                            mLoading.dismiss();
+                            showSchSplash(site.name, site.splashs);
+                        }
+                    });
+                    app.pushRegister(bundle);
+                }
+            }
+        }, this);
     }
 }
