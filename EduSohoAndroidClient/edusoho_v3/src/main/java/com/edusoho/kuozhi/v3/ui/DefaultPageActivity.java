@@ -65,9 +65,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         setContentView(R.layout.activity_default);
         initView();
 
-        if (savedInstanceState == null) {
-            //selectItem(0);
-        }
         if (mService != null) {
             mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         }
@@ -113,7 +110,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //super.onSaveInstanceState(outState);
     }
 
     private void initView() {
@@ -144,10 +140,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
         mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
-    }
-
-    private void selectItem(int position) {
-
     }
 
     private class NavDownTabClickListener implements View.OnClickListener {
