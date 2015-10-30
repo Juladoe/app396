@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
@@ -24,21 +23,15 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.PluginModel;
-
 import org.xmlpull.v1.XmlPullParser;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-
-import dalvik.system.DexClassLoader;
 
 /**
  * Created by JesseHuang on 15/4/23.
@@ -48,7 +41,6 @@ public class CoreEngine {
     private static final String PLUGIN = "plugin";
     private static final String INSTALL = "install";
     private static CoreEngine engine;
-    public AppCache appCache;
     private MessageEngine messageEngine;
 
 
@@ -238,7 +230,6 @@ public class CoreEngine {
     }
 
     private void init() {
-        appCache = AppDbCache.getInstance(mContext);
         messageEngine = MessageEngine.init();
         mMessageMap = new ConcurrentHashMap<String, ArrayList<CoreEngineMsgCallback>>();
         initPluginFromXml();
