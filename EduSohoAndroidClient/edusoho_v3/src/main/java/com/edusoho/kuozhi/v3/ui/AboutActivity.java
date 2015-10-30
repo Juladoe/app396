@@ -93,7 +93,7 @@ public class AboutActivity extends ActionBarBaseActivity {
 
         tvCheckUpdate.setText(AppUtil.getColorTextAfter(
                 "版本更新 ",
-                mContext.getResources().getString(R.string.apk_version),
+                app.getApkVersion(),
                 R.color.system_normal_text
         ));
 
