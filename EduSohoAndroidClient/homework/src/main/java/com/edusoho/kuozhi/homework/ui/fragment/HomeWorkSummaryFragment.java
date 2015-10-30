@@ -36,6 +36,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
     private TextView homeworkInfoContent;
     private Button startBtn;
 
+    private View mEmptyNotice;
     private View mLoadLayout;
     private HomeworkProvider mHomeworkProvider;
     private ExerciseProvider mExerciseProvider;
@@ -64,6 +65,8 @@ public class HomeWorkSummaryFragment extends BaseFragment {
         homeworkNameContent = (TextView) view.findViewById(R.id.homework_name_content);
         homeworkInfo = (TextView) view.findViewById(R.id.homework_info);
         homeworkInfoContent = (TextView) view.findViewById(R.id.homework_info_content);
+        mEmptyNotice = view.findViewById(R.id.empty_data_page);
+        mEmptyNotice.setVisibility(View.GONE);
         startBtn = (Button) view.findViewById(R.id.start_homework_btn);
         if (HomeworkSummaryActivity.HOMEWORK.equals(mSummaryActivity.getType())) {
             homeworkName.setText("作业名称");
@@ -87,6 +90,10 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             @Override
             public void success(HomeWorkModel homeWorkModel) {
                 mLoadLayout.setVisibility(View.GONE);
+                if (homeWorkModel == null){
+                    mEmptyNotice.setVisibility(View.VISIBLE);
+                    return;
+                }
                 renderHomeworkView(homeWorkModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
@@ -107,6 +114,10 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             @Override
             public void success(ExerciseModel exerciseModel) {
                 mLoadLayout.setVisibility(View.GONE);
+                if (exerciseModel == null){
+                    mEmptyNotice.setVisibility(View.VISIBLE);
+                    return;
+                }
                 renderExerciseView(exerciseModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
