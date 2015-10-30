@@ -403,7 +403,7 @@ public class EdusohoApp extends Application {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
         } catch (Exception e) {
-            version = getResources().getString(R.string.apk_version);
+
         }
         return version;
     }
