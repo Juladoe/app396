@@ -81,7 +81,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private EduSohoTextBtn mLessonPreviousBtn;
     private EduSohoTextBtn mMoreBtn;
 
-    private ExerciseOptionDialog mExerciseDialog;
+    private ExerciseOptionDialog mPluginDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,8 +300,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.menu_homework) {
-            mExerciseDialog = new ExerciseOptionDialog(mContext, getLessonId());
-            mExerciseDialog.show();
+            mPluginDialog = new ExerciseOptionDialog(mContext, getLessonId());
+            mPluginDialog.show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -577,4 +577,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPluginDialog != null && mPluginDialog.isShowing()) {
+            mPluginDialog.dismiss();
+        }
+    }
 }
