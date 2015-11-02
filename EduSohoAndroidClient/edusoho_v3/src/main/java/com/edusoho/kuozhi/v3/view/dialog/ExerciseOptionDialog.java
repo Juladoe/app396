@@ -3,7 +3,11 @@ package com.edusoho.kuozhi.v3.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,8 +18,10 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
 import com.edusoho.kuozhi.v3.util.Const;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +34,6 @@ public class ExerciseOptionDialog extends Dialog {
     private Context mContext;
     private GridView mGridView;
     private int mLessonId;
-
-    public View.OnClickListener mClickListener;
 
     public ExerciseOptionDialog(Context context, int lessonId) {
         super(context, R.style.FullDialogTheme);
@@ -44,19 +48,28 @@ public class ExerciseOptionDialog extends Dialog {
     private ArrayList<GridViewItem> createGridViewItemList() {
         ArrayList<GridViewItem> list = new ArrayList<>();
 
-        GridViewItem item = new GridViewItem();
-        item.iconRes = R.drawable.icon_homework_sel;
-        item.title = "作业";
-        item.type = "homework";
-        item.action = "HomeworkSummaryActivity";
-        list.add(item);
+        Bundle bundle = new Bundle();
+        bundle.putInt("lessonId", mLessonId);
+        Intent intent = new Intent();
+        intent.putExtra(Const.LESSON_ID, mLessonId);
+        intent.setAction(Const.LESSON_PLUGIN);
 
-        item = new GridViewItem();
-        item.iconRes = R.drawable.icon_exercise_sel;
-        item.title = "练习";
-        item.type = "exercise";
-        item.action = "HomeworkSummaryActivity";
-        list.add(item);
+        List<ResolveInfo> resolveInfos = mContext.getPackageManager().queryIntentActivities(
+                intent, PackageManager.GET_ACTIVITIES);
+        for (ResolveInfo resolveInfo : resolveInfos) {
+            GridViewItem item = new GridViewItem();
+            item.iconRes = resolveInfo.loadIcon(mContext.getPackageManager());
+            item.title = resolveInfo.loadLabel(mContext.getPackageManager()).toString();
+            item.bundle = intent.getExtras();
+            item.action = resolveInfo.activityInfo.name;
+            try {
+                Class lessonPluginCallbackCls = Class.forName(resolveInfo.activityInfo.name + "$Callback");
+                item.callback = (LessonPluginCallback) lessonPluginCallbackCls.getConstructor(Context.class).newInstance(mContext);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            list.add(item);
+        }
 
         return list;
     }
@@ -69,11 +82,11 @@ public class ExerciseOptionDialog extends Dialog {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GridViewItem item = (GridViewItem) parent.getItemAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putInt("lessonId", mLessonId);
+                if (item.callback.click(parent, view, position)) {
+                    return;
+                }
                 Intent intent = new Intent();
-                intent.putExtra(Const.LESSON_ID, mLessonId);
-                intent.putExtra("type", item.type);
+                intent.putExtras(item.bundle);
                 intent.setClassName(getContext().getPackageName(), item.action);
                 mContext.startActivity(intent);
             }
@@ -132,19 +145,20 @@ public class ExerciseOptionDialog extends Dialog {
         @Override
         public View getView(int index, View view, ViewGroup vg) {
             final ViewHolder holder;
+            GridViewItem item = mList.get(index);
             if (view == null) {
                 view = inflater.inflate(mResouce, null);
                 holder = new ViewHolder();
-
                 holder.itemView = (TextView) view.findViewById(R.id.lesson_gridview_item);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
             }
 
-            GridViewItem item = mList.get(index);
             holder.itemView.setText(item.title);
-            holder.itemView.setCompoundDrawablesWithIntrinsicBounds(0, item.iconRes, 0, 0);
+            holder.itemView.setCompoundDrawablesWithIntrinsicBounds(null, item.iconRes, null, null);
+
+            item.callback.initPlugin(view, item.bundle);
             return view;
         }
 
@@ -156,10 +170,11 @@ public class ExerciseOptionDialog extends Dialog {
 
     private class GridViewItem {
 
-        public int iconRes;
+        public Drawable iconRes;
         public String title;
-        public String type;
         public String action;
+        public Bundle bundle;
+        public LessonPluginCallback callback;
     }
 
 }
