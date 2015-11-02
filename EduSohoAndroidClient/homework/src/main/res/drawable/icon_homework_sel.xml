@@ -2,8 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- 按下状态 -->
-    <item android:drawable="@drawable/icon_homework" android:state_focused="true"/>
-    <item android:drawable="@drawable/icon_homework" android:state_pressed="true"/>
+    <item android:drawable="@drawable/icon_homework" android:state_enabled="true"/>
 
     <!-- 普通无焦点状态 -->
     <item android:drawable="@drawable/icon_homework_normal"/>
