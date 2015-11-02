@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +23,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.animation.AccelerateInterpolator;
 
 import com.android.volley.Response;
@@ -41,10 +44,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -976,5 +981,46 @@ public class AppUtil {
         }
 
         return -1;
+    }
+
+    /**
+     * by suju
+     * context 缓存数组
+     */
+    static WeakHashMap<Integer, Context> contextMap = new WeakHashMap<>();
+
+    public static Context contextAddAssets(Context context) {
+        if (contextMap.containsKey(context.hashCode())) {
+            return context;
+        }
+
+        AssetManager assetManager = context.getAssets();
+        String zipName = String.format("assets-%s.zip", getApkVersion(context));
+        addZipToAssets(assetManager, new File(context.getFilesDir(), zipName));
+        contextMap.put(context.hashCode(), context);
+        return context;
+    }
+
+    public static void addZipToAssets(AssetManager assetManager, File file) {
+        if (! file.exists()) {
+            return;
+        }
+        try {
+            Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
+            addAssetPath.invoke(assetManager, file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getApkVersion(Context context) {
+        String version = "1.0.0";
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            version = packageInfo.versionName;
+        } catch (Exception e) {
+
+        }
+        return version;
     }
 }

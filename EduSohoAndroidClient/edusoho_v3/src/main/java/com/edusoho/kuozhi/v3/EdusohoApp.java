@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,9 +26,11 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.BuildConfig;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
@@ -82,7 +85,6 @@ public class EdusohoApp extends Application {
     public String host;
     public String domain;
     public Gson gson;
-    public SqliteUtil sqliteUtil;
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
@@ -122,7 +124,10 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        if (!"debug".equals(BuildConfig.BUILD_TYPE)) {
+            EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+        }
+
         init();
         PluginHelper.getInstance().applicationOnCreate(getBaseContext());
     }
@@ -272,8 +277,12 @@ public class EdusohoApp extends Application {
         loadConfig();
 
         mEngine = CoreEngine.create(this);
-        startMainService();
         installPlugin();
+        startMainService();
+    }
+
+    public void startMainService() {
+        app.mEngine.runService(EdusohoMainService.TAG, this, null);
     }
 
     private void installPlugin() {
@@ -286,7 +295,7 @@ public class EdusohoApp extends Application {
             public void run() {
                 Log.d(TAG, "installPlugin");
                 mEngine.installApkPlugin();
-                //sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
+                sp.edit().putBoolean(INSTALL_PLUGIN, true).commit();
             }
         });
     }
@@ -305,10 +314,6 @@ public class EdusohoApp extends Application {
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
                 showImageOnFail(R.drawable.defaultpic).build();
-    }
-
-    public void startMainService() {
-        app.mEngine.runService(EdusohoMainService.TAG, this, null);
     }
 
     public HashMap<String, String> getPlatformInfo() {
@@ -400,7 +405,7 @@ public class EdusohoApp extends Application {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
         } catch (Exception e) {
-            version = getResources().getString(R.string.apk_version);
+
         }
         return version;
     }
@@ -847,5 +852,15 @@ public class EdusohoApp extends Application {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Context getBaseContext() {
+        return AppUtil.contextAddAssets(super.getBaseContext());
+    }
+
+    @Override
+    public AssetManager getAssets() {
+        return getBaseContext().getAssets();
     }
 }

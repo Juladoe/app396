@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -66,9 +65,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         setContentView(R.layout.activity_default);
         initView();
 
-        if (savedInstanceState == null) {
-            //selectItem(0);
-        }
         if (mService != null) {
             mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         }
@@ -85,7 +81,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         logSchoolInfoToServer();
-        if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.INTENT_COMMAND)) {
+        if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
             processIntent(getIntent());
         }
     }
@@ -107,14 +103,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             targetIntent.putExtras(intent.getExtras());
             targetIntent.setFlags(intent.getFlags());
             startActivity(targetIntent);
-        } else if (!intent.hasExtra(Const.INTENT_COMMAND)) {
+        } else if (!intent.hasExtra(Const.SWITCH_NEWS_TAB)) {
             selectDownTab(R.id.nav_tab_find);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //super.onSaveInstanceState(outState);
     }
 
     private void initView() {
@@ -145,10 +140,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
         mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
-    }
-
-    private void selectItem(int position) {
-
     }
 
     private class NavDownTabClickListener implements View.OnClickListener {
@@ -279,7 +270,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if (getIntent().hasExtra(Const.INTENT_COMMAND)) {
+                    if (getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
                         selectDownTab(R.id.nav_tab_find);
                     } else {
                         selectDownTab(R.id.nav_tab_news);

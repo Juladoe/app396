@@ -335,7 +335,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
     }
 
     /**
-     * Upload media resource to upyun
+     * Upload media resources to upyun
      *
      * @param file Upload file
      * @param chat chatInfo

@@ -65,12 +65,12 @@ public class NewsFragment extends BaseFragment {
     public static final int UPDATE_UNREAD_BULLETIN = 17;
     public static final int UPDATE_UNREAD_NEWS_COURSE = 18;
     public static final int UPDATE_UNREAD_ARTICLE_CREATE = 19;
+    public static final int REFRESH_LIST = 20;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
     private TextView tvEmptyText;
     private SwipeAdapter mSwipeAdapter;
-    private String mArticleAvatar;
 
     @Override
     public void onAttach(Activity activity) {
@@ -303,7 +303,11 @@ public class NewsFragment extends BaseFragment {
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();
         } else {
+            if (message.data == null) {
+                return;
+            }
             int fromId = message.data.getInt(Const.FROM_ID, 0);
+            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             switch (messageType.code) {
                 case Const.ADD_MSG:
                     int chatHandleType = message.data.getInt(Const.ADD_CHAT_MSG_DESTINATION, 0);
@@ -319,19 +323,16 @@ public class NewsFragment extends BaseFragment {
                     handleBulletinMsg(bulletinMessage);
                     break;
                 case UPDATE_UNREAD_MSG:
-                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                     String type = message.data.getString(Const.NEWS_TYPE);
                     newDataSource.updateUnread(fromId, app.loginUser.id, type);
                     mSwipeAdapter.updateItem(fromId, type);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
-                    NewDataSource bulletinDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    bulletinDataSource.updateBulletinUnread(app.loginUser.id, PushUtil.BulletinType.TYPE);
+                    newDataSource.updateBulletinUnread(app.loginUser.id, PushUtil.BulletinType.TYPE);
                     mSwipeAdapter.updateItem(fromId, PushUtil.BulletinType.TYPE);
                     break;
                 case UPDATE_UNREAD_NEWS_COURSE:
-                    NewDataSource newsCourseDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    newsCourseDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.TYPE);
+                    newDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.TYPE);
                     mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.TYPE);
                     break;
                 case Const.ADD_CHAT_MSGS:
@@ -358,6 +359,11 @@ public class NewsFragment extends BaseFragment {
                     WrapperXGPushTextMessage classroomMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     int classroomHandleType = message.data.getInt(Const.ADD_CLASSROOM_DISCUSS_MSG_DESTINATION, 0);
                     getNewChatMsg(classroomHandleType, classroomMessage);
+                    break;
+                case REFRESH_LIST:
+                    List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
+                    mSwipeAdapter.update(news);
+                    break;
             }
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
@@ -594,7 +600,7 @@ public class NewsFragment extends BaseFragment {
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
                 new MessageType(UPDATE_UNREAD_BULLETIN, source),
-                new MessageType(UPDATE_UNREAD_NEWS_COURSE, source)};
+                new MessageType(UPDATE_UNREAD_NEWS_COURSE, source), new MessageType(REFRESH_LIST, source)};
     }
 
     @Override

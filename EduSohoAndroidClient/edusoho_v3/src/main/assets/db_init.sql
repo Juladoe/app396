@@ -1,4 +1,4 @@
-create table data_cache (
+create table if not exists data_cache (
     type varchar(64),
     key varchar(255),
     value text

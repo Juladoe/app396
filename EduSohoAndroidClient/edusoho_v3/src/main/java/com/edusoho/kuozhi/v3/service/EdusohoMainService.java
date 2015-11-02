@@ -1,14 +1,15 @@
 package com.edusoho.kuozhi.v3.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,6 +29,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -39,7 +41,6 @@ import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +73,16 @@ public class EdusohoMainService extends Service {
         app = (EdusohoApp) getApplication();
         mService = this;
         mWorkHandler = new WorkHandler(this);
+    }
+
+    @Override
+    public Context getBaseContext() {
+        return AppUtil.contextAddAssets(super.getBaseContext());
+    }
+
+    @Override
+    public AssetManager getAssets() {
+        return getBaseContext().getAssets();
     }
 
     public void sendMessage(int type, Object obj) {

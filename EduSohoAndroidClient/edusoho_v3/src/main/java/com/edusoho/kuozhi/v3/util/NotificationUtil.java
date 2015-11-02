@@ -167,7 +167,7 @@ public class NotificationUtil {
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (isAppExit(context)) {
-            notifyIntent.putExtra(Const.INTENT_COMMAND, PushUtil.DiscountType.DISCOUNT);
+            notifyIntent.putExtra(Const.SWITCH_NEWS_TAB, PushUtil.DiscountType.DISCOUNT);
         }
 
         PendingIntent pendIntent = PendingIntent.getActivity(context, DISCOUNT_ID,

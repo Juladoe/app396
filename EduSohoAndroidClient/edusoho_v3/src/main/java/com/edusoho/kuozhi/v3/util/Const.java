@@ -150,7 +150,7 @@ public class Const {
      * mobile/{code}/version  *
      */
     public static final String MOBILE_APP_VERSION = "mobile/%s/version";
-    public static final String MOBILE_APP_RESOURCE = "mobile/%s/resource";
+    public static final String MOBILE_APP_RESOURCE = "mobile/%s/resources";
     public static final String MOBILE_APP_URL = "%smobile/%s";
 
     /**
@@ -264,11 +264,12 @@ public class Const {
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
+    public static final String CLASSROOM_UNLEARN = "ClassRoom/unlearn";
 
     public static final int PUSH_VERSION = 2;
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "http://tui.edusoho.net/v2";
-    //public static final String PUSH_HOST = "http://115.29.78.158:94/v2";
+//    public static final String PUSH_HOST = "http://115.29.78.158:94/v2";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
@@ -428,6 +429,9 @@ public class Const {
     public static final String USER_LEARN_COURSE = "main#/course/%d";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
+    public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";
+    public static final String CLASSROOM_COURSES = "main#/classroom/%d";
+    public static final String CLASSROOM_MEMBER_LIST = "main#/studentlist/classroom/%d";
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
@@ -446,6 +450,7 @@ public class Const {
     public static final String GET_SCHOOL_APP = "/api/mobileschools/app/%d";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
     public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
+    public static final String CLASSROOM_ALL_MEMBERS = "/api/classrooms/%d/members";
 
     /**
      * 绑定第三方登录
@@ -460,7 +465,7 @@ public class Const {
      * intent action
      */
     public static final String INTENT_TARGET = "intent_target";
-    public static final String INTENT_COMMAND = "intent_command";
+    public static final String SWITCH_NEWS_TAB = "switch_news_tab";
 
     /*
         资讯api

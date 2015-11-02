@@ -41,9 +41,9 @@ public class NewDataSource {
         mDbHelper.close();
     }
 
-    public New getNew(int courseId, int belongId) {
+    public New getNew(int fromId, int belongId) {
         openRead();
-        Cursor cursor = mDataBase.rawQuery("SELECT * FROM NEW WHERE FROMID = ? AND BELONGID = ?", new String[]{courseId + "", belongId + ""});
+        Cursor cursor = mDataBase.rawQuery("SELECT * FROM NEW WHERE FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
         New newCourse = null;
         if (cursor.moveToNext()) {
             newCourse = convertCursor2New(cursor);

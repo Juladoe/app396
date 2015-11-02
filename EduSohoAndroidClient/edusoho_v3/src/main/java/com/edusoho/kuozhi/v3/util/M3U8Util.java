@@ -782,15 +782,22 @@ public class M3U8Util {
         private byte[] mDesgetKey;
 
         public DegestInputStream(InputStream target, String host) {
-            initDesgetKey(host);
+            initDesgetKey(host, true);
             this.mTargetInputStream = target;
         }
 
-        private void initDesgetKey(String host) {
+        public DegestInputStream(InputStream target, String host, boolean isMd5) {
+            initDesgetKey(host, isMd5);
+            this.mTargetInputStream = target;
+        }
 
-            String desgetStr = "";
-            if (!TextUtils.isEmpty(host)) {
-                desgetStr = DigestUtils.md5(host);
+        private void initDesgetKey(String host, boolean isMd5) {
+
+            String desgetStr = host;
+            if (isMd5) {
+                if (!TextUtils.isEmpty(host)) {
+                    desgetStr = DigestUtils.md5(host);
+                }
             }
 
             this.mCurrentDesgetIndex = 0;

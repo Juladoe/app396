@@ -96,6 +96,15 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     public static class SchoolChangeHandler {
         private EdusohoApp mApp;
         private BaseActivity mActivity;
+        private LoadDialog mLoading;
+
+        private Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mLoading.dismiss();
+                CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
+            }
+        };
 
         public SchoolChangeHandler(BaseActivity activity) {
             this.mActivity = activity;
@@ -117,21 +126,57 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             mActivity.finish();
         }
 
+        protected void startSchoolActivity(School site)  {
+            mLoading.dismiss();
+            showSchSplash(site.name, site.splashs);
+        }
+
+        protected void bindApiToken(final UserResult userResult) {
+            RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_API_TOKEN, false);
+            mApp.getUrl(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Token token = mActivity.parseJsonValue(response, new TypeToken<Token>() {
+                    });
+                    if (token != null) {
+                        final School site = userResult.site;
+                        mApp.saveApiToken(token.token);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.BIND_USER_ID, userResult.user == null ? "" : userResult.user.id + "");
+                        bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
+                            @Override
+                            public void showSplash() {
+                                startSchoolActivity(site);
+                            }
+                        });
+                        mApp.pushRegister(bundle);
+                        if (userResult.user == null) {
+                            startSchoolActivity(site);
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
+                }
+            });
+        }
+
         public void change(String url) {
-            final LoadDialog loading = LoadDialog.create(mActivity);
-            loading.show();
+            mLoading = LoadDialog.create(mActivity);
+            mLoading.show();
 
             RequestUrl requestUrl = new RequestUrl(url);
             mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    loading.dismiss();
                     try {
                         final UserResult userResult = mApp.gson.fromJson(
                                 response, new TypeToken<UserResult>() {
                                 }.getType());
 
-                        if (userResult == null || userResult.user == null) {
+                        if (userResult == null) {
                             CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                             return;
                         }
@@ -155,43 +200,14 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
                         mApp.registDevice(null);
 
-                        RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_API_TOKEN, false);
-                        mApp.getUrl(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Token token = mActivity.parseJsonValue(response, new TypeToken<Token>() {
-                                });
-                                if (token != null) {
-                                    mApp.saveApiToken(token.token);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                                    bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
-                                        @Override
-                                        public void showSplash() {
-                                            showSchSplash(site.name, site.splashs);
-                                        }
-                                    });
-                                    mApp.pushRegister(bundle);
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
-                            }
-                        });
+                        bindApiToken(userResult);
 
                     } catch (Exception e) {
+                        mLoading.dismiss();
                         CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    loading.dismiss();
-                    CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
-                }
-            });
+            }, errorListener);
         }
 
         private boolean checkMobileVersion(final School site, HashMap<String, String> versionRange) {
