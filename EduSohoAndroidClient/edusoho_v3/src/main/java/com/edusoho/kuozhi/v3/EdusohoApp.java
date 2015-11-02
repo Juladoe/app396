@@ -44,10 +44,12 @@ import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
@@ -407,28 +409,13 @@ public class EdusohoApp extends Application {
         app.defaultSchool = school;
         app.schoolHost = school.url + "/";
         setHost(school.host);
-        SharedPreferences sp = getSharedPreferences("defaultSchool", MODE_PRIVATE);
-        SharedPreferences.Editor edit = sp.edit();
-        edit.putString("name", school.name);
-        edit.putString("url", school.url);
-        edit.putString("host", school.host);
-        edit.putString("logo", school.logo);
-        edit.commit();
+        SchoolUtil.saveSchool(getBaseContext(), school);
     }
 
     private void loadDefaultSchool() {
-        SharedPreferences sp = getSharedPreferences("defaultSchool", MODE_PRIVATE);
-        Map<String, String> map = (Map<String, String>) sp.getAll();
-        if (!map.isEmpty()) {
-            School item = new School();
-            item.name = map.get("name");
-            item.url = map.get("url");
-            item.host = map.get("host");
-            item.logo = map.get("logo");
-            setHost(item.host);
-            item.url = checkSchoolUrl(item.url);
-            setCurrentSchool(item);
-        }
+        School item = SchoolUtil.getDefaultSchool(getBaseContext());
+        setHost(item.host);
+        setCurrentSchool(item);
     }
 
     private void setHost(String host) {
@@ -436,29 +423,9 @@ public class EdusohoApp extends Application {
         this.domain = getDomain();
     }
 
-    private String checkSchoolUrl(String url) {
-        if (url.endsWith("mapi_v1")) {
-            String newUrl = url.substring(0, url.length() - 1);
-            return newUrl + "2";
-        }
-        return url;
-    }
-
-    public void SaveUser2Local(User user) {
-        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
-        SharedPreferences.Editor edit = sp.edit();
-        if (user != null) {
-            edit.putString("userInfo", gson.toJson(user));
-        } else {
-            edit.putString("userInfo", "");
-        }
-
-        edit.apply();
-    }
-
     public User loadUserInfo() {
-        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
-        String strUser = sp.getString("userInfo", "");
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
+        String strUser = tokenMap.get("userInfo").toString();
         User user = null;
         if (!TextUtils.isEmpty(strUser)) {
             user = parseJsonValue(AppUtil.encode2(strUser), new TypeToken<User>() {
@@ -468,25 +435,18 @@ public class EdusohoApp extends Application {
     }
 
     private void loadToken() {
-        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
-        token = sp.getString("token", "");
-        apiToken = sp.getString("apiToken", "");
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
+        token = tokenMap.get("token").toString();
+        apiToken = tokenMap.get("apiToken").toString();
     }
 
     public void saveApiToken(String apiToken) {
-        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
-        SharedPreferences.Editor edit = sp.edit();
-        edit.putString("apiToken", apiToken);
-        edit.apply();
+        ApiTokenUtil.saveApiToken(getBaseContext(), apiToken);
         this.apiToken = apiToken;
     }
 
     public void saveToken(UserResult userResult) {
-        SharedPreferences sp = getSharedPreferences("token", MODE_APPEND);
-        SharedPreferences.Editor edit = sp.edit();
-        edit.putString("token", userResult.token);
-        edit.putString("userInfo", AppUtil.encode2(gson.toJson(userResult.user)));
-        edit.apply();
+        ApiTokenUtil.saveToken(getBaseContext(), userResult);
 
         token = userResult.token == null || "".equals(userResult.token) ? "" : userResult.token;
         if (TextUtils.isEmpty(token)) {
@@ -498,11 +458,7 @@ public class EdusohoApp extends Application {
     }
 
     public void removeToken() {
-        SharedPreferences sp = getSharedPreferences("token", MODE_PRIVATE);
-        SharedPreferences.Editor edit = sp.edit();
-        edit.putString("token", "");
-        edit.putString("userInfo", "");
-        edit.apply();
+        ApiTokenUtil.removeToken(getBaseContext());
 
         SqliteUtil.clearUser(loginUser == null ? 0 : loginUser.id);
         token = null;
