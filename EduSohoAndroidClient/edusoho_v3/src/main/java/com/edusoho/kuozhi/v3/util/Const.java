@@ -479,4 +479,6 @@ public class Const {
     public static final String EXERCISE_CONTENT = "/api/exercise/%d";
     public static final String EXERCISE_CONTENT_RESULT = "/api/exercise/%d/result";
     public static final String EXERCISE_RESULT = "/api/exercise_results/%d";
+
+    public static final String LESSON_PLUGIN = "android.intent.action.LESSON_PLUGIN";
 }
