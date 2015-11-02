@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lesson_gridview_item"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/homework_icon_bg_sel"
-    android:drawablePadding="5dp"
-    android:drawableTop="@drawable/icon_homework_sel"
-    android:gravity="center"
+    android:layout_margin="16dp"
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="8dp"
-    android:text="作业"
-    android:textColor="@color/primary_text_sel"
-    android:textSize="@dimen/base_x_small_size" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_gravity="center"
+        android:id="@+id/lesson_gridview_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="作业"
+        android:textColor="@color/primary_text_sel"
+        android:textSize="@dimen/base_x_small_size" />
+</FrameLayout>
