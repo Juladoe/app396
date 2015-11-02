@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">homework</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="hw_card_submit">确认提交</string>
+    <string name="exercise_label">练习</string>
+    <string name="homework_label">作业</string>
 
 </resources>
