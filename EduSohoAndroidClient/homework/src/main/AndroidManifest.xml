@@ -5,16 +5,39 @@
     <application
         android:allowBackup="true">
         <activity
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:icon="@drawable/icon_homework_sel"
+            android:label="@string/homework_label"
             android:name=".HomeworkSummaryActivity" >
+            <intent-filter>
+                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
+                <action android:name="android.intent.action.LESSON_PLUGIN" />
+            </intent-filter>
         </activity>
+
         <activity
             android:name=".HomeworkActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".HomeWorkParseActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:label="@string/exercise_label"
+            android:icon="@drawable/icon_exercise_sel"
+            android:name=".ExerciseSummaryActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.LESSON_PLUGIN" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ExerciseActivity"
             android:configChanges="keyboardHidden|orientation"
