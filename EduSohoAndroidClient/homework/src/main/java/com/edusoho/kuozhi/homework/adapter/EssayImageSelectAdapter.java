@@ -12,7 +12,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 

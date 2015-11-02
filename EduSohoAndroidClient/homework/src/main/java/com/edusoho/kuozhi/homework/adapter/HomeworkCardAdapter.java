@@ -57,7 +57,8 @@ public class HomeworkCardAdapter extends BaseAdapter {
         TextView mText = (TextView) view;
         List<String> answers = mList.get(i).getAnswer();
         mText.setBackgroundResource(answers == null ? R.drawable.hw_card_item_bg : R.drawable.hw_card_item_bg_pressed);
-        mText.setText((i + 1) + "");
+        mText.setTextColor(mContext.getResources().getColor(answers == null ? R.color.primary : R.color.white));
+        mText.setText(String.valueOf(i + 1));
         return view;
     }
 
