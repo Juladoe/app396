@@ -64,7 +64,6 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
     public BaseHomeworkQuestionWidget(Context context) {
         super(context);
         mContext = context;
-        mType = HomeworkSummaryActivity.getInstance().getType();
         initView(null);
     }
 
