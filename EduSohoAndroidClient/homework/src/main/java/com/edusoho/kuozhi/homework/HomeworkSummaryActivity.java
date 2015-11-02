@@ -1,21 +1,35 @@
 package com.edusoho.kuozhi.homework;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.homework.listener.BaseLessonPluginCallback;
 import com.edusoho.kuozhi.homework.model.ExerciseModel;
 import com.edusoho.kuozhi.homework.model.ExerciseProvider;
 import com.edusoho.kuozhi.homework.model.ExerciseResult;
+import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeWorkResult;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
+import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -24,7 +38,6 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  */
 public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
-    private static HomeworkSummaryActivity homeworkSummaryActivity;
     public static final String HOMEWORK = "homework";
     public static final String EXERCISE = "exercise";
     public static final String TYPE = "type";
@@ -35,7 +48,6 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
 
     private Bundle mBundle;
     private HomeworkProvider mHomeworkProvider;
-    private ExerciseProvider mExerciseProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +57,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         mBundle = intent.getExtras();
 
         mLessonId = mBundle == null ? 0 : mBundle.getInt(Const.LESSON_ID);
-        mType = mBundle == null ? HOMEWORK : mBundle.getString("type");
-        setBackMode(BACK, HOMEWORK.equals(mType) ? "作业" : "练习");
+        mType = HOMEWORK;
         setContentView(R.layout.homework_summary_layout);
         ModelProvider.init(getBaseContext(), this);
         initView();
@@ -68,12 +79,6 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         loadFragment(bundle, fragmentName);
     }
 
-    private void renderExerciseView() {
-        String fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
-        Bundle bundle = getIntent().getExtras();
-        loadFragment(bundle, fragmentName);
-    }
-
     protected void loadFragment(Bundle bundle, String fragmentName) {
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -86,12 +91,9 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         }
     }
 
-    public void initView() {
-        if (HOMEWORK.equals(mType)){
-            loadHomeWork();
-        }else {
-            renderExerciseView();
-        }
+    protected void initView() {
+        setBackMode(BACK, "作业");
+        loadHomeWork();
     }
 
     private void loadHomeWork() {
@@ -113,44 +115,37 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         });
     }
 
-//    private void loadExercise(){
-//        String url = String.format(Const.EXERCISE_RESULT, mLessonId);
-//        RequestUrl requestUrl = app.bindNewUrl(url, true);
-//        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-//        loadDialog.show();
-//        mExerciseProvider.getExerciseResult(requestUrl, false).success(new NormalCallback<ExerciseResult>() {
-//            @Override
-//            public void success(ExerciseResult exerciseResult) {
-//                loadDialog.dismiss();
-//                renderExerciseView(exerciseResult);
-//            }
-//        }).fail(new NormalCallback<VolleyError>() {
-//            @Override
-//            public void success(VolleyError obj) {
-//                loadDialog.dismiss();
-//            }
-//        });
-//    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (HOMEWORK.equals(mType)){
-            if (requestCode == REQUEST_DO && resultCode == HomeworkActivity.RESULT_DO) {
-                loadHomeWork();
-            }
-        }else {
-            if (data!=null){
-                int exerciseId = data.getIntExtra(ExerciseActivity.EXERCISE_ID, 0);
-                Bundle bundle = new Bundle();
-                bundle.putInt(ExerciseParseActivity.EXERCISE_ID,exerciseId);
-                app.mEngine.runNormalPluginWithBundle("ExerciseParseActivity",mContext,bundle);
-            }
+        if (requestCode == REQUEST_DO && resultCode == HomeworkActivity.RESULT_DO) {
+            loadHomeWork();
         }
-
     }
 
-    public static HomeworkSummaryActivity getInstance(){
-        return homeworkSummaryActivity;
+    public static class Callback extends BaseLessonPluginCallback
+    {
+        public Callback(Context context)
+        {
+            super(context);
+        }
+
+        @Override
+        protected RequestUrl getRequestUrl(int lessonId) {
+            String url = new StringBuilder()
+                    .append(String.format(Const.HOMEWORK_CONTENT, lessonId))
+                    .append("?_idType=lesson")
+                    .toString();
+            return ApiTokenUtil.bindNewUrl(mContext, url, true);
+        }
+
+        @Override
+        public boolean click(AdapterView<?> parent, View view, int position) {
+            if (!view.isEnabled()) {
+                CommonUtil.longToast(mContext, "课程暂无作业");
+                return true;
+            }
+            return false;
+        }
     }
 }
