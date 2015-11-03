@@ -231,7 +231,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     protected void handlerMultiMsg(ViewHolder holder, int position) {
-        Chat model = (Chat) mList.get(position);
+        BaseMsgEntity model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
