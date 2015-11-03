@@ -193,4 +193,5 @@
     <!-- ChatSelect -->
     <string name="chat_select_label">最近聊天</string>
     <string name="chat_select_create">创建新聊天</string>
+    <string name="group_select_create">选择讨论组</string>
 </resources>
