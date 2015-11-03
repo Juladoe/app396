@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.handler.ChatSendHandler;
+import com.edusoho.kuozhi.v3.handler.ClassRoomChatSendHandler;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -64,9 +65,14 @@ public class ChatSelectFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 New item = (New)parent.getItemAtPosition(position);
+                if (PushUtil.ChatUserType.CLASSROOM.equals(item.type)) {
+                    new ClassRoomChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
+                    return;
+                }
                 new ChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
             }
         });
+
         mSelectFrientBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +120,8 @@ public class ChatSelectFragment extends BaseFragment {
         String[] types = new String[] {
                 PushUtil.ChatUserType.USER,
                 PushUtil.ChatUserType.FRIEND,
-                PushUtil.ChatUserType.TEACHER
+                PushUtil.ChatUserType.TEACHER,
+                PushUtil.ChatUserType.CLASSROOM
         };
         for (New item : source) {
             if (CommonUtil.inArray(item.type, types)) {
