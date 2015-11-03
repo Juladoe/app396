@@ -3,20 +3,28 @@ package com.edusoho.kuozhi.v3.model.bal;
 /**
  * Created by Melomelon on 2015/9/10.
  */
-public class DiscussionGroup {
+public class DiscussionGroup extends Friend {
 
     public String type;
-    public String id;
-    public String title;
     public String picture;
 
-    private String sortLetter;
-
-    public String getSortLetters() {
-        return sortLetter;
+    @Override
+    public String getNickname() {
+        return title;
     }
 
-    public void setSortLetters(String letter) {
-        this.sortLetter = letter;
+    @Override
+    public String getMediumAvatar() {
+        return picture;
+    }
+
+    @Override
+    public String getLargeAvatar() {
+        return picture;
+    }
+
+    @Override
+    public String getSmallAvatar() {
+        return picture;
     }
 }
