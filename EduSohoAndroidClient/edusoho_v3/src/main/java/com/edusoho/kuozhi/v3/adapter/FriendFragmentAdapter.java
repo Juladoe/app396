@@ -24,14 +24,14 @@ import java.util.List;
 /**
  * Created by Melomelon on 2015/5/26.
  */
-public class FriendFragmentAdapter extends BaseAdapter {
+public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
 
     private static final int MAX_TYPE_COUNT = 2;
     private static final int TYPE_HEAD = 0;
     private static final int TYPE_FRIEND = 1;
 
     private LayoutInflater mInflater;
-    private ArrayList mList;
+    private ArrayList<T> mList;
     private Context mContext;
     private EdusohoApp mApp;
     private View mHeadView;
@@ -107,7 +107,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder = (ItemHolder) v.getTag();
                 }
 
-                final Friend friend = (Friend) mList.get(position - 1);
+                final T friend =  mList.get(position - 1);
                 if (position != mList.size()) {
                     if (getSectionForPosition(position - 1) != getSectionForPosition(position)) {
                         itemHolder.dividerLine.setVisibility(View.GONE);
@@ -118,7 +118,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder.dividerLine.setVisibility(View.GONE);
                 }
 
-                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.roles)) {
+                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.getRoles())) {
                     itemHolder.teacherTag.setVisibility(View.VISIBLE);
                 } else {
                     itemHolder.teacherTag.setVisibility(View.GONE);
@@ -133,9 +133,9 @@ public class FriendFragmentAdapter extends BaseAdapter {
                     itemHolder.catalog.setVisibility(View.GONE);
                 }
 
-                itemHolder.friendName.setText(friend.nickname);
-                if (!TextUtils.isEmpty(friend.mediumAvatar)) {
-                    ImageLoader.getInstance().displayImage(friend.mediumAvatar, itemHolder.friendAvatar, mApp.mOptions);
+                itemHolder.friendName.setText(friend.getNickname());
+                if (!TextUtils.isEmpty(friend.getMediumAvatar())) {
+                    ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions);
                 } else {
                     itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
                 }
@@ -144,16 +144,16 @@ public class FriendFragmentAdapter extends BaseAdapter {
         return v;
     }
 
-    public void addSchoolList(List<SchoolApp> list) {
+    public void addSchoolList(List<T> list) {
         list.get(0).isTop = true;
         list.get(list.size() - 1).isBottom = true;
         mList.addAll(list);
         updateList();
     }
 
-    public void addFriendList(List<Friend> list) {
+    public void addFriendList(List<T> list) {
         list.get(0).isTop = true;
-        list.get(list.size() - 1).isBottom = true;
+        list.get(list.size() - 1).setBottom(true);
         mList.addAll(list);
         updateList();
     }
@@ -174,7 +174,7 @@ public class FriendFragmentAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return (Friend) mList.get(position - 1);
+        return mList.get(position - 1);
     }
 
     @Override
