@@ -419,6 +419,9 @@ public class EdusohoApp extends Application {
 
     private void loadDefaultSchool() {
         School item = SchoolUtil.getDefaultSchool(getBaseContext());
+        if (item == null) {
+            return;
+        }
         setHost(item.host);
         setCurrentSchool(item);
     }
@@ -441,6 +444,9 @@ public class EdusohoApp extends Application {
 
     private void loadToken() {
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
+        if (tokenMap.isEmpty()) {
+            return;
+        }
         token = tokenMap.get("token").toString();
         apiToken = tokenMap.get("apiToken").toString();
     }
