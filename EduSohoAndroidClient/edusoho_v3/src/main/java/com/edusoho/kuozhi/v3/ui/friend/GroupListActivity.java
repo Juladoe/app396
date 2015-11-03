@@ -4,15 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
@@ -25,9 +23,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.SideBar;
-import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,8 +36,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
     private final String TAG = "GroupList";
     private ListView mListView;
 
-    private GroupListAdapter mAdapter;
-    private LayoutInflater mLayoutInflater;
+    private FriendFragmentAdapter mAdapter;
 
     private SideBar mSidebar;
     private TextView mCharTextView;
@@ -75,12 +69,12 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 }
             }
         });
-        mAdapter = new GroupListAdapter();
+        mAdapter = new FriendFragmentAdapter(getBaseContext(), app);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final DiscussionGroup discussionGroup = ((GroupListAdapter) parent.getAdapter()).getItem(position);
+                final DiscussionGroup discussionGroup = (DiscussionGroup) parent.getItemAtPosition(position);
                 app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -130,7 +124,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     List<DiscussionGroup> groupsList = Arrays.asList(groups);
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
-                    mAdapter.addGroupList(groupsList);
+                    mAdapter.addFriendList(groupsList);
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }
@@ -149,127 +143,6 @@ public class GroupListActivity extends ActionBarBaseActivity {
             } else {
                 discussionGroup.setSortLetters("#");
             }
-        }
-    }
-
-
-    public class GroupListAdapter extends BaseAdapter {
-
-        public GroupListAdapter() {
-            mLayoutInflater = LayoutInflater.from(mContext);
-        }
-
-        @Override
-        public int getCount() {
-            return mGroupList.size();
-        }
-
-        @Override
-        public DiscussionGroup getItem(int i) {
-            return mGroupList.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        public void addGroupItem(DiscussionGroup group) {
-            mGroupList.add(group);
-        }
-
-        public void addGroupList(List<DiscussionGroup> list) {
-            mGroupList.addAll(list);
-            notifyDataSetChanged();
-        }
-
-        private void clearList() {
-            mGroupList.clear();
-            updataList();
-        }
-
-        public void updataList() {
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            GroupItemHolder groupItemHolder;
-            if (view == null) {
-                groupItemHolder = new GroupItemHolder();
-                view = mLayoutInflater.inflate(R.layout.group_list_item_layout, null);
-//                groupItemHolder.groupAvatar = (EduSohoGroupAvatar) view.findViewById(R.id.group_avatar);
-                groupItemHolder.groupAvatar = (RoundedImageView) view.findViewById(R.id.group_avatar);
-                groupItemHolder.groupName = (TextView) view.findViewById(R.id.group_name);
-                groupItemHolder.catalog = (TextView) view.findViewById(R.id.group_item_catalog);
-                groupItemHolder.dividerLine = view.findViewById(R.id.divider_line);
-
-                view.setTag(groupItemHolder);
-            } else {
-                groupItemHolder = (GroupItemHolder) view.getTag();
-            }
-
-            DiscussionGroup group = mGroupList.get(position);
-
-//            generateGroupAvatar(groupItemHolder, position + 2);
-            if (!group.picture.equals("")) {
-                ImageLoader.getInstance().displayImage(group.picture, groupItemHolder.groupAvatar, app.mOptions);
-            } else {
-                groupItemHolder.groupAvatar.setImageResource(R.drawable.default_avatar);
-            }
-            groupItemHolder.groupName.setText(group.title);
-
-            int section = getSectionForPosition(position);
-            if (position == getPositionForSection(section)) {
-                groupItemHolder.catalog.setVisibility(View.VISIBLE);
-                groupItemHolder.catalog.setText(group.getSortLetters());
-            } else {
-                groupItemHolder.catalog.setVisibility(View.GONE);
-            }
-
-            if (position != mGroupList.size() - 1) {
-                if (getSectionForPosition(position) != getSectionForPosition(position + 1)) {
-                    groupItemHolder.dividerLine.setVisibility(View.GONE);
-                } else {
-                    groupItemHolder.dividerLine.setVisibility(View.VISIBLE);
-                }
-            } else {
-                groupItemHolder.dividerLine.setVisibility(View.GONE);
-            }
-
-            return view;
-        }
-
-//        private void generateGroupAvatar(GroupItemHolder groupItemHolder, int i) {
-//            for (int count = 0; count < i; count++) {
-//                groupItemHolder.groupAvatar.addAvatar(R.drawable.default_avatar);
-//            }
-//        }
-
-        public int getSectionForPosition(int position) {
-            DiscussionGroup group = mGroupList.get(position);
-            return group.getSortLetters().charAt(0);
-
-        }
-
-        public int getPositionForSection(int section) {
-            for (int i = 0; i < mGroupList.size(); i++) {
-                DiscussionGroup group = mGroupList.get(i);
-                String sortLetter = group.getSortLetters();
-                char firstLettar = sortLetter.toUpperCase().charAt(0);
-                if (firstLettar == section) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        private class GroupItemHolder {
-            //            EduSohoGroupAvatar groupAvatar;
-            RoundedImageView groupAvatar;
-            TextView groupName;
-            TextView catalog;
-            View dividerLine;
         }
     }
 }
