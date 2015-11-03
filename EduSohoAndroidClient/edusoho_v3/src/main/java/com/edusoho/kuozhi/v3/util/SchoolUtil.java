@@ -14,10 +14,11 @@ public class SchoolUtil {
 
     public static School getDefaultSchool(Context context) {
 
-        School item = new School();
+        School item = null;
         SharedPreferences sp = context.getSharedPreferences("defaultSchool", context.MODE_PRIVATE);
         Map<String, String> map = (Map<String, String>) sp.getAll();
         if (!map.isEmpty()) {
+            item = new School();
             item.name = map.get("name");
             item.url = map.get("url");
             item.host = map.get("host");
