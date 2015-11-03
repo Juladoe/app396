@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -16,6 +18,7 @@ import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
@@ -28,16 +31,17 @@ import java.util.List;
 /**
  * Created by howzhi on 15/9/30.
  */
-public class FriendSelectFragment extends BaseFragment {
+public class FriendSelectFragment extends BaseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String BODY = "body";
     private TextView mCurrentFriendTagView;
     private SideBar mSidebar;
+    protected View mGroupSelectBtn;
     private ListView mFriendListView;
 
-    private RedirectBody mRedirectBody;
+    protected RedirectBody mRedirectBody;
     private FriendProvider mFriendProvider;
-    private FriendFragmentAdapter mFriendAdapter;
+    protected FriendFragmentAdapter mFriendAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class FriendSelectFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        mGroupSelectBtn = mContainerView.findViewById(R.id.select_group_btn);
         mFriendListView = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
         mCurrentFriendTagView = (TextView) mContainerView.findViewById(R.id.dialog);
@@ -78,25 +83,37 @@ public class FriendSelectFragment extends BaseFragment {
                 }
             }
         });
-        mFriendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Friend friend = (Friend) parent.getItemAtPosition(position);
-                ChatSendHandler chatSendHandler = new ChatSendHandler(mActivity, mRedirectBody);
-                chatSendHandler.setFinishCallback(new NormalCallback() {
-                    @Override
-                    public void success(Object obj) {
-                        mActivity.setResult(ChatSendHandler.RESULT_SELECT_FRIEND_OK);
-                    }
-                });
-                chatSendHandler.handleClick(friend.id, friend.nickname, friend.mediumAvatar);
-            }
-        });
+
+        mGroupSelectBtn.setOnClickListener(this);
+        mFriendListView.setOnItemClickListener(this);
 
         initFriendListData();
     }
 
-    private void initFriendListData() {
+    @Override
+    public void onClick(View v) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
+                "GroupSelectFragment", mActivity, getArguments());
+        fragmentTransaction.addToBackStack("GroupSelectFragment");
+        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Friend friend = (Friend) parent.getItemAtPosition(position);
+        ChatSendHandler chatSendHandler = new ChatSendHandler(mActivity, mRedirectBody);
+        chatSendHandler.setFinishCallback(new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                mActivity.setResult(ChatSendHandler.RESULT_SELECT_FRIEND_OK);
+            }
+        });
+        chatSendHandler.handleClick(friend.id, friend.nickname, friend.mediumAvatar);
+    }
+
+    protected void initFriendListData() {
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=10000/");
@@ -114,9 +131,9 @@ public class FriendSelectFragment extends BaseFragment {
         });
     }
 
-    private void setChar(List<Friend> list) {
+    protected <T extends Friend> void setChar(List<T> list) {
         for (Friend friend : list) {
-            String pinyin = CharacterParser.getInstance().getSelling(friend.nickname);
+            String pinyin = CharacterParser.getInstance().getSelling(friend.getNickname());
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {
                 friend.setSortLetters(sortString.toUpperCase());
@@ -124,5 +141,17 @@ public class FriendSelectFragment extends BaseFragment {
                 friend.setSortLetters("#");
             }
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return "选择校友";
+    }
+
+    @Override
+    public void onResume() {
+        FragmentPageActivity activity = (FragmentPageActivity) getActivity();
+        activity.setBackMode(FragmentPageActivity.BACK, getTitle());
+        super.onResume();
     }
 }
