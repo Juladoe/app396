@@ -325,23 +325,8 @@
         version="1.0" />
 
     <plugin
-        name="HomeworkSummaryActivity"
-        package="com.edusoho.kuozhi.homework.HomeworkSummaryActivity"
-        version="1.0" />
-
-    <plugin
-        name="HomeworkAnswerCardActivity"
-        package="com.edusoho.kuozhi.homework.HomeworkAnswerCardActivity"
-        version="1.0" />
-
-    <plugin
-        name="ExerciseActivity"
-        package="com.edusoho.kuozhi.homework.ExerciseActivity"
-        version="1.0" />
-
-    <plugin
-        name="ExerciseParseActivity"
-        package="com.edusoho.kuozhi.homework.ExerciseParseActivity"
+        name="GroupSelectFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.GroupSelectFragment"
         version="1.0" />
 
 </plugins>
