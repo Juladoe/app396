@@ -7,6 +7,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -40,12 +41,12 @@ public class ChatSendHandler {
     public static final int RESULT_SELECT_FRIEND_OK = 0020;
 
     //must Activity
-    private BaseActivity mActivity;
-    private EdusohoApp app;
+    protected BaseActivity mActivity;
+    protected EdusohoApp app;
 
-    private RedirectBody mRedirectBody;
+    protected RedirectBody mRedirectBody;
     private ChatDataSource mChatDataSource;
-    private NormalCallback mFinishCallback;
+    protected NormalCallback mFinishCallback;
 
     public ChatSendHandler(BaseActivity activity, RedirectBody redirectBody) {
         mActivity = activity;
@@ -87,35 +88,17 @@ public class ChatSendHandler {
         return chat;
     }
 
-    private void sendMessage(int toId, String title, String avatar, RedirectBody body) {
+    protected void sendMessage(int toId, String title, String avatar, RedirectBody body) {
 
         CustomContent customContent = createSendMsgCustomContent(toId, title, avatar);
-        Gson gson = new Gson();
-        String content = gson.toJson(body);
+        String content = new Gson().toJson(body);
 
         Chat chat = updateChatData(toId, content, customContent.getCreatedTime());
-        WrapperXGPushTextMessage message = updateNewsList(customContent, content);
-        redirectMessageToUser(customContent, chat, message);
+        WrapperXGPushTextMessage message = updateNewsList(customContent, chat);
+        redirectMessageToUser(chat, message);
     }
 
-    private WrapperXGPushTextMessage updateNewsList(CustomContent customContent, String content) {
-        WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-        message.setTitle(customContent.getNickname());
-        message.setContent(content);
-        message.setCustomContentJson(new Gson().toJson(customContent));
-        message.isForeground = true;
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
-        ChatActivity.CurrentFromId = customContent.getFromId();
-        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
-
-        return message;
-    }
-
-    private void redirectMessageToUser(CustomContent customContent, final Chat chat, WrapperXGPushTextMessage message) {
-
+    private V2CustomContent getV2CustomContent(CustomContent customContent, Chat chat) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setType(customContent.getTypeBusiness());
@@ -133,11 +116,32 @@ public class ChatSendHandler {
         v2CustomContent.setV(2);
         v2CustomContent.setCreatedTime(customContent.getCreatedTime());
 
+        return v2CustomContent;
+    }
+
+    private WrapperXGPushTextMessage updateNewsList(CustomContent customContent, Chat chat) {
+        WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
+        message.setTitle(customContent.getNickname());
+        message.setContent(chat.content);
+        message.setCustomContentJson(new Gson().toJson(getV2CustomContent(customContent, chat)));
+        message.isForeground = true;
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.GET_PUSH_DATA, message);
+        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
+        ChatActivity.CurrentFromId = customContent.getFromId();
+        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
+
+        return message;
+    }
+
+    protected void redirectMessageToUser(final BaseMsgEntity entity, WrapperXGPushTextMessage message) {
+
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("content", chat.content);
-        params.put("custom", new Gson().toJson(v2CustomContent));
+        params.put("content", entity.content);
+        params.put("custom", message.getCustomContentJson());
 
         final Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
@@ -152,10 +156,10 @@ public class ChatSendHandler {
 
                 int status = PushUtil.MsgDeliveryType.FAILED;
                 if (result != null && result.getResult()) {
-                    chat.id = result.id;
+                    entity.id = result.id;
                     status = PushUtil.MsgDeliveryType.SUCCESS;
                 }
-                updateChatStatus(chat, status, bundle);
+                updateChatStatus(entity, status, bundle);
                 if (mFinishCallback != null) {
                     mFinishCallback.success(null);
                 }
@@ -168,7 +172,7 @@ public class ChatSendHandler {
             public void onErrorResponse(VolleyError error) {
                 loadDialog.dismiss();
                 CommonUtil.longToast(mActivity.getBaseContext(), "网络连接不可用请稍后再试");
-                updateChatStatus(chat, PushUtil.MsgDeliveryType.FAILED, bundle);
+                updateChatStatus(entity, PushUtil.MsgDeliveryType.FAILED, bundle);
             }
         });
     }
@@ -185,7 +189,8 @@ public class ChatSendHandler {
         return customContent;
     }
 
-    private void updateChatStatus(Chat chat, int status, Bundle bundle) {
+    protected void updateChatStatus(BaseMsgEntity entity, int status, Bundle bundle) {
+        Chat chat = (Chat) entity;
         chat.delivery = status;
         mChatDataSource.update(chat);
         bundle.putInt(ChatActivity.MSG_DELIVERY, status);
