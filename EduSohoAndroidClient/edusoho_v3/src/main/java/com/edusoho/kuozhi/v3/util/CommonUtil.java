@@ -106,6 +106,9 @@ public class CommonUtil {
     }
 
     public static boolean inArray(String find, String[] array) {
+        if (array == null || array.length == 0) {
+            return false;
+        }
         int result = Arrays.binarySearch(array, find, new Comparator<String>() {
             @Override
             public int compare(String find, String str) {
