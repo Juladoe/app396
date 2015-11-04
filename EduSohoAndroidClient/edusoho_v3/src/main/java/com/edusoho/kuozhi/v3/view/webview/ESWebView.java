@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,6 +38,7 @@ import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.gson.reflect.TypeToken;
@@ -216,7 +218,7 @@ public class ESWebView extends RelativeLayout {
             mActivity.showActionBar();
         }
 
-        if (checkResourceIsExists()) {
+        if (TextUtils.isEmpty(mAppCode) || checkResourceIsExists()) {
             mWebView.loadUrl(mUrl);
             return;
         }
@@ -311,10 +313,6 @@ public class ESWebView extends RelativeLayout {
 
         public ESWebViewClient(CordovaInterface cordova, CordovaWebView view) {
             super(cordova, view);
-        }
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
         }
 
         @Override
