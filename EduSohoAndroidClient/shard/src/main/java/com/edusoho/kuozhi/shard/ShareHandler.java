@@ -4,5 +4,5 @@ package com.edusoho.kuozhi.shard;
  * Created by onewoman on 14-11-6.
  */
 public interface ShareHandler {
-    public void handler(String type);
+    public boolean handler(String type);
 }
