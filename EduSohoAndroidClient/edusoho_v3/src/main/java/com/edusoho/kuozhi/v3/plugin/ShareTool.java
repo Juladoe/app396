@@ -1,34 +1,45 @@
 package com.edusoho.kuozhi.v3.plugin;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.View;
-
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.shard.ListData;
 import com.edusoho.kuozhi.shard.ShareHandler;
 import com.edusoho.kuozhi.shard.ShareUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by JesseHuang on 15/6/19.
  */
 public class ShareTool {
+
+    private static final String SHARE_COURSE_TO_USER = "http://%s/mapi_v2/mobile/main#/%s/%s";
+
     private Context mContext;
     private String mUrl = "";
     private String mTitle = "";
@@ -44,47 +55,93 @@ public class ShareTool {
     }
 
     public void shardCourse() {
-        final ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
-        ImageLoader.getInstance().loadImage(mPic, EdusohoApp.app.mOptions, new ImageLoadingListener() {
+        ImageLoader.getInstance().loadImage(mPic, EdusohoApp.app.mOptions, new SimpleImageLoadingListener() {
             @Override
-            public void onLoadingStarted(String imageUri, View view) {
-
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                startShare(imageUri);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 CommonUtil.longToast(mContext, "课程图片获取失败");
             }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-                File file = ImageLoader.getInstance().getDiskCache().get(imageUri);
-                shareUtil.initShareParams(
-                        R.mipmap.ic_launcher,
-                        mTitle,
-                        mUrl,
-                        AppUtil.coverCourseAbout(mAbout),
-                        file,
-                        EdusohoApp.app.host
-                );
-                shareUtil.show(new ShareHandler() {
-                    @Override
-                    public void handler(String type) {
-                        //朋友圈
-                        int wxType = SendMessageToWX.Req.WXSceneTimeline;
-                        if ("Wechat".equals(type)) {
-                            wxType = SendMessageToWX.Req.WXSceneSession;
-                        }
-                        shardToMM(mContext, wxType);
-                    }
-                });
-            }
-
-            @Override
-            public void onLoadingCancelled(String s, View view) {
-
-            }
         });
+    }
+
+    private void startShare(String imageUri) {
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        File file = ImageLoader.getInstance().getDiskCache().get(imageUri);
+        shareUtil.setCustomList(getCustomListData());
+        shareUtil.initShareParams(
+                R.mipmap.ic_launcher,
+                mTitle,
+                mUrl,
+                AppUtil.coverCourseAbout(mAbout),
+                file,
+                EdusohoApp.app.host
+        );
+        shareUtil.show(getShareHandler());
+    }
+
+    private ShareHandler getShareHandler() {
+        return new ShareHandler() {
+            @Override
+            public boolean handler(String type) {
+                if (type.startsWith("Wechat")) {
+                    //朋友圈
+                    int wxType = SendMessageToWX.Req.WXSceneTimeline;
+                    if ("Wechat".equals(type)) {
+                        wxType = SendMessageToWX.Req.WXSceneSession;
+                    }
+                    shardToMM(mContext, wxType);
+                    return true;
+                }
+
+                if ("shareToUser".equals(type)) {
+                    shareToUser(mUrl, mTitle, mAbout, mPic);
+                    return true;
+                }
+
+                return false;
+            }
+        };
+    }
+
+    private String coverWebUrl(String url) {
+
+        if (TextUtils.isEmpty(url)) {
+            return "";
+        }
+
+        Pattern WEB_URL_PAT = Pattern.compile("(http://)?(.+)/(course|classroom)/(\\d+)", Pattern.DOTALL);
+        Matcher matcher = WEB_URL_PAT.matcher(url);
+        if (matcher.find()) {
+            return String.format(SHARE_COURSE_TO_USER, matcher.group(2), matcher.group(3), matcher.group(4));
+        }
+        return url;
+    }
+
+    private void shareToUser(String url, String title, String about, String pic) {
+        RedirectBody redirectBody = RedirectBody.createByShareContent(
+                coverWebUrl(url), title, about, pic);
+
+        Intent startIntent = new Intent();
+        startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
+        startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
+        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
+        startIntent.setComponent(new ComponentName(mContext.getPackageName(), "FragmentPageActivity"));
+        mContext.startActivity(startIntent);
+    }
+
+    private List<ListData> getCustomListData() {
+        List<ListData> listDatas = new ArrayList<>();
+        ListData data = new ListData(
+                mContext.getResources().getDrawable(R.drawable.share_user),
+                "shareToUser",
+                mContext
+        );
+        listDatas.add(data);
+        return listDatas;
     }
 
     private boolean shardToMM(Context context, int type) {
