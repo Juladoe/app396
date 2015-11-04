@@ -124,6 +124,10 @@ public class NotificationUtil {
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                 type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
                 break;
+            case PushUtil.CourseType.LIVE_NOTIFY:
+                type = PushUtil.CourseCode.Lesson_LIVE_NOTIFY;
+                xgMessage.content = xgMessage.content + "将在1小时后直播";
+                break;
         }
         xgMessage.content = String.format("【%s】%s", type, xgMessage.content);
 

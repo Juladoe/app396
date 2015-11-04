@@ -44,7 +44,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 public class NewsCourseActivity extends ActionBarBaseActivity {
     public static int CurrentCourseId = 0;
     public static final String COURSE_ID = "course_id";
-    public static final String[] ACTIONS = {"查看详情", "进入学习"};
+    public static final String[] ACTIONS = {"查看详情", "进入学习", "进入直播"};
     private int mCourseId;
     private int mStart = 0;
 
@@ -313,6 +313,27 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                             break;
                     }
 
+                    itemClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            app.mEngine.runNormalPlugin(
+                                    LessonActivity.TAG, mActivity, new PluginRunCallback() {
+                                        @Override
+                                        public void setIntentDate(Intent startIntent) {
+                                            startIntent.putExtra(Const.COURSE_ID, newsCourseEntity.getCourseId());
+                                            startIntent.putExtra(Const.LESSON_ID, newsCourseEntity.getObjectId());
+                                        }
+                                    }
+                            );
+                        }
+                    };
+                    break;
+                case PushUtil.CourseType.LIVE_NOTIFY:
+                    viewHolder.tvAction.setText(ACTIONS[2]);
+                    viewHolder.tvContent.setText(newsCourseEntity.getContent());
+                    viewHolder.tvLessonType.setText(PushUtil.CourseCode.Lesson_LIVE_NOTIFY);
+                    viewHolder.ivLessonType.setText(getString(R.string.font_lesson_live_start_notify));
+                    viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.badge_red));
                     itemClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

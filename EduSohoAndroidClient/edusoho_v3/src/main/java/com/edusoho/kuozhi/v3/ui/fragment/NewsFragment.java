@@ -462,6 +462,9 @@ public class NewsFragment extends BaseFragment {
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                 type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
                 break;
+            case PushUtil.CourseType.LIVE_NOTIFY:
+                type = PushUtil.CourseCode.Lesson_LIVE_NOTIFY;
+                wrapperMessage.content = wrapperMessage.content + "将在1小时后直播";
         }
         newModel.content = String.format("【%s】%s", type, wrapperMessage.content);
         newModel.imgUrl = v2CustomContent.getFrom().getImage();

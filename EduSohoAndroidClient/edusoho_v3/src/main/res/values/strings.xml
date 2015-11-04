@@ -105,6 +105,7 @@
     <string name="font_favorite">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
     <string name="font_announcement">&#xe629;</string>
+    <string name="font_lesson_live_start_notify">&#xe660;</string>
     <string name="font_login_username">&#xe619;</string>
     <string name="font_login_password">&#xe616;</string>
     <string name="font_lesson_type_live">&#xe652;</string>

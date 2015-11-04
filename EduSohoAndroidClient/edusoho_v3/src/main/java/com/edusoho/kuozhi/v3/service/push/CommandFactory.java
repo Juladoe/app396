@@ -73,6 +73,9 @@ public class CommandFactory {
             case PushUtil.DiscountType.DISCOUNT_FREE:
                 pushCommand = new PushDiscountPassCommand(pusher);
                 break;
+            case PushUtil.CourseType.LIVE_NOTIFY:
+                pushCommand = new PushLiveLessonStartNotify(pusher);
+                break;
         }
         return pushCommand;
     }

@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.v3.service.push.CommandFactory;
 import com.edusoho.kuozhi.v3.service.push.PushCommand;
 import com.edusoho.kuozhi.v3.service.push.Pusher;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.Gson;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
@@ -62,6 +63,14 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             } else {
                 Gson gson = new Gson();
                 V2CustomContent v2CustomContent = gson.fromJson(wrapperMessage.getCustomContentJson(), V2CustomContent.class);
+//                wrapperMessage.title = "App模拟直播测试2";
+//                wrapperMessage.content = "直播测试1";
+//                v2CustomContent.getBody().setType(PushUtil.CourseType.LIVE_NOTIFY);
+//                v2CustomContent.getTo().setType(PushUtil.CourseType.TYPE);
+//                v2CustomContent.getFrom().setType(PushUtil.CourseType.TYPE);
+//                v2CustomContent.getFrom().setId(208);
+//                v2CustomContent.getFrom().setImage("http://trymob.edusoho.cn/assets/img/default/course.png?6.7.3");
+//                wrapperMessage.setCustomContentJson(gson.toJson(v2CustomContent));
                 Pusher pusher = new Pusher(bundle, wrapperMessage);
                 pusher.setV2CustomContent(v2CustomContent);
                 PushCommand pushCommand = CommandFactory.V2Make(pusher);

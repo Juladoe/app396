@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class PushUtil {
     public static class CourseType {
         public static final String TYPE = "course";
+        public static final String LIVE_NOTIFY = "live.notify";
         public static final String LESSON_PUBLISH = "lesson.publish";
         public static final String TESTPAPER_REVIEWED = "testpaper.reviewed";
         public static final String COURSE_OPEN = "course.open";
@@ -36,6 +37,7 @@ public class PushUtil {
         public static final String TESTPAPER_REVIEWED = "试卷批阅完成";
         public static final String LESSON_PUBLISH = "课时更新";
         public static final String COURSE_ANNOUNCEMENT = "课程公告";
+        public static final String Lesson_LIVE_NOTIFY = "直播提醒";
     }
 
     public static class ChatUserType {
