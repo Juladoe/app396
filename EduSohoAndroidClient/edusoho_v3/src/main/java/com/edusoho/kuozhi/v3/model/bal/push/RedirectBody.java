@@ -37,4 +37,20 @@ public class RedirectBody implements Serializable {
 
         return redirectBody;
     }
+
+    public static RedirectBody createByShareContent(String url, String title, String about, String pic) {
+
+        RedirectBody redirectBody = new RedirectBody();
+
+        redirectBody.type = "share.redirect";
+        redirectBody.fromType = "share";
+        redirectBody.title = title;
+        redirectBody.image = pic;
+        redirectBody.content = about;
+        redirectBody.url = url;
+        redirectBody.source = "self";
+        redirectBody.id = 0;
+
+        return redirectBody;
+    }
 }
