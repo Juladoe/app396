@@ -2,28 +2,17 @@ package com.edusoho.kuozhi.homework;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.homework.listener.BaseLessonPluginCallback;
-import com.edusoho.kuozhi.homework.model.ExerciseModel;
-import com.edusoho.kuozhi.homework.model.ExerciseProvider;
-import com.edusoho.kuozhi.homework.model.ExerciseResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeWorkResult;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
-import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
+import com.edusoho.kuozhi.v3.listener.BaseLessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -146,6 +135,19 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        protected void loadPlugin(Bundle bundle) {
+            int lessonId = bundle.getInt(Const.LESSON_ID, 0);
+            RequestUrl requestUrl = getRequestUrl(lessonId);
+            HomeworkProvider provider = ModelProvider.initProvider(mContext, HomeworkProvider.class);
+            provider.getHomeWork(requestUrl).success(new NormalCallback<HomeWorkModel>() {
+                @Override
+                public void success(HomeWorkModel homeWorkModel) {
+                    setViewStatus(homeWorkModel != null && homeWorkModel.getId() != 0);
+                }
+            }).fail(this);
         }
     }
 }
