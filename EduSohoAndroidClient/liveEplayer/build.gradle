@@ -17,16 +17,14 @@ android {
 
 
     //链接选项 移除lint检查的error
-    android {
-        lintOptions {
-            abortOnError false
-        }
+    lintOptions {
+        abortOnError false
     }
 
     //签名
     signingConfigs {
         debugConfig {
-            storeFile file("key/edusoho.kuozhi.jks")
+            storeFile file("../kuozhiv2/key/edusoho.kuozhi.jks")
             storePassword "10001000"
             keyAlias "cn"
             keyPassword "10001000"
@@ -37,6 +35,12 @@ android {
         debug {
             zipAlignEnabled true
             minifyEnabled false
+        }
+
+        release {
+            zipAlignEnabled true
+            minifyEnabled false
+            signingConfig signingConfigs.debugConfig
         }
     }
 }
