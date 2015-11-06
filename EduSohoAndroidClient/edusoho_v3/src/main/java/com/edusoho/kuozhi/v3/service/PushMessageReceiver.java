@@ -63,14 +63,6 @@ public class PushMessageReceiver extends XGPushBaseReceiver {
             } else {
                 Gson gson = new Gson();
                 V2CustomContent v2CustomContent = gson.fromJson(wrapperMessage.getCustomContentJson(), V2CustomContent.class);
-//                wrapperMessage.title = "App模拟直播测试2";
-//                wrapperMessage.content = "直播测试1";
-//                v2CustomContent.getBody().setType(PushUtil.CourseType.LIVE_NOTIFY);
-//                v2CustomContent.getTo().setType(PushUtil.CourseType.TYPE);
-//                v2CustomContent.getFrom().setType(PushUtil.CourseType.TYPE);
-//                v2CustomContent.getFrom().setId(208);
-//                v2CustomContent.getFrom().setImage("http://trymob.edusoho.cn/assets/img/default/course.png?6.7.3");
-//                wrapperMessage.setCustomContentJson(gson.toJson(v2CustomContent));
                 Pusher pusher = new Pusher(bundle, wrapperMessage);
                 pusher.setV2CustomContent(v2CustomContent);
                 PushCommand pushCommand = CommandFactory.V2Make(pusher);

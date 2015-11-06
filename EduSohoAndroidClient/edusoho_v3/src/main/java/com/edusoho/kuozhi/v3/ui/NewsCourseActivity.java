@@ -333,7 +333,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     viewHolder.tvContent.setText(newsCourseEntity.getContent());
                     viewHolder.tvLessonType.setText(PushUtil.CourseCode.Lesson_LIVE_NOTIFY);
                     viewHolder.ivLessonType.setText(getString(R.string.font_lesson_live_start_notify));
-                    viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.badge_red));
+                    viewHolder.ivLessonType.setBackgroundColor(getResources().getColor(R.color.red));
                     itemClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
