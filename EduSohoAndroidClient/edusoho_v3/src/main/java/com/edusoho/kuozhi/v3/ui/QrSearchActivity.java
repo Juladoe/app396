@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.ui.fragment.AboutFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.zxing.Result;
 import java.net.URL;
@@ -148,14 +149,32 @@ public class QrSearchActivity extends CaptureActivity {
         protected String apiType;
         protected String apiMethod;
         protected String mUrl;
+        private String mHost;
 
         public URLMatchType(String url) {
             this.mUrl = url;
+
+            try {
+                this.mHost = new URL(url).getHost();
+            } catch (Exception e) {
+                this.mHost = "";
+            }
         }
 
         public boolean handle(String apiType, String apiMethod) {
             if (apiType.equals(this.apiType) && apiMethod.equals(this.apiMethod)) {
-                match();
+                if (mHost.equals(app.domain)) {
+                    match();
+                    return true;
+                }
+                PopupDialog popupDialog = PopupDialog.createNormal(mActivity, "扫描提示", "请扫描当前网校二维码");
+                popupDialog.setOkListener(new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        finish();
+                    }
+                });
+                popupDialog.show();
                 return true;
             }
             return false;
