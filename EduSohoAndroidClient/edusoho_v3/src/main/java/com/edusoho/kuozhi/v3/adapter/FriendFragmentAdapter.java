@@ -4,20 +4,20 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +107,7 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                     itemHolder = (ItemHolder) v.getTag();
                 }
 
-                final T friend =  mList.get(position - 1);
+                final T friend = mList.get(position - 1);
                 if (position != mList.size()) {
                     if (getSectionForPosition(position - 1) != getSectionForPosition(position)) {
                         itemHolder.dividerLine.setVisibility(View.GONE);
@@ -134,10 +134,14 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                 }
 
                 itemHolder.friendName.setText(friend.getNickname());
-                if (!TextUtils.isEmpty(friend.getMediumAvatar())) {
-                    ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions);
+                if (TextUtils.isEmpty(friend.getMediumAvatar()) || friend.getMediumAvatar().contains("default")) {
+                    if (friend instanceof DiscussionGroup) {
+                        itemHolder.friendAvatar.setImageResource(R.drawable.default_classroom);
+                    } else {
+                        itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
+                    }
                 } else {
-                    itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
+                    ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions);
                 }
                 break;
         }

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,7 +125,22 @@ public class SwipeAdapter extends BaseAdapter {
         }
 
         New item = mList.get(position);
-        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions);
+        if (TextUtils.isEmpty(item.imgUrl) || item.imgUrl.contains("default")) {
+            switch (item.type) {
+                case PushUtil.ChatUserType.FRIEND:
+                case PushUtil.ChatUserType.TEACHER:
+                    viewHolder.ivAvatar.setImageResource(R.drawable.default_avatar);
+                    break;
+                case PushUtil.ChatUserType.CLASSROOM:
+                    viewHolder.ivAvatar.setImageResource(R.drawable.default_classroom);
+                    break;
+                case PushUtil.ChatUserType.COURSE:
+                    viewHolder.ivAvatar.setImageResource(R.drawable.defalut_course);
+                    break;
+            }
+        } else {
+            ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions);
+        }
         if (item.unread == 0) {
             viewHolder.bvUnread.setVisibility(View.GONE);
         } else {

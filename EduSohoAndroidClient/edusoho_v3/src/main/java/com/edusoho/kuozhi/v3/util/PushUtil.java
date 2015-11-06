@@ -45,6 +45,7 @@ public class PushUtil {
         public static final String TEACHER = "teacher";
         public static final String FRIEND = "friend";
         public static final String CLASSROOM = "classroom";
+        public static final String COURSE = "course";
     }
 
     /**
