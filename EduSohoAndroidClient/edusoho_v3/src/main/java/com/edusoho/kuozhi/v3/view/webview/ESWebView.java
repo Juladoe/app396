@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -210,13 +211,14 @@ public class ESWebView extends RelativeLayout {
         mUrl = url;
         Matcher matcher = APPCODE_PAT.matcher(url);
         if (matcher.find()) {
+            mActivity.hideActionBar();
             updateCode(matcher.group(1));
             mLocalAppMeta = getLocalApp(mAppCode);
         } else {
             mActivity.showActionBar();
         }
 
-        if (checkResourceIsExists()) {
+        if (TextUtils.isEmpty(mAppCode) || checkResourceIsExists()) {
             mWebView.loadUrl(mUrl);
             return;
         }
@@ -326,7 +328,7 @@ public class ESWebView extends RelativeLayout {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (url.startsWith(mActivity.app.host)) {
-                view.loadUrl(url);
+                loadUrl(url);
                 return true;
             }
 
