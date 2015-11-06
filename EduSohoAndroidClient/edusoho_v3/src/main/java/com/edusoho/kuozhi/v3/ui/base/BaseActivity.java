@@ -117,10 +117,16 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void hideActionBar() {
+        if (mActionBar == null) {
+            return;
+        }
         mActionBar.hide();
     }
 
     public void showActionBar() {
+        if (mActionBar == null) {
+            return;
+        }
         mActionBar.show();
     }
 
