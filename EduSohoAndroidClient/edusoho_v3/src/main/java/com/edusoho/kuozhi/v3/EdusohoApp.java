@@ -60,7 +60,6 @@ import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.morgoo.droidplugin.PluginHelper;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -129,12 +128,10 @@ public class EdusohoApp extends Application {
         }
 
         init();
-        PluginHelper.getInstance().applicationOnCreate(getBaseContext());
     }
 
     @Override
     protected void attachBaseContext(Context base) {
-        PluginHelper.getInstance().applicationAttachBaseContext(base);
         super.attachBaseContext(base);
     }
 
@@ -443,12 +440,12 @@ public class EdusohoApp extends Application {
     }
 
     private void loadToken() {
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
+        Map<String, String> tokenMap = ApiTokenUtil.getToken(getBaseContext());
         if (tokenMap.isEmpty()) {
             return;
         }
-        token = tokenMap.get("token").toString();
-        apiToken = tokenMap.get("apiToken").toString();
+        token = tokenMap.get("token");
+        apiToken = tokenMap.get("apiToken");
     }
 
     public void saveApiToken(String apiToken) {

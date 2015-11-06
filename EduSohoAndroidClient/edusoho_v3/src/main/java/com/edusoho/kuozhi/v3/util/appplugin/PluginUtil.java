@@ -1,10 +1,7 @@
 package com.edusoho.kuozhi.v3.util.appplugin;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import com.morgoo.droidplugin.pm.PluginManager;
-import java.io.File;
 
 /**
  * Created by howzhi on 15/10/14.
@@ -12,7 +9,7 @@ import java.io.File;
 public class PluginUtil {
 
     public static void start(String pluginName, Context context, Intent intent) {
-
+        /*
         try {
             File pluginDir = new File(context.getFilesDir(), "plugin");
             if (!PluginManager.getInstance().isPluginPackage(pluginName)) {
@@ -28,6 +25,7 @@ public class PluginUtil {
         } catch (Exception e) {
 
         }
+        */
     }
 
 }

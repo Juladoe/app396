@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.appplugin.PluginUtil;
 import com.edusoho.kuozhi.v3.view.ESExpandableTextView;
+import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -239,11 +240,7 @@ public class LiveLessonFragment extends BaseFragment {
                 int exStrPoint = param[param.length - 1].indexOf("exStr=");
                 String exStr = param[param.length - 1].substring(exStrPoint + "exStr=".length());
 
-                Intent intent = new Intent();
-                intent.putExtra("liveClassroomId", liveClassroomId);
-                intent.putExtra("exStr", exStr);
-                intent.putExtra("replayState", replayState);
-                PluginUtil.start("com.edusoho.liveplayer",  mContext, intent);
+                new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
             }
         }, null);
     }
