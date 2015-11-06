@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21
@@ -8,43 +8,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 21
     }
-
-    productFlavors {
-        liveplayer {
-            applicationId "com.edusoho.liveplayer"
-        }
-    }
-
-
-    //链接选项 移除lint检查的error
-    lintOptions {
-        abortOnError false
-    }
-
-    //签名
-    signingConfigs {
-        debugConfig {
-            storeFile file("../kuozhiv2/key/edusoho.kuozhi.jks")
-            storePassword "10001000"
-            keyAlias "cn"
-            keyPassword "10001000"
-        }
-    }
-
-    buildTypes {
-        debug {
-            zipAlignEnabled true
-            minifyEnabled false
-        }
-
-        release {
-            zipAlignEnabled true
-            minifyEnabled false
-            signingConfig signingConfigs.debugConfig
-        }
-    }
 }
-
 
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.0'
