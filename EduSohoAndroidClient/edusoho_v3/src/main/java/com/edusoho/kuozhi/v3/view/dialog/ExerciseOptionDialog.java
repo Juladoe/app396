@@ -59,7 +59,7 @@ public class ExerciseOptionDialog extends Dialog {
                 intent, PackageManager.GET_ACTIVITIES);
         for (ResolveInfo resolveInfo : resolveInfos) {
             GridViewItem item = new GridViewItem();
-            item.iconRes = resolveInfo.loadIcon(mContext.getPackageManager());
+            item.iconRes = mContext.getResources().getDrawable(resolveInfo.activityInfo.icon);
             item.title = resolveInfo.loadLabel(mContext.getPackageManager()).toString();
             item.bundle = intent.getExtras();
             item.action = resolveInfo.activityInfo.name;
