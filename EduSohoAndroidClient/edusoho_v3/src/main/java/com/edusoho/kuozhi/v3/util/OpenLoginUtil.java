@@ -85,7 +85,7 @@ public class OpenLoginUtil {
     private String[] getWeixinLoginResult(HashMap<String, Object> res) {
         String id = res.get("unionid").toString();
         String name = res.get("nickname").toString();
-        String avatar = res.get("headImgUrl").toString();
+        String avatar = res.get("headimgurl").toString();
 
         return new String[]{id, name, avatar, "weixinmob"};
     }
@@ -139,6 +139,7 @@ public class OpenLoginUtil {
 
             @Override
             public void onError(Platform platform, int action, Throwable throwable) {
+                platform.removeAccount();
             }
 
             @Override
