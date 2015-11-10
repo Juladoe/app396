@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,12 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -134,15 +135,13 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                 }
 
                 itemHolder.friendName.setText(friend.getNickname());
-                if (TextUtils.isEmpty(friend.getMediumAvatar()) || friend.getMediumAvatar().contains("default")) {
-                    if (friend instanceof DiscussionGroup) {
-                        itemHolder.friendAvatar.setImageResource(R.drawable.default_classroom);
-                    } else {
-                        itemHolder.friendAvatar.setImageResource(R.drawable.default_avatar);
-                    }
+                String itemType;
+                if (friend instanceof DiscussionGroup) {
+                    itemType = PushUtil.ChatUserType.CLASSROOM;
                 } else {
-                    ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions);
+                    itemType = PushUtil.ChatUserType.FRIEND;
                 }
+                ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions, new AvatarLoadingListener(itemType));
                 break;
         }
         return v;

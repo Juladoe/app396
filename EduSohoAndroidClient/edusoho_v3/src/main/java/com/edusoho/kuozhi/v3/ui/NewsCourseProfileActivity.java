@@ -84,7 +84,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
         }
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnFail(R.drawable.default_avatar).build();
+                showImageOnFail(R.drawable.default_course).build();
 
         New entity = newsCourseDataSource.getNew(mCourseId, app.loginUser.id);
         setBackMode(BACK, entity.getTitle());
