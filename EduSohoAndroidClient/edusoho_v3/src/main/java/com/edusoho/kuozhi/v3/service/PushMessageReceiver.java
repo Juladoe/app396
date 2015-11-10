@@ -10,7 +10,6 @@ import com.edusoho.kuozhi.v3.service.push.CommandFactory;
 import com.edusoho.kuozhi.v3.service.push.PushCommand;
 import com.edusoho.kuozhi.v3.service.push.Pusher;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.Gson;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;

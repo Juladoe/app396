@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -41,6 +42,7 @@ import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,7 +129,7 @@ public class EdusohoMainService extends Service {
                                 response, new TypeToken<UserResult>() {
                                 }.getType());
 
-                        if (result != null) {
+                        if (result != null && result.user != null && (!TextUtils.isEmpty(result.token))) {
                             app.saveToken(result);
                             app.sendMessage(Const.LOGIN_SUCCESS, null);
                             Bundle bundle = new Bundle();

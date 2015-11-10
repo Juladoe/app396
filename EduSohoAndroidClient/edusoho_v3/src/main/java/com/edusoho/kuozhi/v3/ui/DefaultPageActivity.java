@@ -128,7 +128,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             View child = mNavLayout.getChildAt(i);
             child.setOnClickListener(mNavDownTabClickListener);
         }
-        if (TextUtils.isEmpty(app.token)) {
+        if (TextUtils.isEmpty(app.token) || app.loginUser == null) {
             mSelectBtn = R.id.nav_tab_find;
         } else {
             mSelectBtn = R.id.nav_tab_news;
@@ -151,7 +151,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private void selectDownTab(int id) {
         String tag;
-        if (TextUtils.isEmpty(app.token) && id != R.id.nav_tab_find) {
+        if (app.loginUser == null && id != R.id.nav_tab_find) {
             app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
             return;
         }
