@@ -29,7 +29,7 @@ public class FragmentTestActivity extends ActionBarBaseActivity {
 
     public Fragment loadFragment(String fragmentName, Bundle bundle) {
         List<Fragment> list =  mFragmentManager.getFragments();
-        if (list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             try {
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 Fragment fragment = Fragment.instantiate(mActivity, fragmentName);
