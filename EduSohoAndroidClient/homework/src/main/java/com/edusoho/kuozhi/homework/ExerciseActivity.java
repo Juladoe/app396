@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.homework;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.listener.IHomeworkQuestionResult;
@@ -48,9 +51,12 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
     protected List<HomeWorkQuestion> mExerciseQuestionList;
     protected ExerciseProvider mExerciseProvider;
 
+    private FrameLayout mLoading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.exercise_activity_layout);
+        mLoading = (FrameLayout) findViewById(R.id.load_layout);
         initIntentData();
         mExerciseProvider = ModelProvider.initProvider(getBaseContext(), ExerciseProvider.class);
         setBackMode(BACK, "练习");
@@ -75,8 +81,7 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
 
     protected void initView() {
         RequestUrl requestUrl = getRequestUrl();
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-        loadDialog.show();
+        mLoading.setVisibility(View.VISIBLE);
         mExerciseProvider.getExercise(requestUrl).success(new NormalCallback<ExerciseModel>() {
             @Override
             public void success(ExerciseModel exerciseModel) {
@@ -84,12 +89,12 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.ACTIONBAR_TITLE, "练习题目");
                 loadFragment(bundle);
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         });
     }
