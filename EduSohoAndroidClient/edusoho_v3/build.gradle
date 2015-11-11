@@ -22,7 +22,7 @@ dependencies {
     compile files('libs/wup-1.0.0-SNAPSHOT.jar')
     compile files('libs/Xg_sdk_v2.38.jar')
     compile files('libs/libammsdk.jar')
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.makeramen:roundedimageview:2.2.0'
     compile 'in.srain.cube:ultra-ptr:1.0.9'
     compile 'com.mcxiaoke.volley:library:1.0.15'
