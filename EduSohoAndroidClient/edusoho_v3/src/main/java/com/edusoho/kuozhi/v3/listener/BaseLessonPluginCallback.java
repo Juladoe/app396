@@ -59,5 +59,6 @@ public abstract class BaseLessonPluginCallback implements LessonPluginCallback, 
 
     @Override
     public void success(VolleyError obj) {
+        setViewStatus(false);
     }
 }
