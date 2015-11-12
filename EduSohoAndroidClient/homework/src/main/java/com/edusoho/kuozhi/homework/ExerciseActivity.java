@@ -246,4 +246,8 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
     public void success(VolleyError obj) {
         CommonUtil.longToast(getBaseContext(), "服务器忙，提交失败,请重新提交!");
     }
+
+    public void setProvider(ExerciseProvider provider){
+        mExerciseProvider = provider;
+    }
 }
