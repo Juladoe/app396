@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.listener.IHomeworkQuestionResult;
@@ -50,12 +52,16 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
     protected List<HomeWorkQuestion> mHomeWorkQuestionList;
     protected HomeworkProvider mHomeworkProvider;
 
+    private FrameLayout mLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initIntentData();
         setBackMode(BACK, HomeworkSummaryActivity.HOMEWORK.equals(mType) ? "作业" : "练习");
         mHomeworkProvider = ModelProvider.initProvider(getBaseContext(), HomeworkProvider.class);
+        setContentView(R.layout.homework_activity_layout);
+        mLoading = (FrameLayout) findViewById(R.id.load_layout);
         initView();
         app.registMsgSource(this);
     }
@@ -81,8 +87,7 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
 
     protected void initView() {
         RequestUrl requestUrl = getRequestUrl();
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-        loadDialog.show();
+        mLoading.setVisibility(View.VISIBLE);
         mHomeworkProvider.getHomeWork(requestUrl).success(new NormalCallback<HomeWorkModel>() {
             @Override
             public void success(HomeWorkModel homeWorkModel) {
@@ -90,12 +95,12 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.ACTIONBAR_TITLE, HomeworkSummaryActivity.HOMEWORK.equals(mType) ? "作业题目" : "练习题目");
                 loadFragment(bundle);
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         });
     }
