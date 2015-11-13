@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeWorkResult;
@@ -38,6 +40,8 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     private Bundle mBundle;
     private HomeworkProvider mHomeworkProvider;
 
+    private FrameLayout mLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         mLessonId = mBundle == null ? 0 : mBundle.getInt(Const.LESSON_ID);
         mType = HOMEWORK;
         setContentView(R.layout.homework_summary_layout);
+        mLoading = (FrameLayout) findViewById(R.id.load_layout);
         ModelProvider.init(getBaseContext(), this);
         initView();
     }
@@ -88,18 +93,17 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     private void loadHomeWork() {
         String url = String.format(Const.HOMEWORK_RESULT, mLessonId);
         RequestUrl requestUrl = app.bindNewUrl(url, true);
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-        loadDialog.show();
+        mLoading.setVisibility(View.VISIBLE);
         mHomeworkProvider.getHomeWorkResult(requestUrl, false).success(new NormalCallback<HomeWorkResult>() {
             @Override
             public void success(HomeWorkResult homeWorkModel) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
                 renderHomeworkView(homeWorkModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         });
     }
