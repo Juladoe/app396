@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkQuestionFragment;
+import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment;
 import com.edusoho.test.FragmentTestActivity;
 import com.edusoho.test.base.BaseFragmentTestCase;
 
@@ -17,6 +18,14 @@ public class HomeWorkQuestionFragmentTest extends BaseFragmentTestCase<HomeWorkQ
 
     public HomeWorkQuestionFragmentTest() {
         super(HomeWorkQuestionFragment.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
+                FragmentTestActivity.class);
+        mLaunchIntent.putExtra("fragment", HomeWorkQuestionFragment.class.getName());
     }
 
     @UiThreadTest
@@ -35,4 +44,5 @@ public class HomeWorkQuestionFragmentTest extends BaseFragmentTestCase<HomeWorkQ
         ViewPager mHomeworkQuestionPager = (ViewPager) layoutView.findViewById(com.edusoho.kuozhi.homework.R.id.homework_viewpaper);
         assertNotNull(mHomeworkQuestionPager);
     }
+
 }

@@ -6,6 +6,8 @@
     android:background="@color/system_normal_bg"
     android:orientation="vertical">
 
+    <include layout="@layout/load_layout"/>
+
     <LinearLayout
         android:id="@+id/hw_result_head"
         android:layout_width="match_parent"

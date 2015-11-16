@@ -18,6 +18,7 @@ public class FragmentTestActivity extends ActionBarBaseActivity {
     private String mFragment;
     private String mTitle;
     public static final String FRAGMENT = "fragment";
+    private Fragment tmpFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,22 +29,18 @@ public class FragmentTestActivity extends ActionBarBaseActivity {
     }
 
     public Fragment loadFragment(String fragmentName, Bundle bundle) {
-        List<Fragment> list =  mFragmentManager.getFragments();
-        if (list.isEmpty()) {
-            try {
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                Fragment fragment = Fragment.instantiate(mActivity, fragmentName);
-                fragment.setArguments(bundle);
-                fragmentTransaction.replace(android.R.id.content, fragment);
-                fragmentTransaction.commit();
-
-                return fragment;
-            } catch (Exception ex) {
-                Log.d("FragmentPageActivity", ex.toString());
-            }
+        try {
+            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            Fragment fragment = Fragment.instantiate(getBaseContext(), fragmentName);
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(android.R.id.content, fragment);
+            fragmentTransaction.commit();
+            tmpFragment = fragment;
+        } catch (Exception ex) {
+            Log.d("FragmentTestActivity", ex.toString());
         }
+        return tmpFragment;
 
-        return list.get(0);
     }
 
     protected void initView() {

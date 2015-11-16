@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.homework.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ public class HomeWorkResultFragment extends BaseFragment implements View.OnClick
     private int mLessonId;
     private Bundle mBundle;
     private HomeWorkResult mHomeWorkResult;
+    private FrameLayout mLoading;
 
     private HomeworkProvider mHomeworkProvider;
 
@@ -61,25 +64,26 @@ public class HomeWorkResultFragment extends BaseFragment implements View.OnClick
         mResultView = (TextView) view.findViewById(R.id.hw_result_total);
         mResultParseBtn = view.findViewById(R.id.hw_result_parse);
         mResultReDoBtn = view.findViewById(R.id.hw_result_redo);
+        mLoading = (FrameLayout) view.findViewById(R.id.load_layout );
+
         loadHomeWorkResult();
     }
 
     private void loadHomeWorkResult() {
         String url = String.format(Const.HOMEWORK_RESULT, mLessonId);
         RequestUrl requestUrl = app.bindNewUrl(url, true);
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-        loadDialog.show();
+        mLoading.setVisibility(View.VISIBLE);
         mHomeworkProvider.getHomeWorkResult(requestUrl, true).success(new NormalCallback<HomeWorkResult>() {
             @Override
             public void success(HomeWorkResult homeWorkResult) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
                 mHomeWorkResult = homeWorkResult;
                 renderView(homeWorkResult);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         });
     }
