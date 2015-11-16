@@ -11,6 +11,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 
 import com.edusoho.kuozhi.v3.ui.RegisterActivity;
+import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 
 /**
  * Created by JesseHuang on 15/8/23.
@@ -64,7 +65,7 @@ public class RegisterActivityTest extends ActivityUnitTestCase<RegisterActivity>
         assertNotNull(etMail);
         EditText etMailPass = (EditText) mActivity.findViewById(com.edusoho.kuozhi.R.id.et_mail_pass);
         assertNotNull(etMailPass);
-        Button btnMailReg = (Button) mActivity.findViewById(com.edusoho.kuozhi.R.id.btn_mail_reg);
+        EduSohoLoadingButton btnMailReg = (EduSohoLoadingButton) mActivity.findViewById(com.edusoho.kuozhi.R.id.btn_mail_reg);
         assertNotNull(btnMailReg);
     }
 
@@ -84,7 +85,7 @@ public class RegisterActivityTest extends ActivityUnitTestCase<RegisterActivity>
         assertNotNull(etPhonePass);
         Button btnSendCode = (Button) mActivity.findViewById(R.id.btn_send_code);
         assertNotNull(btnSendCode);
-        Button btnPhoneReg = (Button) mActivity.findViewById(R.id.btn_phone_reg);
+        EduSohoLoadingButton btnPhoneReg = (EduSohoLoadingButton) mActivity.findViewById(R.id.btn_phone_reg);
         assertNotNull(btnPhoneReg);
     }
 }
