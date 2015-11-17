@@ -10,11 +10,13 @@ import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkQuestionFragment;
 import com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment;
 import com.edusoho.test.FragmentTestActivity;
 import com.edusoho.test.base.BaseFragmentTestCase;
+import com.edusoho.test.homework.BaseFragmentTestCaseForHomework;
+import com.edusoho.test.homework.HomeworkQuestionFragmentTestActivity;
 
 /**
  * Created by Melomelon on 2015/11/13.
  */
-public class HomeWorkQuestionFragmentTest extends BaseFragmentTestCase<HomeWorkQuestionFragment> {
+public class HomeWorkQuestionFragmentTest extends BaseFragmentTestCaseForHomework<HomeWorkQuestionFragment> {
 
     public HomeWorkQuestionFragmentTest() {
         super(HomeWorkQuestionFragment.class);
@@ -24,7 +26,7 @@ public class HomeWorkQuestionFragmentTest extends BaseFragmentTestCase<HomeWorkQ
     protected void setUp() throws Exception {
         super.setUp();
         mLaunchIntent = new Intent(mInstrumentation.getTargetContext(),
-                FragmentTestActivity.class);
+                HomeworkQuestionFragmentTestActivity.class);
         mLaunchIntent.putExtra("fragment", HomeWorkQuestionFragment.class.getName());
     }
 

@@ -77,6 +77,9 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = Fragment.instantiate(getBaseContext(), fragmentName);
+            if (bundle.getString(TYPE) == null){
+                bundle.putString(TYPE,"homework");
+            }
             fragment.setArguments(bundle);
             fragmentTransaction.replace(android.R.id.content, fragment);
             fragmentTransaction.commit();
