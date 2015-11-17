@@ -329,4 +329,11 @@
         package="com.edusoho.kuozhi.v3.ui.fragment.GroupSelectFragment"
         version="1.0" />
 
+    <plugin
+        name="ExerciseParseActivity"
+        package="com.edusoho.kuozhi.homework.ExerciseParseActivity"
+        version="1.0" />
+
+
+
 </plugins>
