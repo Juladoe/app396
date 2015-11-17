@@ -25,6 +25,10 @@ public class HomeworkQuestionFragmentTestActivity extends FragmentTestActivity i
 
     @Override
     public void setCurrentQuestionIndex(int index) {
+    }
 
+    @Override
+    public String getType() {
+        return "homework";
     }
 }
