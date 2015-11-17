@@ -220,8 +220,6 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
                 Bundle bundle = message.data;
                 int index = bundle.getInt("index", 0);
                 ArrayList<String> data = bundle.getStringArrayList("data");
-                String qtStr = bundle.getString("QuestionType");
-                //QuestionType questionType = QuestionType.value(qtStr);
                 HomeWorkQuestion question = mHomeWorkQuestionList.get(index);
                 question.setAnswer(data);
                 break;
@@ -243,5 +241,10 @@ public class HomeworkActivity extends ActionBarBaseActivity implements IHomework
     @Override
     public void success(VolleyError volleyError) {
         CommonUtil.longToast(getBaseContext(), "服务器忙，提交失败,请重新提交!");
+    }
+
+    @Override
+    public String getType() {
+        return "homework";
     }
 }

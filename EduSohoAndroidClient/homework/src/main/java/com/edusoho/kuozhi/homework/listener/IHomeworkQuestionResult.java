@@ -14,4 +14,6 @@ public interface IHomeworkQuestionResult {
     public int getCurrentQuestionIndex();
 
     public void setCurrentQuestionIndex(int index);
+
+    public String getType();
 }

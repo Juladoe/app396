@@ -20,12 +20,14 @@ public class HomeworkQuestionAdapter extends PagerAdapter {
     protected LayoutInflater inflater;
     protected int mResouce;
     protected Context mContext;
+    protected String mType;
     protected List<HomeWorkQuestion> mList;
 
     public HomeworkQuestionAdapter(
-            Context context, List<HomeWorkQuestion> list)
+            String type, Context context, List<HomeWorkQuestion> list)
     {
         mList = list;
+        mType = type;
         mContext = context;
         inflater = LayoutInflater.from(context);
     }
@@ -52,7 +54,7 @@ public class HomeworkQuestionAdapter extends PagerAdapter {
 
     protected View switchQuestionWidget(HomeWorkQuestion homeWorkQuestion, int index)
     {
-        HomeworkQuestionWidget widget = new HomeworkQuestionWidget(mContext, homeWorkQuestion, index);
+        HomeworkQuestionWidget widget = new HomeworkQuestionWidget(mType, mContext, homeWorkQuestion, index);
         return widget.getView();
     }
 

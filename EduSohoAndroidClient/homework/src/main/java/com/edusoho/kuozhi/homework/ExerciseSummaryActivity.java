@@ -50,6 +50,7 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
     private void renderExerciseView() {
         String fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
         Bundle bundle = getIntent().getExtras();
+        bundle.putString("type", EXERCISE);
         loadFragment(bundle, fragmentName);
     }
 
