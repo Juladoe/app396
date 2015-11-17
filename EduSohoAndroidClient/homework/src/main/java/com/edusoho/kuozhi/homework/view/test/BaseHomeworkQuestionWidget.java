@@ -93,6 +93,10 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
         mQuestion = question;
     }
 
+    public void setType(String type) {
+        this.mType = type;
+    }
+
     protected void initMaterialStem() {
         HomeWorkQuestion parent = mQuestion.getParent();
         if (parent != null) {

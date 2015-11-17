@@ -3,7 +3,6 @@ package com.edusoho.test;
 import android.content.Intent;
 import android.test.UiThreadTest;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.v3.ui.AboutActivity;
 import com.edusoho.kuozhi.v3.view.EduUpdateView;
 import com.edusoho.test.base.BaseActivityUnitTestCase;

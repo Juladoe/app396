@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
+import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 
 /**
  * Created by JesseHuang on 15/8/23.
@@ -63,7 +64,7 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
         assertNotNull(etUsername);
         EditText etPassword = (EditText) mActivity.findViewById(R.id.et_password);
         assertNotNull(etPassword);
-        Button mBtnLogin = (Button) mActivity.findViewById(R.id.btn_login);
+        EduSohoLoadingButton mBtnLogin = (EduSohoLoadingButton) mActivity.findViewById(R.id.btn_login);
         assertNotNull(mBtnLogin);
         ImageView ivWeibo = (ImageView) mActivity.findViewById(R.id.iv_weibo);
         assertNotNull(ivWeibo);

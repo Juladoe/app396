@@ -40,7 +40,6 @@ public class FragmentTestActivity extends ActionBarBaseActivity {
             Log.d("FragmentTestActivity", ex.toString());
         }
         return tmpFragment;
-
     }
 
     protected void initView() {

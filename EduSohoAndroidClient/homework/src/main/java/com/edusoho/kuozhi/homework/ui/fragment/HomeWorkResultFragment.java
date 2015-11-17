@@ -2,7 +2,7 @@ package com.edusoho.kuozhi.homework.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -23,7 +23,6 @@ import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -135,6 +134,9 @@ public class HomeWorkResultFragment extends BaseFragment implements View.OnClick
     }
 
     private String parsePassedStatus(String passedStatus) {
+        if (TextUtils.isEmpty(passedStatus)) {
+            return "合格";
+        }
         switch (passedStatus) {
             case "passed":
                 return "合格";

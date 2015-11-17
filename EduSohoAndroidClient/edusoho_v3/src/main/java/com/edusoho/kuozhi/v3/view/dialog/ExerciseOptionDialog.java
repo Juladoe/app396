@@ -52,6 +52,7 @@ public class ExerciseOptionDialog extends Dialog {
         Bundle bundle = new Bundle();
         bundle.putInt("lessonId", mLessonId);
         Intent intent = new Intent();
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(Const.LESSON_ID, mLessonId);
         intent.setAction(Const.LESSON_PLUGIN);
 

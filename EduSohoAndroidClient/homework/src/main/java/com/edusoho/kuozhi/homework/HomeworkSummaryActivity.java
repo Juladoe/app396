@@ -70,6 +70,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         }
 
         Bundle bundle = getIntent().getExtras();
+        bundle.putString("type", mType);
         loadFragment(bundle, fragmentName);
     }
 
