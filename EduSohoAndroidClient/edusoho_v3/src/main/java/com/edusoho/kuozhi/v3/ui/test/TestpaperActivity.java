@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -20,10 +18,11 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperCardFragment;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -112,7 +111,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
             }
             showTestpaperCard(false);
             return true;
-        } else if (id == R.id.testpaper_menu_time) {
+        } else if (id == R.id.testpaper_menu_time && mLimitedTime > 0) {
             if (mIsRun) {
                 stopTask();
             } else {
@@ -192,7 +191,6 @@ public class TestpaperActivity extends TestpaperBaseActivity
     }
 
     private void loadTestpaper() {
-        setProgressBarIndeterminateVisibility(true);
         String baseUrl = "";
         if (mDoType == DO) {
             baseUrl = Const.TESTPAPER_FULL_INFO;
@@ -202,7 +200,6 @@ public class TestpaperActivity extends TestpaperBaseActivity
             baseUrl = Const.SHOW_TESTPAPER;
         }
 
-        Log.d(null, "baseurl->" + baseUrl);
         RequestUrl requestUrl = app.bindUrl(baseUrl, true);
         requestUrl.setParams(new String[]{
                 "id", mTestpaperResultId + "",
@@ -211,15 +208,18 @@ public class TestpaperActivity extends TestpaperBaseActivity
                 "targetId", mLessonId + ""
         });
 
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
         ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                setProgressBarIndeterminateVisibility(false);
+                loadDialog.dismiss();
                 TestpaperFullResult result = parseJsonValue(
                         response, new TypeToken<TestpaperFullResult>() {
                         });
 
                 if (result == null) {
+                    CommonUtil.longToast(mContext, "加载试卷出错！");
                     return;
                 }
 
@@ -274,27 +274,9 @@ public class TestpaperActivity extends TestpaperBaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mIsRun) {
+        if (!mIsRun && mLimitedTime > 0) {
             startTask();
         }
-        /*
-        if (mStopType == PHOTO_CAMEAR) {
-            startTask();
-            return;
-        }
-        if (!mIsRun && mLoadDlg == null){
-            mLoadDlg = PopupDialog.createNormal(
-                    mActivity, "暂停考试", "考试暂停中！");
-            mLoadDlg.setOnDismissListener(new DialogInterface.OnDismissListener(){
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    startTask();
-                    mLoadDlg = null;
-                }
-            });
-            mLoadDlg.show();
-        }
-        */
     }
 
     private void stopTask() {
@@ -368,7 +350,7 @@ public class TestpaperActivity extends TestpaperBaseActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (!mIsTimeOver) {
+        if (!mIsTimeOver && mLimitedTime > 0) {
             stopTask();
         }
     }

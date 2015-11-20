@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="时间"
+        android:title=""
         android:id="@+id/testpaper_menu_time"
         app:showAsAction="ifRoom"
         android:orderInCategory="100" />

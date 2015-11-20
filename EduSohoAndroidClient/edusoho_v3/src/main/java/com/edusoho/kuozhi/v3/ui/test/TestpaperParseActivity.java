@@ -8,6 +8,7 @@ import com.edusoho.kuozhi.v3.model.bal.test.TestpaperResultType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -42,7 +43,8 @@ public class TestpaperParseActivity extends TestpaperBaseActivity {
     }
 
     private void loadTestpaperResult() {
-        setProgressBarIndeterminateVisibility(true);
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
         RequestUrl requestUrl = mActivity.app.bindUrl(Const.TESTPAPER_RESULT, true);
         requestUrl.setParams(new String[]{
                 "id", mTestpaperResultId + ""
@@ -51,7 +53,7 @@ public class TestpaperParseActivity extends TestpaperBaseActivity {
         ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                setProgressBarIndeterminateVisibility(false);
+                loadDialog.dismiss();
                 TestpaperResultType result = parseJsonValue(
                         response, new TypeToken<TestpaperResultType>() {
                         });

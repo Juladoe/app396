@@ -33,6 +33,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 
 /**
  * Created by howzhi on 14-9-19.
@@ -105,7 +106,7 @@ public class TestpaperCardFragment extends DialogFragment {
                 PaperResult paperResult = mTestpaperActivity.getTestpaperResult();
                 RequestUrl requestUrl = mTestpaperActivity.app.bindUrl(
                         Const.FINISH_TESTPAPER, true);
-                HashMap<String, String> params = requestUrl.getParams();
+                IdentityHashMap<String, String> params = requestUrl.initKeysMap();
                 params.put("usedTime", mTestpaperActivity.getUsedTime() + "");
                 params.put("id", paperResult.id + "");
 
