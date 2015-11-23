@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -340,6 +341,17 @@ public class M3U8Util {
     }
 
     private void downloadLocalVideos(String videoUrl) {
+        ContentValues cv = new ContentValues();
+        cv.put("finish", 0);
+        cv.put("total_num", 1);
+        cv.put("play_list", videoUrl);
+        mSqliteUtil.update(
+                "data_m3u8",
+                cv,
+                "lessonId=? and host=?",
+                new String[]{String.valueOf(mLessonId), mTargetHost}
+        );
+
         insertM3U8SourceToDb(mLessonId, videoUrl);
         FileOutputStream fos;
         InputStream is;
@@ -352,17 +364,6 @@ public class M3U8Util {
             if (fileSize < 1 || is == null) {
                 return;
             } else {
-                ContentValues cv = new ContentValues();
-                cv.put("finish", 0);
-                cv.put("total_num", fileSize);
-                cv.put("play_list", videoUrl);
-                mSqliteUtil.update(
-                        "data_m3u8",
-                        cv,
-                        "lessonId=? and host=?",
-                        new String[]{String.valueOf(mLessonId), mTargetHost}
-                );
-
                 String key = DigestUtils.md5(videoUrl);
                 File file = createLocalM3U8SourceFile(key);
                 if (file == null) {
@@ -375,28 +376,19 @@ public class M3U8Util {
                 while ((len = is.read(buffer)) != -1) {
                     fos.write(buffer, 0, len);
                     downloadSize = downloadSize + len;
-                    String updateSql = "update data_m3u8 set download_num=%d where userId=%d and host='%s' and lessonId=%d";
-                    mSqliteUtil.execSQL(String.format(updateSql, downloadSize, mUserId, mTargetHost, mLessonId));
-                    //发送下载广播
-                    Intent intent = new Intent(DownloadStatusReceiver.ACTION);
-                    intent.putExtra(Const.LESSON_ID, mLessonId);
-                    intent.putExtra(Const.COURSE_ID, mCourseId);
-                    intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
-                    mContext.sendBroadcast(intent);
+                    M3U8DownService.getService().updateNotification(mLessonId, mLessonTitle, fileSize, downloadSize);
                 }
                 fos.close();
                 is.close();
-                String updateM3U8Sql = "update data_m3u8 set finish = 1 and download_num = %d where userId = %d and host = '%s' and lessonId = %d";
-                mSqliteUtil.execSQL(String.format(updateM3U8Sql, fileSize, mUserId, mTargetHost, mLessonId));
-                String updateM3U8DataSql = "update data_m3u8_url set finish = 1 and lessonId = %d";
-                mSqliteUtil.execSQL(String.format(updateM3U8DataSql, mLessonId));
-                //M3U8DownService.getService().showCompleteNotification(mLessonId, mLessonTitle);
-                //M3U8DownService.getService().startDownloadLasterTask();
-                //发送下载广播
+                String updateSql = "update data_m3u8 set download_num = %d, finish = %d where userId = %d and host = '%s' and lessonId = %d";
+                mSqliteUtil.execSQL(String.format(updateSql, 1, 1, mUserId, mTargetHost, mLessonId));
+                String updateM3U8DataSql = "update data_m3u8_url set finish = %d and lessonId = %d";
+                mSqliteUtil.execSQL(String.format(updateM3U8DataSql, 1, mLessonId));
                 Intent intent = new Intent(DownloadStatusReceiver.ACTION);
                 intent.putExtra(Const.LESSON_ID, mLessonId);
                 intent.putExtra(Const.COURSE_ID, mCourseId);
                 intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
+                intent.putExtra(Const.IS_LOCAL_VIDEO, true);
                 mContext.sendBroadcast(intent);
             }
         } catch (Exception ex) {

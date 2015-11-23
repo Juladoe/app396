@@ -186,8 +186,13 @@ public class SqliteUtil extends SQLiteOpenHelper {
     }
 
     public void execSQL(String sql) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sql);
+        try {
+            Log.d("m3u8_sql", sql);
+            SQLiteDatabase db = getWritableDatabase();
+            db.execSQL(sql);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public int delete(String table, String where, String[] args) {
@@ -199,7 +204,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     public int update(String table, ContentValues cv, String where, String[] args) {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
-        Log.d(null, "upate sqlite ->" + result);
+        Log.d("m3u8_sql", "update " + table + " ->" + where);
         return result;
     }
 

@@ -361,6 +361,7 @@ public class Const {
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
     public static final String mTestpaperResultId = "testpaperResultId";
+    public static final String IS_LOCAL_VIDEO = "is_local_video";
 
     public static final String QUESTION_TITLE = "question_title";
     public static final String QUESTION_EDIT_RESULT = "question_edit_result";
