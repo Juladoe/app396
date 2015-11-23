@@ -382,12 +382,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                         return;
                     }
                 }
-//                else {
-//                    if ("local".equals(listItem.uploadFile.storage)) {
-//                        CommonUtil.longToast(mContext, "暂不支持本地视频下载!");
-//                        return;
-//                    }
-//                }
 
                 saveCache(
                         mContext,
