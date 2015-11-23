@@ -45,6 +45,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.FileUtils;
+
 /**
  * Created by howzhi on 14-9-15.
  */
@@ -454,7 +457,23 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             default:
                 LessonItem<String> normalLesson = lessonItem;
                 if (mFromCache) {
-                    normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                    if (lessonItem.mediaUri.contains("getLocalVideo")) {
+                        StringBuffer dirBuilder = new StringBuffer(EdusohoApp.getWorkSpace().getAbsolutePath());
+                        dirBuilder.append("/videos/")
+                                .append(app.loginUser.id)
+                                .append("/")
+                                .append(app.domain)
+                                .append("/")
+                                .append(mLessonId).append("/").append(DigestUtils.md5(lessonItem.mediaUri));
+                        if (FileUtils.isFileExist(dirBuilder.toString())) {
+                            normalLesson.mediaUri = dirBuilder.toString();
+                        } else {
+                            CommonUtil.longToast(mContext, "视频文件不存在");
+                            return null;
+                        }
+                    } else {
+                        normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                    }
                 }
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, normalLesson.content);
