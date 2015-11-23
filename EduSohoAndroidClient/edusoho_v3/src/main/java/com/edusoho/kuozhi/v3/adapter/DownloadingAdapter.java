@@ -13,7 +13,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -37,14 +37,14 @@ import cn.trinea.android.common.util.ToastUtils;
 public class DownloadingAdapter extends BaseExpandableListAdapter {
     private Context mContex;
     private BaseActivity mActivity;
-    private SparseArray<M3U8DbModle> m3u8ModelList;
+    private SparseArray<M3U8DbModel> m3u8ModelList;
     private List<Course> mGroupItems;
     private List<List<LessonItem>> mChildItems;
     private boolean mSelectedShow = false;
     private DownloadType mType;
     private int mChildLayoutId;
 
-    public DownloadingAdapter(Context ctx, BaseActivity activity, SparseArray<M3U8DbModle> m3u8List,
+    public DownloadingAdapter(Context ctx, BaseActivity activity, SparseArray<M3U8DbModel> m3u8List,
                               List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons, DownloadType type, int childResId) {
         mContex = ctx;
         mActivity = activity;
@@ -76,7 +76,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
     }
 
-    public void updateProgress(int lessonId, M3U8DbModle model) {
+    public void updateProgress(int lessonId, M3U8DbModel model) {
         m3u8ModelList.put(lessonId, model);
         notifyDataSetChanged();
     }
@@ -147,7 +147,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                 if (mChildPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
                     mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
                     if (service != null) {
-                        service.cancleDownloadTask(mLessonItem.id);
+                        service.cancelDownloadTask(mLessonItem.id);
                     }
                 } else {
                     if (!mActivity.app.getNetIsConnect()) {
@@ -188,7 +188,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         if (mType == DownloadType.DOWNLOADED) {
             childPanel.tvVideoLength.setText(AppUtil.convertCNTime(lessonItem.length));
         } else {
-            final M3U8DbModle model = m3u8ModelList.get(lessonItem.id);
+            final M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
             childPanel.ivDownloadSign.setOnClickListener(new DownloadSignClick(childPanel, lessonItem));
             childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
         }

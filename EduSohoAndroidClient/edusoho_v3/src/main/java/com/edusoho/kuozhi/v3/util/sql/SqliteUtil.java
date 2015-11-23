@@ -170,13 +170,13 @@ public class SqliteUtil extends SQLiteOpenHelper {
         return null;
     }
 
-    public <T> T query(QueryPaser<T> queryPaser, String selection, String... selectionArgs) {
+    public <T> T query(QueryParser<T> queryParser, String selection, String... selectionArgs) {
         T obj = null;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(selection, selectionArgs);
         while (cursor.moveToNext()) {
-            obj = queryPaser.parse(cursor);
-            if (queryPaser.isSignle()) {
+            obj = queryParser.parse(cursor);
+            if (queryParser.isSingle()) {
                 break;
             }
         }
@@ -249,12 +249,12 @@ public class SqliteUtil extends SQLiteOpenHelper {
         }
     }
 
-    public static class QueryPaser<T> {
+    public static class QueryParser<T> {
         public T parse(Cursor cursor) {
             return null;
         }
 
-        public boolean isSignle() {
+        public boolean isSingle() {
             return false;
         }
     }
