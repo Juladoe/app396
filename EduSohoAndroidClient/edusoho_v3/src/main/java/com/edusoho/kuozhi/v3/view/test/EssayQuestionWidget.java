@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
@@ -34,9 +35,11 @@ import com.edusoho.kuozhi.v3.model.bal.test.TestResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.fragment.test.EssayFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.test.MaterialFragment;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperParseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.html.EduHtml;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -135,6 +138,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         mCameraBtn = (ImageView) this.findViewById(R.id.essay_camera);
 
         contentEdt.addTextChangedListener(onTextChangedListener);
+        final Class target = mQuestionSeq.parentId != 0 ? MaterialFragment.class : EssayFragment.class;
 
         mPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +146,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
                 TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
                 testpaperActivity.setType(TestpaperActivity.PHOTO_CAMEAR);
                 EdusohoApp.app.sendMsgToTargetForCallback(
-                        EssayFragment.PHOTO, null, EssayFragment.class, new NormalCallback() {
+                        EssayFragment.PHOTO, null, target, new NormalCallback() {
                             @Override
                             public void success(Object obj) {
                                 addImageToEdit((Bundle) obj);
@@ -157,7 +161,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
                 TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
                 testpaperActivity.setType(TestpaperActivity.PHOTO_CAMEAR);
                 EdusohoApp.app.sendMsgToTargetForCallback(
-                        EssayFragment.CAMERA, null, EssayFragment.class, new NormalCallback() {
+                        EssayFragment.CAMERA, null, target, new NormalCallback() {
                             @Override
                             public void success(Object obj) {
                                 addImageToEdit((Bundle) obj);
@@ -195,8 +199,9 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         }
 
         String html = "你的答案:<p></p>" + myAnswer;
-        myAnswerText.setText(Html.fromHtml(
-                html, new NetImageGetter(myAnswerText, html), null));
+        SpannableStringBuilder myAnswerSpanned = (SpannableStringBuilder) Html.fromHtml(
+                html, new NetImageGetter(myAnswerText, html), null);
+        myAnswerText.setText(EduHtml.addImageClickListener(myAnswerSpanned, myAnswerText, mContext));
 
         html = "参考答案:<p></p>" + listToStr(mQuestion.answer);
         myRightText.setText(Html.fromHtml(

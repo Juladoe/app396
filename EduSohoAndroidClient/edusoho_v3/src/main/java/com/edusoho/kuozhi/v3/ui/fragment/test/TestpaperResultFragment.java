@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.ui.CourseDetailsTabActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoButton;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -79,11 +80,13 @@ public class TestpaperResultFragment extends BaseFragment {
                 "id", mTestpaperResultId + ""
         });
 
-        showProgress(true);
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
+
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                showProgress(false);
+                loadDialog.dismiss();
                 TestpaperResultType testpaperResultType = mActivity.handleJsonValue(
                         response, new TypeToken<TestpaperResultType>() {
                         });
