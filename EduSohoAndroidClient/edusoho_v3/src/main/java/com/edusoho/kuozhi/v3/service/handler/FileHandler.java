@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -38,7 +38,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.protocol.HttpRequestHandler;
-import org.apache.http.protocol.RequestContent;
 import org.apache.http.util.EntityUtils;
 
 import cn.trinea.android.common.util.DigestUtils;
@@ -79,10 +78,10 @@ public class FileHandler implements HttpRequestHandler {
             if (loginUser == null) {
                 return;
             }
-            M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
+            M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                     mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Util.ALL);
-            if (m3U8DbModle != null) {
-                httpResponse.setEntity(new StringEntity(m3U8DbModle.playList));
+            if (m3U8DbModel != null) {
+                httpResponse.setEntity(new StringEntity(m3U8DbModel.playList));
                 return;
             }
         }
@@ -170,7 +169,7 @@ public class FileHandler implements HttpRequestHandler {
         @Override
         public void writeTo(OutputStream outstream) throws IOException {
             //Args.notNull(outstream, "Output stream");
-            M3U8Util.DegestInputStream instream = new M3U8Util.DegestInputStream(
+            M3U8Util.DigestInputStream instream = new M3U8Util.DigestInputStream(
                     new FileInputStream(this.file)
                     ,mHost
             );

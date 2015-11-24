@@ -18,7 +18,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
@@ -39,7 +39,7 @@ public class M3U8DownService extends Service {
 
     private NotificationManager notificationManager;
     private SparseArray<Notification> notificationList;
-    private SparseArray<M3U8Util> mM3U8UitlList;
+    private SparseArray<M3U8Util> mM3U8UitlList = new SparseArray<M3U8Util>();
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
 
     private DownloadStatusReceiver mDownLoadStatusReceiver;
@@ -61,8 +61,7 @@ public class M3U8DownService extends Service {
         mService = this;
         mContext = this;
 
-        notificationList = new SparseArray<Notification>();
-        mM3U8UitlList = new SparseArray<M3U8Util>();
+        notificationList = new SparseArray<>();
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(3);
         mThreadPoolExecutor.setMaximumPoolSize(4);
         notificationManager = (NotificationManager)
@@ -75,17 +74,7 @@ public class M3U8DownService extends Service {
         return mService;
     }
 
-    /**
-     * todo suju
-     *
-     * @param lessonId
-     * @return
-     */
-    public boolean isExistsDownTask(int lessonId) {
-        return mM3U8UitlList.indexOfKey(lessonId) >= 0;
-    }
-
-    public void cancleDownloadTask(int lessonId) {
+    public void cancelDownloadTask(int lessonId) {
         M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
         if (m3U8Util != null) {
             m3U8Util.cancelDownload();
@@ -98,7 +87,7 @@ public class M3U8DownService extends Service {
     public void cancelAllDownloadTask() {
         int size = mM3U8UitlList.size();
         for (int i = 0; i < size; i++) {
-            cancleDownloadTask(mM3U8UitlList.keyAt(i));
+            cancelDownloadTask(mM3U8UitlList.keyAt(i));
         }
     }
 
@@ -146,7 +135,7 @@ public class M3U8DownService extends Service {
                 }
                 Log.d(TAG, "m3u8 download_service onStartCommand");
                 if (mM3U8UitlList.size() > 2) {
-                    Log.d(TAG, "mM3U8UitlList list is full " + mM3U8UitlList.size());
+                    Log.d(TAG, "mM3U8UtilList list is full " + mM3U8UitlList.size());
                     return;
                 }
 
@@ -169,9 +158,8 @@ public class M3U8DownService extends Service {
         notification.defaults = Notification.DEFAULT_LIGHTS;
 
         Intent notificationIntent = new Intent(this, DownloadManagerActivity.class);
-        PendingIntent contentItent = PendingIntent.getActivity(
+        notification.contentIntent = PendingIntent.getActivity(
                 this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.contentIntent = contentItent;
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.download_notification_layout);
 
         remoteViews.setTextViewText(R.id.notify_title, title);
@@ -183,7 +171,7 @@ public class M3U8DownService extends Service {
         notificationList.put(lessonId, notification);
     }
 
-    private void updateNotification(int lessonId, String title, int total, int download) {
+    public void updateNotification(int lessonId, String title, int total, int download) {
         Notification notification = notificationList.get(lessonId);
         if (notification == null) {
             return;
@@ -198,7 +186,7 @@ public class M3U8DownService extends Service {
         notificationManager.notify(lessonId, notification);
     }
 
-    private void showComplteNotification(int lessonId, String title) {
+    public void showCompleteNotification(int lessonId, String title) {
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -209,9 +197,8 @@ public class M3U8DownService extends Service {
         notification.tickerText = "下载完成";
 
         Intent notificationIntent = new Intent();
-        PendingIntent contentItent = PendingIntent.getActivity(
+        notification.contentIntent = PendingIntent.getActivity(
                 this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
-        notification.contentIntent = contentItent;
 
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.download_notification_layout);
 
@@ -232,25 +219,25 @@ public class M3U8DownService extends Service {
         @Override
         public void invoke(Intent intent) {
             int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
-            M3U8Util m3U8Uitl = mM3U8UitlList.get(lessonId);
+            M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
             User loginUser = EdusohoApp.app.loginUser;
-            if (m3U8Uitl == null || loginUser == null) {
+            if (m3U8Util == null || loginUser == null) {
                 return;
             }
-            String title = m3U8Uitl.getLessonTitle();
+            String title = m3U8Util.getLessonTitle();
 
-            M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
+            M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                     mContext, loginUser.id, lessonId, EdusohoApp.app.domain, M3U8Util.ALL);
-            if (m3U8DbModle == null) {
+            if (m3U8DbModel == null) {
                 return;
             }
-            if (m3U8DbModle.downloadNum == m3U8DbModle.totalNum) {
-                Log.d(TAG, "showComplteNotification " + lessonId);
-                showComplteNotification(lessonId, title);
+            if (m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+                Log.d(TAG, "showCompleteNotification " + lessonId);
+                showCompleteNotification(lessonId, title);
                 startDownloadLasterTask();
             } else {
                 Log.d(TAG, "updateNotification " + lessonId);
-                updateNotification(lessonId, title, m3U8DbModle.totalNum, m3U8DbModle.downloadNum);
+                updateNotification(lessonId, title, m3U8DbModel.totalNum, m3U8DbModel.downloadNum);
             }
         }
     };
@@ -260,24 +247,24 @@ public class M3U8DownService extends Service {
         if (loginUser == null) {
             return;
         }
-        ArrayList<M3U8DbModle> m3U8DbModles = M3U8Util.queryM3U8DownTasks(
+        ArrayList<M3U8DbModel> m3U8DbModels = M3U8Util.queryM3U8DownTasks(
                 mContext, EdusohoApp.app.domain, loginUser.id);
-        int size = m3U8DbModles.size();
+        int size = m3U8DbModels.size();
         size = size > 3 ? 3 : size;
 
         for (int i = 0; i < size; i++) {
-            M3U8DbModle m3U8DbModle = m3U8DbModles.get(i);
+            M3U8DbModel m3U8DbModel = m3U8DbModels.get(i);
             LessonItem lessonItem = SqliteUtil.getUtil(mContext).queryForObj(
                     new TypeToken<LessonItem>() {
                     },
                     "where type=? and key=?",
                     Const.CACHE_LESSON_TYPE,
-                    "lesson-" + m3U8DbModle.lessonId
+                    "lesson-" + m3U8DbModel.lessonId
             );
-            if (mM3U8UitlList.indexOfKey(m3U8DbModle.lessonId) >= 0) {
+            if (mM3U8UitlList.indexOfKey(m3U8DbModel.lessonId) >= 0) {
                 continue;
             }
-            startTask(m3U8DbModle.lessonId, lessonItem.courseId, lessonItem.title);
+            startTask(m3U8DbModel.lessonId, lessonItem.courseId, lessonItem.title);
         }
     }
 }

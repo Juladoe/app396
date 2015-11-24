@@ -20,9 +20,8 @@ public class M3U8File {
     public ArrayList<String> urlList;
     public ArrayList<M3U8ListItem> m3u8List;
 
-    public M3U8File()
-    {
-        this.keyList = new ArrayList<String>();
-        this.urlList = new ArrayList<String>();
+    public M3U8File() {
+        this.keyList = new ArrayList<>();
+        this.urlList = new ArrayList<>();
     }
 }
