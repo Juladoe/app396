@@ -386,10 +386,7 @@ public class M3U8Util {
                     fos.write(buffer, 0, len);
                     downloadSize = downloadSize + len;
                     float percent = downloadSize / (float) fileSize;
-                    Log.d("download_percent", percent + "");
                     if ((int) (percent * 100) == downloadPercent && downloadPercent <= 100) {
-                        Log.d("download_percent_%", "percent:" + percent);
-                        Log.d("download_percent_%", "downloadPercent:" + downloadPercent);
                         String updateSql = "update data_m3u8 set download_num = %d where userId = %d and host = '%s' and lessonId = %d";
                         mSqliteUtil.execSQL(String.format(updateSql, downloadPercent, mUserId, mTargetHost, mLessonId));
                         downloadPercent = downloadPercent + 5;
