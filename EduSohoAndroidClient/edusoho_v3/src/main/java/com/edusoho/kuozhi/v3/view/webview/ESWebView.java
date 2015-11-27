@@ -159,7 +159,7 @@ public class ESWebView extends RelativeLayout {
             }
             return mActivity.parseJsonValue(
                     appVersionString.toString(), new TypeToken<AppMeta>() {
-            });
+                    });
         }
 
         return null;
@@ -187,8 +187,9 @@ public class ESWebView extends RelativeLayout {
     }
 
     public void updateApp(String appCode, boolean isLoadByDialog) {
+        String projectCode = mContext.getString(R.string.app_code);
         RequestUrl appVersionUrl = mActivity.app.bindUrl(
-                String.format(Const.MOBILE_APP_VERSION, appCode), true);
+                String.format(Const.MOBILE_APP_VERSION, appCode, projectCode), true);
 
         RequestCallback<Boolean> callback = null;
         if (isLoadByDialog) {
@@ -258,7 +259,8 @@ public class ESWebView extends RelativeLayout {
 
         try {
             if (files.length == 0) {
-                zinInputStream = mContext.getAssets().open(String.format("edusoho-html5-%s.Android.zip", mAppCode));
+                String projectCode = mContext.getString(R.string.app_code);
+                zinInputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, mAppCode));
                 updateApp(mAppCode, false);
             } else {
                 zinInputStream = new FileInputStream(files[0]);
