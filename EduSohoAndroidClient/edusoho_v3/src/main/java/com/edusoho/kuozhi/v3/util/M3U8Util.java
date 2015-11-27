@@ -14,7 +14,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -38,10 +38,12 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -98,61 +100,55 @@ public class M3U8Util {
             this.mTargetHost = hostUri.getHost();
         }
 
-        mFutures = new ArrayList<HttpGet>();
-        mTimeOutList = new Hashtable<String, Integer>();
+        mFutures = new ArrayList<>();
+        mTimeOutList = new Hashtable<>();
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(3);
         mThreadPoolExecutor.setMaximumPoolSize(4);
         mSqliteUtil = SqliteUtil.getUtil(mContext);
     }
 
-    private static M3U8DbModle parseM3U8Modle(Cursor cursor) {
-        M3U8DbModle m3U8DbModle = new M3U8DbModle();
-        m3U8DbModle.id = cursor.getInt(cursor.getColumnIndex("id"));
-        m3U8DbModle.finish = cursor.getInt(cursor.getColumnIndex("finish"));
-        m3U8DbModle.downloadNum = cursor.getInt(cursor.getColumnIndex("download_num"));
-        m3U8DbModle.totalNum = cursor.getInt(cursor.getColumnIndex("total_num"));
-        m3U8DbModle.lessonId = cursor.getInt(cursor.getColumnIndex("lessonId"));
-        m3U8DbModle.host = cursor.getString(cursor.getColumnIndex("host"));
-        m3U8DbModle.playList = cursor.getString(cursor.getColumnIndex("play_list"));
+    private static M3U8DbModel parseM3U8Model(Cursor cursor) {
+        M3U8DbModel m3U8DbModel = new M3U8DbModel();
+        m3U8DbModel.id = cursor.getInt(cursor.getColumnIndex("id"));
+        m3U8DbModel.finish = cursor.getInt(cursor.getColumnIndex("finish"));
+        m3U8DbModel.downloadNum = cursor.getInt(cursor.getColumnIndex("download_num"));
+        m3U8DbModel.totalNum = cursor.getInt(cursor.getColumnIndex("total_num"));
+        m3U8DbModel.lessonId = cursor.getInt(cursor.getColumnIndex("lessonId"));
+        m3U8DbModel.host = cursor.getString(cursor.getColumnIndex("host"));
+        m3U8DbModel.playList = cursor.getString(cursor.getColumnIndex("play_list"));
 
-        return m3U8DbModle;
+        return m3U8DbModel;
     }
 
     /**
      * 获取视频缓存
-     *
-     * @param id
-     * @param host
-     * @return
      */
-    public static M3U8DbModle queryM3U8Modle(
+    public static M3U8DbModel queryM3U8Model(
             Context context, int userId, int id, String host, int isFinish) {
-        SqliteUtil.QueryPaser<M3U8DbModle> queryCallBack =
-                new SqliteUtil.QueryPaser<M3U8DbModle>() {
+        SqliteUtil.QueryParser<M3U8DbModel> queryCallBack =
+                new SqliteUtil.QueryParser<M3U8DbModel>() {
                     @Override
-                    public M3U8DbModle parse(Cursor cursor) {
-                        return parseM3U8Modle(cursor);
+                    public M3U8DbModel parse(Cursor cursor) {
+                        return parseM3U8Model(cursor);
                     }
                 };
 
         String finishQuery = isFinish == ALL ? "" : " and finish=" + isFinish;
-        M3U8DbModle m3U8DbModle = SqliteUtil.getUtil(context).query(
+        return SqliteUtil.getUtil(context).query(
                 queryCallBack,
                 "select * from data_m3u8 where userId=? and host=? and lessonId=?" + finishQuery,
                 String.valueOf(userId), host, String.valueOf(id)
         );
-
-        return m3U8DbModle;
     }
 
-    public static ArrayList<M3U8DbModle> queryM3U8DownTasks(Context context, String host, int userId) {
-        final ArrayList<M3U8DbModle> list = new ArrayList<M3U8DbModle>();
-        SqliteUtil.QueryPaser<M3U8DbModle> queryCallBack =
-                new SqliteUtil.QueryPaser<M3U8DbModle>() {
+    public static ArrayList<M3U8DbModel> queryM3U8DownTasks(Context context, String host, int userId) {
+        final ArrayList<M3U8DbModel> list = new ArrayList<>();
+        SqliteUtil.QueryParser<M3U8DbModel> queryCallBack =
+                new SqliteUtil.QueryParser<M3U8DbModel>() {
                     @Override
-                    public M3U8DbModle parse(Cursor cursor) {
-                        M3U8DbModle m3U8DbModle = parseM3U8Modle(cursor);
-                        list.add(m3U8DbModle);
+                    public M3U8DbModel parse(Cursor cursor) {
+                        M3U8DbModel m3U8DbModel = parseM3U8Model(cursor);
+                        list.add(m3U8DbModel);
                         return null;
                     }
                 };
@@ -167,7 +163,7 @@ public class M3U8Util {
         return list;
     }
 
-    public static SparseArray<M3U8DbModle> getM3U8ModleList(
+    public static SparseArray<M3U8DbModel> getM3U8ModelList(
             Context context, int[] ids, int userId, String host, int isFinish) {
         final StringBuffer lessonIds = new StringBuffer("(");
         for (int id : ids) {
@@ -178,13 +174,13 @@ public class M3U8Util {
         }
         lessonIds.append(")");
 
-        final SparseArray<M3U8DbModle> list = new SparseArray<M3U8DbModle>();
-        SqliteUtil.QueryPaser<M3U8DbModle> queryCallBack =
-                new SqliteUtil.QueryPaser<M3U8DbModle>() {
+        final SparseArray<M3U8DbModel> list = new SparseArray<>();
+        SqliteUtil.QueryParser<M3U8DbModel> queryCallBack =
+                new SqliteUtil.QueryParser<M3U8DbModel>() {
                     @Override
-                    public M3U8DbModle parse(Cursor cursor) {
-                        M3U8DbModle m3U8DbModle = parseM3U8Modle(cursor);
-                        list.put(m3U8DbModle.lessonId, m3U8DbModle);
+                    public M3U8DbModel parse(Cursor cursor) {
+                        M3U8DbModel m3U8DbModel = parseM3U8Model(cursor);
+                        list.put(m3U8DbModel.lessonId, m3U8DbModel);
                         return null;
                     }
                 };
@@ -223,7 +219,7 @@ public class M3U8Util {
         );
     }
 
-    public static M3U8DbModle saveM3U8Model(
+    public static M3U8DbModel saveM3U8Model(
             Context context, int lessonId, String host, int userId) {
         Log.d(TAG, "saveM3U8Model");
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(context);
@@ -238,13 +234,13 @@ public class M3U8Util {
         cv.put("play_list", "");
         sqliteUtil.insert("data_m3u8", cv);
 
-        M3U8DbModle m3U8DbModle = new M3U8DbModle();
-        m3U8DbModle.finish = START;
-        m3U8DbModle.lessonId = lessonId;
-        m3U8DbModle.host = host;
-        m3U8DbModle.userId = userId;
+        M3U8DbModel m3U8DbModel = new M3U8DbModel();
+        m3U8DbModel.finish = START;
+        m3U8DbModel.lessonId = lessonId;
+        m3U8DbModel.host = host;
+        m3U8DbModel.userId = userId;
 
-        return m3U8DbModle;
+        return m3U8DbModel;
     }
 
     public String getLessonTitle() {
@@ -276,45 +272,12 @@ public class M3U8Util {
         return null;
     }
 
-    private void loadLessonUrl(final int lessonId, int courseId) {
-        RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", String.valueOf(courseId),
-                "lessonId", String.valueOf(lessonId)
-        });
-
-        app.postUrl(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                LessonItem lessonItem = app.gson.fromJson(
-                        response.toString(), new TypeToken<LessonItem>() {
-                        }.getType()
-                );
-                if (lessonItem == null) {
-                    return;
-                }
-                mLessonMediaUrl = lessonItem.mediaUri;
-                mLessonTitle = lessonItem.title;
-                mThreadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        parseM3U8();
-                    }
-                });
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-    }
-
     public void download(int lessonId, int courseId, int userId) {
         mLessonId = lessonId;
         mCourseId = courseId;
-        M3U8DbModle m3U8DbModle = queryM3U8Modle(mContext, userId, lessonId, mTargetHost, ALL);
+        M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
 
-        if (m3U8DbModle != null && m3U8DbModle.finish == UN_FINISH) {
+        if (m3U8DbModel != null && m3U8DbModel.finish == UN_FINISH) {
             Log.d(TAG, "continue M3U8DbModle");
             LessonItem lessonItem = mSqliteUtil.queryForObj(
                     new TypeToken<LessonItem>() {
@@ -328,7 +291,7 @@ public class M3U8Util {
                 mLessonTitle = lessonItem.title;
             }
 
-            M3U8File m3U8File = getM3U8FileFromModle(m3U8DbModle);
+            M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
 
             Log.d(TAG, "continue m3U8File " + m3U8File.urlList);
             downloadM3U8SourceFile(m3U8File);
@@ -339,12 +302,116 @@ public class M3U8Util {
         loadLessonUrl(lessonId, courseId);
     }
 
-    private M3U8File getM3U8FileFromModle(M3U8DbModle m3U8DbModle) {
-        StringReader reader = new StringReader(m3U8DbModle.playList);
+    private void loadLessonUrl(final int lessonId, int courseId) {
+        RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
+        requestUrl.setParams(new String[]{
+                "courseId", String.valueOf(courseId),
+                "lessonId", String.valueOf(lessonId)
+        });
 
-        final HashMap<String, Integer> filters = new HashMap<String, Integer>();
-        SqliteUtil.QueryPaser<HashMap<String, Integer>> queryCallBack =
-                new SqliteUtil.QueryPaser<HashMap<String, Integer>>() {
+        app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                final LessonItem lessonItem = app.gson.fromJson(
+                        response, new TypeToken<LessonItem>() {
+                        }.getType()
+                );
+                if (lessonItem == null) {
+                    return;
+                }
+                mLessonMediaUrl = lessonItem.mediaUri;
+                mLessonTitle = lessonItem.title;
+                mThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mLessonMediaUrl != null && mLessonMediaUrl.contains("getLocalVideo")) {
+                            downloadLocalVideos(mLessonMediaUrl);
+                        } else {
+                            parseM3U8();
+                        }
+                    }
+                });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+    }
+
+    private void sendBroadcast() {
+        Intent intent = new Intent(DownloadStatusReceiver.ACTION);
+        intent.putExtra(Const.LESSON_ID, mLessonId);
+        intent.putExtra(Const.COURSE_ID, mCourseId);
+        intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
+        mContext.sendBroadcast(intent);
+    }
+
+    private void downloadLocalVideos(String videoUrl) {
+        insertM3U8SourceToDb(mLessonId, videoUrl);
+        FileOutputStream fos;
+        InputStream is;
+        try {
+            java.net.URL url = new java.net.URL(videoUrl);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+            is = conn.getInputStream();
+            int fileSize = conn.getContentLength();
+            if (fileSize < 1 || is == null) {
+                return;
+            } else {
+                ContentValues cv = new ContentValues();
+                cv.put("finish", 0);
+                cv.put("total_num", 100);
+                cv.put("play_list", videoUrl);
+                mSqliteUtil.update(
+                        "data_m3u8",
+                        cv,
+                        "lessonId=? and host=?",
+                        new String[]{String.valueOf(mLessonId), mTargetHost}
+                );
+                sendBroadcast();
+
+                String key = DigestUtils.md5(videoUrl);
+                File file = createLocalM3U8SourceFile(key);
+                if (file == null) {
+                    return;
+                }
+                fos = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int len;
+                int downloadSize = 0;
+                int downloadPercent = 1;
+                while ((len = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len);
+                    downloadSize = downloadSize + len;
+                    float percent = downloadSize / (float) fileSize;
+                    if ((int) (percent * 100) == downloadPercent && downloadPercent <= 100) {
+                        String updateSql = "update data_m3u8 set download_num = %d where userId = %d and host = '%s' and lessonId = %d";
+                        mSqliteUtil.execSQL(String.format(updateSql, downloadPercent, mUserId, mTargetHost, mLessonId));
+                        downloadPercent = downloadPercent + 5;
+                        sendBroadcast();
+                    }
+                }
+                fos.close();
+                is.close();
+                String updateSql = "update data_m3u8 set download_num = %d, finish = %d where userId = %d and host = '%s' and lessonId = %d";
+                mSqliteUtil.execSQL(String.format(updateSql, 100, 1, mUserId, mTargetHost, mLessonId));
+                String updateM3U8DataSql = "update data_m3u8_url set finish = %d and lessonId = %d";
+                mSqliteUtil.execSQL(String.format(updateM3U8DataSql, 1, mLessonId));
+                sendBroadcast();
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private M3U8File getM3U8FileFromModel(M3U8DbModel m3U8DbModel) {
+        StringReader reader = new StringReader(m3U8DbModel.playList);
+
+        final HashMap<String, Integer> filters = new HashMap<>();
+        SqliteUtil.QueryParser<HashMap<String, Integer>> queryCallBack =
+                new SqliteUtil.QueryParser<HashMap<String, Integer>>() {
                     @Override
                     public HashMap<String, Integer> parse(Cursor cursor) {
                         String url = cursor.getString(cursor.getColumnIndex("url"));
@@ -358,7 +425,7 @@ public class M3U8Util {
                 queryCallBack,
                 "select * from data_m3u8_url where finish=? and lessonId=?",
                 "1",
-                String.valueOf(m3U8DbModle.lessonId)
+                String.valueOf(m3U8DbModel.lessonId)
         );
         M3U8File m3U8File = parseM3u8ListFile(new BufferedReader(reader), filters);
         return m3U8File;
@@ -366,9 +433,6 @@ public class M3U8Util {
 
     /**
      * 获取网络的m3u8 file
-     *
-     * @param url
-     * @return
      */
     private M3U8File getM3U8FileFromUrl(String url) {
         M3U8File m3U8File = null;
@@ -417,7 +481,7 @@ public class M3U8Util {
         }
     }
 
-    private void downloadSingleFile(String url, int type) {
+    private void downloadSingleFile(String url) {
         HttpParams params = new BasicHttpParams();
         ConnManagerParams.setMaxTotalConnections(params, 100);
         //超时
@@ -432,8 +496,6 @@ public class M3U8Util {
         HttpGet httpGet = new HttpGet(url);
         try {
             Log.d(TAG, "download " + url);
-            HttpResponse response = mHttpClient.execute(httpGet);
-
             //发送下载广播
             Intent intent = new Intent(DownloadStatusReceiver.ACTION);
             intent.putExtra(Const.LESSON_ID, mLessonId);
@@ -444,8 +506,8 @@ public class M3U8Util {
             //超时处理
             int count = mTimeOutList.get(key);
             if (count < 3) {
-                Log.d(TAG, "timeiout count " + count);
-                downloadSingleFile(url, type);
+                Log.d(TAG, "timeout count " + count);
+                downloadSingleFile(url);
                 mTimeOutList.put(key, ++count);
             }
             e.printStackTrace();
@@ -483,9 +545,6 @@ public class M3U8Util {
 
     /**
      * 插入每个需要下载的资源 url md5保存
-     *
-     * @param lessonId
-     * @param url
      */
     private void insertM3U8SourceToDb(int lessonId, String url) {
         ContentValues cv = new ContentValues();
@@ -509,10 +568,10 @@ public class M3U8Util {
             //更新总计数器
             String updateSql = "update data_m3u8 set download_num=download_num+1 where userId=%d and host='%s' and lessonId=%d";
             mSqliteUtil.execSQL(String.format(updateSql, mUserId, mTargetHost, mLessonId));
-            M3U8DbModle m3U8DbModle = queryM3U8Modle(mContext, mUserId, mLessonId, mTargetHost, ALL);
+            M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, mUserId, mLessonId, mTargetHost, ALL);
 
-            if (m3U8DbModle.downloadNum == m3U8DbModle.totalNum) {
-                String playListStr = createLocalM3U8File(m3U8DbModle);
+            if (m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+                String playListStr = createLocalM3U8File(m3U8DbModel);
                 Log.d(TAG, "m3U8DbModle-> finish");
                 cv.put("play_list", playListStr);
                 mSqliteUtil.update(
@@ -550,8 +609,8 @@ public class M3U8Util {
         mTimeOutList = null;
     }
 
-    private String createLocalM3U8File(M3U8DbModle m3U8DbModle) {
-        String playList = m3U8DbModle.playList;
+    private String createLocalM3U8File(M3U8DbModel m3U8DbModel) {
+        String playList = m3U8DbModel.playList;
         StringBuffer stringBuffer = new StringBuffer();
         Matcher matcher = URL_PAT.matcher(playList);
 
@@ -604,7 +663,7 @@ public class M3U8Util {
 
                         FileUtils.writeFile(
                                 file,
-                                new DegestInputStream(response.getEntity().getContent(), mTargetHost)
+                                new DigestInputStream(response.getEntity().getContent(), mTargetHost)
                         );
                     }
 
@@ -701,14 +760,14 @@ public class M3U8Util {
         int pos = -1;
         String oldKey = null;
         try {
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line).append("\n");
                 Matcher matcher = M3U8_STREAM_PAT.matcher(line);
                 if (matcher.find()) {
                     if (m3U8File.m3u8List == null) {
                         m3U8File.type = M3U8File.STREAM_LIST;
-                        m3U8File.m3u8List = new ArrayList<M3U8ListItem>();
+                        m3U8File.m3u8List = new ArrayList<>();
                     }
 
                     M3U8ListItem item = new M3U8ListItem();
@@ -774,34 +833,33 @@ public class M3U8Util {
         return m3U8File;
     }
 
-    public static class DegestInputStream extends InputStream {
-        private static final String TAG = "DegestInputStream";
+    public static class DigestInputStream extends InputStream {
 
         private InputStream mTargetInputStream;
-        private int mCurrentDesgetIndex;
-        private byte[] mDesgetKey;
+        private int mCurrentDigestIndex;
+        private byte[] mDigestKey;
 
-        public DegestInputStream(InputStream target, String host) {
-            initDesgetKey(host, true);
+        public DigestInputStream(InputStream target, String host) {
+            initDigestKey(host, true);
             this.mTargetInputStream = target;
         }
 
-        public DegestInputStream(InputStream target, String host, boolean isMd5) {
-            initDesgetKey(host, isMd5);
+        public DigestInputStream(InputStream target, String host, boolean isMd5) {
+            initDigestKey(host, isMd5);
             this.mTargetInputStream = target;
         }
 
-        private void initDesgetKey(String host, boolean isMd5) {
+        private void initDigestKey(String host, boolean isMd5) {
 
-            String desgetStr = host;
+            String digestStr = host;
             if (isMd5) {
                 if (!TextUtils.isEmpty(host)) {
-                    desgetStr = DigestUtils.md5(host);
+                    digestStr = DigestUtils.md5(host);
                 }
             }
 
-            this.mCurrentDesgetIndex = 0;
-            this.mDesgetKey = desgetStr.getBytes();
+            this.mCurrentDigestIndex = 0;
+            this.mDigestKey = digestStr.getBytes();
         }
 
         @Override
@@ -828,15 +886,15 @@ public class M3U8Util {
         }
 
         private void processorByteArray(int length, byte[] buffer) {
-            if (length <= 0 || this.mDesgetKey.length == 0) {
+            if (length <= 0 || this.mDigestKey.length == 0) {
                 return;
             }
 
-            int keyLength = mDesgetKey.length - 1;
+            int keyLength = mDigestKey.length - 1;
             for (int i = 0; i < length; i++) {
                 byte b = buffer[i];
-                mCurrentDesgetIndex = mCurrentDesgetIndex > keyLength ? 0 : mCurrentDesgetIndex;
-                b = (byte) (b ^ mDesgetKey[mCurrentDesgetIndex++]);
+                mCurrentDigestIndex = mCurrentDigestIndex > keyLength ? 0 : mCurrentDigestIndex;
+                b = (byte) (b ^ mDigestKey[mCurrentDigestIndex++]);
                 buffer[i] = b;
             }
         }

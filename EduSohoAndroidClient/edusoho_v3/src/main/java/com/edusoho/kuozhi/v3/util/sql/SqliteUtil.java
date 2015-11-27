@@ -170,13 +170,13 @@ public class SqliteUtil extends SQLiteOpenHelper {
         return null;
     }
 
-    public <T> T query(QueryPaser<T> queryPaser, String selection, String... selectionArgs) {
+    public <T> T query(QueryParser<T> queryParser, String selection, String... selectionArgs) {
         T obj = null;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(selection, selectionArgs);
         while (cursor.moveToNext()) {
-            obj = queryPaser.parse(cursor);
-            if (queryPaser.isSignle()) {
+            obj = queryParser.parse(cursor);
+            if (queryParser.isSingle()) {
                 break;
             }
         }
@@ -186,8 +186,13 @@ public class SqliteUtil extends SQLiteOpenHelper {
     }
 
     public void execSQL(String sql) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sql);
+        try {
+            Log.d("m3u8_sql", sql);
+            SQLiteDatabase db = getWritableDatabase();
+            db.execSQL(sql);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public int delete(String table, String where, String[] args) {
@@ -199,7 +204,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     public int update(String table, ContentValues cv, String where, String[] args) {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
-        Log.d(null, "upate sqlite ->" + result);
+        Log.d("m3u8_sql", "update " + table + " ->" + where);
         return result;
     }
 
@@ -249,12 +254,12 @@ public class SqliteUtil extends SQLiteOpenHelper {
         }
     }
 
-    public static class QueryPaser<T> {
+    public static class QueryParser<T> {
         public T parse(Cursor cursor) {
             return null;
         }
 
-        public boolean isSignle() {
+        public boolean isSingle() {
             return false;
         }
     }
