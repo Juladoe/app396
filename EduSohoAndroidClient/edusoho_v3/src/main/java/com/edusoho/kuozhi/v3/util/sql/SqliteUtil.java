@@ -12,6 +12,7 @@ import android.util.Log;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
+import com.edusoho.kuozhi.v3.util.AssetsUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
@@ -79,7 +80,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
         BufferedReader reader = null;
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            inputStream = mContext.getAssets().open(name);
+            inputStream = AssetsUtil.open(mContext, name);
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
