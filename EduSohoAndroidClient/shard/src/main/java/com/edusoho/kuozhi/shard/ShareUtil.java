@@ -12,10 +12,14 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
@@ -43,7 +47,7 @@ public class ShareUtil {
 
     private ShareUtil(Context context) {
         //添加应用信息
-        ShareSDK.initSDK(context);
+        new ShareSDKUtil().initSDK(context);
         mContext = context;
     }
 
