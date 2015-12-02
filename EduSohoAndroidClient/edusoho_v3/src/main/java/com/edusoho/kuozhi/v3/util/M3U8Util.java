@@ -864,7 +864,11 @@ public class M3U8Util {
 
         @Override
         public int read() throws IOException {
-            return mTargetInputStream.read();
+            int length = mTargetInputStream.read();
+            byte[] buffer = new byte[1];
+            buffer[0] = (byte)length;
+            processorByteArray(1, buffer);
+            return buffer[0];
         }
 
         @Override
@@ -876,7 +880,10 @@ public class M3U8Util {
 
         @Override
         public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-            return mTargetInputStream.read(buffer, byteOffset, byteCount);
+            int length =  mTargetInputStream.read(buffer, byteOffset, byteCount);
+            processorByteArray(length, buffer);
+
+            return length;
         }
 
         @Override
