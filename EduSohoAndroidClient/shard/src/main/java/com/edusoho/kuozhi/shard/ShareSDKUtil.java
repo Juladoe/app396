@@ -1,11 +1,16 @@
 package com.edusoho.kuozhi.shard;
 
 import android.content.Context;
+import android.util.ArrayMap;
+import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 
 /**
@@ -13,9 +18,26 @@ import cn.sharesdk.framework.ShareSDK;
  */
 public class ShareSDKUtil {
 
+    private HashMap<String, String> platformMap;
+
     public void initSDK(Context context) {
+        platformMap = new HashMap<>(10);
         ShareSDK.initSDK(context, "41f51eeb5d88");
         initDevInfo(context);
+    }
+
+    public Platform[] getPlatformList() {
+        Platform[] platforms = ShareSDK.getPlatformList();
+        ArrayList<Platform> platformsList = new ArrayList<>();
+        for (int i=0; i < platforms.length; i++) {
+            if (platformMap.containsKey(platforms[i].getName())) {
+                platformsList.add(platforms[i]);
+            }
+        }
+
+        Platform[] filterPlatforms = new Platform[platformsList.size()];
+        platformsList.toArray(filterPlatforms);
+        return filterPlatforms;
     }
 
     private void initDevInfo(Context context) {
@@ -32,6 +54,7 @@ public class ShareSDKUtil {
                         String attributeValue = parser.getAttributeValue(attriIndex).trim();
                         hashMap.put(attributeName, attributeValue);
                     }
+                    platformMap.put(name, "");
                     ShareSDK.setPlatformDevInfo(name,hashMap);
                 }
             }

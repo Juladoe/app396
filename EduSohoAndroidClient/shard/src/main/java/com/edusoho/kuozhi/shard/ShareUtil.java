@@ -43,11 +43,12 @@ public class ShareUtil {
     private Context mContext;
     private ShardDialog mAlertDialog;
     private ShareHandler mShareHandler;
-    private static ShareUtil shareUtil;
+    private ShareSDKUtil mShareSDKUtil;
 
     private ShareUtil(Context context) {
         //添加应用信息
-        new ShareSDKUtil().initSDK(context);
+        mShareSDKUtil = new ShareSDKUtil();
+        mShareSDKUtil.initSDK(context);
         mContext = context;
     }
 
@@ -86,12 +87,8 @@ public class ShareUtil {
         return false;
     }
 
-    public Platform getPlatForm(String name) {
-        return ShareSDK.getPlatform(name);
-    }
-
     public void initDialog() {
-        Platform[] platforms = ShareSDK.getPlatformList();
+        Platform[] platforms = mShareSDKUtil.getPlatformList();
         ArrayList<ListData> list = new ArrayList<ListData>();
         for (Platform platform : platforms) {
             String name = platform.getName();

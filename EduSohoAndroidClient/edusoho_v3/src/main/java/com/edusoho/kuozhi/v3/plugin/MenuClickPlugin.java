@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -46,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/6/2.
@@ -64,6 +66,12 @@ public class MenuClickPlugin extends CoreBridge {
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
             }
         });
+    }
+
+    @JsAnnotation
+    public JSONArray getThirdConfig(JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        List<String> types = ThirdPartyLogin.getInstance(mContext).getLoginTypes();
+        return new JSONArray(types);
     }
 
     @JsAnnotation
