@@ -19,7 +19,7 @@ public class ThirdPartyLogin {
 
     private ThirdPartyLogin(Context context) {
         mContext = context;
-        ShareSDK.initSDK(context);
+        new ShareSDKUtil().initSDK(context);
         mPlats = new HashMap<>();
     }
 

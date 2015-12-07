@@ -70,16 +70,6 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @Override
-    public Context getBaseContext() {
-        return AppUtil.contextAddAssets(super.getBaseContext());
-    }
-
-    @Override
-    public AssetManager getAssets() {
-        return getBaseContext().getAssets();
-    }
-
-    @Override
     public void startActivity(Intent intent) {
 
         ComponentName componentName = intent.getComponent();

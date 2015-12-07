@@ -857,13 +857,4 @@ public class EdusohoApp extends Application {
         return false;
     }
 
-    @Override
-    public Context getBaseContext() {
-        return AppUtil.contextAddAssets(super.getBaseContext());
-    }
-
-    @Override
-    public AssetManager getAssets() {
-        return getBaseContext().getAssets();
-    }
 }

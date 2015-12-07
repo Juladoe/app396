@@ -77,16 +77,6 @@ public class EdusohoMainService extends Service {
         mWorkHandler = new WorkHandler(this);
     }
 
-    @Override
-    public Context getBaseContext() {
-        return AppUtil.contextAddAssets(super.getBaseContext());
-    }
-
-    @Override
-    public AssetManager getAssets() {
-        return getBaseContext().getAssets();
-    }
-
     public void sendMessage(int type, Object obj) {
         Message message = mWorkHandler.obtainMessage(type);
         message.obj = obj;
