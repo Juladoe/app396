@@ -720,15 +720,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         private WeakReference<ChatActivity> mWeakReference;
 
         private VolumeHandler(ChatActivity activity) {
-            if (this.mWeakReference == null) {
-                this.mWeakReference = new WeakReference<>(activity);
-            }
+            mWeakReference = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            ChatActivity activity = this.mWeakReference.get();
-            activity.ivRecordImage.setImageResource(activity.mSpeakerAnimResId[msg.what]);
+            ChatActivity activity = mWeakReference.get();
+            if (activity != null) {
+                activity.ivRecordImage.setImageResource(activity.mSpeakerAnimResId[msg.what]);
+            }
         }
     }
 

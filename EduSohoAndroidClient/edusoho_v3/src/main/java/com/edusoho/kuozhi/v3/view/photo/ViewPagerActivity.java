@@ -12,6 +12,7 @@ import android.view.ViewGroup.LayoutParams;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -81,7 +82,11 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
-            ImageLoader.getInstance().displayImage(mImages[position], photoView, EdusohoApp.app.mOptions);
+            if (mImages[position].contains(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE)) {
+                ImageLoader.getInstance().displayImage("file://" + mImages[position], photoView, EdusohoApp.app.mOptions);
+            } else {
+                ImageLoader.getInstance().displayImage(mImages[position], photoView, EdusohoApp.app.mOptions);
+            }
             container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
             container.setOnClickListener(new View.OnClickListener() {
