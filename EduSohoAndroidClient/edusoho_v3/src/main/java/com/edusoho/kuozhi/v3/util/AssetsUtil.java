@@ -17,10 +17,13 @@ import java.util.zip.ZipOutputStream;
 public class AssetsUtil {
 
     public static InputStream open(Context context, String name) throws IOException{
+        return context.getAssets().open(name);
+        /*
         InputStream inputStream = context.getAssets().open(name);
         M3U8Util.DigestInputStream digestInputStream = new M3U8Util.DigestInputStream(
                 inputStream, context.getPackageName(), false);
 
         return digestInputStream;
+        */
     }
 }
