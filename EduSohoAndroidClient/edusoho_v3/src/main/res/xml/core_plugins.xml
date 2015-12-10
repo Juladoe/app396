@@ -76,6 +76,11 @@
         version="1.0" />
 
     <plugin
+        name="CourseDetailActivity"
+        package="com.edusoho.kuozhi.v3.ui.CourseDetailActivity"
+        version="1.0" />
+
+    <plugin
         name="NewsCourseActivity"
         package="com.edusoho.kuozhi.v3.ui.NewsCourseActivity"
         version="1.0" />

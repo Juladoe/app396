@@ -46,6 +46,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     public static final String COURSE_ID = "course_id";
     public static final String[] ACTIONS = {"查看详情", "进入学习", "进入直播"};
     private int mCourseId;
+    private String mCourseTitle;
     private int mStart = 0;
 
     private PtrClassicFrameLayout mPtrFrame;
@@ -98,7 +99,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         if (intent == null) {
             return;
         }
-        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
+        mCourseTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
+        setBackMode(BACK, mCourseTitle);
         mCourseId = intent.getIntExtra(COURSE_ID, 0);
         CurrentCourseId = mCourseId;
         if (mCourseId == 0) {
@@ -170,10 +172,18 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.news_course_profile) {
-            app.mEngine.runNormalPlugin("NewsCourseProfileActivity", mContext, new PluginRunCallback() {
+//            app.mEngine.runNormalPlugin("NewsCourseProfileActivity", mContext, new PluginRunCallback() {
+//                @Override
+//                public void setIntentDate(Intent startIntent) {
+//                    startIntent.putExtra(Const.COURSE_ID, mCourseId);
+//                }
+//            });
+
+            app.mEngine.runNormalPlugin("CourseDetailActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(Const.COURSE_ID, mCourseId);
+                    startIntent.putExtra(Const.FROM_ID, mCourseId);
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mCourseTitle);
                 }
             });
         }

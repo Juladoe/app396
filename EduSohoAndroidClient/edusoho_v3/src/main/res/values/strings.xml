@@ -53,10 +53,12 @@
     <string name="message_do_not_disturb">消息免打扰</string>
     <string name="clear_message_record">清空课程历史记录</string>
     <string name="clear_service_profile_record">清空历史记录</string>
-    <string name="classroom_all_members">全体成员组</string>
+    <string name="classroom_all_members">全体成员</string>
     <string name="classroom_announcement">班级公告</string>
     <string name="entry_classroom_course">进入班级课程</string>
     <string name="clear_classroom_record">清除聊天记录</string>
+    <string name="course_announcement">课程公告</string>
+    <string name="entry_course">进入课程</string>
     <string name="login_more">更多</string>
 
     <!--EditText-->
@@ -73,6 +75,7 @@
     <string name="reg_mail_reg">邮箱注册</string>
     <string name="reg_send_code">发送验证码</string>
     <string name="del_record_and_quit_classroom">删除并退出班级</string>
+    <string name="del_record_and_quit_course">删除并退出学习</string>
 
     <!--system-->
     <string name="request_fail_text">网络连接不可用或请求失败</string>

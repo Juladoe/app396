@@ -35,7 +35,7 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/more_setting_list_select"
                 android:padding="12dp"
-                android:text="全体成员组"
+                android:text="@string/classroom_all_members"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/medium_font_size" />
 
@@ -66,7 +66,7 @@
                 android:textSize="@dimen/medium_font_size" />
 
             <TextView
-                android:id="@+id/clear_classroom_record"
+                android:id="@+id/clear_record"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"

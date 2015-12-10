@@ -357,6 +357,7 @@ public class Const {
     public static final String MEDIA_SOURCE = "mediaSource";
     public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAR_TITLE = "title";
+    public static final String ENTITY = "ENTITY";
     public static final String IS_STUDENT = "is_student";
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
@@ -430,6 +431,7 @@ public class Const {
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
     public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";
+    public static final String COURSE_ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String CLASSROOM_COURSES = "main#/classroom/%d";
     public static final String CLASSROOM_MEMBER_LIST = "main#/studentlist/classroom/%d";
 
