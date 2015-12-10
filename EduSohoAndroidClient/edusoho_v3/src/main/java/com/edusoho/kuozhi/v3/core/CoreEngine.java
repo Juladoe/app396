@@ -16,14 +16,18 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.PluginModel;
+
 import org.xmlpull.v1.XmlPullParser;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -195,6 +199,22 @@ public class CoreEngine {
             }
 
             serverActivity.startActivity(startIntent);
+        }
+    }
+
+    public void runNormalPluginWithAnim(
+            String pluginName, Context serverActivity, PluginRunCallback callback, NormalCallback normalCallback) {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startIntent.setClassName(serverActivity, pluginModel.packAge);
+            if (callback != null) {
+                callback.setIntentDate(startIntent);
+            }
+
+            serverActivity.startActivity(startIntent);
+            normalCallback.success(null);
         }
     }
 

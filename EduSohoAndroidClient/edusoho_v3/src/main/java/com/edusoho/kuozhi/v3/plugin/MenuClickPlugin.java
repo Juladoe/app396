@@ -7,9 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.inputmethod.InputMethodManager;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -22,7 +24,6 @@ import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
@@ -37,6 +38,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupInputDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridge.CoreBridge;
 import com.google.gson.reflect.TypeToken;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaPlugin;
@@ -44,6 +46,7 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.util.Iterator;
 
@@ -117,7 +120,7 @@ public class MenuClickPlugin extends CoreBridge {
                 CordovaChromeClient.FILECHOOSER_RESULTCODE);
     }
 
-    private void upload(String url, JSONObject heads, JSONObject params, final CallbackContext callbackContext) throws Exception{
+    private void upload(String url, JSONObject heads, JSONObject params, final CallbackContext callbackContext) throws Exception {
         RequestUrl requestUrl = new RequestUrl(url);
         Iterator<String> itor = heads.keys();
         while (itor.hasNext()) {
@@ -168,7 +171,12 @@ public class MenuClickPlugin extends CoreBridge {
     public void openDrawer(JSONArray args, CallbackContext callbackContext) throws JSONException {
         String message = args.getString(0);
         if (message.equals("open")) {
-            EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
+            EdusohoApp.app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+                @Override
+                public void success(Object obj) {
+                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+                }
+            });
         }
     }
 
@@ -362,7 +370,6 @@ public class MenuClickPlugin extends CoreBridge {
     public void clearUserToken(JSONArray args, CallbackContext callbackContext) throws JSONException {
         mActivity.app.removeToken();
         mActivity.app.sendMessage(Const.LOGOUT_SUCCESS, null);
-        mActivity.app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
     }
 
     @JsAnnotation

@@ -407,7 +407,8 @@
     <color name="grey_main">#c8cacd</color>
     <color name="badge_red">#ff0000</color>
     <color name="red">#e96969</color>
-    <color name="news_course_title">#576b95</color>
+    <color name="blue_beta">#576b95</color>
+    <color name="blue_beta_press">#7f9cd9</color>
 
 
     <!-- pym color -->

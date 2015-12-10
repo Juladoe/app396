@@ -135,7 +135,7 @@ public class SwipeAdapter extends BaseAdapter {
         }
 
         if (PushUtil.CourseType.TYPE.equals(item.type)) {
-            viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.news_course_title));
+            viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.blue_beta));
         } else {
             viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.base_black_87));
         }

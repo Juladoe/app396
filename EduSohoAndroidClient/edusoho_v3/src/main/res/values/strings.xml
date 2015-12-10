@@ -15,6 +15,7 @@
     <string name="down_tab_news">动态</string>
     <string name="down_tab_find">发现</string>
     <string name="down_tab_friends">校友</string>
+    <string name="down_tab_mine">我</string>
     <string name="toolbar_title">分类</string>
     <string name="login">登录</string>
     <string name="login_loading">正在登录...</string>
@@ -45,6 +46,7 @@
     <string name="login_forget_password">忘记密码?</string>
     <string name="drawer_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
+    <string name="login_register">注册</string>
     <string name="news_course_profile">课程信息</string>
     <string name="news_course_share">分享</string>
     <string name="study_entrance">进入学习</string>
@@ -55,6 +57,7 @@
     <string name="classroom_announcement">班级公告</string>
     <string name="entry_classroom_course">进入班级课程</string>
     <string name="clear_classroom_record">清除聊天记录</string>
+    <string name="login_more">更多</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -132,6 +135,7 @@
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>
     <string name="title_friends">校友</string>
+    <string name="title_mine">我</string>
 
     <string name="exercise">练习</string>
     <string name="homework">作业</string>

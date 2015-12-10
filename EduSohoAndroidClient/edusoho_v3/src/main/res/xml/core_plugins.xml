@@ -126,6 +126,11 @@
         version="1.0" />
 
     <plugin
+        name="MineFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MineFragment"
+        version="1.0" />
+
+    <plugin
         name="PptLessonFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.lesson.PptLessonFragment"
         version="1.0" />
@@ -333,7 +338,6 @@
         name="ExerciseParseActivity"
         package="com.edusoho.kuozhi.homework.ExerciseParseActivity"
         version="1.0" />
-
 
 
 </plugins>

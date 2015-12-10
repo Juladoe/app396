@@ -10,7 +10,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.edusoho.test.base.BaseActivityNoActionBarUnitTestCase;
 

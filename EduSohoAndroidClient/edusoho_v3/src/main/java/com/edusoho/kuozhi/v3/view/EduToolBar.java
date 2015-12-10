@@ -55,7 +55,6 @@ public class EduToolBar extends Toolbar {
         centerTitle = typedArray.getString(R.styleable.EduToolBar_centerTitle);
         centerTitleSize = (int) typedArray.getDimension(R.styleable.EduToolBar_centerTitleSize, 14);
         centerTitleColor = typedArray.getColor(R.styleable.EduToolBar_centerTitleColor, Color.WHITE);
-        this.setNavigationIcon(R.drawable.buy_vip_icon_normal);
     }
 
     @Override
