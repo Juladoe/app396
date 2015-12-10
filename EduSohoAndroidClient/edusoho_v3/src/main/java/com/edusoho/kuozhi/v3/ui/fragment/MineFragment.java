@@ -40,12 +40,13 @@ public class MineFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_mine);
-        initData();
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initData();
         setHasOptionsMenu(true);
     }
 
@@ -53,7 +54,7 @@ public class MineFragment extends BaseFragment {
     protected void initView(View view) {
         //mActivity.setTitle(getString(R.string.title_mine));
         tvNickname = (TextView) view.findViewById(R.id.tv_nickname);
-        tvTitle = (TextView) view.findViewById(R.id.tv_user_title);
+        tvTitle = (TextView) view.findViewById(R.id.tv_title);
         rivAvatar = (RoundedImageView) view.findViewById(R.id.riv_avatar);
         vUserInfoLayout = view.findViewById(R.id.rl_user_info);
 
@@ -65,11 +66,11 @@ public class MineFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (app.loginUser != null || TextUtils.isEmpty(app.token)) {
+        if (app.loginUser == null || TextUtils.isEmpty(app.token)) {
             return;
         }
         tvNickname.setText(app.loginUser.nickname);
-        tvTitle.setText(app.token);
+        tvTitle.setText(app.loginUser.title);
     }
 
     private View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
