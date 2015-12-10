@@ -55,7 +55,7 @@ public class CourseStudyPageActivity extends BaseActivity{
         mToolbar = (Toolbar) findViewById(R.id.course_study_page_toolbar);
         if (mToolbar != null){
             setSupportActionBar(mToolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mToolbar.setNavigationIcon(R.drawable.icon_up_button);
 
             mTabRadioGroup = (RadioGroup) findViewById(R.id.course_process_radio_group);
             studyButton = (RadioButton) findViewById(R.id.radio_group_study_process);
