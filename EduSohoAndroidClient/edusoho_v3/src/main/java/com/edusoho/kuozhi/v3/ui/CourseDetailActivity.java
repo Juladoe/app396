@@ -15,12 +15,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.CourseMemberResult;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -35,7 +35,6 @@ import java.util.List;
 public class CourseDetailActivity extends ChatItemBaseDetail {
 
     private CourseDetailsResult mCourseResult;
-    private Course mCourseInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,20 +174,23 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.news_course_profile) {
+            final LoadDialog loadDialog = LoadDialog.create(mContext);
+            loadDialog.setTextVisible(View.GONE);
+            loadDialog.show();
             RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("courseId", mFromId + "");
             app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    loadDialog.dismiss();
                     mCourseResult = parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
                     });
-                    mCourseInfo = mCourseResult.course;
-                    if (mCourseInfo != null) {
+                    if (mCourseResult != null && mCourseResult.course != null) {
                         String url = app.host + "/course/" + mFromId;
-                        String title = mCourseInfo.title;
-                        String about = mCourseInfo.about;
-                        String pic = mCourseInfo.middlePicture;
+                        String title = mCourseResult.course.title;
+                        String about = mCourseResult.course.about;
+                        String pic = mCourseResult.course.middlePicture;
 
                         final ShareTool shareTool = new ShareTool(mActivity, url, title, about, pic);
                         new Handler((mActivity.getMainLooper())).post(new Runnable() {
@@ -197,12 +199,15 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                                 shareTool.shardCourse();
                             }
                         });
+                    } else {
+                        CommonUtil.longToast(mContext, "获取课程信息失败");
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    loadDialog.dismiss();
+                    CommonUtil.longToast(mContext, "获取课程信息失败");
                 }
             });
 
