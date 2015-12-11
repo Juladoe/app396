@@ -26,11 +26,12 @@ public class CourseStudyProcessFragment extends BaseFragment{
     private StudyProcessRecyclerAdapter mAdapter;
 
     private List dataList;
+    private Bundle mBundle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_course_study_process_layout);
-
         initData();
     }
 
@@ -48,7 +49,8 @@ public class CourseStudyProcessFragment extends BaseFragment{
 
     public void initData(){
         initList();
-        mAdapter.setDataList(dataList);
+        mBundle = getArguments();
+//        mAdapter.setDataList(dataList);
     }
 
     public void initList(){

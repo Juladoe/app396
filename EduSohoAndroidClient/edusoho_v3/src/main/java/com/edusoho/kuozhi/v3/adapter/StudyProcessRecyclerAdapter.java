@@ -85,7 +85,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public int getItemCount() {
-        return mDataList.size();
+//        return mDataList.size();
+        return 0;
     }
 
     public void setDataList(List list){

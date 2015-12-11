@@ -344,6 +344,11 @@
         package="com.edusoho.kuozhi.v3.ui.fragment.CourseStudyDiscussFragment"
         version="1.0" />
 
+    <plugin
+        name="CourseStudyPageActivity"
+        package="com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity"
+        version="1.0" />
+
 
 
 </plugins>
