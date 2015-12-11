@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by JesseHuang on 15/10/28.
  */
-public class GroupMember implements Serializable {
+public class ClassroomMember implements Serializable {
 
     public int id;
     public int classroomId;

@@ -452,7 +452,8 @@ public class Const {
     public static final String GET_SCHOOL_APP = "/api/mobileschools/app/%d";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
     public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
-    public static final String CLASSROOM_ALL_MEMBERS = "/api/classrooms/%d/members";
+    public static final String CLASSROOM_MEMBERS = "/api/classrooms/%d/members";
+    public static final String COURSE_MEMBERS = "/api/courses/%d/members";
 
     /**
      * 绑定第三方登录

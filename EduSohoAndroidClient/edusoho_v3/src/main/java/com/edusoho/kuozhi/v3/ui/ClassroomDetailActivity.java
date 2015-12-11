@@ -3,12 +3,15 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.MemberResult;
+import com.edusoho.kuozhi.v3.model.bal.ClassroomMember;
+import com.edusoho.kuozhi.v3.model.bal.ClassroomMemberResult;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -20,9 +23,12 @@ import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/10/27.
@@ -45,20 +51,22 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
         mFromId = intent.getIntExtra(Const.FROM_ID, 0);
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE) + "详情");
 
-        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.CLASSROOM_ALL_MEMBERS, mFromId), true);
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.CLASSROOM_MEMBERS, mFromId), true);
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                MemberResult memberResult = parseJsonValue(response, new TypeToken<MemberResult>() {
+                ClassroomMemberResult memberResult = parseJsonValue(response, new TypeToken<ClassroomMemberResult>() {
                 });
                 int total;
                 if (memberResult != null) {
-                    total = Integer.parseInt(memberResult.total);
+                    total = memberResult.total;
                     tvMemberSum.setText(getString(R.string.classroom_all_members) + "(" + total + ")");
-                }
-                if (memberResult.resources != null) {
-                    MemberAvatarAdapter adapter = new MemberAvatarAdapter(Arrays.asList(memberResult.resources));
-                    gvMemberAvatar.setAdapter(adapter);
+                    if (memberResult.resources != null) {
+                        MemberAvatarAdapter adapter = new MemberAvatarAdapter(Arrays.asList(memberResult.resources));
+                        gvMemberAvatar.setAdapter(adapter);
+                    }
+                } else {
+                    CommonUtil.longToast(mContext, "获取班级信息失败");
                 }
             }
         }, new Response.ErrorListener() {
@@ -148,6 +156,82 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             });
             popupDialog.setOkText("确定");
             popupDialog.show();
+        }
+    }
+
+    public class MemberAvatarAdapter extends BaseAdapter {
+        public List<ClassroomMember> mList;
+        private DisplayImageOptions mOptions;
+
+        public MemberAvatarAdapter(List<ClassroomMember> mList) {
+            this.mList = mList;
+            mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
+                    showImageForEmptyUri(R.drawable.default_avatar).
+                    showImageOnFail(R.drawable.default_avatar).build();
+        }
+
+        @Override
+        public int getCount() {
+            if (mList != null) {
+                return mList.size() + 1;
+            }
+            return 1;
+        }
+
+        @Override
+        public ClassroomMember getItem(int position) {
+            return mList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = getLayoutInflater().inflate(R.layout.item_member_avatar, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            if (getCount() - 1 != position) {
+                final ClassroomMember member = mList.get(position);
+                viewHolder.ivAvatar.setBackground(null);
+                ImageLoader.getInstance().displayImage(member.user.avatar, viewHolder.ivAvatar, mOptions);
+                viewHolder.tvMemberName.setText(member.user.nickname);
+                viewHolder.ivAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_PROFILE, member.user.id));
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
+                    }
+                });
+            } else {
+                viewHolder.ivAvatar.setBackgroundResource(R.drawable.group_member_more_bg);
+                viewHolder.tvMemberName.setText("更多");
+                viewHolder.ivAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_MEMBER_LIST, mFromId));
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
+                    }
+                });
+            }
+            return convertView;
         }
     }
 }

@@ -6,11 +6,15 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.CourseMember;
+import com.edusoho.kuozhi.v3.model.bal.CourseMemberResult;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -18,8 +22,12 @@ import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/12/10.
@@ -47,6 +55,32 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
         tvClassroomAnnouncement.setText(getString(R.string.course_announcement));
         tvEntryClassroom.setText(getString(R.string.entry_course));
         btnDelRecordAndQuit.setText(getString(R.string.del_record_and_quit_course));
+
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.COURSE_MEMBERS, mFromId), true);
+        ajaxGet(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CourseMemberResult courseMemberResult = parseJsonValue(response, new TypeToken<CourseMemberResult>() {
+                });
+                int total;
+                if (courseMemberResult != null) {
+                    total = courseMemberResult.total;
+                    tvMemberSum.setText(getString(R.string.classroom_all_members) + "(" + total + ")");
+                    if (courseMemberResult.resources != null) {
+                        CourseMemberAvatarAdapter adapter = new CourseMemberAvatarAdapter(Arrays.asList(courseMemberResult.resources));
+                        gvMemberAvatar.setAdapter(adapter);
+                    }
+                } else {
+                    CommonUtil.longToast(mContext, "获取课程信息失败");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CommonUtil.longToast(mContext, "获取课程信息失败");
+            }
+        });
+
     }
 
     @Override
@@ -175,5 +209,81 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public class CourseMemberAvatarAdapter extends BaseAdapter {
+        public List<CourseMember> mList;
+        protected DisplayImageOptions mOptions;
+
+        public CourseMemberAvatarAdapter(List<CourseMember> mList) {
+            this.mList = mList;
+            mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
+                    showImageForEmptyUri(R.drawable.default_avatar).
+                    showImageOnFail(R.drawable.default_avatar).build();
+        }
+
+        @Override
+        public int getCount() {
+            if (mList != null) {
+                return mList.size() + 1;
+            }
+            return 1;
+        }
+
+        @Override
+        public CourseMember getItem(int position) {
+            return mList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = getLayoutInflater().inflate(R.layout.item_member_avatar, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            if (getCount() - 1 != position) {
+                final CourseMember member = mList.get(position);
+                viewHolder.ivAvatar.setBackground(null);
+                ImageLoader.getInstance().displayImage(member.user.avatar, viewHolder.ivAvatar, mOptions);
+                viewHolder.tvMemberName.setText(member.user.nickname);
+                viewHolder.ivAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_PROFILE, member.user.id));
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
+                    }
+                });
+            } else {
+                viewHolder.ivAvatar.setBackgroundResource(R.drawable.group_member_more_bg);
+                viewHolder.tvMemberName.setText("更多");
+                viewHolder.ivAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_MEMBER_LIST, mFromId));
+                                startIntent.putExtra(WebViewActivity.URL, url);
+                            }
+                        });
+                    }
+                });
+            }
+            return convertView;
+        }
     }
 }
