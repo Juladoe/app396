@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 /**
  * Created by JesseHuang on 15/12/14.
  */
-public class CourseDiscussFragment extends BaseFragment {
+public class DiscussFragment extends BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

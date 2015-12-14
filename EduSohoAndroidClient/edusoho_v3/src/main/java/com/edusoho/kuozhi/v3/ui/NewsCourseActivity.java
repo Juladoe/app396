@@ -22,7 +22,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 public class NewsCourseActivity extends ActionBarBaseActivity {
     public static int CurrentCourseId = 0;
     public static final String COURSE_ID = "course_id";
-    private static final String mFragmentTags[] = {"CourseStudyFragment", "CourseDiscussFragment"};
+    private static final String mFragmentTags[] = {"CourseStudyFragment", "DiscussFragment"};
     private int mCourseId;
     private String mCourseTitle;
     private String mCurrentFragmentTag;
