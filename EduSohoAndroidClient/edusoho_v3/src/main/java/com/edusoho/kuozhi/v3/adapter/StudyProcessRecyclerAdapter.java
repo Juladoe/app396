@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 
 import java.util.List;
 
@@ -23,39 +24,47 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     public static final int NORMAL_NOTI = 3;
     public static final int INTENT_NOTI = 4;
 
-    private List mDataList;
-
+    private List<NewsCourseEntity> mDataList;
     private LayoutInflater mLayoutInflater;
     private Context mContext;
 
 
-    public StudyProcessRecyclerAdapter(Context context) {
+    public StudyProcessRecyclerAdapter(Context context, List list) {
         this.mLayoutInflater = LayoutInflater.from(context);
         this.mContext = context;
+        this.mDataList = list;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        NewsCourseEntity entity = mDataList.get(position);
+
+        if (entity.getBodyType().equals("testpaper.reviewed")) {
+            return INTENT_NOTI;
+        } else if (entity.getBodyType().equals("course.lessonTitle")) {
+            return LESSON_TITLE;
+        } else {
+            return NORMAL_NOTI;
+        }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case LESSON_SUMMARY:
-                return new LessonSummaryViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_lesson_summary, parent));
+                return new LessonSummaryViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_lesson_summary, parent,false));
 
             case LESSON_TITLE:
-                return new LessonSummaryViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_lesson_title, parent));
+                return new LessonTitleViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_lesson_title, parent,false));
 
             case COST_TIME:
-                return new CostTimeViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_cost_time, parent));
+                return new CostTimeViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_cost_time, parent,false));
 
             case NORMAL_NOTI:
-                return new NormalNotificationViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_notification, parent));
+                return new NormalNotificationViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_notification, parent,false));
 
             case INTENT_NOTI:
-                return new IntentNotificationViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_notification, parent));
+                return new IntentNotificationViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_notification, parent,false));
 
             default:
                 return null;
@@ -66,31 +75,45 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (holder instanceof LessonSummaryViewHolder){
+        if (holder instanceof LessonSummaryViewHolder) {
 
         }
-        if (holder instanceof LessonTitleViewHolder){
+        if (holder instanceof LessonTitleViewHolder) {
+            String lessonTitle = mDataList.get(position).getContent();
+            ((LessonTitleViewHolder) holder).lessonTitle.setText(lessonTitle);
 
         }
-        if (holder instanceof CostTimeViewHolder){
+        if (holder instanceof CostTimeViewHolder) {
 
         }
-        if (holder instanceof NormalNotificationViewHolder){
+        if (holder instanceof NormalNotificationViewHolder) {
 
+            NewsCourseEntity entity = mDataList.get(position);
+            String content = getTextContent(entity);
+            ((NormalNotificationViewHolder) holder).notificationContent.setText(content);
+//            ((NormalNotificationViewHolder) holder).notificationTeacherTime.setText(entity.getCreatedTime());
         }
-        if (holder instanceof IntentNotificationViewHolder){
+        if (holder instanceof IntentNotificationViewHolder) {
 
+            NewsCourseEntity entity = mDataList.get(position);
+            String content = getTextContent(entity);
+            ((IntentNotificationViewHolder) holder).notificationContent.setText(content);
+//            ((IntentNotificationViewHolder) holder).notificationTeacherTime.setText(entity.getCreatedTime());
         }
+    }
+
+    private String getTextContent(NewsCourseEntity entity) {
+        String textContent;
+
+        textContent = entity.getTitle() + ":\n";
+        textContent += "    " + entity.getContent();
+
+        return textContent;
     }
 
     @Override
     public int getItemCount() {
-//        return mDataList.size();
-        return 0;
-    }
-
-    public void setDataList(List list){
-        mDataList = list;
+        return mDataList.size();
     }
 
     private class LessonTitleViewHolder extends RecyclerView.ViewHolder {
@@ -140,7 +163,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         public NormalNotificationViewHolder(View itemView) {
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
-            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
+//            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
 
         }
     }
@@ -153,7 +176,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         public IntentNotificationViewHolder(View itemView) {
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
-            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
+//            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
 
         }
     }
