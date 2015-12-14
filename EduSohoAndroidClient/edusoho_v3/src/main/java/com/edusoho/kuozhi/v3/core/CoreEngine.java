@@ -155,7 +155,7 @@ public class CoreEngine {
 
     public Fragment runPluginWithFragment(
             String pluginName, Activity activity, PluginFragmentCallback callback) {
-        Fragment fragment = null;
+        Fragment fragment;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             fragment = Fragment.instantiate(activity, pluginModel.packAge);

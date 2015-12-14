@@ -6,12 +6,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
 import com.umeng.analytics.MobclickAgent;
@@ -74,6 +76,21 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
 
         if (backTitle != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    protected void initSwitchButton(String backTitle, RadioGroup.OnCheckedChangeListener clickListener) {
+        if (backTitle != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        if (clickListener != null) {
+            View switchButtonLayout = getLayoutInflater().inflate(R.layout.actionbar_course_switch_button, null);
+            EduSohoCompoundButton switchButton = (EduSohoCompoundButton) switchButtonLayout.findViewById(R.id.ecb_switch);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                    ActionBar.LayoutParams.MATCH_PARENT);
+            layoutParams.gravity = Gravity.CENTER;
+            mActionBar.setCustomView(switchButtonLayout, layoutParams);
+            switchButton.setOnCheckedChangeListener(clickListener);
         }
     }
 

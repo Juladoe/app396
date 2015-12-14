@@ -24,6 +24,8 @@
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
     <string name="course_study_entrance">进入学习</string>
+    <string name="study">学习</string>
+    <string name="discuss">讨论</string>
 
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
@@ -114,14 +116,6 @@
     <string name="font_lesson_live_start_notify">&#xe660;</string>
     <string name="font_login_username">&#xe619;</string>
     <string name="font_login_password">&#xe616;</string>
-    <string name="font_lesson_type_live">&#xe652;</string>
-    <string name="font_lesson_type_text">&#xe64c;</string>
-    <string name="font_lesson_type_video">&#xe64a;</string>
-    <string name="font_lesson_type_audio">&#xe64f;</string>
-    <string name="font_lesson_type_testpaper">&#xe61e;</string>
-    <string name="font_lesson_type_ppt">&#xe650;</string>
-    <string name="font_lesson_type_document">&#xe651;</string>
-    <string name="font_lesson_type_flash">&#xe653;</string>
 
     <string name="learned_status">&#xe639;</string>
     <string name="learning_status">&#xe638;</string>

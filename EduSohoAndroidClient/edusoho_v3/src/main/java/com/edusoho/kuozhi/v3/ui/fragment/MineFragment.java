@@ -40,7 +40,6 @@ public class MineFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_mine);
-
     }
 
     @Override
