@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.view.webview.bridge;
+package com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge;
 
 /**
  * Created by howzhi on 15/4/17.
