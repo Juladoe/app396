@@ -86,6 +86,7 @@ public class Const {
     public static final String GET_PUSH_DATA = "get_push_data";
     public static final String FROM_ID = "from_id";
     public static final String NEWS_TYPE = "news_type";
+    public static final String NEW_ITEM_INFO = "new_item_info";
 
     //public static final int ADD_DISCUSS_MSG = 1;
     public static final int ADD_MSG = 2;

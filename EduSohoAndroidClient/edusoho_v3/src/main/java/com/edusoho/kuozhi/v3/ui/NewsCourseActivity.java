@@ -9,7 +9,9 @@ import android.view.MenuItem;
 import android.widget.RadioGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -26,7 +28,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private int mCourseId;
     private String mCourseTitle;
     private String mCurrentFragmentTag;
-
+    private New mNewItemInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,11 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         if (intent == null) {
             return;
         }
-        mCourseTitle = intent.getStringExtra(Const.ACTIONBAR_TITLE);
+        mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
+        mCourseTitle = mNewItemInfo.title;
         //setBackMode(BACK, mCourseTitle);
         initSwitchButton(BACK, mOnCheckedChangeListener);
-        mCourseId = intent.getIntExtra(COURSE_ID, 0);
+        mCourseId = mNewItemInfo.fromId;
         CurrentCourseId = mCourseId;
         if (mCourseId == 0) {
             CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
@@ -64,7 +67,12 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         if (fragment != null) {
             fragmentTransaction.show(fragment);
         } else {
-            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, new PluginFragmentCallback() {
+                @Override
+                public void setArguments(Bundle bundle) {
+                    bundle.putSerializable(Const.NEW_ITEM_INFO, mNewItemInfo);
+                }
+            });
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
         fragmentTransaction.commit();

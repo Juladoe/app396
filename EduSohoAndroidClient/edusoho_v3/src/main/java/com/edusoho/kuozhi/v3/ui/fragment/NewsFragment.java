@@ -61,11 +61,13 @@ public class NewsFragment extends BaseFragment {
     public static final int HANDLE_RECEIVE_CHAT_MSG = 12;
     public static final int HANDLE_SEND_CLASSROOM_DISCUSS_MSG = 13;
     public static final int HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG = 14;
-    public static final int UPDATE_UNREAD_MSG = 15;
-    public static final int UPDATE_UNREAD_BULLETIN = 17;
-    public static final int UPDATE_UNREAD_NEWS_COURSE = 18;
-    public static final int UPDATE_UNREAD_ARTICLE_CREATE = 19;
-    public static final int REFRESH_LIST = 20;
+    public static final int HANDLE_SEND_COURSE_DISCUSS_MSG = 15;
+    public static final int HANDLE_RECEIVE_COURSE_DISCUSS_MSG = 16;
+    public static final int UPDATE_UNREAD_MSG = 17;
+    public static final int UPDATE_UNREAD_BULLETIN = 18;
+    public static final int UPDATE_UNREAD_NEWS_COURSE = 19;
+    public static final int UPDATE_UNREAD_ARTICLE_CREATE = 20;
+    public static final int REFRESH_LIST = 21;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -266,8 +268,9 @@ public class NewsFragment extends BaseFragment {
                     app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(NewsCourseActivity.COURSE_ID, newItem.fromId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(Const.NEW_ITEM_INFO, newItem);
+//                            startIntent.putExtra(NewsCourseActivity.COURSE_ID, newItem.fromId);
+//                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
                         }
                     });
                     break;

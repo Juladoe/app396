@@ -83,7 +83,7 @@ public class CourseDiscussDataSource {
         cv.put(allColumns[8], model.type);
         cv.put(allColumns[9], model.delivery);
         cv.put(allColumns[10], model.createdTime);
-        int effectRow = mDataBase.update(TABLE_NAME, cv, "COURSEID = ?", new String[]{model.courseId + ""});
+        int effectRow = mDataBase.update(TABLE_NAME, cv, "DISCUSSID = ?", new String[]{model.discussId + ""});
         this.close();
         return effectRow;
     }

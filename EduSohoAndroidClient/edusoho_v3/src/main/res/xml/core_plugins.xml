@@ -136,7 +136,7 @@
         version="1.0" />
 
     <plugin
-        name="CourseDiscussFragment"
+        name="DiscussFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment"
         version="1.0" />
 
