@@ -70,6 +70,8 @@ public class CourseStudyProcessFragment extends BaseFragment {
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         initData();
+//        studyProcessRecyclerView.scrollToPosition(dataList.size());
+
     }
 
     public void initData() {
@@ -141,8 +143,9 @@ public class CourseStudyProcessFragment extends BaseFragment {
                 entity.setTeacher(course.teachers[0].nickname);
                 entity.setImage(course.smallPicture);
                 entity.setTitle(course.title);
-                dataList.add(0,entity);
+                dataList.add(0, entity);
                 mAdapter.notifyDataSetChanged();
+
             }
         }, new Response.ErrorListener() {
             @Override

@@ -92,7 +92,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
         if (holder instanceof LessonSummaryViewHolder) {
             NewsCourseEntity entity = mDataList.get(position);
-            ((LessonSummaryViewHolder) holder).summaryCourseIntroduction.setText(entity.getContent());
+            ((LessonSummaryViewHolder) holder).summaryCourseIntroduction.setText("课程简介："+entity.getContent());
             ImageLoader.getInstance().displayImage(entity.getImage(), ((LessonSummaryViewHolder) holder).summaryCourseImage);
             ((LessonSummaryViewHolder) holder).summaryCourseTitle.setText(entity.getTitle());
             ((LessonSummaryViewHolder) holder).summaryCourseTeacher.setText("教师："+entity.getTeacher());
