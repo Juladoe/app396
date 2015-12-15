@@ -9,26 +9,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by melomelon on 15/12/9.
  */
-public class CourseStudyProcessFragment extends BaseFragment{
+public class CourseStudyProcessFragment extends BaseFragment {
 
     private RecyclerView studyProcessRecyclerView;
 
@@ -40,9 +49,10 @@ public class CourseStudyProcessFragment extends BaseFragment{
 
     private NewsCourseDataSource newsCourseDataSource;
 
-    private String[] types = {"testpaper.reviewed","announcement.create","quesqion.answered"};
+    private String[] types = {"testpaper.reviewed", "announcement.create", "quesqion.answered"};
 
     List lessonIds = new ArrayList();
+    List<String> lessonTitles = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,15 +72,16 @@ public class CourseStudyProcessFragment extends BaseFragment{
         initData();
     }
 
-    public void initData(){
+    public void initData() {
         mBundle = getArguments();
         mCourseId = mBundle.getInt("course_id");
         newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<NewsCourseEntity> newsCourseEntityList = getNewsCourseList(0);
+        dataList = getNewsCourseList(0);
 
-        newsCourseEntityList = filterList(newsCourseEntityList);
-        newsCourseEntityList = addLessonTitle(newsCourseEntityList);
-        mAdapter = new StudyProcessRecyclerAdapter(mContext,newsCourseEntityList);
+        dataList = filterList(dataList);
+        dataList = addLessonTitle(dataList);
+        addCourseSummary(dataList);
+        mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList,app);
         studyProcessRecyclerView.setAdapter(mAdapter);
     }
 
@@ -80,10 +91,10 @@ public class CourseStudyProcessFragment extends BaseFragment{
         return entities;
     }
 
-    public List filterList(List<NewsCourseEntity> list){
-        for (int i = 0;i<list.size();i++){
+    public List filterList(List<NewsCourseEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
-            if (!Arrays.asList(types).contains(entity.getBodyType())){
+            if (!Arrays.asList(types).contains(entity.getBodyType())) {
                 list.remove(i);
                 i--;
             }
@@ -91,22 +102,54 @@ public class CourseStudyProcessFragment extends BaseFragment{
         return list;
     }
 
-    public List addLessonTitle(List<NewsCourseEntity> list){
-        for (int i = 0;i<list.size();i++){
+    public List addLessonTitle(List<NewsCourseEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
-//            if (lessonIds.contains(entity.getObjectId()) || entity.getBodyType().equals("testpaper.reviewed") || entity.getBodyType().equals("announcement.create")){
-            if (lessonIds.contains(entity.getObjectId()) || entity.getBodyType().equals("announcement.create")){
+            if (lessonIds.contains(entity.getObjectId())
+                    || lessonTitles.contains(entity.getContent())
+                    || entity.getBodyType().equals("announcement.create")) {
                 continue;
-            }else {
+            } else {
                 NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
                 newsCourseEntity.setContent(entity.getContent());
                 newsCourseEntity.setBodyType("course.lessonTitle");
-                list.add(i,newsCourseEntity);
+                newsCourseEntity.setObjectId(entity.getObjectId());
+                newsCourseEntity.setCourseId(mCourseId);
+                list.add(i, newsCourseEntity);
                 lessonIds.add(entity.getObjectId());
+                lessonTitles.add(entity.getContent());
                 i++;
             }
         }
         return list;
+    }
+
+    private void addCourseSummary(final List<NewsCourseEntity> entities) {
+        RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("courseId", mCourseId + "");
+
+        app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CourseDetailsResult courseDetailsResult = mActivity.parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
+                });
+                Course course = courseDetailsResult.course;
+                NewsCourseEntity entity = new NewsCourseEntity();
+                entity.setBodyType("course.summary");
+                entity.setContent(course.about.equals("") ? "暂无课程简介" : course.about);
+                entity.setTeacher(course.teachers[0].nickname);
+                entity.setImage(course.smallPicture);
+                entity.setTitle(course.title);
+                dataList.add(0,entity);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     @Override
@@ -118,4 +161,6 @@ public class CourseStudyProcessFragment extends BaseFragment{
     public void invoke(WidgetMessage message) {
         super.invoke(message);
     }
+
+
 }

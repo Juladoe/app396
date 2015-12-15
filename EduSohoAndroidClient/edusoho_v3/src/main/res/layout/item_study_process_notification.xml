@@ -6,7 +6,8 @@
     android:background="@drawable/round_frame_bg"
     android:padding="8dp"
     android:layout_marginTop="4dp"
-    android:layout_marginLeft="24dp">
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
 
     <TextView
         android:id="@+id/study_process_notification_content"

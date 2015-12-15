@@ -17,6 +17,9 @@ public class NewsCourseEntity {
     private int userId;
     private int createdTime;
 
+    private String image;
+    private String teacher;
+
     public NewsCourseEntity() {
 
     }
@@ -127,5 +130,21 @@ public class NewsCourseEntity {
 
     public void setCreatedTime(int createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
     }
 }

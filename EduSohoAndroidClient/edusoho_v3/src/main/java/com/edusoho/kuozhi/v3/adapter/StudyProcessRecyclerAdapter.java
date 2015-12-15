@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
+import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyProcessFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,7 +28,7 @@ import java.util.List;
  */
 public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final int LESSON_SUMMARY = 0;
+    public static final int COURSE_SUMMARY = 0;
     public static final int LESSON_TITLE = 1;
     public static final int COST_TIME = 2;
     public static final int NORMAL_NOTI = 3;
@@ -27,12 +37,15 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<NewsCourseEntity> mDataList;
     private LayoutInflater mLayoutInflater;
     private Context mContext;
+    private EdusohoApp mApp;
 
 
-    public StudyProcessRecyclerAdapter(Context context, List list) {
+
+    public StudyProcessRecyclerAdapter(Context context, List list,EdusohoApp app) {
         this.mLayoutInflater = LayoutInflater.from(context);
         this.mContext = context;
         this.mDataList = list;
+        this.mApp = app;
     }
 
     @Override
@@ -43,7 +56,9 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             return INTENT_NOTI;
         } else if (entity.getBodyType().equals("course.lessonTitle")) {
             return LESSON_TITLE;
-        } else {
+        } else if (entity.getBodyType().equals("course.summary")){
+            return COURSE_SUMMARY;
+        }else {
             return NORMAL_NOTI;
         }
     }
@@ -51,7 +66,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case LESSON_SUMMARY:
+            case COURSE_SUMMARY:
                 return new LessonSummaryViewHolder(mLayoutInflater.inflate(R.layout.item_study_process_lesson_summary, parent,false));
 
             case LESSON_TITLE:
@@ -76,11 +91,30 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         if (holder instanceof LessonSummaryViewHolder) {
-
+            NewsCourseEntity entity = mDataList.get(position);
+            ((LessonSummaryViewHolder) holder).summaryCourseIntroduction.setText(entity.getContent());
+            ImageLoader.getInstance().displayImage(entity.getImage(), ((LessonSummaryViewHolder) holder).summaryCourseImage);
+            ((LessonSummaryViewHolder) holder).summaryCourseTitle.setText(entity.getTitle());
+            ((LessonSummaryViewHolder) holder).summaryCourseTeacher.setText("教师："+entity.getTeacher());
         }
         if (holder instanceof LessonTitleViewHolder) {
-            String lessonTitle = mDataList.get(position).getContent();
+            final NewsCourseEntity entity = mDataList.get(position);
+            String lessonTitle = entity.getContent();
             ((LessonTitleViewHolder) holder).lessonTitle.setText(lessonTitle);
+            ((LessonTitleViewHolder) holder).lessonTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mApp.mEngine.runNormalPlugin(
+                            LessonActivity.TAG, mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.COURSE_ID, entity.getCourseId());
+                                    startIntent.putExtra(Const.LESSON_ID, entity.getObjectId());
+                                }
+                            }
+                    );
+                }
+            });
 
         }
         if (holder instanceof CostTimeViewHolder) {
@@ -95,10 +129,26 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         if (holder instanceof IntentNotificationViewHolder) {
 
-            NewsCourseEntity entity = mDataList.get(position);
+            final NewsCourseEntity entity = mDataList.get(position);
             String content = getTextContent(entity);
             ((IntentNotificationViewHolder) holder).notificationContent.setText(content);
 //            ((IntentNotificationViewHolder) holder).notificationTeacherTime.setText(entity.getCreatedTime());
+            if (entity.getBodyType().equals("testpaper.reviewed")){
+                ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mApp.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "TestpaperResultFragment");
+                                startIntent.putExtra(Const.ACTIONBAR_TITLE, entity.getTitle() + "考试结果");
+                                startIntent.putExtra(TestpaperResultFragment.RESULT_ID, entity.getObjectId());
+                                startIntent.putExtra(Const.STATUS, "finished");
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -123,25 +173,25 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         public LessonTitleViewHolder(View itemView) {
             super(itemView);
             lessonTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_title);
-
         }
+
     }
 
     private class LessonSummaryViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView summaryLessonTitle;
-        private ImageView summaryLessonImage;
-        private TextView summaryLessonIntroduction;
+        private TextView summaryCourseTitle;
+        private ImageView summaryCourseImage;
+        private TextView summaryCourseIntroduction;
         private ImageView summaryTeacherAvatar;
-        private TextView summaryLessonTeacher;
+        private TextView summaryCourseTeacher;
 
         public LessonSummaryViewHolder(View itemView) {
             super(itemView);
-            summaryLessonTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_title);
-            summaryLessonImage = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_image);
-            summaryLessonIntroduction = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_introduction);
-            summaryLessonTeacher = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_teacher);
-            summaryTeacherAvatar = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_teacher_avatar);
+            summaryCourseTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_title);
+            summaryCourseImage = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_image);
+            summaryCourseIntroduction = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_introduction);
+            summaryCourseTeacher = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_teacher);
+//            summaryTeacherAvatar = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_teacher_avatar);
 
         }
     }
@@ -164,8 +214,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
 //            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
-
         }
+
     }
 
     private class IntentNotificationViewHolder extends RecyclerView.ViewHolder {
