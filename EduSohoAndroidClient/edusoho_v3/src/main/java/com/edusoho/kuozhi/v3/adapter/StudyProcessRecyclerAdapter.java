@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyProcessFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -92,7 +93,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
         if (holder instanceof LessonSummaryViewHolder) {
             NewsCourseEntity entity = mDataList.get(position);
-            ((LessonSummaryViewHolder) holder).summaryCourseIntroduction.setText("课程简介："+entity.getContent());
+            ((LessonSummaryViewHolder) holder).summaryCourseIntroduction.setText("课程简介："+ AppUtil.removeHtmlSpace(AppUtil.removeHtmlSpan(entity.getContent())));
             ImageLoader.getInstance().displayImage(entity.getImage(), ((LessonSummaryViewHolder) holder).summaryCourseImage);
             ((LessonSummaryViewHolder) holder).summaryCourseTitle.setText(entity.getTitle());
             ((LessonSummaryViewHolder) holder).summaryCourseTeacher.setText(entity.getTeacher());
@@ -126,20 +127,20 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             NewsCourseEntity entity = mDataList.get(position);
             String content = getTextContent(entity);
             ((NormalNotificationViewHolder) holder).notificationContent.setText(content);
-//            ((NormalNotificationViewHolder) holder).notificationTeacherTime.setText(entity.getCreatedTime());
             if (entity.getBodyType().equals("announcement.create")){
                 ((NormalNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_course_notification);
 
             }
+            ((NormalNotificationViewHolder) holder).notificationTime.setText("系统 发布于"+AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()),null));
         }
 
         if (holder instanceof IntentNotificationViewHolder) {
 
             final NewsCourseEntity entity = mDataList.get(position);
             String content = getTextContent(entity);
+            ((IntentNotificationViewHolder) holder).notificationTime.setText("系统 发布于"+AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()),null));
 
-            ((IntentNotificationViewHolder) holder).notificationContent.setText(content);
-//            ((IntentNotificationViewHolder) holder).notificationTeacherTime.setText(entity.getCreatedTime());
+                    ((IntentNotificationViewHolder) holder).notificationContent.setText(content);
             if (entity.getBodyType().equals("testpaper.reviewed")){
                 ((IntentNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_testpater_reviewed);
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +219,6 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             summaryCourseImage = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_image);
             summaryCourseIntroduction = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_introduction);
             summaryCourseTeacher = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_teacher);
-//            summaryTeacherAvatar = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_teacher_avatar);
 
         }
     }
@@ -235,13 +235,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private class NormalNotificationViewHolder extends RecyclerView.ViewHolder {
 
         private TextView notificationContent;
-        private TextView notificationTeacherTime;
+        private TextView notificationTime;
         private ImageView typeImage;
 
         public NormalNotificationViewHolder(View itemView) {
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
-//            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
+            notificationTime = (TextView) itemView.findViewById(R.id.study_process_notification_time);
             typeImage = (ImageView) itemView.findViewById(R.id.notification_type_image);
         }
 
@@ -250,13 +250,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private class IntentNotificationViewHolder extends RecyclerView.ViewHolder {
 
         private TextView notificationContent;
-        private TextView notificationTeacherTime;
+        private TextView notificationTime;
         private ImageView typeImage;
 
         public IntentNotificationViewHolder(View itemView) {
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
-//            notificationTeacherTime = (TextView) itemView.findViewById(R.id.study_process_notification_teacher_time);
+            notificationTime = (TextView) itemView.findViewById(R.id.study_process_notification_time);
             typeImage = (ImageView) itemView.findViewById(R.id.notification_type_image);
 
         }

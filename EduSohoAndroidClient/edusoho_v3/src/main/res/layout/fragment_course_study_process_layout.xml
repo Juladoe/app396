@@ -8,7 +8,7 @@
         android:id="@+id/study_process_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_feedback1">
+        android:background="@color/backgroud">
 
     </android.support.v7.widget.RecyclerView>
 

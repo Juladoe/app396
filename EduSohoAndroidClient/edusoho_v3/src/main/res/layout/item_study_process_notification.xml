@@ -23,7 +23,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_cccccc" />
+        android:background="@color/grey_feedback1" />
 
     <TextView
         android:id="@+id/study_process_notification_content"
@@ -35,17 +35,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_cccccc" />
+        android:background="@color/grey_feedback1" />
 
     <TextView
+        android:id="@+id/study_process_notification_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="xxxx 发布于2015年12月15日" />
+        android:paddingTop="6dp" />
 
-    <!--<TextView-->
-    <!--android:id="@+id/study_process_notification_teacher_time"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
 
 </LinearLayout>
