@@ -269,8 +269,6 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(Const.NEW_ITEM_INFO, newItem);
-//                            startIntent.putExtra(NewsCourseActivity.COURSE_ID, newItem.fromId);
-//                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
                         }
                     });
                     break;

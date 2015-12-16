@@ -281,7 +281,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_MEMBER_LIST, mFromId));
+                                String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.COURSE_MEMBER_LIST, mFromId));
                                 startIntent.putExtra(WebViewActivity.URL, url);
                             }
                         });
