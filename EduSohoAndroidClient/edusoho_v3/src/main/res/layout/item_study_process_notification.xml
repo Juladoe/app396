@@ -2,48 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/grey_line_bg"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:layout_marginBottom="8dp"
-    android:layout_marginTop="8dp"
     android:layout_marginLeft="12dp"
     android:layout_marginRight="12dp"
-    >
+    android:layout_marginTop="8dp"
+    android:background="@drawable/grey_line_bg"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
 
     <ImageView
-        android:padding="8dp"
+        android:id="@+id/notification_type_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/setting_new"/>
+        android:paddingBottom="8dp"
+        android:paddingTop="4dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_cccccc"/>
+        android:background="@color/grey_cccccc" />
 
     <TextView
-        android:padding="8dp"
         android:id="@+id/study_process_notification_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:padding="8dp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_cccccc"/>
+        android:background="@color/grey_cccccc" />
 
     <TextView
-        android:padding="8dp"
-        android:text="xxxx 发布于2015年12月15日"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="xxxx 发布于2015年12月15日" />
 
     <!--<TextView-->
-        <!--android:id="@+id/study_process_notification_teacher_time"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
+    <!--android:id="@+id/study_process_notification_teacher_time"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
 
 </LinearLayout>
