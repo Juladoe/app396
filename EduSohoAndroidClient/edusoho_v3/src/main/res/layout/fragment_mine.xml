@@ -179,7 +179,7 @@
                 android:layout_toLeftOf="@+id/eiv_right_arrow"
                 android:layout_toRightOf="@+id/eiv_my_study"
                 android:gravity="center_vertical"
-                android:text="@string/drawer_items_learn"
+                android:text="@string/mine_items_learn"
                 android:textSize="@dimen/large_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -231,7 +231,7 @@
                 android:layout_toLeftOf="@+id/eiv_right_arrow1"
                 android:layout_toRightOf="@+id/eiv_my_download"
                 android:gravity="center_vertical"
-                android:text="@string/drawer_items_download"
+                android:text="@string/mine_items_download"
                 android:textSize="@dimen/large_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -283,7 +283,7 @@
                 android:layout_toLeftOf="@+id/eiv_right_arrow2"
                 android:layout_toRightOf="@+id/eiv_my_vip"
                 android:gravity="center_vertical"
-                android:text="@string/drawer_items_buy_vip"
+                android:text="@string/mine_items_buy_vip"
                 android:textSize="@dimen/large_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -335,7 +335,7 @@
                 android:layout_toLeftOf="@+id/eiv_right_arrow3"
                 android:layout_toRightOf="@+id/eiv_my_collection"
                 android:gravity="center_vertical"
-                android:text="@string/drawer_items_collection"
+                android:text="@string/mine_items_collection"
                 android:textSize="@dimen/large_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -379,7 +379,7 @@
             android:layout_toLeftOf="@+id/eiv_right_arrow4"
             android:layout_toRightOf="@+id/eiv_my_setting"
             android:gravity="center_vertical"
-            android:text="@string/drawer_items_collection"
+            android:text="@string/mine_items_setting"
             android:textSize="@dimen/large_font_size" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoIconView

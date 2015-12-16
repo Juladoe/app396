@@ -46,7 +46,7 @@
     <string name="about_feedback">意见反馈</string>
     <string name="about_check_update">检查新版本</string>
     <string name="login_forget_password">忘记密码?</string>
-    <string name="drawer_nickname">立即登录</string>
+    <string name="mine_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
     <string name="login_register">注册</string>
     <string name="news_course_profile">课程信息</string>
@@ -116,7 +116,7 @@
     <string name="font_chat_voice">&#xe641;</string>
     <string name="font_chat_media_photo">&#xe640;</string>
     <string name="font_chat_media_camera">&#xe63f;</string>
-    <string name="font_drawer_setting">&#xe60e;</string>
+    <string name="font_mine_setting">&#xe60e;</string>
     <string name="font_favorite">&#xe605;</string>
     <string name="font_favorited">&#xe62a;</string>
     <string name="font_announcement">&#xe629;</string>
@@ -169,10 +169,10 @@
 
     <string name="show_live_in_school_room">0</string>
 
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="mine_open">Open navigation mine</string>
+    <string name="mine_close">Close navigation mine</string>
 
-    <string-array name="drawer_items">
+    <string-array name="mine_items">
         <item>我的学习</item>
         <item>我的收藏</item>
         <item>我发表的</item>
@@ -191,12 +191,11 @@
         <item>从不</item>
     </string-array>
 
-    <string name="drawer_items_learn">我的学习</string>
-    <string name="drawer_items_download">我的下载</string>
-    <string name="drawer_items_buy_vip">开通会员</string>
-    <string name="drawer_items_collection">我的收藏</string>
-    <string name="drawer_items_publish">我的发表</string>
-    <string name="drawer_items_setting">我的设置</string>
+    <string name="mine_items_learn">我的学习</string>
+    <string name="mine_items_download">我的下载</string>
+    <string name="mine_items_buy_vip">开通会员</string>
+    <string name="mine_items_collection">我的收藏</string>
+    <string name="mine_items_setting">我的设置</string>
 
     <string name="qr_search_notice">将二维码放入框内，即可自动扫描</string>
 
