@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -26,15 +25,15 @@ public class MineFragment extends BaseFragment {
     private RoundedImageView rivAvatar;
     private View vUserInfoLayout;
 
-    private final int mRadioIds[] = {
-            R.id.radio0,
-            R.id.radio1,
-            R.id.radio2,
-            R.id.radio3,
-            R.id.radio4,
+    private final int mViewIds[] = {
+            R.id.rl_my_1,
+            R.id.rl_my_2,
+            R.id.rl_my_3,
+            R.id.rl_my_4,
+            R.id.rl_my_5,
     };
 
-    private final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
+    private final View[] mViews = new View[mViewIds.length];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,9 +57,9 @@ public class MineFragment extends BaseFragment {
         vUserInfoLayout = view.findViewById(R.id.rl_user_info);
 
         vUserInfoLayout.setOnClickListener(mUserInfoClickListener);
-        for (int i = 0; i < mRadioButtons.length; i++) {
-            mRadioButtons[i] = (RadioButton) view.findViewById(mRadioIds[i]);
-            mRadioButtons[i].setOnClickListener(mRadioBtnClickListener);
+        for (int i = 0; i < mViews.length; i++) {
+            mViews[i] = view.findViewById(mViewIds[i]);
+            mViews[i].setOnClickListener(mRadioBtnClickListener);
         }
     }
 
@@ -75,7 +74,7 @@ public class MineFragment extends BaseFragment {
     private View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.radio0) {
+            if (v.getId() == R.id.rl_my_1) {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -83,9 +82,9 @@ public class MineFragment extends BaseFragment {
                         startIntent.putExtra(WebViewActivity.URL, url);
                     }
                 });
-            } else if (v.getId() == R.id.radio1) {
+            } else if (v.getId() == R.id.rl_my_2) {
                 mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity", mContext, null);
-            } else if (v.getId() == R.id.radio2) {
+            } else if (v.getId() == R.id.rl_my_3) {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -93,7 +92,7 @@ public class MineFragment extends BaseFragment {
                         startIntent.putExtra(WebViewActivity.URL, url);
                     }
                 });
-            } else if (v.getId() == R.id.radio3) {
+            } else if (v.getId() == R.id.rl_my_4) {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -101,7 +100,7 @@ public class MineFragment extends BaseFragment {
                         startIntent.putExtra(WebViewActivity.URL, url);
                     }
                 });
-            } else if (v.getId() == R.id.radio4) {
+            } else if (v.getId() == R.id.rl_my_5) {
                 mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
             }
         }

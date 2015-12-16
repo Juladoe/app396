@@ -234,7 +234,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabNews.setIcon(getResources().getString(R.string.font_news));
         mDownTabFind.setIcon(getResources().getString(R.string.font_find));
         mDownTabFriends.setIcon(getResources().getString(R.string.font_friends));
-        mDownTabMine.setIcon(getResources().getString(R.string.font_friends));
+        mDownTabMine.setIcon(getResources().getString(R.string.font_mine));
         if (id == R.id.nav_tab_news) {
             mDownTabNews.setIcon(getResources().getString(R.string.font_news_pressed));
             mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
@@ -245,7 +245,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             mDownTabFriends.setIcon(getResources().getString(R.string.font_friends_pressed));
             mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         } else if (id == R.id.nav_tab_mine) {
-            mDownTabMine.setIcon(getResources().getString(R.string.font_friends_pressed));
+            mDownTabMine.setIcon(getResources().getString(R.string.font_mine_pressed));
             mDownTabMine.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         }
     }

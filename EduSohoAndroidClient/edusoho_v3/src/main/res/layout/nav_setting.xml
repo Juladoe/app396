@@ -54,7 +54,7 @@
         android:orientation="vertical"
         app:fontColor="@color/nav_btn_sel"
         app:iconSizeScale="2.2"
-        app:image="@string/font_friends"
+        app:image="@string/font_mine"
         app:size="@dimen/nav_layout_btn_size"
         app:text="@string/down_tab_mine" />
 </LinearLayout>

@@ -138,6 +138,14 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData();
@@ -201,7 +209,6 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
         initCacheFolder();
-
         try {
             mAdapter = new CourseDiscussAdapter<>(getList(0), mContext);
             mAdapter.setSendImageClickListener(this);
@@ -245,7 +252,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         public void run() {
             Bundle bundle = new Bundle();
             bundle.putInt(Const.FROM_ID, mCourseId);
-            bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.CLASSROOM);
+            bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.COURSE);
             app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
         }
     };
@@ -375,6 +382,8 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         mAdapter.updateItemByChatId(model);
     }
 
+    // endregion
+
     private void uploadMedia(final File file, final String type, String strType) {
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
@@ -415,8 +424,6 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             Log.e(TAG, e.getMessage());
         }
     }
-
-    // endregion
 
     @Override
     public void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType) {

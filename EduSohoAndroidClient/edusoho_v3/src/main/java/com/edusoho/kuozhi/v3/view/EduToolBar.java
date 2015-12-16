@@ -89,29 +89,4 @@ public class EduToolBar extends Toolbar {
         tvCenterTitle.setText(text);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
-
-    public void setTitleVisibility(int visibility) {
-        tvCenterTitle.setVisibility(visibility);
-        //mImageView.setVisibility(visibility);
-    }
-
-//    private class TitleClickListener implements OnClickListener {
-//        @Override
-//        public void onClick(View v) {
-//            if (rotationFlag) {
-//                rotation(mImageView, 0, -180);
-//
-//            } else {
-//                rotation(mImageView, -180, 0);
-//            }
-//            rotationFlag = !rotationFlag;
-//
-//        }
-//    }
-//
-//    private void rotation(View view, float start, float end) {
-//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", start, end);
-//        objectAnimator.setDuration(180).setInterpolator(new LinearInterpolator());
-//        objectAnimator.start();
-//    }
 }

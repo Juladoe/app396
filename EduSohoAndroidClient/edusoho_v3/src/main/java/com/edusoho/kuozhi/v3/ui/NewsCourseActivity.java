@@ -44,7 +44,6 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         }
         mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
         mCourseTitle = mNewItemInfo.title;
-        //setBackMode(BACK, mCourseTitle);
         initSwitchButton(BACK, mOnCheckedChangeListener);
         mCourseId = mNewItemInfo.fromId;
         CurrentCourseId = mCourseId;

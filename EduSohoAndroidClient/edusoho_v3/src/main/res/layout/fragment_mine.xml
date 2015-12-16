@@ -9,8 +9,8 @@
         android:id="@+id/rl_user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:padding="16dp">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/riv_avatar"
@@ -25,6 +25,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/head_icon_large"
+            android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/riv_avatar">
 
             <TextView
@@ -40,6 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:visibility="invisible" />
 
             <TextView
@@ -53,95 +56,340 @@
 
     </RelativeLayout>
 
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/rl_user_info"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:background="@android:color/white">-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio0"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="52dp"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:button="@null"-->
+    <!--android:drawableLeft="@drawable/drawer_selector_0"-->
+    <!--android:paddingEnd="0dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:text="@string/drawer_items_learn"-->
+    <!--android:textColor="@drawable/drawer_selector_font"-->
+    <!--android:textSize="@dimen/large_font_size" />-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="52dp"-->
+    <!--android:layout_below="@+id/radio0"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:button="@null"-->
+    <!--android:drawableLeft="@drawable/drawer_selector_1"-->
+    <!--android:drawablePadding="15dp"-->
+    <!--android:paddingEnd="0dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:text="@string/drawer_items_download"-->
+    <!--android:textColor="@drawable/drawer_selector_font"-->
+    <!--android:textSize="@dimen/large_font_size" />-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio2"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="52dp"-->
+    <!--android:layout_below="@+id/radio1"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:button="@null"-->
+    <!--android:drawableLeft="@drawable/drawer_selector_2"-->
+    <!--android:drawablePadding="15dp"-->
+    <!--android:paddingEnd="0dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:text="@string/drawer_items_buy_vip"-->
+    <!--android:textColor="@drawable/drawer_selector_font"-->
+    <!--android:textSize="@dimen/large_font_size" />-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio3"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="52dp"-->
+    <!--android:layout_below="@+id/radio2"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:button="@null"-->
+    <!--android:drawableLeft="@drawable/drawer_selector_3"-->
+    <!--android:drawablePadding="15dp"-->
+    <!--android:gravity="center_vertical|left"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:text="@string/drawer_items_collection"-->
+    <!--android:textColor="@drawable/drawer_selector_font"-->
+    <!--android:textSize="@dimen/large_font_size" />-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio4"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="52dp"-->
+    <!--android:layout_below="@+id/radio3"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:button="@null"-->
+    <!--android:drawableLeft="@drawable/drawer_selector_5"-->
+    <!--android:drawablePadding="15dp"-->
+    <!--android:drawableRight="@drawable/indicator_arrow"-->
+    <!--android:gravity="center_vertical|left"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:text="@string/drawer_items_setting"-->
+    <!--android:textColor="@drawable/drawer_selector_font"-->
+    <!--android:textSize="@dimen/large_font_size" />-->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_user_info"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white">
 
-        <RadioButton
-            android:id="@+id/radio0"
+        <RelativeLayout
+            android:id="@+id/rl_my_1"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="52dp"
             android:layout_alignParentTop="true"
-            android:background="@android:color/white"
-            android:button="@null"
-            android:drawableLeft="@drawable/drawer_selector_0"
-            android:drawablePadding="15dp"
-            android:paddingEnd="0dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="0dp"
-            android:text="@string/drawer_items_learn"
-            android:textColor="@drawable/drawer_selector_font"
-            android:textSize="@dimen/large_font_size" />
+            android:background="@drawable/my_item_bg"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
-        <RadioButton
-            android:id="@+id/radio1"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/radio0"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/white"
-            android:button="@null"
-            android:drawableLeft="@drawable/drawer_selector_1"
-            android:drawablePadding="15dp"
-            android:paddingEnd="0dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="0dp"
-            android:text="@string/drawer_items_download"
-            android:textColor="@drawable/drawer_selector_font"
-            android:textSize="@dimen/large_font_size" />
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_my_study"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@color/red"
+                android:padding="5dp"
+                android:text="@string/font_my_study"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/large_font_size" />
 
-        <RadioButton
-            android:id="@+id/radio2"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/radio1"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/white"
-            android:button="@null"
-            android:drawableLeft="@drawable/drawer_selector_2"
-            android:drawablePadding="15dp"
-            android:paddingEnd="0dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="0dp"
-            android:text="@string/drawer_items_buy_vip"
-            android:textColor="@drawable/drawer_selector_font"
-            android:textSize="@dimen/large_font_size" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@+id/eiv_right_arrow"
+                android:layout_toRightOf="@+id/eiv_my_study"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_items_learn"
+                android:textSize="@dimen/large_font_size" />
 
-        <RadioButton
-            android:id="@+id/radio3"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/radio2"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/white"
-            android:button="@null"
-            android:drawableLeft="@drawable/drawer_selector_3"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical|left"
-            android:paddingLeft="40dp"
-            android:paddingRight="0dp"
-            android:text="@string/drawer_items_collection"
-            android:textColor="@drawable/drawer_selector_font"
-            android:textSize="@dimen/large_font_size" />
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/font_right_arrow"
+                android:textColor="@color/grey_cccccc"
+                android:textSize="@dimen/large_font_size" />
+        </RelativeLayout>
 
-        <RadioButton
-            android:id="@+id/radio4"
+        <View
+            android:id="@+id/v_separate_line_1"
+            android:layout_width="wrap_content"
+            android:layout_height="1px"
+            android:layout_below="@+id/rl_my_1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/grey_dddddd" />
+
+        <RelativeLayout
+            android:id="@+id/rl_my_2"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/radio3"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/white"
-            android:button="@null"
-            android:drawableLeft="@drawable/drawer_selector_5"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical|left"
-            android:paddingLeft="40dp"
-            android:paddingRight="0dp"
-            android:text="@string/drawer_items_setting"
-            android:textColor="@drawable/drawer_selector_font"
-            android:textSize="@dimen/large_font_size" />
+            android:layout_height="52dp"
+            android:layout_below="@+id/v_separate_line_1"
+            android:background="@drawable/my_item_bg"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_my_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@color/orange_alpha"
+                android:padding="5dp"
+                android:text="@string/font_my_download"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/large_font_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@+id/eiv_right_arrow1"
+                android:layout_toRightOf="@+id/eiv_my_download"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_items_download"
+                android:textSize="@dimen/large_font_size" />
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_right_arrow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/font_right_arrow"
+                android:textColor="@color/grey_cccccc"
+                android:textSize="@dimen/large_font_size" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/v_separate_line_2"
+            android:layout_width="wrap_content"
+            android:layout_height="1px"
+            android:layout_below="@+id/rl_my_2"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/grey_dddddd" />
+
+        <RelativeLayout
+            android:id="@+id/rl_my_3"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_below="@+id/v_separate_line_2"
+            android:background="@drawable/my_item_bg"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_my_vip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@color/green_alpha"
+                android:padding="5dp"
+                android:text="@string/font_my_vip"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/large_font_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@+id/eiv_right_arrow2"
+                android:layout_toRightOf="@+id/eiv_my_vip"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_items_buy_vip"
+                android:textSize="@dimen/large_font_size" />
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_right_arrow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/font_right_arrow"
+                android:textColor="@color/grey_cccccc"
+                android:textSize="@dimen/large_font_size" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/v_separate_line_3"
+            android:layout_width="wrap_content"
+            android:layout_height="1px"
+            android:layout_below="@+id/rl_my_3"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/grey_dddddd" />
+
+        <RelativeLayout
+            android:id="@+id/rl_my_4"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_below="@+id/v_separate_line_3"
+            android:background="@drawable/my_item_bg"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_my_collection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@color/blue_alpha"
+                android:padding="5dp"
+                android:text="@string/font_my_collection"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/large_font_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@+id/eiv_right_arrow3"
+                android:layout_toRightOf="@+id/eiv_my_collection"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_items_collection"
+                android:textSize="@dimen/large_font_size" />
+
+            <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/eiv_right_arrow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/font_right_arrow"
+                android:textColor="@color/grey_cccccc"
+                android:textSize="@dimen/large_font_size" />
+        </RelativeLayout>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_my_5"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/my_item_bg"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:id="@+id/eiv_my_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@color/blue_alpha"
+            android:padding="5dp"
+            android:text="@string/font_my_setting"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/large_font_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@+id/eiv_right_arrow4"
+            android:layout_toRightOf="@+id/eiv_my_setting"
+            android:gravity="center_vertical"
+            android:text="@string/drawer_items_collection"
+            android:textSize="@dimen/large_font_size" />
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:id="@+id/eiv_right_arrow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/font_right_arrow"
+            android:textColor="@color/grey_cccccc"
+            android:textSize="@dimen/large_font_size" />
+    </RelativeLayout>
 </LinearLayout>
