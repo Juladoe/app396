@@ -1,14 +1,11 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -40,6 +37,7 @@ import java.util.List;
 public class CourseStudyProcessFragment extends BaseFragment {
 
     private RecyclerView studyProcessRecyclerView;
+    private ImageButton mFloatButton;
 
     private StudyProcessRecyclerAdapter mAdapter;
 
@@ -68,6 +66,13 @@ public class CourseStudyProcessFragment extends BaseFragment {
         studyProcessRecyclerView = (RecyclerView) view.findViewById(R.id.study_process_list);
         studyProcessRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mFloatButton = (ImageButton) view.findViewById(R.id.float_button);
+        mFloatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //// TODO: 15/12/17 跳转到提问界面 
+            }
+        });
 
         initData();
 //        studyProcessRecyclerView.scrollToPosition(dataList.size());
