@@ -134,19 +134,19 @@ public class SwipeAdapter extends BaseAdapter {
             case PushUtil.ChatUserType.TEACHER:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("老师");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.red));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_teacher_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             case PushUtil.ChatUserType.CLASSROOM:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("班级");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.blue_alpha));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_classroom_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             case PushUtil.ChatUserType.COURSE:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("课程");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.green_alpha));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_course_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             default:
