@@ -127,31 +127,26 @@ public class SwipeAdapter extends BaseAdapter {
         final New item = mList.get(position);
         ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions, new AvatarLoadingListener(item.type));
 
-        if (item.unread == 0) {
-            viewHolder.bvUnread.setVisibility(View.GONE);
-        } else {
-            viewHolder.bvUnread.setVisibility(View.VISIBLE);
-            viewHolder.bvUnread.setText(String.valueOf(item.unread));
-        }
+        viewHolder.bvUnread.setBadgeCount(item.unread);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.tvTitle.getLayoutParams();
         switch (item.type) {
             case PushUtil.ChatUserType.TEACHER:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("老师");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.red));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_teacher_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             case PushUtil.ChatUserType.CLASSROOM:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("班级");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.blue_alpha));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_classroom_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             case PushUtil.ChatUserType.COURSE:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("课程");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.green_alpha));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_course_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             default:

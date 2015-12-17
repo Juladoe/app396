@@ -84,7 +84,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.tv_classroom_announcement) {
+        if (v.getId() == R.id.rl_announcement) {
             app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
@@ -92,7 +92,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                     startIntent.putExtra(WebViewActivity.URL, url);
                 }
             });
-        } else if (v.getId() == R.id.tv_entry_classroom) {
+        } else if (v.getId() == R.id.rl_entry) {
             app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
@@ -100,7 +100,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                     startIntent.putExtra(WebViewActivity.URL, url);
                 }
             });
-        } else if (v.getId() == R.id.clear_record) {
+        } else if (v.getId() == R.id.rl_clear_record) {
 //            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
 //                @Override
 //                public void onClick(int button) {
