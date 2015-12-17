@@ -50,7 +50,6 @@ public class MineFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        //mActivity.setTitle(getString(R.string.title_mine));
         tvNickname = (TextView) view.findViewById(R.id.tv_nickname);
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
         rivAvatar = (RoundedImageView) view.findViewById(R.id.riv_avatar);
@@ -125,6 +124,5 @@ public class MineFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.layout.);
     }
 }

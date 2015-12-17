@@ -435,7 +435,8 @@ public class Const {
     public static final String COURSE_ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String CLASSROOM_COURSES = "main#/classroom/%d";
     public static final String CLASSROOM_MEMBER_LIST = "main#/studentlist/classroom/%d";
-    public static final String COURSE_MEMBER_LIST = "main#/studentlist/coruse/%d";
+    public static final String COURSE_MEMBER_LIST = "main#/studentlist/course/%d";
+    public static final String TEACHER_MANAGERMENT = "main#/todolist/%d";
 
 
     public static final String HAVE_ADD_TRUE = "friend";
