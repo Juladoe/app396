@@ -9,7 +9,8 @@
         android:id="@+id/rl_user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@drawable/my_item_bg"
+        android:onClick="true"
         android:padding="16dp">
 
         <com.makeramen.roundedimageview.RoundedImageView
@@ -26,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/head_icon_large"
             android:layout_marginLeft="15dp"
+            android:layout_toLeftOf="@+id/eiv_right_arrow0"
             android:layout_toRightOf="@+id/riv_avatar">
 
             <TextView
@@ -34,15 +36,16 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/v_divider"
                 android:text="阔知网络"
-                android:textSize="@dimen/medium_font_size" />
+                android:textColor="@color/base_black_87"
+                android:textSize="@dimen/large_font_size" />
 
             <View
                 android:id="@+id/v_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
                 android:visibility="invisible" />
 
             <TextView
@@ -51,8 +54,19 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/v_divider"
                 android:text="管理员"
-                android:textSize="@dimen/small_font_size" />
+                android:textSize="@dimen/medium_font_size"
+                android:textColor="@color/base_black_54" />
         </RelativeLayout>
+
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+            android:id="@+id/eiv_right_arrow0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/font_right_arrow"
+            android:textColor="@color/grey_cccccc"
+            android:textSize="@dimen/large_font_size" />
 
     </RelativeLayout>
 
@@ -93,6 +107,7 @@
                 android:layout_toRightOf="@+id/eiv_my_study"
                 android:gravity="center_vertical"
                 android:text="@string/mine_items_learn"
+                android:textColor="@color/base_black_87"
                 android:textSize="@dimen/large_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -145,7 +160,8 @@
                 android:layout_toRightOf="@+id/eiv_my_download"
                 android:gravity="center_vertical"
                 android:text="@string/mine_items_download"
-                android:textSize="@dimen/large_font_size" />
+                android:textSize="@dimen/large_font_size"
+                android:textColor="@color/base_black_87" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/eiv_right_arrow1"
@@ -197,7 +213,8 @@
                 android:layout_toRightOf="@+id/eiv_my_vip"
                 android:gravity="center_vertical"
                 android:text="@string/mine_items_buy_vip"
-                android:textSize="@dimen/large_font_size" />
+                android:textSize="@dimen/large_font_size"
+                android:textColor="@color/base_black_87" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/eiv_right_arrow2"
@@ -249,7 +266,8 @@
                 android:layout_toRightOf="@+id/eiv_my_collection"
                 android:gravity="center_vertical"
                 android:text="@string/mine_items_collection"
-                android:textSize="@dimen/large_font_size" />
+                android:textSize="@dimen/large_font_size"
+                android:textColor="@color/base_black_87" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/eiv_right_arrow3"
@@ -293,7 +311,8 @@
             android:layout_toRightOf="@+id/eiv_my_setting"
             android:gravity="center_vertical"
             android:text="@string/mine_items_setting"
-            android:textSize="@dimen/large_font_size" />
+            android:textSize="@dimen/large_font_size"
+            android:textColor="@color/base_black_87" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoIconView
             android:id="@+id/eiv_right_arrow4"

@@ -49,6 +49,14 @@ public class MineFragment extends BaseFragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            initData();
+        }
+    }
+
+    @Override
     protected void initView(View view) {
         tvNickname = (TextView) view.findViewById(R.id.tv_nickname);
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
