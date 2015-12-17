@@ -21,6 +21,9 @@ public class ChatItemBaseDetail extends ActionBarBaseActivity implements View.On
     protected TextView tvClassroomAnnouncement;
     protected TextView tvEntryClassroom;
     protected TextView tvClearChatRecord;
+    protected View vAnnouncement;
+    protected View vEntry;
+    protected View vClearChatRecord;
     protected Button btnDelRecordAndQuit;
 
     @Override
@@ -43,9 +46,13 @@ public class ChatItemBaseDetail extends ActionBarBaseActivity implements View.On
         tvEntryClassroom = (TextView) findViewById(R.id.tv_entry_classroom);
         tvClearChatRecord = (TextView) findViewById(R.id.clear_record);
         btnDelRecordAndQuit = (Button) findViewById(R.id.btn_del_and_quit);
-        tvClassroomAnnouncement.setOnClickListener(this);
-        tvEntryClassroom.setOnClickListener(this);
-        tvClearChatRecord.setOnClickListener(this);
+        vAnnouncement = findViewById(R.id.rl_announcement);
+        vEntry = findViewById(R.id.rl_entry);
+        vClearChatRecord = findViewById(R.id.rl_clear_record);
+
+        vAnnouncement.setOnClickListener(this);
+        vEntry.setOnClickListener(this);
+        vClearChatRecord.setOnClickListener(this);
         btnDelRecordAndQuit.setOnClickListener(this);
     }
 
