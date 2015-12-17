@@ -127,12 +127,7 @@ public class SwipeAdapter extends BaseAdapter {
         final New item = mList.get(position);
         ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions, new AvatarLoadingListener(item.type));
 
-        if (item.unread == 0) {
-            viewHolder.bvUnread.setVisibility(View.GONE);
-        } else {
-            viewHolder.bvUnread.setVisibility(View.VISIBLE);
-            viewHolder.bvUnread.setText(String.valueOf(item.unread));
-        }
+        viewHolder.bvUnread.setBadgeCount(item.unread);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.tvTitle.getLayoutParams();
         switch (item.type) {
