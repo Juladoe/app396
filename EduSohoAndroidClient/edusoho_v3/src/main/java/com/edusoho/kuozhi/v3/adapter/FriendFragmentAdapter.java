@@ -44,10 +44,6 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
         mApp = app;
     }
 
-    public void updateList() {
-        notifyDataSetChanged();
-    }
-
     public int getSectionForPosition(int position) {
         Friend friend = (Friend) (mList.get(position));
         return friend.getSortLetters().charAt(0);
@@ -151,19 +147,19 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
         list.get(0).isTop = true;
         list.get(list.size() - 1).isBottom = true;
         mList.addAll(list);
-        updateList();
+        notifyDataSetChanged();
     }
 
     public void addFriendList(List<T> list) {
         list.get(0).isTop = true;
         list.get(list.size() - 1).setBottom(true);
         mList.addAll(list);
-        updateList();
+        notifyDataSetChanged();
     }
 
     public void clearList() {
         mList.clear();
-        updateList();
+        notifyDataSetChanged();
     }
 
     public void setHeadView(View headView) {

@@ -56,6 +56,7 @@ import java.util.List;
  */
 public class FriendFragment extends BaseFragment {
 
+    public static int REQUEST_CODE = 1;
     public static boolean isNews = false;
     private ListView mFriendList;
     private View mFootView;
@@ -114,7 +115,7 @@ public class FriendFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Friend friend = (Friend) parent.getAdapter().getItem(position);
-                app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runPluginFromFragmentForResultWithCallback("ChatActivity",getInstance(), REQUEST_CODE, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
@@ -129,6 +130,10 @@ public class FriendFragment extends BaseFragment {
 
         mFriendCount = (TextView) mFootView.findViewById(R.id.friends_count);
         initViewData();
+    }
+
+    public FriendFragment getInstance(){
+        return this;
     }
 
     private View getFriendListHeadView() {
@@ -229,6 +234,7 @@ public class FriendFragment extends BaseFragment {
                             List<Friend> list = Arrays.asList(friendResult.data);
                             setChar(list);
                             Collections.sort(list, friendComparator);
+                            mFriendAdapter.clearList();
                             mFriendAdapter.addFriendList(list);
                         }
                         setFriendsCount(friendResult.data.length + "");
@@ -343,4 +349,18 @@ public class FriendFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == ChatActivity.RESULT_CODE_UPDATE){
+            loadFriend().then(new PromiseCallback() {
+                @Override
+                public Promise invoke(Object obj) {
+                    mFriendAdapter.notifyDataSetChanged();
+                    return null;
+                }
+            });
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
