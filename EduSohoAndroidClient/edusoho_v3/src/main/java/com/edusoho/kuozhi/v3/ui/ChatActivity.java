@@ -93,6 +93,10 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
     public static final String MSG_DELIVERY = "msg_delivery";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
+    private boolean isNeedUpdate;
+    public static int RESULT_CODE_UPDATE = 0x12;
+    public static int RESULT_CODE_NOUPDATE = 0x13;
+
     private static final int IMAGE_SIZE = 1024 * 500;
 
     private static final int SEND_IMAGE = 1;
@@ -261,6 +265,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             }
         }
 
+        isNeedUpdate = false;
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mType = intent.getStringExtra(Const.NEWS_TYPE);
         mToId = app.loginUser.id;
@@ -1021,6 +1026,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
+            isNeedUpdate = true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1106,5 +1112,15 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             mChatDataSource.close();
         }
         unregisterReceiver(mAudioDownloadReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isNeedUpdate == true){
+            setResult(RESULT_CODE_UPDATE);
+        }else {
+            setResult(RESULT_CODE_NOUPDATE);
+        }
+        super.onBackPressed();
     }
 }

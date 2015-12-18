@@ -104,6 +104,20 @@ public class CoreEngine {
         }
     }
 
+    public void runPluginFromFragmentForResultWithCallback(
+            String pluginName, Fragment fragment,int requestCode, PluginRunCallback callback){
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setClassName(fragment.getActivity(), pluginModel.packAge);
+            if (callback != null) {
+                callback.setIntentDate(startIntent);
+            }
+
+            fragment.startActivityForResult(startIntent, requestCode);
+        }
+    }
+
     public void runNormalPluginForResult(
             String pluginName, Activity serverActivity, int requestCode, PluginRunCallback callback) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
