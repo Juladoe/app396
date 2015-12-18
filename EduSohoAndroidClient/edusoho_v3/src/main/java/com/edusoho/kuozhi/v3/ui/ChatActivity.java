@@ -1018,7 +1018,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_PROFILE, mFromId));
-                    startIntent.putExtra(WebViewActivity.URL, url);
+                    startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
         }

@@ -86,7 +86,7 @@ public class MineFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_LEARN);
-                        startIntent.putExtra(WebViewActivity.URL, url);
+                        startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });
             } else if (v.getId() == R.id.rl_my_2) {
@@ -96,7 +96,7 @@ public class MineFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.VIP_LIST);
-                        startIntent.putExtra(WebViewActivity.URL, url);
+                        startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });
             } else if (v.getId() == R.id.rl_my_4) {
@@ -104,7 +104,7 @@ public class MineFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_FAVORITE);
-                        startIntent.putExtra(WebViewActivity.URL, url);
+                        startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });
             } else if (v.getId() == R.id.rl_my_5) {
@@ -124,7 +124,7 @@ public class MineFragment extends BaseFragment {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
-                    startIntent.putExtra(WebViewActivity.URL, url);
+                    startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
         }

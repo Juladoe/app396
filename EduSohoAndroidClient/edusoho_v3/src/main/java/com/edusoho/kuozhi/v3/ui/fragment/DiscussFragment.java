@@ -35,7 +35,6 @@ import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.CourseDiscussAdapter;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
@@ -184,26 +183,16 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     }
 
     protected void initData() {
-        Intent intent = mActivity.getIntent();
-        if (intent == null) {
+        Bundle bundle = getArguments();
+        mNewItemInfo = (New) bundle.get(Const.NEW_ITEM_INFO);
+        if (mNewItemInfo == null) {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
-        mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
         mCourseImage = mNewItemInfo.imgUrl;
         mCourseName = mNewItemInfo.title;
         mCourseId = mNewItemInfo.fromId;
-        if (TextUtils.isEmpty(mUserType)) {
-            String[] roles = new String[app.loginUser.roles.length];
-            for (int i = 0; i < app.loginUser.roles.length; i++) {
-                roles[i] = app.loginUser.roles[i].toString();
-            }
-            if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
-                mUserType = PushUtil.ChatUserType.TEACHER;
-            } else {
-                mUserType = PushUtil.ChatUserType.FRIEND;
-            }
-        }
+        mUserType = mActivity.app.getCurrentUserRole();
         NotificationUtil.cancelById(mCourseId);
         if (mCourseDiscussDataSource == null) {
             mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));

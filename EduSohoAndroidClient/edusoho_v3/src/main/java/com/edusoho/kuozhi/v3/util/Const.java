@@ -270,7 +270,6 @@ public class Const {
     public static final int PUSH_VERSION = 2;
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "http://tui.edusoho.net/v2";
-    //    public static final String PUSH_HOST = "http://115.29.78.158:94/v2";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
@@ -344,7 +343,6 @@ public class Const {
 
     public static final String QUESTION_URL = "question_url";
     public static final String COURSE_ID = "courseId";
-    public static final String URL = "url";
     public static final String QUESTION_USER_ID = "question_user_id";
     public static final String TESTPAPER_DO_TYPE = "do_type";
     public static final String FREE = "free";
@@ -423,6 +421,7 @@ public class Const {
      * html5 url
      */
 
+    public static final String WEB_URL = "web_url";
     public static final String MY_LEARN = "main#/mylearn";
     public static final String VIP_LIST = "main#/viplist";
     public static final String MY_INFO = "main#/myinfo";

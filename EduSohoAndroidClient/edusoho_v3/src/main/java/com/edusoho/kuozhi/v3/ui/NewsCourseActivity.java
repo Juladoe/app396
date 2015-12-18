@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 
 /**
  * Created by JesseHuang on 15/9/16.
@@ -24,11 +25,14 @@ import com.edusoho.kuozhi.v3.util.Const;
 public class NewsCourseActivity extends ActionBarBaseActivity {
     public static int CurrentCourseId = 0;
     public static final String COURSE_ID = "course_id";
-    private static final String mFragmentTags[] = {"CourseStudyFragment", "DiscussFragment"};
+    private static final String mFragmentTags[] = {"DiscussFragment", "CourseStudyFragment", "TeachFragment"};
+    private static final String mRadioButtonTitle[] = {"学习", "教学"};
     private int mCourseId;
     private String mCourseTitle;
     private String mCurrentFragmentTag;
     private New mNewItemInfo;
+    private String mUserType;
+    private PluginFragmentCallback mPluginFragmentCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +48,37 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         }
         mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
         mCourseTitle = mNewItemInfo.title;
-        initSwitchButton(BACK, mOnCheckedChangeListener);
         mCourseId = mNewItemInfo.fromId;
         CurrentCourseId = mCourseId;
         if (mCourseId == 0) {
             CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
             return;
         }
-        showFragment(mFragmentTags[0]);
+        mUserType = app.getCurrentUserRole();
+        switch (mUserType) {
+            case PushUtil.ChatUserType.FRIEND:
+                initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
+                mPluginFragmentCallback = new PluginFragmentCallback() {
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putSerializable(Const.NEW_ITEM_INFO, mNewItemInfo);
+                    }
+                };
+                showFragment(mFragmentTags[1]);
+                break;
+            case PushUtil.ChatUserType.TEACHER:
+                initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
+                mPluginFragmentCallback = new PluginFragmentCallback() {
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.TEACHER_MANAGERMENT, app.loginUser.id));
+                        bundle.putString(Const.WEB_URL, url);
+                    }
+                };
+                showFragment(mFragmentTags[2]);
+                break;
+            default:
+        }
     }
 
 
@@ -66,12 +93,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         if (fragment != null) {
             fragmentTransaction.show(fragment);
         } else {
-            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, new PluginFragmentCallback() {
-                @Override
-                public void setArguments(Bundle bundle) {
-                    bundle.putSerializable(Const.NEW_ITEM_INFO, mNewItemInfo);
-                }
-            });
+            fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mPluginFragmentCallback);
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
         fragmentTransaction.commit();
@@ -82,9 +104,13 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             if (checkedId == R.id.rb_study) {
-                showFragment(mFragmentTags[0]);
+                if (PushUtil.ChatUserType.FRIEND.equals(mUserType)) {
+                    showFragment(mFragmentTags[1]);
+                } else {
+                    showFragment(mFragmentTags[2]);
+                }
             } else if (checkedId == R.id.rb_discuss) {
-                showFragment(mFragmentTags[1]);
+                showFragment(mFragmentTags[0]);
             }
         }
     };

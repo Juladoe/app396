@@ -210,7 +210,7 @@ public class MenuClickPlugin extends CoreBridge {
         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(WebViewActivity.URL, strUrl);
+                startIntent.putExtra(Const.WEB_URL, strUrl);
             }
         });
     }

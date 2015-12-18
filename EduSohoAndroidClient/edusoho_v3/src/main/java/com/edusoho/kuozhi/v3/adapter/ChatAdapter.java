@@ -256,7 +256,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(WebViewActivity.URL, body.url);
+                        startIntent.putExtra(Const.WEB_URL, body.url);
                     }
                 });
             }

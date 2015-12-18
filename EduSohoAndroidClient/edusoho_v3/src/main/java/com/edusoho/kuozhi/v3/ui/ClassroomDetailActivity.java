@@ -84,7 +84,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_ANNOUNCEMENT, mFromId));
-                    startIntent.putExtra(WebViewActivity.URL, url);
+                    startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
         } else if (v.getId() == R.id.tv_entry_classroom) {
@@ -92,7 +92,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_COURSES, mFromId));
-                    startIntent.putExtra(WebViewActivity.URL, url);
+                    startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
         } else if (v.getId() == R.id.clear_record) {
@@ -210,7 +210,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_PROFILE, member.user.id));
-                                startIntent.putExtra(WebViewActivity.URL, url);
+                                startIntent.putExtra(Const.WEB_URL, url);
                             }
                         });
                     }
@@ -225,7 +225,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_MEMBER_LIST, mFromId));
-                                startIntent.putExtra(WebViewActivity.URL, url);
+                                startIntent.putExtra(Const.WEB_URL, url);
                             }
                         });
                     }
