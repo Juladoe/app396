@@ -90,7 +90,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
             RadioButton radioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_study);
             radioButton.setText(roleTitle);
             ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                    ActionBar.LayoutParams.MATCH_PARENT);
+                    ActionBar.LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = Gravity.CENTER;
             mActionBar.setCustomView(switchButtonLayout, layoutParams);
             switchButton.setOnCheckedChangeListener(clickListener);
