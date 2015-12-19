@@ -8,6 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/nav_bottom_layout"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/tb_action_bar"
         android:background="@color/system_normal_bg" />
 </RelativeLayout>

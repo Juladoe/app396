@@ -99,7 +99,7 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            mActivity.setTitle(getString(R.string.title_news));
+            //mActivity.setTitle(getString(R.string.title_news));
         }
         super.onHiddenChanged(hidden);
     }
