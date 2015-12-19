@@ -358,7 +358,7 @@ public class SearchDialogFragment extends DialogFragment {
     public Promise followUser(Friend friend) {
         final Promise promise = new Promise();
 
-        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, false);
+        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append(friend.id + "/followers");
         requestUrl.url = stringBuffer.toString();
