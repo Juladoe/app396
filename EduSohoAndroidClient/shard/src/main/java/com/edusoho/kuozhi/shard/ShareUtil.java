@@ -1,30 +1,16 @@
 package com.edusoho.kuozhi.shard;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ListView;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-
+import java.util.List;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
-
 import static com.mob.tools.utils.R.getBitmapRes;
 
 
@@ -45,6 +31,8 @@ public class ShareUtil {
     private ShareHandler mShareHandler;
     private ShareSDKUtil mShareSDKUtil;
 
+    private List<ListData> mCustomList;
+
     private ShareUtil(Context context) {
         //添加应用信息
         mShareSDKUtil = new ShareSDKUtil();
@@ -54,6 +42,10 @@ public class ShareUtil {
 
     public static ShareUtil getShareUtil(Context context) {
         return new ShareUtil(context);
+    }
+
+    public void setCustomList(List<ListData> dataList) {
+        this.mCustomList = dataList;
     }
 
     public ShareUtil initShareParams(
@@ -90,6 +82,7 @@ public class ShareUtil {
     public void initDialog() {
         Platform[] platforms = mShareSDKUtil.getPlatformList();
         ArrayList<ListData> list = new ArrayList<ListData>();
+
         for (Platform platform : platforms) {
             String name = platform.getName();
             if (filterPlat(name)) {
@@ -108,19 +101,22 @@ public class ShareUtil {
             }
         });
 
+        if (mCustomList != null) {
+            list.addAll(mCustomList);
+        }
+
         mAlertDialog = new ShardDialog(mContext);
         mAlertDialog.setShardDatas(list);
         mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListData data = (ListData) parent.getItemAtPosition(position);
-                if (data.type.startsWith("Wechat")) {
-                    if (mShareHandler != null) {
-                        mShareHandler.handler(data.type);
-                        mAlertDialog.dismiss();
-                    }
+
+                if (mShareHandler != null && mShareHandler.handler(data.type)) {
+                    mAlertDialog.dismiss();
                     return;
                 }
+
                 mOneKeyShare.setPlatform(data.type);
                 mOneKeyShare.setSilent(false);
                 mOneKeyShare.show(mContext);

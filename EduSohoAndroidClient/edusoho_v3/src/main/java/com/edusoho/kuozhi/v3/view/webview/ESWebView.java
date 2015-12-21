@@ -32,6 +32,7 @@ import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -283,10 +284,6 @@ public class ESWebView extends RelativeLayout {
     }
 
     private class ESWebViewClient extends WebViewClient {
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        }
 
         @Override
         public void onPageFinished(WebView view, String url) {

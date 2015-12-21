@@ -4,9 +4,11 @@ import android.os.Bundle;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -16,6 +18,8 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.Gson;
+
+import java.util.HashMap;
 
 /**
  * Created by howzhi on 15/11/2.
@@ -42,7 +46,19 @@ public class ClassRoomChatSendHandler extends ChatSendHandler {
     protected void sendMessage(int toId, String title, String avatar, RedirectBody body) {
         ClassroomDiscussEntity classroomDiscussEntity = updateChatData(toId, new Gson().toJson(body));
         WrapperXGPushTextMessage message = updateNewsList(title, avatar, classroomDiscussEntity);
-        redirectMessageToUser(classroomDiscussEntity, message);
+        redirectMessageToUser(null, classroomDiscussEntity, message);
+    }
+
+
+    @Override
+    protected RequestUrl getRequestUrl(CustomContent customContent, BaseMsgEntity entity, WrapperXGPushTextMessage message) {
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", app.loginUser.nickname);
+        params.put("content", entity.content);
+        params.put("custom", message.getCustomContentJson());
+
+        return requestUrl;
     }
 
     private WrapperXGPushTextMessage updateNewsList(String classRoomTitle, String classRoomAvatar, ClassroomDiscussEntity model) {
