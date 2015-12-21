@@ -30,14 +30,15 @@ public class ShareUtil {
     private ShardDialog mAlertDialog;
     private ShareHandler mShareHandler;
     private ShareSDKUtil mShareSDKUtil;
-
     private List<ListData> mCustomList;
+    private ArrayList<ListData> mList;
 
     private ShareUtil(Context context) {
         //添加应用信息
         mShareSDKUtil = new ShareSDKUtil();
         mShareSDKUtil.initSDK(context);
         mContext = context;
+        initPlatformList();
     }
 
     public static ShareUtil getShareUtil(Context context) {
@@ -46,6 +47,13 @@ public class ShareUtil {
 
     public void setCustomList(List<ListData> dataList) {
         this.mCustomList = dataList;
+        if (mCustomList != null) {
+            mList.addAll(mCustomList);
+        }
+    }
+
+    public List<ListData> getDataList() {
+        return mList;
     }
 
     public ShareUtil initShareParams(
@@ -79,9 +87,10 @@ public class ShareUtil {
         return false;
     }
 
-    public void initDialog() {
+    private void initPlatformList()
+    {
         Platform[] platforms = mShareSDKUtil.getPlatformList();
-        ArrayList<ListData> list = new ArrayList<ListData>();
+        mList = new ArrayList<ListData>();
 
         for (Platform platform : platforms) {
             String name = platform.getName();
@@ -91,22 +100,20 @@ public class ShareUtil {
             String resName = "logo_" + name;
             int resId = getBitmapRes(mContext, resName);
             ListData data = new ListData(mContext.getResources().getDrawable(resId), name, mContext);
-            list.add(data);
+            mList.add(data);
         }
 
-        Collections.sort(list, new Comparator<ListData>() {
+        Collections.sort(mList, new Comparator<ListData>() {
             @Override
             public int compare(ListData lhs, ListData rhs) {
                 return rhs.type.compareToIgnoreCase(lhs.type);
             }
         });
+    }
 
-        if (mCustomList != null) {
-            list.addAll(mCustomList);
-        }
-
+    public void initDialog() {
         mAlertDialog = new ShardDialog(mContext);
-        mAlertDialog.setShardDatas(list);
+        mAlertDialog.setShardDatas(mList);
         mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

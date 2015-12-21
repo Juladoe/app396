@@ -71,7 +71,8 @@ public class ShareTool {
     private void startShare(String imageUri) {
         ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
         File file = ImageLoader.getInstance().getDiskCache().get(imageUri);
-        shareUtil.setCustomList(getCustomListData());
+        List<ListData> listDatas = shareUtil.getDataList();
+        listDatas.addAll(0, getCustomListData());
         shareUtil.initShareParams(
                 R.mipmap.ic_launcher,
                 mTitle,
@@ -135,6 +136,9 @@ public class ShareTool {
 
     private List<ListData> getCustomListData() {
         List<ListData> listDatas = new ArrayList<>();
+        if (EdusohoApp.app.loginUser == null) {
+            return listDatas;
+        }
         ListData data = new ListData(
                 mContext.getResources().getDrawable(R.drawable.share_user),
                 "shareToUser",

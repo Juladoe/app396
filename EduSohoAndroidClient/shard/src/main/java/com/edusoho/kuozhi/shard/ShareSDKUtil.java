@@ -27,8 +27,7 @@ public class ShareSDKUtil {
     public void initSDK(Context context) {
         mContext = context;
         platformMap = new HashMap<>(10);
-        ShareSDK.initSDK(context, "41f51eeb5d88");
-        initDevInfo(context);
+        ShareSDK.initSDK(context);
     }
 
     private static boolean isWeixinAvilible(Context context) {
@@ -47,21 +46,7 @@ public class ShareSDKUtil {
     }
 
     public Platform[] getPlatformList() {
-        Platform[] platforms = ShareSDK.getPlatformList();
-        ArrayList<Platform> platformsList = new ArrayList<>();
-        for (int i=0; i < platforms.length; i++) {
-            String name = platforms[i].getName();
-            if ("Wechat".equals(name) && !isWeixinAvilible(mContext)) {
-                continue;
-            }
-            if (platformMap.containsKey(name)) {
-                platformsList.add(platforms[i]);
-            }
-        }
-
-        Platform[] filterPlatforms = new Platform[platformsList.size()];
-        platformsList.toArray(filterPlatforms);
-        return filterPlatforms;
+        return ShareSDK.getPlatformList();
     }
 
     private void initDevInfo(Context context) {

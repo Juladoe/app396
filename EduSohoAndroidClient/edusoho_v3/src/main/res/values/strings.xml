@@ -203,7 +203,4 @@
     <string name="chat_select_label">最近聊天</string>
     <string name="chat_select_create">创建新聊天</string>
     <string name="group_select_create">选择讨论组</string>
-
-    <!-- share course -->
-    <string name="shareToUser">发送给朋友</string>
 </resources>
