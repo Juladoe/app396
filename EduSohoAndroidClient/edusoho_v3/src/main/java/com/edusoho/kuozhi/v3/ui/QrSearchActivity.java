@@ -79,7 +79,7 @@ public class QrSearchActivity extends CaptureActivity {
 
     private void showUrlInESWebView(String url) {
         Bundle bundle = new Bundle();
-        bundle.putString(WebViewActivity.URL, url);
+        bundle.putString(Const.WEB_URL, url);
         app.mEngine.runNormalPluginWithBundle("WebViewActivity", mActivity, bundle);
     }
 

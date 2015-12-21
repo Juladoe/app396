@@ -6,20 +6,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -28,12 +29,10 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
-import com.edusoho.kuozhi.v3.view.EduToolBar;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
@@ -51,11 +50,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private EduSohoTextBtn mDownTabNews;
     private EduSohoTextBtn mDownTabFind;
     private EduSohoTextBtn mDownTabFriends;
-    private EduToolBar mToolBar;
+    private EduSohoTextBtn mDownTabMine;
+    private Toolbar tbActionBar;
+    private TextView tvTitle;
     private NavDownTabClickListener mNavDownTabClickListener;
 
-    private DrawerLayout mDrawerLayout;
-    private FragmentNavigationDrawer mFragmentNavigationDrawer;
     private boolean mLogoutFlag = false;
 
     @Override
@@ -117,11 +116,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabNews = (EduSohoTextBtn) findViewById(R.id.nav_tab_news);
         mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
         mDownTabFriends = (EduSohoTextBtn) findViewById(R.id.nav_tab_friends);
-        mToolBar = (EduToolBar) findViewById(R.id.toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
+        tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
+        tvTitle = (TextView) findViewById(R.id.tv_title);
+        setSupportActionBar(tbActionBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mNavDownTabClickListener = new NavDownTabClickListener();
 
-        setSupportActionBar(mToolBar);
 
         int count = mNavLayout.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -133,13 +134,12 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         } else {
             mSelectBtn = R.id.nav_tab_news;
         }
-
         selectDownTab(mSelectBtn);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mFragmentNavigationDrawer = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mFragmentNavigationDrawer.initDrawer(mDrawerLayout, R.id.navigation_drawer);
         mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
+    }
+
+    public void setTitle(String title) {
+        tvTitle.setText(title);
     }
 
     private class NavDownTabClickListener implements View.OnClickListener {
@@ -152,21 +152,30 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private void selectDownTab(int id) {
         String tag;
         if (app.loginUser == null && id != R.id.nav_tab_find) {
-            app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
+            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+                @Override
+                public void success(Object obj) {
+                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+                }
+            });
             return;
         }
 
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
-            mToolBar.setVisibility(View.GONE);
+            tbActionBar.setVisibility(View.GONE);
         } else if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
-            mToolBar.setCenterTitle(getString(R.string.title_news));
-            mToolBar.setVisibility(View.VISIBLE);
-        } else {
+            setTitle(getString(R.string.title_news));
+            tbActionBar.setVisibility(View.VISIBLE);
+        } else if (id == R.id.nav_tab_friends) {
             tag = "FriendFragment";
-            mToolBar.setCenterTitle(getString(R.string.title_friends));
-            mToolBar.setVisibility(View.VISIBLE);
+            setTitle(getString(R.string.title_friends));
+            tbActionBar.setVisibility(View.VISIBLE);
+        } else {
+            tag = "MineFragment";
+            setTitle(getString(R.string.title_mine));
+            tbActionBar.setVisibility(View.VISIBLE);
         }
         if (tag.equals(mCurrentTag)) {
             return;
@@ -227,9 +236,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+        mDownTabMine.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         mDownTabNews.setIcon(getResources().getString(R.string.font_news));
         mDownTabFind.setIcon(getResources().getString(R.string.font_find));
         mDownTabFriends.setIcon(getResources().getString(R.string.font_friends));
+        mDownTabMine.setIcon(getResources().getString(R.string.font_mine));
         if (id == R.id.nav_tab_news) {
             mDownTabNews.setIcon(getResources().getString(R.string.font_news_pressed));
             mDownTabNews.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
@@ -239,11 +250,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         } else if (id == R.id.nav_tab_friends) {
             mDownTabFriends.setIcon(getResources().getString(R.string.font_friends_pressed));
             mDownTabFriends.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
+        } else if (id == R.id.nav_tab_mine) {
+            mDownTabMine.setIcon(getResources().getString(R.string.font_mine_pressed));
+            mDownTabMine.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            Log.d("onOptionsItemSelected", "home");
+        }
         return false;
     }
 
@@ -295,11 +312,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (mFragmentNavigationDrawer.isDrawerOpen()) {
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
-                    return true;
-                }
-
                 if (null == mToast.getView().getParent()) {
                     mToast.show();
                 } else {

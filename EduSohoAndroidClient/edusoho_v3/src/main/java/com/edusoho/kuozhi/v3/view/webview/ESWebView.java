@@ -198,11 +198,8 @@ public class ESWebView extends RelativeLayout {
         mUrl = url;
         Matcher matcher = APPCODE_PAT.matcher(url);
         if (matcher.find()) {
-            mActivity.hideActionBar();
             updateCode(matcher.group(1));
             mLocalAppMeta = getLocalApp(mAppCode);
-        } else {
-            mActivity.showActionBar();
         }
 
         if (TextUtils.isEmpty(mAppCode) || checkResourceIsExists()) {

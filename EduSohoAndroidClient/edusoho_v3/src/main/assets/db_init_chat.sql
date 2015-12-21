@@ -69,3 +69,17 @@ create table if not exists classroom_discuss(
     createdTime integer
 );
 
+create table if not exists course_discuss(
+    discussId integer primary key AutoIncrement,
+    id integer,
+    courseId integer,
+    fromId integer,
+    nickname varchar(100),
+    headImgUrl varchar(255),
+    content varchar(255),
+    belongId integer,
+    type varchar,
+    delivery integer,
+    createdTime integer
+);
+

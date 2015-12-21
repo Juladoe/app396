@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,6 +45,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
+    private TextView tvMore;
     private String mAuthCancel;
 
     @Override
@@ -215,14 +217,32 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     };
 
+    private View.OnClickListener mMoreClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+        }
+    };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.login_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.item_register) {
+            mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //overridePendingTransition(R.anim.up_to_down, R.anim.none);
     }
 
     @Override

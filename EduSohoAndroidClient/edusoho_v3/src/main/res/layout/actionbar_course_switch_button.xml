@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <com.edusoho.kuozhi.v3.view.EduSohoCompoundButton
+        android:id="@+id/ecb_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/found_compound_btn"
+        android:checkedButton="@+id/rb_study"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_study"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/left_btn_press"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="2dp"
+            android:text="@string/study"
+            android:textSize="@dimen/small_font_size"
+            android:textColor="@android:color/white" />
+
+        <RadioButton
+            android:id="@+id/rb_discuss"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/right_btn_press"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="2dp"
+            android:text="@string/discuss"
+            android:textSize="@dimen/small_font_size"
+            android:textColor="@android:color/white" />
+    </com.edusoho.kuozhi.v3.view.EduSohoCompoundButton>
+
+</RelativeLayout>

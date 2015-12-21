@@ -8,9 +8,9 @@
             <stroke android:width="1px" android:color="@color/font_2" />
             <!-- shape的颜色，支持渐变 -->
             <gradient
-                android:centerColor="@color/backgroud"
-                android:endColor="@color/backgroud"
-                android:startColor="@color/backgroud" />
+                android:centerColor="@color/background"
+                android:endColor="@color/background"
+                android:startColor="@color/background" />
         </shape>
     </item>
 

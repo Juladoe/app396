@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -24,7 +25,6 @@ import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
@@ -181,7 +181,12 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void openDrawer(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         String message = args.getString(0);
         if (message.equals("open")) {
-            EdusohoApp.app.sendMsgToTarget(Const.MAIN_MENU_OPEN, null, FragmentNavigationDrawer.class);
+            EdusohoApp.app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+                @Override
+                public void success(Object obj) {
+                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+                }
+            });
         }
     }
 
@@ -215,7 +220,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(WebViewActivity.URL, strUrl);
+                startIntent.putExtra(Const.WEB_URL, strUrl);
             }
         });
     }
@@ -375,7 +380,6 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void clearUserToken(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         mActivity.app.removeToken();
         mActivity.app.sendMessage(Const.LOGOUT_SUCCESS, null);
-        mActivity.app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
     }
 
     @JsAnnotation

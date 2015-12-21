@@ -256,7 +256,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(WebViewActivity.URL, body.url);
+                        startIntent.putExtra(Const.WEB_URL, body.url);
                     }
                 });
             }
@@ -601,13 +601,21 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
 
         @Override
         public void onClick(View v) {
+            ArrayList<String> imageUrls = getCurrentImageUrls();
+            int index = 0;
+            int size = imageUrls.size();
+            for (int i = 0; i < size; i++) {
+                if (("file://" + imageUrls.get(i)).equals(mImageUrl)) {
+                    index = i;
+                    break;
+                }
+            }
             Bundle bundle = new Bundle();
-            bundle.putInt("index", 1);
-            bundle.putStringArray("images", new String[]{mImageUrl});
+            bundle.putInt("index", index);
+            bundle.putStringArrayList("imageList", imageUrls);
             EdusohoApp.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
         }
     }
-
 
     public class AudioMsgClick implements View.OnClickListener {
         private File mAudioFile;
@@ -679,6 +687,18 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             mAnimDrawable = (AnimationDrawable) holder.ivVoiceAnim.getBackground();
             mAnimDrawable.start();
         }
+    }
+
+    protected ArrayList<String> getCurrentImageUrls() {
+        ArrayList<String> imagesUrls = new ArrayList<>();
+        int size = mList.size();
+        for (int i = 0; i < size; i++) {
+            BaseMsgEntity entity = mList.get(i);
+            if (entity.type.equals(PushUtil.ChatMsgType.IMAGE)) {
+                imagesUrls.add(entity.content);
+            }
+        }
+        return imagesUrls;
     }
 
     protected void stopVoiceAnim(ViewHolder holder, int resId) {
@@ -826,9 +846,9 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     public interface ImageErrorClick {
-        public void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
+        void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
 
-        public void sendMsgAgain(BaseMsgEntity model);
+        void sendMsgAgain(BaseMsgEntity model);
     }
 
     @Override

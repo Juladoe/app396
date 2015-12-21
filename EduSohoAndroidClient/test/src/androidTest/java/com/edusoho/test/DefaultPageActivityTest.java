@@ -10,7 +10,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.edusoho.test.base.BaseActivityNoActionBarUnitTestCase;
 
@@ -58,27 +57,6 @@ public class DefaultPageActivityTest extends BaseActivityNoActionBarUnitTestCase
     public void testActivityDestroy() {
         mActivity = getActivity();
         mInstrumentation.callActivityOnDestroy(mActivity);
-    }
-
-    @UiThreadTest
-    public void testFragmentNavigationDrawer() {
-        mActivity = getActivity();
-        DrawerLayout mDrawerLayout = (DrawerLayout) mActivity.findViewById(R.id.drawer_layout);
-        assertNotNull(mDrawerLayout);
-        FragmentNavigationDrawer mFragmentNavigationDrawer = (FragmentNavigationDrawer) mActivity.getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        assertNotNull(mFragmentNavigationDrawer);
-        final int mRadioIds[] = {
-                com.edusoho.kuozhi.R.id.radio0,
-                com.edusoho.kuozhi.R.id.radio1,
-                com.edusoho.kuozhi.R.id.radio2,
-                com.edusoho.kuozhi.R.id.radio3,
-                com.edusoho.kuozhi.R.id.radio4,
-        };
-        final RadioButton[] mRadioButtons = new RadioButton[mRadioIds.length];
-        for (int i = 0; i < mRadioButtons.length; i++) {
-            mRadioButtons[i] = (RadioButton) mActivity.findViewById(mRadioIds[i]);
-            assertNotNull(mRadioButtons[i]);
-        }
     }
 
     @UiThreadTest

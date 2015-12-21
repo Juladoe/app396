@@ -229,6 +229,7 @@ public class FriendFragment extends BaseFragment {
                             List<Friend> list = Arrays.asList(friendResult.data);
                             setChar(list);
                             Collections.sort(list, friendComparator);
+                            mFriendAdapter.clearList();
                             mFriendAdapter.addFriendList(list);
                         }
                         setFriendsCount(friendResult.data.length + "");
@@ -309,6 +310,9 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
             initViewData();
         }
+        if (messageType.type.equals(Const.DELETE_FRIEND)){
+            initViewData();
+        }
         if (messageType.code == Const.NEW_FANS) {
             isNews = true;
             FriendNewsActivity.isNews = true;
@@ -322,7 +326,8 @@ public class FriendFragment extends BaseFragment {
         MessageType[] messageTypes = {new MessageType(Const.LOGIN_SUCCESS)
                 , new MessageType(Const.REFRESH_FRIEND_LIST)
                 , new MessageType(Const.NEW_FANS, source)
-                , new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)};
+                , new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)
+                , new MessageType(Const.DELETE_FRIEND)};
         return messageTypes;
     }
 
@@ -342,5 +347,4 @@ public class FriendFragment extends BaseFragment {
         }
         return view;
     }
-
 }

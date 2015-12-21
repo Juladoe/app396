@@ -130,7 +130,7 @@
     <dimen name="title_bottom_edge_height">2px</dimen>
     <dimen name="item_edge_height">1dp</dimen>
 
-    <dimen name="head_icon_large">48dp</dimen>
+    <dimen name="head_icon_large">52dp</dimen>
 
     <dimen name="head_icon_medium">40dp</dimen>
 
