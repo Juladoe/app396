@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Xml;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -20,40 +17,17 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.reflect.TypeToken;
-
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.util.EntityUtils;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 
@@ -65,12 +39,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                initAssets();
-            }
-        });
         mCurrentIntent = getIntent();
         if (mCurrentIntent != null && !mCurrentIntent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
             startApp();
@@ -112,7 +80,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     continue;
                 }
 
-                M3U8Util.DegestInputStream inputStream = new M3U8Util.DegestInputStream(
+                M3U8Util.DigestInputStream inputStream = new M3U8Util.DigestInputStream(
                         assetManager.open(name), getPackageName(), false);
                 ZipEntry zipEntry = new ZipEntry("assets/" + name);
                 zipOutputStream.putNextEntry(zipEntry);

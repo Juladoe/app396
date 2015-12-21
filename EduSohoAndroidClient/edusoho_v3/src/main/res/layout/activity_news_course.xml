@@ -1,52 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout
-        android:id="@+id/rotate_header_list_view_frame"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_bottom_layout"
-        app:ptr_duration_to_close="200"
-        app:ptr_duration_to_close_header="1000"
-        app:ptr_keep_header_when_refresh="true"
-        app:ptr_pull_to_fresh="false"
-        app:ptr_ratio_of_header_height_to_refresh="1.2"
-        app:ptr_resistance="1.7">
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/lv_course_news"
-            android:divider="@null"
-            android:fadingEdge="none"
-            android:fastScrollEnabled="false"
-            android:scrollbars="none"
-            android:smoothScrollbar="true"
-            android:clickable="false"
-            android:transcriptMode="alwaysScroll" />
-    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/ll_bottom_layout">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/study_entrance"
-            android:textSize="@dimen/medium_font_size"
-            android:clickable="true"
-            android:padding="10dp"
-            android:gravity="center"
-            android:textColor="@color/base_black_87"
-            android:background="@drawable/news_course_bottom_btn_bg"
-            android:id="@+id/tv_study_entrance" />
-    </LinearLayout>
-
-
+        android:layout_above="@+id/nav_bottom_layout"
+        android:layout_below="@+id/tb_action_bar"
+        android:background="@color/system_normal_bg" />
 </RelativeLayout>

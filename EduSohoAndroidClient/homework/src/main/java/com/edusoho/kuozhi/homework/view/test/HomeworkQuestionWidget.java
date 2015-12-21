@@ -16,11 +16,13 @@ public class HomeworkQuestionWidget {
     private Context mContext;
     private HomeWorkQuestion mQuestionSeq;
     private int mIndex;
+    protected String mType;
     private BaseHomeworkQuestionWidget mWidget;
 
     public HomeworkQuestionWidget(
-            Context context, HomeWorkQuestion question, int index) {
+            String type, Context context, HomeWorkQuestion question, int index) {
         mIndex = index;
+        mType = type;
         mContext = context;
         mQuestionSeq = question;
         init();
@@ -48,6 +50,7 @@ public class HomeworkQuestionWidget {
         }
         mWidget = (BaseHomeworkQuestionWidget) LayoutInflater.from(mContext).inflate(
                 layoutId, null);
+        mWidget.setType(mType);
         mWidget.setData(mQuestionSeq, mIndex);
     }
 

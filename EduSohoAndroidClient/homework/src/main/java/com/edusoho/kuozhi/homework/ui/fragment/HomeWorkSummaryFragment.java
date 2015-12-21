@@ -40,7 +40,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
     private View mLoadLayout;
     private HomeworkProvider mHomeworkProvider;
     private ExerciseProvider mExerciseProvider;
-    private HomeworkSummaryActivity mSummaryActivity;
+    private String mType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mLessonId = getArguments().getInt(Const.LESSON_ID, 0);
-        mSummaryActivity = (HomeworkSummaryActivity) activity;
+        mType = getArguments().getString("type");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
         mEmptyNotice = view.findViewById(R.id.empty_data_page);
         mEmptyNotice.setVisibility(View.GONE);
         startBtn = (Button) view.findViewById(R.id.start_homework_btn);
-        if (HomeworkSummaryActivity.HOMEWORK.equals(mSummaryActivity.getType())) {
+        if (HomeworkSummaryActivity.HOMEWORK.equals(mType)) {
             homeworkName.setText("作业名称");
             homeworkInfo.setText("作业说明");
             initHomeworkSummary();
@@ -137,7 +137,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getBaseContext(), HomeworkActivity.class);
                 intent.putExtra(HomeworkActivity.HOMEWORK_ID, homeWorkModel.getId());
-                intent.putExtra(HomeworkSummaryActivity.TYPE, mSummaryActivity.getType());
+                intent.putExtra(HomeworkSummaryActivity.TYPE, mType);
                 getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
             }
         });
@@ -152,7 +152,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getBaseContext(), ExerciseActivity.class);
                 intent.putExtra(ExerciseActivity.EXERCISE_ID, exerciseModel.getId());
-                intent.putExtra(HomeworkSummaryActivity.TYPE, mSummaryActivity.getType());
+                intent.putExtra(HomeworkSummaryActivity.TYPE, mType);
                 getActivity().startActivityForResult(intent, HomeworkSummaryActivity.REQUEST_DO);
             }
         });

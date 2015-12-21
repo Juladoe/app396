@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import com.edusoho.kuozhi.homework.listener.BaseLessonPluginCallback;
 import com.edusoho.kuozhi.homework.model.ExerciseProvider;
+import com.edusoho.kuozhi.homework.model.HomeWorkModel;
+import com.edusoho.kuozhi.homework.model.HomeworkProvider;
+import com.edusoho.kuozhi.v3.listener.BaseLessonPluginCallback;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -27,7 +31,6 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (data == null) {
             return;
         }
@@ -46,6 +49,7 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
     private void renderExerciseView() {
         String fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
         Bundle bundle = getIntent().getExtras();
+        bundle.putString(TYPE,"exercise");
         loadFragment(bundle, fragmentName);
     }
 
@@ -72,6 +76,19 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        protected void loadPlugin(Bundle bundle) {
+            int lessonId = bundle.getInt(Const.LESSON_ID, 0);
+            RequestUrl requestUrl = getRequestUrl(lessonId);
+            HomeworkProvider provider = ModelProvider.initProvider(mContext, HomeworkProvider.class);
+            provider.getHomeWork(requestUrl).success(new NormalCallback<HomeWorkModel>() {
+                @Override
+                public void success(HomeWorkModel homeWorkModel) {
+                    setViewStatus(homeWorkModel != null && homeWorkModel.getId() != 0);
+                }
+            }).fail(this);
         }
     }
 }

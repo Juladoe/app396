@@ -22,6 +22,9 @@
         <activity
             android:name="com.edusoho.test.FragmentTestActivity">
         </activity>
+        <activity
+            android:name="com.edusoho.test.homework.HomeworkQuestionFragmentTestActivity">
+        </activity>
     </application>
 
 </manifest>

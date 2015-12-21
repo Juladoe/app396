@@ -156,7 +156,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 SystemInfo systemInfo = parseJsonValue(response, new TypeToken<SystemInfo>() {
                 });
 
-                if (TextUtils.isEmpty(systemInfo.mobileApiUrl)) {
+                if (systemInfo == null || TextUtils.isEmpty(systemInfo.mobileApiUrl)) {
+                    mLoading.dismiss();
                     PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }

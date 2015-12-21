@@ -82,7 +82,6 @@ public class BaseChatActivity extends ActionBarBaseActivity {
     protected ImageView ivRecordImage;
 
     protected float mPressDownY;
-    protected BaseAdapter mAdapter;
     protected MediaRecorderTask mMediaRecorderTask;
     protected VolumeHandler mHandler;
     protected AudioDownloadReceiver mAudioDownloadReceiver;

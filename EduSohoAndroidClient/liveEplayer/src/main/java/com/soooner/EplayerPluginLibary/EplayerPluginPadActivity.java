@@ -28,6 +28,7 @@ import com.soooner.source.common.net.Protocol;
 import com.soooner.source.common.util.*;
 import com.soooner.source.common.util.DateUtil;
 import com.soooner.source.entity.EPlayerData;
+import com.soooner.source.entity.EPlayerPlayModelType;
 import com.soooner.source.entity.PicUrl;
 import com.soooner.source.entity.Prainse;
 import com.soooner.source.entity.SessionData.*;
@@ -1089,6 +1090,15 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
         }else {
 
             playerData =  new    EPlayerData();
+        }
+
+        /*
+            @fix by suju
+         */
+        if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){
+            EplayerSetting.isPlayback = true;
+        }else{
+            EplayerSetting.isPlayback = false;
         }
 
         playerControllerView= (PlayerControllerView) findViewById(R.id.playerControllerView);

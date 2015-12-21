@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ProgressBar
+        android:id="@+id/pb_loading"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/progress_bar_status"
         android:layout_alignParentTop="true"
-        android:id="@+id/pb_loading" />
+        android:progressDrawable="@drawable/progress_bar_status" />
 
     <com.edusoho.kuozhi.v3.view.webview.ESWebView
         android:id="@+id/webView"

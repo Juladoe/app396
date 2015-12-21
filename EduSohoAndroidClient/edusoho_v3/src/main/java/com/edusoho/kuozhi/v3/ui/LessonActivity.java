@@ -23,7 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonStatus;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -44,6 +44,9 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
+import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -319,9 +322,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         initLessonIds();
         initRedirectBtn();
         int userId = app.loginUser == null ? 0 : app.loginUser.id;
-        M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
+        M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                 mContext, userId, mLessonId, app.domain, M3U8Util.FINISH);
-        mFromCache = m3U8DbModle != null;
+        mFromCache = m3U8DbModel != null;
         if (mFromCache) {
             try {
                 loadLessonFromCache();
@@ -454,7 +457,23 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             default:
                 LessonItem<String> normalLesson = lessonItem;
                 if (mFromCache) {
-                    normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                    if (lessonItem.mediaUri.contains("getLocalVideo")) {
+                        StringBuffer dirBuilder = new StringBuffer(EdusohoApp.getWorkSpace().getAbsolutePath());
+                        dirBuilder.append("/videos/")
+                                .append(app.loginUser.id)
+                                .append("/")
+                                .append(app.domain)
+                                .append("/")
+                                .append(mLessonId).append("/").append(DigestUtils.md5(lessonItem.mediaUri));
+                        if (FileUtils.isFileExist(dirBuilder.toString())) {
+                            normalLesson.mediaUri = dirBuilder.toString();
+                        } else {
+                            CommonUtil.longToast(mContext, "视频文件不存在");
+                            return null;
+                        }
+                    } else {
+                        normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                    }
                 }
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, normalLesson.content);
@@ -537,7 +556,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private boolean getM3U8Cache(int lessonId) {
-        M3U8DbModle model = M3U8Util.queryM3U8Modle(mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.FINISH);
+        M3U8DbModel model = M3U8Util.queryM3U8Model(mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.FINISH);
         return model != null;
     }
 

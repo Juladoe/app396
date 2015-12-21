@@ -27,6 +27,7 @@ import com.soooner.playback.entity.EPlaybackSessionInfo;
 import com.soooner.source.common.net.Protocol;
 import com.soooner.source.common.util.*;
 import com.soooner.source.entity.EPlayerData;
+import com.soooner.source.entity.EPlayerPlayModelType;
 import com.soooner.source.entity.Prainse;
 import com.soooner.source.entity.SessionData.*;
 import com.soooner.source.entity.SessionData.LivaRoomInfo.LiveRoomInfoData;
@@ -1118,6 +1119,15 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         }else {
 
             playerData =  new    EPlayerData();
+        }
+
+        /*
+            @fix by suju
+         */
+        if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){
+            EplayerSetting.isPlayback = true;
+        }else{
+            EplayerSetting.isPlayback = false;
         }
 
         if (EplayerSetting.isPlayback){

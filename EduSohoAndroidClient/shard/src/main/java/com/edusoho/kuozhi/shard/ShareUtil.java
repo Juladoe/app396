@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
@@ -36,7 +35,7 @@ public class ShareUtil {
 
     private ShareUtil(Context context) {
         //添加应用信息
-        ShareSDK.initSDK(context);
+        new ShareSDKUtil().initSDK(context);
         mContext = context;
     }
 

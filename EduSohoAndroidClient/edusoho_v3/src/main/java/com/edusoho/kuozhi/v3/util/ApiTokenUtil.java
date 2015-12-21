@@ -28,9 +28,9 @@ public class ApiTokenUtil {
         return requestUrl;
     }
 
-    public static Map<String,?> getToken(Context context) {
+    public static Map<String,String> getToken(Context context) {
         SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
-        return sp.getAll();
+        return (Map<String,String>) sp.getAll();
     }
 
     public static void saveApiToken(Context context, String apiToken) {

@@ -70,16 +70,6 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @Override
-    public Context getBaseContext() {
-        return AppUtil.contextAddAssets(super.getBaseContext());
-    }
-
-    @Override
-    public AssetManager getAssets() {
-        return getBaseContext().getAssets();
-    }
-
-    @Override
     public void startActivity(Intent intent) {
 
         ComponentName componentName = intent.getComponent();
@@ -117,10 +107,16 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void hideActionBar() {
+        if (mActionBar == null) {
+            return;
+        }
         mActionBar.hide();
     }
 
     public void showActionBar() {
+        if (mActionBar == null) {
+            return;
+        }
         mActionBar.show();
     }
 
@@ -241,7 +237,6 @@ public class BaseActivity extends ActionBarActivity {
             value = mActivity.gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
-            e.printStackTrace();
             return value;
         }
 

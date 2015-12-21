@@ -173,7 +173,7 @@ public class ArticleFragment extends BaseFragment {
         app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(WebViewActivity.URL, url);
+                startIntent.putExtra(Const.WEB_URL, url);
             }
         });
     }

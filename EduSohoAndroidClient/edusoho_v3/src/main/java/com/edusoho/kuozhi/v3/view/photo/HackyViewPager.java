@@ -1,11 +1,8 @@
 package com.edusoho.kuozhi.v3.view.photo;
 
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewParent;
 
 /**
@@ -26,6 +23,7 @@ public class HackyViewPager extends ViewPager {
     private int isDown = 1;
     private float mLastMotionX;
     private float mLastMotionY;
+    private OnClickListener mViewPagerClickListener;
 
     public HackyViewPager(Context context) {
         super(context);
@@ -78,11 +76,20 @@ public class HackyViewPager extends ViewPager {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                float delayY = y - mLastMotionY;
+                float delayX = x - mLastMotionX;
+                if (Math.abs(delayX) < 100 && Math.abs(delayY) < 100 && mViewPagerClickListener != null) {
+                    mViewPagerClickListener.onClick(this);
+                }
             case MotionEvent.ACTION_CANCEL:
                 parent.requestDisallowInterceptTouchEvent(false);
                 break;
         }
-
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        mViewPagerClickListener = l;
     }
 }

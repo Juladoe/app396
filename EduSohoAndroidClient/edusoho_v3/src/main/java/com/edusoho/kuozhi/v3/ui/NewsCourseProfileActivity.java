@@ -84,7 +84,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
         }
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnFail(R.drawable.default_avatar).build();
+                showImageOnFail(R.drawable.default_course).build();
 
         New entity = newsCourseDataSource.getNew(mCourseId, app.loginUser.id);
         setBackMode(BACK, entity.getTitle());
@@ -121,7 +121,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_LEARN_COURSE, mCourseId));
-                        startIntent.putExtra(WebViewActivity.URL, url);
+                        startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });
             }

@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -115,7 +116,7 @@ public class SwipeAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(mLayoutId, null);
             viewHolder = new ViewHolder(convertView);
@@ -123,33 +124,29 @@ public class SwipeAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        New item = mList.get(position);
-        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions);
-        if (item.unread == 0) {
-            viewHolder.bvUnread.setVisibility(View.GONE);
-        } else {
-            viewHolder.bvUnread.setVisibility(View.VISIBLE);
-            viewHolder.bvUnread.setText(String.valueOf(item.unread));
-        }
+        final New item = mList.get(position);
+        ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions, new AvatarLoadingListener(item.type));
 
-        if (PushUtil.CourseType.TYPE.equals(item.type)) {
-            viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.news_course_title));
-        } else {
-            viewHolder.tvTitle.setTextColor(mContext.getResources().getColor(R.color.base_black_87));
-        }
+        viewHolder.bvUnread.setBadgeCount(item.unread);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.tvTitle.getLayoutParams();
         switch (item.type) {
             case PushUtil.ChatUserType.TEACHER:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("老师");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.green_alpha));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_teacher_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             case PushUtil.ChatUserType.CLASSROOM:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
                 viewHolder.tvRole.setText("班级");
-                viewHolder.tvRole.setTextColor(mContext.getResources().getColor(R.color.blue_alpha));
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_classroom_bg);
+                layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
+                break;
+            case PushUtil.ChatUserType.COURSE:
+                viewHolder.tvRole.setVisibility(View.VISIBLE);
+                viewHolder.tvRole.setText("课程");
+                viewHolder.tvRole.setBackgroundResource(R.drawable.role_course_bg);
                 layoutParams.addRule(RelativeLayout.LEFT_OF, 0);
                 break;
             default:

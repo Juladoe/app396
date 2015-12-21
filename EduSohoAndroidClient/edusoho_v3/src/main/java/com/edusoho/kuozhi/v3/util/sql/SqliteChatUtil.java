@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.util.AssetsUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by JesseHuang on 15/7/1.
  */
 public class SqliteChatUtil extends SQLiteOpenHelper {
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
     private static String mCurDbName;
     private static SqliteChatUtil instance;
     private Context mContext;
@@ -68,7 +69,7 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
         BufferedReader reader = null;
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            inputStream = mContext.getAssets().open(name);
+            inputStream = AssetsUtil.open(mContext, name);
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {

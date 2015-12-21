@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -20,7 +21,6 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 public class WebViewActivity extends ActionBarBaseActivity {
 
     private final static String TAG = "WebViewActivity";
-    public final static String URL = "data";
     public final static int CLOSE = 0x01;
     public final static int BACK = 0x02;
 
@@ -41,7 +41,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     public void initCordovaWebView() {
         Intent intent = getIntent();
         if (intent != null) {
-            url = intent.getStringExtra(URL);
+            url = intent.getStringExtra(Const.WEB_URL);
         }
 
         if (TextUtils.isEmpty(url)) {

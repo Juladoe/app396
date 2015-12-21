@@ -30,7 +30,7 @@ import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.DownloadingFragment;
@@ -255,8 +255,8 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         LocalCourseModel model = new LocalCourseModel();
 
         final ArrayList<LessonItem> lessonItems = new ArrayList<LessonItem>();
-        SqliteUtil.QueryPaser<ArrayList<LessonItem>> queryPaser;
-        queryPaser = new SqliteUtil.QueryPaser<ArrayList<LessonItem>>() {
+        SqliteUtil.QueryParser<ArrayList<LessonItem>> queryParser;
+        queryParser = new SqliteUtil.QueryParser<ArrayList<LessonItem>>() {
             @Override
             public ArrayList<LessonItem> parse(Cursor cursor) {
                 String value = cursor.getString(cursor.getColumnIndex("value"));
@@ -280,7 +280,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             lessonIdQuery.append(")");
         }
         mSqliteUtil.query(
-                queryPaser,
+                queryParser,
                 "select * from data_cache where type=?" + lessonIdQuery.toString(),
                 Const.CACHE_LESSON_TYPE
         );
@@ -300,7 +300,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                 }
             });
 
-            model.m3U8DbModles = M3U8Util.getM3U8ModleList(
+            model.m3U8DbModles = M3U8Util.getM3U8ModelList(
                     mContext, ids, app.loginUser.id, this.host, isFinish);
             for (LessonItem lessonItem : lessonItems) {
                 if (model.m3U8DbModles.indexOfKey(lessonItem.id) < 0) {
@@ -328,20 +328,20 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     }
 
     private void filterLessons(
-            int isFinish, ArrayList<LessonItem> lessonItems, SparseArray<M3U8DbModle> m3U8Models) {
+            int isFinish, ArrayList<LessonItem> lessonItems, SparseArray<M3U8DbModel> m3U8Models) {
         Iterator<LessonItem> iterator = lessonItems.iterator();
         while (iterator.hasNext()) {
             LessonItem item = iterator.next();
-            M3U8DbModle m3U8DbModle = m3U8Models.get(item.id);
-            if (m3U8DbModle != null && m3U8DbModle.finish != isFinish) {
+            M3U8DbModel m3U8DbModel = m3U8Models.get(item.id);
+            if (m3U8DbModel != null && m3U8DbModel.finish != isFinish) {
                 iterator.remove();
             }
         }
     }
 
     private Course getLocalCourse(int courseId) {
-        SqliteUtil.QueryPaser<Course> queryPaser;
-        queryPaser = new SqliteUtil.QueryPaser<Course>() {
+        SqliteUtil.QueryParser<Course> queryParser;
+        queryParser = new SqliteUtil.QueryParser<Course>() {
             @Override
             public Course parse(Cursor cursor) {
                 String value = cursor.getString(cursor.getColumnIndex("value"));
@@ -353,13 +353,13 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             }
 
             @Override
-            public boolean isSignle() {
+            public boolean isSingle() {
                 return true;
             }
         };
 
         Course course = mSqliteUtil.query(
-                queryPaser,
+                queryParser,
                 "select * from data_cache where type=? and key=?",
                 Const.CACHE_COURSE_TYPE,
                 "course-" + courseId
@@ -406,7 +406,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         if (service != null) {
             service.cancelAllDownloadTask();
             for (int id : ids) {
-                service.cancleDownloadTask(id);
+                service.cancelDownloadTask(id);
             }
         }
 
@@ -457,7 +457,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
 
     public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
-        public SparseArray<M3U8DbModle> m3U8DbModles;
+        public SparseArray<M3U8DbModel> m3U8DbModles;
         public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
 
         public LocalCourseModel() {

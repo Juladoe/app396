@@ -194,7 +194,7 @@ public class DownLoadService extends Service {
     }
 
     public static LessonResource queryDownTask(EdusohoApp app, int materialId) {
-        SqliteUtil.QueryPaser<LessonResource> queryPaser = new SqliteUtil.QueryPaser<LessonResource>() {
+        SqliteUtil.QueryParser<LessonResource> queryParser = new SqliteUtil.QueryParser<LessonResource>() {
             @Override
             public LessonResource parse(Cursor cursor) {
                 LessonResource resource = new LessonResource();
@@ -210,7 +210,7 @@ public class DownLoadService extends Service {
 
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(app);
         return sqliteUtil.query(
-                queryPaser,
+                queryParser,
                 "select * from lesson_resource where materialId=? and userId=? and host=?",
                 String.valueOf(materialId),
                 String.valueOf(app.loginUser.id),
@@ -253,7 +253,7 @@ public class DownLoadService extends Service {
 
     public static SparseArray<LessonResource> queryAllDownloadStatus(EdusohoApp app, int lessonId) {
         final SparseArray<LessonResource> list = new SparseArray<LessonResource>();
-        SqliteUtil.QueryPaser<LessonResource> queryPaser = new SqliteUtil.QueryPaser<LessonResource>() {
+        SqliteUtil.QueryParser<LessonResource> queryParser = new SqliteUtil.QueryParser<LessonResource>() {
             @Override
             public LessonResource parse(Cursor cursor) {
                 LessonResource resource = new LessonResource();
@@ -270,7 +270,7 @@ public class DownLoadService extends Service {
         };
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(app);
         sqliteUtil.query(
-                queryPaser,
+                queryParser,
                 "select * from lesson_resource where lessonId=? and host=? and userId=?",
                 String.valueOf(lessonId),
                 app.domain,

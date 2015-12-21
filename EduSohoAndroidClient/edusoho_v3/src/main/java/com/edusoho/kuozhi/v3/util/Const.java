@@ -86,6 +86,7 @@ public class Const {
     public static final String GET_PUSH_DATA = "get_push_data";
     public static final String FROM_ID = "from_id";
     public static final String NEWS_TYPE = "news_type";
+    public static final String NEW_ITEM_INFO = "new_item_info";
 
     //public static final int ADD_DISCUSS_MSG = 1;
     public static final int ADD_MSG = 2;
@@ -115,6 +116,7 @@ public class Const {
     public static final String REFRESH_REVIEWS = "refresh_review";
     public static final String REFRESH_FRIEND_LIST = "refresh_friend_list";
     public static final String CLEAR_HISTORY = "clear_history";
+    public static final String DELETE_FRIEND = "delete_friend";
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
@@ -269,7 +271,6 @@ public class Const {
     public static final int PUSH_VERSION = 2;
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "http://tui.edusoho.net/v2";
-//    public static final String PUSH_HOST = "http://115.29.78.158:94/v2";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
     public static final String UNBIND = "/auth/unBind";
@@ -343,7 +344,6 @@ public class Const {
 
     public static final String QUESTION_URL = "question_url";
     public static final String COURSE_ID = "courseId";
-    public static final String URL = "url";
     public static final String QUESTION_USER_ID = "question_user_id";
     public static final String TESTPAPER_DO_TYPE = "do_type";
     public static final String FREE = "free";
@@ -357,6 +357,7 @@ public class Const {
     public static final String MEDIA_SOURCE = "mediaSource";
     public static final String LESSON_TYPE = "type";
     public static final String ACTIONBAR_TITLE = "title";
+    public static final String ENTITY = "ENTITY";
     public static final String IS_STUDENT = "is_student";
     public static final String LIST_JSON = "list_json";
     public static final String IS_LEARN = "is_learn";
@@ -421,6 +422,7 @@ public class Const {
      * html5 url
      */
 
+    public static final String WEB_URL = "web_url";
     public static final String MY_LEARN = "main#/mylearn";
     public static final String VIP_LIST = "main#/viplist";
     public static final String MY_INFO = "main#/myinfo";
@@ -430,8 +432,12 @@ public class Const {
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
     public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";
+    public static final String COURSE_ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String CLASSROOM_COURSES = "main#/classroom/%d";
     public static final String CLASSROOM_MEMBER_LIST = "main#/studentlist/classroom/%d";
+    public static final String COURSE_MEMBER_LIST = "main#/studentlist/course/%d";
+    public static final String TEACHER_MANAGERMENT = "main#/todolist/%d";
+
 
     public static final String HAVE_ADD_TRUE = "friend";
     public static final String HAVE_ADD_FALSE = "none";
@@ -450,7 +456,8 @@ public class Const {
     public static final String GET_SCHOOL_APP = "/api/mobileschools/app/%d";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
     public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
-    public static final String CLASSROOM_ALL_MEMBERS = "/api/classrooms/%d/members";
+    public static final String CLASSROOM_MEMBERS = "/api/classrooms/%d/members";
+    public static final String COURSE_MEMBERS = "/api/courses/%d/members";
 
     /**
      * 绑定第三方登录

@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
@@ -51,6 +52,7 @@ public class ExerciseOptionDialog extends Dialog {
         Bundle bundle = new Bundle();
         bundle.putInt("lessonId", mLessonId);
         Intent intent = new Intent();
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(Const.LESSON_ID, mLessonId);
         intent.setAction(Const.LESSON_PLUGIN);
 
@@ -58,7 +60,7 @@ public class ExerciseOptionDialog extends Dialog {
                 intent, PackageManager.GET_ACTIVITIES);
         for (ResolveInfo resolveInfo : resolveInfos) {
             GridViewItem item = new GridViewItem();
-            item.iconRes = resolveInfo.loadIcon(mContext.getPackageManager());
+            item.iconRes = mContext.getResources().getDrawable(resolveInfo.activityInfo.icon);
             item.title = resolveInfo.loadLabel(mContext.getPackageManager()).toString();
             item.bundle = intent.getExtras();
             item.action = resolveInfo.activityInfo.name;
@@ -150,6 +152,7 @@ public class ExerciseOptionDialog extends Dialog {
                 view = inflater.inflate(mResouce, null);
                 holder = new ViewHolder();
                 holder.itemView = (TextView) view.findViewById(R.id.lesson_gridview_item);
+                holder.itemLoad = view.findViewById(R.id.lesson_gridview_load);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
@@ -157,23 +160,47 @@ public class ExerciseOptionDialog extends Dialog {
 
             holder.itemView.setText(item.title);
             holder.itemView.setCompoundDrawablesWithIntrinsicBounds(null, item.iconRes, null, null);
+            switch (item.status) {
+                case GridViewItem.LOAD:
+                    setViewStatus(holder, view, false);
+                    holder.itemLoad.setVisibility(View.VISIBLE);
+                    break;
+                case GridViewItem.UNENABLE:
+                    setViewStatus(holder, view, false);
+                    holder.itemLoad.setVisibility(View.GONE);
+                    break;
+                case GridViewItem.ENABLE:
+                    setViewStatus(holder, view, true);
+                    holder.itemLoad.setVisibility(View.GONE);
 
-            item.callback.initPlugin(view, item.bundle);
+            }
+            item.callback.initPlugin(this, index);
             return view;
+        }
+
+        private void setViewStatus(ViewHolder holder, View view, boolean status) {
+            view.setEnabled(status);
+            holder.itemView.setEnabled(status);
         }
 
         private class ViewHolder
         {
             public TextView itemView;
+            public View itemLoad;
         }
     }
 
-    private class GridViewItem {
+    public class GridViewItem {
+
+        public static final int LOAD = 0001;
+        public static final int ENABLE = 0002;
+        public static final int UNENABLE = 0003;
 
         public Drawable iconRes;
         public String title;
         public String action;
         public Bundle bundle;
+        public int status;
         public LessonPluginCallback callback;
     }
 

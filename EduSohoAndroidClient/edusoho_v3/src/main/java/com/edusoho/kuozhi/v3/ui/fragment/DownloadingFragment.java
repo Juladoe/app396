@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
@@ -126,7 +126,7 @@ public class DownloadingFragment extends BaseFragment {
     }
 
     private void updateLocalCourseList(int lessonId) {
-        M3U8DbModle m3u8Model = M3U8Util.queryM3U8Modle(
+        M3U8DbModel m3u8Model = M3U8Util.queryM3U8Model(
                 mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
         if (m3u8Model.finish == M3U8Util.FINISH) {
             if (mActivityContainer != null) {

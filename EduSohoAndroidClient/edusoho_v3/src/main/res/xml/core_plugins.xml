@@ -76,6 +76,11 @@
         version="1.0" />
 
     <plugin
+        name="CourseDetailActivity"
+        package="com.edusoho.kuozhi.v3.ui.CourseDetailActivity"
+        version="1.0" />
+
+    <plugin
         name="NewsCourseActivity"
         package="com.edusoho.kuozhi.v3.ui.NewsCourseActivity"
         version="1.0" />
@@ -124,6 +129,27 @@
         name="FindFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.FindFragment"
         version="1.0" />
+
+    <plugin
+        name="MineFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MineFragment"
+        version="1.0" />
+
+    <plugin
+        name="DiscussFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseStudyFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseStudyFragment"
+        version="1.0" />
+
+    <plugin
+        name="TeachFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.TeachFragment"
+        version="1.0" />
+
 
     <plugin
         name="PptLessonFragment"
@@ -328,5 +354,11 @@
         name="GroupSelectFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.GroupSelectFragment"
         version="1.0" />
+
+    <plugin
+        name="ExerciseParseActivity"
+        package="com.edusoho.kuozhi.homework.ExerciseParseActivity"
+        version="1.0" />
+
 
 </plugins>

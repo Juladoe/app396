@@ -67,8 +67,6 @@ public class HomeWorkQuestionFragment extends BaseFragment implements ViewPager.
     protected ViewPager mHomeworkQuestionPager;
     private IHomeworkQuestionResult mQuestionResult;
 
-    private String mType;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +91,7 @@ public class HomeWorkQuestionFragment extends BaseFragment implements ViewPager.
         mQuestionTitleView.setText(getArguments().getString(Const.ACTIONBAR_TITLE));
         List<HomeWorkQuestion> questionList = mQuestionResult.getQuestionList();
         mHomeworkQuestionCount = questionList.size();
-        HomeworkQuestionAdapter adapter = new HomeworkQuestionAdapter(mContext, questionList);
+        HomeworkQuestionAdapter adapter = new HomeworkQuestionAdapter(mQuestionResult.getType(), mContext, questionList);
         mHomeworkQuestionPager.setAdapter(adapter);
         setHomeworkIndex(mCurrentIndex = 1);
     }

@@ -24,9 +24,8 @@ import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.DownLessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.UploadFile;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -91,7 +90,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             if (lessonId == 0) {
                 return;
             }
-            M3U8DbModle m3u8Model = M3U8Util.queryM3U8Modle(
+            M3U8DbModel m3u8Model = M3U8Util.queryM3U8Model(
                     mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
             if (mAdapter != null) {
                 mAdapter.updateDownloadSign(lessonId, m3u8Model);
@@ -296,18 +295,11 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         while (lessonItemIterator.hasNext()) {
             LessonItem lessonItem = lessonItemIterator.next();
             CourseLessonType type = CourseLessonType.value(lessonItem.type);
-            if (type == CourseLessonType.VIDEO &&
-                    "published".equals(lessonItem.status) &&
-                    "self".equals(lessonItem.mediaSource)) {
-                UploadFile uploadFile = lessonItem.uploadFile;
-                if (uploadFile == null || "cloud".equals(uploadFile.storage)) {
-                    continue;
+            if (!(type == CourseLessonType.VIDEO && "published".equals(lessonItem.status) && "self".equals(lessonItem.mediaSource))) {
+                //非章、非节，删除
+                if (!lessonItem.itemType.toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
+                    lessonItemIterator.remove();
                 }
-            }
-
-            //非章、非节，删除
-            if (!lessonItem.itemType.toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
-                lessonItemIterator.remove();
             }
         }
     }
@@ -332,11 +324,11 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         idStr.append(")");
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
 
-        final SparseArray<M3U8DbModle> m3U8DbModels = M3U8Util.getM3U8ModleList(
+        final SparseArray<M3U8DbModel> m3U8DbModels = M3U8Util.getM3U8ModelList(
                 mContext, ids, app.loginUser.id, app.domain, M3U8Util.ALL);
 
-        SqliteUtil.QueryPaser<SparseArray<DownloadStatus>> queryPaser;
-        queryPaser = new SqliteUtil.QueryPaser<SparseArray<DownloadStatus>>() {
+        SqliteUtil.QueryParser<SparseArray<DownloadStatus>> queryParser;
+        queryParser = new SqliteUtil.QueryParser<SparseArray<DownloadStatus>>() {
             @Override
             public SparseArray<DownloadStatus> parse(Cursor cursor) {
                 String value = cursor.getString(cursor.getColumnIndex("value"));
@@ -353,7 +345,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         };
 
         sqliteUtil.query(
-                queryPaser,
+                queryParser,
                 "select * from data_cache where type=? and key in " + idStr.toString(),
                 Const.CACHE_LESSON_TYPE
         );
@@ -389,11 +381,6 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                         CommonUtil.longToast(mContext, "暂不支持本地视频下载!");
                         return;
                     }
-                } else {
-                    if ("local".equals(listItem.uploadFile.storage)) {
-                        CommonUtil.longToast(mContext, "暂不支持本地视频下载!");
-                        return;
-                    }
                 }
 
                 saveCache(
@@ -409,16 +396,16 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                         app.gson.toJson(mCourse)
                 );
 
-                M3U8DbModle m3U8DbModle = M3U8Util.queryM3U8Modle(
+                M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                         mContext, app.loginUser.id, lessonItem.id, app.domain, M3U8Util.ALL);
-                if (m3U8DbModle != null) {
+                if (m3U8DbModel != null) {
                     return;
                 }
-                m3U8DbModle = M3U8Util.saveM3U8Model(
+                m3U8DbModel = M3U8Util.saveM3U8Model(
                         mContext, lessonItem.id, app.domain, app.loginUser.id);
                 M3U8DownService.startDown(
                         mContext, lessonItem.id, lessonItem.courseId, lessonItem.title);
-                mAdapter.updateDownloadSign(lessonItem.id, m3U8DbModle);
+                mAdapter.updateDownloadSign(lessonItem.id, m3U8DbModel);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -453,7 +440,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             mChildItems = childItems;
         }
 
-        public void updateDownloadSign(int lessonId, M3U8DbModle model) {
+        public void updateDownloadSign(int lessonId, M3U8DbModel model) {
             for (List<LessonItem> itemList : mChildItems) {
                 for (LessonItem lessonItem : itemList) {
                     if (lessonItem.id == lessonId) {

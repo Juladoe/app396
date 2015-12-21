@@ -58,12 +58,9 @@ public class FriendFragmentTest extends BaseFragmentTestCase<FriendFragmentTest.
         ListAdapter adapter = headAdapter.getWrappedAdapter();
         assertNotNull(adapter);
 
-        assertEquals(12, adapter.getCount());
-        SchoolApp app = (SchoolApp) adapter.getItem(1);
-        assertNotNull(app);
-        assertEquals("edusoho", app.name);
+        assertEquals(11, adapter.getCount());
 
-        Friend friend1 = (Friend) adapter.getItem(2);
+        Friend friend1 = (Friend) adapter.getItem(1);
         assertNotNull(friend1);
         assertEquals("nickname-1",friend1.nickname);
         assertEquals(1,friend1.id);

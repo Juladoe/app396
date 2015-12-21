@@ -56,10 +56,20 @@ public class HomeworkCardAdapter extends BaseAdapter {
 
         TextView mText = (TextView) view;
         List<String> answers = mList.get(i).getAnswer();
-        mText.setBackgroundResource(answers == null ? R.drawable.hw_card_item_bg : R.drawable.hw_card_item_bg_pressed);
-        mText.setTextColor(mContext.getResources().getColor(answers == null ? R.color.primary : R.color.white));
+        boolean isNoAnswer = (answers == null)?true:isFillEmpty(answers);
+        mText.setBackgroundResource(isNoAnswer ? R.drawable.hw_card_item_bg : R.drawable.hw_card_item_bg_pressed);
+        mText.setTextColor(mContext.getResources().getColor(isNoAnswer ? R.color.primary : R.color.white));
         mText.setText(String.valueOf(i + 1));
         return view;
+    }
+
+    private boolean isFillEmpty(List<String> list){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).length()!=0){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

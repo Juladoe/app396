@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.v3.model.bal.Lesson;
 
 
-import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModle;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 
 import java.io.Serializable;
 
@@ -42,7 +42,7 @@ public class LessonItem<T> implements Serializable {
     public String endTime;
     public String replayStatus;
 
-    public M3U8DbModle m3u8Model;
+    public M3U8DbModel m3u8Model;
     public boolean isSelected;
     public int groupId;
 

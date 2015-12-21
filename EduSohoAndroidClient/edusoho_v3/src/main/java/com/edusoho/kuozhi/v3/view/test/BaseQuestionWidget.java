@@ -32,6 +32,8 @@ import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by howzhi on 14-9-29.
@@ -106,7 +108,6 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
                 );
         }
 
-        int width = EdusohoApp.screenW - AppUtil.dp2px(mContext, 30) - 10;
         return Html.fromHtml(
                 stem,
                 new EduImageGetterHandler(mContext, stemView),
@@ -125,6 +126,14 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
 
     protected String listToStr(ArrayList<String> arrayList) {
         StringBuilder stringBuilder = new StringBuilder();
+        Collections.sort(arrayList, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                int l = AppUtil.parseInt(lhs);
+                int r = AppUtil.parseInt(rhs);
+                return l - r;
+            }
+        });
         for (String answer : arrayList) {
             if (TextUtils.isEmpty(answer)) {
                 continue;

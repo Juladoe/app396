@@ -2,28 +2,19 @@ package com.edusoho.kuozhi.homework;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.homework.listener.BaseLessonPluginCallback;
-import com.edusoho.kuozhi.homework.model.ExerciseModel;
-import com.edusoho.kuozhi.homework.model.ExerciseProvider;
-import com.edusoho.kuozhi.homework.model.ExerciseResult;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeWorkResult;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
-import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
+import com.edusoho.kuozhi.v3.listener.BaseLessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -49,6 +40,8 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     private Bundle mBundle;
     private HomeworkProvider mHomeworkProvider;
 
+    private FrameLayout mLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +52,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         mLessonId = mBundle == null ? 0 : mBundle.getInt(Const.LESSON_ID);
         mType = HOMEWORK;
         setContentView(R.layout.homework_summary_layout);
+        mLoading = (FrameLayout) findViewById(R.id.load_layout);
         ModelProvider.init(getBaseContext(), this);
         initView();
     }
@@ -76,6 +70,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         }
 
         Bundle bundle = getIntent().getExtras();
+        bundle.putString("type", mType);
         loadFragment(bundle, fragmentName);
     }
 
@@ -83,6 +78,9 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = Fragment.instantiate(getBaseContext(), fragmentName);
+            if (bundle.getString(TYPE) == null){
+                bundle.putString(TYPE,"homework");
+            }
             fragment.setArguments(bundle);
             fragmentTransaction.replace(android.R.id.content, fragment);
             fragmentTransaction.commit();
@@ -99,18 +97,17 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     private void loadHomeWork() {
         String url = String.format(Const.HOMEWORK_RESULT, mLessonId);
         RequestUrl requestUrl = app.bindNewUrl(url, true);
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
-        loadDialog.show();
+        mLoading.setVisibility(View.VISIBLE);
         mHomeworkProvider.getHomeWorkResult(requestUrl, false).success(new NormalCallback<HomeWorkResult>() {
             @Override
             public void success(HomeWorkResult homeWorkModel) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
                 renderHomeworkView(homeWorkModel);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                loadDialog.dismiss();
+                mLoading.setVisibility(View.GONE);
             }
         });
     }
@@ -146,6 +143,19 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        protected void loadPlugin(Bundle bundle) {
+            int lessonId = bundle.getInt(Const.LESSON_ID, 0);
+            RequestUrl requestUrl = getRequestUrl(lessonId);
+            HomeworkProvider provider = ModelProvider.initProvider(mContext, HomeworkProvider.class);
+            provider.getHomeWork(requestUrl).success(new NormalCallback<HomeWorkModel>() {
+                @Override
+                public void success(HomeWorkModel homeWorkModel) {
+                    setViewStatus(homeWorkModel != null && homeWorkModel.getId() != 0);
+                }
+            }).fail(this);
         }
     }
 }

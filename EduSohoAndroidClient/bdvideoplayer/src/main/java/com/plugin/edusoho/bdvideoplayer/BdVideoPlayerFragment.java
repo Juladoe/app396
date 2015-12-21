@@ -2,12 +2,16 @@ package com.plugin.edusoho.bdvideoplayer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.*;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +29,11 @@ import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
 import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
+
+import org.w3c.dom.Text;
+
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -174,7 +183,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     break;
                 case EVENT_REPLAY:
                     Log.d(TAG, "EVENT_REPLAY");
-                    mVV.start();
+                    startVideo();
                     mVV.seekTo(mLastPos);
                     mLastPos = 0;
                     break;
@@ -226,7 +235,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         /**
          * 开始播放
          */
-        mVV.start();
+        startVideo();
 
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
     }
@@ -241,10 +250,116 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         /**
          * 开始播放
          */
-        mVV.start();
+
+        startVideo();
 
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_START;
+    }
+
+    private String getCpuType() {
+        String CPU_ABI = android.os.Build.CPU_ABI;
+        if (TextUtils.isEmpty(CPU_ABI)) {
+            CPU_ABI = Build.CPU_ABI2;
+        }
+
+        return TextUtils.isEmpty(CPU_ABI) ? "" : CPU_ABI;
+    }
+
+    private void showAlertDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog alertDialog = builder.setTitle("播放提示")
+                .setMessage(message)
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        getActivity().finish();
+                    }
+                })
+                .create();
+        alertDialog.show();
+    }
+
+    protected void startVideo() {
+        try {
+            chackVideoCanPlayer();
+            mVV.start();
+        } catch (Exception e) {
+            Log.d(TAG, "error:" + e.getMessage());
+        }
+    }
+
+    private int getCpuBit() {
+        int cupBit;
+        try {
+            Field SUPPORTED_64_BIT_ABIS_FIELD = android.os.Build.class.getField("SUPPORTED_64_BIT_ABIS");
+            SUPPORTED_64_BIT_ABIS_FIELD.setAccessible(true);
+            String[] SUPPORTED_64_BIT_ABIS = (String[])  SUPPORTED_64_BIT_ABIS_FIELD.get(null);
+            cupBit = SUPPORTED_64_BIT_ABIS == null || SUPPORTED_64_BIT_ABIS.length == 0 ? 32 : 64;
+        } catch (Exception e) {
+            cupBit = 32;
+        }
+
+        return cupBit;
+    }
+
+    private void chackVideoCanPlayer() {
+        String CPU_ABI = getCpuType();
+        if (CPU_ABI.contains("x86")) {
+            File libDir = mContext.getDir("x86lib", Context.MODE_PRIVATE);
+            if (new File(libDir, "libcyberplayer.so").exists()) {
+                return;
+            }
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    updateSoLib();
+                }
+            });
+            throw new RuntimeException("not_support");
+        }
+    }
+
+    private void updateSoLib() {
+        final ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Log.d(TAG, "" + Thread.currentThread());
+        new AsyncTask<Integer, Integer, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Integer... params) {
+                SoLibManager.DownProcessListener listener = new SoLibManager.DownProcessListener() {
+                    @Override
+                    public void update(int count, int process) {
+                        publishProgress(count, process);
+                    }
+                };
+                return new SoLibManager(listener).downPlayerSoLib("x86", mContext);
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                Log.d(TAG, "" + Thread.currentThread());
+                progressDialog.setMessage(String.format(
+                        "正在下载解码包:%s/%s"
+                        , Formatter.formatFileSize(mContext, values[0]),
+                        Formatter.formatFileSize(mContext, values[1])
+                ));
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if (aBoolean) {
+                    progressDialog.cancel();
+                    showAlertDialog("解码库更新完成，请重新打开视频播放");
+                    return;
+                }
+                showAlertDialog("暂不支持在该设备上播放视频");
+            }
+
+        }.execute(0);
     }
 
     private Timer autoHideTimer;
@@ -327,7 +442,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(null, "bd fragment create");
+        Log.d(TAG, "bd fragment create");
         mContext = getActivity();
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
@@ -336,16 +451,24 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         Bundle bundle = getArguments();
         mIsHwDecode = bundle.getBoolean("isHW", false);
         isCacheVideo = bundle.getBoolean("from_cache", false);
-        Log.d(null, "isCacheVideo " + isCacheVideo);
-        mSoLibDir = bundle.getString("soLibDir");
-        mDecodeMode = bundle.getInt("decode", BVideoView.DECODE_SW);
+        Log.d(TAG, "isCacheVideo " + isCacheVideo);
 
+        initSoLib();
         mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
-        mVideoHead = getUrlPath(bundle.getString("headUrl"));
 
+        int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
+        mDecodeMode = bundle.getInt("decode", decodeMode);
+        mVideoHead = getUrlPath(bundle.getString("headUrl"));
         autoHideTimer = new Timer();
 
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
+    }
+
+    private void initSoLib() {
+        File libDir = mContext.getDir(getCpuType() + "lib", Context.MODE_PRIVATE);
+        if (new File(libDir, "libcyberplayer.so").exists()) {
+            mSoLibDir = libDir.getAbsolutePath();
+        }
     }
 
     private String getUrlPath(String uriPath) {
@@ -362,7 +485,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 playUrl = uri.getPath();
             }
         }
-        Log.d(null, "playUrl->" + playUrl);
+        Log.d(TAG, "playUrl->" + playUrl);
         return playUrl;
     }
 
@@ -385,10 +508,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
          * 设置ak及sk的前16位
          */
         BVideoView.setAKSK(AK, SK);
-        if (mSoLibDir != null && !BdPlayerManager.NORMAL_LIB_DIR.equals(mSoLibDir)) {
+        if (!TextUtils.isEmpty(mSoLibDir)) {
             BVideoView.setNativeLibsDirectory(mSoLibDir);
         }
-
         /**
          *创建BVideoView和BMediaController
          */
@@ -431,6 +553,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
          */
 
         mVV.setDecodeMode(mDecodeMode);
+        if (mDecodeMode == BVideoView.DECODE_HW) {
+            mVV.setVideoScalingMode(BVideoView.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+        }
         mController.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

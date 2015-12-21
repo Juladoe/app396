@@ -30,6 +30,10 @@ public class LoadDialog extends Dialog {
         initView();
     }
 
+    public void setTextVisible(int visible) {
+        loading_txt.setVisibility(visible);
+    }
+
     public static LoadDialog create(Context context) {
         return new LoadDialog(context, R.style.loadDlgTheme);
     }

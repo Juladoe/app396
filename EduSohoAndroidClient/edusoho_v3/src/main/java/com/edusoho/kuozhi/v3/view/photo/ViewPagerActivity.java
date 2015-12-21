@@ -12,6 +12,7 @@ import android.view.ViewGroup.LayoutParams;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import photoview.PhotoView;
 public class ViewPagerActivity extends ActionBarBaseActivity {
 
     private ViewPager mViewPager;
-    private StringBuffer mTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
         mViewPager = (HackyViewPager) findViewById(R.id.images_pager);
         Intent dataIntent = getIntent();
         int index = dataIntent.getIntExtra("index", 0);
-        String[] images = null;
+        String[] images;
         if (dataIntent.hasExtra("imageList")) {
             ArrayList<String> list = dataIntent.getStringArrayListExtra("imageList");
             images = getImageUrls(list);
@@ -43,20 +43,12 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
             images = (String[]) dataIntent.getSerializableExtra("images");
         }
 
-        setBackMode(BACK, "图片预览");
         if (images != null && images.length > 0) {
             SamplePagerAdapter adapter = new SamplePagerAdapter(images);
             mViewPager.setAdapter(adapter);
             mViewPager.setOnPageChangeListener(adapter);
             mViewPager.setCurrentItem(index);
         }
-
-        mTitle = new StringBuffer();
-        mTitle.append("图片预览 ")
-                .append(index + 1)
-                .append("/")
-                .append(images.length);
-        setTitle(mTitle.toString());
     }
 
     private String[] getImageUrls(List<String> list) {
@@ -90,8 +82,19 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
-            ImageLoader.getInstance().displayImage(mImages[position], photoView, EdusohoApp.app.mOptions);
+            if (mImages[position].contains(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE)) {
+                ImageLoader.getInstance().displayImage("file://" + mImages[position], photoView, EdusohoApp.app.mOptions);
+            } else {
+                ImageLoader.getInstance().displayImage(mImages[position], photoView, EdusohoApp.app.mOptions);
+            }
             container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
             return photoView;
         }
 
@@ -111,17 +114,14 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
 
         @Override
         public void onPageSelected(int position) {
-            mTitle = new StringBuffer();
-            mTitle.append("图片预览 ")
-                    .append(position + 1)
-                    .append("/")
-                    .append(mImages.length);
-            setTitle(mTitle.toString());
+
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
 
         }
+
+
     }
 }
