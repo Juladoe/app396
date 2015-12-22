@@ -554,6 +554,16 @@ public class AppUtil {
         return appStorage;
     }
 
+    public static File getHtmlPluginStorage(Context context, String domain) {
+        File html5plugin = context.getDir("html5plugin", Context.MODE_PRIVATE);
+        File schoolStorage = new File(html5plugin, domain);
+        if (!schoolStorage.exists()) {
+            schoolStorage.mkdirs();
+        }
+
+        return schoolStorage;
+    }
+
     public static File getSchoolStorage(String host) {
         File store = getAppStorage();
         File schoolStorage = new File(store, host);
@@ -574,9 +584,9 @@ public class AppUtil {
         return cacheDir;
     }
 
-    public static File getAppZipStorage()
+    public static File getAppZipStorage(Context context)
     {
-        File storage = AppUtil.getAppStorage();
+        File storage = context.getDir("html5plugin", Context.MODE_PRIVATE);
         File srcDir = new File(storage, "appZip");
         if (!srcDir.exists()) {
             srcDir.mkdirs();

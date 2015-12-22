@@ -135,7 +135,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     private AppMeta getLocalApp(String appCode) {
-        File schoolStorage = AppUtil.getSchoolStorage(mActivity.app.domain);
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
         File appDir = new File(schoolStorage, appCode);
 
         if (appDir.exists()) {
@@ -212,7 +212,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     private boolean checkResourceIsExists() {
-        File appZipStorage = AppUtil.getAppZipStorage();
+        File appZipStorage = AppUtil.getAppZipStorage(mContext);
 
         File[] files = appZipStorage.listFiles(new FilenameFilter() {
             @Override
@@ -237,7 +237,7 @@ public class ESWebView extends RelativeLayout {
             return true;
         }
 
-        File schoolStorage = AppUtil.getSchoolStorage(mActivity.app.domain);
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
         File schoolAppFile = new File(schoolStorage, mAppCode);
         InputStream zinInputStream = null;
 
