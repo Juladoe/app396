@@ -42,7 +42,9 @@ import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
@@ -76,6 +78,7 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class DiscussFragment extends BaseFragment implements View.OnClickListener, View.OnTouchListener, ChatAdapter.ImageErrorClick {
     private static final String TAG = "DiscussFragment";
+    public static int CurrentCourseId = 0;
 
     private String mCourseName;
     private String mCourseImage;
@@ -183,8 +186,8 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     }
 
     protected void initData() {
-        Bundle bundle = getArguments();
-        mNewItemInfo = (New) bundle.get(Const.NEW_ITEM_INFO);
+        Intent intent = mActivity.getIntent();
+        mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
         if (mNewItemInfo == null) {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
@@ -193,6 +196,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         mCourseName = mNewItemInfo.title;
         mCourseId = mNewItemInfo.fromId;
         mUserType = mActivity.app.getCurrentUserRole();
+        CurrentCourseId = mCourseId;
         NotificationUtil.cancelById(mCourseId);
         if (mCourseDiscussDataSource == null) {
             mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
@@ -361,8 +365,8 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
-        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
+        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
+        app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
     }
 
     public void updateSendMsgToListView(int type, CourseDiscussEntity model) {
@@ -902,5 +906,28 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     public void onDestroy() {
         super.onDestroy();
         mActivity.unregisterReceiver(mAudioDownloadReceiver);
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        String source = this.getClass().getSimpleName();
+        return new MessageType[]{new MessageType(Const.ADD_COURSE_DISCUSS_MSG, source)};
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        try {
+            MessageType messageType = message.type;
+            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+            switch (messageType.code) {
+                case Const.ADD_COURSE_DISCUSS_MSG:
+                    CourseDiscussEntity model = new CourseDiscussEntity(wrapperMessage);
+                    mAdapter.addItem(model);
+                    break;
+                default:
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

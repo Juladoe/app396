@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -151,7 +150,7 @@ public class CourseDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapter<T
     }
 
     protected void handleReceiveMsgText(CourseViewHolder holder, int position) {
-        final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
+        final CourseDiscussEntity model = (CourseDiscussEntity) mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
@@ -215,7 +214,7 @@ public class CourseDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapter<T
     }
 
     protected void handlerReceiveAudio(final CourseViewHolder holder, int position) {
-        final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
+        final CourseDiscussEntity model = (CourseDiscussEntity) mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);

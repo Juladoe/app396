@@ -98,10 +98,9 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if (!hidden) {
-            //mActivity.setTitle(getString(R.string.title_news));
-        }
         super.onHiddenChanged(hidden);
+        if (!hidden) {
+        }
     }
 
     @Override
@@ -357,9 +356,10 @@ public class NewsFragment extends BaseFragment {
                     NotificationUtil.cancelById(fromId);
                     break;
                 case Const.ADD_CLASSROOM_MSG:
-                    WrapperXGPushTextMessage classroomMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                    int classroomHandleType = message.data.getInt(Const.ADD_CLASSROOM_DISCUSS_MSG_DESTINATION, 0);
-                    getNewChatMsg(classroomHandleType, classroomMessage);
+                case Const.ADD_COURSE_DISCUSS_MSG:
+                    WrapperXGPushTextMessage discussMsg = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    int classroomHandleType = message.data.getInt(Const.ADD_DISCUSS_MSG_DESTINATION, 0);
+                    getNewChatMsg(classroomHandleType, discussMsg);
                     break;
                 case REFRESH_LIST:
                     List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
@@ -381,14 +381,16 @@ public class NewsFragment extends BaseFragment {
             case HANDLE_RECEIVE_CHAT_MSG:
                 handleReceiveChatMsg(xgPushTextMessage);
                 break;
-            case HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG:
-                handlerReceiveClassroomMsg(xgPushTextMessage);
-                break;
             case HANDLE_SEND_CHAT_MSG:
                 handleSendChatMsg(xgPushTextMessage);
                 break;
+            case HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG:
+            case HANDLE_RECEIVE_COURSE_DISCUSS_MSG:
+                handleDiscussReceiveMsg(xgPushTextMessage);
+                break;
+            case HANDLE_SEND_COURSE_DISCUSS_MSG:
             case HANDLE_SEND_CLASSROOM_DISCUSS_MSG:
-                handleSendClassroomMsg(xgPushTextMessage);
+                handleDiscussSendMsg(xgPushTextMessage);
                 break;
         }
     }
@@ -501,7 +503,7 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handlerReceiveClassroomMsg(WrapperXGPushTextMessage message) {
+    private void handleDiscussReceiveMsg(WrapperXGPushTextMessage message) {
         New model = new New();
         V2CustomContent v2CustomContent = message.getV2CustomContent();
         model.fromId = v2CustomContent.getTo().getId();
@@ -534,7 +536,8 @@ public class NewsFragment extends BaseFragment {
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
-            model.unread = (message.isForeground && ClassroomDiscussActivity.CurrentClassroomId == model.fromId) ? 0 : news.get(0).unread + 1;
+            boolean isCurActivity = ClassroomDiscussActivity.CurrentClassroomId == model.fromId || NewsCourseActivity.CurrentCourseId == model.fromId;
+            model.unread = (message.isForeground && isCurActivity) ? 0 : news.get(0).unread + 1;
             newDataSource.update(model);
             setItemToTop(model);
         }
@@ -556,7 +559,7 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleSendClassroomMsg(WrapperXGPushTextMessage message) {
+    private void handleDiscussSendMsg(WrapperXGPushTextMessage message) {
         New model = new New();
         V2CustomContent v2CustomContent = message.getV2CustomContent();
         model.fromId = v2CustomContent.getTo().getId();
@@ -588,7 +591,7 @@ public class NewsFragment extends BaseFragment {
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
-            model.unread = (message.isForeground && ClassroomDiscussActivity.CurrentClassroomId == model.fromId) ? 0 : news.get(0).unread + 1;
+            model.unread = (message.isForeground && DiscussFragment.CurrentCourseId == model.fromId) ? 0 : news.get(0).unread + 1;
             newDataSource.update(model);
             setItemToTop(model);
         }

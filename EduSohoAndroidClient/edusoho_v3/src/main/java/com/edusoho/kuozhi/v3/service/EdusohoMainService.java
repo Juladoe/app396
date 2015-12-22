@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.OffLineMsgEntity;
@@ -28,15 +27,16 @@ import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
+import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
@@ -220,11 +220,19 @@ public class EdusohoMainService extends Service {
                     NotificationUtil.showDiscountPass(EdusohoApp.app.mContext, xgMessage);
                     break;
                 case Const.ADD_CLASSROOM_MSG:
-                    ClassroomDiscussEntity model = new ClassroomDiscussEntity(xgMessage);
+                    ClassroomDiscussEntity classroomDiscussEntity = new ClassroomDiscussEntity(xgMessage);
                     ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    classroomDiscussDataSource.create(model);
-                    if (!xgMessage.isForeground || ClassroomDiscussActivity.CurrentClassroomId != model.classroomId) {
+                    classroomDiscussDataSource.create(classroomDiscussEntity);
+                    if (!xgMessage.isForeground || ClassroomDiscussActivity.CurrentClassroomId != classroomDiscussEntity.classroomId) {
                         NotificationUtil.showClassroomDiscussMsg(EdusohoApp.app.mContext, xgMessage);
+                    }
+                    break;
+                case Const.ADD_COURSE_DISCUSS_MSG:
+                    CourseDiscussEntity courseDiscussEntity = new CourseDiscussEntity(xgMessage);
+                    CourseDiscussDataSource courseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
+                    courseDiscussDataSource.create(courseDiscussEntity);
+                    if (!xgMessage.isForeground || NewsCourseActivity.CurrentCourseId != courseDiscussEntity.courseId) {
+                        NotificationUtil.showCourseDiscuss(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
             }
