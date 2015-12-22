@@ -125,12 +125,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof NormalNotificationViewHolder) {
 
             NewsCourseEntity entity = mDataList.get(position);
-            String content = getTextContent(entity);
-            ((NormalNotificationViewHolder) holder).notificationContent.setText(content);
-            if (entity.getBodyType().equals("announcement.create")){
-                ((NormalNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_course_notification);
-
+            if (entity.getBodyType().equals("lesson.finish")){
+                ((NormalNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_lesson_finished);
+                ((NormalNotificationViewHolder) holder).notificationContent.setText("课时结束");
+                //// TODO: 15/12/22
             }
+//            String content = getTextContent(entity);
+//            ((NormalNotificationViewHolder) holder).notificationContent.setText(content);
             ((NormalNotificationViewHolder) holder).notificationTime.setText("系统 发布于"+AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()),null));
         }
 
@@ -139,8 +140,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             final NewsCourseEntity entity = mDataList.get(position);
             String content = getTextContent(entity);
             ((IntentNotificationViewHolder) holder).notificationTime.setText("系统 发布于"+AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()),null));
+            ((IntentNotificationViewHolder) holder).notificationContent.setText(content);
 
-                    ((IntentNotificationViewHolder) holder).notificationContent.setText(content);
             if (entity.getBodyType().equals("testpaper.reviewed")){
                 ((IntentNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_testpater_reviewed);
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
@@ -157,20 +158,19 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                         });
                     }
                 });
-            }
-
-            if (entity.getBodyType().equals("homework.reviewed")){
+            }else if (entity.getBodyType().equals("homework.reviewed")){
                 ((IntentNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_homework_reviewed);
+                ((IntentNotificationViewHolder) holder).notificationContent.setText("作业批阅完成"+entity.getContent());
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //// TODO: 15/12/16
                     }
                 });
-            }
-            if (entity.getBodyType().equals("question.answered")){
+            }else if (entity.getBodyType().equals("question.answered")){
                 ((IntentNotificationViewHolder) holder).typeImage.setImageResource(R.drawable.icon_quenstion_answer);
-                ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
+                ((IntentNotificationViewHolder) holder).notificationContent.setText("有老师回答了你的问题"+entity.getContent());
+                        ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //// TODO: 15/12/16
@@ -203,6 +203,10 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             lessonTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_title);
         }
 
+    }
+
+    public void addItem(NewsCourseEntity entity){
+        mDataList.add(entity);
     }
 
     private class LessonSummaryViewHolder extends RecyclerView.ViewHolder {

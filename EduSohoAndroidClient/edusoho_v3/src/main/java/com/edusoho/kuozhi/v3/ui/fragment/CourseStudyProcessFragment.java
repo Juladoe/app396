@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -14,22 +13,27 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by melomelon on 15/12/9.
@@ -41,13 +45,19 @@ public class CourseStudyProcessFragment extends BaseFragment {
 
     private StudyProcessRecyclerAdapter mAdapter;
 
+    private LinkedHashMap<String, List<NewsCourseEntity>> totalListMap;
+    private int listCount = 0;
     private List<NewsCourseEntity> dataList;
     private Bundle mBundle;
     private int mCourseId;
 
     private NewsCourseDataSource newsCourseDataSource;
 
-    private String[] types = {"testpaper.reviewed", "announcement.create", "quesqion.answered"};
+    private String[] types = {PushUtil.CourseType.TESTPAPER_REVIEWED,
+            PushUtil.CourseType.QUESTION_ANSWERED,
+            PushUtil.CourseType.HOMEWORK_REVIEWED,
+            PushUtil.CourseType.LESSON_FINISH
+    };
 
     List lessonIds = new ArrayList();
     List<String> lessonTitles = new ArrayList<String>();
@@ -83,17 +93,17 @@ public class CourseStudyProcessFragment extends BaseFragment {
         mBundle = getArguments();
         mCourseId = mBundle.getInt("course_id");
         newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        totalListMap = new LinkedHashMap<>();
         dataList = getNewsCourseList(0);
-
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
         addCourseSummary(dataList);
-        mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList,app);
+        mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList, app);
         studyProcessRecyclerView.setAdapter(mAdapter);
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
-        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.NEWS_LIMIT, mCourseId, app.loginUser.id);
+        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.STUDY_PROCESS_LIMIT, mCourseId, app.loginUser.id);
         Collections.reverse(entities);
         return entities;
     }
@@ -112,21 +122,49 @@ public class CourseStudyProcessFragment extends BaseFragment {
     public List addLessonTitle(List<NewsCourseEntity> list) {
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
-            if (lessonIds.contains(entity.getObjectId())
-                    || lessonTitles.contains(entity.getContent())
-                    || entity.getBodyType().equals("announcement.create")) {
-                continue;
+            String lessonId = entity.getObjectId() + "";
+            String content = entity.getContent();
+            if (entity.getBodyType().equals(PushUtil.CourseType.TESTPAPER_REVIEWED)) {
+                if (lessonTitles.contains(content)) {
+                    totalListMap.get(content).add(entity);
+                    continue;
+                }else {
+                    NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
+                    newsCourseEntity.setContent(content);
+                    newsCourseEntity.setBodyType("course.lessonTitle");
+                    newsCourseEntity.setObjectId(Integer.parseInt(lessonId));
+                    newsCourseEntity.setCourseId(mCourseId);
+
+                    List<NewsCourseEntity> subList = new ArrayList<>();
+                    subList.add(newsCourseEntity);
+                    subList.add(entity);
+
+                    totalListMap.put(content, subList);
+                    lessonTitles.add(content);
+                }
+
+            } else if (lessonIds.contains(lessonId)) {
+                totalListMap.get(lessonId).add(entity);
             } else {
                 NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
-                newsCourseEntity.setContent(entity.getContent());
+                newsCourseEntity.setContent(content);
                 newsCourseEntity.setBodyType("course.lessonTitle");
-                newsCourseEntity.setObjectId(entity.getObjectId());
+                newsCourseEntity.setObjectId(Integer.parseInt(lessonId));
                 newsCourseEntity.setCourseId(mCourseId);
-                list.add(i, newsCourseEntity);
-                lessonIds.add(entity.getObjectId());
-                lessonTitles.add(entity.getContent());
-                i++;
+
+                List<NewsCourseEntity> subList = new ArrayList<>();
+                subList.add(newsCourseEntity);
+                subList.add(entity);
+
+                totalListMap.put(lessonId, subList);
+                lessonIds.add(lessonId);
             }
+        }
+        list.clear();
+        Iterator iterator = totalListMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            list.addAll((Collection<? extends NewsCourseEntity>) entry.getValue());
         }
         return list;
     }
@@ -162,12 +200,18 @@ public class CourseStudyProcessFragment extends BaseFragment {
 
     @Override
     public MessageType[] getMsgTypes() {
-        return super.getMsgTypes();
+        String source = this.getClass().getSimpleName();
+        return new MessageType[]{new MessageType(Const.ADD_COURSE_MSG, source)};
     }
 
     @Override
     public void invoke(WidgetMessage message) {
-        super.invoke(message);
+        MessageType messageType = message.type;
+        if (Const.ADD_COURSE_MSG == messageType.code) {
+            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+            NewsCourseEntity entity = new NewsCourseEntity(wrapperMessage);
+            mAdapter.addItem(entity);
+        }
     }
 
 

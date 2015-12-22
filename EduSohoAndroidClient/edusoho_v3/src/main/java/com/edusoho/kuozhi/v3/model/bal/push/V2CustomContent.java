@@ -141,6 +141,7 @@ public class V2CustomContent {
         private String lessonType;
         private String title;
         private String image;
+        private String lessonId;
 
         public String getImage() {
             return image;
