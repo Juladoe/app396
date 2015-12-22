@@ -18,7 +18,6 @@
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
-                <size android:height="3dp"/>
                 <gradient
                     android:startColor="@color/video_sk_bg_2_gradient"
                     android:centerColor="@color/video_sk_bg_2_gradient"
@@ -33,7 +32,6 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <size android:height="3dp"/>
                 <gradient
                     android:startColor="@color/video_sk_gradient"
                     android:centerColor="@color/video_sk_gradient"

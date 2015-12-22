@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -62,7 +63,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private ImageView mReplayBtn = null;
     private CheckBox mFullBtn = null;
 
-    private RelativeLayout mController = null;
+    private LinearLayout mController = null;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
@@ -489,8 +490,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      */
     private void initUI(View view) {
         mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
-        mBackbtn = (ImageView) view.findViewById(R.id.back_btn);
-        mForwardbtn = (ImageView) view.findViewById(R.id.forward_btn);
         mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
         mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
 
@@ -515,7 +514,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             mViewHolder.addView(mVV);
             mControllerHolder.addView(mVVCtl);
         */
-        mController = (RelativeLayout) view.findViewById(R.id.video_controller);
+        mController = (LinearLayout) view.findViewById(R.id.video_controller);
         /**
          *注册listener
          */
@@ -740,24 +739,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     mVV.resume();
                 }
 
-            }
-        });
-
-        /**
-         * 实现切换示例
-         */
-        mBackbtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mVV.seekTo(mProgress.getProgress() - 5);
-                mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
-            }
-        });
-
-
-        mForwardbtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mVV.seekTo(mProgress.getProgress() + 5);
-                mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
             }
         });
 
