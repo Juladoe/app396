@@ -52,12 +52,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public int getItemViewType(int position) {
         NewsCourseEntity entity = mDataList.get(position);
+        String type = entity.getBodyType();
 
-        if (entity.getBodyType().equals("testpaper.reviewed")) {
+        if (type.equals("testpaper.reviewed") || type.equals("homework.reviewed") || type.equals("question.answered")) {
             return INTENT_NOTI;
-        } else if (entity.getBodyType().equals("course.lessonTitle")) {
+        } else if (type.equals("course.lessonTitle")) {
             return LESSON_TITLE;
-        } else if (entity.getBodyType().equals("course.summary")){
+        } else if (type.equals("course.summary")){
             return COURSE_SUMMARY;
         }else {
             return NORMAL_NOTI;
