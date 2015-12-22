@@ -38,7 +38,6 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String mCurrentFragmentTag;
     private New mNewItemInfo;
     private String mUserType;
-    private PluginFragmentCallback mPluginFragmentCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

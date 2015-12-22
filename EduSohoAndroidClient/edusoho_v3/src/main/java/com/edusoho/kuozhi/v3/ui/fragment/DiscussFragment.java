@@ -143,7 +143,11 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-
+            mAdapter = new CourseDiscussAdapter<>(getList(0), mContext);
+            mAdapter.setSendImageClickListener(this);
+            lvMessage.setAdapter(mAdapter);
+            mStart = mAdapter.getCount();
+            lvMessage.post(mListViewSelectRunnable);
         }
     }
 
