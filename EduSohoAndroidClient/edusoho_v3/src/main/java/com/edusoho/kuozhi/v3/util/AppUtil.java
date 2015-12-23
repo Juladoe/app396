@@ -1049,7 +1049,7 @@ public class AppUtil {
         String date;
         long unixLong = Long.parseLong(timeStampStr)*1000;
         if (format == null){
-            format = "yyyy-MM-dd";
+            format = "yyyy-MM-dd HH:mm:ss";
         }
         date = new java.text.SimpleDateFormat(format).format(unixLong);
         return date;

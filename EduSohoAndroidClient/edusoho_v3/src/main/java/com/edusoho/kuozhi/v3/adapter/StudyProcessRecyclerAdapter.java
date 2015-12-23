@@ -60,6 +60,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             return LESSON_TITLE;
         } else if (type.equals("course.summary")){
             return COURSE_SUMMARY;
+        }else if (type.equals("lesson.costTime")){
+            return COST_TIME;
         }else {
             return NORMAL_NOTI;
         }
@@ -121,7 +123,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
         }
         if (holder instanceof CostTimeViewHolder) {
-
+            NewsCourseEntity entity = mDataList.get(position);
+            ((CostTimeViewHolder) holder).costTime.setText(entity.getContent());
         }
         if (holder instanceof NormalNotificationViewHolder) {
 

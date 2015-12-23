@@ -30,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:textSize="@dimen/medium_font_size" />
 
     <View
         android:layout_width="match_parent"
@@ -41,7 +42,8 @@
         android:id="@+id/study_process_notification_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="6dp" />
+        android:paddingTop="6dp"
+        android:textSize="@dimen/small_font_size" />
 
 
 </LinearLayout>

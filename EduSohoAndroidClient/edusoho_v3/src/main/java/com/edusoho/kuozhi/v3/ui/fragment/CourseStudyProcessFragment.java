@@ -13,12 +13,14 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
@@ -146,14 +148,19 @@ public class CourseStudyProcessFragment extends BaseFragment {
             } else if (lessonIds.contains(lessonId)) {
                 totalListMap.get(lessonId).add(entity);
             } else {
-                NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
-                newsCourseEntity.setContent(content);
-                newsCourseEntity.setBodyType("course.lessonTitle");
-                newsCourseEntity.setObjectId(Integer.parseInt(lessonId));
-                newsCourseEntity.setCourseId(mCourseId);
+                NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
+                lessonTitleEntity.setContent(content);
+                lessonTitleEntity.setBodyType("course.lessonTitle");
+                lessonTitleEntity.setObjectId(Integer.parseInt(lessonId));
+                lessonTitleEntity.setCourseId(mCourseId);
+
+                NewsCourseEntity costTimeEntity = new NewsCourseEntity();
+                costTimeEntity.setContent("课时学习开始时间："+ AppUtil.timeStampToDate(entity.getCreatedTime()+"",null));
+                costTimeEntity.setBodyType("lesson.costTime");
 
                 List<NewsCourseEntity> subList = new ArrayList<>();
-                subList.add(newsCourseEntity);
+                subList.add(lessonTitleEntity);
+                subList.add(costTimeEntity);
                 subList.add(entity);
 
                 totalListMap.put(lessonId, subList);
