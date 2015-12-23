@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="8dp"
     android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp">
+        android:paddingTop="16dp">
 
 
         <ImageView
@@ -20,21 +21,21 @@
             android:layout_height="80dp" />
 
         <TextView
-            android:textColor="@color/black"
             android:id="@+id/study_process_lesson_summary_title"
-            android:ellipsize="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/study_process_lesson_summary_image"
+            android:ellipsize="end"
+            android:textColor="@color/black"
             android:textSize="@dimen/large_font_size" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/study_process_lesson_summary_image"
             android:layout_alignBottom="@id/study_process_lesson_summary_image"
+            android:layout_toRightOf="@id/study_process_lesson_summary_image"
             android:orientation="horizontal">
 
             <TextView
@@ -45,11 +46,11 @@
                 android:layout_marginLeft="12dp" />
 
             <ImageView
-                android:layout_toRightOf="@id/study_process_lesson_summary_teacher"
-                android:src="@drawable/teacher_tag"
-                android:layout_marginLeft="12dp"
                 android:layout_width="40dp"
-                android:layout_height="20dp" />
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/study_process_lesson_summary_teacher"
+                android:src="@drawable/teacher_tag" />
 
 
         </RelativeLayout>
@@ -58,19 +59,19 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="8dp"
             android:layout_alignLeft="@id/study_process_lesson_summary_image"
-            android:layout_below="@id/study_process_lesson_summary_image">
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/study_process_lesson_summary_image"
+            android:layout_marginTop="8dp">
 
             <TextView
-                android:lineSpacingMultiplier="1.2"
                 android:id="@+id/study_process_lesson_summary_introduction"
-                android:ellipsize="end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/study_process_lesson_summary_title"
                 android:layout_toRightOf="@id/study_process_lesson_summary_image"
+                android:ellipsize="end"
+                android:lineSpacingMultiplier="1.2"
                 android:maxLines="3"
                 android:textColor="@color/system_gray_text" />
 
@@ -82,6 +83,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_feedback1"/>
+        android:background="@color/grey_feedback1" />
 
 </LinearLayout>

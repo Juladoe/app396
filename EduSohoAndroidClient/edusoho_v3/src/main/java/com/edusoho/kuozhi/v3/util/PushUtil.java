@@ -15,10 +15,10 @@ public class PushUtil {
         public static final String COURSE_OPEN = "course.open";
         public static final String COURSE_CLOSE = "course.close";
         public static final String COURSE_ANNOUNCEMENT = "announcement.create";
-        public static final String LESSON_BEGIN = "";
         public static final String HOMEWORK_REVIEWED = "homework.reviewed";
         public static final String QUESTION_ANSWERED = "question.answered";
         public static final String LESSON_FINISH  = "lesson.finish";
+        public static final String LESSON_START = "lesson.start";
     }
 
     public static class LessonType {

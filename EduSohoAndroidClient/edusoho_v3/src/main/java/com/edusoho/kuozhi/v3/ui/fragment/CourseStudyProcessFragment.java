@@ -62,7 +62,6 @@ public class CourseStudyProcessFragment extends BaseFragment {
     };
 
     List lessonIds = new ArrayList();
-    List<String> lessonTitles = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +86,6 @@ public class CourseStudyProcessFragment extends BaseFragment {
         });
 
         initData();
-//        studyProcessRecyclerView.scrollToPosition(dataList.size());
 
     }
 
@@ -99,6 +97,7 @@ public class CourseStudyProcessFragment extends BaseFragment {
         dataList = getNewsCourseList(0);
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
+        dataList = addFinishTime(dataList);
         addCourseSummary(dataList);
         mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList, app);
         studyProcessRecyclerView.setAdapter(mAdapter);
@@ -126,36 +125,17 @@ public class CourseStudyProcessFragment extends BaseFragment {
             NewsCourseEntity entity = list.get(i);
             String lessonId = entity.getLessonId() + "";
             String content = entity.getContent();
-            if (entity.getBodyType().equals(PushUtil.CourseType.TESTPAPER_REVIEWED)) {
-                if (lessonTitles.contains(content)) {
-                    totalListMap.get(content).add(entity);
-                    continue;
-                }else {
-                    NewsCourseEntity newsCourseEntity = new NewsCourseEntity();
-                    newsCourseEntity.setContent(content);
-                    newsCourseEntity.setBodyType("course.lessonTitle");
-                    newsCourseEntity.setObjectId(Integer.parseInt(lessonId));
-                    newsCourseEntity.setCourseId(mCourseId);
-
-                    List<NewsCourseEntity> subList = new ArrayList<>();
-                    subList.add(newsCourseEntity);
-                    subList.add(entity);
-
-                    totalListMap.put(content, subList);
-                    lessonTitles.add(content);
-                }
-
-            } else if (lessonIds.contains(lessonId)) {
+            if (lessonIds.contains(lessonId)) {
                 totalListMap.get(lessonId).add(entity);
             } else {
                 NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
                 lessonTitleEntity.setContent(content);
                 lessonTitleEntity.setBodyType("course.lessonTitle");
-                lessonTitleEntity.setObjectId(Integer.parseInt(lessonId));
+                lessonTitleEntity.setLessonId(Integer.parseInt(lessonId));
                 lessonTitleEntity.setCourseId(mCourseId);
 
                 NewsCourseEntity costTimeEntity = new NewsCourseEntity();
-                costTimeEntity.setContent("课时学习开始时间："+ AppUtil.timeStampToDate(entity.getCreatedTime()+"",null));
+                costTimeEntity.setContent("课时学习开始时间：" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
                 costTimeEntity.setBodyType("lesson.costTime");
 
                 List<NewsCourseEntity> subList = new ArrayList<>();
@@ -172,6 +152,19 @@ public class CourseStudyProcessFragment extends BaseFragment {
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             list.addAll((Collection<? extends NewsCourseEntity>) entry.getValue());
+        }
+        return list;
+    }
+
+    private List addFinishTime(List<NewsCourseEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
+            NewsCourseEntity entity = list.get(i);
+            if (entity.getBodyType().equals("lesson.finish")) {
+                NewsCourseEntity finishTime = new NewsCourseEntity();
+                finishTime.setBodyType("lesson.costTime");
+                finishTime.setContent("课时学习完成时间" + AppUtil.timeStampToDate(entity.getCreatedTime()+"", null));
+                list.add(++i,finishTime);
+            }
         }
         return list;
     }
