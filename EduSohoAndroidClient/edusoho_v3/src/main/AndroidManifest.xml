@@ -245,7 +245,7 @@
             android:name="com.edusoho.kuozhi.v3.view.photo.ViewPagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
-            android:theme="@style/AppThemeNoActionBar" />
+            android:theme="@style/AppViewPaperTheme" />
 
         <!-- 【必须】 exported设置为true -->
         <activity
