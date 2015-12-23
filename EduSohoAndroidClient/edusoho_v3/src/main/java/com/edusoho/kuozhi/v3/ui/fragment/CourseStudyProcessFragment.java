@@ -122,7 +122,7 @@ public class CourseStudyProcessFragment extends BaseFragment {
     public List addLessonTitle(List<NewsCourseEntity> list) {
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
-            String lessonId = entity.getObjectId() + "";
+            String lessonId = entity.getLessonId() + "";
             String content = entity.getContent();
             if (entity.getBodyType().equals(PushUtil.CourseType.TESTPAPER_REVIEWED)) {
                 if (lessonTitles.contains(content)) {

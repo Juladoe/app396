@@ -16,6 +16,9 @@ public class NewsCourseEntity {
     private String lessonType;
     private int userId;
     private int createdTime;
+    private int lessonId;
+    private int homworkResultId;
+    private int questionId;
 
     private String image;
     private String teacher;
@@ -36,6 +39,9 @@ public class NewsCourseEntity {
         this.lessonType = v2CustomContent.getBody().getLessonType();
         this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
+        this.lessonId = v2CustomContent.getBody().getLessonId();
+        this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
+        this.questionId = v2CustomContent.getBody().getQuestionId();
     }
 
     public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
@@ -50,6 +56,9 @@ public class NewsCourseEntity {
         this.lessonType = v2CustomContent.getBody().getLessonType();
         this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
+        this.lessonId = v2CustomContent.getBody().getLessonId();
+        this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
+        this.questionId = v2CustomContent.getBody().getQuestionId();
     }
 
     public int getId() {
@@ -146,5 +155,29 @@ public class NewsCourseEntity {
 
     public void setTeacher(String teacher) {
         this.teacher = teacher;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
+    }
+
+    public int getHomworkResultId() {
+        return homworkResultId;
+    }
+
+    public void setHomworkResultId(int homworkResultId) {
+        this.homworkResultId = homworkResultId;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 }

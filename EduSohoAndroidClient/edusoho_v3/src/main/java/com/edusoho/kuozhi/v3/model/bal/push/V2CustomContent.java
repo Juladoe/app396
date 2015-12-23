@@ -141,7 +141,33 @@ public class V2CustomContent {
         private String lessonType;
         private String title;
         private String image;
-        private String lessonId;
+        private int lessonId;
+        private int homeworkResultId;
+        private int questionId;
+
+        public int getHomeworkResultId() {
+            return homeworkResultId;
+        }
+
+        public void setHomeworkResultId(int homeworkResultId) {
+            this.homeworkResultId = homeworkResultId;
+        }
+
+        public int getQuestionId() {
+            return questionId;
+        }
+
+        public void setQuestionId(int questionId) {
+            this.questionId = questionId;
+        }
+
+        public int getLessonId() {
+            return lessonId;
+        }
+
+        public void setLessonId(int lessonId) {
+            this.lessonId = lessonId;
+        }
 
         public String getImage() {
             return image;
