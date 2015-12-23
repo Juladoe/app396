@@ -591,7 +591,8 @@ public class NewsFragment extends BaseFragment {
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
-            model.unread = (message.isForeground && DiscussFragment.CurrentCourseId == model.fromId) ? 0 : news.get(0).unread + 1;
+            boolean isCurrentId = DiscussFragment.CurrentCourseId == model.fromId || ClassroomDiscussActivity.CurrentClassroomId == model.fromId;
+            model.unread = (message.isForeground && isCurrentId) ? 0 : news.get(0).unread + 1;
             newDataSource.update(model);
             setItemToTop(model);
         }
