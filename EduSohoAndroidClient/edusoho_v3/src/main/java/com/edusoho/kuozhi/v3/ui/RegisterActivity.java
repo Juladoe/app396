@@ -87,7 +87,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
         btnMailReg = (EduSohoLoadingButton) findViewById(R.id.btn_mail_reg);
         btnMailReg.setOnClickListener(mMailRegClickListener);
         mSmsCodeHandler = new SmsCodeHandler(this);
-        Log.d("test", etCode.getMeasuredHeight() + "");
     }
 
     public static class SmsCodeHandler extends Handler {

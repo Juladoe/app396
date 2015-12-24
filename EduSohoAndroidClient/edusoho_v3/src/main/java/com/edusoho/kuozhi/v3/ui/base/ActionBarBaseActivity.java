@@ -6,18 +6,23 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JesseHuang on 15/4/23.
@@ -31,6 +36,10 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected TextView mTitleTextView;
     private View mTitleLayoutView;
     protected int mRunStatus;
+    private EduSohoCompoundButton switchButton;
+    private RadioButton rbStudyRadioButton;
+    private RadioButton rbDiscussRadioButton;
+    private CircleImageView civBadgeView;
     private Queue<WidgetMessage> mUIMessageQueue;
 
     protected XGPushClickedResult mXGClick;
@@ -74,6 +83,39 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
 
         if (backTitle != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    protected void initSwitchButton(String backTitle, String roleTitle, RadioGroup.OnCheckedChangeListener clickListener) {
+        if (backTitle != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        if (clickListener != null) {
+            View switchButtonLayout = getLayoutInflater().inflate(R.layout.actionbar_course_switch_button, null);
+            switchButton = (EduSohoCompoundButton) switchButtonLayout.findViewById(R.id.ecb_switch);
+            rbStudyRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_study);
+            rbDiscussRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_discuss);
+            civBadgeView = (CircleImageView) switchButtonLayout.findViewById(R.id.civ_badge_view);
+            rbStudyRadioButton.setText(roleTitle);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                    ActionBar.LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.CENTER;
+            mActionBar.setCustomView(switchButtonLayout, layoutParams);
+            switchButton.setOnCheckedChangeListener(clickListener);
+        }
+    }
+
+    public void setSwitchBadgeViewVisible(int visible) {
+        if (civBadgeView != null) {
+            civBadgeView.setVisibility(visible);
+        }
+    }
+
+    public void setRadioButtonChecked(int id) {
+        if (rbStudyRadioButton.getId() == id) {
+            rbStudyRadioButton.setChecked(true);
+        } else {
+            rbDiscussRadioButton.setChecked(true);
         }
     }
 

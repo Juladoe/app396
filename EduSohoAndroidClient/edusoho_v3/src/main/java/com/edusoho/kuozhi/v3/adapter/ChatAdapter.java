@@ -256,7 +256,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(WebViewActivity.URL, body.url);
+                        startIntent.putExtra(Const.WEB_URL, body.url);
                     }
                 });
             }
@@ -846,9 +846,9 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     public interface ImageErrorClick {
-        public void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
+        void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
 
-        public void sendMsgAgain(BaseMsgEntity model);
+        void sendMsgAgain(BaseMsgEntity model);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
+import java.io.Serializable;
+
 /**
  * Created by JesseHuang on 15/9/15.
  */
-public class V2CustomContent {
+public class V2CustomContent implements Serializable {
     private int msgId;
     private int v;
     private FromEntity from;

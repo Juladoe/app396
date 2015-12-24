@@ -7,12 +7,6 @@
         <attr name="fontColor" format="color" />
         <attr name="iconSizeScale" format="float" />
     </declare-styleable>
-    EduSohoLoadingButton
-    <declare-styleable name="EduToolBar">
-        <attr name="centerTitle" format="string" />
-        <attr name="centerTitleSize" format="dimension" />
-        <attr name="centerTitleColor" format="color"></attr>
-    </declare-styleable>
 
     <declare-styleable name="ESExpandableTextView">
         <attr name="maxCollapsedLines" format="integer" />

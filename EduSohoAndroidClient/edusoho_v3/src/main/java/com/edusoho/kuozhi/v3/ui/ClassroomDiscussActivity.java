@@ -381,8 +381,8 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CLASSROOM_DISCUSS_MSG);
-        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
+        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CLASSROOM_DISCUSS_MSG);
+        app.sendMsgToTarget(Const.ADD_CLASSROOM_MSG, bundle, NewsFragment.class);
     }
 
     public void updateSendMsgToListView(int type, ClassroomDiscussEntity model) {

@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
@@ -153,7 +152,8 @@ public class SettingActivity extends ActionBarBaseActivity {
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
-                        app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+                        app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+
                         NotificationUtil.cancelAll();
                         finish();
                     }
@@ -169,7 +169,7 @@ public class SettingActivity extends ActionBarBaseActivity {
                 app.removeToken();
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);
-                app.sendMsgToTarget(Const.MAIN_MENU_CLOSE, null, FragmentNavigationDrawer.class);
+                app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
                 NotificationUtil.cancelAll();
                 finish();
             }

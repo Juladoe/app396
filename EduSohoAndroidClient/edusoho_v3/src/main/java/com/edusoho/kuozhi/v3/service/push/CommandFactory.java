@@ -66,6 +66,10 @@ public class CommandFactory {
                 } else if (PushUtil.ChatUserType.USER.equals(toType)) {
                     pusher.convertWrapperMessage2V2();
                     pushCommand = new PushMsgCommand(pusher);
+                } else if (PushUtil.ChatUserType.COURSE.equals(toType)) {
+                    if (v2CustomContent.getFrom().getId() != EdusohoApp.app.loginUser.id) {
+                        pushCommand = new PushCourseDiscussCommand(pusher);
+                    }
                 }
                 break;
             case PushUtil.DiscountType.DISCOUNT_GLOBAL:
