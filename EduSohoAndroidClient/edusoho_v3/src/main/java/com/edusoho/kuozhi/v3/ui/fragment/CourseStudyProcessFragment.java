@@ -58,7 +58,8 @@ public class CourseStudyProcessFragment extends BaseFragment {
     private String[] types = {PushUtil.CourseType.TESTPAPER_REVIEWED,
             PushUtil.CourseType.QUESTION_ANSWERED,
             PushUtil.CourseType.HOMEWORK_REVIEWED,
-            PushUtil.CourseType.LESSON_FINISH
+            PushUtil.CourseType.LESSON_FINISH,
+            PushUtil.CourseType.LESSON_START
     };
 
     List lessonIds = new ArrayList();
@@ -97,7 +98,6 @@ public class CourseStudyProcessFragment extends BaseFragment {
         dataList = getNewsCourseList(0);
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
-        dataList = addFinishTime(dataList);
         addCourseSummary(dataList);
         mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList, app);
         studyProcessRecyclerView.setAdapter(mAdapter);
@@ -151,7 +151,9 @@ public class CourseStudyProcessFragment extends BaseFragment {
         Iterator iterator = totalListMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            list.addAll((Collection<? extends NewsCourseEntity>) entry.getValue());
+            List<NewsCourseEntity> subList = (List<NewsCourseEntity>) entry.getValue();
+            addFinishTime(subList);
+            list.addAll(subList);
         }
         return list;
     }
@@ -162,8 +164,8 @@ public class CourseStudyProcessFragment extends BaseFragment {
             if (entity.getBodyType().equals("lesson.finish")) {
                 NewsCourseEntity finishTime = new NewsCourseEntity();
                 finishTime.setBodyType("lesson.costTime");
-                finishTime.setContent("课时学习完成时间" + AppUtil.timeStampToDate(entity.getCreatedTime()+"", null));
-                list.add(++i,finishTime);
+                finishTime.setContent("课时学习完成时间" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
+                list.add(finishTime);
             }
         }
         return list;
