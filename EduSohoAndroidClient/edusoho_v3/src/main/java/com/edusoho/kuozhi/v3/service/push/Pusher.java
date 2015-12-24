@@ -11,8 +11,10 @@ import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyProcessFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
@@ -90,10 +92,10 @@ public class Pusher {
     }
 
     public void pushTestpaperReviewed() {
-        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        boolean isForeground = EdusohoApp.app.isForeground(CourseStudyPageActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyProcessFragment.class);
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
@@ -101,10 +103,10 @@ public class Pusher {
 
     public void pushHomeworkReviewed(){
         //// TODO: 15/12/21  
-        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        boolean isForeground = EdusohoApp.app.isForeground(CourseStudyPageActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyProcessFragment.class);
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
@@ -112,10 +114,10 @@ public class Pusher {
 
     public void pushQuestionAnswered(){
         //// TODO: 15/12/21  
-        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        boolean isForeground = EdusohoApp.app.isForeground(CourseStudyPageActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyProcessFragment.class);
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
@@ -123,10 +125,10 @@ public class Pusher {
 
     public void pushLessonFinished(){
         //// TODO: 15/12/21  
-        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        boolean isForeground = EdusohoApp.app.isForeground(CourseStudyPageActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyProcessFragment.class);
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
@@ -134,10 +136,10 @@ public class Pusher {
 
     public void pushLessonStart(){
         //// TODO: 15/12/23
-        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
+        boolean isForeground = EdusohoApp.app.isForeground(CourseStudyPageActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsCourseActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyProcessFragment.class);
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);

@@ -87,7 +87,7 @@ public class CourseStudyProcessFragment extends BaseFragment {
         });
 
         initData();
-
+        filterData();
     }
 
     public void initData() {
@@ -96,9 +96,15 @@ public class CourseStudyProcessFragment extends BaseFragment {
         newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         totalListMap = new LinkedHashMap<>();
         dataList = getNewsCourseList(0);
+//        dataList = filterList(dataList);
+//        dataList = addLessonTitle(dataList);
+//        addCourseSummary(dataList);
+    }
+
+    public void filterData(){
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
-        addCourseSummary(dataList);
+        addCourseSummary();
         mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList, app);
         studyProcessRecyclerView.setAdapter(mAdapter);
     }
@@ -121,6 +127,7 @@ public class CourseStudyProcessFragment extends BaseFragment {
     }
 
     public List addLessonTitle(List<NewsCourseEntity> list) {
+        lessonIds.clear();
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
             String lessonId = entity.getLessonId() + "";
@@ -177,7 +184,7 @@ public class CourseStudyProcessFragment extends BaseFragment {
         return list;
     }
 
-    private void addCourseSummary(final List<NewsCourseEntity> entities) {
+    private void addCourseSummary() {
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
@@ -218,9 +225,11 @@ public class CourseStudyProcessFragment extends BaseFragment {
         if (Const.ADD_COURSE_MSG == messageType.code) {
             WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
             NewsCourseEntity entity = new NewsCourseEntity(wrapperMessage);
-            mAdapter.addItem(entity);
+            initData();
+            dataList.add(entity);
+            filterData();
+            mAdapter.notifyDataSetChanged();
         }
     }
-
 
 }
