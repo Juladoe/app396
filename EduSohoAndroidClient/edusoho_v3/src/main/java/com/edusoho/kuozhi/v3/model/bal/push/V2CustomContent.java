@@ -143,6 +143,42 @@ public class V2CustomContent implements Serializable {
         private String lessonType;
         private String title;
         private String image;
+        private int lessonId;
+        private int homeworkResultId;
+        private int questionId;
+        private boolean isLessonFinished;
+
+        public boolean getIsLessonFinished() {
+            return isLessonFinished;
+        }
+
+        public void setIsLessonFinished(boolean isLessonFinished) {
+            this.isLessonFinished = isLessonFinished;
+        }
+
+        public int getHomeworkResultId() {
+            return homeworkResultId;
+        }
+
+        public void setHomeworkResultId(int homeworkResultId) {
+            this.homeworkResultId = homeworkResultId;
+        }
+
+        public int getQuestionId() {
+            return questionId;
+        }
+
+        public void setQuestionId(int questionId) {
+            this.questionId = questionId;
+        }
+
+        public int getLessonId() {
+            return lessonId;
+        }
+
+        public void setLessonId(int lessonId) {
+            this.lessonId = lessonId;
+        }
 
         public String getImage() {
             return image;

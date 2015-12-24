@@ -462,6 +462,18 @@ public class NewsFragment extends BaseFragment {
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
                 type = PushUtil.CourseCode.TESTPAPER_REVIEWED;
                 break;
+            case PushUtil.CourseType.HOMEWORK_REVIEWED:
+                type = PushUtil.CourseType.HOMEWORK_REVIEWED;
+                break;
+            case PushUtil.CourseType.QUESTION_ANSWERED:
+                type = PushUtil.CourseType.QUESTION_ANSWERED;
+                break;
+            case PushUtil.CourseType.LESSON_START:
+                type = PushUtil.CourseType.LESSON_START;
+                break;
+            case PushUtil.CourseType.LESSON_FINISH:
+                type = PushUtil.CourseType.LESSON_FINISH;
+                break;
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                 type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
                 break;

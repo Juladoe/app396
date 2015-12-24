@@ -1023,4 +1023,35 @@ public class AppUtil {
         }
         return version;
     }
+
+
+    /**
+     * 去除string中的HTML标签
+     * @param string
+     * @return
+     */
+    public static String removeHtmlSpan(String string){
+        String htmlRegx = "<[^>]+>";
+        String regxedStr = string;
+        Pattern htmlPattern = Pattern.compile(htmlRegx, Pattern.CASE_INSENSITIVE);
+        Matcher htmlMatcher = htmlPattern.matcher(string);
+        regxedStr = htmlMatcher.replaceAll("");
+        return regxedStr;
+    }
+
+    /**
+     * 时间戳转日期
+     * @param timeStampStr
+     * @param format
+     * @return
+     */
+    public static String timeStampToDate(String timeStampStr,String format){
+        String date;
+        long unixLong = Long.parseLong(timeStampStr)*1000;
+        if (format == null){
+            format = "yy-MM-dd  HH:mm";
+        }
+        date = new java.text.SimpleDateFormat(format).format(unixLong);
+        return date;
+    }
 }

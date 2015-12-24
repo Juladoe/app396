@@ -31,4 +31,5 @@ dependencies {
     compile files('libs/gson-2.1.jar')
     compile files('libs/cordova-3.4.jar');
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.android.support:recyclerview-v7:22.1.1'
 }

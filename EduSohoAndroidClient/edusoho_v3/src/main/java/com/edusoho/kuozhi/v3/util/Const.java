@@ -70,6 +70,7 @@ public class Const {
     //默认分页数量
     public static final int LIMIT = 10;
     public static final int NEWS_LIMIT = 15;
+    public static final int STUDY_PROCESS_LIMIT = 32768;
 
     public static final String EQUIP_TYPE = "Android";
     public static final String BIND_USER_ID = "bind_user_id";

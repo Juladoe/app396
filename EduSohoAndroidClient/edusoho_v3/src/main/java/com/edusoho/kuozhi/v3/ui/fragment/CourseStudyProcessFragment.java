@@ -1,10 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
-import android.view.View;
-
-import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +13,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -32,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,15 +38,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by JesseHuang on 15/12/14.
+ * Created by melomelon on 15/12/9.
  */
-public class CourseStudyFragment extends BaseFragment {
+public class CourseStudyProcessFragment extends BaseFragment {
+
     private RecyclerView studyProcessRecyclerView;
     private ImageButton mFloatButton;
 
     private StudyProcessRecyclerAdapter mAdapter;
 
     private LinkedHashMap<String, List<NewsCourseEntity>> totalListMap;
+    private int listCount = 0;
     private List<NewsCourseEntity> dataList;
     private Bundle mBundle;
     private int mCourseId;
@@ -68,6 +68,7 @@ public class CourseStudyFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_course_study_process_layout);
+
     }
 
     @Override
@@ -81,7 +82,7 @@ public class CourseStudyFragment extends BaseFragment {
         mFloatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //// TODO: 15/12/17 跳转到提问界面
+                //// TODO: 15/12/17 跳转到提问界面 
             }
         });
 
