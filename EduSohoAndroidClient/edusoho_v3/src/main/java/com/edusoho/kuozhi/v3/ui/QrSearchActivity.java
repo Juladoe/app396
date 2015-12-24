@@ -63,14 +63,14 @@ public class QrSearchActivity extends CaptureActivity {
             return true;
         }
 
+        if (! resultUrl.getHost().equals(app.domain)) {
+            PopupDialog.createNormal(mContext, "二维码提示", "该二维码对应内容非当前登录网校内教学内容，请核对后重新扫描。").show();
+            return true;
+        }
+
         Matcher typeMatcher = TYPE_PAT.matcher(resultUrl.getPath());
         if (typeMatcher.find() && urlcanMatch(typeMatcher)) {
             return false;
-        }
-
-        if (! resultUrl.getHost().equals(app.domain)) {
-            showUrlInWebView(result);
-            return true;
         }
 
         showUrlInESWebView(result);
