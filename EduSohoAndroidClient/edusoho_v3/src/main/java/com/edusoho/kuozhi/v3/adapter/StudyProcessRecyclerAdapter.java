@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +103,11 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof LessonTitleViewHolder) {
             final NewsCourseEntity entity = mDataList.get(position);
             String lessonTitle = entity.getContent();
+            if (entity.getIsLessonfinished() == true){
+                ((LessonTitleViewHolder) holder).lessonState.setImageResource(R.drawable.icon_lesson_state_finished);
+            }else {
+                ((LessonTitleViewHolder) holder).lessonState.setImageResource(R.drawable.icon_lesson_state_half);
+            }
             ((LessonTitleViewHolder) holder).lessonTitle.setText(lessonTitle);
             ((LessonTitleViewHolder) holder).lessonTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,7 +137,6 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_lesson_start));
                 ((NormalNotificationViewHolder) holder).notificationType.setText("课时完成");
                 ((NormalNotificationViewHolder) holder).notificationContent.setText("恭喜您已经完成了课时\"" + entity.getContent() + "\"的学习");
-                //// TODO: 15/12/22
 
             }
             if (entity.getBodyType().equals("lesson.start")) {
@@ -171,11 +176,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setBackgroundResource(R.drawable.process_testpaper_bg);
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_testpaper));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("作业批阅完成");
-                ((IntentNotificationViewHolder) holder).notificationContent.setText("课时：" + entity.getContent() + "的作业已经批阅完成");
+                ((IntentNotificationViewHolder) holder).notificationContent.setText("课时：\"" + entity.getContent() + "\"的作业已经批阅完成");
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //// TODO: 15/12/16
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(Const.LESSON_ID,entity.getLessonId());
+                        mApp.mEngine.runNormalPluginWithBundle("HomeworkSummaryActivity",mContext,bundle);
                     }
                 });
             } else if (entity.getBodyType().equals("question.answered")) {
@@ -201,9 +208,11 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private class LessonTitleViewHolder extends RecyclerView.ViewHolder {
 
         private TextView lessonTitle;
+        private ImageView lessonState;
 
         public LessonTitleViewHolder(View itemView) {
             super(itemView);
+            lessonState = (ImageView) itemView.findViewById(R.id.studyprocess_lesson_state_icon);
             lessonTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_title);
         }
     }

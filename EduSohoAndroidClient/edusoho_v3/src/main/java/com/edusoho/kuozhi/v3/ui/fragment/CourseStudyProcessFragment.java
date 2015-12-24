@@ -166,6 +166,12 @@ public class CourseStudyProcessFragment extends BaseFragment {
                 finishTime.setBodyType("lesson.costTime");
                 finishTime.setContent("课时学习完成时间" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
                 list.add(finishTime);
+                for (int j = 0;j<i;j++){
+                    NewsCourseEntity tmpEntity = list.get(j);
+                    if (tmpEntity.getBodyType().equals("course.lessonTitle")){
+                        tmpEntity.setIsLessonfinished(true);
+                    }
+                }
             }
         }
         return list;

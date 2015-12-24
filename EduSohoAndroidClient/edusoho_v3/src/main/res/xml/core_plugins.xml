@@ -349,6 +349,11 @@
         package="com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity"
         version="1.0" />
 
+    <plugin
+        name="HomeworkSummaryActivity"
+        package="com.edusoho.kuozhi.homework.HomeworkSummaryActivity"
+        version="1.0" />
+
 
 
 </plugins>

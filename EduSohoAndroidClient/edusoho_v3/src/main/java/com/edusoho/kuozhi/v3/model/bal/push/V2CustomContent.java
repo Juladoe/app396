@@ -144,6 +144,15 @@ public class V2CustomContent {
         private int lessonId;
         private int homeworkResultId;
         private int questionId;
+        private boolean isLessonFinished;
+
+        public boolean getIsLessonFinished() {
+            return isLessonFinished;
+        }
+
+        public void setIsLessonFinished(boolean isLessonFinished) {
+            this.isLessonFinished = isLessonFinished;
+        }
 
         public int getHomeworkResultId() {
             return homeworkResultId;

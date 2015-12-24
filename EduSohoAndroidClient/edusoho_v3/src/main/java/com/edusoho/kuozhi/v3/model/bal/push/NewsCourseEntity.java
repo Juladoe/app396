@@ -19,6 +19,7 @@ public class NewsCourseEntity {
     private int lessonId;
     private int homworkResultId;
     private int questionId;
+    private boolean isLessonfinished;
 
     private String image;
     private String teacher;
@@ -42,6 +43,7 @@ public class NewsCourseEntity {
         this.lessonId = v2CustomContent.getBody().getLessonId();
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
         this.questionId = v2CustomContent.getBody().getQuestionId();
+        this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
     }
 
     public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
@@ -59,6 +61,7 @@ public class NewsCourseEntity {
         this.lessonId = v2CustomContent.getBody().getLessonId();
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
         this.questionId = v2CustomContent.getBody().getQuestionId();
+        this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
     }
 
     public int getId() {
@@ -179,5 +182,13 @@ public class NewsCourseEntity {
 
     public void setQuestionId(int questionId) {
         this.questionId = questionId;
+    }
+
+    public boolean getIsLessonfinished() {
+        return isLessonfinished;
+    }
+
+    public void setIsLessonfinished(boolean isLessonfinished) {
+        this.isLessonfinished = isLessonfinished;
     }
 }
