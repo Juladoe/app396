@@ -264,8 +264,7 @@ public class NewsFragment extends BaseFragment {
                     app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
                     break;
                 case PushUtil.CourseType.TYPE:
-                    app.mEngine.runNormalPlugin("CourseStudyPageActivity", mContext, new PluginRunCallback() {
-//                    app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
+                    app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(Const.NEW_ITEM_INFO, newItem);

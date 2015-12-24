@@ -96,9 +96,6 @@ public class CourseStudyProcessFragment extends BaseFragment {
         newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         totalListMap = new LinkedHashMap<>();
         dataList = getNewsCourseList(0);
-//        dataList = filterList(dataList);
-//        dataList = addLessonTitle(dataList);
-//        addCourseSummary(dataList);
     }
 
     public void filterData(){

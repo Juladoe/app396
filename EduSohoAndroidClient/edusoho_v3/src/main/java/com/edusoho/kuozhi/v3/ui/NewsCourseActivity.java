@@ -139,6 +139,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         @Override
         public void setArguments(Bundle bundle) {
             bundle.putSerializable(Const.NEW_ITEM_INFO, mNewItemInfo);
+            bundle.putInt("course_id",mCourseId);
         }
     };
 
