@@ -173,7 +173,8 @@
         <activity
             android:name=".v3.ui.NewsCourseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
             android:name=".v3.ui.NewsCourseProfileActivity"
@@ -246,6 +247,12 @@
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:theme="@style/AppViewPaperTheme" />
+
+        <activity
+            android:name="com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
 
         <!-- 【必须】 exported设置为true -->
         <activity

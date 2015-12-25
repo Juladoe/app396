@@ -427,4 +427,11 @@
     <color name="grounding">#f7f7f7</color>
     <color name="grounding_operation">#fafafa</color>
     <color name="feedback">#f0f0f0</color>
+
+    <color name="process_lesson_start">#f5a623</color>
+    <color name="process_lesson_start_bg">#f5edd6</color>
+    <color name="process_question">#4a90e2</color>
+    <color name="process_question_bg">#d6e7f9</color>
+    <color name="process_testpaper">#37b97d</color>
+    <color name="process_testpaper_bg">#cfefe2</color>
 </resources>
