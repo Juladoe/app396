@@ -36,6 +36,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -353,7 +354,7 @@ public class AppUtil {
                 if (isOutStream && bos != null) {
                     bos.close();
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }
@@ -584,8 +585,7 @@ public class AppUtil {
         return cacheDir;
     }
 
-    public static File getAppZipStorage(Context context)
-    {
+    public static File getAppZipStorage(Context context) {
         File storage = context.getDir("html5plugin", Context.MODE_PRIVATE);
         File srcDir = new File(storage, "appZip");
         if (!srcDir.exists()) {
@@ -612,7 +612,7 @@ public class AppUtil {
                     continue;
                 }
 
-                if (! isFileDirExists(file)) {
+                if (!isFileDirExists(file)) {
                     continue;
                 }
                 if (AppUtil.saveStreamToFile(zin, file, false)) {
@@ -633,7 +633,7 @@ public class AppUtil {
     }
 
     public static boolean unZipFile(File outFile, File zinFile) {
-        if (! outFile.exists()) {
+        if (!outFile.exists()) {
             outFile.mkdir();
         }
 
@@ -645,7 +645,7 @@ public class AppUtil {
     }
 
     private static boolean isFileDirExists(File file) {
-        if (! file.getParentFile().exists()) {
+        if (!file.getParentFile().exists()) {
             return file.getParentFile().mkdirs();
         }
 
@@ -982,9 +982,9 @@ public class AppUtil {
     public static int searchInArray(int[] array, int search) {
 
         if (array == null || array.length == 0) {
-            return  -1;
+            return -1;
         }
-        for (int i=0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
             if (search == array[i]) {
                 return i;
             }
@@ -1012,7 +1012,7 @@ public class AppUtil {
     }
 
     public static void addZipToAssets(AssetManager assetManager, File file) {
-        if (! file.exists()) {
+        if (!file.exists()) {
             return;
         }
         try {
@@ -1037,10 +1037,11 @@ public class AppUtil {
 
     /**
      * 去除string中的HTML标签
+     *
      * @param string
      * @return
      */
-    public static String removeHtmlSpan(String string){
+    public static String removeHtmlSpan(String string) {
         String htmlRegx = "<[^>]+>";
         String regxedStr = string;
         Pattern htmlPattern = Pattern.compile(htmlRegx, Pattern.CASE_INSENSITIVE);
@@ -1051,17 +1052,46 @@ public class AppUtil {
 
     /**
      * 时间戳转日期
+     *
      * @param timeStampStr
      * @param format
      * @return
      */
-    public static String timeStampToDate(String timeStampStr,String format){
+    public static String timeStampToDate(String timeStampStr, String format) {
         String date;
-        long unixLong = Long.parseLong(timeStampStr)*1000;
-        if (format == null){
+        long unixLong = Long.parseLong(timeStampStr) * 1000;
+        if (format == null) {
             format = "yy-MM-dd  HH:mm";
         }
         date = new java.text.SimpleDateFormat(format).format(unixLong);
         return date;
+    }
+
+    public static String timeStampDiffToDay(int timeStampDiff) {
+
+        if (timeStampDiff > 0) {
+            int second = timeStampDiff % 60;
+            int totalMin = timeStampDiff / 60;
+            if (totalMin > 0) {
+                int min = totalMin % 60;
+                int totalHour = totalMin / 60;
+                if (totalHour > 0) {
+                    int hour = totalHour % 24;
+                    int totalDay = totalHour / 24;
+                    if (totalDay > 0) {
+                        int day = totalDay;
+                        return String.format("%d天%d小时%d分%d秒", day, hour, min, second);
+                    } else {
+                        return String.format("%d小时%d分%d秒", hour, min, second);
+                    }
+                } else {
+                    return String.format("%d分%d秒", min, second);
+                }
+            } else {
+                return String.format("%d秒", second);
+            }
+        } else {
+            return "0秒";
+        }
     }
 }

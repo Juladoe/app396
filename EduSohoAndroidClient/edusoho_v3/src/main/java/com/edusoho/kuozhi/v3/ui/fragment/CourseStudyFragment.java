@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -97,7 +98,7 @@ public class CourseStudyFragment extends BaseFragment {
         dataList = getNewsCourseList(0);
     }
 
-    public void filterData(){
+    public void filterData() {
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
         addCourseSummary();
@@ -165,16 +166,28 @@ public class CourseStudyFragment extends BaseFragment {
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
             if (entity.getBodyType().equals("lesson.finish")) {
-                NewsCourseEntity finishTime = new NewsCourseEntity();
-                finishTime.setBodyType("lesson.costTime");
-                finishTime.setContent("课时学习完成时间" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
-                list.add(finishTime);
-                for (int j = 0;j<i;j++){
-                    NewsCourseEntity tmpEntity = list.get(j);
-                    if (tmpEntity.getBodyType().equals("course.lessonTitle")){
-                        tmpEntity.setIsLessonfinished(true);
+                if (list.get(list.size() - 1).getBodyType().equals("lesson.costTime")) {
+                    continue;
+                } else {
+                    NewsCourseEntity finishTime = new NewsCourseEntity();
+                    finishTime.setBodyType("lesson.costTime");
+                    finishTime.setContent("课时学习耗时：" + AppUtil.timeStampDiffToDay((entity.getLearnFinishTime() - entity.getLearnStartTime())));
+                    list.add(finishTime);
+                    for (int j = 0; j < i; j++) {
+                        NewsCourseEntity tmpEntity = list.get(j);
+                        if (tmpEntity.getBodyType().equals("course.lessonTitle")) {
+                            tmpEntity.setIsLessonfinished(true);
+                        }
                     }
                 }
+                for (int k = i + 1; k < list.size(); k++) {
+                    NewsCourseEntity superFinishEntity = list.get(k);
+                    if (superFinishEntity.getBodyType().equals("lesson.finish")) {
+                        list.remove(k);
+                        k--;
+                    }
+                }
+
             }
         }
         return list;

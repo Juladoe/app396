@@ -147,6 +147,24 @@ public class V2CustomContent implements Serializable {
         private int homeworkResultId;
         private int questionId;
         private boolean isLessonFinished;
+        private int learnStartTime;
+        private int learnFinishTime;
+
+        public int getLearnStartTime() {
+            return learnStartTime;
+        }
+
+        public void setLearnStartTime(int learnStartTime) {
+            this.learnStartTime = learnStartTime;
+        }
+
+        public int getLearnFinishTime() {
+            return learnFinishTime;
+        }
+
+        public void setLearnFinishTime(int learnFinishTime) {
+            this.learnFinishTime = learnFinishTime;
+        }
 
         public boolean getIsLessonFinished() {
             return isLessonFinished;

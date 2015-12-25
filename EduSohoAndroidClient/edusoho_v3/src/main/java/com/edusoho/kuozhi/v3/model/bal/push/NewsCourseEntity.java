@@ -20,6 +20,8 @@ public class NewsCourseEntity {
     private int homworkResultId;
     private int questionId;
     private boolean isLessonfinished;
+    private int learnStartTime;
+    private int learnFinishTime;
 
     private String image;
     private String teacher;
@@ -44,6 +46,8 @@ public class NewsCourseEntity {
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
         this.questionId = v2CustomContent.getBody().getQuestionId();
         this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
+        this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
+        this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
     }
 
     public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
@@ -62,6 +66,8 @@ public class NewsCourseEntity {
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
         this.questionId = v2CustomContent.getBody().getQuestionId();
         this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
+        this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
+        this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
     }
 
     public int getId() {
@@ -190,5 +196,21 @@ public class NewsCourseEntity {
 
     public void setIsLessonfinished(boolean isLessonfinished) {
         this.isLessonfinished = isLessonfinished;
+    }
+
+    public int getLearnStartTime() {
+        return learnStartTime;
+    }
+
+    public void setLearnStartTime(int learnStartTime) {
+        this.learnStartTime = learnStartTime;
+    }
+
+    public int getLearnFinishTime() {
+        return learnFinishTime;
+    }
+
+    public void setLearnFinishTime(int learnFinishTime) {
+        this.learnFinishTime = learnFinishTime;
     }
 }
