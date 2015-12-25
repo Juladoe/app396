@@ -165,16 +165,22 @@ public class CourseStudyFragment extends BaseFragment {
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
             if (entity.getBodyType().equals("lesson.finish")) {
-                NewsCourseEntity finishTime = new NewsCourseEntity();
-                finishTime.setBodyType("lesson.costTime");
-                finishTime.setContent("课时学习完成时间" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
-                list.add(finishTime);
-                for (int j = 0;j<i;j++){
-                    NewsCourseEntity tmpEntity = list.get(j);
-                    if (tmpEntity.getBodyType().equals("course.lessonTitle")){
-                        tmpEntity.setIsLessonfinished(true);
+                if (list.get(list.size()-1).getBodyType().equals("lesson.costTime")){
+                    continue;
+// list.get(list.size()-1).setContent("课时学习耗时：" + AppUtil.timeStampDiffToDay((entity.getLearnFinishTime() - entity.getLearnStartTime())));
+                }else {
+                    NewsCourseEntity finishTime = new NewsCourseEntity();
+                    finishTime.setBodyType("lesson.costTime");
+                    finishTime.setContent("课时学习耗时：" + AppUtil.timeStampDiffToDay((entity.getLearnFinishTime() - entity.getLearnStartTime())));
+                    list.add(finishTime);
+                    for (int j = 0;j<i;j++){
+                        NewsCourseEntity tmpEntity = list.get(j);
+                        if (tmpEntity.getBodyType().equals("course.lessonTitle")){
+                            tmpEntity.setIsLessonfinished(true);
+                        }
                     }
                 }
+
             }
         }
         return list;

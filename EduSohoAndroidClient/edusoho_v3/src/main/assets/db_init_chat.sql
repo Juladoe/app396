@@ -44,7 +44,9 @@ create table if not exists news_course(
     createdTime integer,
     lessonId integer,
     homeworkResultId integer,
-    questionId integer
+    questionId integer,
+    learnStartTime integer,
+    learnFinishTime integer
 );
 
 create table if not exists sp_msg(
