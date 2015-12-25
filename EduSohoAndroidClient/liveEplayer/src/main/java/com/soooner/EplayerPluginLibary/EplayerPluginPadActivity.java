@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -708,6 +709,11 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
                     }
                     break;
                 }
+                case  TaskType.MESSAGE_PLAYBACK_SEGMENT_IEEMPTY:{
+                    ToastUtil.showToast(context,R.string.playback_info_isempty);
+                    finish();
+                    break;
+                }
                 case TaskType.MESSAGE_LOGIN_ERROR: {
                     hideLoading();
                     int errorCode = msg.arg1;
@@ -940,8 +946,9 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
             @Override
             public void onLoadingFailed() {
                 try {
-                    EplayerPluginPadActivity.this.requestStop();
                     createAlertDialog("提示","您的网络太糟糕，无法加载图片，请重试或者切换到稳定网络！");
+                    EplayerPluginPadActivity.this.requestStop();
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1092,7 +1099,9 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
             playerData =  new    EPlayerData();
         }
 
-        /*
+        playerControllerView= (PlayerControllerView) findViewById(R.id.playerControllerView);
+
+         /*
             @fix by suju
          */
         if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){
@@ -1100,8 +1109,6 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
         }else{
             EplayerSetting.isPlayback = false;
         }
-
-        playerControllerView= (PlayerControllerView) findViewById(R.id.playerControllerView);
 
         //TODO 回看判断
         if (EplayerSetting.isPlayback){
@@ -1874,7 +1881,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
     public void showAlertDialog() {
         TextView  text=new TextView(this);
-        android.view.ViewGroup.LayoutParams lp =text.getLayoutParams();
+        ViewGroup.LayoutParams lp =text.getLayoutParams();
         text.setTextSize(18);
 
         text.setGravity(Gravity.CENTER);
@@ -1933,6 +1940,8 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
             try {
 
+                ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
+
                 EplayerPluginPadActivity.this.loading = new PlaybackLoading();
                 EplayerPluginPadActivity.this.loading.liveClassroomId = this.liveClassroomId;
                 EplayerPluginPadActivity.this.loading.pid = this.pid;
@@ -1940,12 +1949,16 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
             }catch (Exception e){
                 e.printStackTrace();
             }
-
+            if(CheckUtil.isEmpty(EPlaybackSessionInfo.sharedSessionInfo().segmentArrays)){
+                Message message = Message.obtain();
+                message.what = TaskType.MESSAGE_PLAYBACK_SEGMENT_IEEMPTY;
+                handler.sendMessage(message);
+                return;
+            }
 
             handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
 
-            ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
-
+            System.gc();
 
         }
     }

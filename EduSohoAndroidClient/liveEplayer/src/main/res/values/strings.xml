@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">ACTIVITY_ENTRY_NAME</string>
     <string name="liveClassroomId_username_userpwd">房间ID、用户名、密码不能为空</string>
-
     <string name="liveClassroomId_null">房间ID不能为空</string>
     <string name="liveClassroomId_validate">校验码不能为空</string>
 
@@ -20,4 +19,6 @@
 
     <string name="vote_countenmame_hint">共%1$s人作答</string>
     <string name="vote_pad_countenmame_hint">统计结果：共%1$s人作答</string>
+
+    <string name="playback_info_isempty">回看内容为空</string>
 </resources>

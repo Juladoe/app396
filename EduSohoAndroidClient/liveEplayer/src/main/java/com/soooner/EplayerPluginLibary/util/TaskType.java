@@ -55,4 +55,5 @@ public class TaskType {
 
     public static final int MESSAGE_PARSETHREAD= 1000127;
 
+    public static final int MESSAGE_PLAYBACK_SEGMENT_IEEMPTY = 1000128;//分析后回看信息为空
 }
