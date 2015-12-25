@@ -186,7 +186,7 @@ public class TimeTaskUtils {
     }
 
     public interface TimeTaskListener  {
-        public void handlerTimeTaskLooping(int taskType,boolean isEnd);//定时周期回调,已经结束时传true
+        public void handlerTimeTaskLooping(int taskType, boolean isEnd);//定时周期回调,已经结束时传true
     }
 
 }

@@ -1,58 +1,63 @@
-package com.edusoho.kuozhi.v3.view.webview.bridge;
+package com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.webkit.JavascriptInterface;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
-
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
 /**
  * Created by howzhi on 15/4/17.
  */
-public class CoreBridge extends CordovaPlugin {
+public class BaseBridgePlugin<T extends Activity> implements IBridgePlugin {
 
-    public static final String TAG = "CoreBridge";
+    public static final String TAG = "BaseBridgePlugin";
 
     private HashMap<String, Method> mMethodList;
     protected Context mContext;
-    protected ActionBarBaseActivity mActivity;
+    protected BridgePluginContext mPluginContext;
+    protected T mActivity;
 
-
-    public CoreBridge() {
+    public BaseBridgePlugin() {
         super();
         initMethods();
     }
 
     @Override
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-        mActivity = (ActionBarBaseActivity) cordova.getActivity();
+    public String getName() {
+        return "";
+    }
+
+    @Override
+    public void initialize(BridgePluginContext pluginContext) {
+        this.mPluginContext = pluginContext;
+        mActivity = (T) pluginContext.getActivity();
         mContext = mActivity.getBaseContext();
-        super.initialize(cordova, webView);
+    }
+
+    @Override
+    public Object executeAnsy(String action, JSONArray args) {
+        CallbackStatus callbackStatus = invoke(action, args, null);
+        return callbackStatus.getMessage();
     }
 
     @Override
     public boolean execute(
-            String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        CallbackStatus<JSONObject> callbackStatus = invoke(action, args, callbackContext);
+            String action, JSONArray args, BridgeCallback callbackContext) throws JSONException {
+        CallbackStatus callbackStatus = invoke(action, args, callbackContext);
 
-        JSONObject message = callbackStatus.getMessage();
+        Object message = callbackStatus.getMessage();
         switch (callbackStatus.getStatus()) {
             case CallbackStatus.ERROR:
                 callbackContext.error(message);
                 break;
             case CallbackStatus.SUCCESS:
                 if (message != null) {
+                    Log.d(TAG, "success:" + action);
                     callbackContext.success(message);
                 }
                 break;
@@ -78,12 +83,12 @@ public class CoreBridge extends CordovaPlugin {
         }
     }
 
-    public CallbackStatus<JSONObject> invoke(String action, JSONArray args, CallbackContext callbackContext) {
+    public CallbackStatus invoke(String action, JSONArray args, BridgeCallback callbackContext) {
         CallbackStatus callbackStatus = new CallbackStatus();
         Method method = mMethodList.get(action);
         if (method != null) {
             try {
-                JSONObject object = (JSONObject) method.invoke(this, args, callbackContext);
+                Object object =  method.invoke(this, args, callbackContext);
                 callbackStatus.setSuccess(object);
             } catch (Exception e) {
                 e.printStackTrace();

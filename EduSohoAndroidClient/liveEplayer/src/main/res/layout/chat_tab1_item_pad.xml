@@ -28,8 +28,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_ciya" />
 
         </LinearLayout>
@@ -45,8 +45,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_jiyan" />
 
         </LinearLayout>
@@ -62,8 +62,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col3"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_buding" />
 
         </LinearLayout>
@@ -79,8 +79,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col4"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_shangxin" />
 
         </LinearLayout>
@@ -97,8 +97,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col5"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_daxiao" />
 
         </LinearLayout>
@@ -114,8 +114,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col6"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_jingya" />
 
         </LinearLayout>
@@ -132,8 +132,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col7"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_qinqin" />
 
         </LinearLayout>
@@ -149,8 +149,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col8"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_weixiao" />
 
         </LinearLayout>
@@ -166,8 +166,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col9"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_tushe" />
 
         </LinearLayout>
@@ -183,8 +183,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row1_col10"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_tianshi" />
 
         </LinearLayout>
@@ -210,8 +210,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_shuaku" />
 
         </LinearLayout>
@@ -227,8 +227,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_daidai" />
 
         </LinearLayout>
@@ -245,8 +245,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col3"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_daku" />
 
         </LinearLayout>
@@ -262,8 +262,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col4"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_moshu" />
 
         </LinearLayout>
@@ -279,8 +279,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col5"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_yaoguai" />
 
         </LinearLayout>
@@ -296,8 +296,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col6"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight"
                 android:background="@drawable/e_xingxing" />
 
         </LinearLayout>
@@ -311,8 +311,8 @@
 
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight" />
 
         </LinearLayout>
         <LinearLayout
@@ -324,8 +324,8 @@
 
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight" />
 
         </LinearLayout>
         <LinearLayout
@@ -337,8 +337,8 @@
 
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="@dimen/chat_size_with_hight" />
 
         </LinearLayout>
 
@@ -353,8 +353,8 @@
 
             <ImageView
                 android:id="@+id/img_tab_item_row2_col10"
-                android:layout_width="30dp"
-                android:layout_height="19dp"
+                android:layout_width="@dimen/chat_size_with_hight"
+                android:layout_height="29dp"
                 android:background="@drawable/item_back" />
 
         </LinearLayout>

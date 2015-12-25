@@ -12,8 +12,8 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.webview.CordovaContext;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 
 /**
  * Created by JesseHuang on 15/6/17.
@@ -129,7 +129,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CordovaContext cordovaContext = mWebView.getWebView().getCordovaContext();
-        cordovaContext.onActivityResult(requestCode, resultCode, data);
+        BridgePluginContext pluginContext = mWebView.getWebView().getBridgePluginContext();
+        pluginContext.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.*;
+import com.alibaba.fastjson.JSONReader;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
@@ -35,6 +36,8 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.widget.VideoView;
 
 import java.io.File;
+import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -149,7 +152,7 @@ public class MyVideoView extends FrameLayout {
         my_videoview_onclick = view.findViewById(R.id.my_videoview_onclick);
 
 
-        my_videoview_onclick.setOnClickListener(new View.OnClickListener() {
+        my_videoview_onclick.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -161,7 +164,7 @@ public class MyVideoView extends FrameLayout {
             }
         });
 
-        rl_changpian.setOnClickListener(new View.OnClickListener() {
+        rl_changpian.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -406,14 +409,23 @@ public class MyVideoView extends FrameLayout {
                 final   PlaybackSegment currentPlaybackSegment= data.currentPlaybackSegment;
                 final PlayList info=currentPlaybackSegment.info;
                 if(info.isexists()){
+                    String downUrl=  EplayerSetting.spliceVideoPlayBaseUrl+ info.getSuffix()+"/"+info.getDownSpliceUrl()+"/index.list";
+
+                    if(EplayerSetting.enbledLog)
+                        LogUtil.d("downUrl:"+downUrl);
+
                     initPlayBackVideoView(info.type,currentPlaybackSegment.endTime,currentPlaybackSegment.startTime-currentPlaybackSegment.allSegmentStartTime,currentPlaybackSegment.seq,data.getPlayUrl(),info.getDownLocationPath(),info.endfiletime,info.getSuffix());
                 }else{
                     String downUrl=  EplayerSetting.spliceVideoPlayBaseUrl+ info.getSuffix()+"/"+info.getDownSpliceUrl()+"/index.list";
-                    MyHttpUtils.getHttpUtils().download(downUrl,info.getDownLocationPath(),new RequestCallBack<File>(){
+
+                    if(EplayerSetting.enbledLog)
+                        LogUtil.d("downUrl:"+downUrl);
+
+                    MyHttpUtils.getHttpUtils().download(downUrl, info.getDownLocationPath(), new RequestCallBack<File>() {
 
                         @Override
                         public void onSuccess(ResponseInfo<File> responseInfo) {
-                            initPlayBackVideoView(info.type,currentPlaybackSegment.endTime,currentPlaybackSegment.startTime-currentPlaybackSegment.allSegmentStartTime,currentPlaybackSegment.seq,data.getPlayUrl(),responseInfo.result.getPath(),info.endfiletime,info.getSuffix());
+                            initPlayBackVideoView(info.type, currentPlaybackSegment.endTime, currentPlaybackSegment.startTime - currentPlaybackSegment.allSegmentStartTime, currentPlaybackSegment.seq, data.getPlayUrl(), responseInfo.result.getPath(), info.endfiletime, info.getSuffix());
                         }
 
                         @Override
@@ -464,13 +476,81 @@ public class MyVideoView extends FrameLayout {
         @Override
         public void run() {
             try {
-                JSONObject jsonObject = JSONUtils.getJSONFromFile(path);
-                SpliceInfo spliceInfo = SpliceInfo.fromJson(jsonObject,suffix,endfiletime,endTime,allseq+seq, type);
-                spliceInfo.palyurl=palyUrl;
+
+                SpliceInfo bean =new SpliceInfo();
+
+                bean.suffix=suffix;
+                bean.endfiletime=endfiletime;
+
+                //将画笔信息按页保存，一页为一个对象，里面包含画笔列表，并冗余第一条和最后一条的时间，方便查询
+                JSONReader reader = new JSONReader(new FileReader(path));
+                reader.startObject();
+                int count =0;
+                while (reader.hasNext()) {
+                    String key = reader.readString();
+
+                    if ("interval".equals(key)) {
+                        int interval = reader.readInteger();
+                        bean.interval = interval;
+                        count++;
+                    } else if ("timestamp".equals(key)) {
+                        long timestamp = reader.readLong();
+                        bean.timestamp = timestamp;
+                        count++;
+                    } else if ("length".equals(key)) {
+                        long length = reader.readLong();
+                        bean.length = length;
+                        count++;
+
+                    } else if ("zero4Thirteenth".equals(key)) {
+                        String zero4Thirteenth = reader.readString();
+                        bean.zero4Thirteenth = "true".equals(zero4Thirteenth);
+                        count++;
+                    }
+                    if(count==4){
+                        break;
+                    }
+
+                }
+//                reader.endObject();
+                reader.close();
+
+
+                LogUtil.e("-------SpliceInfo:interval:" + bean.interval + " timestamp:" + bean.timestamp + " length:" + bean.length + " zero4Thirteenth:" + bean.zero4Thirteenth);
+
+
+                bean.suffix=suffix;
+                bean.endfiletime=endfiletime;
+                bean.endTime=endTime;
+                bean.seq=allseq+seq;
+                bean.type=type;
+                bean.palyurl=palyUrl;
+
+                if((bean.endTime-bean.seq)%2000==0)
+                    bean.indexSize=(int)((bean.endTime-bean.seq) /2000);
+                else
+                    bean.indexSize=(int)((bean.endTime-bean.seq) /2000) + 1;
+
+                bean.startIndex = (int)(bean.seq /2000);
+
+                int size =(int)(bean.length /2000);
+                LogUtil.e("-------SpliceInfo:startIndex:" +  bean.startIndex + " size:" + size+ " indexSize:" + bean.indexSize+ " seq:" + seq );
+
+                if((bean.startIndex+bean.indexSize)>size){
+
+                    bean.indexSize = size - bean.startIndex;
+                }
+                LogUtil.e("-------SpliceInfo:startIndex:" +  bean.startIndex + " size:" + size+ " indexSize:" + bean.indexSize+ " seq:" + seq );
+
+
+//                JSONObject jsonObject = JSONUtils.getJSONFromFile(path);
+//                SpliceInfo spliceInfo = SpliceInfo.fromJson(jsonObject,suffix,endfiletime,endTime,allseq+seq, type);
+//                spliceInfo.palyurl=palyUrl;
                 Message message=Message.obtain();
                 message.what= TaskType.MESSAGE_PARSETHREAD;
-                message.obj=spliceInfo;
+                message.obj=bean;
                 handler.sendMessage(message);
+                System.gc();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -498,7 +578,7 @@ public class MyVideoView extends FrameLayout {
                         final SpliceInfo spliceInfo= (SpliceInfo) msg.obj;
                         PlaySpliceLoader.load(spliceInfo);
 
-                        if(spliceInfo.playSplicelist.size()<=1){
+                        if(spliceInfo.indexSize<=1){
                             bus.post(new NextSegmentEvent());
                             return;
                         }
@@ -508,7 +588,7 @@ public class MyVideoView extends FrameLayout {
 
                             @Override
                             public int getAvioCount(IMediaPlayer mp) {
-                                return spliceInfo.playSplicelist.size();
+                                return spliceInfo.indexSize;
                             }
 
                             @Override
@@ -520,7 +600,7 @@ public class MyVideoView extends FrameLayout {
                             @Override
                             public String getAvioPath(IMediaPlayer mp, int currentIndex) {
                                 //已经播放到最后了，要停止播放
-                                if(currentIndex>=spliceInfo.playSplicelist.size()){
+                                if(currentIndex>=spliceInfo.indexSize){
                                    MyVideoView.this.is_avio_done = true;
                                     return null;
                                 }
@@ -530,15 +610,15 @@ public class MyVideoView extends FrameLayout {
                                 if(null!=spliceLocation){
                                     handler.removeMessages(MESSAGE_LOADOUTTIME);
                                     playIndex=-1;
-                                //    LogUtil.d("streamEOF","removeMessages");
+                                    LogUtil.d("streamEOF","removeMessages");
                                 }else{
                                     //如果已经全部下载完成，并缓冲区已经没有数据了，认为播放结束
                                     if(PlaySpliceLoader.isDownEnd&&null!=PlaySpliceLoader.playSpliceMap&&PlaySpliceLoader.playSpliceMap.size()==0){
                                         handler.removeMessages(MESSAGE_LOADOUTTIME);
-                                   //     LogUtil.d("streamEOF","end removeMessages");
+                                        LogUtil.d("streamEOF","end removeMessages");
                                     }else{
                                         if (playIndex!=currentIndex){
-                                      //      LogUtil.d("streamEOF","add Messages playIndex:"+playIndex+" currentIndex: "+currentIndex);
+                                            LogUtil.d("streamEOF","add Messages playIndex:"+playIndex+" currentIndex: "+currentIndex);
                                             playIndex=currentIndex;
                                             handler.removeMessages(MESSAGE_LOADOUTTIME);
                                             handler.sendEmptyMessageDelayed(MESSAGE_LOADOUTTIME,LOAD_OUT_TIME);
@@ -547,6 +627,7 @@ public class MyVideoView extends FrameLayout {
                                     }
 
                                 }
+                                System.gc();
 
                                 return spliceLocation;
                             }

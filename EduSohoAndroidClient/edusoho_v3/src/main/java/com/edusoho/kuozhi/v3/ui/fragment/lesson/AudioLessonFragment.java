@@ -1,22 +1,27 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-
+import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,7 +35,12 @@ public class AudioLessonFragment extends BaseFragment {
     private SeekBar mAudioProgress;
     private TextView mTotalTime;
     private TextView mCurrentTime;
+    private ImageView mAudioCoverView;
+    private View mAudioCoverLayout;
     private String mUri;
+    protected int mCourseId;
+    protected float mAudioCoverAnimOffset;
+    protected ObjectAnimator mAudioCoverAnim;
 
     private Timer updateTimer;
     private boolean mIsSetTotalTime;
@@ -74,8 +84,8 @@ public class AudioLessonFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Bundle bundle = getArguments();
+        mCourseId = bundle.getInt(Const.COURSE_ID, 0);
         mUri = bundle.getString(Const.MEDIA_URL);
-        Log.d(null, "uri->" + mUri);
     }
 
     private String timeFormat(int second) {
@@ -92,94 +102,136 @@ public class AudioLessonFragment extends BaseFragment {
         return strTemp;
     }
 
+    private void updateAudioCoverViewStatus(boolean isPlay) {
+        if (mAudioCoverAnim == null) {
+            mAudioCoverAnim = ObjectAnimator.ofFloat(mAudioCoverLayout, "rotation", 0f, 359f);
+            mAudioCoverAnim.setDuration(10000);
+            mAudioCoverAnim.setInterpolator(new LinearInterpolator());
+            mAudioCoverAnim.setRepeatCount(-1);
+        }
+        if (isPlay) {
+            mAudioCoverAnim.setFloatValues(mAudioCoverAnimOffset, mAudioCoverAnimOffset + 359f);
+            mAudioCoverAnim.start();
+        } else {
+            mAudioCoverAnimOffset = (float) mAudioCoverAnim.getAnimatedValue();
+            mAudioCoverAnim.cancel();
+        }
+    }
+
     @Override
     protected void initView(View view) {
         super.initView(view);
         mTotalTime = (TextView) view.findViewById(R.id.audio_totalTime);
         mCurrentTime = (TextView) view.findViewById(R.id.audio_currentTime);
         mPlayBtn = (ImageView) view.findViewById(R.id.audio_playbtn);
+        mAudioCoverView = (ImageView) view.findViewById(R.id.audio_play_cover);
+        mAudioCoverLayout = view.findViewById(R.id.audio_play_cover_layout);
         mAudioProgress = (SeekBar) view.findViewById(R.id.audio_progress);
-
-        mPlayBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (audioMediaPlayer.isPlaying()) {
-                    audioMediaPlayer.pause();
-                    mPlayBtn.setImageResource(R.drawable.audio_pause);
-                } else {
-                    audioMediaPlayer.start();
-                    mPlayBtn.setImageResource(R.drawable.audio_play);
-                }
-            }
-        });
 
         if (TextUtils.isEmpty(mUri)) {
             CommonUtil.longToast(mContext, "无效的音频课时!");
             return;
         }
+
+        CourseProvider courseProvider = ModelProvider.initProvider(mContext, CourseProvider.class);
+        RequestUrl requestUrl = app.bindUrl(String.format("%s?courseId=%d", Const.COURSE, mCourseId), false);
+        courseProvider.getCourse(requestUrl).success(new NormalCallback<CourseDetailsResult>() {
+            @Override
+            public void success(CourseDetailsResult courseDetailsResult) {
+                if (courseDetailsResult != null && courseDetailsResult.course != null) {
+                    ImageLoader.getInstance().displayImage(courseDetailsResult.course.middlePicture, mAudioCoverView);
+                }
+            }
+        });
+
         try {
             audioMediaPlayer.setDataSource(mUri);
             audioMediaPlayer.prepareAsync();
-            audioMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.start();
-                    updateTimer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            Message msg = updateHandler.obtainMessage(UPDATE_PLAY_TIME);
-                            msg.arg1 = audioMediaPlayer.getCurrentPosition();
-                            msg.sendToTarget();
-
-                            if (!mIsSetTotalTime) {
-                                msg = updateHandler.obtainMessage(SET_TOTALTIME);
-                                msg.arg1 = audioMediaPlayer.getDuration();
-                                msg.sendToTarget();
-                            }
-                        }
-                    }, 0, 1000);
-                }
-            });
-
-            audioMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    audioMediaPlayer.seekTo(0);
-                    mPlayBtn.setImageResource(R.drawable.audio_pause);
-                }
-            });
-
-            audioMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    CommonUtil.longToast(mContext, "不能播放此音频课程!");
-                    return true;
-                }
-            });
-
-            mAudioProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    if (b) {
-                        audioMediaPlayer.seekTo(i);
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
+            initListener();
         } catch (IllegalStateException e) {
             CommonUtil.longToast(mContext, "不能播放此音频课程!");
         } catch (Exception e) {
             CommonUtil.longToast(mContext, "不能播放此音频课程!");
         }
+    }
+
+    private void initListener() {
+        View.OnClickListener playListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (audioMediaPlayer.isPlaying()) {
+                    updateAudioCoverViewStatus(false);
+                    audioMediaPlayer.pause();
+                    mPlayBtn.setImageResource(R.drawable.video_play);
+                } else {
+                    updateAudioCoverViewStatus(true);
+                    audioMediaPlayer.start();
+                    mPlayBtn.setImageResource(R.drawable.video_pause);
+                }
+            }
+        };
+        mAudioCoverLayout.setOnClickListener(playListener);
+        mPlayBtn.setOnClickListener(playListener);
+
+        audioMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+                mPlayBtn.setImageResource(R.drawable.video_pause);
+                updateAudioCoverViewStatus(true);
+                updateTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Message msg = updateHandler.obtainMessage(UPDATE_PLAY_TIME);
+                        msg.arg1 = 2 + audioMediaPlayer.getCurrentPosition();
+                        msg.sendToTarget();
+
+                        if (!mIsSetTotalTime) {
+                            msg = updateHandler.obtainMessage(SET_TOTALTIME);
+                            msg.arg1 = audioMediaPlayer.getDuration();
+                            msg.sendToTarget();
+                        }
+                    }
+                }, 0, 1000);
+            }
+        });
+
+        audioMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                updateAudioCoverViewStatus(false);
+                audioMediaPlayer.seekTo(0);
+                mPlayBtn.setImageResource(R.drawable.video_play);
+            }
+        });
+
+        audioMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                updateAudioCoverViewStatus(false);
+                CommonUtil.longToast(mContext, "不能播放此音频课程!");
+                return true;
+            }
+        });
+
+        mAudioProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if (b) {
+                    audioMediaPlayer.seekTo(i);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
@@ -195,6 +247,9 @@ public class AudioLessonFragment extends BaseFragment {
             if (audioMediaPlayer.isPlaying()) {
                 audioMediaPlayer.stop();
             }
+        }
+        if (mAudioCoverAnim != null) {
+            mAudioCoverAnim.cancel();
         }
         audioMediaPlayer.release();
         audioMediaPlayer = null;

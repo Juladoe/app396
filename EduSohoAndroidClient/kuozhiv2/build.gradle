@@ -8,8 +8,8 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        versionName "3.2.1"
-        versionCode 27
+        versionName "3.2.2"
+        versionCode 28
     }
 
     productFlavors {
@@ -54,6 +54,7 @@ dependencies {
     compile project(':homework')
 }
 
+/*
 android.applicationVariants.all { variant ->
 
     CustomFilter.pkg = android.productFlavors[0].applicationId;
@@ -138,4 +139,5 @@ class CustomFilter extends java.io.FilterReader
         return result;
     }
 }
+*/
 

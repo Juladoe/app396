@@ -8,6 +8,8 @@
     <string name="WechatMoments">朋友圈</string>
     <string name="WechatFavorite">微信收藏</string>
     <string name="QQ">QQ</string>
+    <string name="shareToUser">发送给校友</string>
+    <string name="shareFavorite">收藏</string>
 
     <string name="shard_title">分 享</string>
     <string name="shard_cancel">取  消</string>

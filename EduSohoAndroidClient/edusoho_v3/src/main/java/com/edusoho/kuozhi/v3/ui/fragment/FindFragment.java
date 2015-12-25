@@ -77,7 +77,7 @@ public class FindFragment extends ESWebViewFragment{
     }
 
     private void checkLocalResourceStatus() {
-        File schoolStorage = AppUtil.getSchoolStorage(app.domain);
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, app.domain);
         File appDir = new File(schoolStorage, "main");
 
         if (!appDir.exists()) {

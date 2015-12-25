@@ -92,7 +92,7 @@ public class IOUtils {
      * @param input InputStream
      * @param content 对应的匹配内容，分段读取内容宽度等于字段宽度两倍
      * @return string
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public static String readByLength(InputStream input, String content) throws IOException {
 

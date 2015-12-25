@@ -3,7 +3,9 @@ package com.edusoho.kuozhi.v3.view.webview;
 import android.app.Activity;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
-import org.apache.cordova.Config;
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.JsBridgeAdapter;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -13,15 +15,15 @@ import java.util.Queue;
 public class ESCordovaWebViewFactory {
 
     private static final String TAG = "ESCordovaWebViewFactory";
-    private Queue<ESCordovaWebView> mCacheQueue;
+    private Queue<AbstractJsBridgeAdapterWebView> mCacheQueue;
     private static ESCordovaWebViewFactory factory;
 
     private ESCordovaWebViewFactory() {
-        mCacheQueue = new ArrayDeque<ESCordovaWebView>();
+        mCacheQueue = new ArrayDeque<AbstractJsBridgeAdapterWebView>();
     }
 
     public static void init(BaseActivity activity) {
-        Config.init(activity);
+        JsBridgeAdapter.getInstance().init(activity.getBaseContext());
         factory = new ESCordovaWebViewFactory();
     }
 
@@ -33,7 +35,7 @@ public class ESCordovaWebViewFactory {
     }
 
     public void destory() {
-        ESCordovaWebView webView;
+        AbstractJsBridgeAdapterWebView webView;
         while ( (webView = mCacheQueue.poll()) != null) {
             Log.d(TAG, "mCacheQueue destory");
             webView.handleDestroy();
@@ -42,8 +44,7 @@ public class ESCordovaWebViewFactory {
         factory = null;
     }
 
-    public ESCordovaWebView getWebView(Activity activity) {
-        return ESCordovaWebView.create(activity, null);
+    public AbstractJsBridgeAdapterWebView getWebView(Activity activity) {
+        return new ESJsNativeWebView(activity);
     }
-
 }

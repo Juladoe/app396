@@ -213,7 +213,7 @@ public class ESWebViewRequestManager extends RequestManager {
 
     private File getResourceStorage(String host)
     {
-        File storage = AppUtil.getSchoolStorage(host);
+        File storage = AppUtil.getHtmlPluginStorage(mContext, host);
         File srcDir = new File(storage, mCode);
         if (!srcDir.exists()) {
             srcDir.mkdirs();
@@ -248,7 +248,7 @@ public class ESWebViewRequestManager extends RequestManager {
     }
 
     public AppMeta getLocalApp(String appCode) {
-        File schoolStorage = AppUtil.getSchoolStorage(EdusohoApp.app.domain);
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, EdusohoApp.app.domain);
         File appDir = new File(schoolStorage, appCode);
 
         if (appDir.exists()) {
@@ -271,10 +271,10 @@ public class ESWebViewRequestManager extends RequestManager {
         mWorkExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                File appZipStorage = AppUtil.getAppZipStorage();
+                File appZipStorage = AppUtil.getAppZipStorage(mContext);
                 File saveFile = saveFile(appZipStorage, request.getName(), request.url);
 
-                File schoolStorage = AppUtil.getSchoolStorage(EdusohoApp.app.domain);
+                File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, EdusohoApp.app.domain);
                 File schoolAppFile = new File(schoolStorage, mCode);
                 if (AppUtil.unZipFile(schoolAppFile, saveFile)) {
                     callback.onResponse(new Response(true));

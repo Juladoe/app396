@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -28,6 +29,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/5/22.
@@ -66,8 +68,20 @@ public class LoginActivity extends ActionBarBaseActivity {
         ivQQ.setOnClickListener(mQQLoginClickListener);
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
-        tvMore = (TextView) findViewById(R.id.tv_more);
-        tvMore.setOnClickListener(mMoreClickListener);
+        initThirdLoginBtns();
+    }
+
+    private void initThirdLoginBtns() {
+        List<String> types = ThirdPartyLogin.getInstance(mContext).getLoginTypes();
+        for (String type : types) {
+            if ("QQ".equals(type)) {
+                ivQQ.setVisibility(View.VISIBLE);
+            } else if ("Wechat".equals(type)) {
+                ivWeixin.setVisibility(View.VISIBLE);
+            } else if ("SinaWeibo".equals(type)) {
+                ivWeibo.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public static void startLogin(Activity activity) {

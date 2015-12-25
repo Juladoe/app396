@@ -2,7 +2,10 @@ package com.edusoho.kuozhi.shard;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
@@ -16,11 +19,28 @@ public class ThirdPartyLogin {
     private Context mContext;
     private static ThirdPartyLogin mLogin;
     private static Map<String, Platform> mPlats;
+    private ShareSDKUtil mShareSDKUtil;
+    private static final String[] LOING_TYPE = { "QQ", "SinaWeibo", "Wechat" };
 
     private ThirdPartyLogin(Context context) {
         mContext = context;
-        new ShareSDKUtil().initSDK(context);
+        mShareSDKUtil = new ShareSDKUtil();
+        mShareSDKUtil.initSDK(context);
         mPlats = new HashMap<>();
+    }
+
+    public List<String> getLoginTypes() {
+        ArrayList<String> types = new ArrayList<String>();
+        Platform[] platforms = mShareSDKUtil.getPlatformList();
+        for(Platform platform : platforms) {
+            for (String type : LOING_TYPE) {
+                if (type.equals(platform.getName())) {
+                    types.add(type);
+                }
+            }
+        }
+
+        return types;
     }
 
     public static ThirdPartyLogin getInstance(Context context) {

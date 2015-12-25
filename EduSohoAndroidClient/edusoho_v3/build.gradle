@@ -29,7 +29,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile files('libs/gson-2.1.jar')
-    compile files('libs/cordova-3.4.jar');
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.android.support:recyclerview-v7:22.1.1'
 }
