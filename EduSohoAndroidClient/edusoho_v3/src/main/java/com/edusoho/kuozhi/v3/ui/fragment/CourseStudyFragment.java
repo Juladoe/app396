@@ -131,21 +131,25 @@ public class CourseStudyFragment extends BaseFragment {
             NewsCourseEntity entity = list.get(i);
             String lessonId = entity.getLessonId() + "";
             String content = entity.getContent();
-            if (lessonId.equals(0)){
-                if (lessonIds.size() == 0 || lastLessonId == 0){
-                    tmpQuestions.add(entity);
-                }else {
-                    if (tmpQuestions.size()!=0){
-                        totalListMap.get(lastLessonId).addAll(tmpQuestions);
-                        tmpQuestions.clear();
-                    }
-                    totalListMap.get(lastLessonId).add(entity);
+            if (lessonIds.contains(lessonId)) {
+                while (list.get(i).getLessonId()!=0){
+                    totalListMap.get(lessonId).add(list.get(i));
+                    i++;
                 }
-            }else {
-                if (lessonIds.contains(lessonId)) {
-                    totalListMap.get(lessonId).add(entity);
-                    lastLessonId = Integer.parseInt(lessonId);
-                } else {
+                i--; 
+            } else {
+                if (lessonId.equals("0")) {
+                    int j = i;
+                    do {
+                        j++;
+                    } while (j < list.size() && list.get(j).getLessonId() != 0);
+                    List<NewsCourseEntity> subList = new ArrayList<>();
+                    int k = i;
+                    for (;k<j;k++){
+                        subList.add(list.get(k));
+                    }
+                    totalListMap.put(list.get(k-1).getLessonId()+"",subList);
+                }else {
                     NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
                     lessonTitleEntity.setContent(content);
                     lessonTitleEntity.setBodyType("course.lessonTitle");
@@ -160,19 +164,15 @@ public class CourseStudyFragment extends BaseFragment {
                     subList.add(lessonTitleEntity);
                     subList.add(costTimeEntity);
                     subList.add(entity);
+                    while (list.get(i).getLessonId()!=0){
+                        totalListMap.get(lessonId).add(list.get(i));
+                        i++;
+                    }
 
                     totalListMap.put(lessonId, subList);
                     lessonIds.add(lessonId);
-                    lastLessonId = Integer.parseInt(lessonId);
                 }
-                if (tmpQuestions.size()!=0){
-                    totalListMap.get(lessonId).addAll(tmpQuestions);
-                    tmpQuestions.clear();
-                }
-            }
-            if (tmpQuestions.size()!=0 && lessonIds.size() == 0){
-                totalListMap.put("0",tmpQuestions);
-                tmpQuestions.clear();
+
             }
         }
 
