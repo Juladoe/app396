@@ -53,6 +53,8 @@ public class CourseStudyFragment extends BaseFragment {
     private List<NewsCourseEntity> dataList;
     private Bundle mBundle;
     private int mCourseId;
+    private List tmpQuestions = new ArrayList();
+    private int lastLessonId = 0;
 
     private NewsCourseDataSource newsCourseDataSource;
 
@@ -129,28 +131,51 @@ public class CourseStudyFragment extends BaseFragment {
             NewsCourseEntity entity = list.get(i);
             String lessonId = entity.getLessonId() + "";
             String content = entity.getContent();
-            if (lessonIds.contains(lessonId)) {
-                totalListMap.get(lessonId).add(entity);
-            } else {
-                NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
-                lessonTitleEntity.setContent(content);
-                lessonTitleEntity.setBodyType("course.lessonTitle");
-                lessonTitleEntity.setLessonId(Integer.parseInt(lessonId));
-                lessonTitleEntity.setCourseId(mCourseId);
+            if (lessonId.equals(0)){
+                if (lessonIds.size() == 0 || lastLessonId == 0){
+                    tmpQuestions.add(entity);
+                }else {
+                    if (tmpQuestions.size()!=0){
+                        totalListMap.get(lastLessonId).addAll(tmpQuestions);
+                        tmpQuestions.clear();
+                    }
+                    totalListMap.get(lastLessonId).add(entity);
+                }
+            }else {
+                if (lessonIds.contains(lessonId)) {
+                    totalListMap.get(lessonId).add(entity);
+                    lastLessonId = Integer.parseInt(lessonId);
+                } else {
+                    NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
+                    lessonTitleEntity.setContent(content);
+                    lessonTitleEntity.setBodyType("course.lessonTitle");
+                    lessonTitleEntity.setLessonId(Integer.parseInt(lessonId));
+                    lessonTitleEntity.setCourseId(mCourseId);
 
-                NewsCourseEntity costTimeEntity = new NewsCourseEntity();
-                costTimeEntity.setContent("课时学习开始时间：" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
-                costTimeEntity.setBodyType("lesson.costTime");
+                    NewsCourseEntity costTimeEntity = new NewsCourseEntity();
+                    costTimeEntity.setContent("课时学习开始时间：" + AppUtil.timeStampToDate(entity.getCreatedTime() + "", null));
+                    costTimeEntity.setBodyType("lesson.costTime");
 
-                List<NewsCourseEntity> subList = new ArrayList<>();
-                subList.add(lessonTitleEntity);
-                subList.add(costTimeEntity);
-                subList.add(entity);
+                    List<NewsCourseEntity> subList = new ArrayList<>();
+                    subList.add(lessonTitleEntity);
+                    subList.add(costTimeEntity);
+                    subList.add(entity);
 
-                totalListMap.put(lessonId, subList);
-                lessonIds.add(lessonId);
+                    totalListMap.put(lessonId, subList);
+                    lessonIds.add(lessonId);
+                    lastLessonId = Integer.parseInt(lessonId);
+                }
+                if (tmpQuestions.size()!=0){
+                    totalListMap.get(lessonId).addAll(tmpQuestions);
+                    tmpQuestions.clear();
+                }
+            }
+            if (tmpQuestions.size()!=0 && lessonIds.size() == 0){
+                totalListMap.put("0",tmpQuestions);
+                tmpQuestions.clear();
             }
         }
+
         list.clear();
         Iterator iterator = totalListMap.entrySet().iterator();
         while (iterator.hasNext()) {
