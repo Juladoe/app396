@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -68,6 +69,15 @@ public class LoginActivity extends ActionBarBaseActivity {
         ivQQ.setOnClickListener(mQQLoginClickListener);
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
+        tvMore = (TextView) findViewById(R.id.tv_more);
+        tvMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingIntent = new Intent();
+                settingIntent.setComponent(new ComponentName(getPackageName(), "SettingActivity"));
+                startActivity(settingIntent);
+            }
+        });
         initThirdLoginBtns();
     }
 

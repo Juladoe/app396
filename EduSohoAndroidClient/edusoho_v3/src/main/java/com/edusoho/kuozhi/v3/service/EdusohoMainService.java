@@ -113,7 +113,6 @@ public class EdusohoMainService extends Service {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        Log.d("-->", "onResponse");
                         mAjaxQueue.poll();
                         UserResult result = app.gson.fromJson(
                                 response, new TypeToken<UserResult>() {
@@ -128,7 +127,7 @@ public class EdusohoMainService extends Service {
                         }
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.d(TAG, e.getMessage());
                     }
                 }
             }, new Response.ErrorListener() {
