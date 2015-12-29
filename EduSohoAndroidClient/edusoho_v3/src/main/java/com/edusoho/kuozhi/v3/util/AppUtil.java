@@ -23,7 +23,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.animation.AccelerateInterpolator;
 
 import com.android.volley.Response;
@@ -36,6 +35,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -353,7 +353,7 @@ public class AppUtil {
                 if (isOutStream && bos != null) {
                     bos.close();
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }
@@ -574,8 +574,7 @@ public class AppUtil {
         return cacheDir;
     }
 
-    public static File getAppZipStorage()
-    {
+    public static File getAppZipStorage() {
         File storage = AppUtil.getAppStorage();
         File srcDir = new File(storage, "appZip");
         if (!srcDir.exists()) {
@@ -602,7 +601,7 @@ public class AppUtil {
                     continue;
                 }
 
-                if (! isFileDirExists(file)) {
+                if (!isFileDirExists(file)) {
                     continue;
                 }
                 if (AppUtil.saveStreamToFile(zin, file, false)) {
@@ -623,7 +622,7 @@ public class AppUtil {
     }
 
     public static boolean unZipFile(File outFile, File zinFile) {
-        if (! outFile.exists()) {
+        if (!outFile.exists()) {
             outFile.mkdir();
         }
 
@@ -635,7 +634,7 @@ public class AppUtil {
     }
 
     private static boolean isFileDirExists(File file) {
-        if (! file.getParentFile().exists()) {
+        if (!file.getParentFile().exists()) {
             return file.getParentFile().mkdirs();
         }
 
@@ -756,6 +755,40 @@ public class AppUtil {
         } catch (Exception ex) {
             Log.e("convertMills2Date", ex.getMessage());
             return "";
+        }
+    }
+
+    public static String convertTimeZone2Time(String timeZone) {
+        String time = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = convertMills2Date(sdf.parse(tDate).getTime());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
+        }
+    }
+
+    public static String converMillisecond2TimeZone(long millisecond) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+        String time = sdf.format(millisecond);
+        time = time.replace(' ', 'T').substring(0, time.length() - 2)
+                + ":00";
+        return time;
+    }
+
+    public static long convertTimeZone2Millisecond(String timeZone) {
+        long time = 0;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = sdf.parse(tDate).getTime() / 1000;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
         }
     }
 
@@ -972,9 +1005,9 @@ public class AppUtil {
     public static int searchInArray(int[] array, int search) {
 
         if (array == null || array.length == 0) {
-            return  -1;
+            return -1;
         }
-        for (int i=0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
             if (search == array[i]) {
                 return i;
             }
@@ -1002,7 +1035,7 @@ public class AppUtil {
     }
 
     public static void addZipToAssets(AssetManager assetManager, File file) {
-        if (! file.exists()) {
+        if (!file.exists()) {
             return;
         }
         try {

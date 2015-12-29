@@ -58,6 +58,11 @@ public class PushUtil {
         public static final String MULTI = "multi";
     }
 
+    public static class ThreadMsgType {
+        public static final String THREAD = "thread";
+        public static final String THREAD_POST = "thread.post";
+    }
+
     public static class MsgDeliveryType {
         public static final int SUCCESS = 1;
         public static final int FAILED = 0;

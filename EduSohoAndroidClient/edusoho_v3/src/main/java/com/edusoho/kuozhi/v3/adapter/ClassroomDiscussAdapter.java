@@ -111,14 +111,14 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ClassroomViewHolder holder;
+        DiscussViewHolder holder;
         int type = getItemViewType(position);
         if (convertView == null) {
             convertView = createViewByType(type);
-            holder = new ClassroomViewHolder(convertView, type);
+            holder = new DiscussViewHolder(convertView, type);
             convertView.setTag(holder);
         } else {
-            holder = (ClassroomViewHolder) convertView.getTag();
+            holder = (DiscussViewHolder) convertView.getTag();
         }
 
         switch (type) {
@@ -149,7 +149,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         return convertView;
     }
 
-    protected void handleReceiveMsgText(ClassroomViewHolder holder, int position) {
+    protected void handleReceiveMsgText(DiscussViewHolder holder, int position) {
         final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
@@ -167,7 +167,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
     }
 
-    protected void handlerReceiveImage(final ClassroomViewHolder holder, int position) {
+    protected void handlerReceiveImage(final DiscussViewHolder holder, int position) {
         final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
         final MyImageLoadingListener mMyImageLoadingListener = new MyImageLoadingListener(holder) {
             @Override
@@ -213,7 +213,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
-    protected void handlerReceiveAudio(final ClassroomViewHolder holder, int position) {
+    protected void handlerReceiveAudio(final DiscussViewHolder holder, int position) {
         final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
@@ -309,10 +309,10 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         }
     }
 
-    public class ClassroomViewHolder extends ViewHolder {
+    public static class DiscussViewHolder extends ViewHolder {
         public TextView tvNickname;
 
-        public ClassroomViewHolder(View view, int type) {
+        public DiscussViewHolder(View view, int type) {
             super(view, type);
             if (type == MSG_RECEIVE_TEXT || type == MSG_RECEIVE_IMAGE || type == MSG_RECEIVE_AUDIO) {
                 tvNickname = (TextView) view.findViewById(R.id.tv_nickname);

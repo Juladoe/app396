@@ -143,6 +143,10 @@ public class V2CustomContent implements Serializable {
         private String lessonType;
         private String title;
         private String image;
+        /**
+         * 用于提问类型
+         */
+        private String contentType;
 
         public String getImage() {
             return image;
@@ -190,6 +194,14 @@ public class V2CustomContent implements Serializable {
 
         public void setLessonType(String lessonType) {
             this.lessonType = lessonType;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
         }
     }
 }

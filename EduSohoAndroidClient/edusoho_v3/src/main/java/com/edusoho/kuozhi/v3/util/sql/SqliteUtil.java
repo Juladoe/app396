@@ -27,7 +27,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     private static final int dbVersion = 10;
     private static final int oldVersion = 9;
     private static SqliteUtil instance;
-    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql"};
+    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql", "db_int_audio_cache.sql"};
     private Context mContext;
 
     private SqliteUtil(Context context, String name, CursorFactory factory) {

@@ -172,6 +172,10 @@ public class EdusohoApp extends Application {
     }
 
     public Request<String> postUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+//        if (!getNetIsConnect()) {
+//            CommonUtil.shortToast(getApplicationContext(), "您网络暂时无法连接，请稍后重试");
+//            return null;
+//        }
         mVolley.getRequestQueue();
         StringVolleyRequest request = new StringVolleyRequest(Request.Method.POST, requestUrl, responseListener, errorListener);
         request.setTag(requestUrl.url);

@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -59,10 +58,8 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     private String mClassroomName;
     private String mClassroomImage;
     private int mFromClassroomId;
-    /**
-     * 自己的BusinessType
-     */
-    private String mMyType;
+
+    private String mRoleType;
 
     private ClassroomDiscussDataSource mClassroomDiscussDataSource;
     private ClassroomDiscussAdapter<ClassroomDiscussEntity> mAdapter;
@@ -70,8 +67,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        initView();
     }
 
     @Override
@@ -104,7 +99,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         mAudioDownloadReceiver.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
-        mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
@@ -135,7 +129,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
 
     @Override
     public void initData() {
-        super.initData();
         Intent intent = getIntent();
         if (intent == null) {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
@@ -145,15 +138,15 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         mClassroomName = intent.getStringExtra(Const.ACTIONBAR_TITLE);
         setBackMode(BACK, mClassroomName);
         mFromClassroomId = intent.getIntExtra(FROM_ID, mFromClassroomId);
-        if (TextUtils.isEmpty(mMyType)) {
+        if (TextUtils.isEmpty(mRoleType)) {
             String[] roles = new String[app.loginUser.roles.length];
             for (int i = 0; i < app.loginUser.roles.length; i++) {
                 roles[i] = app.loginUser.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
-                mMyType = PushUtil.ChatUserType.TEACHER;
+                mRoleType = PushUtil.ChatUserType.TEACHER;
             } else {
-                mMyType = PushUtil.ChatUserType.FRIEND;
+                mRoleType = PushUtil.ChatUserType.FRIEND;
             }
         }
         CurrentClassroomId = mFromClassroomId;
@@ -205,7 +198,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", mClassroomName);
         params.put("content", content);
-        params.put("custom", gson.toJson(v2CustomContent));
+        params.put("custom", v2CustomContentJson);
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -285,7 +278,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
         params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
-
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -450,7 +442,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         fromEntity.setId(app.loginUser.id);
         fromEntity.setImage(app.loginUser.mediumAvatar);
         fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mMyType);
+        fromEntity.setType(mRoleType);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
         toEntity.setId(mFromClassroomId);
