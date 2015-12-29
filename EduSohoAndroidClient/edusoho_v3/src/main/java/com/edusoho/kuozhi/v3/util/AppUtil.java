@@ -1094,4 +1094,13 @@ public class AppUtil {
             return "0秒";
         }
     }
+
+    public static String cutString(String str,int length){
+        String string = str;
+        if (string.length()<=length){
+            return string;
+        }else {
+            return string.substring(0,length)+"...";
+        }
+    }
 }

@@ -18,10 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        android:paddingTop="2dp"
         android:textSize="@dimen/x_small_font_size" />
 
     <View
@@ -33,6 +33,7 @@
         android:id="@+id/study_process_notification_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:maxLines="2"
         android:padding="8dp"
         android:textSize="@dimen/small_font_size" />
