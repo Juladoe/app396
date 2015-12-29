@@ -136,6 +136,8 @@ public class CourseStudyFragment extends BaseFragment {
                 while (++i<list.size()){
                     if (list.get(i).getLessonId()==0){
                         totalListMap.get(lessonId).add(list.get(i));
+                    }else {
+                        break;
                     }
                 }
                 i--;
@@ -179,6 +181,8 @@ public class CourseStudyFragment extends BaseFragment {
                     while (++i<list.size()){
                         if (list.get(i).getLessonId()==0){
                             subList.add(list.get(i));
+                        }else {
+                            break;
                         }
                     }
                     i--;
