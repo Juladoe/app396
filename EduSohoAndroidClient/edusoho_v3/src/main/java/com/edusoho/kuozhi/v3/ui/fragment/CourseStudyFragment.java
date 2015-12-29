@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -53,8 +54,7 @@ public class CourseStudyFragment extends BaseFragment {
     private List<NewsCourseEntity> dataList;
     private Bundle mBundle;
     private int mCourseId;
-    private List tmpQuestions = new ArrayList();
-    private int lastLessonId = 0;
+    private boolean isEndByLength = false;
 
     private NewsCourseDataSource newsCourseDataSource;
 
@@ -132,23 +132,35 @@ public class CourseStudyFragment extends BaseFragment {
             String lessonId = entity.getLessonId() + "";
             String content = entity.getContent();
             if (lessonIds.contains(lessonId)) {
-                while (list.get(i).getLessonId()!=0){
-                    totalListMap.get(lessonId).add(list.get(i));
-                    i++;
+                totalListMap.get(lessonId).add(entity);
+                while (++i<list.size()){
+                    if (list.get(i).getLessonId()==0){
+                        totalListMap.get(lessonId).add(list.get(i));
+                    }
                 }
-                i--; 
+                i--;
             } else {
                 if (lessonId.equals("0")) {
                     int j = i;
                     do {
                         j++;
-                    } while (j < list.size() && list.get(j).getLessonId() != 0);
+                        if (!(j < list.size())){
+                            isEndByLength = true;
+                            break;
+                        }
+                        if (list.get(j).getLessonId() != 0){
+                            isEndByLength = false;
+                            break;
+                        }
+                    }while (true);
                     List<NewsCourseEntity> subList = new ArrayList<>();
-                    int k = i;
-                    for (;k<j;k++){
-                        subList.add(list.get(k));
+                    for (;i<j;i++){
+                        subList.add(list.get(i));
                     }
-                    totalListMap.put(list.get(k-1).getLessonId()+"",subList);
+                    totalListMap.put("0",subList);
+                    if (!isEndByLength){
+                        i--;
+                    }
                 }else {
                     NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
                     lessonTitleEntity.setContent(content);
@@ -164,15 +176,15 @@ public class CourseStudyFragment extends BaseFragment {
                     subList.add(lessonTitleEntity);
                     subList.add(costTimeEntity);
                     subList.add(entity);
-                    while (list.get(i).getLessonId()!=0){
-                        totalListMap.get(lessonId).add(list.get(i));
-                        i++;
+                    while (++i<list.size()){
+                        if (list.get(i).getLessonId()==0){
+                            subList.add(list.get(i));
+                        }
                     }
-
+                    i--;
                     totalListMap.put(lessonId, subList);
                     lessonIds.add(lessonId);
                 }
-
             }
         }
 
@@ -187,7 +199,10 @@ public class CourseStudyFragment extends BaseFragment {
         return list;
     }
 
-    private List addFinishTime(List<NewsCourseEntity> list) {
+    private void addFinishTime(List<NewsCourseEntity> list) {
+        if (list == null){
+            return ;
+        }
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
             if (entity.getBodyType().equals("lesson.finish")) {
@@ -215,7 +230,6 @@ public class CourseStudyFragment extends BaseFragment {
 
             }
         }
-        return list;
     }
 
     private void addCourseSummary() {
