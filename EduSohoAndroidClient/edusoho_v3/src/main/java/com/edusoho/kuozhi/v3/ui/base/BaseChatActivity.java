@@ -366,7 +366,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.success(null);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                CommonUtil.longToast(mActivity, getString(R.string.network_does_not_work));
                 Log.d(TAG, "get upload info from upyun failed");
             }
         });

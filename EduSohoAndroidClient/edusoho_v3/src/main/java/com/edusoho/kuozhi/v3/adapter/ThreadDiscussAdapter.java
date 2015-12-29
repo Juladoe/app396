@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
+import com.edusoho.kuozhi.v3.model.sys.AudioCacheEntity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.AudioCacheUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -120,6 +121,22 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 for (ThreadDiscussEntity tmpModel : mList) {
                     if (tmpModel.id == model.id) {
                         tmpModel.delivery = model.delivery;
+                        notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("updateItemState", e.getMessage());
+        }
+    }
+
+    public void updateItemState(int id, int state) {
+        try {
+            if (mList.size() > 1) {
+                for (ThreadDiscussEntity tmpModel : mList) {
+                    if (tmpModel.id == id) {
+                        tmpModel.delivery = state;
                         notifyDataSetChanged();
                         break;
                     }
@@ -277,13 +294,11 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 });
                 break;
         }
-
-        if (model.content.contains("http")) {
-            ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions);
-            holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
-        } else {
-            ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
-            holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
+        AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(model.content);
+        if (cache != null) {
+            String imageLocalPath = cache.localPath;
+            ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(imageLocalPath), holder.ivMsgImage, EdusohoApp.app.mOptions);
+            holder.ivMsgImage.setOnClickListener(new ImageMsgClick(imageLocalPath));
         }
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
     }
@@ -482,6 +497,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
             this.delivery = delivery;
             this.createdTime = createdTime;
         }
+
     }
 
     private ThreadDiscussEntity convertThreadDiscuss(CourseThreadPostEntity courseThreadPostEntity) {

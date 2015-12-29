@@ -5,6 +5,15 @@ package com.edusoho.kuozhi.v3.model.sys;
  */
 public class AudioCacheEntity {
     public int id;
-    public String onlinePath;
     public String localPath;
+    public String onlinePath;
+
+    public AudioCacheEntity() {
+
+    }
+
+    public AudioCacheEntity(String localPath, String onlinePath) {
+        this.localPath = localPath;
+        this.onlinePath = onlinePath;
+    }
 }

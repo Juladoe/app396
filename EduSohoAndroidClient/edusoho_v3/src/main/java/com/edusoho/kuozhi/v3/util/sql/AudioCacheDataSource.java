@@ -44,9 +44,22 @@ public class AudioCacheDataSource {
 
     public AudioCacheEntity getAudio(String path) {
         openRead();
-        AudioCacheEntity model = new AudioCacheEntity();
-        Cursor cursor = mDataBase.rawQuery("SELECT * FROM AUDIO_CACHE WHERE LOCAL_PATH = ? OR ONLINEPATH = ?",
+        AudioCacheEntity model = null;
+        Cursor cursor = mDataBase.rawQuery("SELECT * FROM AUDIO_CACHE WHERE LOCALPATH = ? OR ONLINEPATH = ?",
                 new String[]{path + "", path + ""});
+        while (cursor.moveToNext()) {
+            model = convertCursor2Model(cursor);
+        }
+        cursor.close();
+        close();
+        return model;
+    }
+
+    public AudioCacheEntity getAudio(int id) {
+        openRead();
+        AudioCacheEntity model = null;
+        Cursor cursor = mDataBase.rawQuery("SELECT * FROM AUDIO_CACHE WHERE ID = ?",
+                new String[]{id + ""});
         while (cursor.moveToNext()) {
             model = convertCursor2Model(cursor);
         }
@@ -65,14 +78,15 @@ public class AudioCacheDataSource {
         return effectRow;
     }
 
-    public long create(AudioCacheEntity model) {
+    public AudioCacheEntity create(AudioCacheEntity model) {
         this.openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[1], model.localPath);
         cv.put(allColumns[2], model.onlinePath);
-        long effectRow = mDataBase.insert(TABLE_NAME, null, cv);
+        long id = mDataBase.insert(TABLE_NAME, null, cv);
+        AudioCacheEntity result = getAudio((int) id);
         this.close();
-        return effectRow;
+        return result;
     }
 
     public void update(AudioCacheEntity model) {

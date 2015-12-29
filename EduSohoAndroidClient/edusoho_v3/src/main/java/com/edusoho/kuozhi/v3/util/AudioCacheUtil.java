@@ -27,16 +27,26 @@ public class AudioCacheUtil {
         return mAudioCacheDataSource.getAudio(path);
     }
 
-    public long create(String local, String online) {
-        return mAudioCacheDataSource.create(local, online);
+    public AudioCacheEntity create(String local, String online) {
+        return create(new AudioCacheEntity(local, online));
     }
 
-    public long create(AudioCacheEntity model) {
-        long id = 0;
-        if (mAudioCacheDataSource.getAudio(model.localPath) == null || mAudioCacheDataSource.getAudio(model.onlinePath) == null) {
-            id = mAudioCacheDataSource.create(model);
+    public AudioCacheEntity create(AudioCacheEntity model) {
+        AudioCacheEntity cacheLocal = mAudioCacheDataSource.getAudio(model.localPath);
+        AudioCacheEntity cacheOnline = mAudioCacheDataSource.getAudio(model.onlinePath);
+        AudioCacheEntity result = null;
+        if (cacheLocal == null && cacheOnline == null) {
+            result = mAudioCacheDataSource.create(model);
+        } else if (cacheOnline == null) {
+            model.localPath = cacheLocal.localPath;
+            mAudioCacheDataSource.update(model);
+            result = model;
+        } else if (cacheLocal == null) {
+            model.onlinePath = cacheOnline.onlinePath;
+            mAudioCacheDataSource.update(model);
+            result = model;
         }
-        return id;
+        return result;
     }
 
     public void update(AudioCacheEntity model) {

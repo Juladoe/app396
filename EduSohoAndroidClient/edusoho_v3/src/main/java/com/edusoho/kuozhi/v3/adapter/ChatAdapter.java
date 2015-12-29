@@ -673,7 +673,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 startVoiceAnim(holder, mChatSpeakAnimResId);
                 mCurrentAudioPath = mAudioFile.getPath();
             } else {
-                CommonUtil.shortToast(mContext, mContext.getString(R.string.audio_does_not_exist));
+                CommonUtil.shortToast(mContext, mContext.getString(R.string.cache_audio_does_not_exist));
             }
         }
     }

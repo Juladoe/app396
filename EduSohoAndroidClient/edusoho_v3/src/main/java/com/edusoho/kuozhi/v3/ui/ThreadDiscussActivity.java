@@ -188,10 +188,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     @Override
     public void sendMsgAgain(final BaseMsgEntity model) {
         final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
-        final ThreadDiscussEntity discussModel = mAdapter.getThreadDiscuss(model.id);
-        postModel.delivery = PushUtil.MsgDeliveryType.UPLOADING;
-        discussModel.delivery = postModel.delivery;
-        mAdapter.updateItemState(discussModel);
+        mAdapter.updateItemState(model.id, PushUtil.MsgDeliveryType.UPLOADING);
         handleSendPost(postModel, mSendMsgNormalCallback);
     }
 
@@ -231,26 +228,28 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             return;
         }
         try {
-            final CourseThreadPostEntity model = createCoursePostThreadByCurrentUser(file.getPath(), type, PushUtil.MsgDeliveryType.UPLOADING);
-            model.pid = (int) mCourseThreadPostDataSource.create(model);
+            final CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(file.getPath(), type, PushUtil.MsgDeliveryType.UPLOADING);
+            postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
+            ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
+            addItem2ListView(discussModel);
             getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        AudioCacheUtil.getInstance().create(model.content, model.upyunMediaGetUrl);
-                        uploadUnYunMedia(file, model, type);
+                        postModel.upyunMediaPutUrl = result.putUrl;
+                        postModel.upyunMediaGetUrl = result.getUrl;
+                        postModel.headers = result.getHeaders();
+                        AudioCacheUtil.getInstance().create(postModel.content, postModel.upyunMediaGetUrl);
+                        uploadUnYunMedia(file, postModel);
                         ThreadDiscussActivity.super.saveUploadResult(result.putUrl, result.getUrl, mThreadId);
-                        model.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                        mCourseThreadPostDataSource.update(model);
-                        mAdapter.updateItemState(convertThreadDiscuss(model));
+                        postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                        mCourseThreadPostDataSource.update(postModel);
+                        mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
                     } else {
-                        handleNetError("图片上传失败");
-                        model.delivery = PushUtil.MsgDeliveryType.FAILED;
-                        mCourseThreadPostDataSource.update(model);
-                        mAdapter.updateItemState(convertThreadDiscuss(model));
+                        postModel.delivery = PushUtil.MsgDeliveryType.FAILED;
+                        mCourseThreadPostDataSource.update(postModel);
+                        AudioCacheUtil.getInstance().create(postModel.content, postModel.upyunMediaGetUrl);
+                        mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);
                     }
                 }
             }, app.loginUser.id);
@@ -260,7 +259,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         }
     }
 
-    public void uploadUnYunMedia(final File file, final CourseThreadPostEntity model, final String type) {
+    public void uploadUnYunMedia(final File file, final CourseThreadPostEntity model) {
         RequestUrl putUrl = new RequestUrl(model.upyunMediaPutUrl);
         putUrl.setHeads(model.headers);
         putUrl.setMuiltParams(new Object[]{"file", file});
@@ -268,7 +267,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "success");
-                sendMediaMsg(model, type);
+                handleSendPost(model, mSendMsgNormalCallback);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -282,24 +281,24 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     @Override
     public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
         try {
-            final CourseThreadPostEntity courseThreadPostEntity = mCourseThreadPostDataSource.getPost(model.id);
+            final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
             getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
-                        courseThreadPostEntity.upyunMediaPutUrl = result.putUrl;
-                        courseThreadPostEntity.upyunMediaGetUrl = result.getUrl;
-                        courseThreadPostEntity.headers = result.getHeaders();
-                        uploadUnYunMedia(file, courseThreadPostEntity, type);
+                        postModel.upyunMediaPutUrl = result.putUrl;
+                        postModel.upyunMediaGetUrl = result.getUrl;
+                        postModel.headers = result.getHeaders();
+                        uploadUnYunMedia(file, postModel);
                         ThreadDiscussActivity.super.saveUploadResult(result.putUrl, result.getUrl, mThreadId);
-                        model.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                        mCourseThreadPostDataSource.update(courseThreadPostEntity);
-                        mAdapter.updateItemState(convertThreadDiscuss(courseThreadPostEntity));
+                        postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                        mCourseThreadPostDataSource.update(postModel);
+                        mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
                     } else {
                         handleNetError("图片上传失败");
-                        model.delivery = PushUtil.MsgDeliveryType.FAILED;
-                        mCourseThreadPostDataSource.update(courseThreadPostEntity);
-                        mAdapter.updateItemState(convertThreadDiscuss(courseThreadPostEntity));
+                        postModel.delivery = PushUtil.MsgDeliveryType.FAILED;
+                        mCourseThreadPostDataSource.update(postModel);
+                        mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);
                     }
                 }
             }, app.loginUser.id);
@@ -357,7 +356,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
         params.put("threadId", mThreadId + "");
-        params.put("content", formatContent(postModel.content, postModel.type));
+        params.put("content", formatContent(postModel, postModel.type));
         ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -369,8 +368,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 postModel.createdTime = postThreadResult.createdTime;
                 postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
                 mCourseThreadPostDataSource.update(postModel);
-                ThreadDiscussEntity discussModel = mAdapter.getThreadDiscuss(postModel.pid);
-                mAdapter.updateItemState(discussModel);
+                mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -378,9 +376,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 handleNetError(getString(R.string.network_does_not_work));
                 postModel.delivery = PushUtil.MsgDeliveryType.FAILED;
                 mCourseThreadPostDataSource.update(postModel);
-                final ThreadDiscussEntity discussModel = mAdapter.getThreadDiscuss(postModel.pid);
-                discussModel.delivery = postModel.delivery;
-                mAdapter.updateItemState(discussModel);
+                mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);
             }
         });
     }
@@ -425,91 +421,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             });
         }
     };
-
-    private CourseThreadPostEntity createCoursePostThreadByCurrentUser(String content, String contentType, int deliveryState) {
-        CourseThreadPostEntity model = new CourseThreadPostEntity();
-        model.courseId = mCourseId;
-        model.lessonId = mLessonId;
-        model.threadId = mThreadId;
-        model.user = new CourseThreadPostEntity.UserEntity();
-        model.user.id = app.loginUser.id;
-        model.user.nickname = app.loginUser.nickname;
-        model.user.mediumAvatar = app.loginUser.mediumAvatar;
-        model.content = content;
-        model.type = contentType;
-        model.delivery = deliveryState;
-        model.createdTime = AppUtil.converMillisecond2TimeZone(System.currentTimeMillis());
-        return model;
-    }
-
-    private CourseThreadEntity createCourseThreadByCurrentUser(String content) {
-        CourseThreadEntity model = new CourseThreadEntity();
-        model.id = mThreadId;
-        model.courseId = mCourseId;
-        model.lessonId = mLessonId;
-        model.user = new CourseThreadEntity.UserEntity();
-        model.user.id = app.loginUser.id;
-        model.user.nickname = app.loginUser.nickname;
-        model.user.mediumAvatar = app.loginUser.mediumAvatar;
-        model.type = "question";
-        model.title = content;
-        model.content = content;
-        model.createdTime = AppUtil.converMillisecond2TimeZone(System.currentTimeMillis());
-        return model;
-    }
-
-    private ThreadDiscussEntity convertThreadDiscuss(CourseThreadEntity courseThreadEntity) {
-        //帖子PostId默认为0，默认发送成功
-        return new ThreadDiscussEntity(
-                0,
-                courseThreadEntity.id,
-                courseThreadEntity.courseId,
-                courseThreadEntity.lessonId,
-                courseThreadEntity.user.id,
-                courseThreadEntity.user.nickname,
-                courseThreadEntity.user.mediumAvatar,
-                courseThreadEntity.content,
-                courseThreadEntity.type,
-                1,
-                courseThreadEntity.createdTime);
-    }
-
-    private ThreadDiscussEntity convertThreadDiscuss(CourseThreadPostEntity courseThreadPostEntity) {
-        return new ThreadDiscussEntity(
-                courseThreadPostEntity.pid,
-                courseThreadPostEntity.threadId,
-                courseThreadPostEntity.courseId,
-                courseThreadPostEntity.lessonId,
-                courseThreadPostEntity.user.id,
-                courseThreadPostEntity.user.nickname,
-                courseThreadPostEntity.user.mediumAvatar,
-                courseThreadPostEntity.content,
-                courseThreadPostEntity.type,
-                courseThreadPostEntity.delivery,
-                courseThreadPostEntity.createdTime);
-    }
-
-    private V2CustomContent getV2CustomContent(String content, String msgType, String contentType) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
-        fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mRoleType);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mToUserId);
-        toEntity.setType(PushUtil.ChatUserType.USER);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(msgType);
-        bodyEntity.setContent(content);
-        bodyEntity.setContentType(contentType);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(Const.PUSH_VERSION);
-        //v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
-    }
 
     private void getLists(final int threadId, final NormalCallback<Boolean> normalCallback) {
         if (app.getNetIsConnect()) {
@@ -635,15 +546,17 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         mAdapter.addItem(model);
     }
 
-    private String formatContent(String content, String type) {
+    private String formatContent(CourseThreadPostEntity model, String type) {
+        String content = "";
         switch (type) {
             case PushUtil.ChatMsgType.IMAGE:
-                content = String.format(IMAGE_FORMAT, content);
+                content = String.format(IMAGE_FORMAT, model.upyunMediaGetUrl);
                 break;
             case PushUtil.ChatMsgType.AUDIO:
-                content = String.format(AUDIO_FORMAT, content);
+                content = String.format(AUDIO_FORMAT, model.upyunMediaGetUrl);
                 break;
             default:
+                content = model.content;
         }
         return content;
     }
@@ -676,4 +589,93 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             }
         }
     };
+
+    private CourseThreadPostEntity createCoursePostThreadByCurrentUser(String content, String contentType, int deliveryState) {
+        CourseThreadPostEntity model = new CourseThreadPostEntity();
+        model.courseId = mCourseId;
+        model.lessonId = mLessonId;
+        model.threadId = mThreadId;
+        model.user = new CourseThreadPostEntity.UserEntity();
+        model.user.id = app.loginUser.id;
+        model.user.nickname = app.loginUser.nickname;
+        model.user.mediumAvatar = app.loginUser.mediumAvatar;
+        model.content = content;
+        model.type = contentType;
+        model.delivery = deliveryState;
+        model.createdTime = AppUtil.converMillisecond2TimeZone(System.currentTimeMillis());
+        return model;
+    }
+
+    private CourseThreadEntity createCourseThreadByCurrentUser(String content) {
+        CourseThreadEntity model = new CourseThreadEntity();
+        model.id = mThreadId;
+        model.courseId = mCourseId;
+        model.lessonId = mLessonId;
+        model.user = new CourseThreadEntity.UserEntity();
+        model.user.id = app.loginUser.id;
+        model.user.nickname = app.loginUser.nickname;
+        model.user.mediumAvatar = app.loginUser.mediumAvatar;
+        model.type = "question";
+        model.title = content;
+        model.content = content;
+        model.createdTime = AppUtil.converMillisecond2TimeZone(System.currentTimeMillis());
+        return model;
+    }
+
+    // region convert entity
+
+    private ThreadDiscussEntity convertThreadDiscuss(CourseThreadEntity courseThreadEntity) {
+        //帖子PostId默认为0，默认发送成功
+        return new ThreadDiscussEntity(
+                0,
+                courseThreadEntity.id,
+                courseThreadEntity.courseId,
+                courseThreadEntity.lessonId,
+                courseThreadEntity.user.id,
+                courseThreadEntity.user.nickname,
+                courseThreadEntity.user.mediumAvatar,
+                courseThreadEntity.content,
+                courseThreadEntity.type,
+                1,
+                courseThreadEntity.createdTime);
+    }
+
+    private ThreadDiscussEntity convertThreadDiscuss(CourseThreadPostEntity courseThreadPostEntity) {
+        return new ThreadDiscussEntity(
+                courseThreadPostEntity.pid,
+                courseThreadPostEntity.threadId,
+                courseThreadPostEntity.courseId,
+                courseThreadPostEntity.lessonId,
+                courseThreadPostEntity.user.id,
+                courseThreadPostEntity.user.nickname,
+                courseThreadPostEntity.user.mediumAvatar,
+                courseThreadPostEntity.content,
+                courseThreadPostEntity.type,
+                courseThreadPostEntity.delivery,
+                courseThreadPostEntity.createdTime);
+    }
+
+    private V2CustomContent getV2CustomContent(String content, String msgType, String contentType) {
+        V2CustomContent v2CustomContent = new V2CustomContent();
+        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        fromEntity.setNickname(app.loginUser.nickname);
+        fromEntity.setType(mRoleType);
+        v2CustomContent.setFrom(fromEntity);
+        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
+        toEntity.setId(mToUserId);
+        toEntity.setType(PushUtil.ChatUserType.USER);
+        v2CustomContent.setTo(toEntity);
+        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
+        bodyEntity.setType(msgType);
+        bodyEntity.setContent(content);
+        bodyEntity.setContentType(contentType);
+        v2CustomContent.setBody(bodyEntity);
+        v2CustomContent.setV(Const.PUSH_VERSION);
+        //v2CustomContent.setCreatedTime(mSendTime);
+        return v2CustomContent;
+    }
+
+    // endregion
 }
